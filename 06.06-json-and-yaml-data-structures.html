@@ -1,0 +1,908 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="fa">
+<head>
+<script>!function(){try{var t=localStorage.getItem('php2go-theme');if(t==='dark'||(!t&&window.matchMedia('(prefers-color-scheme:dark)').matches)){document.documentElement.setAttribute('data-theme','dark')}}catch(e){}}();</script>
+<meta charset="utf-8"/>
+<meta content="ie=edge" http-equiv="x-ua-compatible"/>
+<title>۶.۶ ساختارهای داده‌ای JSON و YAML — PHP to Go</title>
+<meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet"/>
+<link href="assets/css/main.css" rel="stylesheet" type="text/css"/>
+<link href="assets/img/favicon.ico" rel="icon" type="image/x-icon"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" media="screen" class="hljs-light-theme" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css" media="not screen" class="hljs-dark-theme" rel="stylesheet"/>
+</head>
+<body>
+<!-- Progress Bar -->
+<div class="progress-bar"><div class="progress-bar__fill"></div></div>
+
+<!-- Header -->
+<header class="site-header">
+<div class="header-inner">
+<div class="header-left">
+<button class="header-btn sidebar-toggle" aria-label="فهرست">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+</button>
+<a href="00.00-front-matter.html" class="header-logo"><span class="logo-php">PHP</span> to <span class="logo-go">Go</span></a>
+<span class="header-crumbs">تعامل با دنیای بیرون › ساختارهای داده‌ای JSON و YAML</span>
+</div>
+<div class="header-right">
+<nav class="header-nav">
+<span class="nav-arrow">‹</span>
+<a href="06.05-embedding-files-in-program.html"><span class="nav-label">۶.۵ جاسازی فایل در برنامه</span></a>
+<a href="00.01-contents.html">فهرست</a>
+<a href="06.07-os-signals.html"><span class="nav-label">۶.۷ دریافت و مدیریت سیگنال‌های سیستم‌عامل</span></a>
+<span class="nav-arrow">›</span>
+</nav>
+<button class="header-btn search-toggle" aria-label="جستجو">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+</button>
+<button class="header-btn theme-toggle" aria-label="تغییر تم">
+<svg class="theme-icon-light" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+<svg class="theme-icon-dark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+</button>
+</div>
+</div>
+</header>
+
+<!-- Search Modal -->
+<div class="search-overlay">
+<div class="search-modal">
+<div class="search-input-wrap">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+<input type="text" class="search-input" placeholder="جستجو... (Ctrl+K)" dir="rtl"/>
+</div>
+<div class="search-results"></div>
+</div>
+</div>
+
+<!-- Layout -->
+<div class="site-layout">
+<!-- Sidebar -->
+<aside class="sidebar"></aside>
+<div class="sidebar-overlay"></div>
+
+<!-- Main Content -->
+<main class="content-area">
+<div class="content-wrap text">
+<div class="chapter">فصل ۶.۶</div>
+<h2 id="ساختارهای-دادهای-json-و-yaml">ساختارهای داده‌ای JSON و YAML</h2>
+<p>در دنیای مدرن نرم‌افزار، تبادل داده بین سرویس‌ها و پیکربندی برنامه‌ها عمدتاً با فرمت‌های JSON و YAML انجام می‌شود. در PHP کار با این فرمت‌ها بسیار ساده است: <code dir="ltr">json_decode()</code> و <code dir="ltr">json_encode()</code> برای JSON و افزونه‌های YAML در دسترس هستند. در Go اما رویکرد متفاوتی وجود دارد: تبدیل داده‌ها به و از struct‌ها با استفاده از struct tag ها. این رویکرد ابتدا ممکن است پیچیده به نظر برسد اما مزیت‌های بزرگی دارد: نوع‌داری ایستا، عملکرد بالا و امنیت بیشتر.</p>
+<figure class="diagram" dir="ltr">
+<svg  font-family="sans-serif" viewBox="0 0 720 380" xmlns="http://www.w3.org/2000/svg" width="720" height="380">
+<defs>
+<marker id="arrJson" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#00ADD8" points="0 0, 10 3.5, 0 7"></polygon></marker>
+<marker id="arrBack" markerheight="7" markerwidth="10" orient="auto" refx="0" refy="3.5"><polygon fill="#ff9800" points="10 0, 0 3.5, 10 7"></polygon></marker>
+</defs>
+<!-- JSON/YAML raw data -->
+<rect fill="#fff3e0" height="100" rx="10" stroke="#ff9800" stroke-width="2" width="160" x="20" y="60"></rect>
+<text fill="#e65100" font-size="14" text-anchor="middle" x="100" y="90" direction="rtl" unicode-bidi="embed">داده خام</text>
+<text fill="#666" font-size="12" text-anchor="middle" x="100" y="115" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">JSON</tspan> یا <tspan direction="ltr" unicode-bidi="embed">YAML</tspan></text>
+<text fill="#999" font-size="11" text-anchor="middle" x="100" y="135" direction="rtl" unicode-bidi="embed">رشته یا []<tspan direction="ltr" unicode-bidi="embed">byte</tspan></text>
+<!-- Unmarshal arrow -->
+<line marker-end="url(#arrJson)" stroke="#00ADD8" stroke-width="2" x1="180" x2="280" y1="110" y2="110"></line>
+<text fill="#00ADD8" font-size="12" font-weight="bold" text-anchor="middle" x="230" y="100" direction="ltr" unicode-bidi="embed">Unmarshal</text>
+<!-- Struct -->
+<rect fill="#e0f7fa" height="120" rx="12" stroke="#00ADD8" stroke-width="2" width="180" x="280" y="55"></rect>
+<text fill="#006064" font-size="14" font-weight="bold" text-anchor="middle" x="370" y="85" direction="ltr" unicode-bidi="embed">Struct</text>
+<text fill="#666" font-size="12" text-anchor="middle" x="370" y="108" direction="ltr" unicode-bidi="embed">type User struct {</text>
+<text fill="#666" font-size="12" text-anchor="middle" x="370" y="128" direction="ltr" unicode-bidi="embed">Name string `json:"name"`</text>
+<text fill="#666" font-size="12" text-anchor="middle" x="370" y="148" direction="ltr" unicode-bidi="embed">Age int `json:"age"`</text>
+<text fill="#666" font-size="12" text-anchor="middle" x="370" y="168" direction="ltr" unicode-bidi="embed">}</text>
+<!-- Marshal arrow back -->
+<line marker-end="url(#arrBack)" stroke="#ff9800" stroke-width="2" x1="280" x2="180" y1="195" y2="195"></line>
+<text fill="#ff9800" font-size="12" font-weight="bold" text-anchor="middle" x="230" y="185" direction="ltr" unicode-bidi="embed">Marshal</text>
+<!-- Output -->
+<rect fill="#e8f5e9" height="60" rx="10" stroke="#4caf50" stroke-width="1.5" width="160" x="20" y="165"></rect>
+<text fill="#2e7d32" font-size="13" text-anchor="middle" x="100" y="192" direction="rtl" unicode-bidi="embed">خروجی <tspan direction="ltr" unicode-bidi="embed">JSON/YAML</tspan></text>
+<text fill="#666" font-size="11" text-anchor="middle" x="100" y="212" direction="rtl" unicode-bidi="embed">رشته یا []<tspan direction="ltr" unicode-bidi="embed">byte</tspan></text>
+<!-- Use in program -->
+<line marker-end="url(#arrJson)" stroke="#00ADD8" stroke-width="2" x1="460" x2="540" y1="115" y2="115"></line>
+<text fill="#00ADD8" font-size="11" text-anchor="middle" x="500" y="105" direction="rtl" unicode-bidi="embed">استفاده</text>
+<rect fill="#f3e5f5" height="90" rx="10" stroke="#9c27b0" stroke-width="1.5" width="160" x="540" y="70"></rect>
+<text fill="#7b1fa2" font-size="13" text-anchor="middle" x="620" y="100" direction="rtl" unicode-bidi="embed">دسترسی نوع‌دار</text>
+<text fill="#666" font-size="12" text-anchor="middle" x="620" y="120" direction="ltr" unicode-bidi="embed">user.Name</text>
+<text fill="#666" font-size="12" text-anchor="middle" x="620" y="140" direction="ltr" unicode-bidi="embed">user.Age</text>
+<!-- PHP comparison -->
+<rect fill="#777BB4" height="110" opacity="0.06" rx="10" stroke="#777BB4" stroke-dasharray="5,3" stroke-width="1.5" width="420" x="280" y="240"></rect>
+<text fill="#777BB4" font-size="14" font-weight="bold" text-anchor="middle" x="490" y="268" direction="rtl" unicode-bidi="embed">در <tspan direction="ltr" unicode-bidi="embed">PHP</tspan></text>
+<text fill="#4a148c" font-size="12" text-anchor="middle" x="490" y="293" direction="ltr" unicode-bidi="embed">json_decode → array / stdClass</text>
+<text fill="#4a148c" font-size="12" text-anchor="middle" x="490" y="313" direction="rtl" unicode-bidi="embed">دسترسی پویا: $<tspan direction="ltr" unicode-bidi="embed">data</tspan>["<tspan direction="ltr" unicode-bidi="embed">name</tspan>"]</text>
+<text fill="#4a148c" font-size="12" text-anchor="middle" x="490" y="333" direction="rtl" unicode-bidi="embed">بدون بررسی نوع در زمان کامپایل</text>
+<line stroke="#777BB4" stroke-dasharray="4,3" stroke-width="1" x1="370" x2="370" y1="175" y2="240"></line>
+</svg>
+<figcaption>شکل ۶-۶ — مقایسه جریان پردازش <bdi dir="ltr">JSON/YAML</bdi> در <bdi dir="ltr">Go</bdi> (<bdi dir="ltr">Unmarshal/Marshal</bdi>) و <bdi dir="ltr">PHP</bdi> (<bdi dir="ltr">decode/encode</bdi>)</figcaption>
+</figure>
+<h3 id="کار-با-json">کار با JSON</h3>
+<p>ساختار <code>encoding/json</code> برای تبدیل بین JSON و struct بسیار مفید است. برخلاف PHP که <code dir="ltr">json_decode()</code> یک آرایه یا شیء پویا برمی‌گرداند، در Go داده‌ها به یک struct با نوع مشخص نگاشت می‌شوند.</p>
+
+<div class="quote-box">
+    <p class="quote-text">ساختارهای داده، داده‌هایشان را آشکار می‌کنند و توابع معناداری ندارند. اشیاء توابع را آشکار می‌کنند و داده‌هایشان را پنهان می‌سازند. برنامه‌نویسان خوب می‌دانند کِی از کدام استفاده کنند.</p>
+    <p class="quote-source">
+        <span class="quote-author">Martin Fowler</span>
+        <span class="quote-role">نویسنده و متخصص بازطراحی نرم‌افزار</span>
+        <span class="quote-separator">|</span>
+        <span class="quote-book">Refactoring</span>
+    </p>
+</div>
+<div class="tip">
+<strong>نکته‌ی حرفه‌ای:</strong> رویکرد <bdi dir="ltr">Go</bdi> در استفاده از struct با <bdi dir="ltr">JSON</bdi> tag‌ها، رویکردی ساختار‌داده‌محور است. برخلاف <bdi dir="ltr">PHP</bdi> که ممکن است از آرایه‌های انجمنی برای همه‌چیز استفاده کنید، در <bdi dir="ltr">Go</bdi> ابتدا شکل داده‌هایتان را تعریف می‌کنید و سپس به رمزگشای <bdi dir="ltr">JSON</bdi> اجازه می‌دهید آن را پر کند.
+</div>
+
+<figure class="diagram" dir="ltr">
+<svg width="700" height="250" viewBox="0 0 700 250" xmlns="http://www.w3.org/2000/svg">
+<rect fill="#fafafa" height="250" rx="8" width="700" x="0" y="0"></rect>
+<defs>
+<marker id="aSt1" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#00ADD8" points="0 0,10 3.5,0 7"></polygon></marker>
+</defs>
+<text fill="#00ADD8" font-size="15" font-weight="bold" text-anchor="middle" x="350" y="25" direction="rtl" unicode-bidi="embed">نگاشت <tspan direction="ltr" unicode-bidi="embed">Struct Tags</tspan>: فیلد <tspan direction="ltr" unicode-bidi="embed">Go</tspan> ↔ کلید <tspan direction="ltr" unicode-bidi="embed">JSON</tspan></text>
+<!-- Go Struct -->
+<rect fill="#00ADD8" height="160" opacity="0.08" rx="10" stroke="#00ADD8" stroke-width="2" width="280" x="30" y="50"></rect>
+<text fill="#00ADD8" font-size="13" font-weight="bold" text-anchor="middle" x="170" y="75" direction="ltr" unicode-bidi="embed">Go Struct</text>
+<text fill="#333" font-size="11" text-anchor="middle" x="170" y="100" direction="ltr" unicode-bidi="embed">Name string `json:"name"`</text>
+<text fill="#333" font-size="11" text-anchor="middle" x="170" y="125" direction="ltr" unicode-bidi="embed">Age int `json:"age"`</text>
+<text fill="#333" font-size="11" text-anchor="middle" x="170" y="150" direction="ltr" unicode-bidi="embed">Email string `json:"email"`</text>
+<text fill="#333" font-size="11" text-anchor="middle" x="170" y="175" direction="ltr" unicode-bidi="embed">Pass string `json:"-"`</text>
+<text fill="#e74c3c" font-size="10" text-anchor="middle" x="170" y="195" direction="rtl" unicode-bidi="embed">هیچ‌گاه در <tspan direction="ltr" unicode-bidi="embed">JSON</tspan> ظاهر نمی‌شود</text>
+<!-- JSON side -->
+<rect fill="#f39c12" height="140" opacity="0.08" rx="10" stroke="#f39c12" stroke-width="2" width="240" x="430" y="55"></rect>
+<text fill="#f39c12" font-size="13" font-weight="bold" text-anchor="middle" x="550" y="80" direction="ltr" unicode-bidi="embed">JSON Keys</text>
+<text fill="#333" font-size="11" text-anchor="middle" x="550" y="105" direction="ltr" unicode-bidi="embed">"name": "Sara"</text>
+<text fill="#333" font-size="11" text-anchor="middle" x="550" y="130" direction="ltr" unicode-bidi="embed">"age": 27</text>
+<text fill="#333" font-size="11" text-anchor="middle" x="550" y="155" direction="ltr" unicode-bidi="embed">"email": "sara@..."</text>
+<text fill="#999" font-size="11" text-anchor="middle" x="550" y="180" direction="ltr" unicode-bidi="embed">بدون کلید "Pass"</text>
+<!-- Mapping arrows -->
+<line marker-end="url(#aSt1)" stroke="#00ADD8" stroke-width="1.5" x1="310" x2="430" y1="96" y2="100"></line>
+<line marker-end="url(#aSt1)" stroke="#00ADD8" stroke-width="1.5" x1="310" x2="430" y1="121" y2="125"></line>
+<line marker-end="url(#aSt1)" stroke="#00ADD8" stroke-width="1.5" x1="310" x2="430" y1="146" y2="150"></line>
+<line stroke="#e74c3c" stroke-dasharray="4,3" stroke-width="1.5" x1="310" x2="430" y1="171" y2="180"></line>
+<!-- Tag options -->
+<rect fill="#f5f5f5" height="30" rx="6" stroke="#ddd" stroke-width="1" width="620" x="40" y="210"></rect>
+<text fill="#555" font-size="10" text-anchor="middle" x="350" y="230" direction="rtl" unicode-bidi="embed">گزینه‌ها: <tspan direction="ltr" unicode-bidi="embed">`json:"name"`</tspan> نام کلید | <tspan direction="ltr" unicode-bidi="embed">`json:",omitempty"`</tspan> حذف اگر خالی | <tspan direction="ltr" unicode-bidi="embed">`json:"-"`</tspan> نادیده</text>
+</svg>
+<figcaption dir="rtl">شکل ۶-۶-ج: نگاشت <bdi dir="ltr">Struct Tags</bdi> — فیلدهای <bdi dir="ltr">Go</bdi> به کلیدهای <bdi dir="ltr">JSON</bdi> تبدیل می‌شوند</figcaption>
+</figure>
+
+
+<h4 id="تبدیل-json-به-struct">تبدیل JSON به struct (Unmarshal)</h4>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">type User struct {
+    Name string `json:"name"`
+    Age int `json:"age"`
+}
+
+func main() {
+    jsonData := []byte(`{"name": "Sara", "age": 27}`)
+    var user User
+    err := json.Unmarshal(jsonData, &amp;user)
+    if err != nil {
+        panic(err)
+    }
+    fmt.Printf("سلام %s! سن شما %d سال است.\n", user.Name, user.Age)
+}
+</code></pre>
+</figure>
+<p>نکته مهم: <strong dir="ltr">struct tag</strong> ها (مثل <code>`json:"name"`</code>) مشخص می‌کنند که هر فیلد struct به کدام کلید JSON نگاشت شود. بدون این tag‌ها، نام فیلد باید به‌طور دقیق با کلید JSON (حتی بزرگ/کوچکی حروف) یکسان باشد.</p>
+<h4 id="تبدیل-struct-به-json">تبدیل struct به JSON (Marshal)</h4>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">user := User{Name: "Ali", Age: 30}
+output, err := json.Marshal(user)
+if err != nil {
+    panic(err)
+}
+fmt.Println(string(output))
+// Output: {"name":"Ali","age":30}
+</code></pre>
+</figure>
+<p>برای خروجی خواناتر می‌توانید از <code dir="ltr">json.MarshalIndent()</code> استفاده کنید:</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">output, _ := json.MarshalIndent(user, "", " ")
+fmt.Println(string(output))
+</code></pre>
+</figure>
+<h3 id="معادل-php-json">معادل در PHP</h3>
+<figure class="code php" dir="ltr">
+<pre><code class="language-php">&lt;?php
+// Convert JSON to array/object
+$json = '{"name": "Sara", "age": 27}';
+$data = json_decode($json, true); // associative array
+echo "سلام {$data['name']}! سن شما {$data['age']} سال است.\n";
+
+// Convert array to JSON
+$user = ["name" =&gt; "Ali", "age" =&gt; 30];
+echo json_encode($user); // {"name":"Ali","age":30}
+
+// More readable output
+echo json_encode($user, JSON_PRETTY_PRINT);
+</code></pre>
+</figure>
+<table class="comparison-table" dir="rtl">
+<thead>
+<tr><th>ویژگی</th><th>PHP</th><th>Go</th></tr>
+</thead>
+<tbody>
+<tr><td>تبدیل JSON به داده</td><td dir="ltr"><code dir="ltr">json_decode()</code></td><td dir="ltr"><code dir="ltr">json.Unmarshal()</code></td></tr>
+<tr><td>تبدیل داده به JSON</td><td dir="ltr"><code dir="ltr">json_encode()</code></td><td dir="ltr"><code dir="ltr">json.Marshal()</code></td></tr>
+<tr><td>نوع خروجی decode</td><td dir="ltr"><code>array</code> / <code>stdClass</code></td><td><code>struct</code> با نوع مشخص</td></tr>
+<tr><td>نگاشت فیلدها</td><td>خودکار بر اساس کلید</td><td dir="ltr">struct tag (<code>`json:"key"`</code>)</td></tr>
+<tr><td>بررسی نوع در زمان کامپایل</td><td> خیر</td><td> بله</td></tr>
+<tr><td>فیلدهای ناشناخته</td><td>در آرایه باقی می‌مانند</td><td>نادیده گرفته می‌شوند (مگر <code>map[string]any</code>)</td></tr>
+<tr><td>خروجی فرمت‌شده</td><td dir="ltr"><code>JSON_PRETTY_PRINT</code></td><td dir="ltr"><code dir="ltr">json.MarshalIndent()</code></td></tr>
+<tr><td>خطای parse</td><td dir="ltr"><code dir="ltr">json_last_error()</code></td><td>مقدار <code>error</code> بازگشتی</td></tr>
+</tbody>
+</table>
+<h3 id="کار-با-yaml">کار با YAML</h3>
+<p>YAML ساختاری خواناتر از JSON دارد و در پروژه‌های DevOps یا پیکربندی بسیار محبوب است. برخلاف JSON که پکیج داخلی دارد، YAML در Go از پکیج خارجی استفاده می‌شود:</p>
+<figure class="code bash" dir="ltr">
+<pre><code class="language-bash">go get gopkg.in/yaml.v3
+</code></pre>
+</figure>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">import (
+"fmt"
+"gopkg.in/yaml.v3"
+)
+
+type Config struct {
+    Port int `yaml:"port"`
+    Env string `yaml:"env"`
+}
+
+func main() {
+    data := `
+    port: 8080
+    env: staging
+    `
+    var cfg Config
+    err := yaml.Unmarshal([]byte(data), &amp;cfg)
+    if err != nil {
+        panic(err)
+    }
+    fmt.Println("پورت:", cfg.Port)
+    fmt.Println("محیط:", cfg.Env)
+}
+</code></pre>
+</figure>
+<p>همانطور که می‌بینید الگوی کار با YAML مشابه JSON است: تعریف struct با tag مناسب، استفاده از <code>Unmarshal</code> برای خواندن و <code>Marshal</code> برای نوشتن. تنها تفاوت استفاده از <code>`yaml:"key"`</code> به‌جای <code>`json:"key"`</code> و ایمپورت پکیج <code dir="ltr">yaml.v3</code> است.</p>
+<div class="tip comparison">
+<strong>نکته:</strong> در PHP تابع <code dir="ltr">yaml_parse()</code> نیاز به نصب افزونه دارد و در بسیاری از هاست‌ها موجود نیست. در Go کافیست یک پکیج خارجی اضافه کنید (<code>go get</code>) و همه چیز در باینری نهایی گنجانده می‌شود.
+</div>
+<h3 id="عملکرد-داخلی-json">عملکرد داخلی encoding/json: Reflection مبتنی بر بازتاب</h3>
+<p>پکیج <code>encoding/json</code> از بسته‌ی <code>reflect</code> برای بررسی فیلدهای struct در زمان اجرا استفاده می‌کند. وقتی <code dir="ltr">json.Marshal()</code> فراخوانی می‌شود:</p>
+<ol>
+<li>نوع مقدار ورودی با <code>reflect</code> بررسی می‌شود</li>
+<li>اگر struct باشد، exported پیمایش می‌شوند</li>
+<li>struct tag‌های <code>`json:"..."`</code> خوانده می‌شوند تا نام کلید JSON و گزینه‌های اضافی مشخص شوند</li>
+<li>مقادیر فیلدها یکی‌یکی به JSON تبدیل می‌شوند</li>
+</ol>
+<div class="note">
+<strong>هزینه‌ی Reflection:</strong> استفاده از <code>reflect</code> در زمان اجرا هزینه‌ای دارد و کندتر از کد دستی است. برای برنامه‌های معمولی این هزینه ناچیز است، اما در hot paths که میلیون‌ها بار JSON تولید/مصرف می‌شود، ابزارهایی مثل <code>easyjson</code> یا <code>sonic</code> کد مارشالینگ را در زمان کامپایل تولید می‌کنند و سرعت چند برابری دارند.
+</div>
+<h3 id="json-rawmessage">json.RawMessage: پردازش تأخیری JSON</h3>
+<p>گاهی نمی‌دانید ساختار دقیق یک بخش از JSON چیست، یا می‌خواهید آن بخش را بدون پردازش عبور بدهید. <code dir="ltr">json.RawMessage</code> یک نوع ساده از <code>[]byte</code> است که محتوای JSON خام را بدون decode نگه می‌دارد:</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">type Event struct {
+    Type string `json:"type"`
+    Data json.RawMessage `json:"data"` // not processed — kept raw
+}
+
+func main() {
+    input := []byte(`{
+    "type": "user_created",
+    "data": {"name": "Ali", "age": 30}
+}`)
+
+var event Event
+json.Unmarshal(input, &amp;event)
+
+fmt.Println("نوع رویداد:", event.Type)
+
+// Now depending on event type, we decode Data
+switch event.Type {
+    case "user_created":
+    var user User
+    json.Unmarshal(event.Data, &amp;user)
+    fmt.Printf("کاربر: %s\n", user.Name)
+    case "order_placed":
+    var order Order
+    json.Unmarshal(event.Data, &amp;order)
+}
+}
+</code></pre>
+</figure>
+<div class="comparison">
+<strong>مقایسه با PHP:</strong> در PHP این الگو به‌طور طبیعی با <code dir="ltr">json_decode()</code> و آرایه‌های پویا انجام می‌شود — زیرا PHP همه چیز را به <code>array</code> یا <code>stdClass</code> تبدیل می‌کند. اما در Go با نوع‌داری ایستا، <code dir="ltr">json.RawMessage</code> راه درستی برای تأخیر انداختن parse تا زمانی که نوع دقیق مشخص شود است.
+</div>
+<h3 id="json-decoder-streaming">json.Decoder: خواندن جریانی JSON</h3>
+<p>تا اینجا از <code dir="ltr">json.Unmarshal()</code> استفاده کردیم که کل JSON را یکجا در حافظه بارگذاری و پردازش می‌کند. اما برای JSON‌های بزرگ یا خواندن از شبکه، بهتر است از <code dir="ltr">json.Decoder</code> استفاده کنید که داده‌ها را stream می‌خواند:</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">// Stream JSON from large file
+file, err := os.Open("large-data.json")
+if err != nil {
+    log.Fatal(err)
+}
+defer file.Close()
+
+decoder := json.NewDecoder(file)
+
+// Read sequential JSON objects
+for decoder.More() {
+    var item Item
+    if err := decoder.Decode(&amp;item); err != nil {
+        log.Fatal(err)
+    }
+    processItem(item)
+}
+</code></pre>
+</figure>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">// Read from HTTP response body without loading entirely into memory
+resp, _ := http.Get("https://api.example.com/stream")
+defer resp.Body.Close()
+
+decoder := json.NewDecoder(resp.Body)
+for decoder.More() {
+    var event Event
+    decoder.Decode(&amp;event)
+    handleEvent(event)
+}
+</code></pre>
+</figure>
+<table class="comparison-table" dir="rtl">
+<thead>
+<tr><th>ویژگی</th><th>json.Unmarshal</th><th>json.Decoder</th></tr>
+</thead>
+<tbody>
+<tr><td>ورودی</td><td><code>[]byte</code> کامل در حافظه</td><td><code><span dir="ltr">io.Reader</span></code> (جریانی)</td></tr>
+<tr><td>مصرف حافظه</td><td>معادل حجم کل JSON</td><td>فقط یک آبجکت در حافظه</td></tr>
+<tr><td>مناسب برای</td><td>JSON کوچک و متوسط</td><td>JSON بزرگ، HTTP streaming</td></tr>
+<tr><td>سرعت</td><td>سریع‌تر برای داده‌ی کوچک</td><td>کارآمدتر برای داده‌ی بزرگ</td></tr>
+</tbody>
+</table>
+<h3 id="custom-marshaljson">سفارشی‌سازی JSON با MarshalJSON و UnmarshalJSON</h3>
+<p>گاهی نیاز دارید نحوه تبدیل یک نوع به JSON را سفارشی کنید. مثلاً فرمت تاریخ، رمزنگاری فیلد، یا خروجی شرطی. Go به شما اجازه می‌دهد متدهای <code>MarshalJSON</code> و <code>UnmarshalJSON</code> را روی نوع خودتان پیاده‌سازی کنید:</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">type User struct {
+    Name string `json:"name"`
+    Password string `json:"-"` // never appears in JSON
+    LastLogin time.Time `json:"last_login"`
+}
+
+// Customize JSON output
+func (u User) MarshalJSON() ([]byte, error) {
+    // Using separate type to prevent infinite loop
+    type Alias User
+    return json.Marshal(&amp;struct {
+        Alias
+        LastLogin string `json:"last_login"` // custom date format
+    }{
+        Alias: Alias(u),
+        LastLogin: u.LastLogin.Format("2006-01-02 15:04:05"),
+    })
+}
+</code></pre>
+</figure>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">// Common struct tag options
+type Product struct {
+    ID int `json:"id"` // key name: id
+    Name string `json:"name,omitempty"` // omitted if empty
+    Price int `json:"price"` // key name: price
+    Owner string `json:"-"` // never appears in JSON
+    Token string `json:",omitempty"` // use field name, omitted if empty
+}
+</code></pre>
+</figure>
+<h3 id="تفاوت-json-yaml">تفاوت‌های JSON و YAML در عمل</h3>
+<table class="comparison-table" dir="rtl">
+<thead>
+<tr><th>ویژگی</th><th>JSON</th><th>YAML</th></tr>
+</thead>
+<tbody>
+<tr><td>پکیج Go</td><td><code>encoding/json</code> (داخلی)</td><td><code>gopkg.in/yaml.v3</code> (خارجی)</td></tr>
+<tr><td>هدف اصلی</td><td>API</td><td>فایل‌های پیکربندی</td></tr>
+<tr><td>strictness</td><td>سهل‌گیر: فیلدهای ناشناخته نادیده گرفته می‌شوند</td><td>سخت‌گیرتر: می‌توان خطای فیلد ناشناخته گرفت</td></tr>
+<tr><td>نوع‌داری</td><td>عدد، رشته، بولین، null، آرایه، آبجکت</td><td>همه انواع JSON + تاریخ، multi-doc</td></tr>
+<tr><td>کامنت</td><td>بدون کامنت</td><td>کامنت <code>#</code> پشتیبانی می‌شود</td></tr>
+<tr><td dir="ltr">Multi-document</td><td>یک سند در هر فایل</td><td>چند سند با <code>---</code> جدا می‌شود</td></tr>
+</tbody>
+</table>
+<div class="tip">
+<strong>نکته‌ی عملی:</strong> همیشه از <code dir="ltr">yaml.v3</code> (نه <code>v2</code>) استفاده کنید. نسخه ۳ رفتار صحیح‌تری با انواع داده دارد و API تمیزتری ارائه می‌دهد. struct tag‌ها در YAML مشابه JSON هستند: <code>`yaml:"key,omitempty"`</code>.
+</div>
+
+<h3 id="json-decoder-تعمیق">json.Decoder و json.Encoder: پردازش جریانی در عمق</h3>
+<p>وقتی از <code dir="ltr">json.Decoder</code> استفاده می‌کنید، در واقع یک state machine در حال خواندن توکن‌به‌توکن JSON است. متد <code dir="ltr">Token()</code> به شما اجازه می‌دهد هر توکن JSON را جداگانه بخوانید — بدون ساخت struct و بدون تخصیص حافظه برای کل آبجکت. این قابلیت برای فیلتر کردن داده‌های بزرگ، استخراج فیلدهای خاص یا پردازش streaming JSON بسیار مفید است:</p>
+
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">// Read JSON token-by-token (without struct)
+decoder := json.NewDecoder(file)
+for decoder.More() {
+    token, err := decoder.Token()
+    if err == io.EOF {
+        break
+    }
+    if err != nil {
+        log.Fatal(err)
+    }
+
+    switch v := token.(type) {
+        case json.Delim:
+        if v == '{' {
+            fmt.Println("شروع آبجکت")
+        } else if v == '}' {
+            fmt.Println("پایان آبجکت")
+        }
+        case string:
+        fmt.Printf("رشته: %s\n", v)
+        case float64:
+        fmt.Printf("عدد: %f\n", v)
+        case bool:
+        fmt.Printf("بولین: %v\n", v)
+        case nil:
+        fmt.Println("null")
+    }
+}
+</code></pre>
+</figure>
+
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">// json.Encoder: streaming JSON writing
+// Suitable for APIs producing JSON arrays
+func streamUsers(w http.ResponseWriter, r *http.Request) {
+    encoder := json.NewEncoder(w)
+
+    // Set header
+    w.Header().Set("Content-Type", "application/json")
+    w.Write([]byte("["))
+
+    first := true
+    rows, _ := db.Query("SELECT name, email FROM users")
+    for rows.Next() {
+        var user User
+        rows.Scan(&amp;user.Name, &amp;user.Email)
+
+        if !first {
+            w.Write([]byte(","))
+        }
+        first = false
+
+        // Write each object as stream
+        encoder.Encode(user)
+    }
+
+    w.Write([]byte("]"))
+}
+</code></pre>
+</figure>
+
+<figure class="diagram" dir="ltr">
+<svg  font-family="sans-serif" viewBox="0 0 720 340" xmlns="http://www.w3.org/2000/svg" width="720" height="340">
+<defs>
+<marker id="arrJ2" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#00ADD8" points="0 0, 10 3.5, 0 7"></polygon></marker>
+</defs>
+<rect fill="#fafafa" height="340" rx="8" width="720" x="0" y="0"></rect>
+<text fill="#333" font-size="16" font-weight="bold" text-anchor="middle" x="360" y="30" direction="rtl" unicode-bidi="embed">جریان رمزگذاری/رمزگشایی <tspan direction="ltr" unicode-bidi="embed">JSON</tspan></text>
+<!-- Unmarshal path -->
+<rect fill="#fff3e0" height="110" rx="10" stroke="#ff9800" stroke-width="2" width="300" x="20" y="60"></rect>
+<text fill="#e65100" font-size="14" font-weight="bold" text-anchor="middle" x="170" y="85" direction="ltr" unicode-bidi="embed">json.Unmarshal</text>
+<text fill="#666" font-size="11" text-anchor="middle" x="170" y="108" direction="rtl" unicode-bidi="embed">ورودی: []<tspan direction="ltr" unicode-bidi="embed">byte</tspan> کامل در حافظه</text>
+<text fill="#666" font-size="11" text-anchor="middle" x="170" y="128" direction="rtl" unicode-bidi="embed">خروجی: <tspan direction="ltr" unicode-bidi="embed">struct</tspan> یکپارچه</text>
+<text fill="#e74c3c" font-size="11" text-anchor="middle" x="170" y="148" direction="rtl" unicode-bidi="embed">حافظه: ۲× حجم <tspan direction="ltr" unicode-bidi="embed">JSON</tspan></text>
+<text fill="#27ae60" font-size="11" text-anchor="middle" x="170" y="163" direction="ltr" unicode-bidi="embed">ساده‌تر — مناسب JSON کوچک</text>
+<!-- Decoder path -->
+<rect fill="#e0f7fa" height="110" rx="10" stroke="#00ADD8" stroke-width="2" width="300" x="400" y="60"></rect>
+<text fill="#006064" font-size="14" font-weight="bold" text-anchor="middle" x="550" y="85" direction="ltr" unicode-bidi="embed">json.Decoder</text>
+<text fill="#666" font-size="11" text-anchor="middle" x="550" y="108" direction="rtl" unicode-bidi="embed">ورودی: <tspan direction="ltr" unicode-bidi="embed">io.Reader</tspan> (جریانی)</text>
+<text fill="#666" font-size="11" text-anchor="middle" x="550" y="128" direction="rtl" unicode-bidi="embed">خروجی: <tspan direction="ltr" unicode-bidi="embed">struct</tspan> یکی‌یکی</text>
+<text fill="#27ae60" font-size="11" text-anchor="middle" x="550" y="148" direction="rtl" unicode-bidi="embed">حافظه: فقط یک آبجکت</text>
+<text fill="#f39c12" font-size="11" text-anchor="middle" x="550" y="163" direction="ltr" unicode-bidi="embed">پیچیده‌تر — مناسب JSON بزرگ</text>
+<!-- Flow diagram at bottom -->
+<rect fill="#e8f5e9" height="130" rx="10" stroke="#4caf50" stroke-width="1.5" width="680" x="20" y="195"></rect>
+<text fill="#2e7d32" font-size="14" font-weight="bold" text-anchor="middle" x="360" y="220" direction="rtl" unicode-bidi="embed">جریان داخلی <tspan direction="ltr" unicode-bidi="embed">json.Decoder</tspan></text>
+<!-- Flow steps -->
+<rect fill="#fff" height="40" rx="6" stroke="#4caf50" stroke-width="1" width="100" x="40" y="240"></rect>
+<text fill="#2e7d32" font-size="11" text-anchor="middle" x="90" y="265" direction="ltr" unicode-bidi="embed">io.Reader</text>
+<line marker-end="url(#arrJ2)" stroke="#4caf50" stroke-width="1.5" x1="140" x2="180" y1="260" y2="260"></line>
+<rect fill="#fff" height="40" rx="6" stroke="#4caf50" stroke-width="1" width="120" x="180" y="240"></rect>
+<text fill="#2e7d32" font-size="11" text-anchor="middle" x="240" y="265" direction="ltr" unicode-bidi="embed">Tokenizer</text>
+<line marker-end="url(#arrJ2)" stroke="#4caf50" stroke-width="1.5" x1="300" x2="340" y1="260" y2="260"></line>
+<rect fill="#fff" height="40" rx="6" stroke="#4caf50" stroke-width="1" width="120" x="340" y="240"></rect>
+<text fill="#2e7d32" font-size="11" text-anchor="middle" x="400" y="265" direction="ltr" unicode-bidi="embed">Parse Token</text>
+<line marker-end="url(#arrJ2)" stroke="#4caf50" stroke-width="1.5" x1="460" x2="500" y1="260" y2="260"></line>
+<rect fill="#fff" height="40" rx="6" stroke="#4caf50" stroke-width="1" width="120" x="500" y="240"></rect>
+<text fill="#2e7d32" font-size="11" text-anchor="middle" x="560" y="265" direction="ltr" unicode-bidi="embed">reflect.Set</text>
+<line marker-end="url(#arrJ2)" stroke="#4caf50" stroke-width="1.5" x1="620" x2="640" y1="260" y2="260"></line>
+<text fill="#2e7d32" font-size="12" text-anchor="middle" x="670" y="265" direction="rtl" unicode-bidi="embed">struct</text>
+<text fill="#999" font-size="10" text-anchor="middle" x="360" y="310" direction="rtl" unicode-bidi="embed">هر آبجکت <tspan direction="ltr" unicode-bidi="embed">JSON</tspan> مستقلاً رمزگشایی می‌شود — بدون نیاز به بارگذاری کل فایل</text>
+</svg>
+<figcaption>شکل ۶-۶-ب — مقایسه <bdi dir="ltr">json.Unmarshal</bdi> و <bdi dir="ltr">json.Decoder</bdi>: جریان داخلی رمزگشایی</figcaption>
+</figure>
+
+<h3 id="unmarshaljson-عمیق">UnmarshalJSON سفارشی: کنترل کامل روی رمزگشایی</h3>
+<p>درست مثل <code>MarshalJSON</code> ، می‌توانید <code>UnmarshalJSON</code> را برای کنترل کامل روی نحوه رمزگشایی JSON پیاده‌سازی کنید. این الگو برای اعتبارسنجی، تبدیل نوع، مقداردهی پیش‌فرض و ساختارهای داده پیچیده مفید است:</p>
+
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">type FlexibleDate struct {
+    time.Time
+}
+
+func (fd *FlexibleDate) UnmarshalJSON(data []byte) error {
+    // Try with different formats
+    formats := []string{
+        `"2006-01-02"`,
+        `"2006-01-02T15:04:05Z"`,
+        `"2006/01/02"`,
+    }
+
+    var s string
+    if err := json.Unmarshal(data, &amp;s); err != nil {
+        return err
+    }
+
+    for _, format := range formats {
+        if t, err := time.Parse(format, s); err == nil {
+            fd.Time = t
+            return nil
+        }
+    }
+
+    return fmt.Errorf("فرمت تاریخ نامعتبر: %s", s)
+}
+
+// Usage
+type Event struct {
+    Name string `json:"name"`
+    Date FlexibleDate `json:"date"`
+}
+
+var event Event
+json.Unmarshal([]byte(`{"name":"کنفرانس","date":"2024-03-15"}`), &amp;event)
+</code></pre>
+</figure>
+
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">// Validation in UnmarshalJSON
+type Email string
+
+func (e *Email) UnmarshalJSON(data []byte) error {
+    var s string
+    if err := json.Unmarshal(data, &amp;s); err != nil {
+        return err
+    }
+
+    // Email format validation
+    if !strings.Contains(s, "@") {
+        return fmt.Errorf("ایمیل نامعتبر: %s", s)
+    }
+
+    *e = Email(s)
+    return nil
+}
+
+type User struct {
+    Name string `json:"name"`
+    Email Email `json:"email"` // automatic validation
+}
+</code></pre>
+</figure>
+
+<h3 id="yaml-عمیق">YAML در عمق: چندسندی، لنگر و مرجع</h3>
+<p>یکی از ویژگی‌های قدرتمند YAML که JSON ندارد، پشتیبانی از چند سند در یک فایل (با جداکننده <code>---</code>) و لنگرها (<code>&amp;</code>) و مراجع (<code>*</code>) است. پکیج <code dir="ltr">yaml.v3</code> از این ویژگی‌ها پشتیبانی می‌کند:</p>
+
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">// Read multi-document YAML file
+data, _ := os.ReadFile("kubernetes-manifests.yaml")
+
+decoder := yaml.NewDecoder(bytes.NewReader(data))
+
+for {
+    var manifest map[string]any
+    err := decoder.Decode(&amp;manifest)
+    if err == io.EOF {
+        break
+    }
+    if err != nil {
+        log.Fatal(err)
+    }
+    fmt.Printf("Kind: %v\n", manifest["kind"])
+}
+</code></pre>
+</figure>
+
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">// Write YAML with custom indentation
+type ServerConfig struct {
+    Host string `yaml:"host"`
+    Port int `yaml:"port"`
+    Logging struct {
+        Level string `yaml:"level"`
+        Format string `yaml:"format"`
+    } `yaml:"logging"`
+}
+
+config := ServerConfig{Host: "localhost", Port: 8080}
+config.Logging.Level = "info"
+config.Logging.Format = "json"
+
+// Encode with 2-space indentation
+out, _ := yaml.Marshal(config)
+fmt.Println(string(out))
+// Output:
+// host: localhost
+// port: 8080
+// logging:
+// level: info
+// format: json
+</code></pre>
+</figure>
+
+<div class="tip">
+<strong>نکته‌ی عملی:</strong> در پروژه‌های واقعی، معمولاً فایل پیکربندی YAML را از دیسک می‌خوانید. الگوی رایج این است: فایل پیکربندی پیش‌فرض را با <code>//go:embed</code> جاسازی کنید و فایل پیکربندی کاربر را از دیسک بخوانید و با پیش‌فرض ادغام کنید. به این ترتیب برنامه بدون فایل پیکربندی هم کار می‌کند.
+</div>
+
+    <h3 id="json-v2-go-1.25">بسته experimental encoding/json/v2 — Go 1.25</h3>
+    <p>
+        Go 1.25 یک پیاده‌سازی جدید و آزمایشی JSON را شامل می‌شود که با تنظیم متغیر محیطی
+        <code>GOEXPERIMENT=jsonv2</code> فعال می‌شود. این پیاده‌سازی شامل دو بسته جدید است:
+    </p>
+    <ul>
+        <li><code>encoding/json/v2</code>: بازنگری عمده بسته <code>encoding/json</code> با عملکرد بهتر</li>
+        <li><code>encoding/json/jsontext</code>: پردازش سطح‌پایین‌تر نحو JSON</li>
+    </ul>
+    <p>
+        پیاده‌سازی جدید در بسیاری از سناریوها عملکرد بسیار بهتری دارد. به‌طور کلی، عملکرد
+        encoding در هر دو پیاده‌سازی برابر است، اما decoding در پیاده‌سازی جدید به‌طور
+        قابل‌توجهی سریع‌تر است.
+    </p>
+    <figure class="code go" dir="ltr">
+        <pre><code class="language-go">// فعال‌سازی: GOEXPERIMENT=jsonv2 go build .
+
+import (
+"encoding/json/v2"
+"encoding/json/v2/jsontext"
+)
+
+type Person struct {
+    Name string `json:"name"`
+    Age  int    `json:"age"`
+}
+
+func main() {
+    p := Person{Name: "Alice", Age: 30}
+
+    // Marshal با API جدید
+    data, err := json.MarshalOptions{
+        Indent: "  ",
+    }.Marshal(p)
+
+    // Unmarshal با گزینه‌های پیشرفته
+    var result Person
+    err = json.UnmarshalOptions{}.Unmarshal(data, &amp;result)
+
+    // دسترسی سطح‌پایین به token‌ها
+    dec := jsontext.NewDecoder(bytes.NewReader(data))
+    for {
+        tok, err := dec.ReadToken()
+        if err != nil { break }
+        fmt.Println(tok)
+    }
+}</code></pre>
+    </figure>
+
+    <div class="quote-box">
+        <p class="quote-text">
+            هر تصمیم طراحی یک مبادله است. هنر مهندسی نرم‌افزار دانستن این است که
+            کدام مبادله‌ها ارزش انجام دارند و کدام‌ها نه. ساده‌ترین راه برای جلوگیری
+            از مبادله، پرهیز از تصمیم‌گیری است — اما این خود بزرگ‌ترین مبادله است.
+        </p>
+        <p class="quote-source">
+            <span class="quote-author">David Thomas و Andrew Hunt</span>
+            <span class="quote-separator">—</span>
+            <span class="quote-book">کتاب The Pragmatic Programmer</span>
+        </p>
+    </div>
+
+<h3 id="json-marshal-unmarshal-type-mapping">نگاشت نوع‌های <bdi dir="ltr">Go</bdi> به <bdi dir="ltr">JSON</bdi> در <bdi dir="ltr">Marshal/Unmarshal</bdi></h3>
+<p>درک دقیق نگاشت نوع‌های <bdi dir="ltr">Go</bdi> به نوع‌های <bdi dir="ltr">JSON</bdi> برای جلوگیری از باگ‌های پنهان بسیار مهم است. برخی نگاشت‌ها مستقیم و ساده هستند مانند تبدیل <bdi dir="ltr">string</bdi> به رشته‌ی <bdi dir="ltr">JSON</bdi> یا <bdi dir="ltr">bool</bdi> به <bdi dir="ltr">boolean</bdi>، اما برخی دیگر نیاز به توجه ویژه دارند. مثلاً <bdi dir="ltr">time.Time</bdi> به رشته‌ی <bdi dir="ltr">RFC3339</bdi> تبدیل می‌شود و <bdi dir="ltr">[]byte</bdi> به رشته‌ی <bdi dir="ltr">base64</bdi> تبدیل می‌شود. همچنین فیلدهای <bdi dir="ltr">unexported</bdi> (که با حرف کوچک شروع می‌شوند) به‌طور کامل نادیده گرفته می‌شوند و هرگز در خروجی <bdi dir="ltr">JSON</bdi> ظاهر نمی‌شوند. این رفتار می‌تواند برای برنامه‌نویسان <bdi dir="ltr">PHP</bdi> که به دسترسی پویا به همه‌ی کلیدها عادت دارند، غافلگیرکننده باشد.</p>
+
+<figure class="diagram" dir="ltr">
+<svg font-family="sans-serif" viewBox="0 0 820 620" xmlns="http://www.w3.org/2000/svg" width="820" height="620">
+<defs>
+<marker id="arrG1" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#4CAF50" points="0 0, 10 3.5, 0 7"></polygon></marker>
+<marker id="arrO1" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#FF9800" points="0 0, 10 3.5, 0 7"></polygon></marker>
+<marker id="arrP1" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#e91e63" points="0 0, 10 3.5, 0 7"></polygon></marker>
+</defs>
+<rect fill="#fafafa" height="620" rx="8" width="820" x="0" y="0"></rect>
+
+<!-- Title -->
+<text fill="#333" font-size="16" font-weight="bold" text-anchor="middle" x="290" y="28" direction="rtl" unicode-bidi="embed">نگاشت نوع‌های <tspan direction="ltr" unicode-bidi="embed">Go</tspan> به نوع‌های <tspan direction="ltr" unicode-bidi="embed">JSON</tspan></text>
+
+<!-- Legend -->
+<rect fill="#4CAF50" height="14" rx="3" width="14" x="500" y="12"></rect>
+<text fill="#4CAF50" font-size="10" text-anchor="start" x="520" y="23" direction="rtl" unicode-bidi="embed">نگاشت مستقیم</text>
+<rect fill="#FF9800" height="14" rx="3" width="14" x="610" y="12"></rect>
+<text fill="#FF9800" font-size="10" text-anchor="start" x="630" y="23" direction="rtl" unicode-bidi="embed">تبدیل خاص</text>
+<rect fill="#e91e63" height="14" rx="3" width="14" x="720" y="12"></rect>
+<text fill="#e91e63" font-size="10" text-anchor="start" x="740" y="23" direction="rtl" unicode-bidi="embed">نکته‌ی مهم</text>
+
+<!-- Left: Go Types header -->
+<rect fill="#00ADD8" height="32" rx="6" width="220" x="30" y="45"></rect>
+<text fill="#fff" font-size="13" font-weight="bold" text-anchor="middle" x="140" y="66" direction="ltr" unicode-bidi="embed">Go Types</text>
+
+<!-- Right: JSON Types header -->
+<rect fill="#f39c12" height="32" rx="6" width="220" x="470" y="45"></rect>
+<text fill="#fff" font-size="13" font-weight="bold" text-anchor="middle" x="580" y="66" direction="ltr" unicode-bidi="embed">JSON Types</text>
+
+<!-- Row 1: struct → object (green) -->
+<rect fill="#e8f5e9" height="28" rx="4" stroke="#4CAF50" stroke-width="1" width="220" x="30" y="88"></rect>
+<text fill="#333" font-size="12" text-anchor="middle" x="140" y="107" direction="ltr" unicode-bidi="embed">struct</text>
+<rect fill="#e8f5e9" height="28" rx="4" stroke="#4CAF50" stroke-width="1" width="220" x="470" y="88"></rect>
+<text fill="#333" font-size="12" text-anchor="middle" x="580" y="107" direction="ltr" unicode-bidi="embed">object { }</text>
+<line marker-end="url(#arrG1)" stroke="#4CAF50" stroke-width="1.5" x1="250" x2="470" y1="102" y2="102"></line>
+
+<!-- Row 2: map[string]any → object (green) -->
+<rect fill="#e8f5e9" height="28" rx="4" stroke="#4CAF50" stroke-width="1" width="220" x="30" y="122"></rect>
+<text fill="#333" font-size="12" text-anchor="middle" x="140" y="141" direction="ltr" unicode-bidi="embed">map[string]any</text>
+<rect fill="#e8f5e9" height="28" rx="4" stroke="#4CAF50" stroke-width="1" width="220" x="470" y="122"></rect>
+<text fill="#333" font-size="12" text-anchor="middle" x="580" y="141" direction="ltr" unicode-bidi="embed">object { }</text>
+<line marker-end="url(#arrG1)" stroke="#4CAF50" stroke-width="1.5" x1="250" x2="470" y1="136" y2="136"></line>
+
+<!-- Row 3: []T → array (green) -->
+<rect fill="#e8f5e9" height="28" rx="4" stroke="#4CAF50" stroke-width="1" width="220" x="30" y="156"></rect>
+<text fill="#333" font-size="12" text-anchor="middle" x="140" y="175" direction="ltr" unicode-bidi="embed">[]T (slice)</text>
+<rect fill="#e8f5e9" height="28" rx="4" stroke="#4CAF50" stroke-width="1" width="220" x="470" y="156"></rect>
+<text fill="#333" font-size="12" text-anchor="middle" x="580" y="175" direction="ltr" unicode-bidi="embed">array [ ]</text>
+<line marker-end="url(#arrG1)" stroke="#4CAF50" stroke-width="1.5" x1="250" x2="470" y1="170" y2="170"></line>
+
+<!-- Row 4: string → string (green) -->
+<rect fill="#e8f5e9" height="28" rx="4" stroke="#4CAF50" stroke-width="1" width="220" x="30" y="190"></rect>
+<text fill="#333" font-size="12" text-anchor="middle" x="140" y="209" direction="ltr" unicode-bidi="embed">string</text>
+<rect fill="#e8f5e9" height="28" rx="4" stroke="#4CAF50" stroke-width="1" width="220" x="470" y="190"></rect>
+<text fill="#333" font-size="12" text-anchor="middle" x="580" y="209" direction="ltr" unicode-bidi="embed">string " "</text>
+<line marker-end="url(#arrG1)" stroke="#4CAF50" stroke-width="1.5" x1="250" x2="470" y1="204" y2="204"></line>
+
+<!-- Row 5: int/float → number (green) -->
+<rect fill="#e8f5e9" height="28" rx="4" stroke="#4CAF50" stroke-width="1" width="220" x="30" y="224"></rect>
+<text fill="#333" font-size="12" text-anchor="middle" x="140" y="243" direction="ltr" unicode-bidi="embed">int / float64</text>
+<rect fill="#e8f5e9" height="28" rx="4" stroke="#4CAF50" stroke-width="1" width="220" x="470" y="224"></rect>
+<text fill="#333" font-size="12" text-anchor="middle" x="580" y="243" direction="ltr" unicode-bidi="embed">number</text>
+<line marker-end="url(#arrG1)" stroke="#4CAF50" stroke-width="1.5" x1="250" x2="470" y1="238" y2="238"></line>
+
+<!-- Row 6: bool → boolean (green) -->
+<rect fill="#e8f5e9" height="28" rx="4" stroke="#4CAF50" stroke-width="1" width="220" x="30" y="258"></rect>
+<text fill="#333" font-size="12" text-anchor="middle" x="140" y="277" direction="ltr" unicode-bidi="embed">bool</text>
+<rect fill="#e8f5e9" height="28" rx="4" stroke="#4CAF50" stroke-width="1" width="220" x="470" y="258"></rect>
+<text fill="#333" font-size="12" text-anchor="middle" x="580" y="277" direction="ltr" unicode-bidi="embed">boolean true/false</text>
+<line marker-end="url(#arrG1)" stroke="#4CAF50" stroke-width="1.5" x1="250" x2="470" y1="272" y2="272"></line>
+
+<!-- Row 7: nil pointer → null (green) -->
+<rect fill="#e8f5e9" height="28" rx="4" stroke="#4CAF50" stroke-width="1" width="220" x="30" y="292"></rect>
+<text fill="#333" font-size="12" text-anchor="middle" x="140" y="311" direction="ltr" unicode-bidi="embed">nil pointer (*T)</text>
+<rect fill="#e8f5e9" height="28" rx="4" stroke="#4CAF50" stroke-width="1" width="220" x="470" y="292"></rect>
+<text fill="#333" font-size="12" text-anchor="middle" x="580" y="311" direction="ltr" unicode-bidi="embed">null</text>
+<line marker-end="url(#arrG1)" stroke="#4CAF50" stroke-width="1.5" x1="250" x2="470" y1="306" y2="306"></line>
+
+<!-- Row 8: time.Time → RFC3339 string (orange - special) -->
+<rect fill="#fff3e0" height="28" rx="4" stroke="#FF9800" stroke-width="1.5" width="220" x="30" y="330"></rect>
+<text fill="#e65100" font-size="12" font-weight="bold" text-anchor="middle" x="140" y="349" direction="ltr" unicode-bidi="embed">time.Time</text>
+<rect fill="#fff3e0" height="28" rx="4" stroke="#FF9800" stroke-width="1.5" width="220" x="470" y="330"></rect>
+<text fill="#e65100" font-size="12" font-weight="bold" text-anchor="middle" x="580" y="349" direction="ltr" unicode-bidi="embed">RFC3339 string</text>
+<line marker-end="url(#arrO1)" stroke="#FF9800" stroke-width="1.5" x1="250" x2="470" y1="344" y2="344"></line>
+<text fill="#FF9800" font-size="9" text-anchor="middle" x="360" y="340" direction="ltr" unicode-bidi="embed">"2024-01-15T10:30:00Z"</text>
+
+<!-- Row 9: []byte → base64 string (orange - special) -->
+<rect fill="#fff3e0" height="28" rx="4" stroke="#FF9800" stroke-width="1.5" width="220" x="30" y="364"></rect>
+<text fill="#e65100" font-size="12" font-weight="bold" text-anchor="middle" x="140" y="383" direction="ltr" unicode-bidi="embed">[]byte</text>
+<rect fill="#fff3e0" height="28" rx="4" stroke="#FF9800" stroke-width="1.5" width="220" x="470" y="364"></rect>
+<text fill="#e65100" font-size="12" font-weight="bold" text-anchor="middle" x="580" y="383" direction="ltr" unicode-bidi="embed">base64 string</text>
+<line marker-end="url(#arrO1)" stroke="#FF9800" stroke-width="1.5" x1="250" x2="470" y1="378" y2="378"></line>
+<text fill="#FF9800" font-size="9" text-anchor="middle" x="360" y="374" direction="ltr" unicode-bidi="embed">"SGVsbG8="</text>
+
+<!-- JSON Tags Section -->
+<rect fill="#f3e5f5" height="30" rx="6" width="660" x="30" y="410"></rect>
+<text fill="#7b1fa2" font-size="13" font-weight="bold" text-anchor="middle" x="360" y="430" direction="rtl" unicode-bidi="embed">ساختار <tspan direction="ltr" unicode-bidi="embed">json</tspan> tag — گزینه‌های پرکاربرد</text>
+
+<!-- Tag: json:"name" -->
+<rect fill="#fff" height="26" rx="4" stroke="#7b1fa2" stroke-width="1" width="310" x="30" y="448"></rect>
+<text fill="#333" font-size="11" text-anchor="start" x="40" y="466" direction="ltr" unicode-bidi="embed">`json:"name"` → کلید JSON برابر "name"</text>
+
+<!-- Tag: json:"-" -->
+<rect fill="#fce4ec" height="26" rx="4" stroke="#e91e63" stroke-width="1" width="310" x="350" y="448"></rect>
+<text fill="#e91e63" font-size="11" text-anchor="start" x="360" y="466" direction="ltr" unicode-bidi="embed">`json:"-"` → فیلد هرگز در JSON ظاهر نمی‌شود</text>
+
+<!-- Tag: json:",omitempty" -->
+<rect fill="#fff" height="26" rx="4" stroke="#7b1fa2" stroke-width="1" width="310" x="30" y="480"></rect>
+<text fill="#333" font-size="11" text-anchor="start" x="40" y="498" direction="ltr" unicode-bidi="embed">`json:",omitempty"` → حذف اگر مقدار پیش‌فرض (صفر/خالی)</text>
+
+<!-- Tag: json:",string" -->
+<rect fill="#fff" height="26" rx="4" stroke="#7b1fa2" stroke-width="1" width="310" x="350" y="480"></rect>
+<text fill="#333" font-size="11" text-anchor="start" x="360" y="498" direction="ltr" unicode-bidi="embed">`json:",string"` → عدد به‌صورت رشته‌ی JSON</text>
+
+<!-- Pitfalls Section -->
+<rect fill="#fce4ec" height="30" rx="6" width="660" x="30" y="520"></rect>
+<text fill="#e91e63" font-size="13" font-weight="bold" text-anchor="middle" x="360" y="540" direction="rtl" unicode-bidi="embed">⚠️ اشتباهات رایج</text>
+
+<!-- Pitfall 1 -->
+<rect fill="#fff" height="24" rx="4" stroke="#e91e63" stroke-width="1" width="320" x="30" y="558"></rect>
+<text fill="#e91e63" font-size="10" text-anchor="start" x="40" y="574" direction="rtl" unicode-bidi="embed">فیلدهای <tspan direction="ltr" unicode-bidi="embed">unexported</tspan> (حرف کوچک) نادیده گرفته می‌شوند</text>
+
+<!-- Pitfall 2 -->
+<rect fill="#fff" height="24" rx="4" stroke="#e91e63" stroke-width="1" width="320" x="370" y="558"></rect>
+<text fill="#e91e63" font-size="10" text-anchor="start" x="380" y="574" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">time.Time</tspan> نیاز به فرمت <tspan direction="ltr" unicode-bidi="embed">RFC3339</tspan> دارد</text>
+
+<!-- Pitfall 3 -->
+<rect fill="#fff" height="24" rx="4" stroke="#e91e63" stroke-width="1" width="320" x="30" y="588"></rect>
+<text fill="#e91e63" font-size="10" text-anchor="start" x="40" y="604" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">[]byte</tspan> به <tspan direction="ltr" unicode-bidi="embed">base64</tspan> تبدیل می‌شود (نه آرایه‌ی عدد!)</text>
+
+<!-- Pitfall 4 -->
+<rect fill="#fff" height="24" rx="4" stroke="#e91e63" stroke-width="1" width="320" x="370" y="588"></rect>
+<text fill="#e91e63" font-size="10" text-anchor="start" x="380" y="604" direction="rtl" unicode-bidi="embed">کلید <tspan direction="ltr" unicode-bidi="embed">map</tspan> حتماً باید <tspan direction="ltr" unicode-bidi="embed">string</tspan> باشد</text>
+
+<!-- Golden Rule Bar -->
+<rect fill="#FF9800" height="24" rx="4" width="660" x="30" y="420" opacity="0"></rect>
+</svg>
+<figcaption>شکل ۶-۶-د — نگاشت نوع‌های <bdi dir="ltr">Go</bdi> به نوع‌های <bdi dir="ltr">JSON</bdi>: سبز = مستقیم، نارنجی = تبدیل خاص، صورتی = نکته‌ی مهم</figcaption>
+</figure>
+
+<h3 id="json-سناریوهای-عملیاتی">سناریوهای عملیاتی</h3>
+<p>در پروژه‌های واقعی، کار با <bdi dir="ltr">JSON</bdi> فراتر از تبدیل ساده‌ی <bdi dir="ltr">struct</bdi> به <bdi dir="ltr">JSON</bdi> است. سناریوهای متعددی وجود دارند که هر کدام نیازمند رویکرد و تکنیک خاصی هستند. آشنایی با این الگوها به شما کمک می‌کند در موقعیت‌های مختلف بهترین تصمیم را بگیرید و از خطاهای رایج جلوگیری کنید. در ادامه پنج سناریوی عملیاتی کلیدی بررسی می‌شوند که هر برنامه‌نویس <bdi dir="ltr">Go</bdi> باید با آن‌ها آشنا باشد.</p>
+<ul>
+<li><strong>مدیریت <bdi dir="ltr">JSON</bdi> درخواست/پاسخ <bdi dir="ltr">API</bdi>:</strong> در <bdi dir="ltr">REST API</bdi> معمولاً داده‌های ورودی را به <bdi dir="ltr">struct</bdi> تبدیل می‌کنید، اعتبارسنجی انجام می‌دهید و سپس پردازش می‌کنید. در پاسخ نیز <bdi dir="ltr">struct</bdi> نتیجه را به <bdi dir="ltr">JSON</bdi> تبدیل می‌کنید. استفاده از <bdi dir="ltr">struct</bdi> جداگانه برای درخواست و پاسخ بهترین روش است تا فیلدهای داخلی افشا نشوند.</li>
+<li><strong>به‌روزرسانی جزئی با <bdi dir="ltr">map[string]any</bdi>:</strong> وقتی <bdi dir="ltr">API</bdi> از <bdi dir="ltr">PATCH</bdi> پشتیبانی می‌کند و فقط برخی فیلدها ارسال می‌شوند، <bdi dir="ltr">map[string]any</bdi> به شما اجازه می‌دهد تشخیص دهید کدام فیلدها ارسال شده‌اند. فیلد غایب در <bdi dir="ltr">map</bdi> یعنی عدم تغییر، اما فیلد با مقدار <bdi dir="ltr">null</bdi> یعنی پاک کردن.</li>
+<li><strong>سفارشی‌سازی <bdi dir="ltr">JSON</bdi> با <bdi dir="ltr">MarshalJSON/UnmarshalJSON</bdi>:</strong> وقتی نیاز به فرمت خاص برای تاریخ، رمزنگاری فیلد یا خروجی شرطی دارید، پیاده‌سازی این دو متد کنترل کامل روی تبدیل به شما می‌دهد. از ترفند <bdi dir="ltr">type Alias</bdi> برای جلوگیری از حلقه‌ی بی‌نهایت استفاده کنید.</li>
+<li><strong>مدیریت ساختار ناشناخته با <bdi dir="ltr">json.RawMessage</bdi>:</strong> در سیستم‌های رویدادمحور که بار متفاوتی دارند، <bdi dir="ltr">RawMessage</bdi> اجازه می‌دهد بخشی از <bdi dir="ltr">JSON</bdi> را بدون رمزگشایی نگه دارید و بعداً بر اساس نوع رویداد، به <bdi dir="ltr">struct</bdi> مناسب تبدیل کنید.</li>
+<li><strong>جریان <bdi dir="ltr">JSON</bdi> با <bdi dir="ltr">json.Decoder</bdi>:</strong> برای فایل‌های بزرگ یا پاسخ‌های <bdi dir="ltr">HTTP streaming</bdi>، <bdi dir="ltr">Decoder</bdi> داده‌ها را توکن‌به‌توکن می‌خواند و فقط یک آبجکت در حافظه نگه می‌دارد. این روش مصرف حافظه را به‌شدت کاهش می‌دهد.</li>
+</ul>
+
+<div class="tip">
+<strong>نکته‌ی مهم:</strong> همیشه از <code dir="ltr">json:"-"</code> برای حذف فیلدهای حساس (رمز عبور، توکن، کلید <bdi dir="ltr">API</bdi>) از خروجی <bdi dir="ltr">JSON</bdi> استفاده کنید. هرگز فقط به <bdi dir="ltr">unexported</bdi> بودن فیلد اکتفا نکنید — در آینده ممکن است متد دسترسی اضافه شود یا نام فیلد به‌اشتباه <bdi dir="ltr">exported</bdi> شود. <code dir="ltr">json:"-"</code> صریح و مطمئن است و حتی اگر فیلد <bdi dir="ltr">exported</bdi> باشد از خروجی <bdi dir="ltr">JSON</bdi> حذف می‌شود.
+</div>
+
+<div class="important">
+<strong>قانون طلایی:</strong> در <bdi dir="ltr">Go</bdi> هرگز بر نام فیلد <bdi dir="ltr">struct</bdi> برای کنترل خروجی <bdi dir="ltr">JSON</bdi> تکیه نکنید — همیشه از <bdi dir="ltr">struct tag</bdi> صریح استفاده کنید. <code dir="ltr">json:"-"</code> برای حذف، <code dir="ltr">json:",omitempty"</code> برای حذف شرطی، و <code dir="ltr">json:"name"</code> برای نام‌گذاری صریح.
+</div>
+
+</div>
+</main>
+</div>
+
+<!-- Footer -->
+<footer class="site-footer">
+<div class="footer-inner">
+<div class="footer-nav">
+<span class="nav-arrow">‹</span>
+<a href="06.05-embedding-files-in-program.html" data-prev>۶.۵ جاسازی فایل در برنامه</a>
+</div>
+<div class="footer-toc">
+<a href="00.01-contents.html">فهرست</a>
+</div>
+<div class="footer-nav">
+<a href="06.07-os-signals.html" data-next>۶.۷ دریافت و مدیریت سیگنال‌های سیستم‌عامل</a>
+<span class="nav-arrow">›</span>
+</div>
+</div>
+</footer>
+
+<!-- Back to Top -->
+<button class="back-to-top" aria-label="بازگشت به بالا">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
+</button>
+
+<!-- Scripts -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/go.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/php.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/sql.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/yaml.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/json.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/dockerfile.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/xml.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/ini.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/plaintext.min.js"></script>
+<script src="assets/js/main.js"></script>
+</body>
+</html>

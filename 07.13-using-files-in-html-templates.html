@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="fa">
+<head>
+<script>!function(){try{var t=localStorage.getItem('php2go-theme');if(t==='dark'||(!t&&window.matchMedia('(prefers-color-scheme:dark)').matches)){document.documentElement.setAttribute('data-theme','dark')}}catch(e){}}();</script>
+<meta charset="utf-8"/>
+<meta content="ie=edge" http-equiv="x-ua-compatible"/>
+<title>۷.۱۳ استفاده از فایل‌ها در قالب HTML — PHP to Go</title>
+<meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet"/>
+<link href="assets/css/main.css" rel="stylesheet" type="text/css"/>
+<link href="assets/img/favicon.ico" rel="icon" type="image/x-icon"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" media="screen" class="hljs-light-theme" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css" media="not screen" class="hljs-dark-theme" rel="stylesheet"/>
+</head>
+<body>
+<!-- Progress Bar -->
+<div class="progress-bar"><div class="progress-bar__fill"></div></div>
+
+<!-- Header -->
+<header class="site-header">
+<div class="header-inner">
+<div class="header-left">
+<button class="header-btn sidebar-toggle" aria-label="فهرست">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+</button>
+<a href="00.00-front-matter.html" class="header-logo"><span class="logo-php">PHP</span> to <span class="logo-go">Go</span></a>
+<span class="header-crumbs">ساخت وب‌سرور › استفاده از فایل‌ها در قالب HTML</span>
+</div>
+<div class="header-right">
+<nav class="header-nav">
+<span class="nav-arrow">‹</span>
+<a href="07.12-serving-static-files-with-embed.html"><span class="nav-label">۷.۱۲ Server فایل‌های استاتیک با استفاده از embed</span></a>
+<a href="00.01-contents.html">فهرست</a>
+<a href="07.14-form-processing.html"><span class="nav-label">۷.۱۴ پردازش فرم‌ها</span></a>
+<span class="nav-arrow">›</span>
+</nav>
+<button class="header-btn search-toggle" aria-label="جستجو">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+</button>
+<button class="header-btn theme-toggle" aria-label="تغییر تم">
+<svg class="theme-icon-light" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+<svg class="theme-icon-dark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+</button>
+</div>
+</div>
+</header>
+
+<!-- Search Modal -->
+<div class="search-overlay">
+<div class="search-modal">
+<div class="search-input-wrap">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+<input type="text" class="search-input" placeholder="جستجو... (Ctrl+K)" dir="rtl"/>
+</div>
+<div class="search-results"></div>
+</div>
+</div>
+
+<!-- Layout -->
+<div class="site-layout">
+<!-- Sidebar -->
+<aside class="sidebar"></aside>
+<div class="sidebar-overlay"></div>
+
+<!-- Main Content -->
+<main class="content-area">
+<div class="content-wrap text">
+<div class="chapter">فصل ۷.۱۳</div>
+<h2 id="استفاده-از-فایلها-در-قالب-html">استفاده از فایل‌ها در قالب HTML</h2>
+<figure class="diagram" dir="ltr">
+<svg height="220" viewBox="0 0 500 220" width="500" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<marker id="arrow13" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#555" points="0 0, 10 3.5, 0 7"></polygon></marker>
+<filter height="104%" id="sh13" width="104%" x="-2%" y="-2%"><fedropshadow dx="1" dy="1" flood-opacity="0.15" stddeviation="2"></fedropshadow></filter>
+</defs>
+<rect fill="#fff" height="220" rx="8" width="500" x="0" y="0"></rect>
+<text fill="#333" font-size="16" font-weight="bold" text-anchor="middle" x="250" y="28" direction="rtl" unicode-bidi="embed">ارجاع به فایل‌ها در قالب <tspan direction="ltr" unicode-bidi="embed">HTML</tspan></text>
+<rect fill="#00ADD8" filter="url(#sh13)" height="55" rx="6" width="220" x="140" y="55"></rect>
+<text fill="#fff" font-size="11" text-anchor="middle" x="250" y="78" direction="ltr" unicode-bidi="embed">HTML Template</text>
+<text fill="#e0f7fa" font-size="9" text-anchor="middle" x="250" y="98" direction="ltr" unicode-bidi="embed">/static/css/style.css</text>
+<line marker-end="url(#arrow13)" stroke="#555" stroke-width="2" x1="200" x2="120" y1="110" y2="150"></line>
+<line marker-end="url(#arrow13)" stroke="#555" stroke-width="2" x1="300" x2="380" y1="110" y2="150"></line>
+<rect fill="#FF9800" filter="url(#sh13)" height="40" rx="6" width="150" x="40" y="150"></rect>
+<text fill="#fff" font-size="10" text-anchor="middle" x="115" y="175" direction="ltr" unicode-bidi="embed">&lt;link href="/static/css"&gt;</text>
+<rect fill="#9C27B0" filter="url(#sh13)" height="40" rx="6" width="150" x="310" y="150"></rect>
+<text fill="#fff" font-size="10" text-anchor="middle" x="385" y="175" direction="ltr" unicode-bidi="embed">&lt;script src="/static/js"&gt;</text>
+</svg>
+<figcaption>شکل ۷-۱۳: ارجاع به فایل‌های استاتیک <bdi dir="ltr">CSS</bdi> و <bdi dir="ltr">JS</bdi> در قالب‌های <bdi dir="ltr">HTML</bdi></figcaption>
+</figure>
+<p>در فایل HTML جاسازی‌شده یا تولیدی، به فایل‌های استاتیک ارجاع می‌دهیم:</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">&lt;link rel="stylesheet" href="/static/css/style.css"&gt;
+&lt;script src="/static/js/app.js" defer&gt;&lt;/script&gt;
+</code></pre>
+</figure>
+<h3 id="نسخه‌گذاری-فایلهای-استاتیک-cache-busting)">Cache Busting</h3>
+<p>وقتی از هدرهای کش قوی استفاده می‌کنید مرورگر فایل‌ها را برای مدت طولانی ذخیره می‌کند. مشکل اینجاست که اگر فایل CSS یا JS را تغییر دهید کاربران ممکن است نسخه قدیمی را ببینند. راه‌حل استاندارد افزودن نسخه یا هش به نام فایل است:</p>
+<figure class="code html" dir="ltr">
+<pre><code class="language-xml"><!-- روش ۱: پارامتر query -->
+&lt;link rel="stylesheet" href="/static/css/style.css?v=1.2.3"&gt;
+
+<!-- روش ۲: هش محتوا (پیشنهادی) -->
+&lt;link rel="stylesheet" href="/static/css/style.a1b2c3.css"&gt;
+</code></pre>
+</figure>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">// Pass app version to template for cache busting
+type PageData struct {
+    Title string
+    Version string // from compile-time variable or config
+}
+
+// In template:
+// &lt;link rel="stylesheet" href="/static/css/style.css?v={{.Version}}"&gt;
+</code></pre>
+</figure>
+<h3 id="تولید-هدر-کش-برای-فایلهای-جاسازیشده">تولید هدر کش برای فایل‌های جاسازی‌شده</h3>
+<p>چون فایل‌های جاسازی‌شده با <code dir="ltr">embed</code> هرگز تغییر نمی‌کنند (مگر با کامپایل مجدد)، می‌توانید هدرهای کش بسیار بلندمدت تنظیم کنید:</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">func embeddedCacheMiddleware(next http.Handler) http.Handler {
+    return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+        // Embedded files are immutable — 1 year cache
+        w.Header().Set("Cache-Control", "public, max-age=31536000, immutable")
+        next.ServeHTTP(w, r)
+    })
+}
+</code></pre>
+</figure>
+<div class="tip"><strong>نکته:</strong> هدر <code>immutable</code> به مرورگر می‌گویند که فایل هرگز تغییر نمی‌کند و نیازی به revalidation ندارد. این هدر فقط زمانی مناسب است که مطمئن باشید فایل واقعاً تغییر نمی‌کند — مثل فایل‌های جاسازی‌شده در باینری.</div>
+<h3 id="نکات-امنیتی">نکات امنیتی</h3>
+<p>استفاده از embed برای سرو کردن فایل‌های استاتیک در Go، روش مدرن، ایمن و قابل‌اتکایی است که مخصوصاً برای single binary deployment بسیار مفید است. ترکیب این روش با caching سمت مرورگر باعث افزایش قابل‌توجه سرعت لود صفحات، کاهش مصرف پهنای باند و بهبود تجربه کاربری می‌شود.</p>
+<h3 id="جاسازی-css-و-js-درون-قالبها">جاسازی CSS و JS درون قالب‌ها</h3>
+<p>گاهی اوقات برای کاهش تعداد درخواست‌های HTTP یا برای تولید صفحات مستقل، نیاز دارید CSS و JS را مستقیماً درون قالب <bdi dir="ltr">HTML</bdi> قرار دهید. با ترکیب <code dir="ltr">embed.FS</code> و توابع سفارشی قالب، می‌توانید فایل‌های <bdi dir="ltr">CSS</bdi> و <bdi dir="ltr">JS</bdi> را بخوانید و درون تگ‌های <code dir="ltr">&lt;style&gt;</code> و <code dir="ltr">&lt;script&gt;</code> قرار دهید:</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">//go:embed static/css/*.css static/js/*.js
+var assetFS embed.FS
+
+var funcs = template.FuncMap{
+    // Read and sign CSS content
+    "inlineCSS": func(name string) (template.CSS, error) {
+        data, err := assetFS.ReadFile("static/css/" + name)
+        if err != nil {
+            return "", err
+        }
+        return template.CSS(data), nil
+    },
+    // Read and sign JS content
+    "inlineJS": func(name string) (template.JS, error) {
+        data, err := assetFS.ReadFile("static/js/" + name)
+        if err != nil {
+            return "", err
+        }
+        return template.JS(data), nil
+    },
+}
+</code></pre>
+</figure>
+<figure class="code html" dir="ltr">
+<pre><code class="language-xml"><!-- استفاده در قالب -->
+&lt;style&gt;{{ inlineCSS "critical.css" }}&lt;/style&gt;
+&lt;script&gt;{{ inlineJS "app.js" }}&lt;/script&gt;
+</code></pre>
+</figure>
+<div class="warning"><strong>هشدار:</strong> فقط فایل‌های قابل کنترل و قابل اعتماد را با این روش جاسازی کنید. هرگز فایل‌های آپلودشده توسط کاربر را <code dir="ltr">inline</code> نکنید زیرا <code dir="ltr">template.CSS</code> و <code dir="ltr">template.JS</code> سیستم ایمن‌سازی خودکار را دور می‌زنند. این روش فقط برای فایل‌های استاتیک داخل <code dir="ltr">embed.FS</code> که در زمان کامپایل جاسازی شده‌اند، امن است.</div>
+<h3 id="شمول-فایل-در-قالبها">شمول فایل در قالب‌ها</h3>
+<p>یکی از کاربردهای مهم <code dir="ltr">{{ template }}</code> شمول فایل‌های جزئی است. مثلاً یک صفحه ممکن است شامل چندین کامپوننت مشترک باشد. هر کامپوننت در فایل جداگانه تعریف شده و با <code dir="ltr">{{ template }}</code> فراخوانی می‌شود. این الگو امکان استفاده مجدد از اجزای رابط کاربری را فراهم می‌کند:</p>
+<figure class="code html" dir="ltr">
+<pre><code class="language-xml">&lt;!-- templates/partials/product-card.html --&gt;
+{{ define "partial.product-card" }}
+&lt;div class="product-card"&gt;
+    &lt;img src="{{ .ImageURL }}" alt="{{ .Name }}"&gt;
+    &lt;h3&gt;{{ .Name }}&lt;/h3&gt;
+    &lt;p class="price"&gt;{{ .Price | formatPrice }}&lt;/p&gt;
+    {{ if .InStock }}
+    &lt;button&gt;افزودن به سبد&lt;/button&gt;
+    {{ else }}
+    &lt;span class="out-of-stock"&gt;ناموجود&lt;/span&gt;
+    {{ end }}
+&lt;/div&gt;
+{{ end }}
+
+<!-- استفاده در صفحه -->
+{{ range .Products }}
+    {{ template "partial.product-card" . }}
+{{ end }}
+</code></pre>
+</figure>
+
+<h3 id="درخت-شمول-فایلهای-قالب">درخت شمول فایل‌های قالب</h3>
+<p>هر صفحه‌ی <bdi dir="ltr">HTML</bdi> در <bdi dir="ltr">Go</bdi> از ترکیب چندین فایل قالب ساخته می‌شود. قالب پایه (<code dir="ltr">base.html</code>) بلوک‌های اصلی را تعریف و قالب‌های جزئی را با <code dir="ltr">{{ template }}</code> فراخوانی می‌کند. هر قالب جزئی ممکن است خود قالب‌های دیگری را فراخوانی کند و یک درخت شمول (<bdi dir="ltr">inclusion tree</bdi>) تشکیل شود. درک این درخت برای دیباگ و سازمان‌دهی قالب‌ها ضروری است. مهم‌ترین نکته این است که تمام فایل‌های قالب باید با هم بارگذاری شوند — مثلاً با <code dir="ltr">ParseGlob</code> یا <code dir="ltr">ParseFS</code> — تا تعاریف <code dir="ltr">{{ define }}</code> همه فایل‌ها در دسترس باشد. ترتیب بارگذاری فایل‌ها مهم نیست، اما ترتیب رندر مهم است: همیشه باید <code dir="ltr">ExecuteTemplate</code> با نام قالب پایه فراخوانی شود.</p>
+
+<figure class="diagram" dir="ltr">
+<svg height="430" viewBox="0 0 480 430" width="480" xmlns="http://www.w3.org/2000/svg">
+<rect fill="#fafafa" height="430" rx="8" width="480" x="0" y="0"></rect>
+<defs><marker id="arrInc" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#00ADD8" points="0 0, 10 3.5, 0 7"></polygon></marker></defs>
+<text fill="#00ADD8" font-size="14" font-weight="bold" text-anchor="middle" x="240" y="25" direction="rtl" unicode-bidi="embed">درخت شمول فایل‌های قالب در <tspan direction="ltr" unicode-bidi="embed">Go</tspan></text>
+
+<!-- base.html (root) -->
+<rect fill="#e0f7fa" height="50" rx="7" stroke="#00ADD8" stroke-width="2" width="160" x="160" y="45"></rect>
+<text fill="#00ADD8" font-size="12" font-weight="bold" text-anchor="middle" x="240" y="67" direction="ltr" unicode-bidi="embed">base.html</text>
+<text fill="#888" font-size="9" text-anchor="middle" x="240" y="84" direction="ltr" unicode-bidi="embed">{{ template "header" }} {{ block "content" }} {{ template "footer" }}</text>
+
+<!-- Arrows from base to children -->
+<line marker-end="url(#arrInc)" stroke="#4CAF50" stroke-width="1.5" x1="195" x2="90" y1="95" y2="135"></line>
+<line marker-end="url(#arrInc)" stroke="#FF9800" stroke-width="1.5" x1="240" x2="240" y1="95" y2="135"></line>
+<line marker-end="url(#arrInc)" stroke="#4CAF50" stroke-width="1.5" x1="285" x2="390" y1="95" y2="135"></line>
+
+<!-- header.html -->
+<rect fill="#e8f5e9" height="40" rx="6" stroke="#4CAF50" stroke-width="1.5" width="120" x="30" y="135"></rect>
+<text fill="#2e7d32" font-size="11" font-weight="bold" text-anchor="middle" x="90" y="160" direction="ltr" unicode-bidi="embed">header.html</text>
+
+<!-- content varies -->
+<rect fill="#fff3e0" height="40" rx="6" stroke="#FF9800" stroke-width="1.5" width="120" x="180" y="135"></rect>
+<text fill="#e65100" font-size="11" font-weight="bold" text-anchor="middle" x="240" y="160" direction="ltr" unicode-bidi="embed">content (varies)</text>
+
+<!-- footer.html -->
+<rect fill="#e8f5e9" height="40" rx="6" stroke="#4CAF50" stroke-width="1.5" width="120" x="340" y="135"></rect>
+<text fill="#2e7d32" font-size="11" font-weight="bold" text-anchor="middle" x="400" y="160" direction="ltr" unicode-bidi="embed">footer.html</text>
+
+<!-- Arrow from header to nav -->
+<line marker-end="url(#arrInc)" stroke="#4CAF50" stroke-width="1.2" x1="90" x2="90" y1="175" y2="205"></line>
+
+<!-- nav.html (included by header) -->
+<rect fill="#e8f5e9" height="35" rx="5" stroke="#4CAF50" stroke-width="1" width="100" x="40" y="205"></rect>
+<text fill="#2e7d32" font-size="10" font-weight="bold" text-anchor="middle" x="90" y="227" direction="ltr" unicode-bidi="embed">nav.html</text>
+
+<!-- Content sub-pages -->
+<line marker-end="url(#arrInc)" stroke="#FF9800" stroke-width="1.2" x1="210" x2="130" y1="175" y2="205"></line>
+<line marker-end="url(#arrInc)" stroke="#FF9800" stroke-width="1.2" x1="240" x2="240" y1="175" y2="205"></line>
+<line marker-end="url(#arrInc)" stroke="#FF9800" stroke-width="1.2" x1="270" x2="350" y1="175" y2="205"></line>
+
+<!-- home.html -->
+<rect fill="#fff3e0" height="35" rx="5" stroke="#FF9800" stroke-width="1" width="95" x="75" y="205"></rect>
+<text fill="#e65100" font-size="10" font-weight="bold" text-anchor="middle" x="122" y="227" direction="ltr" unicode-bidi="embed">home.html</text>
+
+<!-- about.html -->
+<rect fill="#fff3e0" height="35" rx="5" stroke="#FF9800" stroke-width="1" width="95" x="192" y="205"></rect>
+<text fill="#e65100" font-size="10" font-weight="bold" text-anchor="middle" x="240" y="227" direction="ltr" unicode-bidi="embed">about.html</text>
+
+<!-- contact.html -->
+<rect fill="#fff3e0" height="35" rx="5" stroke="#FF9800" stroke-width="1" width="95" x="305" y="205"></rect>
+<text fill="#e65100" font-size="10" font-weight="bold" text-anchor="middle" x="352" y="227" direction="ltr" unicode-bidi="embed">contact.html</text>
+
+<!-- ParseGlob box -->
+<rect fill="#f3e5f5" height="70" rx="6" stroke="#9C27B0" stroke-width="1.5" width="440" x="20" y="265"></rect>
+<text fill="#7B1FA2" font-size="11" font-weight="bold" text-anchor="middle" x="240" y="287" direction="ltr" unicode-bidi="embed">ParseGlob / ParseFS — Load All Dependencies</text>
+<text fill="#555" font-size="9" text-anchor="middle" x="240" y="305" direction="ltr" unicode-bidi="embed">template.Must(template.ParseGlob("templates/*.html"))</text>
+<text fill="#555" font-size="9" text-anchor="middle" x="240" y="320" direction="ltr" unicode-bidi="embed">template.Must(template.ParseFS(embedFS, "templates/*.html", "templates/**/*.html"))</text>
+
+<!-- Ordering note -->
+<rect fill="#fff3e0" height="50" rx="5" stroke="#FF9800" stroke-width="1" width="440" x="20" y="350"></rect>
+<text fill="#e65100" font-size="10" font-weight="bold" text-anchor="middle" x="240" y="370" direction="rtl" unicode-bidi="embed">ترتیب بارگذاری مهم نیست — <tspan direction="ltr" unicode-bidi="embed">ParseGlob</tspan> همه <tspan direction="ltr" unicode-bidi="embed">{{ define }}</tspan>ها را جمع‌آوری می‌کند</text>
+<text fill="#555" font-size="9" text-anchor="middle" x="240" y="388" direction="rtl" unicode-bidi="embed">اما ترتیب رندر مهم است: <tspan direction="ltr" unicode-bidi="embed">ExecuteTemplate(w, "base.html", data)</tspan> — نه نام قالب محتوا</text>
+
+<!-- Golden Rule bar -->
+<rect fill="#FF9800" height="22" rx="4" width="440" x="20" y="405"></rect>
+<text fill="#fff" font-size="9" font-weight="bold" text-anchor="middle" x="240" y="421" direction="rtl" unicode-bidi="embed">قاعده‌ی طلایی: همه قالب‌ها را یکجا <tspan direction="ltr" unicode-bidi="embed">Parse</tspan> کنید و هرگز قالب تکی را در هر درخواست <tspan direction="ltr" unicode-bidi="embed">Parse</tspan> نکنید</text>
+</svg>
+<figcaption>درخت شمول فایل‌های قالب: نحوه‌ی ارجاع قالب‌ها به یکدیگر</figcaption>
+</figure>
+
+<h3 id="سناریوهای-عملیاتی-قالبهای-فایل">سناریوهای عملیاتی</h3>
+<ul>
+<li><strong>سازمان‌دهی ساختار صفحات پیچیده:</strong> در پروژه‌های بزرگ، هر صفحه ممکن است ده‌ها قالب جزئی داشته باشد. قالب‌ها را بر اساس عملکرد تفکیک کنید: <code dir="ltr">layouts/</code> برای قالب‌های پایه، <code dir="ltr">pages/</code> برای محتوای صفحات، <code dir="ltr">partials/</code> برای اجزای مشترک و <code dir="ltr">components/</code> برای ویجت‌های قابل استفاده مجدد. با <code dir="ltr">ParseFS</code> تمام فایل‌ها یکجا بارگذاری می‌شوند.</li>
+<li><strong>شمول شرطی قالب‌ها:</strong> با <code dir="ltr">{{ if .ShowSidebar }}{{ template "sidebar" . }}{{ end }}</code> می‌توانید شمول قالب‌ها را شرطی کنید. این الگو مشابه <code dir="ltr">@if</code> در <bdi dir="ltr">Blade</bdi> است و امکان کنترل پویای ساختار صفحه را فراهم می‌کند.</li>
+<li><strong>توابع کمکی و ابزارهای قالب:</strong> با <code dir="ltr">template.FuncMap</code> توابع سفارشی مثل فرمت تاریخ، تبدیل واحد پول و برش متن تعریف کنید. این توابع در تمام قالب‌ها قابل استفاده هستند و مشابه <bdi dir="ltr">Blade directives</bdi> در <bdi dir="ltr">PHP</bdi> عمل می‌کنند.</li>
+<li><strong>مدیریت مجموعه‌های بزرگ قالب:</strong> در پروژه‌هایی با صدها قالب، از <code dir="ltr">template.New("").Funcs(funcs).ParseFS(fs, patterns...)</code> استفاده کنید تا تمام قالب‌ها با توابع سفارشی یکجا بارگذاری شوند. از بارگذاری تکی فایل‌ها در هر درخواست خودداری کنید چون عملکرد را شدیداً کاهش می‌دهد.</li>
+<li><strong>پیش‌کامپایل قالب‌ها در زمان راه‌اندازی:</strong> تمام قالب‌ها را در تابع <code dir="ltr">init()</code> یا در ابتدای <code dir="ltr">main()</code> بارگذاری و کامپایل کنید. اگر خطایی در قالب‌ها باشد، برنامه در همان ابتدا متوقف می‌شود نه در حین اجرا. این الگو مشابه کش قالب‌ها در <bdi dir="ltr">PHP</bdi> است اما بدون نیاز به پاکسازی کش.</li>
+</ul>
+
+<div class="important"><strong>مهم:</strong> همیشه تمام قالب‌ها را یکجا با <code dir="ltr">ParseGlob</code> یا <code dir="ltr">ParseFS</code> بارگذاری کنید و با <code dir="ltr">ExecuteTemplate</code> و نام قالب پایه رندر کنید. هرگز قالب‌های تکی را در هر درخواست <code dir="ltr">Parse</code> نکنید — این کار علاوه بر عملکرد ضعیف، باعث خطاهای عدم تعریف قالب نیز می‌شود چون وابستگی‌های قالب بارگذاری نمی‌شوند.</div>
+</div>
+</main>
+</div>
+
+<!-- Footer -->
+<footer class="site-footer">
+<div class="footer-inner">
+<div class="footer-nav">
+<span class="nav-arrow">‹</span>
+<a href="07.12-serving-static-files-with-embed.html" data-prev>۷.۱۲ Server فایل‌های استاتیک با استفاده از embed</a>
+</div>
+<div class="footer-toc">
+<a href="00.01-contents.html">فهرست</a>
+</div>
+<div class="footer-nav">
+<a href="07.14-form-processing.html" data-next>۷.۱۴ پردازش فرم‌ها</a>
+<span class="nav-arrow">›</span>
+</div>
+</div>
+</footer>
+
+<!-- Back to Top -->
+<button class="back-to-top" aria-label="بازگشت به بالا">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
+</button>
+
+<!-- Scripts -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/go.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/php.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/sql.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/yaml.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/json.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/dockerfile.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/xml.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/ini.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/plaintext.min.js"></script>
+<script src="assets/js/main.js"></script>
+</body>
+</html>

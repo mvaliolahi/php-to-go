@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="fa">
+<head>
+<script>!function(){try{var t=localStorage.getItem('php2go-theme');if(t==='dark'||(!t&&window.matchMedia('(prefers-color-scheme:dark)').matches)){document.documentElement.setAttribute('data-theme','dark')}}catch(e){}}();</script>
+<meta charset="utf-8"/>
+<meta content="ie=edge" http-equiv="x-ua-compatible"/>
+<title>۵.۹ Goroutine Leak — PHP to Go</title>
+<meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet"/>
+<link href="assets/css/main.css" rel="stylesheet" type="text/css"/>
+<link href="assets/img/favicon.ico" rel="icon" type="image/x-icon"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" media="screen" class="hljs-light-theme" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css" media="not screen" class="hljs-dark-theme" rel="stylesheet"/>
+</head>
+<body>
+<!-- Progress Bar -->
+<div class="progress-bar"><div class="progress-bar__fill"></div></div>
+
+<!-- Header -->
+<header class="site-header">
+<div class="header-inner">
+<div class="header-left">
+<button class="header-btn sidebar-toggle" aria-label="فهرست">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+</button>
+<a href="00.00-front-matter.html" class="header-logo"><span class="logo-php">PHP</span> to <span class="logo-go">Go</span></a>
+<span class="header-crumbs">همزمانی › Goroutine Leak</span>
+</div>
+<div class="header-right">
+<nav class="header-nav">
+<span class="nav-arrow">‹</span>
+<a href="05.08-practical-concurrency-usage.html"><span class="nav-label">۵.۸ کاربردهای عملی Concurrency</span></a>
+<a href="00.01-contents.html">فهرست</a>
+<a href="06.00-chapter-6.html"><span class="nav-label">۶. تعامل با دنیای بیرون</span></a>
+<span class="nav-arrow">›</span>
+</nav>
+<button class="header-btn search-toggle" aria-label="جستجو">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+</button>
+<button class="header-btn theme-toggle" aria-label="تغییر تم">
+<svg class="theme-icon-light" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+<svg class="theme-icon-dark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+</button>
+</div>
+</div>
+</header>
+
+<!-- Search Modal -->
+<div class="search-overlay">
+<div class="search-modal">
+<div class="search-input-wrap">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+<input type="text" class="search-input" placeholder="جستجو... (Ctrl+K)" dir="rtl"/>
+</div>
+<div class="search-results"></div>
+</div>
+</div>
+
+<!-- Layout -->
+<div class="site-layout">
+<!-- Sidebar -->
+<aside class="sidebar"></aside>
+<div class="sidebar-overlay"></div>
+
+<!-- Main Content -->
+<main class="content-area">
+<div class="content-wrap text">
+<div class="chapter">فصل ۵.۹</div>
+<h2 id="goroutine-leak">Goroutine Leak</h2>
+<p>درست مثل memory leak در زبان‌هایی مانند C یا جاوا در Go نیز ممکن است با مشکلی به‌نام <strong dir="ltr">Goroutine Leak</strong> روبه‌رو شوید. Leak به‌معنای باقی ماندن goroutineهایی است که هرگز به پایان نمی‌رسند و همچنان در پس‌زمینه بدون هیچ فایده‌ای اجرا می‌شوند یا در انتظار یک عملیات blocking باقی مانده‌اند.</p>
+
+<div class="quote-box">
+    <p class="quote-text">تخصیص و آزادسازی منابع باید متقارن و مشخص باشد. اگر آن را باز کردید، ببندید. اگر آن را شروع کردید، متوقف کنید. اگر آن را تخصیص دادید، آزاد کنید.</p>
+    <p class="quote-source">
+        <span class="quote-author">Uncle Bob</span>
+        <span class="quote-role">نویسنده و مشاور نرم‌افزار</span>
+        <span class="quote-separator">|</span>
+        <span class="quote-book">Clean Code</span>
+    </p>
+</div>
+
+<div class="tip"><strong>نکته‌ی حرفه‌ای:</strong> برای تشخیص نشت <bdi dir="ltr">Goroutine</bdi> در محیط تولید، از معیارهای <bdi dir="ltr">runtime</bdi> استفاده کنید: مانیتورینگ <bdi dir="ltr"><code>runtime.NumGoroutine()</code></bdi> و تنظیم هشدار برای رشد نامحدود. اگر نمودار تعداد <bdi dir="ltr">Goroutine</bdi>‌ها روند صعودی مداوم دارد و هرگز کاهش نمی‌یابد، نشت رخ داده است. ابزار <bdi dir="ltr"><code>pprof</code></bdi> نیز stack trace دقیق <bdi dir="ltr">Goroutine</bdi>‌های نشتی را ارائه می‌دهد.</div>
+
+<figure class="diagram" dir="ltr">
+<svg height="320" viewBox="0 0 700 320" width="700" xmlns="http://www.w3.org/2000/svg">
+<rect fill="#fafafa" height="320" rx="8" width="700" x="0" y="0"></rect>
+<defs>
+<marker id="aLk1" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#e74c3c" points="0 0,10 3.5,0 7"></polygon></marker>
+<marker id="aLk2" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#27ae60" points="0 0,10 3.5,0 7"></polygon></marker>
+</defs>
+<text fill="#e74c3c" font-size="15" font-weight="bold" text-anchor="middle" x="350" y="25" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">Goroutine</tspan> <tspan direction="ltr" unicode-bidi="embed">Leak</tspan>: نشت و تشخیص</text>
+<!-- Leak scenario -->
+<text fill="#e74c3c" font-size="13" font-weight="bold" text-anchor="middle" x="175" y="55" direction="rtl" unicode-bidi="embed">نشت (<tspan direction="ltr" unicode-bidi="embed">Leak</tspan>)</text>
+<rect fill="#00ADD8" height="40" opacity="0.12" rx="8" stroke="#00ADD8" stroke-width="2" width="130" x="30" y="70"></rect>
+<text fill="#333" font-size="11" text-anchor="middle" x="95" y="95" direction="ltr" unicode-bidi="embed">main()</text>
+<rect fill="#e74c3c" height="40" opacity="0.12" rx="8" stroke="#e74c3c" stroke-width="2" width="130" x="30" y="130"></rect>
+<text fill="#333" font-size="11" text-anchor="middle" x="95" y="155" direction="ltr" unicode-bidi="embed">go leak()</text>
+<line marker-end="url(#aLk1)" stroke="#e74c3c" stroke-width="2" x1="95" x2="95" y1="110" y2="130"></line>
+<rect fill="#e74c3c" height="40" opacity="0.2" rx="8" stroke="#e74c3c" stroke-dasharray="6,3" stroke-width="2" width="130" x="30" y="190"></rect>
+<text fill="#e74c3c" font-size="10" text-anchor="middle" x="95" y="210" direction="rtl" unicode-bidi="embed">&<tspan direction="ltr" unicode-bidi="embed">lt</tspan>;-<tspan direction="ltr" unicode-bidi="embed">ch</tspan> (بلاک برای همیشه)</text>
+<text fill="#e74c3c" font-size="9" text-anchor="middle" x="95" y="225" direction="rtl" unicode-bidi="embed">هیچ‌گاه تمام نمی‌شود!</text>
+<line stroke="#e74c3c" stroke-dasharray="4,3" stroke-width="1.5" x1="95" x2="95" y1="170" y2="190"></line>
+<!-- Fixed scenario -->
+<text fill="#27ae60" font-size="13" font-weight="bold" text-anchor="middle" x="525" y="55" direction="rtl" unicode-bidi="embed">اصلاح‌شده (<tspan direction="ltr" unicode-bidi="embed">Fixed</tspan>)</text>
+<rect fill="#00ADD8" height="40" opacity="0.12" rx="8" stroke="#00ADD8" stroke-width="2" width="130" x="420" y="70"></rect>
+<text fill="#333" font-size="11" text-anchor="middle" x="485" y="95" direction="ltr" unicode-bidi="embed">main()</text>
+<rect fill="#27ae60" height="40" opacity="0.12" rx="8" stroke="#27ae60" stroke-width="2" width="130" x="420" y="130"></rect>
+<text fill="#333" font-size="11" text-anchor="middle" x="485" y="155" direction="ltr" unicode-bidi="embed">go worker()</text>
+<line marker-end="url(#aLk2)" stroke="#27ae60" stroke-width="2" x1="485" x2="485" y1="110" y2="130"></line>
+<rect fill="#27ae60" height="40" opacity="0.15" rx="8" stroke="#27ae60" stroke-width="2" width="130" x="420" y="190"></rect>
+<text fill="#27ae60" font-size="10" text-anchor="middle" x="485" y="210" direction="ltr" unicode-bidi="embed">select + ctx.Done()</text>
+<text fill="#27ae60" font-size="9" text-anchor="middle" x="485" y="225" direction="rtl" unicode-bidi="embed">خروج کنترل‌شده</text>
+<line stroke="#27ae60" stroke-width="1.5" x1="485" x2="485" y1="170" y2="190"></line>
+<!-- Detection tools -->
+<text fill="#555" font-size="12" font-weight="bold" text-anchor="middle" x="350" y="260" direction="rtl" unicode-bidi="embed">ابزارهای تشخیص:</text>
+<rect fill="#00ADD8" height="30" opacity="0.08" rx="6" stroke="#00ADD8" stroke-width="1.5" width="190" x="30" y="275"></rect>
+<text fill="#333" font-size="10" text-anchor="middle" x="125" y="295" direction="ltr" unicode-bidi="embed">runtime.NumGoroutine()</text>
+<rect fill="#f39c12" height="30" opacity="0.08" rx="6" stroke="#f39c12" stroke-width="1.5" width="190" x="240" y="275"></rect>
+<text fill="#333" font-size="10" text-anchor="middle" x="335" y="295" direction="ltr" unicode-bidi="embed">pprof (net/http/pprof)</text>
+<rect fill="#e74c3c" height="30" opacity="0.08" rx="6" stroke="#e74c3c" stroke-width="1.5" width="190" x="450" y="275"></rect>
+<text fill="#333" font-size="10" text-anchor="middle" x="545" y="295" direction="rtl" unicode-bidi="embed">مانیتورینگ + <tspan direction="ltr" unicode-bidi="embed">context</tspan> <tspan direction="ltr" unicode-bidi="embed">timeout</tspan></text>
+</svg>
+<figcaption>شکل ۵-۱۶: <bdi dir="ltr">Goroutine</bdi> <bdi dir="ltr">Leak</bdi> - نشت، عواقب و راه‌حل</figcaption>
+</figure>
+<p>اگر Goroutine Leak رخ دهد:</p>
+<p>تعداد goroutineهای اجرا شده روی سرور بالا می‌رود</p>
+<p>مصرف حافظه و CPU افزایش پیدا می‌کند</p>
+<p>سیستم ممکن است کرش کند یا به شدت کند شود</p>
+<p>عیب‌یابی و رفع مشکل بسیار دشوار است</p>
+<p>مثال ساده‌ی نشت goroutine</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">func leak(ch chan int) {
+    fmt.Println("This line is never reached")
+}
+func main() {
+    ch := make(chan int)
+    go leak(ch) // this goroutine never finishes
+    time.Sleep(2 * time.Second)
+}
+</code></pre>
+</figure>
+<p>&lt;-ch // منتظر دریافت از channel که هیچ‌گاه داده‌ای نمی‌آید</p>
+<p>چگونه از نشت جلوگیری کنیم؟</p>
+<p>همیشه goroutineها را با context یا channelهای کنترل مدیریت کنید.</p>
+<p>برای انتظار از context با timeout یا cancel استفاده کنید.</p>
+<p>از الگوهایی مانند worker pool استفاده کنید که تعداد goroutineها را محدود و مدیریت می‌کند.</p>
+<p>ابزارهای مانیتورینگ goroutine را به کار ببرید (مثلاً <span dir="ltr">runtime.NumGoroutine()</span> برای بررسی تعداد goroutineهای در حال اجرا).</p>
+<h3 id="علل-رایج-leak">علل رایج نشت Goroutine</h3>
+<p>نشتی Goroutine معمولاً از یکی از دلایل زیر ناشی می‌شود:</p>
+
+<figure class="diagram" dir="ltr">
+<svg width="700" height="260" viewBox="0 0 700 260" xmlns="http://www.w3.org/2000/svg">
+<rect fill="#fafafa" height="260" rx="8" width="700" x="0" y="0"></rect>
+<defs>
+<marker id="aLkN1" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#e74c3c" points="0 0,10 3.5,0 7"></polygon></marker>
+<marker id="aLkN2" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#27ae60" points="0 0,10 3.5,0 7"></polygon></marker>
+</defs>
+<text fill="#e74c3c" font-size="14" font-weight="bold" text-anchor="middle" x="175" y="22" direction="rtl" unicode-bidi="embed">نشت: کانال بسته نمی‌شود</text>
+<text fill="#27ae60" font-size="14" font-weight="bold" text-anchor="middle" x="525" y="22" direction="rtl" unicode-bidi="embed">اصلاح: <tspan direction="ltr" unicode-bidi="embed">close(ch)</tspan> + <tspan direction="ltr" unicode-bidi="embed">ctx.Done()</tspan></text>
+<!-- Leak scenario -->
+<rect fill="#00ADD8" height="35" opacity="0.12" rx="6" stroke="#00ADD8" stroke-width="1.5" width="100" x="50" y="45"></rect>
+<text fill="#333" font-size="10" text-anchor="middle" x="100" y="67" direction="ltr" unicode-bidi="embed">go worker()</text>
+<line marker-end="url(#aLkN1)" stroke="#e74c3c" stroke-width="1.5" x1="100" x2="100" y1="80" y2="105"></line>
+<rect fill="#e74c3c" height="40" opacity="0.12" rx="8" stroke="#e74c3c" stroke-width="2" width="200" x="30" y="105"></rect>
+<text fill="#333" font-size="10" text-anchor="middle" x="130" y="122" direction="ltr" unicode-bidi="embed">for val := range ch</text>
+<text fill="#e74c3c" font-size="9" text-anchor="middle" x="130" y="138" direction="rtl" unicode-bidi="embed">بلاک! <tspan direction="ltr" unicode-bidi="embed">close(ch)</tspan> فراموش شده</text>
+<line stroke="#e74c3c" stroke-dasharray="4,3" stroke-width="1.5" x1="100" x2="100" y1="145" y2="170"></line>
+<text fill="#e74c3c" font-size="11" font-weight="bold" text-anchor="middle" x="100" y="185" direction="rtl" unicode-bidi="embed">نشت حافظه!</text>
+<text fill="#e74c3c" font-size="9" text-anchor="middle" x="100" y="200" direction="rtl" unicode-bidi="embed">گوریوتین تا ابد منتظر می‌ماند</text>
+<!-- Divider -->
+<line stroke="#ddd" stroke-width="1" x1="350" x2="350" y1="35" y2="240"></line>
+<!-- Fixed scenario -->
+<rect fill="#00ADD8" height="35" opacity="0.12" rx="6" stroke="#00ADD8" stroke-width="1.5" width="100" x="420" y="45"></rect>
+<text fill="#333" font-size="10" text-anchor="middle" x="470" y="67" direction="ltr" unicode-bidi="embed">go worker()</text>
+<line marker-end="url(#aLkN2)" stroke="#27ae60" stroke-width="1.5" x1="470" x2="470" y1="80" y2="105"></line>
+<rect fill="#27ae60" height="40" opacity="0.12" rx="8" stroke="#27ae60" stroke-width="2" width="220" x="400" y="105"></rect>
+<text fill="#333" font-size="10" text-anchor="middle" x="510" y="122" direction="ltr" unicode-bidi="embed">select + ctx.Done()</text>
+<text fill="#27ae60" font-size="9" text-anchor="middle" x="510" y="138" direction="rtl" unicode-bidi="embed">خروج کنترل‌شده + <tspan direction="ltr" unicode-bidi="embed">close(ch)</tspan></text>
+<line marker-end="url(#aLkN2)" stroke="#27ae60" stroke-width="1.5" x1="470" x2="470" y1="145" y2="170"></line>
+<rect fill="#27ae60" height="35" opacity="0.12" rx="8" stroke="#27ae60" stroke-width="2" width="140" x="400" y="170"></rect>
+<text fill="#27ae60" font-size="11" text-anchor="middle" x="470" y="192" direction="rtl" unicode-bidi="embed">منابع آزاد شدند</text>
+<!-- Bottom note -->
+<rect fill="#f5f5f5" height="30" rx="6" stroke="#ddd" stroke-width="1" width="600" x="50" y="220"></rect>
+<text fill="#555" font-size="10" text-anchor="middle" x="350" y="240" direction="rtl" unicode-bidi="embed">راه‌حل: همیشه <tspan direction="ltr" unicode-bidi="embed">close(ch)</tspan> فراخوانی کنید و از <tspan direction="ltr" unicode-bidi="embed">context</tspan> برای لغو استفاده کنید</text>
+</svg>
+<figcaption dir="rtl">شکل ۵-۱۶-ب: نشت <bdi dir="ltr">Goroutine</bdi> از کانال بسته‌نشده و راه‌حل</figcaption>
+</figure>
+
+
+<p><strong>۱. انتظار روی کانالی که هرگز داده دریافت نمی‌کند:</strong> وقتی Goroutine منتظر دریافت از کانالی است که هیچ‌گاه داده‌ای نمی‌آید یا بسته نمی‌شود.</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">// Leak pattern: forgotten receiver
+func leakPattern1() {
+    ch := make(chan int)
+    go func() {
+        val := &lt;-ch // no data ever arrives → leak!
+        fmt.Println(val)
+    }()
+    // Function returns but goroutine waits
+}
+</code></pre>
+</figure>
+<p><strong>۲. فراموش کردن Context:</strong> وقتی Goroutine‌ای بدون بررسی <code dir="ltr">ctx.Done()</code> در حلقه بی‌نهایت اجرا می‌شود.</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">// Leak pattern: without checking ctx.Done()
+func leakPattern2() {
+    go func() {
+        for {
+            // Endless work without checking ctx.Done()
+            doSomething()
+            time.Sleep(time.Second)
+        }
+    }()
+    // No way to stop this goroutine
+}
+</code></pre>
+</figure>
+<p><strong>۳. انتشار کانال بدون بستن:</strong> وقتی کانالی بسته نمی‌شود و Goroutine‌ها در <code>range</code> منتظر می‌مانند.</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">// Leak pattern: forgetting close
+func leakPattern3() {
+    ch := make(chan int)
+    go func() {
+        for val := range ch { // waits until closed
+            process(val)
+        }
+    }()
+    ch &lt;- 1
+    ch &lt;- 2
+    // close(ch) forgotten! → goroutine waits forever in range
+}
+</code></pre>
+</figure>
+<p><strong>۴. فرستنده‌های رها شده:</strong> وقتی goroutine‌ای در حال ارسال روی کانال بدون بافر است و هیچ گیرنده‌ای وجود ندارد.</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">// Leak pattern: blocked sender
+func leakPattern4() {
+    ch := make(chan int) // unbuffered
+    go func() {
+        ch &lt;- 42 // no receiver → blocked forever
+    }()
+    // Function returns but sender waits
+}
+</code></pre>
+</figure>
+<h3 id="تشخیص-و-مانیتورینگ">تشخیص و مانیتورینگ</h3>
+<p>Go ابزارهای قدرتمندی برای تشخیص نشت goroutine ارائه می‌دهد:</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">// Check number of active goroutines
+fmt.Println("Active goroutines:", runtime.NumGoroutine())
+
+// Using pprof for detailed analysis
+import _ "net/http/pprof"
+go http.ListenAndServe(":6060", nil)
+// Then visit: http://localhost:6060/debug/pprof/goroutine?debug=1
+</code></pre>
+</figure>
+<div class="tip"><strong>جزئیات pprof برای تشخیص نشت:</strong> ابزار <code>net/http/pprof</code> اطلاعات دقیقی از وضعیت goroutineها ارائه می‌دهد:
+<ul>
+<li><strong>خروجی <code>debug=1</code>:</strong> stack trace تمام goroutineها را نمایش می‌دهد. با مقایسه‌ی خروجی در زمان‌های مختلف می‌توان goroutineهای نشتی را شناسایی کرد — آن‌ها stack trace یکسانی دارند و تعدادشان فقط افزایش می‌یابد.</li>
+<li><strong>خروجی <code>debug=2</code>:</strong> علاوه بر stack trace، اطلاعات runtime داخلی (مثل وضعیت goroutine، مدت زمان مسدود بودن و غیره) را نیز نشان می‌دهد.</li>
+<li><strong>ابزار خط فرمان:</strong> با <code>go tool pprof http://localhost:6060/debug/pprof/goroutine</code> می‌توانید پروفایل تعاملی دریافت کنید و با دستور <code>top</code> بیشترین نشت‌ها را ببینید.</li>
+</ul>
+نکته عملی: یک الگوی رایج در تولید، ثبت تعداد goroutineهای فعال به صورت دوره‌ای با <code dir="ltr">runtime.NumGoroutine()</code> و ارسال به سیستم مانیتورینگ (مثل Prometheus) است. اگر نمودار تعداد goroutineها روند صعودی مداوم داشته باشد، نشت رخ داده است.
+</div>
+<h3 id="راه-حل-leak-با-context">راه‌حل نشت با Context</h3>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">func safeWorker(ctx context.Context, ch &lt;-chan int) {
+    for {
+        select {
+            case &lt;-ctx.Done():
+            fmt.Println("خروج کنترل‌شده از goroutine")
+            return
+            case val, ok := &lt;-ch:
+            if !ok {
+                return // channel closed
+            }
+            fmt.Println("پردازش:", val)
+        }
+    }
+}
+
+func main() {
+    ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+    defer cancel()
+    ch := make(chan int)
+    go safeWorker(ctx, ch)
+    // Even if no data arrives on ch, goroutine stops after 5 seconds
+    time.Sleep(6 * time.Second)
+    fmt.Println("Active goroutines:", runtime.NumGoroutine())
+}
+</code></pre>
+</figure>
+<div class="tip"><strong>نکته:</strong> همیشه از <code>context</code> با timeout یا cancel برای هر Goroutine‌ای استفاده کنید که ممکن است مدت طولانی اجرا شود. این کار تضمین می‌کند که منابع سیستم بیهوده مصرف نشوند و Goroutineهای رها شده جمع‌آوری شوند.</div>
+
+<h3 id="نشت-در-سرور-http">نشت Goroutine در سرور HTTP</h3>
+<p>یکی از محل‌های رایج وقوع نشت <bdi dir="ltr">Goroutine</bdi> در سرورهای <bdi dir="ltr">HTTP</bdi> است. وقتی یک <bdi dir="ltr">Handler</bdi> <bdi dir="ltr">Goroutine</bdi> راه‌اندازی می‌کند اما از <bdi dir="ltr">Context</bdi> درخواست استفاده نمی‌کند، اگر کاربر ارتباط را قطع کند، <bdi dir="ltr">Goroutine</bdi> همچنان به کار خود ادامه می‌دهد:</p>
+
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">// Wrong — incorrect: goroutine leak when client disconnects
+func badHandler(w http.ResponseWriter, r *http.Request) {
+    go func() {
+        // This goroutine never stops even if client disconnects
+        result := slowDatabaseQuery() // takes 30 seconds
+        fmt.Println(result) // wasted!
+    }()
+    w.Write([]byte("درخواست دریافت شد"))
+}
+
+// Correct — right: use request Context
+func goodHandler(w http.ResponseWriter, r *http.Request) {
+    ctx := r.Context()
+    go func() {
+        select {
+            case &lt;-ctx.Done():
+            log.Println("درخواست لغو شد")
+            return
+            case result := &lt;-queryAsync():
+            log.Println("نتیجه:", result)
+        }
+    }()
+    w.Write([]byte("درخواست دریافت شد"))
+}
+</code></pre>
+</figure>
+
+<h3 id="نظارت-تولید">نظارت بر تعداد Goroutine در تولید</h3>
+<p>در محیط تولید، نظارت بر تعداد <bdi dir="ltr">Goroutine</bdi>‌های فعال یک شاخص حیاتی است. الگوی رایج ثبت دوره‌ای این عدد و ارسال به سیستم مانیتورینگ است:</p>
+
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">func monitorGoroutines(ctx context.Context) {
+    ticker := time.NewTicker(10 * time.Second)
+    defer ticker.Stop()
+
+    for {
+        select {
+            case &lt;-ctx.Done():
+            return
+            case &lt;-ticker.C:
+            count := runtime.NumGoroutine()
+            log.Printf("تعداد Goroutine فعال: %d\n", count)
+            // Send to Prometheus or monitoring system
+            // goroutineGauge.Set(float64(count))
+
+            if count &gt; 10000 {
+                log.Printf("توجه: هشدار: تعداد Goroutine بیش از حد مجاز!")
+            }
+        }
+    }
+}
+</code></pre>
+</figure>
+
+<div class="important"><strong>خلاصه قوانین طلایی جلوگیری از نشت Goroutine:</strong>
+<ul>
+<li>هر <bdi dir="ltr">Goroutine</bdi> باید مسیر خروج مشخصی داشته باشد.</li>
+<li>همیشه از <code>context.WithCancel</code> یا <code>context.WithTimeout</code> استفاده کنید.</li>
+<li>هرگز <code>go func()</code> بدون <code>ctx.Done()</code> در حلقه ننویسید.</li>
+<li>همیشه کانال‌ها را <code>close</code> کنید وقتی دیگر نیازی به آن‌ها نیست.</li>
+<li>از <code>runtime.NumGoroutine()</code> و <bdi dir="ltr">pprof</bdi> برای نظارت استفاده کنید.</li>
+<li>در تست‌ها از <code>go test -race</code> و بررسی <code>runtime.NumGoroutine()</code> قبل و بعد از تست استفاده کنید.</li>
+</ul>
+</div>
+
+    <h3 id="goroutine-leak-profile-go-1.26">پروفایل نشتی گوروتین — Go 1.26 (آزمایشی)</h3>
+    <p>
+        Go 1.26 یک نوع پروفایل جدید را برای گزارش گوروتین‌های نشت‌کرده معرفی می‌کند.
+        این پروفایل که در بسته <code>runtime/pprof</code> با نام <code>goroutineleak</code>
+        در دسترس است، می‌تواند با تنظیم متغیر محیطی <code>GOEXPERIMENT=goroutineleakprofile</code>
+        فعال شود.
+    </p>
+    <p>
+        یک گوروتین «نشت‌کرده» گوروتینی است که روی یک primitive همزمانی (کانال، <code>sync.Mutex</code>،
+        <code>sync.Cond</code> و غیره) مسدود شده و به‌هیچ‌وجه نمی‌تواند از مسدودی خارج شود.
+        runtime گوروتین‌های نشت‌کرده را با استفاده از garbage collector شناسایی می‌کند: اگر گوروتین G
+        روی primitive همزمانی P مسدود باشد و P از هیچ گوروتین قابل اجرا یا گوروتینی که بتواند
+        G را از مسدودی خارج کند، قابل دسترسی نباشد، آنگاه P نمی‌تواند از مسدودی خارج شود
+        و گوروتین G هرگز بیدار نخواهد شد.
+    </p>
+    <figure class="code go" dir="ltr">
+        <pre><code class="language-go">// مثال: نشتی گوروتین که پروفایل جدید شناسایی میکند
+func processWorkItems(ws []workItem) ([]workResult, error) {
+    ch := make(chan result)
+    for _, w := range ws {
+        go func() {
+            res, err := processWorkItem(w)
+            ch &lt;- result{res, err} // اگر برگشت زودهنگام باشد، اینجا نشتی رخ میدهد
+        }()
+    }
+
+    var results []workResult
+    for range len(ws) {
+        r := &lt;-ch
+        if r.err != nil {
+            // برگشت زودهنگام: تمام گوروتین‌های باقیمانده نشت میکنند!
+            return nil, r.err
+        }
+        results = append(results, r.res)
+    }
+    return results, nil
+}</code></pre>
+    </figure>
+    <figure class="code bash">
+        <pre><code class="language-bash"># فعال‌سازی پروفایل نشتی گوروتین
+GOEXPERIMENT=goroutineleakprofile go build -o myapp .
+./myapp
+
+# دسترسی به پروفایل از طریق HTTP
+curl http://localhost:6060/debug/pprof/goroutineleak > leak.prof
+
+# تحلیل پروفایل
+go tool pprof leak.prof</code></pre>
+    </figure>
+    <p>
+        این پیاده‌سازی آماده تولید است و فقط به‌دلیل جمع‌آوری بازخورد درباره API (به‌ویژه انتخاب
+        ایجاد یک پروفایل جدید) آزمایشی محسوب می‌شود. هدف فعال‌سازی پیش‌فرض این قابلیت در
+        Go 1.27 است. تشکر ویژه از Vlad Saioc از Uber برای این مشارکت.
+    </p>
+
+    <div class="case-study">
+        <div class="case-study-header">
+            <span class="case-study-badge">مطالعه موردی</span>
+            <span class="case-study-title">تشخیص نشتی گوروتین در Uber با تئوری GC</span>
+        </div>
+        <p>
+            Vlad Saioc از Uber در ارائه GopherCon 2025 نظریه و پیاده‌سازی پروفایل نشتی گوروتین
+            را ارائه داد. ایده اصلی استفاده از reachability analysis از garbage collector برای
+            شناسایی گوروتین‌های مسدودی بود که هیچ مسیری برای بیدار شدن ندارند. در عمل، این یعنی
+            GC می‌تواند تشخیص دهد که یک goroutine منتظر یک channel است که هیچ‌کس دیگر به آن ارجاع
+            نمی‌دهد، یا منتظر یک mutex است که هرگز آزاد نمی‌شود. این گوروتین‌ها عملاً «مرده» هستند
+            ولی حافظه‌اشغال‌شده توسط آن‌ها هرگز آزاد نمی‌شود چون runtime هنوز به آن‌ها ارجاع دارد.
+        </p>
+        <p>
+            این رویکرد در Uber بر روی بیش از ۱۰۰۰ میکروسرویس Go تست شد و توانست نشتی‌هایی را شناسایی کند
+            که با روش‌های سنتی (مانند <code>runtime.NumGoroutine()</code>) قابل تشخیص نبودند.
+            روش‌های سنتی فقط تعداد کل goroutine‌ها را نشان می‌دادند و نمی‌توانستند تشخیص دهند کدام
+            goroutine‌ها واقعاً در حال کارند و کدام‌ها نشت کرده‌اند. نتایج نشان داد که بیش از ۱۵ درصد
+            سرویس‌ها حداقل یک نشتی goroutine داشتند. در برخی موارد، نشتی‌ها به‌قدری پنهان بودند که
+            فقط بعد از روزها اجرا باعث افت عملکرد می‌شدند و با تست‌های عادی قابل شناسایی نبودند.
+        </p>
+        <p>
+            درس کلیدی: نشتی goroutine معمولاً نشانه‌های فوری ندارد. سرویس ممکن است ساعت‌ها یا حتی روزها
+            به‌درستی کار کند و سپس به‌دلیل کمبود حافظه فرو بریزد. بهترین راه مقابله، فعال‌سازی مانیتورینگ
+            تعداد goroutine به‌صورت مداوم و تعیین آستانه هشدار برای رشد غیرعادی است. ابزار جدید پروفایل
+            نشتی goroutine که در Go 1.26 به‌صورت آزمایشی اضافه شده، به‌طور خودکار این مشکل را شناسایی می‌کند.
+        </p>
+        <p class="case-study-source">
+            <span class="source-event">GopherCon 2025</span>
+            <span class="source-year">— ۲۰۲۵</span>
+        </p>
+    </div>
+
+<h3 id="فلوچارت-تشخیص-goroutine-leak">فلوچارت تشخیص نشت <bdi dir="ltr">Goroutine</bdi></h3>
+
+<p>تشخیص نشت <bdi dir="ltr">Goroutine</bdi> نیازمند یک رویکرد سیستماتیک است. فلوچارت زیر یک درخت تصمیم کامل ارائه می‌دهد که به شما کمک می‌کند به صورت مرحله‌ای تشخیص دهید آیا <bdi dir="ltr">goroutine</bdi> شما نشت کرده یا خیر. ابتدا بررسی می‌شود آیا <bdi dir="ltr">goroutine</bdi> مسدود شده است، سپس علت مسدود شدن مشخص می‌شود و در نهایت راه‌حل مناسب پیشنهاد می‌گردد. هر مسیر نشت با رنگ قرمز و هر مسیر صحیح با رنگ سبز نمایش داده شده است.</p>
+
+<figure class="diagram" dir="ltr">
+<svg height="720" viewBox="0 0 860 720" width="860" xmlns="http://www.w3.org/2000/svg">
+<rect fill="#fafafa" height="720" rx="8" width="860" x="0" y="0"></rect>
+<defs>
+<marker id="aGl1" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#e91e63" points="0 0,10 3.5,0 7"></polygon></marker>
+<marker id="aGl2" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#4CAF50" points="0 0,10 3.5,0 7"></polygon></marker>
+<marker id="aGl3" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#FF9800" points="0 0,10 3.5,0 7"></polygon></marker>
+<marker id="aGl4" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#555" points="0 0,10 3.5,0 7"></polygon></marker>
+</defs>
+
+<!-- Title -->
+<text fill="#333" font-size="16" font-weight="bold" text-anchor="middle" x="430" y="28" direction="rtl" unicode-bidi="embed">فلوچارت تشخیص نشت <tspan direction="ltr" unicode-bidi="embed">Goroutine</tspan></text>
+
+<!-- ===== START Node ===== -->
+<rect fill="#00ADD8" height="36" rx="18" stroke="#00838F" stroke-width="2" width="200" x="330" y="45"></rect>
+<text fill="#fff" font-size="12" font-weight="bold" text-anchor="middle" x="430" y="68" direction="rtl" unicode-bidi="embed">شروع: بررسی <tspan direction="ltr" unicode-bidi="embed">Goroutine</tspan></text>
+
+<!-- Arrow START → Decision 1 -->
+<line marker-end="url(#aGl4)" stroke="#555" stroke-width="2" x1="430" x2="430" y1="81" y2="108"></line>
+
+<!-- ===== Decision 1: Is it blocked? ===== -->
+<polygon fill="#FF9800" points="430,108 540,148 430,188 320,148" stroke="#E65100" stroke-width="2"></polygon>
+<text fill="#fff" font-size="11" font-weight="bold" text-anchor="middle" x="430" y="145" direction="rtl" unicode-bidi="embed">مسدود شده؟</text>
+<text fill="#fff3e0" font-size="9" text-anchor="middle" x="430" y="160" direction="ltr" unicode-bidi="embed">Is it blocked?</text>
+
+<!-- ===== NO branch: Right → Decision 2 ===== -->
+<line marker-end="url(#aGl2)" stroke="#4CAF50" stroke-width="2" x1="540" x2="700" y1="148" y2="148"></line>
+<text fill="#4CAF50" font-size="10" font-weight="bold" text-anchor="middle" x="620" y="142" direction="ltr" unicode-bidi="embed">No</text>
+
+<!-- Decision 2: Does it have an exit condition? -->
+<polygon fill="#FF9800" points="700,118 810,158 700,198 590,158" stroke="#E65100" stroke-width="2"></polygon>
+<text fill="#fff" font-size="10" font-weight="bold" text-anchor="middle" x="700" y="153" direction="rtl" unicode-bidi="embed">شرط خروج دارد؟</text>
+<text fill="#fff3e0" font-size="8" text-anchor="middle" x="700" y="168" direction="ltr" unicode-bidi="embed">Exit condition?</text>
+
+<!-- Decision 2: YES → OK (green) -->
+<line marker-end="url(#aGl2)" stroke="#4CAF50" stroke-width="2" x1="810" x2="840" y1="158" y2="158"></line>
+<rect fill="#4CAF50" height="32" rx="6" stroke="#2E7D32" stroke-width="2" width="0" x="840" y="142"></rect>
+<!-- OK box below Decision 2 -->
+<line marker-end="url(#aGl2)" stroke="#4CAF50" stroke-width="2" x1="700" x2="700" y1="198" y2="230"></line>
+<text fill="#4CAF50" font-size="9" font-weight="bold" text-anchor="middle" x="730" y="215" direction="ltr" unicode-bidi="embed">Yes</text>
+<rect fill="#4CAF50" height="32" rx="6" stroke="#2E7D32" stroke-width="2" width="120" x="640" y="230"></rect>
+<text fill="#fff" font-size="13" font-weight="bold" text-anchor="middle" x="700" y="251" direction="ltr" unicode-bidi="embed">✓ OK</text>
+
+<!-- Decision 2: NO → LEAK! -->
+<line marker-end="url(#aGl1)" stroke="#e91e63" stroke-width="2" x1="810" x2="840" y1="158" y2="158"></line>
+<text fill="#e91e63" font-size="9" font-weight="bold" text-anchor="middle" x="820" y="135" direction="ltr" unicode-bidi="embed">No</text>
+<!-- Leak box for no exit condition -->
+<rect fill="#e91e63" height="32" rx="6" stroke="#880E4F" stroke-width="2" width="0" x="840" y="142"></rect>
+<!-- Actually place it properly -->
+<rect fill="#e91e63" height="32" rx="6" stroke="#880E4F" stroke-width="2" width="50" x="830" y="142"></rect>
+<text fill="#fff" font-size="10" font-weight="bold" text-anchor="middle" x="855" y="163" direction="ltr" unicode-bidi="embed">LEAK</text>
+
+<!-- Fix annotation for no exit -->
+<rect fill="#FFF3E0" height="18" rx="3" stroke="#FF9800" stroke-width="1" width="140" x="780" y="180"></rect>
+<text fill="#E65100" font-size="7" text-anchor="middle" x="850" y="193" direction="ltr" unicode-bidi="embed">Fix: add ctx.Done() / break</text>
+
+<!-- ===== YES branch: Down → Decision 3 ===== -->
+<line marker-end="url(#aGl1)" stroke="#e91e63" stroke-width="2" x1="430" x2="430" y1="188" y2="225"></line>
+<text fill="#e91e63" font-size="10" font-weight="bold" text-anchor="middle" x="448" y="212" direction="ltr" unicode-bidi="embed">Yes</text>
+
+<!-- Decision 3: What is it blocked on? -->
+<polygon fill="#FF9800" points="430,225 560,270 430,315 300,270" stroke="#E65100" stroke-width="2"></polygon>
+<text fill="#fff" font-size="10" font-weight="bold" text-anchor="middle" x="430" y="266" direction="rtl" unicode-bidi="embed">روی چه مسدود شده؟</text>
+<text fill="#fff3e0" font-size="8" text-anchor="middle" x="430" y="282" direction="ltr" unicode-bidi="embed">Blocked on what?</text>
+
+<!-- ===== 5 Leak paths ===== -->
+
+<!-- Path 1: Channel Send -->
+<line marker-end="url(#aGl1)" stroke="#e91e63" stroke-width="1.5" x1="340" x2="100" y1="270" y2="340"></line>
+<text fill="#e91e63" font-size="8" text-anchor="middle" x="210" y="298" direction="ltr" unicode-bidi="embed">Channel Send</text>
+<rect fill="#e91e63" height="36" rx="6" stroke="#880E4F" stroke-width="2" width="140" x="30" y="340"></rect>
+<text fill="#fff" font-size="9" font-weight="bold" text-anchor="middle" x="100" y="356" direction="ltr" unicode-bidi="embed">ch &lt;- val</text>
+<text fill="#FFCDD2" font-size="8" text-anchor="middle" x="100" y="370" direction="rtl" unicode-bidi="embed">گیرنده‌ای نیست</text>
+<!-- LEAK label -->
+<rect fill="#880E4F" height="22" rx="4" width="60" x="70" y="382"></rect>
+<text fill="#fff" font-size="10" font-weight="bold" text-anchor="middle" x="100" y="397" direction="ltr" unicode-bidi="embed">LEAK!</text>
+<!-- Fix annotation -->
+<rect fill="#E8F5E9" height="18" rx="3" stroke="#4CAF50" stroke-width="1" width="150" x="25" y="410"></rect>
+<text fill="#2E7D32" font-size="7" text-anchor="middle" x="100" y="423" direction="ltr" unicode-bidi="embed">Fix: buffered chan / close(ch)</text>
+
+<!-- Path 2: Channel Recv -->
+<line marker-end="url(#aGl1)" stroke="#e91e63" stroke-width="1.5" x1="370" x2="260" y1="300" y2="340"></line>
+<text fill="#e91e63" font-size="8" text-anchor="middle" x="300" y="318" direction="ltr" unicode-bidi="embed">Channel Recv</text>
+<rect fill="#e91e63" height="36" rx="6" stroke="#880E4F" stroke-width="2" width="140" x="190" y="340"></rect>
+<text fill="#fff" font-size="9" font-weight="bold" text-anchor="middle" x="260" y="356" direction="ltr" unicode-bidi="embed">&lt;-ch</text>
+<text fill="#FFCDD2" font-size="8" text-anchor="middle" x="260" y="370" direction="rtl" unicode-bidi="embed">فرستنده‌ای نیست</text>
+<!-- LEAK label -->
+<rect fill="#880E4F" height="22" rx="4" width="60" x="230" y="382"></rect>
+<text fill="#fff" font-size="10" font-weight="bold" text-anchor="middle" x="260" y="397" direction="ltr" unicode-bidi="embed">LEAK!</text>
+<!-- Fix annotation -->
+<rect fill="#E8F5E9" height="18" rx="3" stroke="#4CAF50" stroke-width="1" width="150" x="185" y="410"></rect>
+<text fill="#2E7D32" font-size="7" text-anchor="middle" x="260" y="423" direction="ltr" unicode-bidi="embed">Fix: close(ch) / ctx.Done()</text>
+
+<!-- Path 3: WaitGroup -->
+<line marker-end="url(#aGl1)" stroke="#e91e63" stroke-width="1.5" x1="430" x2="430" y1="315" y2="340"></line>
+<text fill="#e91e63" font-size="8" text-anchor="middle" x="465" y="332" direction="ltr" unicode-bidi="embed">WaitGroup</text>
+<rect fill="#e91e63" height="36" rx="6" stroke="#880E4F" stroke-width="2" width="140" x="360" y="340"></rect>
+<text fill="#fff" font-size="9" font-weight="bold" text-anchor="middle" x="430" y="356" direction="ltr" unicode-bidi="embed">wg.Wait()</text>
+<text fill="#FFCDD2" font-size="8" text-anchor="middle" x="430" y="370" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">Done()</tspan> فراموش شده</text>
+<!-- LEAK label -->
+<rect fill="#880E4F" height="22" rx="4" width="60" x="400" y="382"></rect>
+<text fill="#fff" font-size="10" font-weight="bold" text-anchor="middle" x="430" y="397" direction="ltr" unicode-bidi="embed">LEAK!</text>
+<!-- Fix annotation -->
+<rect fill="#E8F5E9" height="18" rx="3" stroke="#4CAF50" stroke-width="1" width="150" x="355" y="410"></rect>
+<text fill="#2E7D32" font-size="7" text-anchor="middle" x="430" y="423" direction="ltr" unicode-bidi="embed">Fix: defer wg.Done() always</text>
+
+<!-- Path 4: Lock -->
+<line marker-end="url(#aGl1)" stroke="#e91e63" stroke-width="1.5" x1="490" x2="600" y1="300" y2="340"></line>
+<text fill="#e91e63" font-size="8" text-anchor="middle" x="560" y="318" direction="ltr" unicode-bidi="embed">Lock</text>
+<rect fill="#e91e63" height="36" rx="6" stroke="#880E4F" stroke-width="2" width="140" x="530" y="340"></rect>
+<text fill="#fff" font-size="9" font-weight="bold" text-anchor="middle" x="600" y="356" direction="ltr" unicode-bidi="embed">mu.Lock()</text>
+<text fill="#FFCDD2" font-size="8" text-anchor="middle" x="600" y="370" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">Unlock</tspan> هرگز فراخوانی نمی‌شود</text>
+<!-- LEAK label -->
+<rect fill="#880E4F" height="22" rx="4" width="60" x="570" y="382"></rect>
+<text fill="#fff" font-size="10" font-weight="bold" text-anchor="middle" x="600" y="397" direction="ltr" unicode-bidi="embed">LEAK!</text>
+<!-- Fix annotation -->
+<rect fill="#E8F5E9" height="18" rx="3" stroke="#4CAF50" stroke-width="1" width="155" x="522" y="410"></rect>
+<text fill="#2E7D32" font-size="7" text-anchor="middle" x="600" y="423" direction="ltr" unicode-bidi="embed">Fix: defer mu.Unlock() always</text>
+
+<!-- Path 5: HTTP request -->
+<line marker-end="url(#aGl1)" stroke="#e91e63" stroke-width="1.5" x1="520" x2="760" y1="270" y2="340"></line>
+<text fill="#e91e63" font-size="8" text-anchor="middle" x="660" y="298" direction="ltr" unicode-bidi="embed">HTTP Request</text>
+<rect fill="#e91e63" height="36" rx="6" stroke="#880E4F" stroke-width="2" width="140" x="690" y="340"></rect>
+<text fill="#fff" font-size="9" font-weight="bold" text-anchor="middle" x="760" y="356" direction="ltr" unicode-bidi="embed">http.Get()</text>
+<text fill="#FFCDD2" font-size="8" text-anchor="middle" x="760" y="370" direction="rtl" unicode-bidi="embed">بدون <tspan direction="ltr" unicode-bidi="embed">timeout</tspan></text>
+<!-- LEAK label -->
+<rect fill="#880E4F" height="22" rx="4" width="60" x="730" y="382"></rect>
+<text fill="#fff" font-size="10" font-weight="bold" text-anchor="middle" x="760" y="397" direction="ltr" unicode-bidi="embed">LEAK!</text>
+<!-- Fix annotation -->
+<rect fill="#E8F5E9" height="18" rx="3" stroke="#4CAF50" stroke-width="1" width="160" x="680" y="410"></rect>
+<text fill="#2E7D32" font-size="7" text-anchor="middle" x="760" y="423" direction="ltr" unicode-bidi="embed">Fix: ctx + http.Client{Timeout}</text>
+
+<!-- ===== Summary Section ===== -->
+<rect fill="#263238" height="80" rx="6" width="760" x="50" y="450"></rect>
+<text fill="#80CBC4" font-size="10" font-weight="bold" text-anchor="start" x="70" y="472" direction="rtl" unicode-bidi="embed">الگوی صحیح هر <tspan direction="ltr" unicode-bidi="embed">Goroutine</tspan>:</text>
+<text fill="#A5D6A7" font-size="9" font-family="monospace" text-anchor="start" x="70" y="490" direction="ltr" unicode-bidi="embed">select {</text>
+<text fill="#A5D6A7" font-size="9" font-family="monospace" text-anchor="start" x="70" y="504" direction="ltr" unicode-bidi="embed">  case &lt;-ctx.Done(): return   // always check cancellation</text>
+<text fill="#A5D6A7" font-size="9" font-family="monospace" text-anchor="start" x="70" y="518" direction="ltr" unicode-bidi="embed">  case job := &lt;-jobs: process(job)  // do work</text>
+
+<!-- ===== Info box: detection tools ===== -->
+<rect fill="#E0F7FA" height="55" rx="6" stroke="#00ADD8" stroke-width="1" width="260" x="50" y="545"></rect>
+<text fill="#006064" font-size="10" font-weight="bold" text-anchor="middle" x="180" y="563" direction="rtl" unicode-bidi="embed">ابزارهای تشخیص:</text>
+<text fill="#006064" font-size="8" text-anchor="middle" x="180" y="578" direction="ltr" unicode-bidi="embed">runtime.NumGoroutine()</text>
+<text fill="#006064" font-size="8" text-anchor="middle" x="180" y="592" direction="ltr" unicode-bidi="embed">go tool pprof goroutine</text>
+
+<!-- ===== Info box: prevention ===== -->
+<rect fill="#E8F5E9" height="55" rx="6" stroke="#4CAF50" stroke-width="1" width="260" x="330" y="545"></rect>
+<text fill="#1B5E20" font-size="10" font-weight="bold" text-anchor="middle" x="460" y="563" direction="rtl" unicode-bidi="embed">پیشگیری:</text>
+<text fill="#1B5E20" font-size="8" text-anchor="middle" x="460" y="578" direction="ltr" unicode-bidi="embed">context.WithCancel / WithTimeout</text>
+<text fill="#1B5E20" font-size="8" text-anchor="middle" x="460" y="592" direction="ltr" unicode-bidi="embed">defer close(ch) / defer wg.Done()</text>
+
+<!-- ===== Info box: Go 1.26 ===== -->
+<rect fill="#F3E5F5" height="55" rx="6" stroke="#9C27B0" stroke-width="1" width="210" x="610" y="545"></rect>
+<text fill="#6A1B9A" font-size="10" font-weight="bold" text-anchor="middle" x="715" y="563" direction="ltr" unicode-bidi="embed">Go 1.26 New:</text>
+<text fill="#6A1B9A" font-size="8" text-anchor="middle" x="715" y="578" direction="ltr" unicode-bidi="embed">goroutineleak profile</text>
+<text fill="#6A1B9A" font-size="8" text-anchor="middle" x="715" y="592" direction="ltr" unicode-bidi="embed">GOEXPERIMENT=goroutineleakprofile</text>
+
+<!-- ===== Golden Rule Bar ===== -->
+<rect fill="#FFF8E1" height="24" rx="4" stroke="#F9A825" stroke-width="1.5" width="760" x="50" y="618"></rect>
+<text fill="#E65100" font-size="10" font-weight="bold" text-anchor="middle" x="430" y="635" direction="rtl" unicode-bidi="embed">قانون طلایی: هر <tspan direction="ltr" unicode-bidi="embed">Goroutine</tspan> باید <tspan direction="ltr" unicode-bidi="embed">Context</tspan> بپذیرد، <tspan direction="ltr" unicode-bidi="embed">select</tspan> با <tspan direction="ltr" unicode-bidi="embed">ctx.Done()</tspan> داشته باشد و مسیر خروج مشخصی داشته باشد</text>
+
+<!-- Legend -->
+<rect fill="#e91e63" height="10" rx="2" width="30" x="50" y="660"></rect>
+<text fill="#555" font-size="8" text-anchor="start" x="88" y="669" direction="rtl" unicode-bidi="embed">مسیر نشت</text>
+<rect fill="#4CAF50" height="10" rx="2" width="30" x="160" y="660"></rect>
+<text fill="#555" font-size="8" text-anchor="start" x="198" y="669" direction="rtl" unicode-bidi="embed">مسیر صحیح</text>
+<rect fill="#FF9800" height="10" rx="2" width="30" x="280" y="660"></rect>
+<text fill="#555" font-size="8" text-anchor="start" x="318" y="669" direction="rtl" unicode-bidi="embed">گره تصمیم</text>
+
+<!-- Correct path highlight on the right side -->
+<rect fill="#E8F5E9" height="50" rx="6" stroke="#4CAF50" stroke-width="1" width="180" x="610" y="230"></rect>
+<text fill="#2E7D32" font-size="9" font-weight="bold" text-anchor="middle" x="700" y="248" direction="rtl" unicode-bidi="embed">مسیر صحیح:</text>
+<text fill="#2E7D32" font-size="8" text-anchor="middle" x="700" y="264" direction="ltr" unicode-bidi="embed">select + ctx.Done() + close(ch)</text>
+
+<!-- Dashed line connecting OK box to correct path info -->
+<line stroke="#4CAF50" stroke-dasharray="4,3" stroke-width="1" x1="760" x2="790" y1="246" y2="246"></line>
+
+<!-- Right side annotation: No leak path -->
+<rect fill="#FFEBEE" height="50" rx="6" stroke="#e91e63" stroke-width="1" width="180" x="610" y="290"></rect>
+<text fill="#880E4F" font-size="9" font-weight="bold" text-anchor="middle" x="700" y="308" direction="rtl" unicode-bidi="embed">نشتی رایج:</text>
+<text fill="#880E4F" font-size="8" text-anchor="middle" x="700" y="324" direction="ltr" unicode-bidi="embed">for {} without ctx.Done()</text>
+
+</svg>
+<figcaption>شکل ۵-۱۸: فلوچارت تشخیص نشت <bdi dir="ltr">Goroutine</bdi> — درخت تصمیم با راه‌حل‌ها</figcaption>
+</figure>
+
+<p>این فلوچارت نشان می‌دهد که هر <bdi dir="ltr">goroutine</bdi> مسدود شده معمولاً یکی از پنج علت رایج را دارد: ارسال روی کانال بدون گیرنده، دریافت از کانال بدون فرستنده، انتظار روی <bdi dir="ltr">WaitGroup</bdi> که هرگز <bdi dir="ltr">Done</bdi> نمی‌شود، قفل شدن روی <bdi dir="ltr">Mutex</bdi> که هرگز آزاد نمی‌شود، یا درخواست <bdi dir="ltr">HTTP</bdi> بدون <bdi dir="ltr">timeout</bdi>. برای هر یک از این علت‌ها راه‌حل مشخصی وجود دارد که در بخش‌های راهنمایی کنار هر مسیر نشت نمایش داده شده است. نکته مهم این است که اگر <bdi dir="ltr">goroutine</bdi> مسدود نشده اما شرط خروج ندارد (مثلاً حلقه بی‌نهایت بدون بررسی <bdi dir="ltr">ctx.Done()</bdi>)، باز هم نشت رخ می‌دهد.</p>
+
+<h3 id="سناریوهای-عملیاتی-leak">سناریوهای عملیاتی نشت <bdi dir="ltr">Goroutine</bdi></h3>
+
+<p>در پروژه‌های واقعی، نشت <bdi dir="ltr">Goroutine</bdi> معمولاً در الگوهای خاصی رخ می‌دهد. شناخت این الگوها به شما کمک می‌کند قبل از وقوع نشت از آن جلوگیری کنید. هر یک از سناریوهای زیر بر اساس تجربه توسعه‌دهندگان <bdi dir="ltr">Go</bdi> در سیستم‌های تولیدی بزرگ شناسایی شده‌اند و راه‌حل مشخصی دارند. درک این سناریوها برای هر برنامه‌نویسی که از همزمانی استفاده می‌کند ضروری است.</p>
+
+<ul>
+<li><strong>گیرنده‌های کانال رها شده:</strong> وقتی یک <bdi dir="ltr">goroutine</bdi> منتظر دریافت از کانالی است که دیگر هیچ‌کس به آن ارسال نمی‌کند. مثلاً وقتی تابعی یک <bdi dir="ltr">goroutine</bdi> راه‌اندازی می‌کند که از کانال می‌خواند اما تابع بدون بستن کانال بازمی‌گردد. این الگو به‌ویژه در <bdi dir="ltr">handler</b>های <bdi dir="ltr">HTTP</bdi> رایج است که <bdi dir="ltr">goroutine</bdi> پس‌زمینه‌ای راه‌اندازی می‌کنند. راه‌حل: همیشه کانال را ببندید یا از <bdi dir="ltr">Context</bdi> استفاده کنید.</li>
+<li><strong>عدم لغو <bdi dir="ltr">Context</bdi> در فراخوان‌های <bdi dir="ltr">HTTP</bdi>:</strong> وقتی درخواست <bdi dir="ltr">HTTP</bdi> بدون <bdi dir="ltr">timeout</bdi> یا <bdi dir="ltr">Context</bdi> ارسال می‌شود و سرور پاسخ نمی‌دهد. <bdi dir="ltr">goroutine</bdi> برای همیشه منتظر می‌ماند. این مشکل در <bdi dir="ltr">PHP</bdi> وجود ندارد زیرا هر درخواست <bdi dir="ltr">PHP</bdi> <bdi dir="ltr">timeout</bdi> پیش‌فرض دارد اما در <bdi dir="ltr">Go</bdi> باید صراحتاً تنظیم شود. راه‌حل: همیشه از <code dir="ltr">http.Client{Timeout: ...}</code> و <code dir="ltr">http.NewRequestWithContext(ctx, ...)</code> استفاده کنید.</li>
+<li><strong><bdi dir="ltr">Goroutine</bdi>های حلقه بی‌نهایت:</strong> وقتی <bdi dir="ltr">goroutine</bdi> در حلقه بی‌نهایت اجرا می‌شود بدون آنکه <bdi dir="ltr">ctx.Done()</bdi> را بررسی کند. این الگو اغلب در وظایف پس‌زمینه دیده می‌شود که فراموش می‌شود مکانیزم توقف اضافه شود. حتی اگر حلقه <bdi dir="ltr">time.Sleep</bdi> داشته باشد، <bdi dir="ltr">goroutine</bdi> هرگز پایان نمی‌یابد. راه‌حل: همیشه <code dir="ltr">select</code> با <code dir="ltr">ctx.Done()</code> در حلقه قرار دهید.</li>
+<li><strong>فراموش کردن <bdi dir="ltr">WaitGroup Done</bdi>:</strong> وقتی <bdi dir="ltr">wg.Add(1)</bdi> فراخوانی شده اما به دلیل <bdi dir="ltr">return</bdi> زودهنگام یا <bdi dir="ltr">panic</bdi>، <bdi dir="ltr">wg.Done()</bdi> هرگز اجرا نمی‌شود. <bdi dir="ltr">wg.Wait()</bdi> برای همیشه مسدود می‌ماند. این یکی از خطرناک‌ترین انواع نشت است زیرا نه تنها <bdi dir="ltr">goroutine</bdi> نشت شده بلکه <bdi dir="ltr">goroutine</bdi> منتظر را هم مسدود می‌کند. راه‌حل: همیشه <code dir="ltr">defer wg.Done()</code> را بلافاصله بعد از <code dir="ltr">wg.Add(1)</code> قرار دهید.</li>
+<li><strong><bdi dir="ltr">Goroutine</bdi>های منتظر روی کانال <bdi dir="ltr">nil</bdi>:</strong> ارسال یا دریافت روی کانال <bdi dir="ltr">nil</bdi> برای همیشه مسدود می‌شود. این معمولاً وقتی رخ می‌دهد که متغیر کانال به درستی مقداردهی نشده یا بعد از <code dir="ltr">close</code> دوباره استفاده می‌شود. <bdi dir="ltr">Go</bdi> هیچ خطایی در زمان کامپایل نمی‌دهد و فقط در زمان اجرا مسدود می‌شود. راه‌حل: همیشه کانال را با <code dir="ltr">make</code> بسازید و از استفاده از کانال <bdi dir="ltr">nil</bdi> اجتناب کنید.</li>
+</ul>
+
+<div class="tip"><strong>نکته درباره تشخیص نشت در تولید:</strong> برای شناسایی نشت <bdi dir="ltr">Goroutine</bdi> در محیط تولید، دو ابزار اصلی دارید: اول، <code dir="ltr">runtime.NumGoroutine()</code> که تعداد کل <bdi dir="ltr">goroutine</bdi>های فعال را برمی‌گرداند. ثبت دوره‌ای این عدد و ارسال به سیستم مانیتورینگ (مثل <bdi dir="ltr">Prometheus</bdi>) بهترین روش است. اگر نمودار روند صعودی مداوم داشت، نشت رخ داده است. دوم، <code dir="ltr">pprof</code> با مسیر <code dir="ltr">/debug/pprof/goroutine</code> که <bdi dir="ltr">stack trace</bdi> تمام <bdi dir="ltr">goroutine</bdi>ها را نشان می‌دهد. با مقایسه‌ی خروجی در زمان‌های مختلف می‌توان <bdi dir="ltr">goroutine</bdi>های نشتی را که <bdi dir="ltr">stack trace</bdi> یکسانی دارند و تعدادشان فقط افزایش می‌یابد شناسایی کرد. دستور <code dir="ltr">go tool pprof http://localhost:6060/debug/pprof/goroutine</code> پروفایل تعاملی ارائه می‌دهد.</div>
+
+</div>
+</main>
+</div>
+
+<!-- Footer -->
+<footer class="site-footer">
+<div class="footer-inner">
+<div class="footer-nav">
+<span class="nav-arrow">‹</span>
+<a href="05.08-practical-concurrency-usage.html" data-prev>۵.۸ کاربردهای عملی Concurrency</a>
+</div>
+<div class="footer-toc">
+<a href="00.01-contents.html">فهرست</a>
+</div>
+<div class="footer-nav">
+<a href="06.00-chapter-6.html" data-next>۶. تعامل با دنیای بیرون</a>
+<span class="nav-arrow">›</span>
+</div>
+</div>
+</footer>
+
+<!-- Back to Top -->
+<button class="back-to-top" aria-label="بازگشت به بالا">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
+</button>
+
+<!-- Scripts -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/go.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/php.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/sql.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/yaml.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/json.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/dockerfile.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/xml.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/ini.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/plaintext.min.js"></script>
+<script src="assets/js/main.js"></script>
+</body>
+</html>

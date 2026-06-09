@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="fa">
+<head>
+<script>!function(){try{var t=localStorage.getItem('php2go-theme');if(t==='dark'||(!t&&window.matchMedia('(prefers-color-scheme:dark)').matches)){document.documentElement.setAttribute('data-theme','dark')}}catch(e){}}();</script>
+<meta charset="utf-8"/>
+<meta content="ie=edge" http-equiv="x-ua-compatible"/>
+<title>۱۱.۳ gomock — PHP to Go</title>
+<meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet"/>
+<link href="assets/css/main.css" rel="stylesheet" type="text/css"/>
+<link href="assets/img/favicon.ico" rel="icon" type="image/x-icon"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" media="screen" class="hljs-light-theme" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css" media="not screen" class="hljs-dark-theme" rel="stylesheet"/>
+</head>
+<body>
+<!-- Progress Bar -->
+<div class="progress-bar"><div class="progress-bar__fill"></div></div>
+
+<!-- Header -->
+<header class="site-header">
+<div class="header-inner">
+<div class="header-left">
+<button class="header-btn sidebar-toggle" aria-label="فهرست">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+</button>
+<a href="00.00-front-matter.html" class="header-logo"><span class="logo-php">PHP</span> to <span class="logo-go">Go</span></a>
+<span class="header-crumbs">تست‌نویسی › gomock</span>
+</div>
+<div class="header-right">
+<nav class="header-nav">
+<span class="nav-arrow">‹</span>
+<a href="11.02-assertion.html"><span class="nav-label">۱۱.۲ Assertion</span></a>
+<a href="00.01-contents.html">فهرست</a>
+<a href="11.04-testing-restful-apis-with-httpexpect.html"><span class="nav-label">۱۱.۴ تست پیشرفته APIهای RESTful با httpexpect</span></a>
+<span class="nav-arrow">›</span>
+</nav>
+<button class="header-btn search-toggle" aria-label="جستجو">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+</button>
+<button class="header-btn theme-toggle" aria-label="تغییر تم">
+<svg class="theme-icon-light" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+<svg class="theme-icon-dark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+</button>
+</div>
+</div>
+</header>
+
+<!-- Search Modal -->
+<div class="search-overlay">
+<div class="search-modal">
+<div class="search-input-wrap">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+<input type="text" class="search-input" placeholder="جستجو... (Ctrl+K)" dir="rtl"/>
+</div>
+<div class="search-results"></div>
+</div>
+</div>
+
+<!-- Layout -->
+<div class="site-layout">
+<!-- Sidebar -->
+<aside class="sidebar"></aside>
+<div class="sidebar-overlay"></div>
+
+<!-- Main Content -->
+<main class="content-area">
+<div class="content-wrap text">
+<div class="chapter">فصل ۱۱.۳</div>
+<h2 id="gomock">gomock</h2>
+<figure class="diagram" dir="ltr">
+<svg height="320" viewBox="0 0 650 320" width="650" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<marker id="arrowm" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5">
+<polygon fill="#00ADD8" points="0 0, 10 3.5, 0 7"></polygon>
+</marker>
+</defs>
+<text class="title" text-anchor="middle" x="325" y="25" direction="rtl" unicode-bidi="embed">فرآیند <tspan direction="ltr" unicode-bidi="embed">Mock</tspan> کردن با <tspan direction="ltr" unicode-bidi="embed">gomock</tspan></text>
+<!-- Step 1: Define Interface -->
+<rect class="box-step" height="55" width="160" x="30" y="55"></rect>
+<text font-weight="bold" text-anchor="middle" x="110" y="75" direction="rtl" unicode-bidi="embed">۱. تعریف <tspan direction="ltr" unicode-bidi="embed">Interface</tspan></text>
+<text class="small" text-anchor="middle" x="110" y="95" direction="ltr" unicode-bidi="embed">type UserRepository interface</text>
+<line marker-end="url(#arrowm)" stroke="#00ADD8" stroke-width="2" x1="190" x2="220" y1="82" y2="82"></line>
+<!-- Step 2: Generate Mock -->
+<rect class="box-mock" height="55" width="180" x="220" y="55"></rect>
+<text font-weight="bold" text-anchor="middle" x="310" y="75" direction="rtl" unicode-bidi="embed">۲. تولید <tspan direction="ltr" unicode-bidi="embed">Mock</tspan></text>
+<text class="small" text-anchor="middle" x="310" y="95" direction="ltr" unicode-bidi="embed">mockgen -source=user.go</text>
+<line marker-end="url(#arrowm)" stroke="#00ADD8" stroke-width="2" x1="400" x2="430" y1="82" y2="82"></line>
+<!-- Step 3: Use in Test -->
+<rect class="box-test" height="55" width="190" x="430" y="55"></rect>
+<text font-weight="bold" text-anchor="middle" x="525" y="75" direction="rtl" unicode-bidi="embed">۳. استفاده در تست</text>
+<text class="small" text-anchor="middle" x="525" y="95" direction="ltr" unicode-bidi="embed">EXPECT().Return()</text>
+<!-- Detailed flow below -->
+<rect class="box-code" height="60" width="200" x="80" y="160"></rect>
+<text text-anchor="middle" x="180" y="180" direction="ltr" unicode-bidi="embed">UserRepository</text>
+<text class="small" text-anchor="middle" x="180" y="200" direction="ltr" unicode-bidi="embed">FindByID(id int) (*User, error)</text>
+<line marker-end="url(#arrowm)" stroke="#00ADD8" stroke-width="2" x1="280" x2="340" y1="190" y2="190"></line>
+<rect class="box-mock" height="60" width="230" x="340" y="160"></rect>
+<text text-anchor="middle" x="455" y="180" direction="ltr" unicode-bidi="embed">MockUserRepository</text>
+<text class="small" text-anchor="middle" x="455" y="200" direction="ltr" unicode-bidi="embed">EXPECT().FindByID(1).Return(...)</text>
+<!-- Test execution -->
+<rect class="box-test" height="50" width="310" x="170" y="260"></rect>
+<text text-anchor="middle" x="325" y="282" direction="ltr" unicode-bidi="embed">UserService.GetName(1)</text>
+<text class="small" text-anchor="middle" x="325" y="298" direction="rtl" unicode-bidi="embed">سرویس از <tspan direction="ltr" unicode-bidi="embed">Mock</tspan> استفاده می‌کند نه دیتابیس واقعی</text>
+<line marker-end="url(#arrowm)" stroke="#00ADD8" stroke-width="2" x1="455" x2="400" y1="220" y2="260"></line>
+</svg>
+<figcaption>شکل ۱۱-۳: فرآیند <bdi dir="ltr">Mock</bdi> کردن با <bdi dir="ltr">gomock</bdi></figcaption>
+</figure>
+<p>پیش در در مورد mock کردن توضیحاتی داده شد ولی در پروژه‌های واقعی اغلب نیاز داریم در هنگام تست، dependency های خارجی مثل دیتابیس، سرویس‌های دیگر یا APIها را <strong dir="ltr">mock</strong> کنیم تا side affect ها را کنترل کنیم. یعنی به‌جای اجرای واقعی آن‌ها یک نسخه‌ی شبیه‌سازی‌شده ایجاد می‌کنیم که رفتار مورد انتظار را تقلید می‌کند. این کار:</p>
+<p>تست‌ها را سریع‌تر و قابل پیش‌بینی‌تر می‌کند</p>
+<p>از وابستگی به منابع بیرونی مثل پایگاه‌داده یا سرویس های شخص ثالث جلوگیری می‌کند</p>
+<p>امکان تست سناریوهای خطا و edge caseها را فراهم می‌کند
+</p>
+<p>در دنیای Go ابزار استاندارد و قدرتمند برای ایجاد mockها پکیج از تیم گوگل است.</p>
+
+<div class="quote-box">
+    <p class="quote-text">چیزی که مالک آن نیستید را mock نکنید. فقط interfaceهایی که کنترل آن‌ها در دست شماست را mock کنید، نه کتابخانه‌های خارجی را. اگر نیاز دارید یک کتابخانه شخص ثالث را mock کنید، ابتدا آن را درون interfaceای که خودتان مالکش هستید بپیچید.</p>
+    <p class="quote-source">
+        <span class="quote-author">Andy Hunt و Dave Thomas</span>
+        <span class="quote-role">نویسندگان مهندسی نرم‌افزار</span>
+        <span class="quote-separator">|</span>
+        <span class="quote-book">The Pragmatic Programmer</span>
+    </p>
+</div>
+<div class="tip">
+<strong>نکته‌ی حرفه‌ای:</strong> در <bdi dir="ltr">Go</bdi> بهترین mockها interfaceهای حداقلی هستند که توسط مصرف‌کننده تعریف شده‌اند. به‌جای ساخت یک interface بزرگ که کل <bdi dir="ltr">API</bdi> خارجی را بازتاب می‌دهد، یک interface کوچک با فقط متدهایی که کدتان واقعاً فراخوانی می‌کند تعریف کنید.
+</div>
+
+<h3 id="نصب-gomock-و-ابزار-mockgen">نصب gomock و ابزار mockgen</h3>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">go install go.uber.org/mock/mockgen@latest
+</code></pre>
+</figure>
+<p>همچنین اضافه کردن به پروژه:</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">go get go.uber.org/mock/gomock
+</code></pre>
+</figure>
+<h3 id="ساختار-کلی-تست-با-gomock">ساختار کلی تست با gomock</h3>
+<p>برای استفاده از gomock باید مراحل زیر را طی کنید:</p>
+<p>تعریف یک <strong dir="ltr">interface</strong></p>
+<p>ساخت فایل mock از آن interface با ابزار mockgen</p>
+<p>استفاده از mock در تست
+</p>
+<p><strong>مثال تست سرویس کاربر</strong></p>
+<p>در نظر بگیرید یک سرویس داریم که وابسته به یک Repository است.</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">// user.go
+type User struct {
+    ID int
+    Name string
+}
+type UserRepository interface {
+    FindByID(id int) (*User, error)
+}
+</code></pre>
+</figure>
+<p>و در سرویس اصلی:</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">// service.go
+type UserService struct {
+    Repo UserRepository
+}
+func (s *UserService) GetName(id int) (string, error) {
+    user, err := s.Repo.FindByID(id)
+    if err != nil {
+        return "", err
+    }
+    return user.Name, nil
+}
+</code></pre>
+</figure>
+<h3 id="تولید-mock-با-mockgen">تولید mock با mockgen</h3>
+<p>برای ساخت mock از UserRepository:
+</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">mockgen -source=user.go -destination=mocks/user_mock.go -package=mocks
+</code></pre>
+</figure>
+<p>در این فایل user_mock.go یک struct به نام MockUserRepository ساخته می‌شود که می‌توان رفتارهای آن را در تست کنترل کرد.</p>
+<h3 id="نوشتن-تست-با-استفاده-از-mock">نوشتن تست با استفاده از mock</h3>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">// service_test.go
+package service_test
+import (
+"testing"
+"github.com/golang/mock/gomock"
+"github.com/your_project/mocks"
+"github.com/your_project/service"
+"github.com/stretchr/testify/assert"
+)
+func TestGetName(t *testing.T) {
+    ctrl := gomock.NewController(t)
+    defer ctrl.Finish()
+    mockRepo := mocks.NewMockUserRepository(ctrl)
+    mockRepo.EXPECT().
+    FindByID(1).
+    Return(&amp;service.User{ID: 1, Name: "Ali"}, nil)
+    userService := service.UserService{Repo: mockRepo}
+    name, err := userService.GetName(1)
+    assert.NoError(t, err)
+    assert.Equal(t, "Ali", name)
+}
+</code></pre>
+</figure>
+<p>تعیین رفتار mock:</p>
+<p><strong>توضیح کامل‌تر</strong> <strong dir="ltr">gomock . EXPECT</strong></p>
+<p>متد <span dir="ltr">EXPECT()</span> رفتار تابع مورد انتظار را تعریف می‌کند. شما می‌توانید:
+</p>
+<p>تعداد دفعات فراخوانی را کنترل کنید <span dir="ltr">Times(n)</span>, AnyTimes, MinTimes,</p>
+<p>پارامترها را به‌صورت دقیق یا با الگو مقایسه کنید <span dir="ltr">gomock.Any()</span></p>
+<p>رفتار متفاوت برای چند بار فراخوانی با <span dir="ltr">.Do(...)</span> یا <span dir="ltr">.Return(...)</span> در چند مرحله تعیین کنید
+</p>
+<p><strong>مزایای استفاده از</strong> <strong dir="ltr">gomock</strong></p>
+<p>پشتیبانی قوی از تعیین دقیق رفتار dependency ها</p>
+<p>یکپارچگی بالا با تست‌های مبتنی بر interface</p>
+<p>ابزار رسمی پایدار و قابل اطمینان برای پروژه‌های حرفه‌ای</p>
+<div class="comparison"><strong>مقایسه با PHP:</strong> در PHP معمولاً از PHPUnit Mock یا Mockery برای شبیه‌سازی وابستگی‌ها استفاده می‌شود. در PHPUnit با <code dir="ltr">$this-&gt;createMock(Repository::class)</code> یک Mock می‌سازید و با <code dir="ltr">$mock-&gt;method('find')-&gt;willReturn($user)</code> رفتار آن را تعریف می‌کنید. در Go اما mock به‌صورت خودکار از interface تولید می‌شود و type-safety کامل دارد. یعنی اگر interface تغییر کند، mock هم باید دوباره تولید شود و کامپایلر خطا را نشان می‌دهد.</div>
+<h3 id="مثال-کاربردی-gomock-با-الگوی-repository">مثال کاربردی: gomock با الگوی Repository</h3>
+<p>در فصل ۸ با الگوی Repository آشنا شدید. این الگو یک لایه انتزاعی بین منطق کسب‌وکار و دسترسی به داده‌ها ایجاد می‌کند. حالا می‌خواهیم ببینیم چگونه با gomock می‌توانیم این الگو را تست کنیم.</p>
+<p>به عنوان مثال یک Repository برای مدیریت مقالات داریم:</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">// article/repository.go
+package article
+
+type Article struct {
+    ID int
+    Title string
+    Content string
+    AuthorID int
+}
+
+type Repository interface {
+    FindByID(id int) (*Article, error)
+    FindByAuthor(authorID int) ([]Article, error)
+    Create(a *Article) error
+    Delete(id int) error
+}
+</code></pre>
+</figure>
+<p>و سرویس کسب‌وکار که از این Repository استفاده می‌کند:</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">// article/service.go
+package article
+
+import "fmt"
+
+type Service struct {
+    Repo Repository
+}
+
+func (s *Service) GetArticle(id int) (*Article, error) {
+    if id &lt;= 0 {
+        return nil, fmt.Errorf("invalid article ID: %d", id)
+    }
+    return s.Repo.FindByID(id)
+}
+
+func (s *Service) GetArticlesByAuthor(authorID int) ([]Article, error) {
+    articles, err := s.Repo.FindByAuthor(authorID)
+    if err != nil {
+        return nil, fmt.Errorf("failed to fetch articles: %w", err)
+    }
+    if len(articles) == 0 {
+        return nil, fmt.Errorf("no articles found for author %d", authorID)
+    }
+    return articles, nil
+}
+</code></pre>
+</figure>
+<p><strong>مرحله ۱: تولید</strong> <strong dir="ltr">Mock</strong></p>
+<figure class="code bash" dir="ltr">
+<pre><code class="language-bash"># Generate mock from interface with mockgen
+$ mkdir -p mocks
+$ mockgen -source=article/repository.go \
+    -destination=mocks/repository_mock.go \
+    -package=mocks
+</code></pre>
+</figure>
+<p>این فرمان فایل <code>mocks/repository_mock.go</code> را ایجاد می‌کند که شامل <code>MockRepository</code> است.</p>
+<p><strong>مرحله ۲: نوشتن تست</strong></p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">// article/service_test.go
+package article_test
+
+import (
+"testing"
+"go.uber.org/mock/gomock"
+"yourapp/article"
+"yourapp/mocks"
+)
+
+func TestGetArticle_Success(t *testing.T) {
+    ctrl := gomock.NewController(t)
+    defer ctrl.Finish()
+
+    mockRepo := mocks.NewMockRepository(ctrl)
+
+    // Define expected behavior: when FindByID(1) is called
+    mockRepo.EXPECT().
+    FindByID(1).
+    Return(&amp;article.Article{ID: 1, Title: "Go Testing"}, nil)
+
+    svc := article.Service{Repo: mockRepo}
+
+    art, err := svc.GetArticle(1)
+    if err != nil {
+        t.Fatalf("unexpected error: %v", err)
+    }
+    if art.Title != "Go Testing" {
+        t.Errorf("expected 'Go Testing', got '%s'", art.Title)
+    }
+}
+
+func TestGetArticle_InvalidID(t *testing.T) {
+    ctrl := gomock.NewController(t)
+    defer ctrl.Finish()
+
+    mockRepo := mocks.NewMockRepository(ctrl)
+
+    // No EXPECT defined because it shouldn't reach Repository
+    svc := article.Service{Repo: mockRepo}
+
+    _, err := svc.GetArticle(-1)
+    if err == nil {
+        t.Error("expected error for invalid ID")
+    }
+}
+
+func TestGetArticlesByAuthor_EmptyResult(t *testing.T) {
+    ctrl := gomock.NewController(t)
+    defer ctrl.Finish()
+
+    mockRepo := mocks.NewMockRepository(ctrl)
+
+    // Return empty list
+    mockRepo.EXPECT().
+    FindByAuthor(99).
+    Return([]article.Article{}, nil)
+
+    svc := article.Service{Repo: mockRepo}
+
+    _, err := svc.GetArticlesByAuthor(99)
+    if err == nil {
+        t.Error("expected error for empty result")
+    }
+}
+</code></pre>
+</figure>
+<div class="important"><strong>نکته مهم:</strong> در تست <code>TestGetArticle_InvalidID</code> هیچ <code>EXPECT</code> تعریف نکردیم. اگر اشتباهاً <code>FindByID</code> با ID نامعتبر فراخوانی شود، gomock تست را شکست می‌دهد. early return واقعاً به Repository نمی‌رسند.</div>
+<h3 id="مقایسه-mock-دستی-دربرابر-gomock">مقایسه: Mock دستی در برابر gomock</h3>
+<p>همیشه لازم نیست از gomock استفاده کنید. برای interface‌های ساده، نوشتن mock دستی ممکن است ساده‌تر و سریع‌تر باشد. جدول زیر به شما کمک می‌کند تصمیم بگیرید:</p>
+<table class="comparison-table" dir="rtl">
+<thead>
+<tr><th>معیار</th><th>Mock دستی</th><th>gomock</th></tr>
+</thead>
+<tbody>
+<tr><td>پیچیدگی interface</td><td>مناسب برای ۱ تا ۳ متد</td><td>مناسب برای interface های بزرگ</td></tr>
+<tr><td>سرعت راه‌اندازی</td><td>سریع (فقط یک struct)</td><td>نیاز به mockgen و تولید فایل</td></tr>
+<tr><td>کنترل رفتار پویا</td><td>سخت‌تر (نیاز به فیلدهای شرطی)</td><td>آسان با <span dir="ltr">EXPECT()</span>.<span dir="ltr">Return()</span>.<span dir="ltr">Times()</span></td></tr>
+<tr><td>بررسی فراخوانی</td><td>باید خودتان شمارنده بنویسید</td><td>خودکار با EXPECT و <span dir="ltr">ctrl.Finish()</span></td></tr>
+<tr><td>نگهداری</td><td>دستی: باید با تغییر interface به‌روز شود</td><td>خودکار: mockgen دوباره تولید می‌کند</td></tr>
+<tr><td dir="ltr">Type Safety</td><td>بله (اگر درست پیاده شود)</td><td>بله (تولید خودکار)</td></tr>
+<tr><td>وابستگی</td><td>بدون وابستگی خارجی</td><td>نیاز به <code>go.uber.org/mock</code></td></tr>
+</tbody>
+</table>
+<p><strong>مثال</strong> <strong dir="ltr">Mock دستی</strong> برای همان Repository:</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">// mocks/repository_stub.go
+package mocks
+
+import "yourapp/article"
+
+// StubRepository is a simple manual mock
+type StubRepository struct {
+    Article *article.Article
+    Err error
+    Articles []article.Article
+}
+
+func (s *StubRepository) FindByID(id int) (*article.Article, error) {
+    return s.Article, s.Err
+}
+
+func (s *StubRepository) FindByAuthor(authorID int) ([]article.Article, error) {
+    return s.Articles, s.Err
+}
+
+func (s *StubRepository) Create(a *article.Article) error {
+    return s.Err
+}
+
+func (s *StubRepository) Delete(id int) error {
+    return s.Err
+}
+</code></pre>
+</figure>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">// Using manual mock
+func TestGetArticle_WithStub(t *testing.T) {
+    repo := &amp;StubRepository{
+        Article: &amp;article.Article{ID: 1, Title: "Go Testing"},
+    }
+    svc := article.Service{Repo: repo}
+
+    art, err := svc.GetArticle(1)
+    if err != nil {
+        t.Fatalf("unexpected error: %v", err)
+    }
+    if art.Title != "Go Testing" {
+        t.Errorf("expected 'Go Testing', got '%s'", art.Title)
+    }
+}
+</code></pre>
+</figure>
+<div class="tip"><strong>توصیه:</strong> برای پروژه‌های کوچک یا interface‌های ساده، mock دستی کافی و حتی مطلوب‌تر است (کمتر وابستگی، ساده‌تر قابل فهم). اما برای پروژه‌های بزرگ با interface‌های پیچیده و چندین متد، gomock با قابلیت‌هایی مثل <code dir="ltr">EXPECT().Times()</code> ، <code dir="ltr">gomock.Any()</code> و <code dir="ltr">Do()</code> کنترل بسیار دقیق‌تری ارائه می‌دهد.</div>
+
+<h3 id="mock-generation-با-mockgen-پیشرفته">Mock Generation با mockgen</h3>
+<p>ابزار <bdi dir="ltr">mockgen</bdi> دو حالت تولید mock دارد: حالت source و حالت reflect. در پروژه‌های بزرگ، حالت reflect مفیدتر است چون نیاز به ساخت خودکار mock از طریق <bdi dir="ltr">go:generate</bdi> دارد:</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">// user/repository.go
+//go:generate mockgen -destination=mocks/user_repository_mock.go -package=mocks yourapp/pkg/user Repository
+
+type Repository interface {
+    FindByID(id int) (*User, error)
+    FindByEmail(email string) (*User, error)
+    Create(user *User) error
+    Update(user *User) error
+    Delete(id int) error
+}
+</code></pre>
+</figure>
+<figure class="code bash" dir="ltr">
+<pre><code class="language-bash"># Generate all mocks with go generate
+$ go generate ./...
+
+# Or manually with reflect mode
+$ mockgen -destination=mocks/user_mock.go \
+    -package=mocks \
+    -source=user/repository.go
+
+# Or with reflect mode from imported package
+$ mockgen -destination=mocks/io_mock.go \
+    -package=mocks \
+    io Reader,Writer
+</code></pre>
+</figure>
+
+<h3 id="mock-verification-و-expectations">Mock Verification و Expectations</h3>
+<p>از جنبه‌های مهم کار با mock، تعریف دقیق رفتار مورد انتظار و تأیید آن پس از اجرای تست است. gomock چندین روش برای کنترل و تأیید رفتار mock ارائه می‌دهد:</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">func TestMockExpectations(t *testing.T) {
+    ctrl := gomock.NewController(t)
+    defer ctrl.Finish()
+
+    mockRepo := mocks.NewMockRepository(ctrl)
+
+    // 1. Define simple behavior: each call returns specified result
+    mockRepo.EXPECT().
+    FindByID(1).
+    Return(&amp;User{ID: 1, Name: "Ali"}, nil)
+
+    // 2. Define call count
+    mockRepo.EXPECT().
+    FindByID(2).
+    Return(nil, errors.New("not found")).
+    Times(2) // must be called exactly 2 times
+
+    // 3. Any number of calls (zero to infinity)
+    mockRepo.EXPECT().
+    FindByID(gomock.Any()). // any ID
+    Return(&amp;User{}, nil).
+    AnyTimes()
+
+    // 4. Call range
+    mockRepo.EXPECT().
+    Create(gomock.Any()).
+    Return(nil).
+    MinTimes(1).MaxTimes(5)
+
+    // 5. Dynamic behavior with Do
+    var capturedUser *User
+    mockRepo.EXPECT().
+    Create(gomock.Any()).
+    Do(func(user *User) {
+        capturedUser = user // save input for later inspection
+    }).
+    Return(nil)
+
+    // 6. Call sequence (order matters)
+    gomock.InOrder(
+    mockRepo.EXPECT().Create(gomock.Any()).Return(nil),
+    mockRepo.EXPECT().FindByID(gomock.Any()).Return(&amp;User{}, nil),
+)
+}
+</code></pre>
+</figure>
+
+<figure class="diagram" dir="ltr">
+<svg height="340" viewBox="0 0 650 340" width="650" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<marker id="arrowmock" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5">
+<polygon fill="#555" points="0 0, 10 3.5, 0 7"></polygon>
+</marker>
+</defs>
+<rect fill="#fafafa" height="340" rx="8" width="650" x="0" y="0"></rect>
+<text fill="#333" font-size="16" font-weight="bold" text-anchor="middle" x="325" y="28" direction="rtl" unicode-bidi="embed">جریان تعامل <tspan direction="ltr" unicode-bidi="embed">Mock</tspan> در تست</text>
+<!-- Test -->
+<rect fill="#2196F3" height="50" rx="6" width="120" x="30" y="55"></rect>
+<text fill="#fff" font-weight="bold" text-anchor="middle" x="90" y="77" direction="rtl" unicode-bidi="embed">تست</text>
+<text fill="#e3f2fd" font-size="9" text-anchor="middle" x="90" y="95" direction="ltr" unicode-bidi="embed">TestXxx</text>
+<line marker-end="url(#arrowmock)" stroke="#2196F3" stroke-width="2" x1="150" x2="200" y1="80" y2="80"></line>
+<!-- EXPECT -->
+<rect fill="#FF9800" height="50" rx="6" width="160" x="200" y="55"></rect>
+<text fill="#fff" font-weight="bold" text-anchor="middle" x="280" y="77" direction="ltr" unicode-bidi="embed">EXPECT().Return()</text>
+<text fill="#fff3e0" font-size="9" text-anchor="middle" x="280" y="95" direction="rtl" unicode-bidi="embed">تعریف رفتار مورد انتظار</text>
+<line marker-end="url(#arrowmock)" stroke="#FF9800" stroke-width="2" x1="360" x2="400" y1="80" y2="80"></line>
+<!-- Mock Object -->
+<rect fill="#9C27B0" height="50" rx="6" width="120" x="400" y="55"></rect>
+<text fill="#fff" font-weight="bold" text-anchor="middle" x="460" y="77" direction="ltr" unicode-bidi="embed">Mock Object</text>
+<text fill="#e1bee7" font-size="9" text-anchor="middle" x="460" y="95" direction="rtl" unicode-bidi="embed">شبیه‌سازی وابستگی</text>
+<line marker-end="url(#arrowmock)" stroke="#9C27B0" stroke-width="2" x1="520" x2="540" y1="80" y2="80"></line>
+<!-- Real Code -->
+<rect fill="#4CAF50" height="50" rx="6" width="100" x="540" y="55"></rect>
+<text fill="#fff" font-weight="bold" text-anchor="middle" x="590" y="77" direction="rtl" unicode-bidi="embed">کد واقعی</text>
+<text fill="#e8f5e9" font-size="9" text-anchor="middle" x="590" y="95" direction="ltr" unicode-bidi="embed">SUT</text>
+<!-- Verification -->
+<rect fill="#f5f5f5" height="140" rx="8" stroke="#ddd" stroke-width="1" width="580" x="35" y="130"></rect>
+<text fill="#333" font-size="12" font-weight="bold" text-anchor="middle" x="325" y="155" direction="rtl" unicode-bidi="embed">تأیید رفتار <tspan direction="ltr" unicode-bidi="embed">Mock</tspan> (<tspan direction="ltr" unicode-bidi="embed">Verification</tspan>)</text>
+<rect fill="#fff" height="30" rx="4" stroke="#FF9800" stroke-width="1" width="170" x="50" y="170"></rect>
+<text fill="#E65100" font-size="9" text-anchor="middle" x="135" y="190" direction="ltr" unicode-bidi="embed">ctrl.Finish()</text>
+<rect fill="#fff" height="30" rx="4" stroke="#00ADD8" stroke-width="1" width="170" x="240" y="170"></rect>
+<text fill="#00695C" font-size="9" text-anchor="middle" x="325" y="190" direction="ltr" unicode-bidi="embed">EXPECT().Times(n)</text>
+<rect fill="#fff" height="30" rx="4" stroke="#e91e63" stroke-width="1" width="170" x="430" y="170"></rect>
+<text fill="#880E4F" font-size="9" text-anchor="middle" x="515" y="190" direction="ltr" unicode-bidi="embed">gomock.InOrder()</text>
+<!-- Bottom -->
+<rect fill="#fff" height="30" rx="4" stroke="#9C27B0" stroke-width="1" width="170" x="145" y="220"></rect>
+<text fill="#6A1B9A" font-size="9" text-anchor="middle" x="230" y="240" direction="ltr" unicode-bidi="embed">gomock.Any()</text>
+<rect fill="#fff" height="30" rx="4" stroke="#4CAF50" stroke-width="1" width="170" x="335" y="220"></rect>
+<text fill="#2E7D32" font-size="9" text-anchor="middle" x="420" y="240" direction="ltr" unicode-bidi="embed">EXPECT().Do(func)</text>
+<!-- Warning -->
+<rect fill="#fce4ec" height="30" rx="6" stroke="#e91e63" stroke-width="1" width="540" x="55" y="290"></rect>
+<text fill="#880E4F" font-size="10" text-anchor="middle" x="325" y="310" direction="rtl" unicode-bidi="embed">توجه: هر <tspan direction="ltr" unicode-bidi="embed">EXPECT</tspan> که فراخوانی نشود = شکست تست | هر فراخوانی بدون <tspan direction="ltr" unicode-bidi="embed">EXPECT</tspan> = شکست تست</text>
+</svg>
+<figcaption>شکل ۱۱-۴: جریان تعامل <bdi dir="ltr">Mock</bdi> و تأیید رفتار در تست</figcaption>
+</figure>
+
+<h3 id="چه-زمان-mock-و-چه-زمان-fake">چه زمان Mock و چه زمان Fake؟</h3>
+
+<p>از تصمیمات کلیدی در تست‌نویسی، انتخاب بین Mock و Fake است. هر دو روش برای ایزوله کردن تست‌ها از وابستگی‌های خارجی استفاده می‌شوند، اما رویکرد و فلسفه متفاوتی دارند. درک تفاوت این دو به شما کمک می‌کند تست‌های بهتری بنویسید.</p>
+
+<p><strong>Mock</strong> یک شیء است که رفتار آن را به‌صورت دقیق و از قبل تعریف می‌کنید. هر فراخوانی متد و مقدار بازگشتی آن باید صریحاً مشخص شود. اگر فراخوانی‌ای انجام شود که تعریف نشده، تست شکست می‌خورد. Mockها برای behavior testing مناسب هستند — یعنی بررسی اینکه آیا کد شما متدهای درست را با پارامترهای درست فراخوانی کرده یا نه.</p>
+
+<p><strong>Fake</strong> یک پیاده‌سازی واقعی اما ساده‌شده از interface است که واقعاً کار می‌کند. مثلاً یک <code>InMemoryUserRepository</code> که به‌جای دیتابیس واقعی، از یک map در حافظه استفاده می‌کند. Fakestate testing مناسب هستند — یعنی بررسی اینکه آیا نتیجه نهایی درست است یا نه.</p>
+
+<table class="comparison-table" dir="rtl">
+<thead>
+<tr><th>معیار</th><th>Mock</th><th>Fake</th></tr>
+</thead>
+<tbody>
+<tr><td>نوع تست</td><td>Behavior</td><td>State</td></tr>
+<tr><td>تعریف رفتار</td><td>صریح — هر فراخوانی باید تعریف شود</td><td>ضمنی — خودش واقعاً کار می‌کند</td></tr>
+<tr><td>مقاومت در برابر refactor</td><td>کم — تغییر در فراخوانی‌ها = شکست تست</td><td>زیاد — فقط نتیجه نهایی مهم است</td></tr>
+<tr><td>پیچیدگی راه‌اندازی</td><td>زیاد — تعداد زیاد EXPECT</td><td>کم — فقط ساخت شیء</td></tr>
+<tr><td>سناریوهای خطا</td><td>آسان — <code dir="ltr">Return(nil, errors.New(...))</code></td><td>سخت‌تر — باید منطق خطا اضافه شود</td></tr>
+<tr><td>مناسب برای</td><td>API خارجی، سرویس‌های شخص ثالث</td><td>Repository، دیتابیس، Cache</td></tr>
+<tr><td>معادل PHP</td><td>Mockery، PHPUnit Mock</td><td>Laravel In-memory SQLite</td></tr>
+</tbody>
+</table>
+
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">// Fake: a real but simplified implementation of UserRepository
+type InMemoryUserRepository struct {
+    users map[int]*User
+    nextID int
+    err error // for simulating errors
+}
+
+func NewInMemoryUserRepository() *InMemoryUserRepository {
+    return &amp;InMemoryUserRepository{
+        users: make(map[int]*User),
+        nextID: 1,
+    }
+}
+
+func (r *InMemoryUserRepository) FindByID(id int) (*User, error) {
+    if r.err != nil {
+        return nil, r.err
+    }
+    user, ok := r.users[id]
+    if !ok {
+        return nil, ErrNotFound
+    }
+    return user, nil
+}
+
+func (r *InMemoryUserRepository) Create(user *User) error {
+    if r.err != nil {
+        return r.err
+    }
+    user.ID = r.nextID
+    r.users[r.nextID] = user
+    r.nextID++
+    return nil
+}
+
+// Using Fake in test — no EXPECT needed
+func TestUserService_WithFake(t *testing.T) {
+    repo := NewInMemoryUserRepository()
+    svc := NewUserService(repo)
+
+    // Create user
+    user := &amp;User{Name: "Ali", Email: "ali@example.com"}
+    err := svc.CreateUser(user)
+    require.NoError(t, err)
+    assert.Equal(t, 1, user.ID)
+
+    // Retrieve user
+    found, err := svc.GetUser(user.ID)
+    require.NoError(t, err)
+    assert.Equal(t, "Ali", found.Name)
+
+    // Simulate error
+    repo.err = errors.New("database connection lost")
+    _, err = svc.GetUser(1)
+    assert.Error(t, err)
+}
+</code></pre>
+</figure>
+
+<div class="tip"><strong>توصیه عملی:</strong> از Mock برای وابستگی‌هایی استفاده کنید که کنترلی روی آن‌ها ندارید (مثل API خارجی، سرویس Payment، سرویس ایمیل). از Fake برای وابستگی‌هایی استفاده کنید که پیاده‌سازی ساده‌ای دارند (مثل Repository، Cache، Queue). Fakeها تست‌های شما را مقاوم‌تر در برابر refactor می‌کنند و خوانایی بهتری دارند.</div>
+
+<h3 id="الگوهای-مشکل-mock-در-go">الگوهای مشکل Mock در Go</h3>
+
+<p>یکی از چالش‌های رایج در Go این است که برخی توابع جزو interface نیستند و نمی‌توان آن‌ها را مستقیماً mock کرد. مثلاً <code>time.Now()</code> یا <code>http.Get()</code> یا توابع پکیج <code>os</code>. برای حل این مشکل، الگوی استاندارد این است که آن توابع را پشت یک interface قرار دهید:</p>
+
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">// Problem: can't mock time.Now()
+func CreateArticle(title string) *Article {
+    return &amp;Article{
+        Title: title,
+        CreatedAt: time.Now(), // problematic in tests!
+    }
+}
+
+// Solution: use interface for time
+type Clock interface {
+    Now() time.Time
+}
+
+type realClock struct{}
+func (realClock) Now() time.Time { return time.Now() }
+
+type fixedClock struct{ t time.Time }
+func (c fixedClock) Now() time.Time { return c.t }
+
+// Now CreateArticle uses Clock
+func CreateArticle(title string, clock Clock) *Article {
+    return &amp;Article{
+        Title: title,
+        CreatedAt: clock.Now(),
+    }
+}
+
+// Test with fixed time
+func TestCreateArticle(t *testing.T) {
+    fixedTime := time.Date(2024, 1, 15, 10, 30, 0, 0, time.UTC)
+    clock := fixedClock{t: fixedTime}
+
+    article := CreateArticle("Go Testing", clock)
+
+    assert.Equal(t, fixedTime, article.CreatedAt,
+    "CreatedAt should use injected clock")
+}
+</code></pre>
+</figure>
+
+<div class="note"><strong>نکته:</strong> Dependency Injection via Interface از الگوهای مهم Go برای تست‌پذیری است. در PHP با فریمورک‌هایی مثل Laravel این مشکل کمتر احساس می‌شود چون Container و Facadeها امکان جایگزینی ساده‌تر را فراهم می‌کنند. اما در Go باید صریحاً interface تعریف و تزریق کنید.</div>
+
+<h3 id="خط-لوله-تولید-و-تزریق-mock">خط لوله تولید و تزریق Mock</h3>
+
+<p>یکی از مهم‌ترین مفاهیم در کار با <bdi dir="ltr">gomock</bdi> درک خط لوله کامل تولید و تزریق mock است. این خط لوله از تعریف <bdi dir="ltr">interface</bdi> شروع می‌شود، با ابزار <bdi dir="ltr">mockgen</bdi> فایل mock تولید می‌شود، و در نهایت mock در تست استفاده می‌شود. هر مرحله از این خط لوله نقش حیاتی دارد: اگر <bdi dir="ltr">interface</bdi> بیش از حد بزرگ باشد، mock کردن سخت می‌شود. اگر mock به‌درستی تولید نشود، رفتار تست اشتباه خواهد بود. و اگر تزریق mock به‌درستی انجام نشود، کد واقعی به‌جای mock اجرا می‌شود.</p>
+
+<p>در <bdi dir="ltr">PHP</bdi> با <bdi dir="ltr">PHPUnit</bdi> این خط لوله ساده‌تر است: با <bdi dir="ltr">$this-&gt;createMock()</bdi> یک mock می‌سازید و با <bdi dir="ltr">$mock-&gt;method()-&gt;willReturn()</bdi> رفتار آن را تعریف می‌کنید. اما در Go این فرآیند ساختاریافته‌تر و type-safe است. تولید خودکار mock از interface تضمین می‌کند که اگر interface تغییر کند، mock باید دوباره تولید شود و کامپایلر خطا را نشان می‌دهد. این مکانیزم ایمنی بزرگی است که در <bdi dir="ltr">PHPUnit</bdi> وجود ندارد.</p>
+
+<figure class="diagram" dir="ltr">
+<svg height="560" viewBox="0 0 720 560" width="720" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<marker id="arrowmp" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5">
+<polygon fill="#555" points="0 0, 10 3.5, 0 7"></polygon>
+</marker>
+</defs>
+<rect fill="#fafafa" height="560" rx="8" width="720" x="0" y="0"></rect>
+
+<!-- Title -->
+<text fill="#333" font-size="16" font-weight="bold" text-anchor="middle" x="360" y="28" direction="rtl" unicode-bidi="embed">خط لوله تولید و تزریق <tspan direction="ltr" unicode-bidi="embed">Mock</tspan> — <tspan direction="ltr" unicode-bidi="embed">gomock</tspan></text>
+
+<!-- Step 1: Interface -->
+<rect fill="#00ADD8" height="50" rx="6" width="140" x="20" y="50"></rect>
+<text fill="#fff" font-weight="bold" text-anchor="middle" x="90" y="72" direction="ltr" unicode-bidi="embed">① Interface</text>
+<text fill="#e0f7fa" font-size="8" text-anchor="middle" x="90" y="88" direction="ltr" unicode-bidi="embed">type Xxx interface</text>
+
+<line marker-end="url(#arrowmp)" stroke="#555" stroke-width="2" x1="160" x2="195" y1="75" y2="75"></line>
+
+<!-- Step 2: mockgen -->
+<rect fill="#9C27B0" height="50" rx="6" width="140" x="195" y="50"></rect>
+<text fill="#fff" font-weight="bold" text-anchor="middle" x="265" y="72" direction="ltr" unicode-bidi="embed">② mockgen</text>
+<text fill="#e1bee7" font-size="8" text-anchor="middle" x="265" y="88" direction="ltr" unicode-bidi="embed">mockgen -source=...</text>
+
+<line marker-end="url(#arrowmp)" stroke="#555" stroke-width="2" x1="335" x2="370" y1="75" y2="75"></line>
+
+<!-- Step 3: Mock file -->
+<rect fill="#4CAF50" height="50" rx="6" width="140" x="370" y="50"></rect>
+<text fill="#fff" font-weight="bold" text-anchor="middle" x="440" y="72" direction="ltr" unicode-bidi="embed">③ Mock File</text>
+<text fill="#e8f5e9" font-size="8" text-anchor="middle" x="440" y="88" direction="ltr" unicode-bidi="embed">mock_xxx.go created</text>
+
+<line marker-end="url(#arrowmp)" stroke="#555" stroke-width="2" x1="510" x2="545" y1="75" y2="75"></line>
+
+<!-- Step 4: Test -->
+<rect fill="#FF9800" height="50" rx="6" width="150" x="545" y="50"></rect>
+<text fill="#fff" font-weight="bold" text-anchor="middle" x="620" y="72" direction="ltr" unicode-bidi="embed">④ Test Code</text>
+<text fill="#fff3e0" font-size="8" text-anchor="middle" x="620" y="88" direction="ltr" unicode-bidi="embed">NewMockXxx(ctrl)</text>
+
+<!-- Steps 5-7 -->
+<rect fill="#9C27B0" height="45" rx="6" width="200" x="30" y="120"></rect>
+<text fill="#fff" font-weight="bold" text-anchor="middle" x="130" y="140" direction="ltr" unicode-bidi="embed">⑤ EXPECT().Method()</text>
+<text fill="#e1bee7" font-size="8" text-anchor="middle" x="130" y="155" direction="ltr" unicode-bidi="embed">.Return(value)</text>
+
+<line marker-end="url(#arrowmp)" stroke="#555" stroke-width="2" x1="230" x2="270" y1="142" y2="142"></line>
+
+<rect fill="#4CAF50" height="45" rx="6" width="200" x="270" y="120"></rect>
+<text fill="#fff" font-weight="bold" text-anchor="middle" x="370" y="140" direction="ltr" unicode-bidi="embed">⑥ Inject Mock</text>
+<text fill="#e8f5e9" font-size="8" text-anchor="middle" x="370" y="155" direction="ltr" unicode-bidi="embed">Svc{Repo: mockRepo}</text>
+
+<line marker-end="url(#arrowmp)" stroke="#555" stroke-width="2" x1="470" x2="510" y1="142" y2="142"></line>
+
+<rect fill="#FF9800" height="45" rx="6" width="200" x="510" y="120"></rect>
+<text fill="#fff" font-weight="bold" text-anchor="middle" x="610" y="140" direction="ltr" unicode-bidi="embed">⑦ Verify</text>
+<text fill="#fff3e0" font-size="8" text-anchor="middle" x="610" y="155" direction="ltr" unicode-bidi="embed">ctrl.Finish()</text>
+
+<!-- DI Pattern box -->
+<rect fill="#f5f5f5" height="140" rx="8" stroke="#ddd" stroke-width="1" width="660" x="30" y="185"></rect>
+<text fill="#333" font-size="12" font-weight="bold" text-anchor="middle" x="360" y="208" direction="rtl" unicode-bidi="embed">الگوی تزریق وابستگی (<tspan direction="ltr" unicode-bidi="embed">Dependency Injection</tspan>)</text>
+
+<!-- Production -->
+<rect fill="#00ADD8" height="55" rx="6" width="300" x="50" y="220"></rect>
+<text fill="#fff" font-size="11" font-weight="bold" text-anchor="middle" x="200" y="240" direction="ltr" unicode-bidi="embed">Production: Constructor(realImpl)</text>
+<text fill="#e0f7fa" font-size="9" text-anchor="middle" x="200" y="260" direction="ltr" unicode-bidi="embed">NewService(postgresRepo)</text>
+
+<!-- Test -->
+<rect fill="#4CAF50" height="55" rx="6" width="300" x="370" y="220"></rect>
+<text fill="#fff" font-size="11" font-weight="bold" text-anchor="middle" x="520" y="240" direction="ltr" unicode-bidi="embed">Test: Constructor(mockImpl)</text>
+<text fill="#e8f5e9" font-size="9" text-anchor="middle" x="520" y="260" direction="ltr" unicode-bidi="embed">NewService(mockRepo)</text>
+
+<!-- PHP comparison -->
+<rect fill="#777BB4" height="120" rx="8" width="660" x="30" y="340"></rect>
+<text fill="#fff" font-size="13" font-weight="bold" text-anchor="middle" x="360" y="362" direction="rtl" unicode-bidi="embed">مقایسه با <tspan direction="ltr" unicode-bidi="embed">PHPUnit Mock</tspan></text>
+
+<rect fill="#00ADD8" height="22" rx="4" width="300" x="50" y="375"></rect>
+<text fill="#fff" font-size="10" font-weight="bold" text-anchor="middle" x="200" y="391" direction="ltr" unicode-bidi="embed">Go: gomock</text>
+
+<rect fill="#777BB4" height="22" rx="4" width="300" x="370" y="375"></rect>
+<text fill="#fff" font-size="10" font-weight="bold" text-anchor="middle" x="520" y="391" direction="ltr" unicode-bidi="embed">PHP: PHPUnit Mock</text>
+
+<text fill="#e8f5e9" font-size="9" text-anchor="start" x="60" y="415" direction="ltr" unicode-bidi="embed">mockgen -source=xxx.go (auto-gen)</text>
+<text fill="#fce4ec" font-size="9" text-anchor="start" x="380" y="415" direction="ltr" unicode-bidi="embed">$this->createMock(Class::class)</text>
+
+<text fill="#e8f5e9" font-size="9" text-anchor="start" x="60" y="435" direction="ltr" unicode-bidi="embed">EXPECT().Method().Return(val)</text>
+<text fill="#fce4ec" font-size="9" text-anchor="start" x="380" y="435" direction="ltr" unicode-bidi="embed">$mock->method('name')->willReturn($val)</text>
+
+<text fill="#e8f5e9" font-size="9" text-anchor="start" x="60" y="455" direction="ltr" unicode-bidi="embed">Type-safe at compile time ✓</text>
+<text fill="#fce4ec" font-size="9" text-anchor="start" x="380" y="455" direction="ltr" unicode-bidi="embed">Runtime errors if method changes ✗</text>
+
+<!-- Golden Rule bar -->
+<rect fill="#FFD600" height="35" rx="6" width="660" x="30" y="475"></rect>
+<text fill="#333" font-size="12" font-weight="bold" text-anchor="middle" x="360" y="497" direction="rtl" unicode-bidi="embed">قانون طلایی: <tspan direction="ltr" unicode-bidi="embed">Interface</tspan> کوچک = <tspan direction="ltr" unicode-bidi="embed">Mock</tspan> آسان | <tspan direction="ltr" unicode-bidi="embed">Interface</tspan> بزرگ = <tspan direction="ltr" unicode-bidi="embed">Refactor</tspan> کنید</text>
+
+<!-- Info boxes -->
+<rect fill="#e8f5e9" height="55" rx="6" stroke="#4CAF50" stroke-width="1" width="310" x="30" y="520"></rect>
+<text fill="#2E7D32" font-size="10" font-weight="bold" text-anchor="middle" x="185" y="540" direction="rtl" unicode-bidi="embed">اگر <tspan direction="ltr" unicode-bidi="embed">mock</tspan> شما ۲۰ <tspan direction="ltr" unicode-bidi="embed">EXPECT</tspan> دارد</text>
+<text fill="#2E7D32" font-size="8" text-anchor="middle" x="185" y="556" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">Interface</tspan> شما خیلی بزرگ است! آن را بشکنید</text>
+
+<rect fill="#fff3e0" height="55" rx="6" stroke="#FF9800" stroke-width="1" width="310" x="380" y="520"></rect>
+<text fill="#E65100" font-size="10" font-weight="bold" text-anchor="middle" x="535" y="540" direction="rtl" unicode-bidi="embed">از <tspan direction="ltr" unicode-bidi="embed">go:generate</tspan> استفاده کنید</text>
+<text fill="#E65100" font-size="8" text-anchor="middle" x="535" y="556" direction="rtl" unicode-bidi="embed">تولید خودکار <tspan direction="ltr" unicode-bidi="embed">mock</tspan> با <tspan direction="ltr" unicode-bidi="embed">go generate ./...</tspan></text>
+</svg>
+<figcaption>شکل ۱۱-۵: خط لوله تولید و تزریق <bdi dir="ltr">Mock</bdi> — از <bdi dir="ltr">Interface</bdi> تا <bdi dir="ltr">Verify</bdi></figcaption>
+</figure>
+
+<h3 id="سناریوهای-عملیاتی-gomock">سناریوهای عملیاتی gomock</h3>
+
+<p>در پروژه‌های واقعی، کار با mock فراتر از مثال‌های ساده است. هر سناریو عملیاتی زیر یک چالش رایج در تست‌نویسی را پوشش می‌دهد که توسعه‌دهندگان مهاجر از <bdi dir="ltr">PHP</bdi> احتمالاً با آن مواجه خواهند شد. این الگوها به شما کمک می‌کنند تست‌های قابل اعتماد و قابل نگهداری بنویسید که در برابر تغییرات کد مقاوم هستند و رفتار واقعی سیستم را به‌درستی تأیید می‌کنند.</p>
+
+<ul>
+<li><strong>Mock کردن Repository دیتابیس برای تست سرویس:</strong> وقتی سرویسی دارید که به Repository وابسته است، نیازی به دیتابیس واقعی در تست سرویس نیست. با mock کردن Repository می‌توانید رفتار سرویس را در حالت‌های مختلف (موفقیت، خطا، خالی بودن نتیجه) تست کنید. این الگو مشابه mock کردن <bdi dir="ltr">Eloquent Model</bdi> در <bdi dir="ltr">Laravel</bdi> است اما در Go با type-safety کامل انجام می‌شود.</li>
+<li><strong>Mock کردن HTTP Client برای تست API:</strong> وقتی کد شما با API خارجی ارتباط برقرار می‌کند، نباید در تست واقعاً درخواست HTTP ارسال کنید. با تعریف <bdi dir="ltr">interface HTTPClient</bdi> و mock کردن آن، می‌توانید پاسخ‌های مختلف (موفق، خطای شبکه، timeout) را شبیه‌سازی کنید. این کار تست‌ها را سریع، قابل تکرار و مستقل از سرویس‌های خارجی می‌کند.</li>
+<li><strong>Mock کردن زمان برای تست‌های قطعی:</strong> توابعی که از <bdi dir="ltr">time.Now()</bdi> استفاده می‌کنند در تست‌ها غیرقطعی هستند. با تعریف <bdi dir="ltr">interface Clock</bdi> و mock کردن آن، می‌توانید زمان ثابت را تزریق کنید و نتایج تست را قابل پیش‌بینی کنید. این الگو در <bdi dir="ltr">PHP</bdi> با <bdi dir="ltr">Carbon::setTestNow()</bdi> قابل انجام است اما در Go باید صریحاً interface تعریف شود.</li>
+<li><strong>تست مسیرهای خطا با شکست mock:</strong> یکی از مهم‌ترین کاربردهای mock، تست رفتار کد در زمان خطای وابستگی است. با <bdi dir="ltr">EXPECT().Return(nil, errors.New("connection lost"))</bdi> می‌توانید سناریوهای خطا را شبیه‌سازی کنید و مطمئن شوید کد شما به‌درستی خطاها را مدیریت می‌کند. در <bdi dir="ltr">PHPUnit</bdi> این کار با <bdi dir="ltr">$mock-&gt;method()-&gt;willThrowException()</bdi> انجام می‌شود.</li>
+<li><strong>تأیید ترتیب و تعداد فراخوانی:</strong> گاهی نه تنها نتیجه mock مهم است، بلکه ترتیب و تعداد فراخوانی‌ها هم اهمیت دارد. با <bdi dir="ltr">gomock.InOrder()</bdi> می‌توانید ترتیب فراخوانی‌ها و با <bdi dir="ltr">EXPECT().Times(n)</bdi> تعداد دقیق فراخوانی‌ها را تأیید کنید. این قابلیت در <bdi dir="ltr">PHPUnit</bdi> با <bdi dir="ltr">expects($this-&gt;exactly(n))</bdi> قابل انجام است.</li>
+</ul>
+
+<div class="tip"><strong>نکته درباره اندازه Interface و Mock:</strong> اگر mock شما بیش از ۲۰ <bdi dir="ltr">EXPECT</bdi> دارد، <bdi dir="ltr">Interface</bdi> شما خیلی بزرگ است! این بوی ضعیف (<bdi dir="ltr">Code Smell</bdi>) نشان‌دهنده نقض اصل تفکیک interface (<bdi dir="ltr">Interface Segregation Principle</bdi>) است. Interface بزرگ را به چند interface کوچک‌تر بشکنید. هر interface باید فقط متدهایی داشته باشد که مصرف‌کننده واقعی آن نیاز دارد. این کار نه تنها mock کردن را آسان‌تر می‌کند، بلکه طراحی کلی سیستم را هم بهبود می‌بخشد.</div>
+
+</div>
+</main>
+</div>
+
+<!-- Footer -->
+<footer class="site-footer">
+<div class="footer-inner">
+<div class="footer-nav">
+<span class="nav-arrow">‹</span>
+<a href="11.02-assertion.html" data-prev>۱۱.۲ Assertion</a>
+</div>
+<div class="footer-toc">
+<a href="00.01-contents.html">فهرست</a>
+</div>
+<div class="footer-nav">
+<a href="11.04-testing-restful-apis-with-httpexpect.html" data-next>۱۱.۴ تست پیشرفته APIهای RESTful با httpexpect</a>
+<span class="nav-arrow">›</span>
+</div>
+</div>
+</footer>
+
+<!-- Back to Top -->
+<button class="back-to-top" aria-label="بازگشت به بالا">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
+</button>
+
+<!-- Scripts -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/go.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/php.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/sql.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/yaml.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/json.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/dockerfile.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/xml.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/ini.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/plaintext.min.js"></script>
+<script src="assets/js/main.js"></script>
+</body>
+</html>

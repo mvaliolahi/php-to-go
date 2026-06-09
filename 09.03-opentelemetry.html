@@ -1,0 +1,891 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="fa">
+<head>
+<script>!function(){try{var t=localStorage.getItem('php2go-theme');if(t==='dark'||(!t&&window.matchMedia('(prefers-color-scheme:dark)').matches)){document.documentElement.setAttribute('data-theme','dark')}}catch(e){}}();</script>
+<meta charset="utf-8"/>
+<meta content="ie=edge" http-equiv="x-ua-compatible"/>
+<title>۹.۳ OpenTelemetry — PHP to Go</title>
+<meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet"/>
+<link href="assets/css/main.css" rel="stylesheet" type="text/css"/>
+<link href="assets/img/favicon.ico" rel="icon" type="image/x-icon"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" media="screen" class="hljs-light-theme" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css" media="not screen" class="hljs-dark-theme" rel="stylesheet"/>
+</head>
+<body>
+<!-- Progress Bar -->
+<div class="progress-bar"><div class="progress-bar__fill"></div></div>
+
+<!-- Header -->
+<header class="site-header">
+<div class="header-inner">
+<div class="header-left">
+<button class="header-btn sidebar-toggle" aria-label="فهرست">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+</button>
+<a href="00.00-front-matter.html" class="header-logo"><span class="logo-php">PHP</span> to <span class="logo-go">Go</span></a>
+<span class="header-crumbs">مانیتورینگ و Observability › OpenTelemetry</span>
+</div>
+<div class="header-right">
+<nav class="header-nav">
+<span class="nav-arrow">‹</span>
+<a href="09.02-prometheus-and-grafana.html"><span class="nav-label">۹.۲ Prometheus و Grafana</span></a>
+<a href="00.01-contents.html">فهرست</a>
+<a href="10.00-chapter-10.html"><span class="nav-label">۱۰. دیباگ و ریشه‌یابی</span></a>
+<span class="nav-arrow">›</span>
+</nav>
+<button class="header-btn search-toggle" aria-label="جستجو">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+</button>
+<button class="header-btn theme-toggle" aria-label="تغییر تم">
+<svg class="theme-icon-light" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+<svg class="theme-icon-dark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+</button>
+</div>
+</div>
+</header>
+
+<!-- Search Modal -->
+<div class="search-overlay">
+<div class="search-modal">
+<div class="search-input-wrap">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+<input type="text" class="search-input" placeholder="جستجو... (Ctrl+K)" dir="rtl"/>
+</div>
+<div class="search-results"></div>
+</div>
+</div>
+
+<!-- Layout -->
+<div class="site-layout">
+<!-- Sidebar -->
+<aside class="sidebar"></aside>
+<div class="sidebar-overlay"></div>
+
+<!-- Main Content -->
+<main class="content-area">
+<div class="content-wrap text">
+<div class="chapter">فصل ۹.۳</div>
+<h2 id="opentelemetry">OpenTelemetry</h2>
+
+<figure class="diagram" dir="ltr">
+<svg height="420" viewBox="0 0 620 420" width="620" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<marker id="arrow2401" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#555" points="0 0, 10 3.5, 0 7"></polygon></marker>
+<filter height="104%" id="sh2401" width="104%" x="-2%" y="-2%"><fedropshadow dx="1" dy="1" flood-opacity="0.15" stddeviation="2"></fedropshadow></filter>
+</defs>
+<rect fill="#fafafa" height="420" rx="8" width="620" x="0" y="0"></rect>
+<text fill="#333" font-size="16" font-weight="bold" text-anchor="middle" x="310" y="28" direction="rtl" unicode-bidi="embed">جریان <tspan direction="ltr" unicode-bidi="embed">Trace</tspan> توزیع‌شده در سیستم میکروسرویس</text>
+
+<!-- Service A -->
+<rect fill="#00ADD8" filter="url(#sh2401)" height="55" rx="6" width="120" x="30" y="60"></rect>
+<text fill="#fff" font-size="11" text-anchor="middle" x="90" y="85" direction="ltr" unicode-bidi="embed">API Gateway</text>
+<text fill="#e0f7fa" font-size="9" text-anchor="middle" x="90" y="102" direction="ltr" unicode-bidi="embed">Span: root</text>
+
+<line marker-end="url(#arrow2401)" stroke="#555" stroke-width="2" x1="150" x2="210" y1="87" y2="87"></line>
+<text fill="#555" font-size="8" text-anchor="middle" x="180" y="80" direction="ltr" unicode-bidi="embed">HTTP + trace ctx</text>
+
+<!-- Service B -->
+<rect fill="#4CAF50" filter="url(#sh2401)" height="55" rx="6" width="120" x="210" y="60"></rect>
+<text fill="#fff" font-size="11" text-anchor="middle" x="270" y="85" direction="ltr" unicode-bidi="embed">User Service</text>
+<text fill="#e8f5e9" font-size="9" text-anchor="middle" x="270" y="102" direction="ltr" unicode-bidi="embed">Span: child</text>
+
+<!-- Service C -->
+<rect fill="#FF9800" filter="url(#sh2401)" height="55" rx="6" width="120" x="390" y="60"></rect>
+<text fill="#fff" font-size="11" text-anchor="middle" x="450" y="85" direction="ltr" unicode-bidi="embed">DB Query</text>
+<text fill="#fff3e0" font-size="9" text-anchor="middle" x="450" y="102" direction="ltr" unicode-bidi="embed">Span: child</text>
+
+<line marker-end="url(#arrow2401)" stroke="#555" stroke-width="2" x1="330" x2="390" y1="87" y2="87"></line>
+
+<!-- Propagation -->
+<rect fill="#E3F2FD" height="50" rx="6" stroke="#2196F3" width="500" x="60" y="140"></rect>
+<text fill="#1565C0" font-size="10" text-anchor="middle" x="310" y="162" direction="ltr" unicode-bidi="embed">W3C Trace Context: traceparent=00-abc123-xyz789-01</text>
+<text fill="#1565C0" font-size="9" text-anchor="middle" x="310" y="180" direction="rtl" unicode-bidi="embed">انتقال <tspan direction="ltr" unicode-bidi="embed">context</tspan> بین سرویس‌ها از طریق <tspan direction="ltr" unicode-bidi="embed">HTTP</tspan> <tspan direction="ltr" unicode-bidi="embed">headers</tspan></text>
+
+<!-- OTel Collector -->
+<rect fill="#9C27B0" filter="url(#sh2401)" height="55" rx="6" width="140" x="60" y="220"></rect>
+<text fill="#fff" font-size="11" text-anchor="middle" x="130" y="245" direction="ltr" unicode-bidi="embed">OTel Collector</text>
+<text fill="#e1bee7" font-size="9" text-anchor="middle" x="130" y="262" direction="ltr" unicode-bidi="embed">Batch + Route</text>
+
+<line marker-end="url(#arrow2401)" stroke="#555" stroke-width="2" x1="90" x2="130" y1="115" y2="220"></line>
+
+<!-- Outputs -->
+<rect fill="#E65100" filter="url(#sh2401)" height="35" rx="4" width="110" x="260" y="220"></rect>
+<text fill="#fff" font-size="10" text-anchor="middle" x="315" y="242" direction="ltr" unicode-bidi="embed">Prometheus</text>
+<rect fill="#4CAF50" filter="url(#sh2401)" height="35" rx="4" width="110" x="260" y="270"></rect>
+<text fill="#fff" font-size="10" text-anchor="middle" x="315" y="292" direction="ltr" unicode-bidi="embed">Tempo</text>
+<rect fill="#777BB4" filter="url(#sh2401)" height="35" rx="4" width="110" x="260" y="320"></rect>
+<text fill="#fff" font-size="10" text-anchor="middle" x="315" y="342" direction="ltr" unicode-bidi="embed">Loki</text>
+
+<line marker-end="url(#arrow2401)" stroke="#555" stroke-width="1.5" x1="200" x2="260" y1="237" y2="237"></line>
+<line marker-end="url(#arrow2401)" stroke="#555" stroke-width="1.5" x1="200" x2="260" y1="250" y2="287"></line>
+<line marker-end="url(#arrow2401)" stroke="#555" stroke-width="1.5" x1="200" x2="260" y1="260" y2="337"></line>
+
+<!-- Grafana -->
+<rect fill="#F46800" filter="url(#sh2401)" height="50" rx="6" width="150" x="430" y="270"></rect>
+<text fill="#fff" font-size="12" text-anchor="middle" x="505" y="295" direction="ltr" unicode-bidi="embed">Grafana</text>
+<text fill="#fff" font-size="9" text-anchor="middle" x="505" y="312" direction="rtl" unicode-bidi="embed">داشبورد یکپارچه</text>
+
+<line stroke="#555" stroke-dasharray="4,4" stroke-width="1.5" x1="370" x2="430" y1="237" y2="280"></line>
+<line stroke="#555" stroke-dasharray="4,4" stroke-width="1.5" x1="370" x2="430" y1="287" y2="290"></line>
+<line stroke="#555" stroke-dasharray="4,4" stroke-width="1.5" x1="370" x2="430" y1="337" y2="300"></line>
+
+<!-- Overhead -->
+<rect fill="#FFF3E0" height="35" rx="4" stroke="#FF9800" width="300" x="60" y="375"></rect>
+<text fill="#E65100" font-size="9" text-anchor="middle" x="210" y="397" direction="rtl" unicode-bidi="embed">Overhead: <2% CPU, <50MB RAM با BatchSpanProcessor و sampling</text>
+</svg>
+<figcaption>شکل ۹-۳: جریان <bdi dir="ltr">Trace</bdi> توزیع‌شده و معماری <bdi dir="ltr">OpenTelemetry</bdi></figcaption>
+</figure>
+
+<p><bdi dir="ltr">OpenTelemetry</bdi> یک پروژه متن‌باز تحت نظر بنیاد <bdi dir="ltr">CNCF</bdi> است که ابزارها و استانداردهایی را برای جمع‌آوری پردازش و ارسال داده‌های <bdi dir="ltr">Observability</bdi> ارائه می‌دهد. این پروژه سه نوع داده اصلی را مدیریت می‌کند:</p>
+
+<p><strong dir="ltr">Metrics</strong> : داده‌های عددی که وضعیت سیستم را نشان می‌دهند (<bdi dir="ltr">Counter</bdi> ، <bdi dir="ltr">Histogram</bdi> ، <bdi dir="ltr">Gauge</bdi>).</p>
+<p><strong dir="ltr">Traces</strong> : ردیابی مسیر یک درخواست در سیستم از لحظه ورود تا خروج.</p>
+<p><strong dir="ltr">Logs</strong> : گزارش‌های متنی که وقایع مهم یا خطاها را ثبت می‌کنند.</p>
+
+<p>مزیت بزرگ <bdi dir="ltr">OpenTelemetry</bdi> یکپارچگی و استانداردسازی است. دیگر نیازی نیست برای هر نوع داده ابزار جداگانه‌ای یاد بگیرید. برای برنامه‌نویس <bdi dir="ltr">PHP</bdi> این ابزار مانند نسخه‌ی پیشرفته‌تر و مقیاس‌پذیرتر از <bdi dir="ltr">Monolog</bdi> یا <bdi dir="ltr">New Relic</bdi> است اما با انعطاف‌پذیری بیشتر و پشتیبانی از سیستم‌های توزیع‌شده.</p>
+
+<div class="quote-box">
+    <p class="quote-text">نمی‌توانید چیزی را تعمیر کنید که نمی‌بینید. کدتان را ابزارسازی کنید تا وقتی در محیط تولید مشکلی پیش می‌آید، دقیقاً ببینید چه اتفاقی افتاده، کِی و کجا افتاده.</p>
+    <p class="quote-source">
+        <span class="quote-author">Andy Hunt و Dave Thomas</span>
+        <span class="quote-role">نویسندگان مهندسی نرم‌افزار</span>
+        <span class="quote-separator">|</span>
+        <span class="quote-book">The Pragmatic Programmer</span>
+    </p>
+</div>
+
+<div class="tip">
+<strong>نکته‌ی حرفه‌ای:</strong> سه رکن مشاهده‌پذیری — لاگ‌ها، متریک‌ها و ردها — اهداف متفاوتی دارند. لاگ‌ها می‌گویند چه اتفاقی افتاده، متریک‌ها می‌گویند چند بار و چقدر سریع، و ردها می‌گویند زمان کجا صرف شده. <bdi dir="ltr">OpenTelemetry</bdi> هر سه را با یک <bdi dir="ltr">API</b> ابزارسازی واحد در اختیارتان می‌گذارد.
+</div>
+
+<h3 id="اجزای-اصلی">اجزای اصلی OpenTelemetry</h3>
+
+<div class="case-study">
+    <div class="case-study-header">
+        <span class="case-study-badge">مطالعه موردی</span>
+        <span class="case-study-title">Tracing توزیع‌شده در Courier</span>
+    </div>
+    <p>Courier از OpenTelemetry برای ردیابی مسیر هر پیام از دریافت تا تحویل استفاده می‌کند. هر پیام از چندین مایکروسرویس عبور می‌کند: صف پیام، پردازشگر، ارائه‌دهنده (ایمیل/SMS/Push)، و ثبت نتیجه. بدون Tracing توزیع‌شده، عیب‌یابی تأخیر یا شکست تحویل غیرممکن بود چون هر مایکروسرویس فقط بخشی از تصویر را می‌دید و هیچ راهی برای پیوند دادن لاگ‌های سرویس‌های مختلف وجود نداشت. وقتی یک پیام تحویل داده نمی‌شد، تیم باید لاگ‌های هر سرویس را جداگانه بررسی می‌کرد و سعی می‌کرد با تطبیق زمان‌بندی‌ها مسیر پیام را بازسازی کند — فرآیندی که ساعت‌ها طول می‌کشید.</p>
+    <p>با OpenTelemetry، تیم Courier می‌تواند یک trace ID را از هر نقطه گرفت و کل مسیر پیام را با زمان‌بندی دقیق هر مرحله مشاهده کند. هر span شامل اطلاعات غنی‌ای است: نام سرویس، عملیات انجام‌شده، زمان شروع و پایان، و هر خطا یا هشداری که رخ داده. این قابلیت زمان عیب‌یابی را از ساعت‌ها به دقیقه‌ها کاهش داد. علاوه بر این، تیم می‌تواند bottleneck‌ها را شناسایی کند — مثلاً اگر پردازشگر پیام بیش از حد طول می‌کشد، می‌توان دقیقاً دید که کدام بخش از پردازش زمان‌بر است و آن را بهینه‌سازی کرد.</p>
+    <p class="case-study-source">
+        <span class="source-event">GopherCon 2022</span>
+        <span class="source-year">، ۲۰۲۲</span>
+    </p>
+</div>
+<p><strong dir="ltr">SDK</strong> : کتابخانه‌ای که در برنامه برای جمع‌آوری داده‌ها استفاده می‌شود.</p>
+
+<figure class="diagram" dir="ltr">
+<svg height="280" viewBox="0 0 700 280" width="700" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<marker id="arrowOtel" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#555" points="0 0, 10 3.5, 0 7"></polygon></marker>
+<filter height="104%" id="shOtel" width="104%" x="-2%" y="-2%"><fedropshadow dx="1" dy="1" flood-opacity="0.12" stddeviation="2"></fedropshadow></filter>
+</defs>
+<rect fill="#fafafa" height="280" rx="8" width="700" x="0" y="0"></rect>
+<text fill="#333" font-size="15" font-weight="bold" text-anchor="middle" x="350" y="28" direction="rtl" unicode-bidi="embed">معماری <tspan direction="ltr" unicode-bidi="embed">OpenTelemetry</tspan>: سه رکن داده ← <tspan direction="ltr" unicode-bidi="embed">Exporter</tspan> ← مقصد</text>
+
+<!-- Three Signals -->
+<rect fill="#4CAF50" filter="url(#shOtel)" height="50" rx="6" width="140" x="30" y="55"></rect>
+<text fill="#fff" font-size="13" font-weight="bold" text-anchor="middle" x="100" y="78" direction="ltr" unicode-bidi="embed">Traces</text>
+<text fill="#e8f5e9" font-size="9" text-anchor="middle" x="100" y="95" direction="rtl" unicode-bidi="embed">ردیابی مسیر درخواست</text>
+
+<rect fill="#FF9800" filter="url(#shOtel)" height="50" rx="6" width="140" x="30" y="120"></rect>
+<text fill="#fff" font-size="13" font-weight="bold" text-anchor="middle" x="100" y="143" direction="ltr" unicode-bidi="embed">Metrics</text>
+<text fill="#fff3e0" font-size="9" text-anchor="middle" x="100" y="160" direction="rtl" unicode-bidi="embed">اندازه‌گیری کمی عملکرد</text>
+
+<rect fill="#2196F3" filter="url(#shOtel)" height="50" rx="6" width="140" x="30" y="185"></rect>
+<text fill="#fff" font-size="13" font-weight="bold" text-anchor="middle" x="100" y="208" direction="ltr" unicode-bidi="embed">Logs</text>
+<text fill="#e3f2fd" font-size="9" text-anchor="middle" x="100" y="225" direction="rtl" unicode-bidi="embed">ثبت وقایع و خطاها</text>
+
+<!-- Arrows from signals to SDK -->
+<line marker-end="url(#arrowOtel)" stroke="#555" stroke-width="1.5" x1="170" x2="240" y1="80" y2="130"></line>
+<line marker-end="url(#arrowOtel)" stroke="#555" stroke-width="1.5" x1="170" x2="240" y1="145" y2="140"></line>
+<line marker-end="url(#arrowOtel)" stroke="#555" stroke-width="1.5" x1="170" x2="240" y1="210" y2="150"></line>
+
+<!-- OTel SDK -->
+<rect fill="#00ADD8" filter="url(#shOtel)" height="100" rx="8" width="160" x="240" y="95"></rect>
+<text fill="#fff" font-size="13" font-weight="bold" text-anchor="middle" x="320" y="122" direction="ltr" unicode-bidi="embed">OTel SDK</text>
+<text fill="#e0f7fa" font-size="9" text-anchor="middle" x="320" y="140" direction="ltr" unicode-bidi="embed">TracerProvider</text>
+<text fill="#e0f7fa" font-size="9" text-anchor="middle" x="320" y="155" direction="ltr" unicode-bidi="embed">MeterProvider</text>
+<text fill="#e0f7fa" font-size="9" text-anchor="middle" x="320" y="170" direction="ltr" unicode-bidi="embed">LoggerProvider</text>
+
+<!-- Arrow from SDK to Collector -->
+<line marker-end="url(#arrowOtel)" stroke="#555" stroke-width="2" x1="400" x2="440" y1="145" y2="145"></line>
+<text fill="#555" font-size="8" text-anchor="middle" x="420" y="138" direction="ltr" unicode-bidi="embed">OTLP</text>
+
+<!-- OTel Collector -->
+<rect fill="#9C27B0" filter="url(#shOtel)" height="80" rx="8" width="140" x="440" y="105"></rect>
+<text fill="#fff" font-size="12" font-weight="bold" text-anchor="middle" x="510" y="130" direction="ltr" unicode-bidi="embed">OTel Collector</text>
+<text fill="#e1bee7" font-size="9" text-anchor="middle" x="510" y="148" direction="ltr" unicode-bidi="embed">Batch + Route</text>
+<text fill="#e1bee7" font-size="9" text-anchor="middle" x="510" y="163" direction="ltr" unicode-bidi="embed">Process + Export</text>
+
+<!-- Arrows to backends -->
+<line marker-end="url(#arrowOtel)" stroke="#4CAF50" stroke-width="1.5" x1="580" x2="620" y1="125" y2="65"></line>
+<line marker-end="url(#arrowOtel)" stroke="#FF9800" stroke-width="1.5" x1="580" x2="620" y1="140" y2="130"></line>
+<line marker-end="url(#arrowOtel)" stroke="#2196F3" stroke-width="1.5" x1="580" x2="620" y1="160" y2="195"></line>
+
+<!-- Backends -->
+<rect fill="#4CAF50" filter="url(#shOtel)" height="40" rx="6" width="110" x="620" y="45"></rect>
+<text fill="#fff" font-size="11" font-weight="bold" text-anchor="middle" x="675" y="65" direction="ltr" unicode-bidi="embed">Tempo</text>
+<text fill="#e8f5e9" font-size="8" text-anchor="middle" x="675" y="78" direction="rtl" unicode-bidi="embed">ذخیره <tspan direction="ltr" unicode-bidi="embed">Trace</tspan></text>
+
+<rect fill="#E65100" filter="url(#shOtel)" height="40" rx="6" width="110" x="620" y="110"></rect>
+<text fill="#fff" font-size="11" font-weight="bold" text-anchor="middle" x="675" y="130" direction="ltr" unicode-bidi="embed">Prometheus</text>
+<text fill="#fff3e0" font-size="8" text-anchor="middle" x="675" y="143" direction="rtl" unicode-bidi="embed">ذخیره <tspan direction="ltr" unicode-bidi="embed">Metric</tspan></text>
+
+<rect fill="#2196F3" filter="url(#shOtel)" height="40" rx="6" width="110" x="620" y="175"></rect>
+<text fill="#fff" font-size="11" font-weight="bold" text-anchor="middle" x="675" y="195" direction="ltr" unicode-bidi="embed">Loki</text>
+<text fill="#e3f2fd" font-size="8" text-anchor="middle" x="675" y="208" direction="rtl" unicode-bidi="embed">ذخیره <tspan direction="ltr" unicode-bidi="embed">Log</tspan></text>
+
+<!-- Grafana -->
+<rect fill="#F46800" filter="url(#shOtel)" height="30" rx="4" width="500" x="130" y="240"></rect>
+<text fill="#fff" font-size="10" font-weight="bold" text-anchor="middle" x="380" y="260" direction="ltr" unicode-bidi="embed">Grafana — Traces + Metrics + Logs</text>
+<line stroke="#F46800" stroke-dasharray="4,3" stroke-width="1" x1="675" x2="675" y1="85" y2="240"></line>
+<line stroke="#F46800" stroke-dasharray="4,3" stroke-width="1" x1="675" x2="675" y1="150" y2="240"></line>
+<line stroke="#F46800" stroke-dasharray="4,3" stroke-width="1" x1="675" x2="675" y1="215" y2="240"></line>
+</svg>
+<figcaption>شکل ۹-۴: معماری <bdi dir="ltr">OpenTelemetry</bdi> — جریان سه رکن داده از <bdi dir="ltr">SDK</bdi> به <bdi dir="ltr">Collector</bdi> و مقاصد ذخیره‌سازی</figcaption>
+</figure>
+
+
+<p><strong dir="ltr">Collector</strong> : سرور مرکزی که داده‌ها را دریافت پردازش و به ابزارهای مقصد منتقل می‌کند.</p>
+<p><strong dir="ltr">Exporter</strong> : ماژولی که داده‌ها را به ابزارهای دیگر می‌فرستد.</p>
+<p><strong dir="ltr">Instrumentation</strong> : کدی که داده‌های <bdi dir="ltr">Observability</bdi> تولید می‌کند.</p>
+
+<h3 id="متریک‌های-سفارشی">Metrics سفارشی با OpenTelemetry</h3>
+<p>علاوه بر <bdi dir="ltr">Tracing</bdi> ، <bdi dir="ltr">OpenTelemetry SDK</bdi> امکان تعریف Metrics سفارشی را نیز فراهم می‌کند:</p>
+
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">import (
+"go.opentelemetry.io/otel"
+"go.opentelemetry.io/otel/metric"
+)
+
+func initMetrics() error {
+    meter := otel.Meter("my-service")
+
+    // Counter
+    requestCounter, _ := meter.Int64Counter("app.requests_total",
+    metric.WithDescription("تعداد کل درخواست‌ها"),
+)
+
+    // Histogram
+    requestDuration, _ := meter.Float64Histogram("app.request_duration",
+    metric.WithDescription("مدت زمان پاسخ‌دهی"),
+    metric.WithUnit("ms"),
+)
+
+    // Gauge (UpDownCounter)
+    activeConns, _ := meter.Int64UpDownCounter("app.active_connections",
+    metric.WithDescription("تعداد اتصال‌های فعال"),
+)
+
+    // Usage
+    requestCounter.Add(ctx, 1, attribute.String("method", "GET"))
+    requestDuration.Record(ctx, 42.5, attribute.String("path", "/api"))
+    activeConns.Add(ctx, 1)
+    defer activeConns.Add(ctx, -1)
+
+    return nil
+}</code></pre>
+</figure>
+
+<h3 id="trace-context-propagation">انتشار Context ترس بین سرویس‌ها</h3>
+<p>یکی از ویژگی‌های کلیدی <bdi dir="ltr">OpenTelemetry</bdi> انتشار خودکار <bdi dir="ltr">Trace Context</bdi> بین سرویس‌هاست. وقتی سرویس A درخواستی به سرویس B ارسال می‌کند <bdi dir="ltr">Trace ID</bdi> و <bdi dir="ltr">Span ID</bdi> به‌صورت خودکار در <bdi dir="ltr">HTTP headers</bdi> (طبق استاندارد <bdi dir="ltr">W3C Trace Context</bdi>) منتقل می‌شوند:</p>
+
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">import (
+"go.opentelemetry.io/otel"
+"go.opentelemetry.io/otel/propagation"
+)
+
+// Service A: send request with trace context
+func callServiceB(ctx context.Context) {
+    req, _ := http.NewRequest("GET", "http://service-b/api", nil)
+    // Inject trace context into HTTP headers
+    otel.GetTextMapPropagator().Inject(ctx, propagation.HeaderCarrier(req.Header))
+    resp, _ := http.DefaultClient.Do(req)
+    defer resp.Body.Close()
+}
+
+// Service B: extract trace context from incoming request
+func handler(w http.ResponseWriter, r *http.Request) {
+    ctx := otel.GetTextMapPropagator().Extract(r.Context(), propagation.HeaderCarrier(r.Header))
+    tracer := otel.Tracer("service-b")
+    ctx, span := tracer.Start(ctx, "handle-request")
+    defer span.End()
+    // Continue processing with ctx containing service A's trace context
+}</code></pre>
+</figure>
+
+<div class="important"><strong>اهمیت انتشار Context:</strong> بدون انتشار <bdi dir="ltr">Trace Context</bdi> هر سرویس <bdi dir="ltr">Trace</bdi> مستقلی ایجاد می‌کند و نمی‌توانید مسیر کامل یک درخواست را در سیستم توزیع‌شده ردیابی کنید. این یکی از تفاوت‌های کلیدی <bdi dir="ltr">OpenTelemetry</bdi> با ابزارهای سنتی <bdi dir="ltr">PHP</bdi> است که در آن هر درخواست یک فرآیند مجزا است و <bdi dir="ltr">Context</bdi> بین سرویس‌ها به‌طور طبیعی منتقل نمی‌شود.</div>
+
+<h3 id="معماری-داخلی-sdk">معماری داخلی SDK</h3>
+<p><strong dir="ltr">TracerProvider</strong> : نقطه ورودی اصلی <bdi dir="ltr">SDK</bdi>. <strong dir="ltr">SpanProcessor</strong> : پردازشگر <bdi dir="ltr">Span</bdi> ها (<bdi dir="ltr">BatchSpanProcessor</bdi> برای <bdi dir="ltr">production</bdi> ، <bdi dir="ltr">SimpleSpanProcessor</bdi> برای <bdi dir="ltr">development</bdi>). <strong dir="ltr">Sampler</strong> : تصمیم می‌گیرد کدام <bdi dir="ltr">Span</bdi> ها ثبت شوند.</p>
+
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">tp := sdktrace.NewTracerProvider(
+sdktrace.WithSampler(sdktrace.TraceIDRatioBased(0.5)), // record 50% of transactions
+sdktrace.WithBatcher(exporter),
+sdktrace.WithResource(resource.NewWithAttributes(
+semconv.SchemaURL,
+semconv.ServiceNameKey.String("my-service"),
+)),
+)
+otel.SetTracerProvider(tp)
+defer tp.Shutdown(context.Background()) // flush remaining Spans</code></pre>
+</figure>
+
+<div class="note"><strong>نکته عملی:</strong> همیشه <code dir="ltr">tp.Shutdown(ctx)</code> را با <bdi dir="ltr">defer</bdi> فراخوانی کنید تا <bdi dir="ltr">Span</bdi> های باقیمانده در بافر قبل از خروج برنامه به <bdi dir="ltr">Exporter</bdi> ارسال شوند.</div>
+
+<h3 id="ملاحظات-production">ملاحظات عملکرد در Production</h3>
+<p>اضافه کردن <bdi dir="ltr">OpenTelemetry</bdi> به برنامه <bdi dir="ltr">overhead</bdi> ایجاد می‌کند. با رعایت نکات زیر می‌توانید این <bdi dir="ltr">overhead</bdi> را به کمتر از ۲ درصد کاهش دهید:</p>
+
+<p><strong>استفاده از <bdi dir="ltr">BatchSpanProcessor</bdi>:</strong> هرگز در <bdi dir="ltr">production</bdi> از <bdi dir="ltr">SimpleSpanProcessor</bdi> استفاده نکنید. <bdi dir="ltr">Batch</bdi> پردازشی <bdi dir="ltr">Span</bdi> ها را در دسته‌ها جمع‌آوری و ارسال می‌کند.</p>
+<p><strong>تنظیم <bdi dir="ltr">Sampling</bdi>:</strong> در سیستم‌های پرترافیک ثبت تمام <bdi dir="ltr">Span</bdi> ها غیرعملی است. از <bdi dir="ltr">TraceIDRatioBased</bdi> با نسبت مناسب استفاده کنید.</p>
+<p><strong>انتخاب <bdi dir="ltr">Exporter</bdi>:</strong> ارسال مستقیم به <bdi dir="ltr">Tempo</bdi> یا <bdi dir="ltr">Jaeger</bdi> ساده‌تر است اما <bdi dir="ltr">OTel Collector</bdi> امکان <bdi dir="ltr">retry</bdi> ، <bdi dir="ltr">buffering</bdi> و <bdi dir="ltr">routing</bdi> را فراهم می‌کند.</p>
+<p><strong>کاهش <bdi dir="ltr">Attributes</bdi>:</strong> هر <bdi dir="ltr">Attribute</bdi> حافظه و پهنای باند مصرف می‌کند. فقط <bdi dir="ltr">Attributes</bdi> ضروری را ثبت کنید.</p>
+
+<div class="warning"><strong>هشدار عملکرد:</strong> اگر <bdi dir="ltr">Sampling</bdi> تنظیم نکنید و <bdi dir="ltr">SimpleSpanProcessor</bdi> استفاده کنید در سیستم‌های پرترافیک <bdi dir="ltr">overhead</bdi> می‌تواند به ۱۰-۲۰ درصد برسد. حتماً <bdi dir="ltr">BatchSpanProcessor</bdi> و <bdi dir="ltr">Sampling</bdi> مناسب تنظیم کنید.</div>
+
+<h3 id="راه-اندازی-عملی">راه‌اندازی عملی با Docker Compose</h3>
+<figure class="code yaml" dir="ltr">
+<pre><code class="language-yaml">version: "3.9"
+services:
+    otel-collector:
+    image: otel/opentelemetry-collector:latest
+    command: ["--config=/etc/otel/config.yaml"]
+    volumes:
+    - ./otel-config.yaml:/etc/otel/config.yaml
+    ports:
+    - "4317:4317" # gRPC
+    - "4318:4318" # HTTP
+    prometheus:
+    image: prom/prometheus:latest
+    volumes:
+    - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+    - "9090:9090"
+    tempo:
+    image: grafana/tempo:latest
+    ports:
+    - "3200:3200"
+    grafana:
+    image: grafana/grafana:latest
+    ports:
+    - "3000:3000"
+    environment:
+    - GF_AUTH_ANONYMOUS_ENABLED=true</code></pre>
+</figure>
+
+<h3 id="اتصال-برنامه-به-otel">اتصال برنامه Go به OpenTelemetry</h3>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">package main
+
+import (
+"context"
+"log"
+"net/http"
+"time"
+"go.opentelemetry.io/otel"
+"go.opentelemetry.io/otel/attribute"
+"go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracegrpc"
+"go.opentelemetry.io/otel/sdk/resource"
+sdktrace "go.opentelemetry.io/otel/sdk/trace"
+semconv "go.opentelemetry.io/otel/semconv/v1.17.0"
+"google.golang.org/grpc"
+)
+
+func initTracer() (*sdktrace.TracerProvider, error) {
+    ctx := context.Background()
+    conn, err := grpc.DialContext(ctx, "localhost:4317", grpc.WithInsecure())
+    if err != nil {
+        return nil, err
+    }
+    exporter, err := otlptracegrpc.New(ctx, otlptracegrpc.WithGRPCConn(conn))
+    if err != nil {
+        return nil, err
+    }
+    tp := sdktrace.NewTracerProvider(
+    sdktrace.WithBatcher(exporter),
+    sdktrace.WithSampler(sdktrace.TraceIDRatioBased(0.5)),
+    sdktrace.WithResource(resource.NewWithAttributes(
+    semconv.SchemaURL,
+    semconv.ServiceNameKey.String("sample-app"),
+)),
+)
+    otel.SetTracerProvider(tp)
+    return tp, nil
+}
+
+func main() {
+    tp, err := initTracer()
+    if err != nil {
+        log.Fatalf("Failed to initialize tracer: %v", err)
+    }
+    defer func() {
+        if err := tp.Shutdown(context.Background()); err != nil {
+            log.Printf("Error shutting down: %v", err)
+        }
+    }()
+
+    http.HandleFunc("/hello", func(w http.ResponseWriter, r *http.Request) {
+        ctx := r.Context()
+        tracer := otel.Tracer("example-tracer")
+        ctx, span := tracer.Start(ctx, "handle-hello")
+        defer span.End()
+        span.SetAttributes(
+        attribute.String("http.method", r.Method),
+        attribute.String("http.url", r.URL.Path),
+    )
+        time.Sleep(200 * time.Millisecond)
+        w.Write([]byte("Hello, Observability!"))
+    })
+    log.Println("Server on :8080")
+    log.Fatal(http.ListenAndServe(":8080", nil))
+}</code></pre>
+</figure>
+
+<h3 id="log-correlation">همبستگی لاگ با Trace</h3>
+<p>یکی از الگوهای کلیدی <bdi dir="ltr">OpenTelemetry</bdi> همبستگی لاگ‌ها با <bdi dir="ltr">Trace</bdi> هاست. وقتی <bdi dir="ltr">trace_id</bdi> در هر لاگ ثبت شود می‌توانید در <bdi dir="ltr">Grafana</bdi> از <bdi dir="ltr">Trace</bdi> به لاگ و برعکس بپرید:</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">// Add trace_id to each log record
+func withTraceID(ctx context.Context) slog.Attr {
+    span := trace.SpanFromContext(ctx)
+    return slog.String("trace_id", span.SpanContext().TraceID().String())
+}
+
+// Set custom logger
+handler := slog.NewJSONHandler(os.Stdout, &amp;slog.HandlerOptions{}).
+WithAttrs([]slog.Attr{slog.Any("trace_id", getTraceID)})</code></pre>
+</figure>
+
+<div class="comparison"><strong>مقایسه با PHP:</strong> در PHP هر درخواست یک process مجزا است و <bdi dir="ltr">Context</bdi> بین درخواست‌ها به‌صورت طبیعی به اشتراک گذاشته نمی‌شود. اما در Go با <code dir="ltr">context.Context</code> می‌توان <bdi dir="ltr">Span</bdi> ها را بین توابع و حتی <bdi dir="ltr">goroutine</bdi> ها به‌صورت خودکار منتقل کرد. این تفاوت بنیادین باعث می‌شود <bdi dir="ltr">OpenTelemetry</bdi> در <bdi dir="ltr">Go</bdi> بسیار طبیعی‌تر و مؤثرتر عمل کند.</div>
+
+<h3 id="پیکربندی-collector">پیکربندی OTel Collector</h3>
+<p><bdi dir="ltr">OTel Collector</bdi> مرکز مدیریت داده‌های Observability است. سه بخش اصلی آن <bdi dir="ltr">Receivers</bdi> (دریافت)، <bdi dir="ltr">Processors</bdi> (پردازش) و <bdi dir="ltr">Exporters</bdi> (ارسال) هستند. فایل پیکربندی زیر یک نمونه عملی برای محیط <bdi dir="ltr">production</bdi> است:</p>
+
+<figure class="code yaml" dir="ltr">
+<pre><code class="language-yaml"># otel-config.yaml
+receivers:
+    otlp:
+    protocols:
+        grpc:
+        endpoint: 0.0.0.0:4317
+        http:
+        endpoint: 0.0.0.0:4318
+
+processors:
+    # Batch data before exporting — reduces network overhead
+    batch:
+    send_batch_size: 1024
+    timeout: 5s
+
+    # Add resource attributes to all telemetry
+    resource:
+    attributes:
+        - key: deployment.environment
+        value: production
+        action: upsert
+
+    # Filter out health check spans (reduce noise)
+    filter:
+    error_mode: ignore
+    traces:
+        span:
+        - 'attributes["http.route"] == "/healthz"'
+
+exporters:
+    # Send traces to Grafana Tempo
+    otlp/tempo:
+    endpoint: tempo:4317
+    tls:
+        insecure: true
+
+    # Send metrics to Prometheus
+    prometheusremotewrite:
+    endpoint: http://prometheus:9090/api/v1/write
+
+    # Send logs to Loki
+    otlphttp/loki:
+    endpoint: http://loki:3100/otlp
+
+service:
+    pipelines:
+    traces:
+        receivers: [otlp]
+        processors: [batch, filter]
+        exporters: [otlp/tempo]
+    metrics:
+        receivers: [otlp]
+        processors: [batch, resource]
+        exporters: [prometheusremotewrite]
+    logs:
+        receivers: [otlp]
+        processors: [batch]
+        exporters: [otlphttp/loki]</code></pre>
+</figure>
+
+<div class="tip"><strong>نکته مهم:</strong> ترتیب <bdi dir="ltr">Processors</bdi> در بخش <code>service.pipelines</code> مهم است. <bdi dir="ltr">Batch</bdi> معمولاً اول باید قرار بگیرد تا داده‌ها قبل از پردازش‌های دیگر دسته‌بندی شوند. <bdi dir="ltr">Filter</bdi> باید قبل از <bdi dir="ltr">Exporter</bdi> باشد تا داده‌های غیرضروری حذف شوند و پهنای باند هدر نرود.</div>
+
+<h3 id="auto-instrumentation">Auto-Instrumentation</h3>
+<p>یکی از جذاب‌ترین ویژگی‌های <bdi dir="ltr">OpenTelemetry</bdi> برای توسعه‌دهندگان تازه‌کار، امکان ابزارسازی خودکار است. بدون نوشتن کد دستی، می‌توانید <bdi dir="ltr">Trace</bdi> برای <bdi dir="ltr">HTTP</bdi> درخواست‌ها، کوئری‌های دیتابیس و فراخوانی‌های <bdi dir="ltr">RPC</bdi> دریافت کنید:</p>
+
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">package main
+
+import (
+"net/http"
+"go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
+)
+
+func main() {
+    // Initialize tracer (as shown in previous examples)
+    tp, _ := initTracer()
+    defer tp.Shutdown(context.Background())
+
+    // Auto-instrumented HTTP handler — each request creates a span
+    mux := http.NewServeMux()
+    mux.HandleFunc("/api/users", func(w http.ResponseWriter, r *http.Request) {
+        // This handler is automatically traced
+        // Span name: "GET /api/users"
+        // Attributes: http.method, http.url, http.status_code
+        w.Write([]byte("Users list"))
+    })
+
+    // Wrap entire mux with OTel HTTP middleware
+    handler := otelhttp.NewHandler(mux, "http-server")
+
+    http.ListenAndServe(":8080", handler)
+    // Now EVERY request automatically gets:
+    // - A root span with HTTP attributes
+    // - Trace context propagation
+    // - Duration measurement
+    // - Error recording
+}</code></pre>
+</figure>
+
+<p>علاوه بر <bdi dir="ltr">net/http</bdi> کتابخانه‌های <bdi dir="ltr">Auto-Instrumentation</bdi> برای فریم‌ورک‌ها و ابزارهای زیر موجود است:</p>
+
+<table class="comparison-table" dir="rtl">
+<thead>
+<tr><th>کتابخانه / ابزار</th><th>پکیج Go</th><th>قابلیت خودکار</th></tr>
+</thead>
+<tbody>
+<tr><td><bdi dir="ltr">net/http</bdi></td><td><bdi dir="ltr">otelhttp</bdi></td><td>ایجاد <bdi dir="ltr">Span</bdi> برای هر درخواست <bdi dir="ltr">HTTP</bdi></td></tr>
+<tr><td><bdi dir="ltr">Gin</bdi></td><td><bdi dir="ltr">otelgin</bdi></td><td>ابزارسازی خودکار <bdi dir="ltr">middleware</bdi></td></tr>
+<tr><td><bdi dir="ltr">database/sql</bdi></td><td><bdi dir="ltr">otelsql</bdi></td><td>ردیابی کوئری‌های دیتابیس</td></tr>
+<tr><td><bdi dir="ltr">gRPC</bdi></td><td><bdi dir="ltr">otelgrpc</bdi></td><td>ردیابی فراخوانی‌های <bdi dir="ltr">RPC</bdi></td></tr>
+<tr><td><bdi dir="ltr">Redis / go-redis</bdi></td><td><bdi dir="ltr">otelredis</bdi></td><td>ردیابی عملیات <bdi dir="ltr">Redis</bdi></td></tr>
+<tr><td><bdi dir="ltr">amqp / RabbitMQ</bdi></td><td><bdi dir="ltr">otelamqp</bdi></td><td>ردیابی پیام‌های صف</td></tr>
+</tbody>
+</table>
+
+<div class="note"><strong>راهنمای انتخاب:</strong> ابتدا از <bdi dir="ltr">Auto-Instrumentation</bdi> استفاده کنید تا بدون تلاش اضافی <bdi dir="ltr">Trace</bdi> پایه دریافت کنید. سپس در نقاط بحرانی برنامه (مثل توابع کسب‌وکار پیچیده) <bdi dir="ltr">Span</bdi> دستی اضافه کنید. ترکیب این دو رویکرد بهترین نتیجه را می‌دهد.</div>
+
+<h3 id="خواندن-trace">راهنمای خواندن Trace در Grafana</h3>
+<p>وقتی <bdi dir="ltr">Trace</bdi>‌ها در <bdi dir="ltr">Grafana Tempo</bdi> ذخیره شدند، می‌توانید آن‌ها را در <bdi dir="ltr">Grafana</bdi> مشاهده و تحلیل کنید. درک ساختار یک <bdi dir="ltr">Trace</bdi> برای عیب‌یابی مؤثر ضروری است:</p>
+
+<figure class="diagram" dir="ltr">
+<svg height="340" viewBox="0 0 650 340" width="650" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<filter height="104%" id="shTrace" width="104%" x="-2%" y="-2%"><fedropshadow dx="1" dy="1" flood-opacity="0.12" stddeviation="2"></fedropshadow></filter>
+</defs>
+<rect fill="#fafafa" height="340" rx="8" width="650" x="0" y="0"></rect>
+<text fill="#333" font-size="15" font-weight="bold" text-anchor="middle" x="325" y="28" direction="rtl" unicode-bidi="embed">ساختار یک <tspan direction="ltr" unicode-bidi="embed">Trace</tspan> — خواندن و تحلیل</text>
+
+<!-- Trace Header -->
+<rect fill="#00ADD8" filter="url(#shTrace)" height="40" rx="6" width="610" x="20" y="45"></rect>
+<text fill="#fff" font-size="11" font-weight="bold" text-anchor="middle" x="325" y="63" direction="ltr" unicode-bidi="embed">Trace ID: abc123def456 | Duration: 420ms | Service: user-api</text>
+<text fill="#e0f7fa" font-size="9" text-anchor="middle" x="325" y="78" direction="ltr" unicode-bidi="embed">Root Span: GET /api/users/42</text>
+
+<!-- Waterfall bars -->
+<rect fill="#4CAF50" height="28" rx="4" stroke="#388E3C" width="550" x="50" y="100"></rect>
+<text fill="#fff" font-size="9" font-weight="bold" x="55" y="118" direction="ltr" unicode-bidi="embed">GET /api/users/42 (420ms) — http.request</text>
+
+<rect fill="#2196F3" height="28" rx="4" stroke="#1565C0" width="380" x="80" y="135"></rect>
+<text fill="#fff" font-size="9" font-weight="bold" x="85" y="153" direction="ltr" unicode-bidi="embed">user.GetUser (350ms) — service.logic</text>
+
+<rect fill="#FF9800" height="28" rx="4" stroke="#E65100" width="120" x="100" y="170"></rect>
+<text fill="#fff" font-size="9" font-weight="bold" x="105" y="188" direction="ltr" unicode-bidi="embed">SELECT users (80ms) — db.query</text>
+
+<rect fill="#FF9800" height="28" rx="4" stroke="#E65100" width="60" x="230" y="170"></rect>
+<text fill="#fff" font-size="9" font-weight="bold" x="235" y="188" direction="ltr" unicode-bidi="embed">Redis (30ms)</text>
+
+<rect fill="#9C27B0" height="28" rx="4" stroke="#6A1B9A" width="180" x="280" y="205"></rect>
+<text fill="#fff" font-size="9" font-weight="bold" x="285" y="223" direction="ltr" unicode-bidi="embed">EnrichUserData (170ms) — service</text>
+
+<rect fill="#FF9800" height="28" rx="4" stroke="#E65100" width="140" x="300" y="240"></rect>
+<text fill="#fff" font-size="9" font-weight="bold" x="305" y="258" direction="ltr" unicode-bidi="embed">HTTP to orders (120ms)</text>
+
+<!-- Legend -->
+<rect fill="#E3F2FD" height="55" rx="4" stroke="#2196F3" width="610" x="20" y="278"></rect>
+<text fill="#1565C0" font-size="10" font-weight="bold" text-anchor="middle" x="325" y="296" direction="rtl" unicode-bidi="embed">نکات تحلیل:</text>
+<text fill="#333" font-size="9" text-anchor="middle" x="325" y="312" direction="rtl" unicode-bidi="embed">۱. هر نوار یک <tspan direction="ltr" unicode-bidi="embed">Span</tspan> است — طول نوار = زمان اجرا | ۲. نوارهای تو در تو = فراخوانی‌های تودرتو</text>
+<text fill="#333" font-size="9" text-anchor="middle" x="325" y="326" direction="rtl" unicode-bidi="embed">۳. نوارهای هم‌سطح = فراخوانی‌های موازی | ۴. شکاف بین نوارها = زمان انتظار</text>
+</svg>
+<figcaption>شکل ۹-۳-الف: ساختار یک <bdi dir="ltr">Trace</bdi> نمونه — هر نوار یک <bdi dir="ltr">Span</bdi> و طول آن نشان‌دهنده زمان اجرا</figcaption>
+</figure>
+
+<p>برای عیب‌یابی مؤثر روی این نکات تمرکز کنید:</p>
+<ul>
+<li><strong>شناسایی گلوگاه:</strong> بلندترین <bdi dir="ltr">Span</bdi> معمولاً گلوگاه است. در مثال بالا <code>EnrichUserData</code> با ۱۷۰ میلی‌ثانیه.</li>
+<li><strong>کشف فراخوانی‌های غیرضروری:</strong> آیا واقعاً نیاز به فراخوانی سرویس سفارشات برای هر درخواست کاربر دارید؟</li>
+<li><strong>بررسی خطاها:</strong> <bdi dir="ltr">Span</bdi>‌های قرمز نشان‌دهنده خطا هستند. روی آن‌ها کلیک کنید تا جزئیات خطا را ببینید.</li>
+<li><strong>مقایسه با خط پایه:</strong> آیا زمان اجرا نسبت به هفته قبل تغییر کرده؟ از <bdi dir="ltr">Compare</bdi> در <bdi dir="ltr">Grafana</bdi> استفاده کنید.</li>
+</ul>
+
+<h3 id="ردیابی-خطا">ردیابی خطا با Trace</h3>
+<p>وقتی خطایی در سیستم توزیع‌شده رخ می‌دهد، <bdi dir="ltr">Trace</bdi> به شما نشان می‌دهد خطا در کدام سرویس و کدام تابع اتفاق افتاده. مهم‌تر از آن، مسیر کامل درخواست قبل از خطا قابل مشاهده است:</p>
+
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">func processOrder(ctx context.Context, orderID string) error {
+    tracer := otel.Tracer("order-service")
+    ctx, span := tracer.Start(ctx, "processOrder",
+    trace.WithAttributes(attribute.String("order.id", orderID)),
+)
+    defer span.End()
+
+    // Step 1: Validate order
+    if err := validateOrder(ctx, orderID); err != nil {
+        // Record error on span — appears as red in Grafana
+        span.RecordError(err)
+        span.SetStatus(codes.Error, err.Error())
+        return fmt.Errorf("validate: %w", err)
+    }
+
+    // Step 2: Charge payment
+    if err := chargePayment(ctx, orderID); err != nil {
+        span.RecordError(err)
+        span.SetStatus(codes.Error, err.Error())
+        return fmt.Errorf("payment: %w", err)
+    }
+
+    // Step 3: Ship order
+    span.AddEvent("payment_completed", trace.WithAttributes(
+    attribute.String("order.id", orderID),
+    attribute.String("status", "paid"),
+))
+    return shipOrder(ctx, orderID)
+}</code></pre>
+</figure>
+
+<div class="tip"><strong>نکته:</strong> متد <code>span.RecordError(err)</code> خطا را به‌صورت رویداد (<bdi dir="ltr">Event</bdi>) روی <bdi dir="ltr">Span</bdi> ثبت می‌کند — شامل پیام خطا و <bdi dir="ltr">stack trace</bdi>. این متد نباید با <code>span.SetStatus(codes.Error, ...)</code> جایگزین شود؛ بلکه باید از هر دو استفاده کنید: <code>RecordError</code> جزئیات خطا و <code>SetStatus</code> وضعیت کلی <bdi dir="ltr">Span</bdi> را مشخص می‌کند.</div>
+
+<h3 id="health-check-observability">Health Check با Observability</h3>
+<p>یکی از الگوهای عملی، اضافه کردن <bdi dir="ltr">Observability</bdi> به <bdi dir="ltr">Health Check endpoint</bdi> است. این کار هم وضعیت سلامت سرویس را نشان می‌دهد و هم اطمینان حاصل می‌کند که خط لوله <bdi dir="ltr">Observability</bdi> به‌درستی کار می‌کند:</p>
+
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">func healthCheckHandler(w http.ResponseWriter, r *http.Request) {
+    ctx := r.Context()
+    tracer := otel.Tracer("health")
+    ctx, span := tracer.Start(ctx, "health-check")
+    defer span.End()
+
+    health := map[string]string{
+        "status":    "healthy",
+        "version":   "1.2.3",
+        "timestamp": time.Now().Format(time.RFC3339),
+    }
+
+    // Check database connectivity
+    if err := db.PingContext(ctx); err != nil {
+        health["status"] = "unhealthy"
+        health["db_error"] = err.Error()
+        span.RecordError(err)
+        span.SetStatus(codes.Error, "database unhealthy")
+        w.WriteHeader(http.StatusServiceUnavailable)
+    }
+
+    // Check Redis connectivity
+    if _, err := redis.Ping(ctx).Result(); err != nil {
+        health["status"] = "degraded"
+        health["redis_error"] = err.Error()
+        span.AddEvent("redis_degraded", trace.WithAttributes(
+        attribute.String("error", err.Error()),
+    ))
+    }
+
+    json.NewEncoder(w).Encode(health)
+}</code></pre>
+</figure>
+
+<h3 id="درخت-اسپن-و-انتشار-کانتکست">درخت <bdi dir="ltr">Span</bdi> و انتشار <bdi dir="ltr">Context</bdi></h3>
+
+<p>درک ساختار درختی <bdi dir="ltr">Span</bdi>‌ها و مکانیزم انتشار <bdi dir="ltr">Context</bdi> (<bdi dir="ltr">context propagation</bdi>) برای عیب‌یابی مؤثر در سیستم‌های توزیع‌شده حیاتی است. هر <bdi dir="ltr">trace</bdi> یک درخت از <bdi dir="ltr">Span</bdi>‌هاست که ریشه آن <bdi dir="ltr">root span</bdi> (معمولاً درخواست ورودی <bdi dir="ltr">HTTP</bdi>) و شاخه‌های آن عملیات فرعی در سرویس‌های مختلف هستند. هر <bdi dir="ltr">Span</bdi> شامل شناسه یکتای خود (<bdi dir="ltr">span ID</bdi>)، شناسه والد (<bdi dir="ltr">parent span ID</bdi>) و شناسه کل <bdi dir="ltr">trace</bdi> (<bdi dir="ltr">trace ID</bdi>) است. انتشار <bdi dir="ltr">Context</bdi> از طریق هدرهای <bdi dir="ltr">HTTP</bdi> (مثل <bdi dir="ltr">traceparent</bdi> و <bdi dir="ltr">tracestate</bdi>) طبق استاندارد <bdi dir="ltr">W3C Trace Context</bdi> انجام می‌شود و تضمین می‌کند که تمام سرویس‌های درگیر در یک درخواست، بخشی از همان <bdi dir="ltr">trace</bdi> باشند. بدون این انتشار خودکار، هر سرویس <bdi dir="ltr">trace</bdi> مستقلی ایجاد می‌کند و ردیابی مسیر کامل درخواست غیرممکن می‌شود.</p>
+
+<figure class="diagram" dir="ltr">
+<svg height="560" viewBox="0 0 720 560" width="720" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<marker id="arrowSpan" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#555" points="0 0,10 3.5,0 7"></polygon></marker>
+<marker id="arrowCtx" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#4CAF50" points="0 0,10 3.5,0 7"></polygon></marker>
+<filter height="104%" id="shSpan" width="104%" x="-2%" y="-2%"><fedropshadow dx="1" dy="1" flood-opacity="0.12" stddeviation="2"></fedropshadow></filter>
+</defs>
+<rect fill="#fafafa" height="560" rx="8" width="720" x="0" y="0"></rect>
+<text fill="#333" font-size="15" font-weight="bold" text-anchor="middle" x="360" y="28" direction="rtl" unicode-bidi="embed">درخت <tspan direction="ltr" unicode-bidi="embed">Span</tspan> و انتشار <tspan direction="ltr" unicode-bidi="embed">Context</tspan> در سیستم توزیع‌شده</text>
+
+<!-- Trace ID Header -->
+<rect fill="#00ADD8" filter="url(#shSpan)" height="35" rx="6" width="680" x="20" y="42"></rect>
+<text fill="#fff" font-size="11" font-weight="bold" text-anchor="middle" x="360" y="65" direction="ltr" unicode-bidi="embed">Trace ID: a1b2c3d4e5f6 | Root Span: HTTP GET /api/order</text>
+
+<!-- Root Span - Gateway -->
+<rect fill="#00ADD8" filter="url(#shSpan)" height="45" rx="6" width="660" x="30" y="88"></rect>
+<text fill="#fff" font-size="10" font-weight="bold" x="40" y="106" direction="ltr" unicode-bidi="embed">Gateway: HTTP GET /api/order</text>
+<text fill="#e0f7fa" font-size="8" x="40" y="122" direction="ltr" unicode-bidi="embed">span_id=abc123 | parent_id=none | duration=320ms</text>
+
+<!-- Child Spans connector lines -->
+<line stroke="#00ADD8" stroke-width="1.5" x1="120" x2="120" y1="133" y2="148"></line>
+<line stroke="#00ADD8" stroke-width="1.5" x1="120" x2="620" y1="148" y2="148"></line>
+<line stroke="#00ADD8" stroke-width="1.5" x1="120" y1="148" x2="120" y2="155"></line>
+<line stroke="#00ADD8" stroke-width="1.5" x1="280" y1="148" x2="280" y2="155"></line>
+<line stroke="#00ADD8" stroke-width="1.5" x1="440" y1="148" x2="440" y2="155"></line>
+<line stroke="#00ADD8" stroke-width="1.5" x1="600" y1="148" x2="600" y2="155"></line>
+
+<!-- Child Span 1: auth.CheckToken -->
+<rect fill="#00ADD8" filter="url(#shSpan)" height="40" rx="5" width="140" x="50" y="155"></rect>
+<text fill="#fff" font-size="9" font-weight="bold" x="60" y="172" direction="ltr" unicode-bidi="embed">auth.CheckToken</text>
+<text fill="#e0f7fa" font-size="7" x="60" y="186" direction="ltr" unicode-bidi="embed">span=d1e2 | parent=abc | 25ms</text>
+
+<!-- Child Span 2: db.QueryOrder -->
+<rect fill="#00ADD8" filter="url(#shSpan)" height="40" rx="5" width="140" x="210" y="155"></rect>
+<text fill="#fff" font-size="9" font-weight="bold" x="220" y="172" direction="ltr" unicode-bidi="embed">db.QueryOrder</text>
+<text fill="#e0f7fa" font-size="7" x="220" y="186" direction="ltr" unicode-bidi="embed">span=f3g4 | parent=abc | 85ms</text>
+
+<!-- Child Span 3: cache.Get -->
+<rect fill="#00ADD8" filter="url(#shSpan)" height="40" rx="5" width="140" x="370" y="155"></rect>
+<text fill="#fff" font-size="9" font-weight="bold" x="380" y="172" direction="ltr" unicode-bidi="embed">cache.Get</text>
+<text fill="#e0f7fa" font-size="7" x="380" y="186" direction="ltr" unicode-bidi="embed">span=h5i6 | parent=abc | 12ms</text>
+
+<!-- Child Span 4: api.GetUserInfo -->
+<rect fill="#00ADD8" filter="url(#shSpan)" height="40" rx="5" width="140" x="530" y="155"></rect>
+<text fill="#fff" font-size="9" font-weight="bold" x="540" y="172" direction="ltr" unicode-bidi="embed">api.GetUserInfo</text>
+<text fill="#e0f7fa" font-size="7" x="540" y="186" direction="ltr" unicode-bidi="embed">span=j7k8 | parent=abc | 180ms</text>
+
+<!-- Service boundary indicators -->
+<rect fill="none" height="60" rx="4" stroke="#FF9800" stroke-width="1.5" stroke-dasharray="4,3" width="150" x="45" y="150"></rect>
+<text fill="#FF9800" font-size="7" font-weight="bold" text-anchor="middle" x="120" y="218" direction="ltr" unicode-bidi="embed">Auth Service</text>
+
+<rect fill="none" height="60" rx="4" stroke="#FF9800" stroke-width="1.5" stroke-dasharray="4,3" width="150" x="205" y="150"></rect>
+<text fill="#FF9800" font-size="7" font-weight="bold" text-anchor="middle" x="280" y="218" direction="ltr" unicode-bidi="embed">Order Service</text>
+
+<rect fill="none" height="60" rx="4" stroke="#FF9800" stroke-width="1.5" stroke-dasharray="4,3" width="150" x="365" y="150"></rect>
+<text fill="#FF9800" font-size="7" font-weight="bold" text-anchor="middle" x="440" y="218" direction="ltr" unicode-bidi="embed">Cache Service</text>
+
+<rect fill="none" height="60" rx="4" stroke="#FF9800" stroke-width="1.5" stroke-dasharray="4,3" width="150" x="525" y="150"></rect>
+<text fill="#FF9800" font-size="7" font-weight="bold" text-anchor="middle" x="600" y="218" direction="ltr" unicode-bidi="embed">User Service</text>
+
+<!-- Context Propagation Section -->
+<text fill="#555" font-size="12" font-weight="bold" text-anchor="middle" x="360" y="245" direction="rtl" unicode-bidi="embed">انتشار <tspan direction="ltr" unicode-bidi="embed">Context</tspan> بین سرویس‌ها</text>
+
+<!-- HTTP Headers Propagation -->
+<rect fill="#E8F5E9" height="70" rx="6" stroke="#4CAF50" stroke-width="1.5" width="660" x="30" y="258"></rect>
+<text fill="#2E7D32" font-size="10" font-weight="bold" text-anchor="middle" x="360" y="278" direction="ltr" unicode-bidi="embed">HTTP Headers (W3C Trace Context)</text>
+<text fill="#333" font-size="9" text-anchor="middle" x="360" y="295" direction="ltr" unicode-bidi="embed">traceparent: 00-a1b2c3d4e5f67890-abc123def456-01</text>
+<text fill="#333" font-size="9" text-anchor="middle" x="360" y="312" direction="ltr" unicode-bidi="embed">tracestate: vendor=go-otel,env=production</text>
+
+<!-- Propagation flow arrows -->
+<rect fill="#00ADD8" filter="url(#shSpan)" height="35" rx="5" width="100" x="30" y="340"></rect>
+<text fill="#fff" font-size="9" text-anchor="middle" x="80" y="362" direction="ltr" unicode-bidi="embed">Gateway</text>
+
+<line marker-end="url(#arrowCtx)" stroke="#4CAF50" stroke-width="2" x1="130" x2="185" y1="358" y2="358"></line>
+<text fill="#4CAF50" font-size="7" text-anchor="middle" x="158" y="350" direction="ltr" unicode-bidi="embed">Inject</text>
+
+<rect fill="#00ADD8" filter="url(#shSpan)" height="35" rx="5" width="80" x="185" y="340"></rect>
+<text fill="#fff" font-size="8" text-anchor="middle" x="225" y="362" direction="ltr" unicode-bidi="embed">Auth Svc</text>
+
+<line marker-end="url(#arrowCtx)" stroke="#4CAF50" stroke-width="2" x1="265" x2="320" y1="358" y2="358"></line>
+
+<rect fill="#00ADD8" filter="url(#shSpan)" height="35" rx="5" width="90" x="320" y="340"></rect>
+<text fill="#fff" font-size="8" text-anchor="middle" x="365" y="362" direction="ltr" unicode-bidi="embed">Order Svc</text>
+
+<line marker-end="url(#arrowCtx)" stroke="#4CAF50" stroke-width="2" x1="410" x2="465" y1="358" y2="358"></line>
+
+<rect fill="#00ADD8" filter="url(#shSpan)" height="35" rx="5" width="90" x="465" y="340"></rect>
+<text fill="#fff" font-size="8" text-anchor="middle" x="510" y="362" direction="ltr" unicode-bidi="embed">Cache Svc</text>
+
+<line marker-end="url(#arrowCtx)" stroke="#4CAF50" stroke-width="2" x1="555" x2="610" y1="358" y2="358"></line>
+
+<rect fill="#00ADD8" filter="url(#shSpan)" height="35" rx="5" width="80" x="610" y="340"></rect>
+<text fill="#fff" font-size="8" text-anchor="middle" x="650" y="362" direction="ltr" unicode-bidi="embed">User Svc</text>
+
+<text fill="#4CAF50" font-size="8" text-anchor="middle" x="360" y="390" direction="rtl" unicode-bidi="embed">هر فلش سبز = انتقال <tspan direction="ltr" unicode-bidi="embed">traceparent</tspan> در <tspan direction="ltr" unicode-bidi="embed">HTTP headers</tspan></text>
+
+<!-- Three Pillars Comparison -->
+<text fill="#555" font-size="12" font-weight="bold" text-anchor="middle" x="360" y="420" direction="rtl" unicode-bidi="embed">سه رکن <tspan direction="ltr" unicode-bidi="embed">Observability</tspan></text>
+
+<rect fill="#00ADD8" filter="url(#shSpan)" height="50" rx="6" width="210" x="30" y="435"></rect>
+<text fill="#fff" font-size="11" font-weight="bold" text-anchor="middle" x="135" y="458" direction="ltr" unicode-bidi="embed">Tracing</text>
+<text fill="#e0f7fa" font-size="8" text-anchor="middle" x="135" y="475" direction="rtl" unicode-bidi="embed">مسیر درخواست بین سرویس‌ها</text>
+
+<rect fill="#FF9800" filter="url(#shSpan)" height="50" rx="6" width="210" x="255" y="435"></rect>
+<text fill="#fff" font-size="11" font-weight="bold" text-anchor="middle" x="360" y="458" direction="ltr" unicode-bidi="embed">Metrics</text>
+<text fill="#fff3e0" font-size="8" text-anchor="middle" x="360" y="475" direction="rtl" unicode-bidi="embed">اعداد تجمیعی عملکرد</text>
+
+<rect fill="#9C27B0" filter="url(#shSpan)" height="50" rx="6" width="210" x="480" y="435"></rect>
+<text fill="#fff" font-size="11" font-weight="bold" text-anchor="middle" x="585" y="458" direction="ltr" unicode-bidi="embed">Logging</text>
+<text fill="#e1bee7" font-size="8" text-anchor="middle" x="585" y="475" direction="rtl" unicode-bidi="embed">جزئیات رویدادها و خطاها</text>
+
+<!-- Golden rule bar -->
+<rect fill="#FFF8E1" height="45" rx="6" stroke="#F9A825" width="660" x="30" y="500"></rect>
+<text fill="#E65100" font-size="9" font-weight="bold" text-anchor="middle" x="360" y="518" direction="rtl" unicode-bidi="embed">قانون طلایی: <tspan direction="ltr" unicode-bidi="embed">Tracing</tspan> = «چرا این درخواست کند است؟» | <tspan direction="ltr" unicode-bidi="embed">Metrics</tspan> = «چند خطا در دقیقه؟» | <tspan direction="ltr" unicode-bidi="embed">Logging</tspan> = «دقیقاً چه اتفاقی افتاد؟»</text>
+<text fill="#E65100" font-size="8" text-anchor="middle" x="360" y="535" direction="rtl" unicode-bidi="embed">هر سه با هم همبسته شوند: <tspan direction="ltr" unicode-bidi="embed">trace_id</tspan> در لاگ ← <tspan direction="ltr" unicode-bidi="embed">span</tspan> با <tspan direction="ltr" unicode-bidi="embed">metrics</tspan> ← <tspan direction="ltr" unicode-bidi="embed">Grafana</tspan> داشبورد یکپارچه</text>
+</svg>
+<figcaption>شکل ۹-۵: درخت <bdi dir="ltr">Span</bdi> در یک <bdi dir="ltr">trace</bdi> توزیع‌شده، انتشار <bdi dir="ltr">Context</bdi> و سه رکن <bdi dir="ltr">Observability</bdi></figcaption>
+</figure>
+
+<p>در نمودار بالا ریشه درخت <bdi dir="ltr">Span</bdi> درخواست <bdi dir="ltr">HTTP GET /api/order</bdi> در سرویس <bdi dir="ltr">gateway</bdi> است. این <bdi dir="ltr">root span</bdi> چهار <bdi dir="ltr">child span</bdi> دارد که هر کدام در یک سرویس متفاوت اجرا می‌شوند. خطوط نقطه‌چین نارنجی مرزهای سرویسی را نشان می‌دهند — هر بار که درخواست از یک سرویس به سرویس دیگر عبور می‌کند، <bdi dir="ltr">trace context</bdi> از طریق هدرهای <bdi dir="ltr">HTTP</bdi> (<bdi dir="ltr">traceparent</bdi> و <bdi dir="ltr">tracestate</bdi>) منتقل می‌شود. این انتشار تضمین می‌کند که تمام <bdi dir="ltr">Span</bdi>‌ها دارای یک <bdi dir="ltr">trace ID</bdi> یکسان هستند و در <bdi dir="ltr">Grafana Tempo</bdi> به‌صورت یک <bdi dir="ltr">trace</bdi> واحد نمایش داده می‌شوند. بدون این مکانیزم هر سرویس <bdi dir="ltr">trace</bdi> مستقلی ایجاد می‌کرد و ردیابی مسیر کامل درخواست از <bdi dir="ltr">gateway</bdi> تا <bdi dir="ltr">user service</bdi> غیرممکن بود. بخش پایینی نمودار سه رکن <bdi dir="ltr">observability</bdi> و نقش هر یک را نشان می‌دهد: <bdi dir="ltr">tracing</bdi> برای مسیریابی بین سرویس‌ها، <bdi dir="ltr">metrics</bdi> برای اعداد تجمیعی و <bdi dir="ltr">logging</bdi> برای جزئیات رویدادها.</p>
+
+<h3 id="سناریوهای-عملیاتی-تلهمتری">سناریوهای عملیاتی</h3>
+
+<ul>
+<li><strong>شناسایی سرویس کند در زنجیره درخواست:</strong> وقتی کاربران از کندی پاسخ‌دهی شکایت دارند، <bdi dir="ltr">trace</bdi> به شما نشان می‌دهد کدام سرویس در زنجیره بیشترین زمان را مصرف کرده. مثلاً اگر <bdi dir="ltr">api.GetUserInfo</bdi> در نمودار بالا ۱۸۰ میلی‌ثانیه طول بکشد در حالی که سایر سرویس‌ها زیر ۱۰۰ میلی‌ثانیه هستند، مشکل در <bdi dir="ltr">user service</bdi> است. با اضافه‌کردن <bdi dir="ltr">span</bdi>‌های دقیق‌تر (مثل <bdi dir="ltr">db.Query</bdi> و <bdi dir="ltr">cache.Lookup</bdi>) می‌توانید دقیقاً ببینید کدام عملیات درون سرویس کند است.</li>
+<li><strong>کشف الگوی <bdi dir="ltr">N+1 query</bdi> در <bdi dir="ltr">trace</bdi>‌ها:</strong> اگر در یک <bdi dir="ltr">trace</bdi> ده‌ها <bdi dir="ltr">span</bdi> تکراری با نام <bdi dir="ltr">db.Query</bdi> ببینید، احتمالاً با مشکل <bdi dir="ltr">N+1</bdi> مواجه هستید. یعنی به‌جای یک کوئری <bdi dir="ltr">JOIN</bdi>، برای هر آیتم یک کوئری جداگانه اجرا می‌شود. این الگو با بررسی <bdi dir="ltr">trace</bdi> در <bdi dir="ltr">Grafana</bdi> به‌سرعت قابل تشخیص است و معمولاً با <bdi dir="ltr">eager loading</bdi> یا <bdi dir="ltr">batch query</bdi> حل می‌شود.</li>
+<li><strong>افزودن <bdi dir="ltr">span</bdi> سفارشی برای منطق کسب‌وکار:</strong> علاوه بر <bdi dir="ltr">auto-instrumentation</bdi>، باید <bdi dir="ltr">span</bdi> دستی برای عملیات کسب‌وکار مهم اضافه کنید. مثلاً <code>tracer.Start(ctx, "calculate_pricing")</code> یا <code>tracer.Start(ctx, "validate_inventory")</code>. این <bdi dir="ltr">span</bdi>‌ها به شما نشان می‌دهند کدام بخش از منطق کسب‌وکار زمان‌بر است و آیا نیاز به بهینه‌سازی دارد.</li>
+<li><strong>استراتژی‌های نمونه‌برداری (<bdi dir="ltr">sampling</bdi>):</strong> در سیستم‌های پرترافیک ثبت تمام <bdi dir="ltr">trace</bdi>‌ها غیرعملی است. نمونه‌برداری مبتنی بر سر (<bdi dir="ltr">head-based sampling</bdi>) در ابتدای درخواست تصمیم می‌گیرد آیا این <bdi dir="ltr">trace</bdi> ثبت شود یا خیر — مزیت آن سادگی است اما ممکن است <bdi dir="ltr">trace</bdi>‌های خطادار را از دست بدهید. نمونه‌برداری مبتنی بر دم (<bdi dir="ltr">tail-based sampling</bdi>) پس از پایان درخواست تصمیم می‌گیرد و می‌تواند تمام <bdi dir="ltr">trace</bdi>‌های خطادار یا کند را ثبت کند — اما به زیرساخت پیچیده‌تری نیاز دارد.</li>
+<li><strong>همبستگی <bdi dir="ltr">trace</bdi> با لاگ و متریک:</strong> برای عیب‌یابی کامل باید بتوانید از <bdi dir="ltr">trace</bdi> به لاگ و متریک پرش کنید. با افزودن <code>trace_id</code> به هر رکورد لاگ و <code>trace_id</code> به <bdi dir="ltr">exemplar</bdi>‌های متریک، در <bdi dir="ltr">Grafana</bdi> می‌توانید از نمودار متریک مستقیماً به <bdi dir="ltr">trace</bdi> مربوطه و سپس به لاگ‌های همان درخواست بروید. این همبستگی سه‌جانبه کلید <bdi dir="ltr">observability</bdi> واقعی است.</li>
+</ul>
+
+<div class="tip"><strong>سه رکن <bdi dir="ltr">Observability</bdi> و زمان استفاده از هر یک:</strong> <bdi dir="ltr">Tracing</bdi> برای پاسخ به «چرا این درخواست کند است؟» — مسیر کامل یک درخواست را در بین سرویس‌ها نشان می‌دهد و گلوگاه‌ها را مشخص می‌کند. <bdi dir="ltr">Metrics</bdi> برای پاسخ به «چند خطا در دقیقه رخ می‌دهد؟» — اعداد تجمیعی مانند نرخ خطا، زمان پاسخ‌دهی و تعداد درخواست‌ها را در بلندمدت نشان می‌دهد و روند تغییرات را آشکار می‌سازد. <bdi dir="ltr">Logging</bdi> برای پاسخ به «دقیقاً چه اتفاقی افتاد؟» — جزئیات کامل هر رویداد شامل مقادیر متغیرها، پیام خطا و زمینه اجرا را ثبت می‌کند. هر سه باید با <bdi dir="ltr">trace_id</bdi> همبسته شوند تا بتوانید از هر یک به دیگری پرش کنید و تصویر کاملی از رفتار سیستم داشته باشید.</div>
+
+</div>
+</div>
+
+<!-- Footer -->
+<footer class="site-footer">
+<div class="footer-inner">
+<div class="footer-nav">
+<span class="nav-arrow">‹</span>
+<a href="09.02-prometheus-and-grafana.html" data-prev>۹.۲ Prometheus و Grafana</a>
+</div>
+<div class="footer-toc">
+<a href="00.01-contents.html">فهرست</a>
+</div>
+<div class="footer-nav">
+<a href="10.00-chapter-10.html" data-next>۱۰. دیباگ و ریشه‌یابی</a>
+<span class="nav-arrow">›</span>
+</div>
+</div>
+</footer>
+
+<!-- Back to Top -->
+<button class="back-to-top" aria-label="بازگشت به بالا">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
+</button>
+
+<!-- Scripts -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/go.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/php.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/sql.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/yaml.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/json.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/dockerfile.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/xml.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/ini.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/plaintext.min.js"></script>
+<script src="assets/js/main.js"></script>
+</body>
+</html>

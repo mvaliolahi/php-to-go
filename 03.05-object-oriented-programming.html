@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="fa">
+<head>
+<script>!function(){try{var t=localStorage.getItem('php2go-theme');if(t==='dark'||(!t&&window.matchMedia('(prefers-color-scheme:dark)').matches)){document.documentElement.setAttribute('data-theme','dark')}}catch(e){}}();</script>
+<meta charset="utf-8"/>
+<meta content="ie=edge" http-equiv="x-ua-compatible"/>
+<title>۳.۵ شی‌گرایی — PHP to Go</title>
+<meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet"/>
+<link href="assets/css/main.css" rel="stylesheet" type="text/css"/>
+<link href="assets/img/favicon.ico" rel="icon" type="image/x-icon"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" media="screen" class="hljs-light-theme" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css" media="not screen" class="hljs-dark-theme" rel="stylesheet"/>
+</head>
+<body>
+<!-- Progress Bar -->
+<div class="progress-bar"><div class="progress-bar__fill"></div></div>
+
+<!-- Header -->
+<header class="site-header">
+<div class="header-inner">
+<div class="header-left">
+<button class="header-btn sidebar-toggle" aria-label="فهرست">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+</button>
+<a href="00.00-front-matter.html" class="header-logo"><span class="logo-php">PHP</span> to <span class="logo-go">Go</span></a>
+<span class="header-crumbs">پکیج‌ها، ماژول‌ها و شی‌گرایی › شی‌گرایی</span>
+</div>
+<div class="header-right">
+<nav class="header-nav">
+<span class="nav-arrow">‹</span>
+<a href="03.04-understanding-program-lifecycle.html"><span class="nav-label">۳.۴ درک چرخه‌ی حیات برنامه</span></a>
+<a href="00.01-contents.html">فهرست</a>
+<a href="03.06-interface.html"><span class="nav-label">۳.۶ Interface</span></a>
+<span class="nav-arrow">›</span>
+</nav>
+<button class="header-btn search-toggle" aria-label="جستجو">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+</button>
+<button class="header-btn theme-toggle" aria-label="تغییر تم">
+<svg class="theme-icon-light" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+<svg class="theme-icon-dark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+</button>
+</div>
+</div>
+</header>
+
+<!-- Search Modal -->
+<div class="search-overlay">
+<div class="search-modal">
+<div class="search-input-wrap">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+<input type="text" class="search-input" placeholder="جستجو... (Ctrl+K)" dir="rtl"/>
+</div>
+<div class="search-results"></div>
+</div>
+</div>
+
+<!-- Layout -->
+<div class="site-layout">
+<!-- Sidebar -->
+<aside class="sidebar"></aside>
+<div class="sidebar-overlay"></div>
+
+<!-- Main Content -->
+<main class="content-area">
+<div class="content-wrap text">
+<div class="chapter">فصل ۳.۵</div>
+<h2 id="شیگرایی">شی‌گرایی</h2>
+<p>برنامه‌نویسی شی‌گرا یکی از ارکان اصلی توسعه نرم‌افزار مدرن است. در زبان‌هایی مانند PHP، Java یا C# مفاهیمی چون کلاس‌ها، وراثت، چندریختی، اینترفیس‌ها و کپسوله‌سازی به‌عنوان اجزای جدانشدنی OOP شناخته می‌شوند. این مفاهیم طی دهه‌ها به توسعه‌دهندگان کمک کرده‌اند تا نرم‌افزارهایی قابل نگهداری، مقیاس‌پذیر و توسعه‌پذیر طراحی کنند.</p>
+<p>اما Go با فلسفه‌ای متفاوت متولد شد. طراحان Go به‌جای تکرار مستقیم همان الگوهای سنتی تلاش کردند زبان را ساده، کاربردی و سازگار با نیازهای مقیاس‌پذیری امروزی به‌ویژه در حوزه‌ی سیستم‌های توزیع‌شده و سرویس‌های ابری طراحی کنند. در نتیجه Go به‌جای پیاده‌سازی سنتی شی‌گرایی رویکردی ترکیبی و مینیمالیستی را ارائه می‌دهد که در این دیگر خبری از کلاس‌ها نیست بلکه struct‌ها به‌عنوان بلوک‌های اصلی داده عمل می‌کنند وبه‌جای وراثت چندسطحی و پیچیده، ترکیب یعنی ساختن رفتارهای پیچیده با کنار هم قرار دادن اجزای ساده‌تر اصل کلیدی است.</p>
+<p>interface‌ها در Go هم وجود دارند و هم یکی از قدرتمندترین ابزارهای این زبان هستند چون تعریف آن‌ها ضمنی است و نیاز به پیاده‌سازی اجباری و رسمی مانند PHP یا Java ندارند. کپسوله‌سازی نیز در Go با مکانیزم ساده‌ی public/private بر اساس حروف بزرگ یا کوچک مدیریت می‌شود. این رویکرد باعث می‌شود شی‌گرایی در Go هم ساده‌تر و هم برای معماری‌های مدرن منعطف‌تر و مناسب‌تر باشد. شما کمتر درگیر سلسله‌مراتب پیچیده می‌شوید و بیشتر روی طراحی رفتار و قابلیت استفاده مجدد از کد تمرکز می‌کنید. در این بخش از کتاب شما با مفاهیم اصلی شی‌گرایی در Go آشنا خواهید شد:</p>
+<p>استفاده از structها به‌عنوان واحد داده و مدل‌سازی اشیاء.</p>
+<p>ترکیب structها برای ساخت ساختارهای بزرگ‌تر و قابل استفاده مجدد.</p>
+<p>تعریف رفتار با interfaceها و درک قدرت پیاده‌سازی ضمنی در Go.</p>
+<p>ایجاد توابع Factory برای ساخت آبجکت‌ها.</p>
+<p>مدیریت دسترسی به داده‌ها و پیاده‌سازی کپسوله‌سازی.</p>
+<p>هدف این بخش این است که پس از پایان مطالعه شما بتوانید با اطمینان structها و interfaceهایی طراحی کنید که هم نیاز فعلی پروژه را پوشش دهند و هم در آینده نیز قابل نگهداری، توسعه‌پذیر و خوانا باشند.</p>
+<h3 id="struct">struct</h3>
+
+<div class="quote-box">
+    <p class="quote-text">متأسفم که مدت‌ها پیش اصطلاح «اشیاء» را برای این موضوع ابداع کردم، زیرا باعث می‌شود بسیاری روی ایده کم‌اهمیت‌تر تمرکز کنند. ایده بزرگ پیام‌رسانی است. کلید ساخت سیستم‌های بزرگ و قابل رشد، بسیار بیشتر طراحی نحوه ارتباط ماژول‌هاست تا نحوه تعامل ویژگی‌های داخلی آن‌ها.</p>
+    <p class="quote-source">
+        <span class="quote-author">Alan Kay</span>
+        <span class="quote-role">خالق مفهوم شی‌گرایی</span>
+        <span class="quote-separator">|</span>
+        <span class="quote-book">Email to Squeak mailing list, 1998</span>
+    </p>
+</div>
+<p>همانطور که گفته شد در Go خبری از کلاس نیست و به جای آن نوع داده‌ای به نام struct وجود دارد که مجموعه‌ای از فیلدهای داده‌ای را کنار هم قرار می‌دهد. می‌توان struct را مشابه کلاس‌های ساده در PHP دانست. برای درک این مفهوم به شکل ۴-۳ توجه کنید.</p>
+
+<figure class="diagram" dir="ltr">
+<svg height="280" viewBox="0 0 700 280" width="700" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<marker id="arrMRPHP" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#777BB4" points="0 0, 10 3.5, 0 7"></polygon></marker>
+<marker id="arrMRGo" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#00ADD8" points="0 0, 10 3.5, 0 7"></polygon></marker>
+</defs>
+<rect fill="#fafafa" height="280" rx="8" width="700" x="0" y="0"></rect>
+<text fill="#00ADD8" font-size="15" font-weight="bold" text-anchor="middle" x="350" y="25" direction="rtl" unicode-bidi="embed">ترتیب جستجوی متد: <tspan direction="ltr" unicode-bidi="embed">PHP</tspan> در برابر <tspan direction="ltr" unicode-bidi="embed">Go</tspan></text>
+<!-- PHP side -->
+<rect fill="#f3e5f5" height="220" rx="12" stroke="#777BB4" stroke-width="2" width="310" x="10" y="45"></rect>
+<text fill="#777BB4" font-size="13" font-weight="bold" text-anchor="middle" x="165" y="68" direction="ltr" unicode-bidi="embed">PHP: Method Resolution</text>
+<!-- PHP chain -->
+<rect fill="#fff" height="32" rx="6" stroke="#777BB4" stroke-width="1.5" width="200" x="65" y="82"></rect>
+<text fill="#777BB4" font-size="11" text-anchor="middle" x="165" y="103" direction="ltr" unicode-bidi="embed">Admin::method()</text>
+<rect fill="#fff" height="32" rx="6" stroke="#777BB4" stroke-width="1.5" width="200" x="65" y="125"></rect>
+<text fill="#777BB4" font-size="11" text-anchor="middle" x="165" y="146" direction="ltr" unicode-bidi="embed">User::method()</text>
+<rect fill="#fff" height="32" rx="6" stroke="#777BB4" stroke-width="1.5" width="200" x="65" y="168"></rect>
+<text fill="#777BB4" font-size="11" text-anchor="middle" x="165" y="189" direction="ltr" unicode-bidi="embed">BaseModel::method()</text>
+<line marker-end="url(#arrMRPHP)" stroke="#777BB4" stroke-width="1.5" x1="165" x2="165" y1="114" y2="125"></line>
+<line marker-end="url(#arrMRPHP)" stroke="#777BB4" stroke-width="1.5" x1="165" x2="165" y1="157" y2="168"></line>
+<text fill="#e74c3c" font-size="10" text-anchor="middle" x="165" y="220" direction="ltr" unicode-bidi="embed">parent::method() → زنجیره‌ای</text>
+<text fill="#e74c3c" font-size="10" text-anchor="middle" x="165" y="237" direction="rtl" unicode-bidi="embed">تغییر والد = شکست فرزند</text>
+<text fill="#777BB4" font-size="9" text-anchor="middle" x="165" y="258" direction="ltr" unicode-bidi="embed">(is-a relationship)</text>
+<!-- Go side -->
+<rect fill="#e0f7fa" height="220" rx="12" stroke="#00ADD8" stroke-width="2" width="360" x="330" y="45"></rect>
+<text fill="#00ADD8" font-size="13" font-weight="bold" text-anchor="middle" x="510" y="68" direction="ltr" unicode-bidi="embed">Go: Method Resolution</text>
+<!-- Go interface -->
+<rect fill="#fff3e0" height="32" rx="6" stroke="#f39c12" stroke-width="2" width="300" x="360" y="82"></rect>
+<text fill="#e65100" font-size="11" font-weight="bold" text-anchor="middle" x="510" y="103" direction="ltr" unicode-bidi="embed">interface { Method() }</text>
+<!-- Go structs -->
+<rect fill="#fff" height="32" rx="6" stroke="#00ADD8" stroke-width="1.5" width="140" x="360" y="132"></rect>
+<text fill="#00ADD8" font-size="11" text-anchor="middle" x="430" y="153" direction="ltr" unicode-bidi="embed">Admin struct</text>
+<rect fill="#fff" height="32" rx="6" stroke="#00ADD8" stroke-width="1.5" width="140" x="520" y="132"></rect>
+<text fill="#00ADD8" font-size="11" text-anchor="middle" x="590" y="153" direction="ltr" unicode-bidi="embed">User struct</text>
+<line stroke="#00ADD8" stroke-dasharray="4,3" stroke-width="1" x1="430" x2="440" y1="132" y2="114"></line>
+<line stroke="#00ADD8" stroke-dasharray="4,3" stroke-width="1" x1="590" x2="530" y1="132" y2="114"></line>
+<!-- Method implementations -->
+<rect fill="#e8f5e9" height="28" rx="4" stroke="#27ae60" stroke-width="1" width="130" x="365" y="178"></rect>
+<text fill="#27ae60" font-size="10" text-anchor="middle" x="430" y="197" direction="ltr" unicode-bidi="embed">Admin.Method()</text>
+<rect fill="#e8f5e9" height="28" rx="4" stroke="#27ae60" stroke-width="1" width="130" x="525" y="178"></rect>
+<text fill="#27ae60" font-size="10" text-anchor="middle" x="590" y="197" direction="ltr" unicode-bidi="embed">User.Method()</text>
+<text fill="#27ae60" font-size="10" text-anchor="middle" x="510" y="228" direction="ltr" unicode-bidi="embed">مستقل — بدون زنجیره</text>
+<text fill="#27ae60" font-size="10" text-anchor="middle" x="510" y="245" direction="rtl" unicode-bidi="embed">تغیر یکی، بقیه بی‌تأثیر</text>
+<text fill="#00ADD8" font-size="9" text-anchor="middle" x="510" y="258" direction="ltr" unicode-bidi="embed">(interface + struct — has-a)</text>
+</svg>
+<figcaption dir="rtl">شکل ۵-۳-ب: ترتیب جستجوی متد در <bdi dir="ltr">PHP</bdi> (زنجیره‌ی ارث‌بری) در برابر <bdi dir="ltr">Go</bdi> (<bdi dir="ltr">interface</bdi> + <bdi dir="ltr">struct</bdi> مستقل)</figcaption>
+</figure>
+
+
+<figure class="diagram" dir="ltr">
+<svg height="280" viewBox="0 0 600 280" width="600" xmlns="http://www.w3.org/2000/svg">
+<text fill="#555" font-size="15" font-weight="bold" text-anchor="middle" x="300" y="25" direction="rtl" unicode-bidi="embed">شی‌گرایی: <tspan direction="ltr" unicode-bidi="embed">PHP</tspan> <tspan direction="ltr" unicode-bidi="embed">vs</tspan> <tspan direction="ltr" unicode-bidi="embed">Go</tspan></text>
+<!-- PHP -->
+<rect fill="#f3e5f5" height="230" rx="12" stroke="#777BB4" stroke-width="2" width="280" x="10" y="40"></rect>
+<text fill="#777BB4" font-size="14" font-weight="bold" text-anchor="middle" x="150" y="65" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">PHP</tspan> — <tspan direction="ltr" unicode-bidi="embed">OOP</tspan> کلاسیک</text>
+<text fill="#333" font-size="12" x="30" y="90" direction="rtl" unicode-bidi="embed">کلاس و شیء</text>
+<text fill="#333" font-size="12" x="30" y="110" direction="rtl" unicode-bidi="embed">وراثت (<tspan direction="ltr" unicode-bidi="embed">extends</tspan>)</text>
+<text fill="#333" font-size="12" x="30" y="130" direction="ltr" unicode-bidi="embed">Interface (implements)</text>
+<text fill="#333" font-size="12" x="30" y="150" direction="ltr" unicode-bidi="embed">public/private/protected</text>
+<text fill="#333" font-size="12" x="30" y="170" direction="ltr" unicode-bidi="embed">Trait</text>
+<text fill="#333" font-size="12" x="30" y="190" direction="ltr" unicode-bidi="embed">Constructor (__construct())</text>
+<text fill="#333" font-size="12" x="30" y="210" direction="ltr" unicode-bidi="embed">Abstract Class</text>
+<text fill="#333" font-size="12" x="30" y="230" direction="ltr" unicode-bidi="embed">Magic Methods</text>
+<text fill="#777BB4" font-size="11" x="30" y="255" direction="rtl" unicode-bidi="embed">سلسله‌مراتب عمیق، <tspan direction="ltr" unicode-bidi="embed">coupling</tspan> بالا</text>
+<!-- Go -->
+<rect fill="#e0f7fa" height="230" rx="12" stroke="#00ADD8" stroke-width="2" width="280" x="310" y="40"></rect>
+<text fill="#00ADD8" font-size="14" font-weight="bold" text-anchor="middle" x="450" y="65" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">Go</tspan> — <tspan direction="ltr" unicode-bidi="embed">OOP</tspan> مینیمال</text>
+<text fill="#333" font-size="12" x="330" y="90" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">struct</tspan> (به‌جای کلاس)</text>
+<text fill="#333" font-size="12" x="330" y="110" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">Composition</tspan> (به‌جای وراثت)</text>
+<text fill="#333" font-size="12" x="330" y="130" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">Interface</tspan> ضمنی</text>
+<text fill="#333" font-size="12" x="330" y="150" direction="ltr" unicode-bidi="embed">Exported/Unexported</text>
+<text fill="#333" font-size="12" x="330" y="170" direction="ltr" unicode-bidi="embed">Embedding</text>
+<text fill="#333" font-size="12" x="330" y="190" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">NewX()</tspan>(به‌جای constructor)</text>
+<text fill="#333" font-size="12" x="330" y="210" direction="rtl" unicode-bidi="embed">بدون ارث‌بری</text>
+<text fill="#333" font-size="12" x="330" y="230" direction="rtl" unicode-bidi="embed">بدون <tspan direction="ltr" unicode-bidi="embed">Trait</tspan> / <tspan direction="ltr" unicode-bidi="embed">Magic</tspan> <tspan direction="ltr" unicode-bidi="embed">Method</tspan></text>
+<text fill="#00ADD8" font-size="11" x="330" y="255" direction="rtl" unicode-bidi="embed">ترکیب ساده، <tspan direction="ltr" unicode-bidi="embed">coupling</tspan> پایین</text>
+</svg>
+<figcaption>شکل ۴-۳: مقایسه‌ی شی‌گرایی در <bdi dir="ltr">PHP</bdi> و <bdi dir="ltr">Go</bdi></figcaption>
+</figure>
+<p>حال به پیاده سازی این struct دقت کنید:</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">package main
+import "fmt"
+type Person struct {
+    Name string
+    Age int
+    IsAdult bool
+}
+func main() {
+    p1 := Person{Name: "Alice", Age: 30, IsAdult: true}
+    fmt.Println("Name:", p1.Name)
+    fmt.Println("Age:", p1.Age)
+    // Modify a field
+    p1.Age = 31
+    fmt.Println("New Age:", p1.Age)
+    var p2 Person
+    fmt.Println("Default Name:", p2.Name) // Output: ""
+    fmt.Println("Default Age:", p2.Age) // Output: 0
+}
+</code></pre>
+</figure>
+<ul>
+<li>تعریف استراکتی با اسم Person</li>
+<li>ساخت یک نمونه از استراکت</li>
+<li>دسترسی به فیلدهای استراکت</li>
+<li>ساخت یک نمونه با مقادیر اولیه یا zero values.</li>
+</ul>
+<p>هر نمونه از این struct یک آبجکت مستقل خواهد بود که سه فیلد Name و Age و IsAdult را دارد. این struct می‌تواند شامل متدهای و فیلدهای خصوصی و یا عمومی باشد که در ادامه توضیح داده خواهند شد.</p>
+<h4 id="اتصال-متد-به-struct">اتصال متد به struct</h4>
+<p>برای اینکه یک struct رفتار داشته باشد می‌توان متدهایی برای آن تعریف کرد:</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">func (p Person) Sample() string {
+    return "Sample: " + p.Name
+}
+</code></pre>
+</figure>
+<p>(p Person) را Receiver می گویند و به زبان ساده Receiver همان نقشی را دارد که this$ در PHP ایفا می‌کند یعنی همان شیء جاری که متد روی آن صدا زده شده است. نهایتا وقتی این متد تعریف شد می‌توانید آن روی نمونه struct خود به این صورت صدا بزنید:
+</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">person := Person{Name: "Meysam"}
+fmt.Println(person.Sample()) // Output: "Sample: Meysam"
+</code></pre>
+</figure>
+<p>در حقیقت Receiver مشخص می‌کند این متد به کدام struct تعلق دارد هر struct می‌تواند چندین متد داشته باشد و این متدها می‌توانند به شرطی که همه در یک package باشند در فایل‌های مختلف نوشته شوند. بر خلاف PHP که همه متدها باید داخل همان کلاس تعریف شوند در Go انعطاف بیشتری دارید و می‌توانید متدها را حتی خارج از فایل تعریف struct هم بنویسید.</p>
+<h4 id="متدهای-pointer-و-value">متدهای Pointer و Value</h4>
+<p>متدهای روی struct می‌توانند به دو صورت تعریف شوند متدهای <strong dir="ltr">value receiver</strong> که روی کپی struct عمل می‌کند و مقدار فیلد های struct را تغییر نمی‌دهند.</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">func (u User) PrintName() { // Value Receiver
+    fmt.Println(u.Name)
+}
+
+func (u *User) Rename(newName string) { // Pointer Receiver
+    u.Name = newName
+}
+</code></pre>
+</figure>
+<p>و متدهای pointer receiver که روی مقدار اصلی struct عمل می‌کند. زمانی که می‌خواهید فیلدی از struct را تغییر دهید باید متد را با pointer receiver تعریف کنید.</p>
+<h4 id="قواعد-method-set">قواعد Method Set</h4>
+<p>از مهم‌ترین و ظریف‌ترین مفاهیم در Go که برنامه‌نویسان PHP باید عمیقاً درک کنند، <strong>قواعد Method Set</strong> است. این قواعد تعیین می‌کنند که کدام متدها روی کدام نوع قابل دسترسی هستند:</p>
+<p><strong>قانون اصلی:</strong></p>
+<p>اگر متد با <strong dir="ltr">pointer receiver</strong> تعریف شده باشد (<code>*User</code>)، فقط <strong>اشاره‌گر</strong> (<code>*User</code>) می‌تواند آن متد را فراخوانی کند.</p>
+<p>اگر متد با <strong dir="ltr">value receiver</strong> تعریف شده باشد (<code>User</code>)، هم <strong>مقدار</strong> (<code>User</code>) و هم <strong>اشاره‌گر</strong> (<code>*User</code>) می‌توانند آن را فراخوانی کنند.</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">type User struct {
+    Name string
+}
+
+// Value Receiver — callable on *User and User
+func (u User) PrintName() string {
+    return u.Name
+}
+
+// Pointer Receiver — only callable on *User
+func (u *User) Rename(newName string) {
+    u.Name = newName
+}
+</code></pre>
+</figure>
+<div class="important"><strong>نکته حیاتی درباره‌ی interface:</strong> این قواعد هنگام اختصاص مقدار به interface بسیار مهم می‌شوند. اگر interface شما متدی با pointer receiver داشته باشد، <strong>نمی‌توانید</strong> مقدار value را به interface اختصاص دهید:
+
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">type Renamer interface {
+    Rename(newName string)
+}
+
+var u User // value
+var p *User = &amp;u // pointer
+
+var r Renamer
+
+r = u // Wrong — compile error! User doesn't have Rename in method set
+r = p // Correct! *User has Rename in method set
+</code></pre>
+</figure>
+<p>دلیل این رفتار این است که اگر Go اجازه دهد مقدار <code>User</code> به interface اختصاص یابد، فراخوانی <code>Rename</code> روی یک <strong>کپی</strong> انجام می‌شود و تغییرات روی مقدار اصلی اعمال نمی‌شود. این رفتار نادرست و گمراه‌کننده خواهد بود.</p>
+</div>
+<h4 id="دریافت-خودکار-آدرس-توسط-کامپایلر">دریافت خودکار آدرس توسط کامپایلر</h4>
+<p>Go در برخی موارد به‌صورت خودکار آدرس متغیر را محاسبه می‌کند. وقتی مقداری دارید که addressable است و می‌خواهید متدی با pointer receiver را روی آن فراخوانی کنید، کامپایلر خودکار آدرس آن را می‌گیرد:</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">u := User{Name: "Ali"}
+u.Rename("Bob") // compiler automatically converts it to (&amp;u).Rename("Bob")
+
+// but non-addressable values don't have this option:
+User{Name: "Ali"}.Rename("Bob") // Wrong — error! literal value is not addressable
+</code></pre>
+</figure>
+<div class="tip"><strong>قانون کلی:</strong> اگر مطمئن نیستید از value receiver استفاده کنید یا pointer receiver، از <strong dir="ltr">pointer receiver</strong> استفاده کنید. دلایل: ۱) امکان تغییر مقدار، ۲) سازگاری با interface ها، ۳) کارایی بهتر برای struct های بزرگ (از کپی‌شدن جلوگیری می‌کند). فقط زمانی از value receiver استفاده کنید که: الف) مقدار کوچک است (مثل <code dir="ltr">time.Time</code>)، ب) immutable است و پ) هیچ نیازی به pointer receiver نیست.</div>
+<h4 id="method-value-و-method-expression">Method Value و Method Expression</h4>
+<p>در Go دو راه برای فراخوانی متد وجود دارد که هر دو در PHP معادل مستقیمی ندارند:</p>
+<p><strong dir="ltr">Method Value:</strong> وقتی متد را روی یک نمونه‌ی خاص فراخوانی می‌کنید، یک closure تولید می‌شود که receiver در آن bound شده است:</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">u := User{Name: "Ali"}
+
+// Method Value — a function with its receiver already specified
+f := u.PrintName // f is a closure with u bound to it
+fmt.Println(f()) // Output: Ali
+
+// Usage: passing method as callback function
+users := []User{{"Ali"}, {"Bob"}, {"Carol"}}
+// Convert each User to its name
+names := Map(users, User.PrintName) // method expression
+</code></pre>
+</figure>
+<p><strong dir="ltr">Method Expression:</strong> وقتی متد را از طریق نوع فراخوانی می‌کنید (بدون نمونه)، receiver باید به‌عنوان آرگومان اول ارسال شود:</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">// Method Expression — receiver as first argument
+f := User.PrintName // f has signature func(User) string
+fmt.Println(f(User{Name: "Ali"})) // Output: Ali
+
+// Pointer receiver method expression
+f2 := (*User).Rename
+f2(&amp;u, "NewName") // equivalent to u.Rename("NewName")
+</code></pre>
+</figure>
+<div class="comparison"><strong>مقایسه با PHP:</strong> در PHP متدها همیشه روی نمونه فراخوانی می‌شوند (<code dir="ltr">$obj-&gt;method()</code>) یا به‌صورت static (<code dir="ltr">Class::method()</code>). Go این مفهوم را با method value و method expression بسیار انعطاف‌پذیرتر کرده است. Method value مشابه <code dir="ltr">Closure::fromCallable([$obj, 'method'])</code> در PHP است و method expression مشابه <code>[User::class, 'methodName']</code> اما با تایپ‌سیستم قوی‌تر.</div>
+<h4 id="تگ">تگ</h4>
+<p>علاوه بر تعریف فیلدها، struct امکان افزودن توضیحات متادیتا به هر فیلد را نیز دارد. این اطلاعات اضافی که در قالب Tag یا برچسب تعریف می‌شوند به ابزارهای خارجی یا توابع استاندارد کمک می‌کنند تا رفتار خاصی در قبال هر فیلد داشته باشند. با استفاده‌ی مناسب از Tag ها می‌توان بدون اینکه نیاز به منطق اضافی یا تنظیمات پیچیده باشد کدهای تمیزتر، قابل‌توسعه‌تر و سازگار با ابزارهای مختلف تولید کرد. تگ شباهت مفهومی زیادی به Attributes در PHP از نسخه 8 به بعد دارد.</p>
+<p>تگ‌ها اغلب در مواقعی به کار می‌روند که بخواهیم ساختار داده‌ی خود را به‌صورت <strong>خودکار به یک فرمت دیگر تبدیل کنیم</strong> مثلاً:
+</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">// Convert to/from JSON (with encoding/json package)
+</code></pre>
+</figure>
+<p>تعریف ویژگی‌های فیلد برای پایگاه داده (ORMها مثل gorm)</p>
+<p>پردازش فرم‌های HTML یا داده‌های ورودی</p>
+<p>تعیین ویژگی‌های اعتبارسنجی</p>
+<p><strong>ساختار کلی یک</strong> <strong dir="ltr">Tag</strong></p>
+<p>تگ‌ها رشته‌هایی هستند که معمولاً به‌صورت key-value تعریف می‌شوند. اگرچه خود Go کاری با آن‌ها ندارد اما کتابخانه‌های دیگر می‌توانند آن‌ها را بخوانند.</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">FieldName type `key1:"value1" key2:"value2"`
+</code></pre>
+</figure>
+<p>مثال:</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">type Product struct {
+    Title string `json:"title" form:"title" validate:"required"`
+}
+</code></pre>
+</figure>
+<p>در این مثال یک فیلد Title سه برچسب دارد:</p>
+<p>برای JSON</p>
+<p>برای فرم HTML</p>
+<p>برای اعتبارسنجی</p>
+<p><strong>مثال استفاده از تگ در</strong> <strong dir="ltr">JSON</strong></p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">type User struct {
+    ID int `json:"id"`
+    Name string `json:"name"`
+    Email string `json:"email,omitempty"`
+}
+</code></pre>
+</figure>
+<p>در مثال بالا:</p>
+<p>عبارت داخل بک‌تیک `...` یک تگ است.</p>
+<p>json:"name" مشخص می‌کند که هنگام تبدیل به JSON فیلد Name به‌صورت name نمایش داده شود. گزینه omitempty باعث می‌شود اگر مقدار فیلد Email تهی باشد در خروجی JSON حذف شود.</p>
+<p><strong>خواندن</strong> <strong dir="ltr">Tag ها</strong></p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">t := reflect.TypeOf(User{})
+field, _ := t.FieldByName("Name")
+fmt.Println(field.Tag.Get("json")) // Output: name
+</code></pre>
+</figure>
+<p>اگر بخواهید در کد تگ‌ها را به‌صورت داینامیک بخوانید می‌توانید از پکیج reflect استفاده کنید:</p>
+<p><strong>نکات مهم</strong></p>
+<p>تگ‌ها فقط روی فیلدهای <strong dir="ltr">exported</strong> اعمال می‌شوند.</p>
+<p>اگر فیلدی تگ نداشته باشد ابزارهایی مثل encoding/json از نام پیش‌فرض فیلد استفاده می‌کنند.</p>
+<p>تگ‌ها فقط خواندنی هستند و نمی‌توان آن‌ها را در زمان اجرا تغییر داد.</p>
+<h3 id="ترکیب">ترکیب</h3>
+<p>در بسیاری از زبان‌ها مانند PHP وراثت از کلاس‌ها برای استفاده مجدد و ایجاد سلسله‌مراتب استفاده می‌شود. اما وراثت می‌تواند پیچیدگی‌های زیادی به وجود آورد و dependency ها را افزایش دهد. در Go به جای وراثت ترکیب یا embedding استفاده می‌شود.فرض کنید struct زیر را داریم:
+</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">type Address struct {
+    City string
+    Zip string
+}
+</code></pre>
+</figure>
+<p>و می‌خواهیم این اطلاعات آدرس را در struct کاربر بگنجانیم. به جای ارث‌بری به سادگی Address را درون User تعریف می‌کنیم:</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">type User struct {
+    Name string
+    Address // embedding
+}
+</code></pre>
+</figure>
+<p>در این حالت همه فیلدها و متدهای Address به صورت مستقیم روی User قابل دسترسی خواهند بود:
+</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">u := User{
+    Name: "Meysam",
+    Address: Address{City: "Tehran", Zip: "12345"},
+}
+fmt.Println(u.City) // Output: Tehran
+</code></pre>
+</figure>
+<p>ترکیب dependency ها را کاهش می‌دهد و به کد خوانایی و انعطاف بیشتری می‌بخشد و سلسله‌مراتب پیچیده کلاس‌ها را حذف می‌کند و به جای آن قابلیت‌های مورد نیاز را به صورت ماژولار به هم اضافه می‌کند و به شما این امکان را می‌دهد که چندین struct را در یک struct جدید ترکیب کنید چیزی که در وراثت چندگانه به صورت مستقیم امکان‌پذیر نیست.</p>
+<h4 id="embedding-در-برابر-composition">Embedding در برابر Composition</h4>
+<p>در Go دو راه برای استفاده‌ی مجدد از struct ها وجود دارد: <strong dir="ltr">Embedding</strong> (تعبیه) و <strong dir="ltr">Composition</strong> (ترکیب). تفاوت این دو ظریف اما بسیار مهم است:</p>
+<p><strong>Embedding:</strong> struct داخلی بدون نام تعریف می‌شود و فیلدها و متدهای آن <strong>ارتقا</strong> (promoted) می‌شوند — یعنی مستقیماً روی struct بیرونی قابل دسترسی هستند:</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">type Address struct {
+    City string
+    Zip string
+}
+
+// Embedding — without field name
+type User struct {
+    Name string
+    Address // City and Zip fields are directly accessible on User
+}
+
+u := User{Name: "Ali", Address: Address{City: "Tehran", Zip: "12345"}}
+fmt.Println(u.City) // direct access — promoted field
+fmt.Println(u.Address.City) // explicit access — always allowed
+</code></pre>
+</figure>
+<p><strong>Composition:</strong> struct داخلی با نام فیلد تعریف می‌شود و فیلدها و متدهای آن ارتقا <strong>نمی‌شوند</strong> :</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">// Composition — with field name
+type Employee struct {
+    Name string
+    Address Address // City and Zip fields are not directly accessible
+}
+
+e := Employee{Name: "Ali", Address: Address{City: "Tehran", Zip: "12345"}}
+// fmt.Println(e.City) // Wrong — error! City does not exist on Employee
+fmt.Println(e.Address.City) // Correct — accessible only through Address
+</code></pre>
+</figure>
+<div class="comparison"><strong>مقایسه با PHP:</strong> Embedding در Go شبیه Trait در PHP است — متدها و ویژگی‌ها «به بالا ارتقا» می‌شوند. اما تفاوت مهم این است که در PHP یک کلاس فقط می‌تواند Trait را use کند و نباید با constructor سازگار باشد. در Go Embedding یک رابطه‌ی «has-a» است (نه «is-a») اما با ارتقای متدها رفتار «is-a» را شبیه‌سازی می‌کند. Composition ساده‌تر است و مشابه داشتن یک پراپرتی از نوع کلاس دیگر در PHP.</div>
+<div class="warning"><strong>هشدار درباره‌ی Embedding:</strong> اگر struct بیرونی و داخلی هر دو فیلدی با نام یکسان داشته باشند، فیلد struct بیرونی اولویت دارد و فیلد struct داخلی <strong dir="ltr">shadow</strong> (سایه) می‌شود. همچنین متدهای promoted به interface کمک می‌کنند، اما فراخوانی متد promoted از داخل struct بیرونی <strong>همیشه receiver داخلی است</strong> ، نه بیرونی:
+
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">type Base struct{}
+
+func (b Base) Hello() string {
+    return "Hello from Base"
+}
+
+type Derived struct {
+    Base
+}
+
+func (d Derived) Greet() string {
+    // Here d.Hello() is called but its receiver is Base not Derived!
+    return d.Hello() + " (called from Derived)"
+}
+</code></pre>
+</figure>
+<p>این رفتار برخلاف وراثت در PHP است که در آن متدهای parent با <code dir="ltr">parent::method()</code> یا override می‌شوند یا به context کلاس فرزند دسترسی دارند.</p>
+</div>
+<h3 id="کپسولهسازی">کپسوله‌سازی</h3>
+<div class="quote-box">
+    <p class="quote-text">مهم‌ترین عامل در طراحی یک سیستم، نحوه‌ی جداسازی چیزهایی که تغییر می‌کنند از چیزهایی که ثابت می‌مانند است.</p>
+    <p class="quote-source">
+        <span class="quote-author">Uncle Bob</span>
+        <span class="quote-role">مهندس نرم‌افزار و نویسنده</span>
+        <span class="quote-separator">|</span>
+        <span class="quote-book">Clean Code</span>
+    </p>
+</div>
+<div class="tip">
+<strong>نکته‌ی حرفه‌ای:</strong> رویکرد <bdi dir="ltr">Go</bdi> به کپسوله‌سازی از طریق پکیج‌ها و شناسه‌های <bdi dir="ltr">unexported</bdi> (حرف کوچک)، متفاوت اما مؤثرتر از <code>private</code>/<code>protected</code> در <bdi dir="ltr">PHP</bdi> است. در <bdi dir="ltr">PHP</bdi> <code>protected</code> اجازه دسترسی زیرکلاس‌ها را می‌دهد و این یعنی جزئیات داخلی همچنان نشت می‌کند. اما در <bdi dir="ltr">Go</bdi> هر چیزی که با حرف کوچک شروع شود فقط در همان پکیج قابل دسترسی است — حتی فایل‌های دیگر همان پکیج هم دسترسی دارند اما پکیج‌های خارجی هرگز. این مرز مشخص‌تر باعث می‌شود تغییرات داخلی بدون ترس از شکستن مصرف‌کنندگان خارجی انجام شوند و اصل جداسازی تغییر از ثبات به‌طور طبیعی رعایت شود.
+</div>
+<p>در زبان‌هایی مانند PHP یا Java سطح دسترسی به اعضای کلاس از طریق کلمات کلیدی مانند public، private یا protected کنترل می‌شود. این کلمات تعیین می‌کنند که آیا یک فیلد یا متد از خارج کلاس یا پکیج قابل دسترسی است یا خیر اما در زبان Go کپسوله‌سازی به شکلی ساده‌تر و از طریق قواعد نام‌گذاری کنترل می‌شود.</p>
+<p>اگر نام یک <strong>فیلد یا متد با حرف بزرگ</strong> شروع شود آن عضو <strong dir="ltr">exported</strong> یا public در نظر گرفته می‌شود و از سایر پکیج‌ها نیز قابل دسترسی است.</p>
+<p>اگر نام با <strong>حرف کوچک</strong> شروع شود عضو <strong dir="ltr">unexported</strong> یا private خواهد بود و فقط در <strong>همان پکیج</strong> قابل استفاده است.</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">type User struct {
+    Name string // public
+    email string // private
+}
+</code></pre>
+</figure>
+<p>در مثال بالا فیلد Name از خارج پکیج نیز قابل دسترسی است اما email فقط درون همان پکیج قابل استفاده خواهد بود.</p>
+<h4 id="دسترسی-کنترلشده-با-getter-و-setter">دسترسی کنترل‌شده با Getter و Setter</h4>
+<p>این الگو مشابه getter/setter در PHP است و امکان کنترل و اعتبارسنجی داده‌ها در زمان دسترسی یا تغییر را فراهم می‌کند.
+</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">func (u *User) Email() string {
+    return u.email
+}
+func (u *User) SetEmail(e string) {
+    u.email = e
+}
+</code></pre>
+</figure>
+<p>این سبک کپسوله‌سازی ساده اما مؤثر است و در کنار طراحی ماژولار Go باعث کاهش dependency ها و افزایش خوانایی و قابلیت تست کد می‌شود.</p>
+
+<h3 id="وراثت-در-برابر-ترکیب">وراثت در برابر ترکیب: مقایسه‌ی عمیق</h3>
+<p>یکی از بزرگترین تغییرات ذهنی که برنامه‌نویسان PHP باید انجام دهند، گذاشتن از تفکر «وراثت» به تفکر «ترکیب» است. در PHP معمولاً سلسله‌مراتب وراثت عمیقی ساخته می‌شود: <code>Animal → Mammal → Dog</code>. اما در Go این الگو ضدالگوی (<bdi dir="ltr">anti-pattern</bdi>) محسوب می‌شود. به‌جای پرسش «Dog چه نوع Animal ای است؟» باید بپرسید «Dog چه رفتارهایی دارد؟»</p>
+
+<figure class="diagram" dir="ltr">
+<svg height="280" viewBox="0 0 700 280" width="700" xmlns="http://www.w3.org/2000/svg">
+<rect fill="#fafafa" height="280" rx="8" width="700" x="0" y="0"></rect>
+<defs>
+<marker id="arrInh" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#777BB4" points="0 0, 10 3.5, 0 7"></polygon></marker>
+<marker id="arrComp" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#00ADD8" points="0 0, 10 3.5, 0 7"></polygon></marker>
+</defs>
+<!-- PHP Inheritance -->
+<text fill="#777BB4" font-size="14" font-weight="bold" text-anchor="middle" x="175" y="25" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">PHP</tspan>: وراثت (<tspan direction="ltr" unicode-bidi="embed">Inheritance</tspan>)</text>
+<rect fill="#f3e5f5" height="40" rx="8" stroke="#777BB4" stroke-width="2" width="120" x="115" y="45"></rect>
+<text fill="#777BB4" font-size="13" font-weight="bold" text-anchor="middle" x="175" y="70" direction="ltr" unicode-bidi="embed">Animal</text>
+<rect fill="#f3e5f5" height="40" rx="8" stroke="#777BB4" stroke-width="2" width="120" x="45" y="120"></rect>
+<text fill="#777BB4" font-size="13" font-weight="bold" text-anchor="middle" x="105" y="145" direction="ltr" unicode-bidi="embed">Mammal</text>
+<rect fill="#f3e5f5" height="40" rx="8" stroke="#777BB4" stroke-width="2" width="120" x="195" y="120"></rect>
+<text fill="#777BB4" font-size="13" font-weight="bold" text-anchor="middle" x="255" y="145" direction="ltr" unicode-bidi="embed">Bird</text>
+<rect fill="#fce4ec" height="40" rx="8" stroke="#e74c3c" stroke-width="2" width="120" x="45" y="195"></rect>
+<text fill="#e74c3c" font-size="13" font-weight="bold" text-anchor="middle" x="105" y="220" direction="ltr" unicode-bidi="embed">Dog</text>
+<line marker-end="url(#arrInh)" stroke="#777BB4" stroke-width="2" x1="105" x2="155" y1="120" y2="85"></line>
+<line marker-end="url(#arrInh)" stroke="#777BB4" stroke-width="2" x1="255" x2="195" y1="120" y2="85"></line>
+<line marker-end="url(#arrInh)" stroke="#777BB4" stroke-width="2" x1="105" x2="105" y1="195" y2="160"></line>
+<text fill="#e74c3c" font-size="11" text-anchor="middle" x="175" y="265" direction="rtl" unicode-bidi="embed">سلسله‌مراتب عمیق، <tspan direction="ltr" unicode-bidi="embed">coupling</tspan> بالا، تغییر سخت</text>
+
+<!-- Go Composition -->
+<text fill="#00ADD8" font-size="14" font-weight="bold" text-anchor="middle" x="525" y="25" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">Go</tspan>: ترکیب (<tspan direction="ltr" unicode-bidi="embed">Composition</tspan>)</text>
+<rect fill="#e0f7fa" height="40" rx="8" stroke="#00ADD8" stroke-width="2" width="100" x="350" y="45"></rect>
+<text fill="#00ADD8" font-size="12" font-weight="bold" text-anchor="middle" x="400" y="70" direction="ltr" unicode-bidi="embed">Walker</text>
+<rect fill="#e0f7fa" height="40" rx="8" stroke="#00ADD8" stroke-width="2" width="100" x="475" y="45"></rect>
+<text fill="#00ADD8" font-size="12" font-weight="bold" text-anchor="middle" x="525" y="70" direction="ltr" unicode-bidi="embed">Swimmer</text>
+<rect fill="#e0f7fa" height="40" rx="8" stroke="#00ADD8" stroke-width="2" width="100" x="600" y="45"></rect>
+<text fill="#00ADD8" font-size="12" font-weight="bold" text-anchor="middle" x="650" y="70" direction="ltr" unicode-bidi="embed">Barker</text>
+<rect fill="#e8f5e9" height="45" rx="8" stroke="#27ae60" stroke-width="2" width="200" x="420" y="130"></rect>
+<text fill="#2e7d32" font-size="13" font-weight="bold" text-anchor="middle" x="520" y="148" direction="ltr" unicode-bidi="embed">Dog</text>
+<text fill="#666" font-size="10" text-anchor="middle" x="520" y="165" direction="ltr" unicode-bidi="embed">Walker + Swimmer + Barker</text>
+<line marker-end="url(#arrComp)" stroke="#00ADD8" stroke-width="1.5" x1="480" x2="425" y1="130" y2="85"></line>
+<line marker-end="url(#arrComp)" stroke="#00ADD8" stroke-width="1.5" x1="520" x2="525" y1="130" y2="85"></line>
+<line marker-end="url(#arrComp)" stroke="#00ADD8" stroke-width="1.5" x1="560" x2="625" y1="130" y2="85"></line>
+<rect fill="#e8f5e9" height="45" rx="8" stroke="#27ae60" stroke-width="2" width="200" x="420" y="210"></rect>
+<text fill="#2e7d32" font-size="13" font-weight="bold" text-anchor="middle" x="520" y="228" direction="ltr" unicode-bidi="embed">Duck</text>
+<text fill="#666" font-size="10" text-anchor="middle" x="520" y="245" direction="ltr" unicode-bidi="embed">Walker + Swimmer + Flyer</text>
+<text fill="#27ae60" font-size="11" text-anchor="middle" x="525" y="275" direction="rtl" unicode-bidi="embed">ترکیب انعطاف‌پذیر، <tspan direction="ltr" unicode-bidi="embed">coupling</tspan> پایین، تغییر آسان</text>
+</svg>
+<figcaption>شکل ۵-۳: مقایسه‌ی وراثت در <bdi dir="ltr">PHP</bdi> با ترکیب در <bdi dir="ltr">Go</bdi></figcaption>
+</figure>
+
+<h4 id="method-promotion">ارتقای متد از طریق Embedding</h4>
+<p>وقتی یک struct را در struct دیگری <bdi dir="ltr">embed</bdi> می‌کنید، متدهای struct داخلی به‌صورت خودکار روی struct بیرونی قابل دسترسی می‌شوند. این مکانیزم <strong>ارتقای متد</strong> (<bdi dir="ltr">method promotion</bdi>) نامیده می‌شود و شبیه‌ترین چیز به وراثت در Go است اما با تفاوت‌های مهم:</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">type Logger struct {
+    prefix string
+}
+
+func (l Logger) Log(msg string) {
+    fmt.Printf("[%s] %s\n", l.prefix, msg)
+}
+
+type Service struct {
+    Logger // method promotion: Service.Log() is available
+    Name string
+}
+
+// Usage
+s := Service{Logger: Logger{prefix: "API"}, Name: "auth"}
+s.Log("started") // equivalent to s.Logger.Log("started")
+</code></pre>
+</figure>
+<p>متدهای ارتقایافته در واقع یک <bdi dir="ltr">syntactic sugar</bdi> هستند — کامپایلر فراخوانی <code>s.Log()</code> را به <code>s.Logger.Log()</code> تبدیل می‌کند. اما نکته‌ی مهم این است که receiver همیشه struct داخلی است نه بیرونی. یعنی اگر <code>Log</code> بخواهد به فیلدهای <code>Service</code> دسترسی داشته باشد، نمی‌تواند — چون receiver آن <code>Logger</code> است نه <code>Service</code>.</p>
+
+<h4 id="polymorphism-via-interfaces">چندریختی از طریق Interfaceها</h4>
+<p>در PHP چندریختی (<bdi dir="ltr">polymorphism</bdi>) از طریق وراثت و <bdi dir="ltr">interface</bdi> حاصل می‌شود. در Go نیز چندریختی وجود دارد اما فقط از طریق <bdi dir="ltr">interface</bdi> و بدون نیاز به وراثت:</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">// Define behavior
+type Speaker interface {
+    Speak() string
+}
+
+// Any struct with Speak() method is automatically a Speaker
+type Dog struct{ Name string }
+func (d Dog) Speak() string { return d.Name + ": Woof!" }
+
+type Cat struct{ Name string }
+func (c Cat) Speak() string { return c.Name + ": Meow!" }
+
+// Polymorphic function — any Speaker is accepted
+func MakeThemSpeak(speakers []Speaker) {
+    for _, s := range speakers {
+        fmt.Println(s.Speak())
+    }
+}
+
+// Usage
+animals := []Speaker{Dog{Name: "Rex"}, Cat{Name: "Mimi"}}
+MakeThemSpeak(animals)
+</code></pre>
+</figure>
+<div class="tip"><strong>نکته‌ی طراحی:</strong> در Go به‌جای ساختن سلسله‌مراتب <code>Animal → Dog/Cat</code> ، مستقیماً <bdi dir="ltr">interface</bdi> <code>Speaker</code> را تعریف می‌کنیم و هر structی که متد <code>Speak()</code> داشته باشد به‌صورت خودکار در جمع <code>[]Speaker</code> پذیرفته می‌شود. این رویکرد انعطاف‌پذیرتر است چون هر struct جدید بدون تغییر در کد موجود می‌تواند به جمع اضافه شود.</div>
+
+<table class="comparison-table" dir="rtl">
+<thead>
+<tr><th>ویژگی</th><th>PHP</th><th>Go (ترکیب + Interface)</th></tr>
+</thead>
+<tbody>
+<tr><td>ارث‌بری</td><td><code>class Dog extends Animal</code></td><td>ندارد — از embedding استفاده شود</td></tr>
+<tr><td>چندریختی</td><td>از طریق وراثت یا interface</td><td>فقط از طریق interface</td></tr>
+<tr><td>بازنویسی متد</td><td><code>override</code> صریح</td><td>متد struct shadowing</td></tr>
+<tr><td>فراخوانی متد والد</td><td><code>parent::method()</code></td><td>صریح: <code>s.Logger.Log()</code></td></tr>
+<tr><td>Trait / Mixin</td><td><code>use TraitName</code></td><td>Embedding بدون نام</td></tr>
+<tr><td>سطح دسترسی</td><td><code>public/private/protected</code></td><td>حرف بزرگ/کوچک + <code>internal</code></td></tr>
+<tr><td>Constructor</td><td><code>__construct()</code></td><td>تابع <code dir="ltr">NewX()</code></td></tr>
+</tbody>
+</table>
+
+<h3 id="embedding-method-promotion-chain">زنجیره‌ی ارتقای متد در Embedding</h3>
+<p>یکی از مهم‌ترین مفاهیمی که برنامه‌نویسان PHP باید درباره‌ی <bdi dir="ltr">embedding</bdi> در Go درک کنند، نحوه‌ی عملکرد <strong>زنجیره‌ی ارتقای متد</strong> (<bdi dir="ltr">method promotion chain</bdi>) است. وقتی یک <bdi dir="ltr">struct</bdi> را در <bdi dir="ltr">struct</bdi> دیگری تعبیه می‌کنید، کامپایلر Go یک مسیر جستجوی مشخص برای متدها ایجاد می‌کند که کاملاً با زنجیره‌ی وراثت PHP متفاوت است. در PHP وقتی متدی روی یک شیء فراخوانی می‌شود، موتور زبان از کلاس فرزند به سمت والد حرکت می‌کند تا متد مناسب را بیابد و با <code dir="ltr">parent::method()</code> می‌توان متد والد را صریحاً فراخوانی کرد. اما در Go مکانیزم ارتقای متد صرفاً یک <strong>شکر نحوی</strong> (<bdi dir="ltr">syntactic sugar</bdi>) است که فراخوانی متد struct تعبیه‌شده را ساده‌تر می‌کند و هیچ زنجیره‌ی واقعی وجود ندارد.</p>
+
+<figure class="diagram" dir="ltr">
+<svg height="520" viewBox="0 0 800 520" width="800" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<marker id="arrEmbed" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#00ADD8" points="0 0, 10 3.5, 0 7"></polygon></marker>
+<marker id="arrPromote" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#4CAF50" points="0 0, 10 3.5, 0 7"></polygon></marker>
+<marker id="arrOverride" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#FF9800" points="0 0, 10 3.5, 0 7"></polygon></marker>
+<marker id="arrPHPInh" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#777BB4" points="0 0, 10 3.5, 0 7"></polygon></marker>
+</defs>
+<rect fill="#fafafa" height="520" rx="8" width="800" x="0" y="0"></rect>
+
+<!-- Title -->
+<text fill="#333" font-size="16" font-weight="bold" text-anchor="middle" x="400" y="25" direction="rtl" unicode-bidi="embed">زنجیره‌ی ارتقای متد: <tspan direction="ltr" unicode-bidi="embed">PHP extends</tspan> در برابر <tspan direction="ltr" unicode-bidi="embed">Go embedding</tspan></text>
+
+<!-- ===== PHP Side ===== -->
+<rect fill="#f3e5f5" height="470" rx="12" stroke="#777BB4" stroke-width="2" width="350" x="10" y="40"></rect>
+<text fill="#777BB4" font-size="14" font-weight="bold" text-anchor="middle" x="185" y="62" direction="ltr" unicode-bidi="embed">PHP: class Dog extends Animal</text>
+
+<!-- PHP Animal class -->
+<rect fill="#fff" height="90" rx="6" stroke="#777BB4" stroke-width="2" width="300" x="35" y="75"></rect>
+<rect fill="#777BB4" height="22" rx="6" width="300" x="35" y="75"></rect>
+<text fill="#fff" font-size="12" font-weight="bold" text-anchor="middle" x="185" y="91" direction="ltr" unicode-bidi="embed">class Animal</text>
+<text fill="#555" font-size="10" x="45" y="113" direction="ltr" unicode-bidi="embed">+ speak(): string</text>
+<text fill="#555" font-size="10" x="45" y="128" direction="ltr" unicode-bidi="embed">+ move(): string</text>
+<text fill="#555" font-size="10" x="45" y="143" direction="ltr" unicode-bidi="embed">+ getName(): string</text>
+
+<!-- PHP Dog class -->
+<rect fill="#fff" height="90" rx="6" stroke="#777BB4" stroke-width="2" width="300" x="35" y="195"></rect>
+<rect fill="#777BB4" height="22" rx="6" width="300" x="35" y="195"></rect>
+<text fill="#fff" font-size="12" font-weight="bold" text-anchor="middle" x="185" y="211" direction="ltr" unicode-bidi="embed">class Dog extends Animal</text>
+<text fill="#777BB4" font-size="10" x="45" y="233" direction="ltr" unicode-bidi="embed">+ fetch(): string</text>
+<text fill="#FF9800" font-size="10" font-weight="bold" x="45" y="248" direction="ltr" unicode-bidi="embed">+ speak(): string  ← override</text>
+<text fill="#777BB4" font-size="10" x="45" y="263" direction="ltr" unicode-bidi="embed">+ parent::speak()  ← callable</text>
+<line marker-end="url(#arrPHPInh)" stroke="#777BB4" stroke-width="2" x1="185" x2="185" y1="195" y2="165"></line>
+
+<!-- PHP Cat class -->
+<rect fill="#fff" height="75" rx="6" stroke="#777BB4" stroke-width="2" width="300" x="35" y="295"></rect>
+<rect fill="#777BB4" height="22" rx="6" width="300" x="35" y="295"></rect>
+<text fill="#fff" font-size="12" font-weight="bold" text-anchor="middle" x="185" y="311" direction="ltr" unicode-bidi="embed">class Cat extends Animal</text>
+<text fill="#777BB4" font-size="10" x="45" y="333" direction="ltr" unicode-bidi="embed">+ purr(): string</text>
+<text fill="#555" font-size="10" x="45" y="348" direction="ltr" unicode-bidi="embed">+ speak(): string  ← inherited</text>
+<line marker-end="url(#arrPHPInh)" stroke="#777BB4" stroke-width="2" x1="185" x2="185" y1="295" y2="265"></line>
+
+<!-- PHP info box -->
+<rect fill="#fff3e0" height="65" rx="6" stroke="#f39c12" stroke-width="1.5" width="310" x="25" y="400"></rect>
+<text fill="#e65100" font-size="11" font-weight="bold" text-anchor="middle" x="180" y="418" direction="rtl" unicode-bidi="embed">رابطه‌ی <tspan direction="ltr" unicode-bidi="embed">is-a</tspan>: <tspan direction="ltr" unicode-bidi="embed">Dog</tspan> یک <tspan direction="ltr" unicode-bidi="embed">Animal</tspan> است</text>
+<text fill="#555" font-size="10" text-anchor="middle" x="180" y="436" direction="ltr" unicode-bidi="embed">parent::speak() → calls Animal's version</text>
+<text fill="#555" font-size="10" text-anchor="middle" x="180" y="452" direction="ltr" unicode-bidi="embed">$dog instanceof Animal → true</text>
+<text fill="#e74c3c" font-size="10" text-anchor="middle" x="180" y="468" direction="rtl" unicode-bidi="embed">تغییر والد = شکست فرزند (بالا به پایین)</text>
+
+<!-- PHP call example -->
+<rect fill="#ede7f6" height="30" rx="4" stroke="#777BB4" stroke-width="1" width="310" x="25" y="475"></rect>
+<text fill="#777BB4" font-size="10" text-anchor="middle" x="180" y="495" direction="ltr" unicode-bidi="embed">$dog->speak() → Dog::speak() (override wins)</text>
+
+<!-- ===== Go Side ===== -->
+<rect fill="#e0f7fa" height="470" rx="12" stroke="#00ADD8" stroke-width="2" width="420" x="370" y="40"></rect>
+<text fill="#00ADD8" font-size="14" font-weight="bold" text-anchor="middle" x="580" y="62" direction="ltr" unicode-bidi="embed">Go: type Dog struct { Animal }</text>
+
+<!-- Go Animal struct -->
+<rect fill="#fff" height="90" rx="6" stroke="#00ADD8" stroke-width="2" width="370" x="395" y="75"></rect>
+<rect fill="#00ADD8" height="22" rx="6" width="370" x="395" y="75"></rect>
+<text fill="#fff" font-size="12" font-weight="bold" text-anchor="middle" x="580" y="91" direction="ltr" unicode-bidi="embed">type Animal struct { Name string }</text>
+<text fill="#4CAF50" font-size="10" font-weight="bold" x="405" y="113" direction="ltr" unicode-bidi="embed">+ func (a Animal) Speak() string</text>
+<text fill="#4CAF50" font-size="10" font-weight="bold" x="405" y="128" direction="ltr" unicode-bidi="embed">+ func (a Animal) Move() string</text>
+<text fill="#4CAF50" font-size="10" font-weight="bold" x="405" y="143" direction="ltr" unicode-bidi="embed">+ func (a Animal) GetName() string</text>
+
+<!-- Go Dog struct -->
+<rect fill="#fff" height="110" rx="6" stroke="#00ADD8" stroke-width="2" width="370" x="395" y="200"></rect>
+<rect fill="#00ADD8" height="22" rx="6" width="370" x="395" y="200"></rect>
+<text fill="#fff" font-size="12" font-weight="bold" text-anchor="middle" x="580" y="216" direction="ltr" unicode-bidi="embed">type Dog struct { Animal; Breed string }</text>
+<text fill="#00ADD8" font-size="10" x="405" y="238" direction="ltr" unicode-bidi="embed">+ func (d Dog) Fetch() string</text>
+<text fill="#FF9800" font-size="10" font-weight="bold" x="405" y="253" direction="ltr" unicode-bidi="embed">+ func (d Dog) Speak() string  ← shadows Animal.Speak</text>
+<text fill="#4CAF50" font-size="10" x="405" y="268" direction="ltr" unicode-bidi="embed">✓ d.Move()       → promoted from Animal</text>
+<text fill="#4CAF50" font-size="10" x="405" y="283" direction="ltr" unicode-bidi="embed">✓ d.GetName()    → promoted from Animal</text>
+<text fill="#4CAF50" font-size="10" x="405" y="298" direction="ltr" unicode-bidi="embed">✓ d.Animal.Speak() → explicit access to Animal</text>
+<line marker-end="url(#arrEmbed)" stroke="#00ADD8" stroke-width="2" x1="540" x2="540" y1="200" y2="165"></line>
+
+<!-- Go Cat struct -->
+<rect fill="#fff" height="90" rx="6" stroke="#00ADD8" stroke-width="2" width="370" x="395" y="335"></rect>
+<rect fill="#00ADD8" height="22" rx="6" width="370" x="395" y="335"></rect>
+<text fill="#fff" font-size="12" font-weight="bold" text-anchor="middle" x="580" y="351" direction="ltr" unicode-bidi="embed">type Cat struct { Animal; Indoor bool }</text>
+<text fill="#00ADD8" font-size="10" x="405" y="373" direction="ltr" unicode-bidi="embed">+ func (c Cat) Purr() string</text>
+<text fill="#4CAF50" font-size="10" font-weight="bold" x="405" y="388" direction="ltr" unicode-bidi="embed">✓ c.Speak() → promoted from Animal (no override)</text>
+<text fill="#4CAF50" font-size="10" x="405" y="403" direction="ltr" unicode-bidi="embed">✓ c.Move()  → promoted from Animal</text>
+<line marker-end="url(#arrEmbed)" stroke="#00ADD8" stroke-width="2" x1="540" x2="540" y1="335" y2="290"></line>
+
+<!-- Go info box -->
+<rect fill="#fff3e0" height="65" rx="6" stroke="#f39c12" stroke-width="1.5" width="380" x="385" y="400"></rect>
+<text fill="#e65100" font-size="11" font-weight="bold" text-anchor="middle" x="575" y="418" direction="rtl" unicode-bidi="embed">رابطه‌ی <tspan direction="ltr" unicode-bidi="embed">has-a</tspan>: <tspan direction="ltr" unicode-bidi="embed">Dog</tspan> یک <tspan direction="ltr" unicode-bidi="embed">Animal</tspan> دارد</text>
+<text fill="#555" font-size="10" text-anchor="middle" x="575" y="436" direction="ltr" unicode-bidi="embed">d.Animal.Speak() → always Animal's receiver</text>
+<text fill="#555" font-size="10" text-anchor="middle" x="575" y="452" direction="ltr" unicode-bidi="embed">d.Speak() → Dog.Speak() (shadow, not override)</text>
+<text fill="#4CAF50" font-size="10" text-anchor="middle" x="575" y="468" direction="rtl" unicode-bidi="embed">تغییر <tspan direction="ltr" unicode-bidi="embed">Animal</tspan> بی‌تأثیر روی متدهای <tspan direction="ltr" unicode-bidi="embed">Dog</tspan></text>
+
+<!-- Go call example -->
+<rect fill="#e0f2f1" height="30" rx="4" stroke="#00ADD8" stroke-width="1" width="380" x="385" y="475"></rect>
+<text fill="#00ADD8" font-size="10" text-anchor="middle" x="575" y="495" direction="ltr" unicode-bidi="embed">d.Speak() → Dog.Speak() (shadow wins) — receiver is Dog, not Animal</text>
+</svg>
+<figcaption dir="rtl">شکل ۵-۳-ج: زنجیره‌ی ارتقای متد در <bdi dir="ltr">Go embedding</bdi> در برابر وراثت <bdi dir="ltr">PHP</bdi> — ارتقا ≠ وراثت</figcaption>
+</figure>
+
+<p>در نمودار بالا می‌بینید که در سمت <bdi dir="ltr">PHP</bdi> رابطه‌ی <code dir="ltr">class Dog extends Animal</code> یک رابطه‌ی <strong>is-a</strong> واقعی است: <bdi dir="ltr">Dog</bdi> واقعاً یک <bdi dir="ltr">Animal</bdi> است و با <code dir="ltr">parent::speak()</code> می‌تواند به متد والد دسترسی پیدا کند. اما در سمت <bdi dir="ltr">Go</bdi> رابطه‌ی <code dir="ltr">type Dog struct { Animal }</code> یک رابطه‌ی <strong>has-a</strong> است: <bdi dir="ltr">Dog</bdi> یک <bdi dir="ltr">Animal</bdi> را در خود جای داده و متدهای آن به‌صورت خودکار «ارتقا» یافته‌اند. این ارتقا فقط یک میانبر نحوی است و هیچ زنجیره‌ی وراثت واقعی ایجاد نمی‌کند. تفاوت کلیدی این است که وقتی <bdi dir="ltr">Dog.Speak()</bdi> تعریف می‌شود متد <bdi dir="ltr">Animal.Speak()</bdi> را <strong>سایه‌اندازی</strong> (<bdi dir="ltr">shadow</bdi>) می‌کند نه <strong>بازنویسی</strong> (<bdi dir="ltr">override</bdi>). در نتیجه هرگز <bdi dir="ltr">parent</bdi> وجود ندارد که بخواهید از آن فراخوانی کنید — فقط <code dir="ltr">d.Animal.Speak()</code> دارید که صریحاً متد struct تعبیه‌شده را فراخوانی می‌کند و receiver همیشه <bdi dir="ltr">Animal</bdi> است نه <bdi dir="ltr">Dog</bdi>.</p>
+
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">type Animal struct {
+    Name string
+}
+
+func (a Animal) Speak() string {
+    return a.Name + " makes a sound"
+}
+
+func (a Animal) Move() string {
+    return a.Name + " moves"
+}
+
+type Dog struct {
+    Animal       // embedding — Animal fields &amp; methods are promoted
+    Breed string
+}
+
+func (d Dog) Fetch() string {
+    return d.Name + " fetches the ball"
+}
+
+// Dog.Speak() shadows Animal.Speak() — NOT an override!
+func (d Dog) Speak() string {
+    return d.Name + " barks"
+}
+
+func main() {
+    d := Dog{Animal: Animal{Name: "Rex"}, Breed: "Labrador"}
+
+    fmt.Println(d.Speak())        // "Rex barks"        — Dog.Speak (shadow)
+    fmt.Println(d.Move())         // "Rex moves"        — promoted from Animal
+    fmt.Println(d.Fetch())        // "Rex fetches..."   — Dog's own method
+    fmt.Println(d.Animal.Speak()) // "Rex makes a sound" — explicit, receiver is Animal
+}
+</code></pre>
+</figure>
+
+<p>در مثال بالا رفتار <code dir="ltr">d.Speak()</code> و <code dir="ltr">d.Animal.Speak()</code> تفاوت بنیادینی با <code dir="ltr">$dog->speak()</code> و <code dir="ltr">parent::speak()</code> در PHP دارد. در PHP وقتی متد فرزند والد را بازنویسی می‌کند همچنان با <code dir="ltr">parent::speak()</code> می‌تواند به نسخه‌ی والد دسترسی پیدا کند و context فرزند حفظ می‌شود. اما در Go فراخوانی <code dir="ltr">d.Animal.Speak()</code> کاملاً مستقل از <bdi dir="ltr">Dog</bdi> عمل می‌کند و receiver آن <bdi dir="ltr">Animal</bdi> است. این یعنی هیچ مکانیزمی معادل <code dir="ltr">parent::</code> در Go وجود ندارد و این یکی از دلایل اصلی است که Go ترکیب را به وراثت ترجیح می‌دهد.</p>
+
+<h4 id="embedding-سناریوهای-عملیاتی">سناریوهای عملیاتی Embedding</h4>
+<ul>
+<li><strong>Embedding انواع خطا برای خطاهای سفارشی:</strong> با تعبیه‌ی <code dir="ltr">error</code> یا <code dir="ltr">fmt.Stringer</code> در struct سفارشی خود می‌توانید بدون پیاده‌سازی صریح متدها رفتار خطای استاندارد Go را به دست آورید. مثلاً <code dir="ltr">type AppError struct { error; Code int }</code> به‌طور خودکار متد <code dir="ltr">Error()</code> را از <code dir="ltr">error</code> ارتقا می‌دهد و فیلد <code dir="ltr">Code</code> اضافی را هم حفظ می‌کند. این الگو در کتابخانه استاندارد Go بسیار رایج است و به شما اجازه می‌دهد بدون ایجاد سلسله‌مراتب وراثت خطاها رفتارهای مختلف را ترکیب کنید.</li>
+<li><strong>Embedding برای middleware شبکه:</strong> با تعبیه‌ی <code dir="ltr">http.Handler</code> در struct جدید می‌توانید middleware بنویسید که درخواست را قبل یا بعد از handler اصلی پردازش کند. مثلاً <code dir="ltr">type LoggingHandler struct { http.Handler; Logger *slog.Logger }</code> متد <code dir="ltr">ServeHTTP</code> را از handler اصلی ارتقا می‌دهد و شما می‌توانید آن را سایه‌اندازی کنید تا لاگ‌گذاری اضافه شود. این رویکرد بسیار ساده‌تر از وراثت کلاس‌های controller در Laravel یا Symfony است.</li>
+<li><strong>Embedding برای thread-safe struct‌ها:</strong> با تعبیه‌ی <code dir="ltr">sync.Mutex</code> یا <code dir="ltr">sync.RWMutex</code> در struct خود متدهای <code dir="ltr">Lock()</code> و <code dir="ltr">Unlock()</code> مستقیماً روی struct بیرونی قابل دسترسی می‌شوند. مثلاً <code dir="ltr">type SafeCounter struct { sync.Mutex; counts map[string]int }</code> اجازه می‌دهد <code dir="ltr">counter.Lock()</code> را مستقیماً فراخوانی کنید. این الگو در کدهای تولیدی Go بسیار پرکاربرد است و نیاز به کپسوله‌سازی دستی قفل‌ها را حذف می‌کند.</li>
+<li><strong>Embedding در برابر interface برای چندریختی:</strong> وقتی نیاز به چندریختی دارید از <bdi dir="ltr">interface</bdi> استفاده کنید و وقتی نیاز به استفاده‌ی مجدد از کد دارید از <bdi dir="ltr">embedding</bdi>. این دو مکمل هم هستند نه جایگزین: <bdi dir="ltr">interface</bdi> رفتار را تعریف می‌کند و <bdi dir="ltr">embedding</bdi> پیاده‌سازی را به اشتراک می‌گذارد. در PHP این دو مفهوم با وراثت و Trait ترکیب شده‌اند اما در Go صریح‌تر و مجزاتر هستند و این جدایی باعث می‌شود کد تمیزتر و قابل‌فهم‌تر باشد.</li>
+</ul>
+
+<div class="tip"><strong>تفاوت بنیادین embedding و inheritance:</strong> embedding در Go یک رابطه‌ی <bdi dir="ltr">has-a</bdi> است نه <bdi dir="ltr">is-a</bdi>. ارتقای متد (<bdi dir="ltr">method promotion</bdi>) فقط یک <bdi dir="ltr">syntactic sugar</bdi> است — وقتی <code dir="ltr">d.Speak()</code> را فراخوانی می‌کنید کامپایلر Go آن را به <code dir="ltr">d.Animal.Speak()</code> تبدیل می‌کند. این یعنی: ۱) هیچ زنجیره‌ی وراثت وجود ندارد ۲) <code dir="ltr">parent::method()</code> معادل ندارد ۳) receiver متد ارتقا‌یافته همیشه struct داخلی است نه بیرونی ۴) سایه‌اندازی (<bdi dir="ltr">shadowing</bdi>) با بازنویسی (<bdi dir="ltr">override</bdi>) متفاوت است. این تفاوت‌ها ممکن است در ابتدا محدودکننده به نظر برسند اما در عمل باعث کاهش coupling و افزایش قابلیت نگهداری کد می‌شوند.</div>
+
+</div>
+</main>
+</div>
+
+<!-- Footer -->
+<footer class="site-footer">
+<div class="footer-inner">
+<div class="footer-nav">
+<span class="nav-arrow">‹</span>
+<a href="03.04-understanding-program-lifecycle.html" data-prev>۳.۴ درک چرخه‌ی حیات برنامه</a>
+</div>
+<div class="footer-toc">
+<a href="00.01-contents.html">فهرست</a>
+</div>
+<div class="footer-nav">
+<a href="03.06-interface.html" data-next>۳.۶ Interface</a>
+<span class="nav-arrow">›</span>
+</div>
+</div>
+</footer>
+
+<!-- Back to Top -->
+<button class="back-to-top" aria-label="بازگشت به بالا">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
+</button>
+
+<!-- Scripts -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/go.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/php.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/sql.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/yaml.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/json.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/dockerfile.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/xml.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/ini.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/plaintext.min.js"></script>
+<script src="assets/js/main.js"></script>
+</body>
+</html>

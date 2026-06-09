@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="fa">
+<head>
+<script>!function(){try{var t=localStorage.getItem('php2go-theme');if(t==='dark'||(!t&&window.matchMedia('(prefers-color-scheme:dark)').matches)){document.documentElement.setAttribute('data-theme','dark')}}catch(e){}}();</script>
+<meta charset="utf-8"/>
+<meta content="ie=edge" http-equiv="x-ua-compatible"/>
+<title>۸.۱ Migration — PHP to Go</title>
+<meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet"/>
+<link href="assets/css/main.css" rel="stylesheet" type="text/css"/>
+<link href="assets/img/favicon.ico" rel="icon" type="image/x-icon"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" media="screen" class="hljs-light-theme" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css" media="not screen" class="hljs-dark-theme" rel="stylesheet"/>
+</head>
+<body>
+<!-- Progress Bar -->
+<div class="progress-bar"><div class="progress-bar__fill"></div></div>
+
+<!-- Header -->
+<header class="site-header">
+<div class="header-inner">
+<div class="header-left">
+<button class="header-btn sidebar-toggle" aria-label="فهرست">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+</button>
+<a href="00.00-front-matter.html" class="header-logo"><span class="logo-php">PHP</span> to <span class="logo-go">Go</span></a>
+<span class="header-crumbs">پایگاه داده › Migration</span>
+</div>
+<div class="header-right">
+<nav class="header-nav">
+<span class="nav-arrow">‹</span>
+<a href="08.00-chapter-8.html"><span class="nav-label">۸. پایگاه داده</span></a>
+<a href="00.01-contents.html">فهرست</a>
+<a href="08.02-connecting-to-database-with-databasesql.html"><span class="nav-label">۸.۲ اتصال به دیتابیس با database/sql</span></a>
+<span class="nav-arrow">›</span>
+</nav>
+<button class="header-btn search-toggle" aria-label="جستجو">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+</button>
+<button class="header-btn theme-toggle" aria-label="تغییر تم">
+<svg class="theme-icon-light" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+<svg class="theme-icon-dark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+</button>
+</div>
+</div>
+</header>
+
+<!-- Search Modal -->
+<div class="search-overlay">
+<div class="search-modal">
+<div class="search-input-wrap">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+<input type="text" class="search-input" placeholder="جستجو... (Ctrl+K)" dir="rtl"/>
+</div>
+<div class="search-results"></div>
+</div>
+</div>
+
+<!-- Layout -->
+<div class="site-layout">
+<!-- Sidebar -->
+<aside class="sidebar"></aside>
+<div class="sidebar-overlay"></div>
+
+<!-- Main Content -->
+<main class="content-area">
+<div class="content-wrap text">
+<div class="chapter">فصل ۸.۱</div>
+<h2 id="migration">Migration</h2>
+<table class="comparison-table" dir="rtl">
+<thead>
+<tr><th>ویژگی</th><th>Laravel Migration</th><th>Go golang-migrate</th><th>Go goose</th></tr>
+</thead>
+<tbody>
+<tr><td>تعریف</td><td>کلاس PHP با <span dir="ltr">up()</span> و <span dir="ltr">down()</span></td><td>فایل SQL جداگانه up.sql و down.sql</td><td>فایل SQL یا Go با عبارت‌های +goose Up/Down</td></tr>
+<tr><td>ساخت Migration</td><td dir="ltr">php artisan make:migration</td><td dir="ltr">migrate create -ext sql -dir migrations</td><td dir="ltr">goose create add_users sql</td></tr>
+<tr><td>اجرا</td><td dir="ltr">php artisan migrate</td><td dir="ltr">migrate -path ./migrations -database ... up</td><td dir="ltr">goose -dir ./migrations postgres ... up</td></tr>
+<tr><td dir="ltr">Rollback</td><td dir="ltr">migrate:rollback --step=N</td><td dir="ltr">migrate down N</td><td dir="ltr">goose down</td></tr>
+<tr><td dir="ltr">Builder API</td><td dir="ltr">Schema::<span dir="ltr">create()</span>, $table->string()</td><td>SQL خام — بدون Builder</td><td>SQL خام یا کد Go</td></tr>
+<tr><td>اجرای برنامه‌ای</td><td dir="ltr">Artisan::<span dir="ltr">call('migrate')</span></td><td dir="ltr">migrate.New() + <span dir="ltr">m.Up()</span></td><td dir="ltr">goose.Open() + <span dir="ltr">goose.Up(db)</span></td></tr>
+<tr><td>شماره‌گذاری</td><td>timestamp</td><td>sequential</td><td>هر دو حالت</td></tr>
+<tr><td>وضعیت Dirty</td><td>ندارد</td><td>جدول schema_migrations با فیلد dirty</td><td>ندارد (اتمیک)</td></tr>
+</tbody>
+</table>
+<figure class="diagram" dir="ltr">
+<svg height="400" viewBox="0 0 620 400" width="620" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<marker id="arrow1401" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#555" points="0 0, 10 3.5, 0 7"></polygon></marker>
+<filter height="104%" id="sh1401" width="104%" x="-2%" y="-2%"><fedropshadow dx="1" dy="1" flood-opacity="0.15" stddeviation="2"></fedropshadow></filter>
+</defs>
+<rect fill="#fafafa" height="400" rx="8" width="620" x="0" y="0"></rect>
+<text fill="#333" font-size="16" font-weight="bold" text-anchor="middle" x="310" y="28" direction="rtl" unicode-bidi="embed">چرخه‌ی حیات <tspan direction="ltr" unicode-bidi="embed">Migration</tspan></text>
+<rect fill="#00ADD8" filter="url(#sh1401)" height="40" rx="6" width="140" x="240" y="55"></rect>
+<text fill="#fff" font-size="11" text-anchor="middle" x="310" y="80" direction="ltr" unicode-bidi="embed">migrate create</text>
+<line marker-end="url(#arrow1401)" stroke="#555" stroke-width="2" x1="310" x2="310" y1="95" y2="120"></line>
+<rect fill="#9C27B0" filter="url(#sh1401)" height="45" rx="6" width="200" x="210" y="120"></rect>
+<text fill="#fff" font-size="10" text-anchor="middle" x="310" y="140" direction="ltr" unicode-bidi="embed">000001_xxx.up.sql</text>
+<text fill="#e1bee7" font-size="9" text-anchor="middle" x="310" y="157" direction="ltr" unicode-bidi="embed">000001_xxx.down.sql</text>
+<line marker-end="url(#arrow1401)" stroke="#4CAF50" stroke-width="2" x1="310" x2="310" y1="165" y2="195"></line>
+<text fill="#4CAF50" font-size="9" text-anchor="middle" x="330" y="185" direction="rtl" unicode-bidi="embed">up</text>
+<rect fill="#4CAF50" filter="url(#sh1401)" height="40" rx="6" width="180" x="220" y="195"></rect>
+<text fill="#fff" font-size="11" text-anchor="middle" x="310" y="220" direction="ltr" unicode-bidi="embed">migrate up → Apply</text>
+<rect fill="#E3F2FD" height="30" rx="4" stroke="#2196F3" width="250" x="185" y="250"></rect>
+<text fill="#1565C0" font-size="9" text-anchor="middle" x="310" y="270" direction="ltr" unicode-bidi="embed">schema_migrations: version=1 dirty=false</text>
+<line marker-end="url(#arrow1401)" stroke="#e91e63" stroke-width="2" x1="400" x2="480" y1="215" y2="300"></line>
+<text fill="#e91e63" font-size="9" text-anchor="middle" x="455" y="265" direction="ltr" unicode-bidi="embed">down</text>
+<rect fill="#e91e63" filter="url(#sh1401)" height="40" rx="6" width="160" x="440" y="300"></rect>
+<text fill="#fff" font-size="11" text-anchor="middle" x="520" y="325" direction="ltr" unicode-bidi="embed">migrate down N</text>
+<rect fill="#FF9800" filter="url(#sh1401)" height="40" rx="6" width="160" x="30" y="300"></rect>
+<text fill="#fff" font-size="10" text-anchor="middle" x="110" y="320" direction="ltr" unicode-bidi="embed">Dirty State!</text>
+<text fill="#fff3e0" font-size="9" text-anchor="middle" x="110" y="334" direction="ltr" unicode-bidi="embed">migrate force V</text>
+<line stroke="#FF9800" stroke-dasharray="4,4" stroke-width="1.5" x1="185" x2="110" y1="280" y2="300"></line>
+</svg>
+<figcaption>شکل ۸-۱: چرخه‌ی حیات <bdi dir="ltr">Migration</bdi> — از ایجاد تا اجرا و بازگشت</figcaption>
+</figure>
+<p>از بخش‌های کلیدی هر پروژه نرم‌افزاری که با دیتابیس کار می‌کند مدیریت ساختار دیتابیس و به‌روزرسانی‌های منظم آن است. اگر شما با <bdi dir="ltr">Laravel</bdi> کار کرده باشید به خوبی با مفهوم <bdi dir="ltr">Migration</bdi> و نسخه‌بندی دیتابیس آشنا هستید ابزاری که تغییرات ساختاری جدول‌ها و داده‌ها را به صورت کد نگهداری و اعمال می‌کند.</p>
+<p>در لاراول <bdi dir="ltr">migration</bdi> ها به صورت کد <bdi dir="ltr">PHP</bdi> با کلاس‌ها و متدهای ساده تعریف می‌شوند و بسیاری از کارها مثل ساخت فیلد، جدول، تغییرات و <bdi dir="ltr">rollback</bdi> به صورت پیش‌فرض به کمک این متدها انجام می‌شود. <bdi dir="ltr">Go</bdi> بیشتر به اجرای مستقیم <bdi dir="ltr">SQL</bdi> و ابزارهای خط فرمان متکی است که انعطاف بیشتر اما نیازمند دقت بالاتر است.</p>
+<p>در <bdi dir="ltr">Go</bdi> شما کنترل بیشتری روی فرآیند <bdi dir="ltr">Migration</bdi> دارید. در این فصل ابتدا به مفهوم <bdi dir="ltr">Migration</bdi> و اهمیت آن می‌پردازیم سپس بهترین روش‌ها و ابزارهای رایج در اکوسیستم <bdi dir="ltr">Go</bdi> را معرفی می‌کنیم و در نهایت با مثال‌های کاربردی نحوه استفاده از ابزار محبوب <strong dir="ltr">golang-migrate</strong> و <strong dir="ltr">goose</strong> را توضیح می‌دهیم.</p>
+<h3 id="چرایی-استفاده">چرایی استفاده</h3>
+<p><strong>نسخه‌بندی ساختار دیتابیس:</strong> تغییرات در جداول، ستون‌ها، ایندکس‌ها و ... به صورت کد ثبت می‌شود تا همیشه تاریخچه تغییرات مشخص باشد. بدون <bdi dir="ltr">Migration</bdi> ، تغییرات دستی روی دیتابیس به‌زودی فراموش می‌شوند و محیط‌های مختلف ناهماهنگ می‌گردند.</p>
+<p><strong>همگام‌سازی تیم توسعه:</strong> اعضای تیم با اجرای <bdi dir="ltr">Migration</bdi> به راحتی ساختار دیتابیس را به‌روز می‌کنند.</p>
+<p><strong>محیط‌های مختلف:</strong> تضمین می‌شود که محیط‌های توسعه، تست و تولید همه یک ساختار دیتابیس یکسان دارند.</p>
+<p><strong>بازگشت به نسخه‌های قبلی:</strong> امکان <bdi dir="ltr">rollback</bdi> و اصلاح سریع اشتباهات ساختاری.</p>
+<p><strong>تولید خودکار در <bdi dir="ltr">CI/CD</bdi>:</strong> اجرای <bdi dir="ltr">Migration</bdi> به عنوان بخشی از <bdi dir="ltr">pipeline</bdi> استقرار.</p>
+<h3 id="ابزارهای-رایج">ابزارهای رایج</h3>
+<p><strong dir="ltr">golang-migrate</strong> : ابزار پرکاربرد با پشتیبانی از چندین دیتابیس و منبع. از شماره‌گذاری متوالی استفاده می‌کند.</p>
+<p><strong dir="ltr">goose</strong> : از هر دو فرمت <bdi dir="ltr">SQL</bdi> و <bdi dir="ltr">Go</bdi> پشتیبانی می‌کند.</p>
+<p><strong dir="ltr">atlas</strong> : ابزاری جدیدتر با رویکرد اعلامی (<bdi dir="ltr">declarative</bdi>).</p>
+<div class="tip"><strong>کدام ابزار را انتخاب کنیم؟</strong> برای پروژه‌های جدید <bdi dir="ltr">golang-migrate</bdi> پیشنهاد می‌شود. اگر نیاز به منطق پیچیده دارید <bdi dir="ltr">goose</bdi> گزینه‌ی بهتری است. برای پروژه‌های بزرگ‌تر <bdi dir="ltr">atlas</bdi> قابل‌توجه است.</div>
+<h3 id="نصب-golang-migrate">نصب golang-migrate</h3>
+<figure class="code bash" dir="ltr"><pre><code class="language-bash">go install -tags 'postgres' github.com/golang-migrate/migrate/v4/cmd/migrate@latest</code></pre></figure>
+<h3 id="ساخت-پوشه-migration-و-تعریف-فایلها">ساخت پوشه Migration و تعریف فایل‌ها</h3>
+
+<figure class="diagram" dir="ltr">
+<svg width="700" height="250" viewBox="0 0 700 250" xmlns="http://www.w3.org/2000/svg">
+<rect fill="#fafafa" height="250" rx="8" width="700" x="0" y="0"></rect>
+<defs>
+<marker id="aMg1" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#27ae60" points="0 0,10 3.5,0 7"></polygon></marker>
+<marker id="aMg2" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#e74c3c" points="0 0,10 3.5,0 7"></polygon></marker>
+</defs>
+<text fill="#00ADD8" font-size="15" font-weight="bold" text-anchor="middle" x="350" y="22" direction="rtl" unicode-bidi="embed">جریان <tspan direction="ltr" unicode-bidi="embed">Migration</tspan>: <tspan direction="ltr" unicode-bidi="embed">up</tspan> (اعمال) و <tspan direction="ltr" unicode-bidi="embed">down</tspan> (بازگشت)</text>
+<!-- Migration files -->
+<rect fill="#00ADD8" height="35" opacity="0.12" rx="6" stroke="#00ADD8" stroke-width="1.5" width="100" x="50" y="50"></rect>
+<text fill="#333" font-size="9" text-anchor="middle" x="100" y="72" direction="ltr" unicode-bidi="embed">001_users.up.sql</text>
+<rect fill="#00ADD8" height="35" opacity="0.12" rx="6" stroke="#00ADD8" stroke-width="1.5" width="100" x="170" y="50"></rect>
+<text fill="#333" font-size="9" text-anchor="middle" x="220" y="72" direction="ltr" unicode-bidi="embed">002_posts.up.sql</text>
+<rect fill="#00ADD8" height="35" opacity="0.12" rx="6" stroke="#00ADD8" stroke-width="1.5" width="100" x="290" y="50"></rect>
+<text fill="#333" font-size="9" text-anchor="middle" x="340" y="72" direction="ltr" unicode-bidi="embed">003_orders.up.sql</text>
+<!-- UP arrow -->
+<line marker-end="url(#aMg1)" stroke="#27ae60" stroke-width="2" x1="340" x2="450" y1="67" y2="67"></line>
+<text fill="#27ae60" font-size="11" font-weight="bold" text-anchor="middle" x="470" y="55" direction="ltr" unicode-bidi="embed">migrate up</text>
+<!-- Database state -->
+<rect fill="#27ae60" height="120" opacity="0.08" rx="10" stroke="#27ae60" stroke-width="2" width="220" x="450" y="40"></rect>
+<text fill="#27ae60" font-size="12" font-weight="bold" text-anchor="middle" x="560" y="62" direction="ltr" unicode-bidi="embed">Database</text>
+<text fill="#333" font-size="10" text-anchor="middle" x="560" y="82" direction="ltr" unicode-bidi="embed">(بله) users table</text>
+<text fill="#333" font-size="10" text-anchor="middle" x="560" y="100" direction="ltr" unicode-bidi="embed">(بله) posts table</text>
+<text fill="#333" font-size="10" text-anchor="middle" x="560" y="118" direction="ltr" unicode-bidi="embed">(بله) orders table</text>
+<text fill="#27ae60" font-size="9" text-anchor="middle" x="560" y="138" direction="ltr" unicode-bidi="embed">version=3 dirty=false</text>
+<!-- DOWN arrow -->
+<line marker-end="url(#aMg2)" stroke="#e74c3c" stroke-width="2" x1="560" x2="560" y1="160" y2="185"></line>
+<text fill="#e74c3c" font-size="11" font-weight="bold" text-anchor="middle" x="560" y="178" direction="ltr" unicode-bidi="embed">migrate down 2</text>
+<!-- After rollback -->
+<rect fill="#e74c3c" height="45" opacity="0.08" rx="8" stroke="#e74c3c" stroke-width="2" width="220" x="450" y="185"></rect>
+<text fill="#e74c3c" font-size="12" font-weight="bold" text-anchor="middle" x="560" y="205" direction="ltr" unicode-bidi="embed">Database</text>
+<text fill="#333" font-size="10" text-anchor="middle" x="560" y="222" direction="ltr" unicode-bidi="embed">(بله) users table</text>
+<text fill="#e74c3c" font-size="9" text-anchor="middle" x="560" y="238" direction="ltr" unicode-bidi="embed">version=1 dirty=false</text>
+<!-- Note -->
+<rect fill="#f5f5f5" height="25" rx="6" stroke="#ddd" stroke-width="1" width="400" x="30" y="185"></rect>
+<text fill="#555" font-size="9" text-anchor="middle" x="230" y="202" direction="rtl" unicode-bidi="embed">هر <tspan direction="ltr" unicode-bidi="embed">Migration</tspan> باید فایل <tspan direction="ltr" unicode-bidi="embed">.up.sql</tspan> و <tspan direction="ltr" unicode-bidi="embed">.down.sql</tspan> داشته باشد</text>
+</svg>
+<figcaption dir="rtl">شکل ۸-۱-ب: جریان <bdi dir="ltr">Migration</bdi> — اعمال (<bdi dir="ltr">up</bdi>) و بازگشت (<bdi dir="ltr">down</bdi>)</figcaption>
+</figure>
+
+
+<figure class="code sql" dir="ltr"><pre><code class="language-sql">-- 000001_create_users_table.up.sql
+CREATE TABLE users (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT now()
+);
+
+-- 000001_create_users_table.down.sql
+DROP TABLE users;</code></pre></figure>
+<h3 id="اجرای-migration-از-خط-فرمان">اجرای Migration از خط فرمان</h3>
+<figure class="code bash" dir="ltr"><pre><code class="language-bash">$ migrate -path ./migrations -database "postgres://user:password@localhost:5432/mydb?sslmode=disable" up</code></pre></figure>
+<h3 id="rollback">Rollback</h3>
+<figure class="code bash" dir="ltr"><pre><code class="language-bash">$ migrate -path ./migrations -database "..." down 2 # دو تا آخر
+$ migrate -path ./migrations -database "..." goto 3 # رفتن به نسخه ۳
+$ migrate -path ./migrations -database "..." down -all # بازگشت کامل</code></pre></figure>
+<h3 id="مدیریت-نسخه-migration">مدیریت نسخه Migration</h3>
+<p>یکی از چالش‌های مهم در کار تیمی مدیریت نسخه‌های <bdi dir="ltr">Migration</bdi> است. در <bdi dir="ltr">golang-migrate</bdi> شماره‌گذاری متوالی است و اگر دو توسعه‌دهنده همزمان <bdi dir="ltr">Migration</bdi> جدیدی با شماره‌ی یکسان ایجاد کنند تداخل پیش می‌آید. راه‌حل‌ها: قفل دیتابیس (<bdi dir="ltr">advisory lock</bdi>)، اجرای <bdi dir="ltr">Migration</bdi> در <bdi dir="ltr">CI/CD</bdi> ، و هماهنگی تیمی.</p>
+<div class="warning"><strong>وضعیت Dirty:</strong> اگر Migration‌ای در حین اجرا با خطا مواجه شود دیتابیس وارد حالت dirty می‌شود. برای رفع مشکل ابتدا علت خطا را برطرف کنید و سپس با <code>migrate force VERSION</code> وضعیت dirty را پاک کنید. هرگز بدون رفع علت اصلی خطا از force استفاده نکنید.</div>
+<h3 id="اجرای-migration-در-برنامه-go">اجرای Migration در برنامه Go</h3>
+<figure class="code go" dir="ltr"><pre><code class="language-go">import (
+"github.com/golang-migrate/migrate/v4"
+_ "github.com/golang-migrate/migrate/v4/database/postgres"
+_ "github.com/golang-migrate/migrate/v4/source/file"
+"log"
+)
+
+func runMigrations() {
+    m, err := migrate.New(
+    "file://migrations",
+    "postgres://user:password@localhost:5432/mydb?sslmode=disable",
+)
+    if err != nil {
+        log.Fatalf("خطا در ساخت migrate: %v", err)
+    }
+    if err := m.Up(); err != nil &amp;&amp; err != migrate.ErrNoChange {
+        log.Fatalf("خطا در اجرای migration: %v", err)
+    }
+    log.Println("Migrationها با موفقیت اجرا شدند")
+}</code></pre></figure>
+<h3 id="استفاده-از-goose">استفاده از goose</h3>
+<figure class="code sql" dir="ltr"><pre><code class="language-sql">-- +goose Up
+CREATE TABLE users (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL
+);
+
+-- +goose Down
+DROP TABLE users;</code></pre></figure>
+<p>همچنین می‌توانید <bdi dir="ltr">Migration</bdi> با کد <bdi dir="ltr">Go</bdi> بنویسید:</p>
+<figure class="code go" dir="ltr"><pre><code class="language-go">// +goose Up
+func Up(tx *sql.Tx) error {
+    _, err := tx.Exec("UPDATE users SET name = UPPER(name)")
+    return err
+}
+
+// +goose Down
+func Down(tx *sql.Tx) error {
+    _, err := tx.Exec("UPDATE users SET name = LOWER(name)")
+    return err
+}</code></pre></figure>
+<div class="important"><strong>نکته‌ی ساختاری:</strong> در <bdi dir="ltr">golang-migrate</bdi> ساختار داخلی <code dir="ltr">migrate.Migrate</code> شامل دو رابط <code dir="ltr">source.Driver</code> و <code dir="ltr">database.Driver</code> است. <code dir="ltr">source.Driver</code> مسئول خواندن فایل‌های <bdi dir="ltr">Migration</bdi> از منبع و <code dir="ltr">database.Driver</code> مسئول اجرای <bdi dir="ltr">Migration</bdi> روی دیتابیس است.</div>
+<div class="comparison"><strong>مقایسه ابزارهای Migration در Go و PHP:</strong> در <bdi dir="ltr">Laravel</bdi> از <bdi dir="ltr">Phinx</bdi> استفاده می‌شود که از کد <bdi dir="ltr">PHP</bdi> با <bdi dir="ltr">Builder API</bdi> بهره می‌برد. در <bdi dir="ltr">Go</bdi> ابزارهای مبتنی بر <bdi dir="ltr">SQL</bdi> خام مثل <bdi dir="ltr">golang-migrate</bdi> کنترل بیشتری می‌دهند. <bdi dir="ltr">goose</bdi> با پشتیبانی از <bdi dir="ltr">Migration</bdi>‌های <bdi dir="ltr">Go</bdi> یک حد واسط ارائه می‌دهد و <bdi dir="ltr">atlas</bdi> با رویکرد <bdi dir="ltr">declarative</bdi> فاصله‌ی بین <bdi dir="ltr">Go</bdi> و <bdi dir="ltr">ORM</bdi> های مدرن را کم می‌کند.</div>
+<h3 id="نکات-مهم-migration">نکات مهم Migration</h3>
+<p><strong>تفکیک Migration‌ها:</strong> هر تغییر بزرگ را در یک <bdi dir="ltr">Migration</bdi> جداگانه قرار دهید.</p>
+<p><strong>برنامه‌ریزی برای rollback:</strong> همیشه فایل <bdi dir="ltr">.down.sql</bdi> را بنویسید و تست کنید.</p>
+<p><strong>اجرای Migration در محیط CI/CD:</strong> تضمین می‌کند دیتابیس به‌روز است.</p>
+<p><strong>مدیریت تراکنش:</strong> برخی دستورات مثل <bdi dir="ltr">ALTER TABLE</bdi> در <bdi dir="ltr">PostgreSQL</bdi> نمی‌توانند در تراکنش اجرا شوند.</p>
+<p><strong>نگهداری در کنترل نسخه:</strong> فایل‌های <bdi dir="ltr">Migration</bdi> باید در گیت ذخیره شوند.</p>
+<p><strong>اجتناب از Migrationهای طولانی:</strong> <bdi dir="ltr">Migration</bdi>‌های کوچک و قابل فهم نگه دارید.</p>
+
+<div class="quote-box">
+    <p class="quote-text">وقتی ساختار دیتابیس را تغییر می‌دهید، هرگز آن را به شکلی تغییر ندهید که کد موجود را بشکند. از مایگریشن‌های افزایشی استفاده کنید که سازگاری رو به عقب را تا زمان به‌روزرسانی همه‌ی کد حفظ کنند.</p>
+    <p class="quote-source">
+        <span class="quote-author">Martin Fowler</span>
+        <span class="quote-role">Evolutionary Database Design</span>
+        <span class="quote-separator">|</span>
+        <span class="quote-book">Refactoring</span>
+    </p>
+</div>
+
+<div class="tip">
+<strong>نکته‌ی حرفه‌ای:</strong> همیشه مایگریشن‌هایی بنویسید که هم رو به جلو و هم رو به عقب قابل اجرا باشند. در <bdi dir="ltr">Go</bdi> از ابزارهایی مثل <bdi dir="ltr">golang-migrate</bdi> یا <bdi dir="ltr">goose</bdi> استفاده کنید و هرگز فایل مایگریشنی را که قبلاً روی محیط تولید اعمال شده تغییر ندهید — به‌جای آن یک مایگریشن جدید بنویسید.
+</div>
+
+<h3 id="خط-زمانی-نسخههای-migration">خط زمانی نسخه‌های Migration</h3>
+
+<figure class="diagram" dir="ltr">
+<svg width="820" height="580" viewBox="0 0 820 580" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<marker id="arrowUpMg" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#4CAF50" points="0 0, 10 3.5, 0 7"></polygon></marker>
+<marker id="arrowDownMg" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#e91e63" points="0 0, 10 3.5, 0 7"></polygon></marker>
+<marker id="arrowConflictMg" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#FF9800" points="0 0, 10 3.5, 0 7"></polygon></marker>
+<filter height="104%" id="shMgTL" width="104%" x="-2%" y="-2%"><fedropshadow dx="1" dy="1" flood-opacity="0.15" stddeviation="2"></fedropshadow></filter>
+</defs>
+<rect fill="#fafafa" height="580" rx="8" width="820" x="0" y="0"></rect>
+
+<!-- Title -->
+<text fill="#333" font-size="16" font-weight="bold" text-anchor="middle" x="410" y="28" direction="rtl" unicode-bidi="embed">خط زمانی نسخه‌های <tspan direction="ltr" unicode-bidi="embed">Migration</tspan> — حرکت رو به جلو (<tspan direction="ltr" unicode-bidi="embed">up</tspan>) و بازگشت (<tspan direction="ltr" unicode-bidi="embed">down</tspan>)</text>
+
+<!-- Timeline horizontal line -->
+<line stroke="#bbb" stroke-width="2" x1="50" x2="770" y1="90" y2="90"></line>
+
+<!-- UP arrow (green, above timeline) -->
+<line marker-end="url(#arrowUpMg)" stroke="#4CAF50" stroke-width="3" x1="70" x2="750" y1="70" y2="70"></line>
+<text fill="#4CAF50" font-size="13" font-weight="bold" text-anchor="middle" x="410" y="60" direction="ltr" unicode-bidi="embed">migrate up →  (green: forward / apply)</text>
+
+<!-- DOWN arrow (red, below timeline) -->
+<line marker-end="url(#arrowDownMg)" stroke="#e91e63" stroke-width="3" x1="750" x2="70" y1="110" y2="110"></line>
+<text fill="#e91e63" font-size="13" font-weight="bold" text-anchor="middle" x="410" y="128" direction="ltr" unicode-bidi="embed">← migrate down  (red: backward / revert)</text>
+
+<!-- Version nodes on timeline -->
+<!-- v0 -->
+<circle cx="90" cy="90" fill="#fff" r="16" stroke="#aaa" stroke-width="2"></circle>
+<text fill="#555" font-size="10" font-weight="bold" text-anchor="middle" x="90" y="94" direction="ltr" unicode-bidi="embed">v0</text>
+<text fill="#888" font-size="8" text-anchor="middle" x="90" y="148" direction="rtl" unicode-bidi="embed">خالی</text>
+
+<!-- v1 -->
+<circle cx="250" cy="90" fill="#4CAF50" r="16" stroke="#4CAF50" stroke-width="2"></circle>
+<text fill="#fff" font-size="10" font-weight="bold" text-anchor="middle" x="250" y="94" direction="ltr" unicode-bidi="embed">v1</text>
+<text fill="#333" font-size="8" text-anchor="middle" x="250" y="148" direction="rtl" unicode-bidi="embed">جدول <tspan direction="ltr" unicode-bidi="embed">users</tspan></text>
+
+<!-- v2 -->
+<circle cx="410" cy="90" fill="#4CAF50" r="16" stroke="#4CAF50" stroke-width="2"></circle>
+<text fill="#fff" font-size="10" font-weight="bold" text-anchor="middle" x="410" y="94" direction="ltr" unicode-bidi="embed">v2</text>
+<text fill="#333" font-size="8" text-anchor="middle" x="410" y="148" direction="rtl" unicode-bidi="embed">ستون <tspan direction="ltr" unicode-bidi="embed">email</tspan></text>
+
+<!-- v3 -->
+<circle cx="570" cy="90" fill="#4CAF50" r="16" stroke="#4CAF50" stroke-width="2"></circle>
+<text fill="#fff" font-size="10" font-weight="bold" text-anchor="middle" x="570" y="94" direction="ltr" unicode-bidi="embed">v3</text>
+<text fill="#333" font-size="8" text-anchor="middle" x="570" y="148" direction="rtl" unicode-bidi="embed">جدول <tspan direction="ltr" unicode-bidi="embed">orders</tspan></text>
+
+<!-- v4 -->
+<circle cx="730" cy="90" fill="#4CAF50" r="16" stroke="#4CAF50" stroke-width="2"></circle>
+<text fill="#fff" font-size="10" font-weight="bold" text-anchor="middle" x="730" y="94" direction="ltr" unicode-bidi="embed">v4</text>
+<text fill="#333" font-size="8" text-anchor="middle" x="730" y="148" direction="rtl" unicode-bidi="embed">کلید خارجی</text>
+
+<!-- File naming convention box -->
+<rect fill="#E3F2FD" height="70" rx="6" stroke="#2196F3" stroke-width="1.5" width="370" x="40" y="168"></rect>
+<text fill="#1565C0" font-size="11" font-weight="bold" text-anchor="middle" x="225" y="188" direction="rtl" unicode-bidi="embed">الگوی نام‌گذاری فایل‌ها</text>
+<text fill="#333" font-size="10" text-anchor="middle" x="225" y="208" direction="ltr" unicode-bidi="embed">001_create_users.up.sql   /   001_create_users.down.sql</text>
+<text fill="#333" font-size="10" text-anchor="middle" x="225" y="226" direction="ltr" unicode-bidi="embed">002_add_email.up.sql      /   002_add_email.down.sql</text>
+
+<!-- Info box: what each version does -->
+<rect fill="#e8f5e9" height="70" rx="6" stroke="#4CAF50" stroke-width="1.5" width="370" x="420" y="168"></rect>
+<text fill="#2E7D32" font-size="11" font-weight="bold" text-anchor="middle" x="605" y="188" direction="rtl" unicode-bidi="embed">تغییرات هر نسخه</text>
+<text fill="#333" font-size="9" text-anchor="middle" x="605" y="206" direction="ltr" unicode-bidi="embed">v1: CREATE TABLE users (id, name, created_at)</text>
+<text fill="#333" font-size="9" text-anchor="middle" x="605" y="220" direction="ltr" unicode-bidi="embed">v2: ALTER TABLE users ADD COLUMN email VARCHAR</text>
+<text fill="#333" font-size="9" text-anchor="middle" x="605" y="234" direction="ltr" unicode-bidi="embed">v3: CREATE TABLE orders ... v4: ADD FOREIGN KEY</text>
+
+<!-- Branching / Conflict section -->
+<text fill="#333" font-size="14" font-weight="bold" text-anchor="middle" x="410" y="275" direction="rtl" unicode-bidi="embed">تداخل: وقتی دو توسعه‌دهنده همزمان <tspan direction="ltr" unicode-bidi="embed">Migration</tspan> می‌سازند</text>
+
+<!-- Main branch line -->
+<line stroke="#4CAF50" stroke-width="2" x1="90" x2="350" y1="320" y2="320"></line>
+<circle cx="90" cy="320" fill="#4CAF50" r="10" stroke="#4CAF50" stroke-width="1.5"></circle>
+<text fill="#4CAF50" font-size="9" text-anchor="middle" x="90" y="340" direction="ltr" unicode-bidi="embed">v3</text>
+
+<!-- Branch A (Developer A) -->
+<line stroke="#00ADD8" stroke-width="2" x1="350" x2="530" y1="320" y2="295"></line>
+<rect fill="#00ADD8" filter="url(#shMgTL)" height="32" rx="5" width="160" x="530" y="278"></rect>
+<text fill="#fff" font-size="9" text-anchor="middle" x="610" y="298" direction="ltr" unicode-bidi="embed">004_add_status.up.sql</text>
+<text fill="#00ADD8" font-size="8" text-anchor="middle" x="610" y="320" direction="rtl" unicode-bidi="embed">توسعه‌دهنده‌ی الف</text>
+
+<!-- Branch B (Developer B) -->
+<line stroke="#9C27B0" stroke-width="2" x1="350" x2="530" y1="320" y2="365"></line>
+<rect fill="#9C27B0" filter="url(#shMgTL)" height="32" rx="5" width="160" x="530" y="348"></rect>
+<text fill="#fff" font-size="9" text-anchor="middle" x="610" y="368" direction="ltr" unicode-bidi="embed">004_add_phone.up.sql</text>
+<text fill="#9C27B0" font-size="8" text-anchor="middle" x="610" y="390" direction="rtl" unicode-bidi="embed">توسعه‌دهنده‌ی ب</text>
+
+<!-- Conflict marker -->
+<rect fill="#FF9800" filter="url(#shMgTL)" height="36" rx="6" width="200" x="310" y="400"></rect>
+<text fill="#fff" font-size="11" font-weight="bold" text-anchor="middle" x="410" y="422" direction="rtl" unicode-bidi="embed">⚠ تداخل شماره‌گذاری!</text>
+<line marker-end="url(#arrowConflictMg)" stroke="#FF9800" stroke-width="1.5" stroke-dasharray="4,3" x1="530" x2="510" y1="298" y2="400"></line>
+<line marker-end="url(#arrowConflictMg)" stroke="#FF9800" stroke-width="1.5" stroke-dasharray="4,3" x1="530" x2="510" y1="368" y2="400"></line>
+
+<!-- Solutions box -->
+<rect fill="#fff3e0" height="60" rx="6" stroke="#FF9800" stroke-width="1.5" width="730" x="45" y="450"></rect>
+<text fill="#E65100" font-size="11" font-weight="bold" text-anchor="middle" x="410" y="470" direction="rtl" unicode-bidi="embed">راه‌حل‌های تداخل</text>
+<text fill="#333" font-size="9" text-anchor="middle" x="180" y="492" direction="rtl" unicode-bidi="embed">۱. قفل <tspan direction="ltr" unicode-bidi="embed">Advisory Lock</tspan> روی دیتابیس</text>
+<text fill="#333" font-size="9" text-anchor="middle" x="410" y="492" direction="rtl" unicode-bidi="embed">۲. اجرای <tspan direction="ltr" unicode-bidi="embed">Migration</tspan> فقط در <tspan direction="ltr" unicode-bidi="embed">CI/CD</tspan></text>
+<text fill="#333" font-size="9" text-anchor="middle" x="640" y="492" direction="rtl" unicode-bidi="embed">۳. شماره‌گذاری <tspan direction="ltr" unicode-bidi="embed">timestamp</tspan> به‌جای ترتیبی</text>
+
+<!-- Golden Rule bar -->
+<rect fill="#4CAF50" height="30" rx="4" width="730" x="45" y="530"></rect>
+<text fill="#fff" font-size="11" font-weight="bold" text-anchor="middle" x="410" y="550" direction="rtl" unicode-bidi="embed">قانون طلایی: هر <tspan direction="ltr" unicode-bidi="embed">Migration</tspan> باید کاملاً قابل بازگشت باشد — فایل <tspan direction="ltr" unicode-bidi="embed">.down.sql</tspan> را همیشه بنویسید و تست کنید</text>
+</svg>
+<figcaption dir="rtl">شکل ۸-۱-ج: خط زمانی نسخه‌های <bdi dir="ltr">Migration</bdi> — حرکت <bdi dir="ltr">up</bdi> (سبز) و <bdi dir="ltr">down</bdi> (قرمز) و تداخل شماره‌گذاری (نارنجی)</figcaption>
+</figure>
+
+<p>خط زمانی نسخه‌های <bdi dir="ltr">Migration</bdi> نشان می‌دهد که دیتابیس چگونه از یک حالت خالی به ساختار نهایی می‌رسد. هر نسخه یک تغییر مشخص را اعمال می‌کند و فایل‌های <bdi dir="ltr">.up.sql</bdi> و <bdi dir="ltr">.down.sql</bdi> به ترتیب مسئول اعمال و بازگشت آن تغییر هستند. وقتی دستور <code dir="ltr">migrate up</code> اجرا می‌شود، تمام نسخه‌هایی که هنوز اعمال نشده‌اند به ترتیب اجرا می‌شوند و شماره نسخه در جدول <code dir="ltr">schema_migrations</code> ثبت می‌گردد. وقتی دستور <code dir="ltr">migrate down N</code> اجرا می‌شود، <bdi dir="ltr">N</bdi> نسخه‌ی آخر به ترتیب معکوس بازگشت می‌خورند.</p>
+
+<p>یکی از مهم‌ترین چالش‌ها در کار تیمی تداخل شماره‌گذاری است. اگر دو توسعه‌دهنده به‌طور همزمان <bdi dir="ltr">Migration</bdi> جدیدی با شماره‌ی یکسان بسازند، ابزار <bdi dir="ltr">golang-migrate</bdi> نمی‌داند کدام را اول اجرا کند. راه‌حل‌های متعددی وجود دارد: استفاده از <bdi dir="ltr">advisory lock</bdi> روی دیتابیس برای جلوگیری از اجرای همزمان، اجرای <bdi dir="ltr">Migration</bdi> فقط در <bdi dir="ltr">CI/CD pipeline</bdi> تا یک نقطه‌ی کنترل واحد وجود داشته باشد، و استفاده از شماره‌گذاری مبتنی بر <bdi dir="ltr">timestamp</bdi> به‌جای شماره‌گذاری ترتیبی که احتمال تداخل را کاهش می‌دهد.</p>
+
+<h3 id="سناریوهای-عملیاتی-migration">سناریوهای عملیاتی</h3>
+<ul>
+<li><strong>جریان کاری توسعه با <bdi dir="ltr">Migration</bdi>:</strong> توسعه‌دهنده شاخه‌ی جدیدی در گیت می‌سازد، <bdi dir="ltr">Migration</bdi> جدید ایجاد می‌کند، تغییرات را روی دیتابیس محلی اعمال می‌کند (<code dir="ltr">migrate up</code>)، کد مربوطه را می‌نویسد، و در نهایت هر دو فایل <bdi dir="ltr">Migration</bdi> و کد برنامه را در <bdi dir="ltr">Pull Request</bdi> ارسال می‌کند. بررسی‌کننده باید فایل‌های <bdi dir="ltr">.up.sql</bdi> و <bdi dir="ltr">.down.sql</bdi> را با دقت بررسی کند.</li>
+<li><strong>یکپارچه‌سازی در <bdi dir="ltr">CI/CD Pipeline</bdi>:</strong> مرحله‌ای در <bdi dir="ltr">pipeline</bdi> استقرار اضافه کنید که قبل از <bdi dir="ltr">deploy</bdi> کد جدید، <bdi dir="ltr">Migration</bdi>‌ها را اعمال کند. این تضمین می‌کند که دیتابیس همیشه همگام با کد است. از پرچم <code dir="ltr">migrate up</code> استفاده کنید تا فقط نسخه‌های اعمال‌نشده اجرا شوند. در صورت خطا، <bdi dir="ltr">deploy</bdi> باید متوقف شود.</li>
+<li><strong>استراتژی‌های بازگشت (<bdi dir="ltr">Rollback</bdi>):</strong> همیشه قبل از اعمال <bdi dir="ltr">Migration</bdi> در محیط تولید، یک پشتیبان از دیتابیس بگیرید. اگر <bdi dir="ltr">Migration</bdi> با مشکل مواجه شد ابتدا علت خطا را بررسی کنید. اگر خطا در خود <bdi dir="ltr">SQL</bdi> است آن را اصلاح کنید و <code dir="ltr">migrate force</code> اجرا کنید. اگر تغییر ساختاری ناخواسته بوده از <code dir="ltr">migrate down</code> استفاده کنید. هرگز بدون تست <bdi dir="ltr">rollback</bdi> در محیط توسعه از آن در تولید استفاده نکنید.</li>
+<li><strong><bdi dir="ltr">Migration</bdi> بدون توقف (<bdi dir="ltr">Zero-Downtime</bdi>) — الگوی Expand/Contract:</strong> تغییرات مخرب مثل حذف ستون را در سه مرحله اعمال کنید: ابتدا ستون جدید را اضافه کنید (<bdi dir="ltr">expand</bdi>) و کد را طوری بنویسید که هم ساختار قدیم و هم جدید را پشتیبانی کند. سپس کد را برای استفاده فقط از ساختار جدید به‌روز کنید. در نهایت ستون قدیمی را حذف کنید (<bdi dir="ltr">contract</bdi>). این الگو تضمین می‌کند که در هیچ لحظه‌ای سرویس قطع نمی‌شود.</li>
+</ul>
+
+<div class="tip"><strong>همیشه <bdi dir="ltr">Migration</bdi> قابل بازگشت بنویسید:</strong> فایل <bdi dir="ltr">.down.sql</bdi> را همیشه بنویسید و جهت <bdi dir="ltr">down</bdi> را تست کنید. در محیط تولید قطعاً لحظه‌ای فرا می‌رسد که باید سریعاً یک تغییر را بازگشت دهید. اگر فایل <bdi dir="ltr">down</bdi> نداشته باشید یا نادرست باشد بازگشت دستی در محیط تولید بسیار پرخطر و زمان‌بر خواهد بود. بهترین روش این است که هر <bdi dir="ltr">Migration</bdi> جدید را ابتدا <code dir="ltr">up</code> و سپس <code dir="ltr">down</code> اجرا کنید تا از صحت هر دو جهت مطمئن شوید.</div>
+</div>
+
+</div>
+
+<!-- Footer -->
+<footer class="site-footer">
+<div class="footer-inner">
+<div class="footer-nav">
+<span class="nav-arrow">‹</span>
+<a href="08.00-chapter-8.html" data-prev>۸. پایگاه داده</a>
+</div>
+<div class="footer-toc">
+<a href="00.01-contents.html">فهرست</a>
+</div>
+<div class="footer-nav">
+<a href="08.02-connecting-to-database-with-databasesql.html" data-next>۸.۲ اتصال به دیتابیس با database/sql</a>
+<span class="nav-arrow">›</span>
+</div>
+</div>
+</footer>
+
+<!-- Back to Top -->
+<button class="back-to-top" aria-label="بازگشت به بالا">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
+</button>
+
+<!-- Scripts -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/go.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/php.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/sql.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/yaml.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/json.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/dockerfile.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/xml.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/ini.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/plaintext.min.js"></script>
+<script src="assets/js/main.js"></script>
+</body>
+</html>

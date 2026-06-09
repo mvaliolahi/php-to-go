@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="fa">
+<head>
+<script>!function(){try{var t=localStorage.getItem('php2go-theme');if(t==='dark'||(!t&&window.matchMedia('(prefers-color-scheme:dark)').matches)){document.documentElement.setAttribute('data-theme','dark')}}catch(e){}}();</script>
+<meta charset="utf-8"/>
+<meta content="ie=edge" http-equiv="x-ua-compatible"/>
+<title>۲.۳ ساختارهای کنترلی — PHP to Go</title>
+<meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet"/>
+<link href="assets/css/main.css" rel="stylesheet" type="text/css"/>
+<link href="assets/img/favicon.ico" rel="icon" type="image/x-icon"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" media="screen" class="hljs-light-theme" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css" media="not screen" class="hljs-dark-theme" rel="stylesheet"/>
+</head>
+<body>
+<!-- Progress Bar -->
+<div class="progress-bar"><div class="progress-bar__fill"></div></div>
+
+<!-- Header -->
+<header class="site-header">
+<div class="header-inner">
+<div class="header-left">
+<button class="header-btn sidebar-toggle" aria-label="فهرست">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+</button>
+<a href="00.00-front-matter.html" class="header-logo"><span class="logo-php">PHP</span> to <span class="logo-go">Go</span></a>
+<span class="header-crumbs">انواع داده و ساختارهای کنترلی › ساختارهای کنترلی</span>
+</div>
+<div class="header-right">
+<nav class="header-nav">
+<span class="nav-arrow">‹</span>
+<a href="02.02-type-conversion.html"><span class="nav-label">۲.۲ Type Conversion</span></a>
+<a href="00.01-contents.html">فهرست</a>
+<a href="02.04-functions-and-methods.html"><span class="nav-label">۲.۴ توابع و متدها</span></a>
+<span class="nav-arrow">›</span>
+</nav>
+<button class="header-btn search-toggle" aria-label="جستجو">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+</button>
+<button class="header-btn theme-toggle" aria-label="تغییر تم">
+<svg class="theme-icon-light" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+<svg class="theme-icon-dark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+</button>
+</div>
+</div>
+</header>
+
+<!-- Search Modal -->
+<div class="search-overlay">
+<div class="search-modal">
+<div class="search-input-wrap">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+<input type="text" class="search-input" placeholder="جستجو... (Ctrl+K)" dir="rtl"/>
+</div>
+<div class="search-results"></div>
+</div>
+</div>
+
+<!-- Layout -->
+<div class="site-layout">
+<!-- Sidebar -->
+<aside class="sidebar"></aside>
+<div class="sidebar-overlay"></div>
+
+<!-- Main Content -->
+<main class="content-area">
+<div class="content-wrap text">
+<div class="chapter">فصل ۲.۳</div>
+<h2 id="ساختارهای-کنترلی">ساختارهای کنترلی</h2>
+<p>یکی از پایه‌ای‌ترین اجزای هر زبان برنامه‌نویسی، ساختارهای کنترلی هستند — ابزارهایی که به کمک آن‌ها منطق برنامه را می‌سازیم، تصمیم می‌گیریم، حلقه اجرا می‌کنیم و جریان اجرای برنامه را کنترل می‌کنیم.</p>
+<p>احتمالاً با پیش‌زمینه‌ای که از برنامه‌نویسی با <bdi dir="ltr">PHP</bdi> دارید، با مفاهیم <code dir="ltr">if</code>، <code dir="ltr">switch</code>، <code dir="ltr">for</code> و <code dir="ltr">while</code> آشنایید. در <bdi dir="ltr">Go</bdi> هرچند ساختارهای مشابهی وجود دارد، تفاوت‌هایی ظریف و گاهی بنیادین در <bdi dir="ltr">syntax</bdi>، فلسفه و کاربرد وجود دارد که درک آن‌ها برای نوشتن کد <bdi dir="ltr">idiomatic</bdi> حیاتی است.</p>
+<table class="comparison-table" dir="rtl">
+<thead>
+<tr><th>ساختار</th><th>PHP</th><th>Go</th></tr>
+</thead>
+<tbody>
+<tr><td>شرط</td><td dir="ltr">if ($x &gt; 0) { }</td><td dir="ltr">if x &gt; 0 { }</td></tr>
+<tr><td>شرط با مقداردهی</td><td>ندارد (متغیر بیرون تعریف شود)</td><td dir="ltr">if n := <span dir="ltr">len(s)</span>; n &gt; 0 { }</td></tr>
+<tr><td dir="ltr">switch</td><td>نیاز به break; (fallthrough با continue)</td><td>break خودکار; fallthrough با کلیدواژه</td></tr>
+<tr><td>حلقه for</td><td dir="ltr">for ($i=0; $i&lt;n; $i++) { }</td><td dir="ltr">for i:=0; i&lt;n; i++ { }</td></tr>
+<tr><td>حلقه while</td><td dir="ltr">while ($cond) { }</td><td dir="ltr">for cond { }</td></tr>
+<tr><td dir="ltr">foreach</td><td dir="ltr">foreach ($arr as $val) { }</td><td dir="ltr">for _, val := range arr { }</td></tr>
+<tr><td>حلقه بی‌نهایت</td><td dir="ltr">while (true) { }</td><td dir="ltr">for { }</td></tr>
+<tr><td>پرانتز شرط</td><td>اجباری</td><td>اختیاری (نداشتن رایج‌تر)</td></tr>
+<tr><td>آکولاد بلاک</td><td>اختیاری برای یک خط</td><td>اجباری همیشه</td></tr>
+</tbody>
+</table>
+<h3 id="if">if</h3>
+<p>در PHP:</p>
+<figure class="code php" dir="ltr">
+<pre><code class="language-php">if ($x &gt; 10) {
+    echo "Greater than 10";
+}
+</code></pre>
+</figure>
+<p>در Go:</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">if x &gt; 10 {
+    fmt.Println("Greater than 10")
+}
+</code></pre>
+</figure>
+<p>در Go نیازی به پرانتز نیست اما بلاک if باید حتی برای یک خط نیز با آکولاد {} باز و بسته شود. Go نیز مشابه PHP از else if پشتیبانی می‌کند. </p>
+<p>مثال:</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">if x &lt; 0 {
+    fmt.Println("Negative")
+} else if x == 0 {
+    fmt.Println("Zero")
+} else {
+    fmt.Println("Positive")
+}
+</code></pre>
+</figure>
+<p>در Go می‌توانید پیش از شرط یک متغیر تعریف کنید که فقط در همان بلاک قابل استفاده است.</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">if n := len(name); n &gt; 5 {
+    fmt.Println("Long name")
+}
+</code></pre>
+</figure>
+<p>در PHP چنین قابلیتی ندارید و متغیر باید خارج از شرط تعریف شود اما میتوان نتیجه ی شرط را مستقیم در یک متغیر ذخیره کرد. همچنین Go فاقد عملگر ||= یا in است. بنابراین باید از if تو در تو یا چند شرط استفاده کنید:</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">if x == 1 || x == 2 || x == 3 {
+    // do something
+}
+</code></pre>
+</figure>
+<h3 id="switch">switch</h3>
+<p>در PHP:</p>
+<figure class="code php" dir="ltr">
+<pre><code class="language-php">switch ($status) {
+    case 'active':
+    ...
+    break;
+}
+</code></pre>
+</figure>
+<p>در Go:</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">switch status {
+    case "active":
+    ...
+    default:
+    ...
+}
+</code></pre>
+</figure>
+<p><strong>در</strong> <strong dir="ltr">Go</strong> نیازی به break نیست و به‌صورت پیش‌فرض پس از اولین case موفق از switch خارج می‌شود. ولی از کلمه کلیدی fallthrough برای ادامه‌ی اجرای case بعدی می توان استفاده کرد. همچنین می‌توانید switch را روی یک شرط منطقی مثل switch true هم اجرا کنید.</p>
+<p>مثال:</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">switch {
+    case age &lt; 18:
+    fmt.Println("Teen")
+    case age &lt; 65:
+    fmt.Println("Adult")
+    default:
+    fmt.Println("Senior")
+}
+</code></pre>
+</figure>
+<h3 id="for">for</h3>
+<p>Go فقط یک ساختار for دارد اما به‌قدری قدرتمند است که جایگزین for, while, و foreach در زبان‌های دیگر می‌شود.</p>
+
+<figure class="diagram" dir="ltr">
+<svg height="280" viewBox="0 0 700 280" width="700" xmlns="http://www.w3.org/2000/svg">
+<defs><marker id="arrLoop" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#00ADD8" points="0 0, 10 3.5, 0 7"></polygon></marker></defs>
+<rect fill="#fafafa" height="280" rx="8" width="700" x="0" y="0"></rect>
+<text fill="#00ADD8" font-size="15" font-weight="bold" text-anchor="middle" x="350" y="25" direction="rtl" unicode-bidi="embed">انواع <tspan direction="ltr" unicode-bidi="embed">for</tspan> در <tspan direction="ltr" unicode-bidi="embed">Go</tspan> — فقط یک کلمه‌ی کلیدی</text>
+<!-- Classic for -->
+<rect fill="#e0f7fa" height="90" rx="8" stroke="#00ADD8" stroke-width="2" width="155" x="15" y="50"></rect>
+<text fill="#00ADD8" font-size="12" font-weight="bold" text-anchor="middle" x="92" y="72" direction="rtl" unicode-bidi="embed">کلاسیک</text>
+<text fill="#333" font-size="10" text-anchor="middle" x="92" y="92" direction="ltr" unicode-bidi="embed">for i:=0; i&lt;n; i++ { }</text>
+<text fill="#999" font-size="9" text-anchor="middle" x="92" y="108" direction="ltr" unicode-bidi="embed">PHP: for ($i=0; ...)</text>
+<text fill="#666" font-size="9" text-anchor="middle" x="92" y="125" direction="rtl" unicode-bidi="embed">شمارنده + شرط + گام</text>
+<!-- While-style -->
+<rect fill="#e8f5e9" height="90" rx="8" stroke="#27ae60" stroke-width="2" width="155" x="185" y="50"></rect>
+<text fill="#27ae60" font-size="12" font-weight="bold" text-anchor="middle" x="262" y="72" direction="rtl" unicode-bidi="embed">سبک <tspan direction="ltr" unicode-bidi="embed">while</tspan></text>
+<text fill="#333" font-size="10" text-anchor="middle" x="262" y="92" direction="ltr" unicode-bidi="embed">for cond { }</text>
+<text fill="#999" font-size="9" text-anchor="middle" x="262" y="108" direction="ltr" unicode-bidi="embed">PHP: while ($cond) { }</text>
+<text fill="#666" font-size="9" text-anchor="middle" x="262" y="125" direction="rtl" unicode-bidi="embed">فقط شرط — بدون شمارنده</text>
+<!-- Range -->
+<rect fill="#fff3e0" height="90" rx="8" stroke="#f39c12" stroke-width="2" width="155" x="355" y="50"></rect>
+<text fill="#e65100" font-size="12" font-weight="bold" text-anchor="middle" x="432" y="72" direction="rtl" unicode-bidi="embed">پیمایش <tspan direction="ltr" unicode-bidi="embed">range</tspan></text>
+<text fill="#333" font-size="10" text-anchor="middle" x="432" y="92" direction="ltr" unicode-bidi="embed">for i, v := range coll { }</text>
+<text fill="#999" font-size="9" text-anchor="middle" x="432" y="108" direction="ltr" unicode-bidi="embed">PHP: foreach ($arr as $v)</text>
+<text fill="#666" font-size="9" text-anchor="middle" x="432" y="125" direction="rtl" unicode-bidi="embed">slice, map, string, chan</text>
+<!-- Infinite -->
+<rect fill="#fce4ec" height="90" rx="8" stroke="#e74c3c" stroke-width="2" width="155" x="525" y="50"></rect>
+<text fill="#e74c3c" font-size="12" font-weight="bold" text-anchor="middle" x="602" y="72" direction="rtl" unicode-bidi="embed">بی‌نهایت</text>
+<text fill="#333" font-size="10" text-anchor="middle" x="602" y="92" direction="ltr" unicode-bidi="embed">for { }</text>
+<text fill="#999" font-size="9" text-anchor="middle" x="602" y="108" direction="ltr" unicode-bidi="embed">PHP: while (true) { }</text>
+<text fill="#666" font-size="9" text-anchor="middle" x="602" y="125" direction="rtl" unicode-bidi="embed">خروج فقط با <tspan direction="ltr" unicode-bidi="embed">break</tspan></text>
+<!-- Flow diagram below -->
+<rect fill="#fff" height="55" rx="6" stroke="#00ADD8" stroke-width="1.5" width="155" x="15" y="165"></rect>
+<text fill="#333" font-size="10" text-anchor="middle" x="92" y="185" direction="ltr" unicode-bidi="embed">init → condition → body → post</text>
+<text fill="#00ADD8" font-size="9" text-anchor="middle" x="92" y="205" direction="ltr" unicode-bidi="embed">↻ repeat</text>
+<rect fill="#fff" height="55" rx="6" stroke="#27ae60" stroke-width="1.5" width="155" x="185" y="165"></rect>
+<text fill="#333" font-size="10" text-anchor="middle" x="262" y="185" direction="ltr" unicode-bidi="embed">condition → body</text>
+<text fill="#27ae60" font-size="9" text-anchor="middle" x="262" y="205" direction="ltr" unicode-bidi="embed">↻ repeat while true</text>
+<rect fill="#fff" height="55" rx="6" stroke="#f39c12" stroke-width="1.5" width="155" x="355" y="165"></rect>
+<text fill="#333" font-size="10" text-anchor="middle" x="432" y="185" direction="ltr" unicode-bidi="embed">next element → body</text>
+<text fill="#f39c12" font-size="9" text-anchor="middle" x="432" y="205" direction="ltr" unicode-bidi="embed">↻ until exhausted</text>
+<rect fill="#fff" height="55" rx="6" stroke="#e74c3c" stroke-width="1.5" width="155" x="525" y="165"></rect>
+<text fill="#333" font-size="10" text-anchor="middle" x="602" y="185" direction="ltr" unicode-bidi="embed">body → body → ...</text>
+<text fill="#e74c3c" font-size="9" text-anchor="middle" x="602" y="205" direction="ltr" unicode-bidi="embed">↻ forever (until break)</text>
+<!-- Bottom note -->
+<rect fill="#e3f2fd" height="35" rx="6" stroke="#2196f3" stroke-width="1" width="660" x="20" y="235"></rect>
+<text fill="#1565c0" font-size="11" text-anchor="middle" x="350" y="257" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">Go</tspan> فقط یک حلقه دارد: <tspan direction="ltr" unicode-bidi="embed">for</tspan> — ساده‌تر، خواناتر، کمتر سردرگم‌کننده</text>
+</svg>
+<figcaption dir="rtl">شکل ۲-۳-الف: انواع حلقه‌ی <bdi dir="ltr">for</bdi> در <bdi dir="ltr">Go</bdi> — جایگزین <bdi dir="ltr">for</bdi> ، <bdi dir="ltr">while</bdi> و <bdi dir="ltr">foreach</bdi> در <bdi dir="ltr">PHP</bdi></figcaption>
+</figure>
+
+
+<p><strong>ساختار کلاسیک</strong> :</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">for i := 0; i &lt; 10; i++ {
+    fmt.Println(i)
+}
+</code></pre>
+</figure>
+<p>معادل PHP:</p>
+<figure class="code php" dir="ltr">
+<pre><code class="language-php">for ($i = 0; $i &lt; 10; $i++) {
+    echo $i;
+}
+</code></pre>
+</figure>
+<h3 id="while">while</h3>
+<p>در Go به کمک for می‌توانید حلقه یا while را شبیه سازی کرد در واقع Go ساختار while ندارد بلکه از for بدون بخش‌های آغاز و پایان استفاده می‌کند.</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">for x &lt; 100 {
+    x *= 2
+}
+</code></pre>
+</figure>
+<p>در PHP:</p>
+<figure class="code php" dir="ltr">
+<pre><code class="language-php">while ($x &lt; 100) {
+    $x *= 2;
+}
+</code></pre>
+</figure>
+<h3 id="infinite-loop">infinite loop</h3>
+<p>در PHP:</p>
+<figure class="code php" dir="ltr">
+<pre><code class="language-php">while (true) {
+}
+</code></pre>
+</figure>
+<p>در Go به روش زیر می‌توانید در حلقه بینهایت ایجاد کنید:</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">for {
+}
+</code></pre>
+</figure>
+<p>برای خروج باید از break استفاده کنید.</p>
+<h3 id="پیمایش-map-یا-range">پیمایش map یا range</h3>
+<p>range یکی از قدرتمندترین ابزارهای Go است. همان‌طور که در PHP از foreach برای پیمایش آرایه‌ها و کالکشن‌ها استفاده می‌کنیم در Go کلمه کلیدی range همین نقش را ایفا می‌کند. range همیشه دو مقدار برمی‌گرداند:</p>
+<p>ایندکس یا کلید (در آرایه و اسلایس‌ها ایندکس، و در map کلید)</p>
+<p>مقدار</p>
+<p>اگر به یکی از آن‌ها نیازی ندارید می‌توانید آن را با _ نادیده بگیرید.</p>
+<p>در PHP:</p>
+<figure class="code php" dir="ltr">
+<pre><code class="language-php">foreach ($users as $user) {
+    echo $user['name'];
+}
+</code></pre>
+</figure>
+<p>مثال پیمایش روی struct:</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">for _, user := range users {
+    fmt.Println(user.Name)
+}
+</code></pre>
+</figure>
+<p>مثال روی map:</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">for key, value := range myMap {
+    fmt.Printf("%s -&gt; %d\n", key, value)
+}
+</code></pre>
+</figure>
+<p>مثال روی slice:</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">for i, v := range numbers {
+    fmt.Printf("numbers[%d] = %d\n", i, v)
+}
+</code></pre>
+</figure>
+<h3 id="break-continue-goto">break, continue, goto</h3>
+<p>Go از break و continue مثل PHP پشتیبانی می‌کند.</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">for i := 0; i &lt; 10; i++ {
+    if i == 5 {
+        continue
+    }
+    if i == 8 {
+        break
+    }
+    fmt.Println(i)
+}
+</code></pre>
+</figure>
+<p>goto نیز در Go وجود دارد ولی استفاده از آن توصیه نمی‌شود مگر در شرایط خاص مثلاً خروج از چند لایه تو در تو.
+</p>
+<h3 id="labeled-loops">حلقه‌های برچسب‌دار و خروج از حلقه‌های تودرتو</h3>
+<p>Go Labels برای حلقه‌ها پشتیبانی می‌کند که امکان خروج یا ادامه‌ی حلقه‌ی بیرونی را از درون حلقه‌ی تو در تو فراهم می‌آورد. در PHP این کار با استفاده از <code>break N;</code> انجام می‌شود.</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">outer:
+for i := 0; i &lt; 10; i++ {
+    for j := 0; j &lt; 10; j++ {
+        if i*j == 42 {
+            break outer // exit both loops
+        }
+    }
+}
+</code></pre>
+</figure>
+<figure class="code php" dir="ltr">
+<pre><code class="language-php">// PHP equivalent
+for ($i = 0; $i &lt; 10; $i++) {
+    for ($j = 0; $j &lt; 10; $j++) {
+        if ($i * $j == 42) {
+            break 2; // exit 2 loop levels
+        }
+    }
+}
+</code></pre>
+</figure>
+<div class="tip"><strong>نکته:</strong> در Go از <code>continue outer</code> نیز می‌توان برای پرش به ابتدای حلقه‌ی بیرونی استفاده کرد. این الگو در PHP معادل مستقیمی ندارد.</div>
+<div class="note"><strong>نحوه‌ی کامپایل range در Go:</strong> کامپایلر Go دستور <code>range</code> را بسته به نوع داده‌ی هدف به شکل‌های متفاوتی ترجمه می‌کند:
+<br/>• روی slice و array: یک حلقه‌ی for ساده با شمارنده‌ی ایندکس تولید می‌شود
+<br/>• روی map: تابع <code>mapiterinit</code> و <code>mapiternext</code> از runtime فراخوانی می‌شوند
+<br/>• روی channel: دریافت از channel تا بسته شدن آن ادامه می‌یابد
+<br/>• روی string: پیمایش UTF-8 به‌صورت rune‌به‌rune انجام می‌شود (نه بایت‌به‌بایت)
+<br/><br/>
+نکته‌ی مهم: مقدار برگشتی range یک کپی از عنصر اصلی است نه ارجاع به آن. بنابراین تغییر مقدار متغیر range روی داده‌ی اصلی تأثیری ندارد. اگر نیاز به تغییر عناصر slice دارید باید از اندیس استفاده کنید: <code>nums[i] = newValue</code>.</div>
+<p><strong>دستورات ترکیبی و تفاوت‌های فلسفی</strong></p>
+<p><strong>خوانایی و سادگی</strong></p>
+<p>Go تاکید زیادی بر نوشتن کد خوانا، ساده و قابل پیش‌بینی دارد. به همین دلیل:</p>
+<p>استفاده از else if به‌شکل تو در تو زیاد رایج نیست پیشنهاد می‌شود که ساختارهای پیچیده با switch یا تفکیک توابع ساده‌سازی شوند.</p>
+<p>استفاده از range تقریباً همیشه جایگزین for ساده روی لیست است.</p>
+<p>استفاده از goto و ساختارهای پیچیده‌ی شرطی تا حد ممکن اجتناب می‌شود.</p>
+<p>ساختارهای کنترلی در Go در نگاه اول ساده‌اند اما طراحی دقیق آن‌ها باعث می‌شود کد Go خواناتر، کوتاه‌تر و کمتر مستعد خطا باشد.
+با این حال انتقال از آزادی PHP به نظم Go ممکن است ابتدا چالش‌برانگیز باشد. درک این ساختارها اولین قدم برای نوشتن کدی idiomatic و مؤثر در Go است.</p>
+<h3 id="if-init-deep">if-init: الگوهای پیشرفته‌ی مقداردهی در شرط</h3>
+<p>یکی از ویژگی‌های منحصربه‌فرد <bdi dir="ltr">Go</bdi> قابلیت <bdi dir="ltr">if-init</bdi> است: تعریف متغیر قبل از شرط در همان خط <code>if</code>. این الگو هم کد را فشرده‌تر می‌کند، و هم حوزه‌ی متغیر را به بلوک <code>if/else</code> محدود می‌کند و از آلودگی حوزه‌ی بیرونی جلوگیری می‌کند. این الگو در <bdi dir="ltr">PHP</bdi> وجود ندارد و برنامه‌نویسان <bdi dir="ltr">PHP</bdi> باید متغیر را قبل از شرط تعریف کنند.</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">// common pattern: read from map with error check
+if val, ok := cache[key]; ok {
+    fmt.Println("یافت شد:", val)
+} else {
+    fmt.Println("یافت نشد")
+}
+// val and ok are only accessible in this block
+
+// common pattern: execute function and check error
+if err := doSomething(); err != nil {
+    return err
+}
+// err is only accessible in the if block
+
+// combined pattern: type conversion and check
+if n, err := strconv.Atoi(input); err == nil {
+    fmt.Println("عدد:", n)
+} else {
+    fmt.Println("ورودی نامعتبر")
+}
+</code></pre>
+</figure>
+<div class="tip"><strong>بهترین روش:</strong> از <code>if-init</code> هرجا ممکن است استفاده کنید. محدود کردن حوزه‌ی متغیرها از مهم‌ترین اصول کد تمیز است. اگر متغیری فقط در بلوک شرطی نیاز است، نباید بیرون از آن تعریف شود. در <bdi dir="ltr">PHP</bdi> متأسفانه این الگو ممکن نیست و متغیرها همیشه در حوزه‌ی بیرونی نیز قابل دسترسی هستند.</div>
+<h3 id="switch-fallthrough">fallthrough در برابر break خودکار</h3>
+<p>رفتار پیش‌فرض <bdi dir="ltr">switch</bdi> در <bdi dir="ltr">Go</bdi> برعکس <bdi dir="ltr">PHP</bdi> است: هر <code>case</code> به‌طور خودکار از <bdi dir="ltr">switch</bdi> خارج می‌شود و نیازی به <code>break</code> ندارد. این رفتار عمدی است چون فراموش کردن <code>break</code> در <bdi dir="ltr">PHP</bdi> از رایج‌ترین منابع باگ است. اما گاهی نیاز دارید چند <code>case</code> پشت سر هم اجرا شوند — برای این کار از <code>fallthrough</code> استفاده می‌کنید.</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">// switch without fallthrough — default behavior
+switch day := time.Now().Weekday(); day {
+    case time.Saturday, time.Sunday: // multiple values in one case
+    fmt.Println("آخر هفته")
+    default:
+    fmt.Println("روز کاری")
+}
+
+// switch with fallthrough — execute next case without condition check
+switch num := 2; num {
+    case 1:
+    fmt.Println("یک")
+    fallthrough // force execution of next case!
+    case 2:
+    fmt.Println("دو")
+    fallthrough
+    case 3:
+    fmt.Println("سه")
+}
+// Output: two three (even if num == 2)
+</code></pre>
+</figure>
+<div class="warning"><strong>احتیاط با fallthrough:</strong> <code>fallthrough</code> باید آخرین دستور در <code>case</code> باشد و نمی‌توان از آن در <code>case</code> آخر استفاده کنید. برخلاف <bdi dir="ltr">PHP</bdi> که در آن فراموش کردن <code>break</code> باعث اجرای <bdi dir="ltr">fall-through</bdi> می‌شود، در <bdi dir="ltr">Go</bdi> باید صراحتاً <code>fallthrough</code> را بنویسید. این طراحی عمدی است تا از باگ‌های رایج <bdi dir="ltr">PHP</bdi> جلوگیری شود.</div>
+<h3 id="goto-labeled">goto و برچسب‌ها: کاربردهای نادر اما معتبر</h3>
+<p>هرچند استفاده از <code>goto</code> در زبان‌های مدرن منع می‌شود، <bdi dir="ltr">Go</bdi> آن را پشتیبانی می‌کند. یکی از کاربردهای معتبر <code>goto</code> در <bdi dir="ltr">Go</bdi> پاکسازی و خروج یکباره از بلوک‌های تودرتو است — الگویی که در کد منبع خود زبان <bdi dir="ltr">Go</bdi> نیز استفاده شده است. البته برچسب‌ها (<bdi dir="ltr">Labels</bdi>) معمولاً ترجیح داده می‌شوند.</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">// goto for exit and cleanup (valid but rare pattern)
+func process(data []byte) error {
+    var f *os.File
+    var err error
+
+    f, err = os.Open("config.json")
+    if err != nil {
+        goto cleanup
+    }
+    // processing...
+    if err = validate(data); err != nil {
+        goto cleanup
+    }
+    // Continue processing...
+    return nil
+
+    cleanup:
+    if f != nil {
+        f.Close()
+    }
+    return err
+}
+
+// Wrong — invalid: goto cannot jump to new variables
+// goto skip
+// x := 10 // Compile error: goto jumps over variable declaration
+// skip:
+</code></pre>
+</figure>
+<div class="note"><strong>قوانین goto در Go:</strong> <code>goto</code> نمی‌تواند به برچسبی پرش کند که خارج از بلوک فعلی است و متغیرهای جدیدی بین <code>goto</code> و برچسب تعریف شده‌اند. این محدودیت ایمنی از رفتار تعریف‌نشده جلوگیری می‌کند. در عمل، از <code>goto</code> فقط در الگوی «پاکسازی و خروج» استفاده کنید و ترجیحاً از <code>defer</code> به‌عنوان جایگزین ایمن‌تر استفاده کنید.</div>
+<h3 id="range-integers">range روی اعداد — Go 1.22+</h3>
+<p>از نسخه‌ی ۱.۲۲ <bdi dir="ltr">Go</bdi> قابلیت جدیدی اضافه شده: پیمایش <code>range</code> روی اعداد صحیح. این ویژگی جایگزین تمیزتری برای الگوی رایج <code>for i := 0; i &lt; n; i++</code> فراهم می‌کند.</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">// Go 1.22+: range on integer
+for i := range 5 {
+    fmt.Println(i) // 0, 1, 2, 3, 4
+}
+
+// Old equivalent
+for i := 0; i &lt; 5; i++ {
+    fmt.Println(i)
+}
+
+// Usage: create slice with index
+items := make([]string, 3)
+for i := range 3 {
+    items[i] = fmt.Sprintf("item-%d", i)
+}
+</code></pre>
+</figure>
+<figure class="diagram" dir="ltr">
+<svg height="400" viewBox="0 0 600 400" width="600" xmlns="http://www.w3.org/2000/svg">
+<rect fill="#fafafa" height="380" rx="12" stroke="#00ADD8" stroke-width="2" width="580" x="10" y="10"></rect>
+<text fill="#00ADD8" font-size="15" font-weight="bold" text-anchor="middle" x="300" y="35" direction="rtl" unicode-bidi="embed">مقایسه‌ی ساختارهای کنترلی: <tspan direction="ltr" unicode-bidi="embed">PHP</tspan> در برابر <tspan direction="ltr" unicode-bidi="embed">Go</tspan></text>
+<!-- if -->
+<rect fill="#e3f2fd" height="55" rx="6" stroke="#2196f3" stroke-width="1.5" width="270" x="20" y="55"></rect>
+<text fill="#1565c0" font-size="12" font-weight="bold" text-anchor="middle" x="155" y="73" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">if</tspan> در <tspan direction="ltr" unicode-bidi="embed">Go</tspan></text>
+<text fill="#333" font-size="10" text-anchor="middle" x="155" y="90" direction="rtl" unicode-bidi="embed">بدون پرانتز • آکولاد اجباری • <tspan direction="ltr" unicode-bidi="embed">if-init</tspan></text>
+<text fill="#333" font-size="10" text-anchor="middle" x="155" y="103" direction="rtl" unicode-bidi="embed">حوزه‌ی متغیر محدود به بلوک</text>
+<rect fill="#f3e5f5" height="55" rx="6" stroke="#777BB4" stroke-width="1.5" width="270" x="310" y="55"></rect>
+<text fill="#777BB4" font-size="12" font-weight="bold" text-anchor="middle" x="445" y="73" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">if</tspan> در <tspan direction="ltr" unicode-bidi="embed">PHP</tspan></text>
+<text fill="#333" font-size="10" text-anchor="middle" x="445" y="90" direction="rtl" unicode-bidi="embed">پرانتز اجباری • آکولاد اختیاری</text>
+<text fill="#333" font-size="10" text-anchor="middle" x="445" y="103" direction="rtl" unicode-bidi="embed">بدون <tspan direction="ltr" unicode-bidi="embed">if-init</tspan> • حوزه‌ی تابع</text>
+<!-- switch -->
+<rect fill="#e8f5e9" height="55" rx="6" stroke="#4caf50" stroke-width="1.5" width="270" x="20" y="125"></rect>
+<text fill="#2e7d32" font-size="12" font-weight="bold" text-anchor="middle" x="155" y="143" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">switch</tspan> در <tspan direction="ltr" unicode-bidi="embed">Go</tspan></text>
+<text fill="#333" font-size="10" text-anchor="middle" x="155" y="160" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">break</tspan> خودکار • <tspan direction="ltr" unicode-bidi="embed">fallthrough</tspan> صریح</text>
+<text fill="#333" font-size="10" text-anchor="middle" x="155" y="173" direction="rtl" unicode="embed"><tspan direction="ltr" unicode-bidi="embed">switch</tspan> بدون عبارت = <tspan direction="ltr" unicode-bidi="embed">if-else</tspan> تمیز</text>
+<rect fill="#fff3e0" height="55" rx="6" stroke="#ff9800" stroke-width="1.5" width="270" x="310" y="125"></rect>
+<text fill="#e65100" font-size="12" font-weight="bold" text-anchor="middle" x="445" y="143" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">switch</tspan> در <tspan direction="ltr" unicode-bidi="embed">PHP</tspan></text>
+<text fill="#333" font-size="10" text-anchor="middle" x="445" y="160" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">break</tspan> لازم • <tspan direction="ltr" unicode-bidi="embed">fall-through</tspan> پیش‌فرض</text>
+<text fill="#333" font-size="10" text-anchor="middle" x="445" y="173" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">match</tspan> در <tspan direction="ltr" unicode-bidi="embed">PHP</tspan> 8 (شبیه‌تر به <tspan direction="ltr" unicode-bidi="embed">Go</tspan>)</text>
+<!-- for/range -->
+<rect fill="#e0f7fa" height="70" rx="6" stroke="#00ADD8" stroke-width="1.5" width="270" x="20" y="200"></rect>
+<text fill="#00838f" font-size="12" font-weight="bold" text-anchor="middle" x="155" y="218" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">for/range</tspan> در <tspan direction="ltr" unicode-bidi="embed">Go</tspan></text>
+<text fill="#333" font-size="10" text-anchor="middle" x="155" y="235" direction="rtl" unicode-bidi="embed">فقط <tspan direction="ltr" unicode-bidi="embed">for</tspan> — جایگزین <tspan direction="ltr" unicode-bidi="embed">while</tspan> و <tspan direction="ltr" unicode-bidi="embed">foreach</tspan></text>
+<text fill="#333" font-size="10" text-anchor="middle" x="155" y="248" direction="rtl" unicode-bidi="embed">range: slice, map, string, chan, int</text>
+<text fill="#333" font-size="10" text-anchor="middle" x="155" y="261" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">for</tspan> { } = حلقه‌ی بی‌نهایت</text>
+<rect fill="#fce4ec" height="70" rx="6" stroke="#e74c3c" stroke-width="1.5" width="270" x="310" y="200"></rect>
+<text fill="#c62828" font-size="12" font-weight="bold" text-anchor="middle" x="445" y="218" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">for/while/foreach</tspan> در <tspan direction="ltr" unicode-bidi="embed">PHP</tspan></text>
+<text fill="#333" font-size="10" text-anchor="middle" x="445" y="235" direction="rtl" unicode-bidi="embed">سه ساختار جداگانه</text>
+<text fill="#333" font-size="10" text-anchor="middle" x="445" y="248" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">foreach</tspan>: فقط <tspan direction="ltr" unicode-bidi="embed">array/object</tspan></text>
+<text fill="#333" font-size="10" text-anchor="middle" x="445" y="261" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">while</tspan>(<tspan direction="ltr" unicode-bidi="embed">true</tspan>) = حلقه‌ی بی‌نهایت</text>
+<!-- Labels/goto -->
+<rect fill="#fff9c4" height="100" rx="6" stroke="#f9a825" stroke-width="1.5" width="560" x="20" y="290"></rect>
+<text fill="#f57f17" font-size="12" font-weight="bold" text-anchor="middle" x="300" y="312" direction="rtl" unicode-bidi="embed">ویژگی‌های منحصربه‌فرد <tspan direction="ltr" unicode-bidi="embed">Go</tspan></text>
+<text fill="#333" font-size="10" x="40" y="332" direction="rtl" unicode-bidi="embed">• <tspan direction="ltr" unicode-bidi="embed">if-init</tspan>: محدود کردن حوزه‌ی متغیر به بلوک شرطی (ندارد در <tspan direction="ltr" unicode-bidi="embed">PHP</tspan>)</text>
+<text fill="#333" font-size="10" x="40" y="350" direction="rtl" unicode-bidi="embed">• <tspan direction="ltr" unicode-bidi="embed">Labels</tspan>: <tspan direction="ltr" unicode-bidi="embed">break/continue</tspan> هدفمند به حلقه‌ی بیرونی (معادل <tspan direction="ltr" unicode-bidi="embed">break</tspan> N در <tspan direction="ltr" unicode-bidi="embed">PHP</tspan>)</text>
+<text fill="#333" font-size="10" x="40" y="368" direction="rtl" unicode-bidi="embed">• <tspan direction="ltr" unicode-bidi="embed">range</tspan> روی اعداد صحیح (<tspan direction="ltr" unicode-bidi="embed">Go</tspan> 1.22+) — جایگزین <tspan direction="ltr" unicode-bidi="embed">for</tspan> ساده</text>
+<text fill="#333" font-size="10" x="40" y="386" direction="rtl" unicode-bidi="embed">• <tspan direction="ltr" unicode-bidi="embed">goto</tspan> با محدودیت‌های ایمنی (نمی‌تواند از تعریف متغیر پرش کند)</text>
+</svg>
+<figcaption>شکل ۹-۲: مقایسه‌ی ساختارهای کنترلی <bdi dir="ltr">PHP</bdi> و <bdi dir="ltr">Go</bdi></figcaption>
+</figure>
+<h3 id="foreach-range-comparison">مقایسه‌ی بصری <bdi dir="ltr">PHP foreach</bdi> در برابر <bdi dir="ltr">Go range</bdi></h3>
+<p>پیمایش مجموعه‌ها یکی از پرکاربردترین عملیات در برنامه‌نویسی است. در <bdi dir="ltr">PHP</bdi> دستور <bdi dir="ltr">foreach</bdi> ابزار اصلی برای پیمایش آرایه‌ها و اشیاء است و مقادیر را به‌صورت ارجاع یا کپی در اختیار بدنه‌ی حلقه قرار می‌دهد. در <bdi dir="ltr">Go</bdi> دستور <bdi dir="ltr">range</bdi> با برگرداندن کپی مقادیر رویکرد متفاوتی دارد و قابلیت‌های منحصربه‌فردی مانند پیمایش <bdi dir="ltr">rune</bdi> رشته و دریافت از <bdi dir="ltr">channel</bdi> فراهم می‌کند. شکل زیر تفاوت‌های کلیدی این دو رویکرد را در کنار هم نمایش می‌دهد.</p>
+<figure class="diagram" dir="ltr">
+<svg height="620" viewBox="0 0 780 620" width="780" xmlns="http://www.w3.org/2000/svg">
+<rect fill="#fafafa" height="600" rx="12" stroke="#00ADD8" stroke-width="2" width="760" x="10" y="10"></rect>
+<text fill="#333" font-size="16" font-weight="bold" text-anchor="middle" x="390" y="35" direction="rtl" unicode-bidi="embed">مقایسه‌ی <tspan direction="ltr" unicode-bidi="embed">PHP foreach</tspan> در برابر <tspan direction="ltr" unicode-bidi="embed">Go range</tspan></text>
+
+<!-- PHP Side -->
+<rect fill="#777BB4" height="28" rx="6" width="355" x="20" y="48"></rect>
+<text fill="#fff" font-size="13" font-weight="bold" text-anchor="middle" x="197" y="67" direction="ltr" unicode-bidi="embed">PHP foreach</text>
+
+<!-- PHP foreach with key => value -->
+<rect fill="#f3e5f5" height="55" rx="6" stroke="#777BB4" stroke-width="1.5" width="355" x="20" y="85"></rect>
+<text fill="#777BB4" font-size="11" font-weight="bold" x="35" y="103" direction="ltr" unicode-bidi="embed">foreach ($array as $key =&gt; $value)</text>
+<text fill="#555" font-size="10" x="35" y="118" direction="rtl" unicode-bidi="embed">کلید و مقدار • مقدار کپی است مگر با <tspan direction="ltr" unicode-bidi="embed">&amp;</tspan></text>
+<text fill="#555" font-size="10" x="35" y="133" direction="ltr" unicode-bidi="embed">Works on: array | object | Traversable</text>
+
+<!-- PHP foreach value only -->
+<rect fill="#f3e5f5" height="40" rx="6" stroke="#777BB4" stroke-width="1.5" width="355" x="20" y="148"></rect>
+<text fill="#777BB4" font-size="11" font-weight="bold" x="35" y="166" direction="ltr" unicode-bidi="embed">foreach ($array as $value)</text>
+<text fill="#555" font-size="10" x="35" y="182" direction="ltr" unicode-bidi="embed">Value only — key is discarded</text>
+
+<!-- PHP foreach by reference -->
+<rect fill="#f3e5f5" height="40" rx="6" stroke="#777BB4" stroke-width="1.5" width="355" x="20" y="198"></rect>
+<text fill="#777BB4" font-size="11" font-weight="bold" x="35" y="216" direction="ltr" unicode-bidi="embed">foreach ($array as &amp;$value)</text>
+<text fill="#555" font-size="10" x="35" y="232" direction="ltr" unicode-bidi="embed">Reference — can modify original array elements</text>
+
+<!-- PHP behaviors -->
+<rect fill="#f3e5f5" height="90" rx="6" stroke="#777BB4" stroke-width="1" width="355" x="20" y="248"></rect>
+<text fill="#777BB4" font-size="11" font-weight="bold" x="35" y="268" direction="ltr" unicode-bidi="embed">PHP behaviors:</text>
+<text fill="#555" font-size="10" x="35" y="285" direction="ltr" unicode-bidi="embed">• Array order is preserved (ordered hash table)</text>
+<text fill="#555" font-size="10" x="35" y="300" direction="ltr" unicode-bidi="embed">• break N; exits N levels of nesting</text>
+<text fill="#555" font-size="10" x="35" y="315" direction="ltr" unicode-bidi="embed">• continue skips to next iteration</text>
+<text fill="#555" font-size="10" x="35" y="330" direction="ltr" unicode-bidi="embed">• Modification during iteration is undefined behavior</text>
+
+<!-- Go Side -->
+<rect fill="#00ADD8" height="28" rx="6" width="375" x="395" y="48"></rect>
+<text fill="#fff" font-size="13" font-weight="bold" text-anchor="middle" x="582" y="67" direction="ltr" unicode-bidi="embed">Go range</text>
+
+<!-- Go range with index and value -->
+<rect fill="#e0f7fa" height="55" rx="6" stroke="#00ADD8" stroke-width="1.5" width="375" x="395" y="85"></rect>
+<text fill="#00ADD8" font-size="11" font-weight="bold" x="410" y="103" direction="ltr" unicode-bidi="embed">for i, v := range slice</text>
+<text fill="#555" font-size="10" x="410" y="118" direction="rtl" unicode-bidi="embed">ایندکس و مقدار • مقدار همیشه کپی است</text>
+<text fill="#555" font-size="10" x="410" y="133" direction="ltr" unicode-bidi="embed">Works on: slice | array | map | string | chan</text>
+
+<!-- Go range value only -->
+<rect fill="#e0f7fa" height="40" rx="6" stroke="#00ADD8" stroke-width="1.5" width="375" x="395" y="148"></rect>
+<text fill="#00ADD8" font-size="11" font-weight="bold" x="410" y="166" direction="ltr" unicode-bidi="embed">for _, v := range slice</text>
+<text fill="#555" font-size="10" x="410" y="182" direction="ltr" unicode-bidi="embed">Value only — discard index with _</text>
+
+<!-- Go range index only -->
+<rect fill="#e0f7fa" height="40" rx="6" stroke="#00ADD8" stroke-width="1.5" width="375" x="395" y="198"></rect>
+<text fill="#00ADD8" font-size="11" font-weight="bold" x="410" y="216" direction="ltr" unicode-bidi="embed">for i := range slice</text>
+<text fill="#555" font-size="10" x="410" y="232" direction="ltr" unicode-bidi="embed">Index only — no value copy (efficient for large structs)</text>
+
+<!-- Go behaviors -->
+<rect fill="#e0f7fa" height="90" rx="6" stroke="#00ADD8" stroke-width="1" width="375" x="395" y="248"></rect>
+<text fill="#00ADD8" font-size="11" font-weight="bold" x="410" y="268" direction="ltr" unicode-bidi="embed">Go behaviors:</text>
+<text fill="#555" font-size="10" x="410" y="285" direction="ltr" unicode-bidi="embed">• Map order is random (by design)</text>
+<text fill="#555" font-size="10" x="410" y="300" direction="ltr" unicode-bidi="embed">• break + label exits specific outer loop</text>
+<text fill="#555" font-size="10" x="410" y="315" direction="ltr" unicode-bidi="embed">• continue + label continues specific outer loop</text>
+<text fill="#555" font-size="10" x="410" y="330" direction="ltr" unicode-bidi="embed">• Range expression is evaluated once before loop</text>
+
+<!-- Go-specific features -->
+<rect fill="#e8f5e9" height="120" rx="8" stroke="#4CAF50" stroke-width="2" width="730" x="20" y="350"></rect>
+<text fill="#2e7d32" font-size="13" font-weight="bold" text-anchor="middle" x="390" y="375" direction="rtl" unicode-bidi="embed">ویژگی‌های منحصربه‌فرد <tspan direction="ltr" unicode-bidi="embed">Go range</tspan></text>
+
+<!-- range over string -->
+<rect fill="#fff" height="30" rx="4" stroke="#4CAF50" stroke-width="1" width="350" x="35" y="388"></rect>
+<text fill="#4CAF50" font-size="11" font-weight="bold" x="45" y="408" direction="ltr" unicode-bidi="embed">range over string → yields runes (not bytes!)</text>
+<text fill="#555" font-size="9" x="45" y="418" direction="ltr" unicode-bidi="embed">for i, r := range "سلام" → i=0,r=س | i=2,r=ل | i=4,r=ا | i=6,r=م</text>
+
+<!-- range over channel -->
+<rect fill="#fff" height="30" rx="4" stroke="#4CAF50" stroke-width="1" width="350" x="395" y="388"></rect>
+<text fill="#4CAF50" font-size="11" font-weight="bold" x="405" y="408" direction="ltr" unicode-bidi="embed">range over channel → receives until closed</text>
+<text fill="#555" font-size="9" x="405" y="418" direction="ltr" unicode-bidi="embed">for msg := range ch { } // blocks until ch is closed</text>
+
+<!-- range over int -->
+<rect fill="#fff" height="30" rx="4" stroke="#4CAF50" stroke-width="1" width="350" x="35" y="425"></rect>
+<text fill="#4CAF50" font-size="11" font-weight="bold" x="45" y="445" direction="ltr" unicode-bidi="embed">range over int (Go 1.22+) → 0, 1, 2, ..., n-1</text>
+<text fill="#555" font-size="9" x="45" y="455" direction="ltr" unicode-bidi="embed">for i := range 5 { } // 0, 1, 2, 3, 4</text>
+
+<!-- range returns copies -->
+<rect fill="#fff" height="30" rx="4" stroke="#e91e63" stroke-width="1.5" width="710" x="35" y="462"></rect>
+<text fill="#e91e63" font-size="11" font-weight="bold" x="45" y="482" direction="rtl" unicode-bidi="embed">هشدار: <tspan direction="ltr" unicode-bidi="embed">range</tspan> کپی برمی‌گرداند نه ارجاع — تغییر مقدار <tspan direction="ltr" unicode-bidi="embed">v</tspan> روی داده‌ی اصلی بی‌تأثیر است</text>
+
+<!-- Labeled breaks -->
+<rect fill="#fff3e0" height="80" rx="6" stroke="#ff9800" stroke-width="1.5" width="730" x="20" y="505"></rect>
+<text fill="#e65100" font-size="12" font-weight="bold" text-anchor="middle" x="390" y="525" direction="rtl" unicode-bidi="embed">خروج از حلقه‌های تودرتو با برچسب</text>
+<text fill="#333" font-size="10" font-family="monospace" text-anchor="middle" x="390" y="548" direction="ltr" unicode-bidi="embed">PHP: break 2;   vs   Go: break outer;</text>
+<text fill="#555" font-size="10" text-anchor="middle" x="390" y="568" direction="rtl" unicode-bidi="embed">در <tspan direction="ltr" unicode-bidi="embed">Go</tspan> برچسب‌ها صریح و خوانا هستند • <tspan direction="ltr" unicode-bidi="embed">continue outer</tspan> نیز موجود است</text>
+<text fill="#555" font-size="10" text-anchor="middle" x="390" y="585" direction="rtl" unicode-bidi="embed">در <tspan direction="ltr" unicode-bidi="embed">PHP</tspan> <tspan direction="ltr" unicode-bidi="embed">break N</tspan> عددی مستعد خطاست و توصیه نمی‌شود</text>
+</svg>
+<figcaption>شکل ۱۰-۲: مقایسه‌ی بصری <bdi dir="ltr">PHP foreach</bdi> در برابر <bdi dir="ltr">Go range</bdi> — شامل ویژگی‌های منحصربه‌فرد <bdi dir="ltr">Go</bdi></figcaption>
+</figure>
+<h3 id="سناریوهای-عملیاتی-پیمایش">سناریوهای عملیاتی پیمایش</h3>
+<p>پیمایش مجموعه‌ها یکی از پرتکرارترین الگوهای برنامه‌نویسی است و درک تفاوت‌های ظریف بین <bdi dir="ltr">PHP foreach</bdi> و <bdi dir="ltr">Go range</bdi> برای نوشتن کد صحیح و کارآمد ضروری است. هرکدام از این سناریوها نکته‌ی مهمی دارند که نادیده‌گرفتن آن‌ها می‌تواند منجر به باگ‌های پنهان و رفتارهای غیرمنتظره شود. در ادامه رایج‌ترین سناریوهای عملیاتی و تله‌های احتمالی را بررسی می‌کنیم.</p>
+<ul>
+<li><strong>پیمایش با ایندکس و مقدار:</strong> در <bdi dir="ltr">Go</bdi> دستور <bdi dir="ltr">range</bdi> همیشه دو مقدار برمی‌گرداند: ایندکس و مقدار. اگر فقط به مقدار نیاز دارید از <code>for _, v := range slice</code> استفاده کنید. اگر فقط به ایندکس نیاز دارید از <code>for i := range slice</code> استفاده کنید که از کپی مقدار جلوگیری می‌کند و برای <bdi dir="ltr">struct</bdi>‌های بزرگ کارآمدتر است.</li>
+<li><strong>تله‌ی تغییر عناصر حین پیمایش:</strong> <bdi dir="ltr">range</bdi> کپی مقادیر را برمی‌گرداند نه ارجاع به عناصر اصلی. بنابراین تغییر متغیر <code>v</code> در حلقه‌ی <code>for i, v := range nums</code> تأثیری روی <bdi dir="ltr">slice</bdi> اصلی ندارد. برای تغییر عناصر باید از ایندکس استفاده کنید: <code>nums[i] = newValue</code>. یا از <bdi dir="ltr">slice</bdi> اشاره‌گرها استفاده کنید: <code>[]*MyStruct</code>.</li>
+<li><strong>خروج از حلقه‌های تودرتو با برچسب:</strong> در <bdi dir="ltr">PHP</bdi> از <code>break 2;</code> برای خروج از دو سطح حلقه استفاده می‌شود. در <bdi dir="ltr">Go</bdi> از برچسب‌ها استفاده می‌شود: <code>outer: for ... { for ... { break outer } }</code>. برچسب‌ها صریح‌تر و خواناتر از عدد در <code>break N</code> هستند و احتمال خطا را کاهش می‌دهند. از <code>continue outer</code> نیز برای پرش به ابتدای حلقه‌ی بیرونی می‌توان بهره برد.</li>
+<li><strong>پیمایش <bdi dir="ltr">map</bdi> با ترتیب تصادفی:</strong> برخلاف <bdi dir="ltr">PHP</bdi> که ترتیب درج عناصر در آرایه را حفظ می‌کند، <bdi dir="ltr">Go</bdi> ترتیب پیمایش <bdi dir="ltr">map</bdi> را عمداً تصادفی می‌کند. این تصمیم طراحی است تا از وابستگی به ترتیب جلوگیری شود. اگر به ترتیب مشخص نیاز دارید کلیدها را مرتب کرده و سپس پیمایش کنید.</li>
+<li><strong>خروج زودهنگام با <bdi dir="ltr">break</bdi>:</strong> در هر دو زبان <bdi dir="ltr">break</bdi> از حلقه‌ی فعلی خارج می‌شود. اما در <bdi dir="ltr">Go</bdi> می‌توان با برچسب مشخص کرد کدام حلقه باید شکسته شود. همچنین <bdi dir="ltr">range</bdi> روی <bdi dir="ltr">channel</bdi> تا بسته‌ شدن <bdi dir="ltr">channel</bdi> ادامه می‌یابد و <bdi dir="ltr">break</bdi> می‌تواند این انتظار را قطع کند.</li>
+</ul>
+<div class="tip"><strong><bdi dir="ltr">range</bdi> کپی برمی‌گرداند:</strong> مهم‌ترین تفاوت <bdi dir="ltr">Go range</bdi> با <bdi dir="ltr">PHP foreach</bdi> این است که مقدار بازگشتی یک کپی است نه ارجاع. اگر نیاز به تغییر عناصر اصلی دارید دو راه دارید: اول، از ایندکس برای دسترسی مستقیم استفاده کنید مثل <code>items[i].Field = newVal</code>. دوم، از <bdi dir="ltr">slice</bdi> اشاره‌گرها استفاده کنید مثل <code>[]*Item</code> تا کپی اشاره‌گر ارزان باشد. هرگز تلاش نکنید مقدار متغیر <bdi dir="ltr">range</bdi> را تغییر دهید و انتظار تأثیر روی داده‌ی اصلی را داشته باشید — این یکی از رایج‌ترین اشتباهات برنامه‌نویسان <bdi dir="ltr">PHP</bdi> در <bdi dir="ltr">Go</bdi> است.</div>
+</div>
+</main>
+</div>
+
+<!-- Footer -->
+<footer class="site-footer">
+<div class="footer-inner">
+<div class="footer-nav">
+<span class="nav-arrow">‹</span>
+<a href="02.02-type-conversion.html" data-prev>۲.۲ Type Conversion</a>
+</div>
+<div class="footer-toc">
+<a href="00.01-contents.html">فهرست</a>
+</div>
+<div class="footer-nav">
+<a href="02.04-functions-and-methods.html" data-next>۲.۴ توابع و متدها</a>
+<span class="nav-arrow">›</span>
+</div>
+</div>
+</footer>
+
+<!-- Back to Top -->
+<button class="back-to-top" aria-label="بازگشت به بالا">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
+</button>
+
+<!-- Scripts -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/go.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/php.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/sql.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/yaml.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/json.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/dockerfile.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/xml.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/ini.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/plaintext.min.js"></script>
+<script src="assets/js/main.js"></script>
+</body>
+</html>

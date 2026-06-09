@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="fa">
+<head>
+<script>!function(){try{var t=localStorage.getItem('php2go-theme');if(t==='dark'||(!t&&window.matchMedia('(prefers-color-scheme:dark)').matches)){document.documentElement.setAttribute('data-theme','dark')}}catch(e){}}();</script>
+<meta charset="utf-8"/>
+<meta content="ie=edge" http-equiv="x-ua-compatible"/>
+<title>۱۰.۲ Delve — PHP to Go</title>
+<meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet"/>
+<link href="assets/css/main.css" rel="stylesheet" type="text/css"/>
+<link href="assets/img/favicon.ico" rel="icon" type="image/x-icon"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" media="screen" class="hljs-light-theme" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css" media="not screen" class="hljs-dark-theme" rel="stylesheet"/>
+</head>
+<body>
+<!-- Progress Bar -->
+<div class="progress-bar"><div class="progress-bar__fill"></div></div>
+
+<!-- Header -->
+<header class="site-header">
+<div class="header-inner">
+<div class="header-left">
+<button class="header-btn sidebar-toggle" aria-label="فهرست">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+</button>
+<a href="00.00-front-matter.html" class="header-logo"><span class="logo-php">PHP</span> to <span class="logo-go">Go</span></a>
+<span class="header-crumbs">دیباگ و ریشه‌یابی › Delve</span>
+</div>
+<div class="header-right">
+<nav class="header-nav">
+<span class="nav-arrow">‹</span>
+<a href="10.01-debugging-and-troubleshooting.html"><span class="nav-label">۱۰.۱ دیباگ و ریشه‌یابی خطاها</span></a>
+<a href="00.01-contents.html">فهرست</a>
+<a href="10.03-using-vscode.html"><span class="nav-label">۱۰.۳ استفاده در VSCode</span></a>
+<span class="nav-arrow">›</span>
+</nav>
+<button class="header-btn search-toggle" aria-label="جستجو">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+</button>
+<button class="header-btn theme-toggle" aria-label="تغییر تم">
+<svg class="theme-icon-light" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+<svg class="theme-icon-dark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+</button>
+</div>
+</div>
+</header>
+
+<!-- Search Modal -->
+<div class="search-overlay">
+<div class="search-modal">
+<div class="search-input-wrap">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+<input type="text" class="search-input" placeholder="جستجو... (Ctrl+K)" dir="rtl"/>
+</div>
+<div class="search-results"></div>
+</div>
+</div>
+
+<!-- Layout -->
+<div class="site-layout">
+<!-- Sidebar -->
+<aside class="sidebar"></aside>
+<div class="sidebar-overlay"></div>
+
+<!-- Main Content -->
+<main class="content-area">
+<div class="content-wrap text">
+<div class="chapter">فصل ۱۰.۲</div>
+<h2 id="delve">Delve</h2>
+<p>Delve یک دیباگر منبع‌باز است که به‌صورت تخصصی برای Go طراحی شده است. برخلاف دیباگرهای عمومی مانند GDB که برای زبان‌های C/C++ ساخته شده‌اند، Delve از قابلیت‌های runtime Go و اطلاعات نمادهای کامپایل‌شده استفاده می‌کند تا به شما امکان اجرای دقیق، توقف، بررسی وضعیت متغیرها و تحلیل مسیر اجرای برنامه را بدهد. مزیت اصلی Delve نسبت به GDB این است که ساختارهای داخلی Go مانند goroutine‌ها، channel‌ها، interface‌ها و slice‌ها را به‌درستی پشتیبانی می‌کند، در حالی که GDB نمی‌تواند حتی goroutine‌ها را نمایش دهد.</p>
+<p>برای برنامه‌نویسانی که از PHP می‌آیند، Delve معادل Xdebug است اما با تفاوت‌های مهم: Xdebug یک extension بومی PHP است که در همان process اجرا می‌شود، اما Delve یک process جداگانه است که از طریق سیستم‌عامل (ptrace در Linux/Mac) به باینری Go متصل می‌شود. این رویکرد مزیت مهمی دارد: Delve هیچ overhead در production ندارد چون فقط زمان دیباگ فعال است، در حالی که Xdebug حتی وقتی استفاده نمی‌شود ۲۰-۴۰٪ عملکرد را کاهش می‌دهد.</p>
+
+<figure class="diagram" dir="ltr">
+<svg height="380" viewBox="0 0 650 380" width="650" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<marker id="arrowd" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5">
+<polygon fill="#00ADD8" points="0 0, 10 3.5, 0 7"></polygon>
+</marker>
+</defs>
+<text class="title" text-anchor="middle" x="325" y="25" direction="rtl" unicode-bidi="embed">گردش کار دیباگ با <tspan direction="ltr" unicode-bidi="embed">Delve</tspan></text>
+<!-- Start: dlv debug -->
+<rect class="box" height="40" width="200" x="225" y="45"></rect>
+<text font-weight="bold" text-anchor="middle" x="325" y="70" direction="ltr" unicode-bidi="embed">dlv debug</text>
+<line marker-end="url(#arrowd)" stroke="#00ADD8" stroke-width="2" x1="325" x2="325" y1="85" y2="110"></line>
+<!-- Set Breakpoint -->
+<rect class="box-action" height="40" width="200" x="225" y="110"></rect>
+<text text-anchor="middle" x="325" y="135" direction="ltr" unicode-bidi="embed">break / b &lt;func&gt;</text>
+<line marker-end="url(#arrowd)" stroke="#00ADD8" stroke-width="2" x1="325" x2="325" y1="150" y2="175"></line>
+<!-- Continue -->
+<rect class="box-action" height="40" width="200" x="225" y="175"></rect>
+<text text-anchor="middle" x="325" y="200" direction="ltr" unicode-bidi="embed">continue / c</text>
+<line marker-end="url(#arrowd)" stroke="#00ADD8" stroke-width="2" x1="325" x2="325" y1="215" y2="240"></line>
+<!-- Hit breakpoint -->
+<rect class="box-result" height="45" width="250" x="200" y="240"></rect>
+<text text-anchor="middle" x="325" y="258" direction="rtl" unicode-bidi="embed">توقف در <tspan direction="ltr" unicode-bidi="embed">Breakpoint</tspan></text>
+<text class="small" text-anchor="middle" x="325" y="275" direction="rtl" unicode-bidi="embed">بررسی وضعیت برنامه</text>
+<!-- Branches from hit breakpoint -->
+<line marker-end="url(#arrowd)" stroke="#ff9800" stroke-width="1.5" x1="200" x2="80" y1="262" y2="310"></line>
+<line marker-end="url(#arrowd)" stroke="#ff9800" stroke-width="1.5" x1="325" x2="325" y1="285" y2="310"></line>
+<line marker-end="url(#arrowd)" stroke="#ff9800" stroke-width="1.5" x1="450" x2="570" y1="262" y2="310"></line>
+<!-- Left: inspect -->
+<rect class="box-action" height="55" width="150" x="10" y="310"></rect>
+<text text-anchor="middle" x="85" y="332" direction="ltr" unicode-bidi="embed">print / p</text>
+<text class="small" text-anchor="middle" x="85" y="350" direction="rtl" unicode-bidi="embed">مشاهده متغیرها</text>
+<!-- Middle: step -->
+<rect class="box-action" height="55" width="180" x="235" y="310"></rect>
+<text text-anchor="middle" x="325" y="332" direction="ltr" unicode-bidi="embed">step / next</text>
+<text class="small" text-anchor="middle" x="325" y="350" direction="rtl" unicode-bidi="embed">گام‌به‌گام در کد</text>
+<!-- Right: stack -->
+<rect class="box-action" height="55" width="165" x="475" y="310"></rect>
+<text text-anchor="middle" x="557" y="332" direction="ltr" unicode-bidi="embed">stack / goroutines</text>
+<text class="small" text-anchor="middle" x="557" y="350" direction="rtl" unicode-bidi="embed">بررسی <tspan direction="ltr" unicode-bidi="embed">Call</tspan> <tspan direction="ltr" unicode-bidi="embed">Stack</tspan></text>
+<!-- Loop arrow back to continue -->
+<path d="M 415 337 Q 460 337 460 290 Q 460 195 425 195" fill="none" marker-end="url(#arrowd)" stroke="#00ADD8" stroke-dasharray="5,3" stroke-width="1.5"></path>
+<text class="small" fill="#00ADD8" x="475" y="265" direction="rtl" unicode-bidi="embed">ادامه دیباگ</text>
+</svg>
+<figcaption>شکل ۱۰-۳: گردش کار دیباگ با <bdi dir="ltr">Delve</bdi></figcaption>
+</figure>
+
+<h3 id="نصب-delve">نصب Delve</h3>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">go install github.com/go-delve/delve/cmd/dlv@latest
+</code></pre>
+</figure>
+<p>پس از نصب، دستور <bdi dir="ltr">dlv version</bdi> را اجرا کنید تا از نصب صحیح مطمئن شوید. برای نصب روی لینوکس یا مک ممکن است نیاز به دسترسی‌های خاص یا تنظیمات امنیتی مثل Seccomp در لینوکس داشته باشید. مستندات رسمی Delve راهنمای خوبی برای رفع مشکلات احتمالی است. همچنین در macOS ممکن است نیاز باشد <bdi dir="ltr">Developer Tools</bdi> را نصب کنید و اجازه‌ی debug را به terminal بدهید.</p>
+
+<h3 id="شروع-دیباگ-کردن-با-delve">شروع دیباگ کردن با Delve</h3>
+<p>در نظر بگیرید کد ساده‌ای داریم:</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">package main
+
+import "fmt"
+
+func factorial(n int) int {
+    if n &lt;= 1 {
+        return 1
+    }
+    return n * factorial(n-1)
+}
+
+func main() {
+    fmt.Println(factorial(5))
+}
+</code></pre>
+</figure>
+<p>برای شروع دیباگ در پوشه پروژه دستور زیر را اجرا کنید:</p>
+<figure class="code bash" dir="ltr">
+<pre><code class="language-bash">$ dlv debug
+</code></pre>
+</figure>
+<p>این دستور برنامه را با فلگ‌های <bdi dir="ltr">-gcflags="all=-N -l"</bdi> کامپایل می‌کند (بهینه‌سازی و inlining غیرفعال) و وارد محیط دیباگ تعاملی می‌شود. حالا می‌توانیم دستورهای مختلف را وارد کنیم و برنامه را خط‌به‌خط بررسی نماییم.</p>
+
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">(dlv) break factorial
+Breakpoint 1 set at 0x... for main.factorial() ./main.go:6
+(dlv) continue
+&gt; main.factorial() ./main.go:6 (hits goroutine(1):1 total:1) (PC: 0x...)
+1: func factorial(n int) int {
+    2: if n &lt;= 1 {
+        3: return 1
+        4: }
+    5: return n * factorial(n-1)
+    6: }
+(dlv) print n
+5
+(dlv) step
+&gt; main.factorial() ./main.go:6
+(dlv) print n
+4
+(dlv) stack
+0 0x... main.factorial at main.go:6
+1 0x... main.factorial at main.go:10
+2 0x... main.main at main.go:14
+3 0x... runtime.main at proc.go:250
+</code></pre>
+</figure>
+<p>در این مثال می‌بینیم که با دستور <bdi dir="ltr">step</bdi> وارد فراخوانی بازگشتی تابع شدیم و مقدار n به ۴ تغییر کرد. دستور <bdi dir="ltr">stack</bdi> هم مسیر فراخوانی را نشان می‌دهد: از <bdi dir="ltr">main</bdi> شروع شده و دو بار <bdi dir="ltr">factorial</bdi> فراخوانی شده است. این اطلاعات برای درک مسیر اجرای برنامه بسیار ارزشمند هستند.</p>
+
+<h3 id="مرجع-دستورهای-delve">مرجع کامل دستورهای Delve</h3>
+<p>دستورات Delve را می‌توان به چند دسته تقسیم کرد. شناخت کامل این دستورات برای دیباگ مؤثر ضروری است. در جدول زیر دستورات اصلی همراه با شرح و مثال کاربردی آورده شده است:</p>
+
+<table class="comparison-table" dir="rtl">
+<thead>
+<tr><th>دستور</th><th>مخفف</th><th>توضیح</th><th>مثال</th></tr>
+</thead>
+<tbody>
+<tr><td dir="ltr"><code>break &lt;loc&gt;</code></td><td dir="ltr"><code>b</code></td><td>تعیین breakpoint در خط یا تابع مشخص</td><td dir="ltr"><code>b main.handler</code></td></tr>
+<tr><td dir="ltr"><code>break &lt;loc&gt; if &lt;cond&gt;</code></td><td>—</td><td>breakpoint شرطی</td><td dir="ltr"><code>b main.process if n == 10</code></td></tr>
+<tr><td dir="ltr"><code>continue</code></td><td dir="ltr"><code>c</code></td><td>ادامه اجرا تا breakpoint بعدی</td><td dir="ltr"><code>c</code></td></tr>
+<tr><td dir="ltr"><code>step</code></td><td dir="ltr"><code>s</code></td><td>step into</td><td dir="ltr"><code>s</code></td></tr>
+<tr><td dir="ltr"><code>next</code></td><td dir="ltr"><code>n</code></td><td>step over</td><td dir="ltr"><code>n</code></td></tr>
+<tr><td dir="ltr"><code>stepout</code></td><td dir="ltr"><code>so</code></td><td>step out</td><td dir="ltr"><code>so</code></td></tr>
+<tr><td dir="ltr"><code>step</code> (در سطوح مختلف)</td><td dir="ltr"><code>si</code></td><td>ورود به دستور اسمبلی</td><td dir="ltr"><code>si</code></td></tr>
+<tr><td dir="ltr"><code>print &lt;expr&gt;</code></td><td dir="ltr"><code>p</code></td><td>نمایش مقدار عبارت یا متغیر</td><td dir="ltr"><code>p user.Name</code></td></tr>
+<tr><td dir="ltr"><code>set &lt;var&gt; = &lt;val&gt;</code></td><td>—</td><td>تغییر مقدار متغیر در زمان اجرا</td><td dir="ltr"><code>set n = 5</code></td></tr>
+<tr><td dir="ltr"><code>stack</code></td><td dir="ltr"><code>bt</code></td><td>نمایش call stack فعلی</td><td dir="ltr"><code>bt 10</code></td></tr>
+<tr><td dir="ltr"><code>goroutines</code></td><td>—</td><td>لیست تمام goroutine‌ها</td><td dir="ltr"><code>goroutines -t</code></td></tr>
+<tr><td dir="ltr"><code>goroutine &lt;id&gt;</code></td><td>—</td><td>سوئیچ به goroutine مشخص</td><td dir="ltr"><code>goroutine 5</code></td></tr>
+<tr><td dir="ltr"><code>list</code></td><td dir="ltr"><code>ls</code></td><td>نمایش کد اطراف محل فعلی</td><td dir="ltr"><code>ls</code></td></tr>
+<tr><td dir="ltr"><code>clear &lt;id&gt;</code></td><td>—</td><td>حذف یک breakpoint</td><td dir="ltr"><code>clear 1</code></td></tr>
+<tr><td dir="ltr"><code>clearall</code></td><td>—</td><td>حذف تمام breakpoint‌ها</td><td dir="ltr"><code>clearall</code></td></tr>
+<tr><td dir="ltr"><code>breakpoints</code></td><td dir="ltr"><code>bp</code></td><td>لیست تمام breakpoint‌ها</td><td dir="ltr"><code>bp</code></td></tr>
+<tr><td dir="ltr"><code>whatis &lt;expr&gt;</code></td><td>—</td><td>نمایش نوع عبارت</td><td dir="ltr"><code>whatis user</code></td></tr>
+<tr><td dir="ltr"><code>vars</code></td><td>—</td><td>نمایش متغیرهای بسته/بسته‌ی فعلی</td><td dir="ltr"><code>vars main</code></td></tr>
+<tr><td dir="ltr"><code>args</code></td><td>—</td><td>نمایش آرگومان‌های تابع فعلی</td><td dir="ltr"><code>args</code></td></tr>
+<tr><td dir="ltr"><code>locals</code></td><td>—</td><td>نمایش متغیرهای محلی</td><td dir="ltr"><code>locals</code></td></tr>
+<tr><td dir="ltr"><code>on &lt;bp&gt; &lt;cmd&gt;</code></td><td>—</td><td>اجرای دستور هنگام رسیدن به breakpoint</td><td dir="ltr"><code>on 1 print n</code></td></tr>
+<tr><td dir="ltr"><code>condition &lt;bp&gt; &lt;cond&gt;</code></td><td>—</td><td>افزودن شرط به breakpoint موجود</td><td dir="ltr"><code>condition 1 n > 5</code></td></tr>
+<tr><td dir="ltr"><code>restart</code></td><td dir="ltr"><code>r</code></td><td>راه‌اندازی مجدد برنامه</td><td dir="ltr"><code>r</code></td></tr>
+<tr><td dir="ltr"><code>exit</code></td><td dir="ltr"><code>q</code></td><td>خروج از Delve</td><td dir="ltr"><code>q</code></td></tr>
+</tbody>
+</table>
+
+<div class="tip"><strong>نکته عملی:</strong> دستور <code>on</code> قابلیت مهمی است. مثلاً <code>on 1 print userID</code> هر بار که breakpoint شماره ۱ فعال شود، مقدار userID را چاپ می‌کند بدون اینکه دستور جداگانه‌ای وارد کنید. این قابلیت مشابه Logpoint در VS Code است.</div>
+
+<h3 id="دیباگ-گوروتینها-پیشرفته">دیباگ goroutine‌ها و channel‌ها</h3>
+<p>از مزیت‌های اصلی Delve نسبت به GDB، پشتیبانی بومی از goroutine‌هاست. در برنامه‌های Go که صدها یا هزاران goroutine فعال دارند، پیدا کردن اینکه کدام goroutine مشکل‌ساز است می‌تواند چالش‌برانگیز باشد. Delve ابزارهای مفیدی برای این کار ارائه می‌دهد:</p>
+
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">(dlv) goroutines
+Thread 12345 at ./main.go:20 goroutine(1) [running]
+Thread 12346 at ./worker.go:45 goroutine(5) [chan receive]
+Thread 12347 at ./handler.go:30 goroutine(8) [IO wait]
+Thread 12348 at ./processor.go:15 goroutine(12) [semacquire]
+* Thread 12349 at ./main.go:35 goroutine(2) [running] (current)
+
+# Switch to goroutine number 5
+(dlv) goroutine 5
+# View that goroutine's stack
+(dlv) stack
+
+# View all goroutines with stack traces
+(dlv) goroutines -t
+
+# Filter goroutines by status
+(dlv) goroutines -s [running|chan receive|IO wait|select]
+
+# Group goroutines by stack trace
+(dlv) goroutines -g
+</code></pre>
+</figure>
+
+<p>وضعیت‌های مختلف goroutine‌ها اطلاعات مهمی درباره مشکل ارائه می‌دهند: <bdi dir="ltr">[running]</bdi> یعنی در حال اجرا، <bdi dir="ltr">[chan receive]</bdi> یعنی منتظر دریافت از channel، <bdi dir="ltr">[chan send]</bdi> یعنی منتظر ارسال به channel، <bdi dir="ltr">[IO wait]</bdi> یعنی منتظر عملیات ورودی/خروجی، <bdi dir="ltr">[select]</bdi> یعنی در دستور select منتظر، و <bdi dir="ltr">[semacquire]</bdi> یعنی mutex. اگر تعداد زیادی goroutine در وضعیت <bdi dir="ltr">[chan receive]</bdi> یا <bdi dir="ltr">[semacquire]</bdi> هستند، احتمالاً مشکل deadlock یا goroutine leak دارید.</p>
+
+<p>برای دیباگ channel‌ها، می‌توانید مقادیر آن‌ها را مستقیماً بررسی کنید:</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">// Debug channel in Delve
+(dlv) print myChan
+chan int {qcount: 3, dataqsiz: 10, buf: [...], elemsize: 8, closed: false, ...}
+
+// View number of elements in buffer
+(dlv) print len(myChan)
+3
+
+// View channel capacity
+(dlv) print cap(myChan)
+10
+
+// Check if channel is closed
+(dlv) print myChan.closed
+false
+</code></pre>
+</figure>
+
+<div class="important"><strong>نکته پیشرفته:</strong> دستور <code>goroutines -g</code> (گروه‌بندی) مفید است وقتی صدها goroutine دارید. این دستور goroutine‌هایی با stack trace مشابه را گروه‌بندی می‌کند و به شما کمک می‌دهد الگوهای تکراری پیدا کنید — مثلاً ۵۰ goroutine که همگی در همان تابع منتظر channel هستند.</div>
+
+<h3 id="breakpointهای-شرطی-پیشرفته">Breakpoint‌های شرطی و Watch Variables</h3>
+<p>در عمل، گذاشتن breakpoint ساده روی یک تابع باعث می‌شود برنامه ده‌ها یا صدها بار متوقف شود و پیدا کردن مورد مشکل‌ساز بین آن‌ها سخت باشد. Breakpoint‌های شرطی به شما اجازه می‌دهند فقط در شرایط خاصی متوقف شوید:</p>
+
+<figure class="code go" dir="ltr">
+<pre><code class="language-go"># Stop only when n equals 10
+(dlv) break main.process if n == 10
+
+# Stop only when slice length is greater than 100
+(dlv) break main.handler if len(items) &gt; 100
+
+# Stop on specific line with condition
+(dlv) break main.go:42 if err != nil
+
+# View all breakpoints with their conditions
+(dlv) breakpoints
+
+# Add condition to existing breakpoint
+(dlv) condition 1 userID == 999
+
+# Hit condition: stop only on N-th call
+(dlv) break main.loop
+(dlv) condition 1 hitcount == 5
+
+# Execute automatic command when hitting breakpoint
+(dlv) break main.handler
+(dlv) on 1 print req.URL
+(dlv) on 1 print userID
+</code></pre>
+</figure>
+
+<p>شما همچنین می‌توانید مقادیر متغیرها را در زمان اجرا تغییر دهید. این قابلیت برای تست سناریوهای مختلف بدون تغییر کد مفید است:</p>
+
+<figure class="code go" dir="ltr">
+<pre><code class="language-go"># Change variable value at runtime
+(dlv) print timeout
+30
+(dlv) set timeout = 5
+(dlv) print timeout
+5
+
+# Change struct field value
+(dlv) set config.MaxRetries = 10
+
+# Change slice element value
+(dlv) set users[0].Role = "admin"
+</code></pre>
+</figure>
+
+<div class="warning"><strong>هشدار:</strong> تغییر مقادیر متغیر در زمان اجرا می‌تواند رفتار غیرمنتظره ایجاد کند. از این قابلیت فقط برای دیباگ استفاده کنید و هرگز در محیط production به‌کار نبرید. همچنین تغییر مقادیر pointer و reference ممکن است باعث panic شود.</div>
+
+<h3 id="آشنایی-با-stack-trace-و-panic">آشنایی با Stack Trace و Panic</h3>
+<p>وقتی برنامه با شرایط بحرانی مواجه می‌شود که نمی‌تواند ادامه دهد (مثلاً دسترسی به اشاره‌گر nil یا ارجاع به آرایه خارج از محدوده)، دستور panic فراخوانی می‌شود که باعث توقف ناگهانی برنامه می‌شود و یک stack trace تولید می‌کند. Stack trace در واقع نقشه‌ای از مسیر خطاست و به شما نشان می‌دهد که برنامه در هنگام بروز خطا کدام توابع را فراخوانی کرده و مسیر اجرای کد کجا بوده است.</p>
+
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">func main() {
+    var a []int
+    fmt.Println(a[1]) // out-of-bounds index reference
+}
+</code></pre>
+</figure>
+
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">panic: runtime error: index out of range [1] with length 0
+goroutine 1 [running]:
+main.main()
+/path/to/main.go:5 +0x39
+</code></pre>
+</figure>
+
+<p>می‌توانید Delve را طوری تنظیم کنید که تا زمانی که برنامه panic می‌کند متوقف شود و سپس وضعیت کامل برنامه را بررسی کنید:</p>
+
+<figure class="code bash" dir="ltr">
+<pre><code class="language-bash"># Method 1: Run program with panic mode
+$ dlv debug -- --panic
+
+# Method 2: Set breakpoint on panic in Delve
+</code></pre>
+</figure>
+
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">(dlv) break runtime.panic
+(dlv) continue
+# When panic occurs, the program stops
+(dlv) stack # مشاهده مسیر خطا
+(dlv) args # مشاهده آرگومان‌های تابع فعلی
+(dlv) locals # مشاهده متغیرهای محلی
+(dlv) goroutines # بررسی وضعیت سایر goroutine‌ها
+</code></pre>
+</figure>
+
+<p>این روش دقیق‌تر از صرفاً خواندن خروجی panic است چون امکان بررسی وضعیت کامل برنامه را در لحظه خطا می‌دهد. می‌توانید مقادیر تمام متغیرها، وضعیت سایر goroutine‌ها و محتوای channel‌ها را در همان لحظه‌ای که panic رخ داده بررسی کنید.</p>
+
+<h3 id="دیباگ-docker-و-remote-debugging">دیباگ Docker و Remote Debugging</h3>
+<p>در محیط‌های مدرن، برنامه‌ها اغلب در container‌ها یا سرورهای راه‌دور اجرا می‌شوند. Docker محیطی ایزوله است و دسترسی مستقیم به محیط اجرا محدود است. همچنین منابع شبکه باید به درستی پورت‌ها را باز کنند تا ابزار دیباگ بتواند به آن متصل شود. Delve دو رویکرد اصلی برای دیباگ راه‌دور ارائه می‌دهد:</p>
+
+<p><strong>رویکرد ۱: اجرای برنامه با Delve در container</strong></p>
+<figure class="code bash" dir="ltr">
+<pre><code class="language-bash"># Dockerfile for debugging
+FROM golang:1.22
+RUN go install github.com/go-delve/delve/cmd/dlv@latest
+WORKDIR /app
+COPY . .
+# Compile with optimization disabled
+RUN go build -gcflags="all=-N -l" -o /app/server ./cmd/server
+# Run Delve in headless mode
+CMD ["dlv", "exec", "/app/server", "--headless", \
+    "--listen=:2345", "--api-version=2", \
+    "--accept-multiclient", "--log"]
+</code></pre>
+</figure>
+
+<figure class="code bash" dir="ltr">
+<pre><code class="language-bash"># Build and run container
+$ docker build -t myapp-debug .
+$ docker run -p 8080:8080 -p 2345:2345 myapp-debug
+
+# Connect from local environment
+$ dlv connect localhost:2345
+</code></pre>
+</figure>
+
+<p><strong>رویکرد ۲: اتصال به process attach</strong></p>
+<figure class="code bash" dir="ltr">
+<pre><code class="language-bash"># Find program PID
+$ ps aux | grep myapp
+
+# Attach Delve to process
+$ dlv attach 12345 --headless --listen=:2345 --api-version=2
+
+# Or directly from local environment (without headless)
+$ dlv attach 12345
+</code></pre>
+</figure>
+
+<p><strong>رویکرد ۳: اتصال از طریق SSH Tunnel</strong></p>
+<figure class="code bash" dir="ltr">
+<pre><code class="language-bash"># Create SSH tunnel
+$ ssh -L 2345:localhost:2345 user@remote-server
+
+# In another terminal: connect via tunnel
+$ dlv connect localhost:2345
+
+# Or use VS Code
+# Configure in launch.json:
+# "host": "localhost", "port": 2345
+</code></pre>
+</figure>
+
+<div class="warning"><strong>هشدار امنیتی:</strong> اتصال remote باید حتماً از طریق شبکه امن (VPN یا SSH tunnel) انجام شود. پورت Delve نباید به اینترنت باز باشد. هر کسی که به پورت Delve دسترسی داشته باشد می‌تواند کد دلخواه اجرا کند. هرگز از <code>--accept-multiclient</code> بدون احراز هویت شبکه استفاده نکنید.</div>
+
+<h3 id="داخلی-دelve-dwarf-و-پروتکل-دیباگ">داخلی Delve: DWARF و پروتکل دیباگ</h3>
+<p>فهم نحوه کار داخلی Delve به شما کمک می‌کند مشکلات دیباگ را بهتر ریشه‌یابی کنید. وقتی <bdi dir="ltr">dlv debug</bdi> را اجرا می‌کنید، Delve مراحل زیر را طی می‌کند:</p>
+
+<p><strong>۱. کامپایل با اطلاعات دیباگ:</strong> Delve برنامه را با فلگ <bdi dir="ltr">-gcflags="all=-N -l"</bdi> کامپایل می‌کند. فلگ <bdi dir="ltr">-N</bdi> optimization را غیرفعال می‌کند و <bdi dir="ltr">-l</bdi> inlining توابع را غیرفعال می‌کند. بدون این فلگ‌ها، کامپایلر ممکن است متغیرها را حذف کند یا توابع را ترکیب کند که دیباگ را ناممکن یا بسیار سخت می‌سازد.</p>
+
+<p><strong>۲. خواندن اطلاعات DWARF:</strong> باینری Go حاوی اطلاعات DWARF (Debugging With Attributed Record Formats) است. این اطلاعات شامل نگاشت بین آدرس‌های ماشین و خطوط کد منبع، نام و نوع متغیرها، و ساختار Stack Frame است. Delve از این اطلاعات برای نمایش متغیرها و خطوط کد به‌جای آدرس‌های حافظه استفاده می‌کند.</p>
+
+<p><strong>۳. کنترل اجرا با ptrace:</strong> در Linux و macOS، Delve از syscall <bdi dir="ltr">ptrace</bdi> برای کنترل اجرای برنامه استفاده می‌کند. ptrace به Delve اجازه می‌دهد برنامه را متوقف کند، ادامه دهد، breakpoint‌ها را تنظیم کند و حافظه‌ی process را بخواند. در Windows از API مشابه <bdi dir="ltr">DebugActiveProcess</bdi> استفاده می‌شود.</p>
+
+<p><strong>۴. پروتکل دیباگ:</strong> Delve از پروتکل <bdi dir="ltr">DAP</bdi> (Debug Adapter Protocol) استفاده می‌کند که توسط Microsoft تعریف شده و توسط VS Code و بسیاری IDE‌های دیگر پشتیبانی می‌شود. این پروتکل به IDE امکان ارسال دستورات دیباگ (break, step, continue) و دریافت اطلاعات (متغیرها، stack, goroutine‌ها) را می‌دهد.</p>
+
+<div class="note"><strong>نکته فنی:</strong> برخلاف GDB که یک دیباگر عمومی است و زبان‌های مختلف را پشتیبانی می‌کند، Delve مخصوص Go طراحی شده و از ساختارهای داخلی Go مانند goroutine‌ها، channel‌ها، interface‌ها و slice‌ها به‌درستی پشتیبانی می‌کند. GDB نمی‌تواند goroutine‌ها را نمایش دهد یا مقادیر interface را به‌درستی تفسیر کند.</div>
+
+<figure class="diagram" dir="ltr">
+<svg height="420" viewBox="0 0 700 420" width="700" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<marker id="arrowdarch" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5">
+<polygon fill="#555" points="0 0, 10 3.5, 0 7"></polygon>
+</marker>
+</defs>
+<rect fill="#fafafa" height="420" rx="8" width="700" x="0" y="0"></rect>
+<text fill="#333" font-size="16" font-weight="bold" text-anchor="middle" x="350" y="28" direction="rtl" unicode-bidi="embed">معماری <tspan direction="ltr" unicode-bidi="embed">Delve</tspan> و ارتباط با <tspan direction="ltr" unicode-bidi="embed">IDE</tspan></text>
+
+<!-- IDE -->
+<rect fill="#2196F3" height="55" rx="8" width="130" x="30" y="55"></rect>
+<text fill="#fff" font-weight="bold" text-anchor="middle" x="95" y="77" direction="ltr" unicode-bidi="embed">VS Code / IDE</text>
+<text fill="#e3f2fd" font-size="9" text-anchor="middle" x="95" y="97" direction="ltr" unicode-bidi="embed">DAP Client</text>
+<!-- DAP Protocol -->
+<line marker-end="url(#arrowdarch)" stroke="#2196F3" stroke-width="2" x1="160" x2="210" y1="82" y2="82"></line>
+<rect fill="#E3F2FD" height="30" rx="4" width="80" x="170" y="95"></rect>
+<text fill="#1565C0" font-size="9" text-anchor="middle" x="210" y="115" direction="ltr" unicode-bidi="embed">DAP / JSON-RPC</text>
+<!-- Delve Server -->
+<rect fill="#00ADD8" height="80" rx="8" width="150" x="270" y="45"></rect>
+<text fill="#fff" font-weight="bold" text-anchor="middle" x="345" y="70" direction="ltr" unicode-bidi="embed">Delve Server</text>
+<text fill="#e0f7fa" font-size="9" text-anchor="middle" x="345" y="87" direction="ltr" unicode-bidi="embed">dlv debug / dlv attach</text>
+<text fill="#e0f7fa" font-size="9" text-anchor="middle" x="345" y="102" direction="ltr" unicode-bidi="embed">headless mode</text>
+<text fill="#e0f7fa" font-size="9" text-anchor="middle" x="345" y="117" direction="ltr" unicode-bidi="embed">:2345</text>
+<!-- Target Process -->
+<line marker-end="url(#arrowdarch)" stroke="#00ADD8" stroke-width="2" x1="420" x2="460" y1="82" y2="82"></line>
+<rect fill="#4CAF50" height="55" rx="8" width="150" x="460" y="55"></rect>
+<text fill="#fff" font-weight="bold" text-anchor="middle" x="535" y="77" direction="ltr" unicode-bidi="embed">Go Binary</text>
+<text fill="#e8f5e9" font-size="9" text-anchor="middle" x="535" y="95" direction="ltr" unicode-bidi="embed">DWARF debug info</text>
+<text fill="#e8f5e9" font-size="9" text-anchor="middle" x="535" y="110" direction="ltr" unicode-bidi="embed">ptrace (Linux/Mac)</text>
+
+<!-- DWARF section -->
+<rect fill="#fff8e1" height="55" rx="6" stroke="#FFA000" stroke-width="1" width="120" x="560" y="130"></rect>
+<text fill="#E65100" font-size="10" font-weight="bold" text-anchor="middle" x="620" y="150" direction="ltr" unicode-bidi="embed">DWARF Info</text>
+<text fill="#F57F17" font-size="8" text-anchor="middle" x="620" y="165" direction="ltr" unicode-bidi="embed">Source ↔ Address</text>
+<text fill="#F57F17" font-size="8" text-anchor="middle" x="620" y="178" direction="ltr" unicode-bidi="embed">Variable Types</text>
+<line stroke="#FFA000" stroke-dasharray="4,2" stroke-width="1.5" x1="535" y1="110" x2="600" y2="130"></line>
+
+<!-- Internal steps -->
+<rect fill="#f5f5f5" height="130" rx="8" stroke="#ddd" stroke-width="1" width="630" x="35" y="200"></rect>
+<text fill="#333" font-size="12" font-weight="bold" text-anchor="middle" x="350" y="225" direction="rtl" unicode-bidi="embed">مراحل داخلی <tspan direction="ltr" unicode-bidi="embed">Delve</tspan> هنگام دیباگ</text>
+<rect fill="#fff" height="25" rx="4" stroke="#00ADD8" stroke-width="1" width="170" x="50" y="240"></rect>
+<text fill="#333" font-size="9" text-anchor="middle" x="135" y="257" direction="rtl" unicode-bidi="embed">۱. کامپایل با -N -l</text>
+<rect fill="#fff" height="25" rx="4" stroke="#00ADD8" stroke-width="1" width="170" x="240" y="240"></rect>
+<text fill="#333" font-size="9" text-anchor="middle" x="325" y="257" direction="rtl" unicode-bidi="embed">۲. خواندن اطلاعات <tspan direction="ltr" unicode-bidi="embed">DWARF</tspan></text>
+<rect fill="#fff" height="25" rx="4" stroke="#00ADD8" stroke-width="1" width="170" x="430" y="240"></rect>
+<text fill="#333" font-size="9" text-anchor="middle" x="515" y="257" direction="rtl" unicode-bidi="embed">۳. تنظیم <tspan direction="ltr" unicode-bidi="embed">breakpoint</tspan>‌ها</text>
+<rect fill="#fff" height="25" rx="4" stroke="#ff9800" stroke-width="1" width="170" x="50" y="275"></rect>
+<text fill="#333" font-size="9" text-anchor="middle" x="135" y="292" direction="rtl" unicode-bidi="embed">۴. <tspan direction="ltr" unicode-bidi="embed">ptrace</tspan>: توقف/ادامه</text>
+<rect fill="#fff" height="25" rx="4" stroke="#ff9800" stroke-width="1" width="170" x="240" y="275"></rect>
+<text fill="#333" font-size="9" text-anchor="middle" x="325" y="292" direction="rtl" unicode-bidi="embed">۵. خواندن حافظه <tspan direction="ltr" unicode-bidi="embed">process</tspan></text>
+<rect fill="#fff" height="25" rx="4" stroke="#ff9800" stroke-width="1" width="170" x="430" y="275"></rect>
+<text fill="#333" font-size="9" text-anchor="middle" x="515" y="292" direction="rtl" unicode-bidi="embed">۶. نمایش مقادیر متغیرها</text>
+<rect fill="#fff" height="25" rx="4" stroke="#4CAF50" stroke-width="1" width="370" x="140" y="305"></rect>
+<text fill="#333" font-size="9" text-anchor="middle" x="325" y="322" direction="rtl" unicode-bidi="embed">۷. ارسال نتایج به <tspan direction="ltr" unicode-bidi="embed">IDE</tspan> از طریق پروتکل <tspan direction="ltr" unicode-bidi="embed">DAP</tspan></text>
+
+<!-- Remote -->
+<rect fill="#e91e63" height="55" rx="6" width="580" x="60" y="350"></rect>
+<text fill="#fff" font-size="10" text-anchor="middle" x="350" y="370" direction="rtl" unicode-bidi="embed">دیباگ راه‌دور: <tspan direction="ltr" unicode-bidi="embed">IDE</tspan> ← <tspan direction="ltr" unicode-bidi="embed">SSH</tspan> <tspan direction="ltr" unicode-bidi="embed">Tunnel</tspan> ← <tspan direction="ltr" unicode-bidi="embed">Delve</tspan> <tspan direction="ltr" unicode-bidi="embed">Headless</tspan> ← <tspan direction="ltr" unicode-bidi="embed">Container/Remote</tspan> <tspan direction="ltr" unicode-bidi="embed">Server</tspan></text>
+<text fill="#fce4ec" font-size="9" text-anchor="middle" x="350" y="390" direction="rtl" unicode-bidi="embed">پورت 2345 فقط از طریق <tspan direction="ltr" unicode-bidi="embed">SSH</tspan> یا <tspan direction="ltr" unicode-bidi="embed">VPN</tspan> قابل دسترسی باشد</text>
+</svg>
+<figcaption>شکل ۱۰-۴: معماری <bdi dir="ltr">Delve</bdi> و ارتباط با <bdi dir="ltr">IDE</bdi> در حالت محلی و راه‌دور</figcaption>
+</figure>
+
+<h3 id="runtime-دیباگ-با-godebug-و-pprof">Runtime دیباگ با GODEBUG و pprof</h3>
+<p>علاوه بر Delve، Go ابزارهای دیگری برای دیباگ در زمان اجرا دارد که بدون توقف برنامه قابل استفاده هستند:</p>
+
+<p><strong dir="ltr">GODEBUG:</strong> متغیر محیطی <bdi dir="ltr">GODEBUG</bdi> به شما امکان می‌دهد رفتار runtime را بدون تغییر کد کنترل کنید. دستورات و فلگ‌های مختلف GODEBUG (مثل <code dir="ltr">schedtrace</code>، <code dir="ltr">gctrace</code> و <code dir="ltr">allocfreetrace</code>) در بخش ۱۰.۱ به‌تفصیل شرح داده شده‌اند.</p>
+
+<p><strong>pprof برای دیباگ زنده:</strong> وقتی <bdi dir="ltr">net/http/pprof</bdi> فعال باشد، می‌توانید در زمان اجرا وضعیت برنامه را بررسی کنید:</p>
+<figure class="code bash" dir="ltr">
+<pre><code class="language-bash"># View goroutines (useful for identifying goroutine leaks)
+$ go tool pprof http://localhost:6060/debug/pprof/goroutine
+
+# View memory status
+$ go tool pprof http://localhost:6060/debug/pprof/heap
+
+# View blocks (Deadlock)
+$ go tool pprof http://localhost:6060/debug/pprof/block
+
+# View mutex contention
+$ go tool pprof http://localhost:6060/debug/pprof/mutex
+</code></pre>
+</figure>
+
+<h3 id="معماری-delve-دیباگر-و-پردازش-هدف">معماری Delve: دیباگر و پردازش هدف</h3>
+<p>همان‌طور که در بخش قبل بررسی کردیم، Delve برخلاف Xdebug یک process جداگانه است که از طریق رابط‌های سیستم‌عامل به باینری Go متصل می‌شود. نمودار زیر جزئیات این معماری و ارتباط بین دیباگر و پردازش هدف را نشان می‌دهد:</p>
+
+<figure class="diagram" dir="ltr">
+<svg height="580" viewBox="0 0 780 580" width="780" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<marker id="arrowarch2" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5">
+<polygon fill="#555" points="0 0, 10 3.5, 0 7"></polygon>
+</marker>
+<marker id="arrowarch2b" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5">
+<polygon fill="#9C27B0" points="0 0, 10 3.5, 0 7"></polygon>
+</marker>
+</defs>
+<rect fill="#fafafa" height="580" rx="8" width="780" x="0" y="0"></rect>
+<text fill="#333" font-size="16" font-weight="bold" text-anchor="middle" x="390" y="28" direction="rtl" unicode-bidi="embed">معماری <tspan direction="ltr" unicode-bidi="embed">Delve</tspan>: دیباگر ↔ پردازش هدف</text>
+
+<!-- Delve Debugger Process (Left) -->
+<rect fill="#00ADD8" height="230" rx="10" width="280" x="30" y="50"></rect>
+<text fill="#fff" font-size="14" font-weight="bold" text-anchor="middle" x="170" y="75" direction="ltr" unicode-bidi="embed">Delve Debugger Process</text>
+<text fill="#e0f7fa" font-size="10" text-anchor="middle" x="170" y="93" direction="rtl" unicode-bidi="embed">پردازش دیباگر</text>
+
+<!-- Delve internal components -->
+<rect fill="#fff" height="28" rx="4" stroke="#9C27B0" stroke-width="1.5" width="130" x="45" y="110"></rect>
+<text fill="#6A1B9A" font-size="10" font-weight="bold" text-anchor="middle" x="110" y="129" direction="ltr" unicode-bidi="embed">break</text>
+
+
+<rect fill="#fff" height="28" rx="4" stroke="#9C27B0" stroke-width="1.5" width="130" x="180" y="110"></rect>
+<text fill="#6A1B9A" font-size="10" font-weight="bold" text-anchor="middle" x="245" y="129" direction="ltr" unicode-bidi="embed">continue</text>
+
+<rect fill="#fff" height="28" rx="4" stroke="#9C27B0" stroke-width="1.5" width="130" x="45" y="148"></rect>
+<text fill="#6A1B9A" font-size="10" font-weight="bold" text-anchor="middle" x="110" y="167" direction="ltr" unicode-bidi="embed">step / next</text>
+
+<rect fill="#fff" height="28" rx="4" stroke="#9C27B0" stroke-width="1.5" width="130" x="180" y="148"></rect>
+<text fill="#6A1B9A" font-size="10" font-weight="bold" text-anchor="middle" x="245" y="167" direction="ltr" unicode-bidi="embed">print</text>
+
+<rect fill="#fff" height="28" rx="4" stroke="#9C27B0" stroke-width="1.5" width="130" x="45" y="186"></rect>
+<text fill="#6A1B9A" font-size="10" font-weight="bold" text-anchor="middle" x="110" y="205" direction="ltr" unicode-bidi="embed">goroutines</text>
+
+<rect fill="#fff" height="28" rx="4" stroke="#9C27B0" stroke-width="1.5" width="130" x="180" y="186"></rect>
+<text fill="#6A1B9A" font-size="10" font-weight="bold" text-anchor="middle" x="245" y="205" direction="ltr" unicode-bidi="embed">stack / frame</text>
+
+<rect fill="#fff" height="28" rx="4" stroke="#9C27B0" stroke-width="1.5" width="265" x="45" y="224"></rect>
+<text fill="#6A1B9A" font-size="10" font-weight="bold" text-anchor="middle" x="177" y="243" direction="ltr" unicode-bidi="embed">DWARF Reader + Expression Evaluator</text>
+
+<!-- Communication area -->
+<rect fill="#FF9800" height="100" rx="8" width="120" x="330" y="110"></rect>
+<text fill="#fff" font-size="12" font-weight="bold" text-anchor="middle" x="390" y="135" direction="ltr" unicode-bidi="embed">ptrace</text>
+<text fill="#fff3e0" font-size="9" text-anchor="middle" x="390" y="152" direction="ltr" unicode-bidi="embed">(Linux / macOS)</text>
+<text fill="#fff3e0" font-size="9" text-anchor="middle" x="390" y="167" direction="ltr" unicode-bidi="embed">DebugActiveProcess</text>
+<text fill="#fff3e0" font-size="9" text-anchor="middle" x="390" y="182" direction="ltr" unicode-bidi="embed">(Windows)</text>
+
+<!-- Arrows between Delve and ptrace -->
+<line marker-end="url(#arrowarch2)" stroke="#00ADD8" stroke-width="2" x1="310" x2="330" y1="160" y2="160"></line>
+<line marker-end="url(#arrowarch2)" stroke="#4CAF50" stroke-width="2" x1="450" x2="470" y1="160" y2="160"></line>
+
+<!-- Target Go Program (Right) -->
+<rect fill="#4CAF50" height="230" rx="10" width="280" x="470" y="50"></rect>
+<text fill="#fff" font-size="14" font-weight="bold" text-anchor="middle" x="610" y="75" direction="ltr" unicode-bidi="embed">Target Go Program</text>
+<text fill="#e8f5e9" font-size="10" text-anchor="middle" x="610" y="93" direction="rtl" unicode-bidi="embed">برنامه هدف (در حال دیباگ)</text>
+
+<!-- Target components -->
+<rect fill="#fff" height="28" rx="4" stroke="#388E3C" stroke-width="1.5" width="250" x="485" y="110"></rect>
+<text fill="#2E7D32" font-size="10" font-weight="bold" text-anchor="middle" x="610" y="129" direction="ltr" unicode-bidi="embed">Go Binary (compiled with -N -l)</text>
+
+<rect fill="#fff" height="28" rx="4" stroke="#388E3C" stroke-width="1.5" width="250" x="485" y="148"></rect>
+<text fill="#2E7D32" font-size="10" font-weight="bold" text-anchor="middle" x="610" y="167" direction="ltr" unicode-bidi="embed">DWARF Debug Information</text>
+
+<rect fill="#fff" height="28" rx="4" stroke="#388E3C" stroke-width="1.5" width="120" x="485" y="186"></rect>
+<text fill="#2E7D32" font-size="10" font-weight="bold" text-anchor="middle" x="545" y="205" direction="ltr" unicode-bidi="embed">Goroutines</text>
+
+<rect fill="#fff" height="28" rx="4" stroke="#388E3C" stroke-width="1.5" width="120" x="615" y="186"></rect>
+<text fill="#2E7D32" font-size="10" font-weight="bold" text-anchor="middle" x="675" y="205" direction="ltr" unicode-bidi="embed">Channels</text>
+
+<rect fill="#fff" height="28" rx="4" stroke="#388E3C" stroke-width="1.5" width="120" x="485" y="224"></rect>
+<text fill="#2E7D32" font-size="10" font-weight="bold" text-anchor="middle" x="545" y="243" direction="ltr" unicode-bidi="embed">Memory/Stack</text>
+
+<rect fill="#fff" height="28" rx="4" stroke="#388E3C" stroke-width="1.5" width="120" x="615" y="224"></rect>
+<text fill="#2E7D32" font-size="10" font-weight="bold" text-anchor="middle" x="675" y="243" direction="ltr" unicode-bidi="embed">Interfaces</text>
+
+<!-- How Delve interacts -->
+<rect fill="#f5f5f5" height="120" rx="8" stroke="#ddd" stroke-width="1" width="720" x="30" y="300"></rect>
+<text fill="#333" font-size="13" font-weight="bold" text-anchor="middle" x="390" y="325" direction="rtl" unicode-bidi="embed">نحوه تعامل <tspan direction="ltr" unicode-bidi="embed">Delve</tspan> با برنامه هدف</text>
+
+<rect fill="#e0f7fa" height="25" rx="4" stroke="#00ADD8" stroke-width="1" width="220" x="45" y="340"></rect>
+<text fill="#006064" font-size="9" text-anchor="middle" x="155" y="357" direction="rtl" unicode-bidi="embed">شروع یا اتصال به <tspan direction="ltr" unicode-bidi="embed">target process</tspan></text>
+
+<rect fill="#fff3e0" height="25" rx="4" stroke="#FF9800" stroke-width="1" width="220" x="280" y="340"></rect>
+<text fill="#E65100" font-size="9" text-anchor="middle" x="390" y="357" direction="rtl" unicode-bidi="embed">تنظیم <tspan direction="ltr" unicode-bidi="embed">breakpoint</tspan> با تغییر باینری</text>
+
+<rect fill="#e8f5e9" height="25" rx="4" stroke="#4CAF50" stroke-width="1" width="220" x="515" y="340"></rect>
+<text fill="#2E7D32" font-size="9" text-anchor="middle" x="625" y="357" direction="rtl" unicode-bidi="embed">خواندن/نوشتن حافظه <tspan direction="ltr" unicode-bidi="embed">process</tspan></text>
+
+<rect fill="#fce4ec" height="25" rx="4" stroke="#e91e63" stroke-width="1" width="220" x="45" y="375"></rect>
+<text fill="#880E4F" font-size="9" text-anchor="middle" x="155" y="392" direction="rtl" unicode-bidi="embed">رهگیری <tspan direction="ltr" unicode-bidi="embed">signal</tspan>ها (<tspan direction="ltr" unicode-bidi="embed">SIGTRAP</tspan>)</text>
+
+<rect fill="#f3e5f5" height="25" rx="4" stroke="#9C27B0" stroke-width="1" width="220" x="280" y="375"></rect>
+<text fill="#6A1B9A" font-size="9" text-anchor="middle" x="390" y="392" direction="rtl" unicode-bidi="embed">ارزیابی عبارات <tspan direction="ltr" unicode-bidi="embed">Go</tspan></text>
+
+<rect fill="#e3f2fd" height="25" rx="4" stroke="#2196F3" stroke-width="1" width="220" x="515" y="375"></rect>
+<text fill="#1565C0" font-size="9" text-anchor="middle" x="625" y="392" direction="rtl" unicode-bidi="embed">سوئیچ بین <tspan direction="ltr" unicode-bidi="embed">goroutine</tspan>ها</text>
+
+<!-- PHP Xdebug comparison -->
+<rect fill="#777BB4" height="85" rx="8" width="345" x="30" y="440"></rect>
+<text fill="#fff" font-size="12" font-weight="bold" text-anchor="middle" x="202" y="463" direction="ltr" unicode-bidi="embed">PHP Xdebug (for comparison)</text>
+<text fill="#e8eaf6" font-size="9" text-anchor="middle" x="202" y="482" direction="rtl" unicode-bidi="embed">• <tspan direction="ltr" unicode-bidi="embed">extension</tspan> در همان <tspan direction="ltr" unicode-bidi="embed">process PHP</tspan></text>
+<text fill="#e8eaf6" font-size="9" text-anchor="middle" x="202" y="498" direction="rtl" unicode-bidi="embed">• پروتکل <tspan direction="ltr" unicode-bidi="embed">DBGP</tspan> (نه <tspan direction="ltr" unicode-bidi="embed">ptrace</tspan>)</text>
+<text fill="#e8eaf6" font-size="9" text-anchor="middle" x="202" y="514" direction="rtl" unicode-bidi="embed">• <tspan direction="ltr" unicode-bidi="embed">overhead</tspan> دائمی ۲۰-۴۰٪</text>
+
+<rect fill="#00ADD8" height="85" rx="8" width="345" x="405" y="440"></rect>
+<text fill="#fff" font-size="12" font-weight="bold" text-anchor="middle" x="577" y="463" direction="ltr" unicode-bidi="embed">Go Delve</text>
+<text fill="#e0f7fa" font-size="9" text-anchor="middle" x="577" y="482" direction="rtl" unicode-bidi="embed">• <tspan direction="ltr" unicode-bidi="embed">process</tspan> جداگانه + <tspan direction="ltr" unicode-bidi="embed">ptrace</tspan></text>
+<text fill="#e0f7fa" font-size="9" text-anchor="middle" x="577" y="498" direction="rtl" unicode-bidi="embed">• پروتکل <tspan direction="ltr" unicode-bidi="embed">DAP</tspan> + پشتیبانی <tspan direction="ltr" unicode-bidi="embed">goroutine</tspan></text>
+<text fill="#e0f7fa" font-size="9" text-anchor="middle" x="577" y="514" direction="rtl" unicode-bidi="embed">• <tspan direction="ltr" unicode-bidi="embed">overhead</tspan> صفر در <tspan direction="ltr" unicode-bidi="embed">production</tspan></text>
+
+<!-- Golden rule bar -->
+<rect fill="#00ADD8" height="35" rx="6" width="720" x="30" y="540"></rect>
+<text fill="#fff" font-size="11" font-weight="bold" text-anchor="middle" x="390" y="562" direction="rtl" unicode-bidi="embed">قانون طلایی: <tspan direction="ltr" unicode-bidi="embed">Delve</tspan> فقط زمان دیباگ فعال است — برخلاف <tspan direction="ltr" unicode-bidi="embed">Xdebug</tspan> که همیشه <tspan direction="ltr" unicode-bidi="embed">overhead</tspan> دارد</text>
+</svg>
+<figcaption>شکل ۱۰-۵: معماری <bdi dir="ltr">Delve</bdi> — ارتباط دیباگر با پردازش هدف از طریق <bdi dir="ltr">ptrace</bdi> و مقایسه با <bdi dir="ltr">PHP Xdebug</bdi></figcaption>
+</figure>
+
+<p>نمودار بالا نشان می‌دهد که Delve چگونه از طریق <bdi dir="ltr">ptrace</bdi> (در Linux و macOS) یا <bdi dir="ltr">DebugActiveProcess</bdi> (در Windows) با برنامه هدف ارتباط برقرار می‌کند. وقتی شما دستوری مثل <bdi dir="ltr">break main.go:42</bdi> صادر می‌کنید، Delve دستورالعمل ماشین مناسب را در آن آدرس حافظه جایگزین می‌کند تا برنامه در آن نقطه متوقف شود. وقتی برنامه به breakpoint می‌رسد، سیستم‌عامل سیگنال <bdi dir="ltr">SIGTRAP</bdi> ارسال می‌کند و Delve کنترل را به دست می‌گیرد. سپس می‌تواند حافظه process را بخواند، مقادیر متغیرها را ارزیابی کند و اطلاعات DWARF را برای نمایش نام متغیرها و انواع آن‌ها به جای آدرس‌های خام استفاده نماید. این معماری کاملاً متفاوت از Xdebug است که مستقیماً در همان process اجرا می‌شود و از opcode‌های PHP برای کنترل جریان استفاده می‌کند.</p>
+
+<h3 id="سناریوهای-عملیاتی-delve">سناریوهای عملیاتی Delve</h3>
+<p>در محیط‌های عملیاتی واقعی، Delve فراتر از دیباگ ساده کاربرد دارد. ترکیب قابلیت‌های breakpoint شرطی، بازرسی goroutine و تحلیل call stack به شما امکان می‌دهد مشکلات پیچیده‌ای را ریشه‌یابی کنید که با log ساده قابل شناسایی نیستند. این سناریوها معمولاً در برنامه‌های production-grade با صدها goroutine فعال و منطق پیچیده رخ می‌دهند و بدون ابزار مناسب، پیدا کردن ریشه مشکل ممکن است ساعت‌ها یا حتی روزها طول بکشد. در ادامه مهم‌ترین سناریوهای عملیاتی و روش‌های دیباگ آن‌ها را بررسی می‌کنیم:</p>
+
+<ul>
+<li><strong>دیباگ با <bdi dir="ltr">Breakpoint</bdi> شرطی:</strong> وقتی تابعی هزاران بار فراخوانی می‌شود اما مشکل فقط در حالت خاصی رخ می‌دهد، breakpoint ساده بی‌فایده است. با <code>break main.process if x == 5</code> یا <code>break main.handler if err != nil</code> فقط در شرایط خاص متوقف شوید. همچنین می‌توانید با <code>condition 1 userID == 999</code> شرطی را به breakpoint موجود اضافه کنید. این قابلیت یکی از قدرتمندترین ابزارهای Delve است و معادل <bdi dir="ltr">Conditional Breakpoint</bdi> در PhpStorm/Xdebug می‌باشد، اما در Delve انعطاف‌پذیری بیشتری در نوشتن شرایط دارید.</li>
+<li><strong>بازرسی وضعیت <bdi dir="ltr">Goroutine</bdi>:</strong> در برنامه‌های همزمان، مشکل ممکن است در goroutine‌ای غیر از main رخ دهد. دستور <code>goroutines</code> لیست تمام goroutine‌ها را نمایش می‌دهد، <code>goroutines -t</code> stack trace هر کدام را نشان می‌دهد، و <code>goroutine 5</code> به goroutine شماره ۵ سوئیچ می‌کند. پس از سوئیچ، می‌توانید با <code>stack</code> و <code>locals</code> وضعیت کامل آن goroutine را بررسی کنید. این قابلیتی است که در PHP/Xdebug وجود ندارد چون PHP تک‌نخی است.</li>
+<li><strong>بررسی <bdi dir="ltr">Call Stack</bdi>:</strong> وقتی در یک breakpoint متوقف می‌شوید، دستور <code>stack</code> (یا <code>bt</code>) مسیر فراخوانی کامل را نشان می‌دهد. با <code>frame 2</code> می‌توانید به فریم خاصی از stack بروید و متغیرهای محلی آن فریم را ببینید. دستور <code>up</code> و <code>down</code> هم برای حرکت بین فریم‌های stack استفاده می‌شوند. این قابلیت برای فهمیدن اینکه چگونه به نقطه فعلی رسیده‌اید بسیار مفید است، به‌ویژه وقتی تابع از چند مسیر مختلف فراخوانی می‌شود.</li>
+<li><strong>دیباگ در <bdi dir="ltr">Docker Container</bdi>:</strong> وقتی مشکل فقط در محیط container قابل بازتولید است، Delve را در حالت headless اجرا کنید: <code>dlv exec ./app --headless --listen=:2345 --api-version=2 --accept-multiclient</code>. سپس از محیط محلی با <code>dlv connect localhost:2345</code> متصل شوید. حتماً پورت ۲۳۴۵ را در Docker map کنید و برنامه را با <code>-gcflags="all=-N -l"</code> بسازید. برای امنیت بیشتر، از SSH tunnel استفاده کنید و هرگز پورت Delve را به اینترنت باز نگذارید.</li>
+<li><strong><bdi dir="ltr">Breakpoint</bdi> شرطی برای مقادیر خاص:</strong> وقتی می‌خواهید فقط وقتی مقدار خاصی در slice یا map وجود دارد متوقف شوید، از شرایط پیچیده‌تر استفاده کنید: <code>break main.process if len(items) > 100</code> یا <code>break main.validate if user.Role == "admin"</code>. همچنین با دستور <code>on 1 print userID</code> می‌توانید هر بار که breakpoint فعال می‌شود مقدار متغیر خاصی را بدون توقف برنامه چاپ کنید (معادل Logpoint در VS Code).</li>
+</ul>
+
+<div class="tip"><strong>نکته کلیدی:</strong> از <code>breakpoint</code> شرطی استفاده کنید تا از گذراندن هزاران فراخوانی بی‌ربط جلوگیری کنید! مثلاً <code>break main.go:42 if x == 5</code> فقط وقتی <code>x</code> برابر ۵ است برنامه را متوقف می‌کند. بدون این شرط، اگر حلقه ۱۰۰۰۰ بار اجرا شود، باید ۱۰۰۰۰ بار دستور <code>continue</code> بزنید تا به مورد موردنظر برسید. breakpoint شرطی زمان دیباگ را از ساعت‌ها به ثانیه کاهش می‌دهد!</div>
+
+</div>
+</main>
+</div>
+
+<!-- Footer -->
+<footer class="site-footer">
+<div class="footer-inner">
+<div class="footer-nav">
+<span class="nav-arrow">‹</span>
+<a href="10.01-debugging-and-troubleshooting.html" data-prev>۱۰.۱ دیباگ و ریشه‌یابی خطاها</a>
+</div>
+<div class="footer-toc">
+<a href="00.01-contents.html">فهرست</a>
+</div>
+<div class="footer-nav">
+<a href="10.03-using-vscode.html" data-next>۱۰.۳ استفاده در VSCode</a>
+<span class="nav-arrow">›</span>
+</div>
+</div>
+</footer>
+
+<!-- Back to Top -->
+<button class="back-to-top" aria-label="بازگشت به بالا">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
+</button>
+
+<!-- Scripts -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/go.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/php.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/sql.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/yaml.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/json.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/dockerfile.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/xml.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/ini.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/plaintext.min.js"></script>
+<script src="assets/js/main.js"></script>
+</body>
+</html>

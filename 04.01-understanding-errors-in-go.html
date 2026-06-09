@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="fa">
+<head>
+<script>!function(){try{var t=localStorage.getItem('php2go-theme');if(t==='dark'||(!t&&window.matchMedia('(prefers-color-scheme:dark)').matches)){document.documentElement.setAttribute('data-theme','dark')}}catch(e){}}();</script>
+<meta charset="utf-8"/>
+<meta content="ie=edge" http-equiv="x-ua-compatible"/>
+<title>۴.۱ درک error در Go — PHP to Go</title>
+<meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet"/>
+<link href="assets/css/main.css" rel="stylesheet" type="text/css"/>
+<link href="assets/img/favicon.ico" rel="icon" type="image/x-icon"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" media="screen" class="hljs-light-theme" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css" media="not screen" class="hljs-dark-theme" rel="stylesheet"/>
+</head>
+<body>
+<!-- Progress Bar -->
+<div class="progress-bar"><div class="progress-bar__fill"></div></div>
+
+<!-- Header -->
+<header class="site-header">
+<div class="header-inner">
+<div class="header-left">
+<button class="header-btn sidebar-toggle" aria-label="فهرست">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+</button>
+<a href="00.00-front-matter.html" class="header-logo"><span class="logo-php">PHP</span> to <span class="logo-go">Go</span></a>
+<span class="header-crumbs">مدیریت خطا › درک error در Go</span>
+</div>
+<div class="header-right">
+<nav class="header-nav">
+<span class="nav-arrow">‹</span>
+<a href="04.00-chapter-4.html"><span class="nav-label">۴. مدیریت خطا</span></a>
+<a href="00.01-contents.html">فهرست</a>
+<a href="04.02-custom-errors.html"><span class="nav-label">۴.۲ ساخت خطاهای سفارشی</span></a>
+<span class="nav-arrow">›</span>
+</nav>
+<button class="header-btn search-toggle" aria-label="جستجو">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+</button>
+<button class="header-btn theme-toggle" aria-label="تغییر تم">
+<svg class="theme-icon-light" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+<svg class="theme-icon-dark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+</button>
+</div>
+</div>
+</header>
+
+<!-- Search Modal -->
+<div class="search-overlay">
+<div class="search-modal">
+<div class="search-input-wrap">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+<input type="text" class="search-input" placeholder="جستجو... (Ctrl+K)" dir="rtl"/>
+</div>
+<div class="search-results"></div>
+</div>
+</div>
+
+<!-- Layout -->
+<div class="site-layout">
+<!-- Sidebar -->
+<aside class="sidebar"></aside>
+<div class="sidebar-overlay"></div>
+
+<!-- Main Content -->
+<main class="content-area">
+<div class="content-wrap text">
+<div class="chapter">فصل ۴.۱</div>
+<div class="note"><strong>یادداشت:</strong> در PHP خطاها معمولاً با <code>try-catch</code> مدیریت می‌شوند و ممکن است چندین لایه بدون مدیریت عبور کنند. اما در Go بررسی خطا صریح و اجباری است. این تفاوت ممکن است در ابتدا آزاردهنده باشد اما در عمل باعث می‌شود کد قابل پیش‌بینی‌تر و قابل اعتمادتر شود.</div>
+<h2 id="درک-error-در-go">درک error در Go</h2>
+<p>در Go خطاها از طریق نوع داده‌ی error که در واقع یک interface است مدیریت می‌شوند.</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">type error interface {
+    Error() string
+}
+</code></pre>
+</figure>
+<p>یعنی هر چیزی که متدی با امضای <code>Error() string</code> داشته باشد می‌تواند به عنوان یک error استفاده شود.</p>
+<h3 id="error-در-سطح-اجرا">error در سطح اجرا: چگونه کار می‌کند؟</h3>
+<p>در زمان اجرا مقدار از نوع <code>error</code> در واقع یک <strong dir="ltr">interface value</strong> است که از دو بخش تشکیل شده: یک اشاره‌گر به اطلاعات نوع type descriptor و یک اشاره‌گر به داده‌ی واقعی. وقتی می‌نویسید <code>var err error</code> هر دو مؤلفه <code>nil</code> هستند. وقتی <code dir="ltr">errors.New("msg")</code> را فراخوانی می‌کنید، یک <code>*errors.errorString</code> ساخته شده و مقادیر type و data آن‌ها در interface value قرار می‌گیرند.</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">// Internal implementation of errors.New in standard library
+type errorString struct {
+    s string
+}
+
+func (e *errorString) Error() string {
+    return e.s
+}
+
+func New(text string) error {
+    return &amp;errorString{text}
+}
+</code></pre>
+</figure>
+<div class="note"><strong>نکته‌ی فنی:</strong> به این دلیل که <code dir="ltr">errors.New</code> یک اشاره‌گر برمی‌گرداند، دو فراخوانی <code dir="ltr">errors.New("same")</code> با هم برابر نیستند — حتی اگر رشته‌ی یکسانی داشته باشند. این رفتار عمدی است تا مقایسه‌ی <code>==</code> بین خطاها گمراه‌کننده نباشد. برای مقایسه‌ی خطاها همیشه از <code dir="ltr">errors.Is</code> استفاده کنید.</div>
+<h3 id="sentinel-errors">خطاهای Sentinel</h3>
+<p>خطاهای Sentinel مقادیر خطای از پیش تعریف‌شده‌ای هستند که به‌عنوان شناسه‌ی یکتای یک شرایط خاص استفاده می‌شوند. این الگو در Go بسیار رایج است و در خود کتابخانه استاندارد هم استفاده شده:</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">// From the io package in standard library
+var EOF = errors.New("EOF")
+
+// From the os package
+var ErrNotExist = errors.New("file does not exist")
+
+// Usage
+if errors.Is(err, os.ErrNotExist) {
+    fmt.Println("فایل وجود ندارد")
+}
+</code></pre>
+</figure>
+<p>خطاهای Sentinel نباید مقدارشان تغییر کند — شناسه‌ی آن‌ها فقط از طریق <strong>آدرس حافظه</strong> مشخص می‌شود. به همین دلیل باید به‌صورت <code>var</code> در سطح بسته تعریف شوند، نه با <code>func</code> که هر بار نمونه جدیدی بسازد.</p>
+<h3 id="type-assertion">بررسی نوع خطا با Type Assertion</h3>
+<p>گاهی باید بفهمید خطای بازگشتی از چه نوعی است تا عمل متناسب با آن انجام دهید. در PHP با <code>instanceof</code> نوع Exception را بررسی می‌کنید. در Go از <strong dir="ltr">type assertion</strong> استفاده می‌شود:</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">type NotFoundError struct {
+    Path string
+}
+
+func (e *NotFoundError) Error() string {
+    return fmt.Sprintf("فایل پیدا نشد: %s", e.Path)
+}
+
+func handleError(err error) {
+    // Type assertion with success check
+    if nf, ok := err.(*NotFoundError); ok {
+        fmt.Println("مسیر نامعتبر:", nf.Path)
+        return
+    }
+    fmt.Println("خطای عمومی:", err)
+}
+</code></pre>
+</figure>
+<div class="comparison"><strong>مقایسه: بررسی نوع خطا در PHP و Go</strong>
+<p><strong dir="ltr">PHP:</strong> از <code>instanceof</code> یا <code>catch</code> چندگانه استفاده می‌شود:</p>
+<figure class="code php" dir="ltr">
+<pre><code class="language-php">try {
+    doSomething();
+} catch (NotFoundError $e) {
+    echo $e-&gt;getPath();
+} catch (PermissionError $e) {
+    echo $e-&gt;getPermission();
+} catch (Exception $e) {
+    echo $e-&gt;getMessage();
+}
+</code></pre>
+<p><strong dir="ltr">Go:</strong> از type assertion یا <code dir="ltr">errors.As</code> استفاده می‌شود:</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">err := doSomething()
+switch e := err.(type) {
+    case *NotFoundError:
+    fmt.Println(e.Path)
+    case *PermissionError:
+    fmt.Println(e.Permission)
+    default:
+    fmt.Println(err)
+}
+</code></pre>
+</figure></figure></div>
+<div class="warning"><strong>هشدار:</strong> هرگز از <code dir="ltr">err.(*SomeType)</code> بدون comma-ok استفاده نکنید. اگر نوع مطابقت نداشته باشد، panic رخ می‌دهد. همیشه بنویسید <code>if e, ok := err.(*SomeType); ok</code>.</div>
+<h3 id="errors-is-و-errors-as">errors.Is و errors.As: جستجو در زنجیره‌ی خطا</h3>
+<p>وقتی خطاها با <code dir="ltr">fmt.Errorf("%w", err)</code> wrap می‌شوند، type assertion ساده دیگر کار نمی‌کند — زیرا نوع بیرونی دیگر همان نوع اصلی نیست. <code dir="ltr">errors.Is</code> و <code dir="ltr">errors.As</code> این مشکل را حل می‌کنند:</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">// errors.Is: does target error exist in the chain? (compare with ==)
+if errors.Is(err, os.ErrNotExist) {
+    fmt.Println("فایل پیدا نشد")
+}
+
+// errors.As: does a specific type exist in the chain? (like instanceof)
+var nf *NotFoundError
+if errors.As(err, &amp;nf) {
+    fmt.Println("مسیر:", nf.Path)
+}
+</code></pre>
+</figure>
+<p><code dir="ltr">errors.Is</code> زنجیره‌ی خطا را با فراخوانی متد <code dir="ltr">Unwrap()</code> پیمایش می‌کند و هر حلقه را با خطای هدف مقایسه می‌کند. <code dir="ltr">errors.As</code> نیز همان مسیر را طی می‌کند اما به‌جای مقایسه‌ی برابری، از <code>interface</code> matching استفاده می‌کند.</p>
+<div class="important"><strong>مهم:</strong> به <code dir="ltr">errors.As</code> باید <strong>اشاره‌گر</strong> به متغیر از نوع موردنظر بدهید، نه خود نوع را. این‌گونه اگر تطبیق پیدا شود، مقدار خطا در متغیر قرار می‌گیرد و به فیلدهای آن دسترسی دارید.</div>
+<h3 id="عملکرد-خطاها">عملکرد Performance خطاها در Go</h3>
+<p>برخلاف PHP Exception که در زمان ساخت به‌طور خودکار stack trace ثبت می‌کند، <code>error</code> در Go فقط یک رشته ذخیره می‌کند. این یعنی ساخت یک مقدار <code>error</code> بسیار سبک‌تر از ساختن یک Exception در PHP است:</p>
+<table class="comparison-table" dir="rtl">
+<thead>
+<tr><th>عامل</th><th>PHP Exception</th><th>Go error</th></tr>
+</thead>
+<tbody>
+<tr><td>هزینه ساخت</td><td>capture stack trace</td><td>بسیار پایین (یک allocation برای رشته)</td></tr>
+<tr><td dir="ltr">Stack trace</td><td>خودکار و اجباری</td><td>نیاز به <code><span dir="ltr">runtime.Callers</span></code> دستی</td></tr>
+<tr><td>هزینه در مسیر عادی</td><td>صفر (فقط در صورت پرتاب)</td><td>صفر (فقط یک مقایسه‌ی nil)</td></tr>
+<tr><td>heap</td><td>همیشه (شیء Exception)</td><td>معمولاً بله (اما سبک)</td></tr>
+</tbody>
+</table>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">// Manually record stack trace (for debugging)
+import "runtime"
+
+func withStack(err error) error {
+    buf := make([]byte, 4096)
+    n := runtime.Stack(buf, false)
+    return fmt.Errorf("%w\nStack:\n%s", err, buf[:n])
+}
+</code></pre>
+</figure>
+<div class="tip"><strong>بهینه‌سازی:</strong> اگر خطای شما پیغام ثابتی دارد، از sentinel error استفاده کنید تا از allocation اضافی جلوگیری شود. <code dir="ltr">errors.New("msg")</code> فقط یک بار تخصیص حافظه می‌دهد و سپس همان اشاره‌گر همیشه بازگردانده می‌شود.</div>
+<figure class="diagram" dir="ltr">
+<svg height="320" viewBox="0 0 650 320" width="650" xmlns="http://www.w3.org/2000/svg">
+<!-- Background -->
+<rect fill="#fafafa" height="320" rx="8" width="650" x="0" y="0"></rect>
+<!-- PHP Exception flow -->
+<text fill="#777BB4" font-size="16" font-weight="bold" text-anchor="middle" x="160" y="30" direction="ltr" unicode-bidi="embed">PHP: Exception</text>
+<rect fill="#777BB4" height="45" opacity="0.15" rx="8" stroke="#777BB4" stroke-width="2" width="200" x="60" y="50"></rect>
+<text fill="#333" font-size="13" text-anchor="middle" x="160" y="78" direction="rtl" unicode-bidi="embed">تابع اصلی</text>
+<rect fill="#777BB4" height="45" opacity="0.15" rx="8" stroke="#777BB4" stroke-width="2" width="200" x="60" y="120"></rect>
+<text fill="#333" font-size="13" text-anchor="middle" x="160" y="148" direction="rtl" unicode-bidi="embed">تابع میانی</text>
+<rect fill="#e74c3c" height="45" opacity="0.15" rx="8" stroke="#e74c3c" stroke-width="2" width="200" x="60" y="190"></rect>
+<text fill="#333" font-size="13" text-anchor="middle" x="160" y="218" direction="ltr" unicode-bidi="embed">throw Exception</text>
+<!-- Arrows PHP -->
+<line marker-end="url(#arrowPHP)" stroke="#777BB4" stroke-width="2" x1="160" x2="160" y1="95" y2="120"></line>
+<line marker-end="url(#arrowPHP)" stroke="#777BB4" stroke-width="2" x1="160" x2="160" y1="165" y2="190"></line>
+<!-- Bubble up arrow -->
+<path d="M 270 212 Q 310 212 310 148 Q 310 78 270 78" fill="none" marker-end="url(#arrowRed)" stroke="#e74c3c" stroke-dasharray="6,3" stroke-width="2"></path>
+<text fill="#e74c3c" font-size="11" x="325" y="150" direction="rtl" unicode-bidi="embed">پرش خودکار</text>
+<text fill="#e74c3c" font-size="11" x="325" y="166" direction="rtl" unicode-bidi="embed">به بالا</text>
+<!-- Go error flow -->
+<text fill="#00ADD8" font-size="16" font-weight="bold" text-anchor="middle" x="490" y="30" direction="ltr" unicode-bidi="embed">Go: error</text>
+<rect fill="#00ADD8" height="45" opacity="0.15" rx="8" stroke="#00ADD8" stroke-width="2" width="200" x="390" y="50"></rect>
+<text fill="#333" font-size="13" text-anchor="middle" x="490" y="78" direction="ltr" unicode-bidi="embed">main()</text>
+<rect fill="#00ADD8" height="45" opacity="0.15" rx="8" stroke="#00ADD8" stroke-width="2" width="200" x="390" y="120"></rect>
+<text fill="#333" font-size="13" text-anchor="middle" x="490" y="148" direction="ltr" unicode-bidi="embed">someFunc()</text>
+<rect fill="#f39c12" height="45" opacity="0.15" rx="8" stroke="#f39c12" stroke-width="2" width="200" x="390" y="190"></rect>
+<text fill="#333" font-size="12" text-anchor="middle" x="490" y="213" direction="ltr" unicode-bidi="embed">return value, error</text>
+<!-- Arrows Go -->
+<line marker-end="url(#arrowGo)" stroke="#00ADD8" stroke-width="2" x1="490" x2="490" y1="95" y2="120"></line>
+<line marker-end="url(#arrowGo)" stroke="#00ADD8" stroke-width="2" x1="490" x2="490" y1="165" y2="190"></line>
+<!-- Explicit check -->
+<path d="M 600 212 L 620 212 L 620 78 L 600 78" fill="none" marker-end="url(#arrowGreen)" stroke="#27ae60" stroke-width="2"></path>
+<text fill="#27ae60" font-size="10" text-anchor="middle" transform="rotate(-90,620,145)" x="620" y="145" direction="ltr" unicode-bidi="embed">if err != nil</text>
+<!-- Check box -->
+<rect fill="#27ae60" height="45" opacity="0.12" rx="8" stroke="#27ae60" stroke-width="2" width="200" x="390" y="260"></rect>
+<text fill="#333" font-size="13" text-anchor="middle" x="490" y="288" direction="rtl" unicode-bidi="embed">بررسی صریح خطا</text>
+<line marker-end="url(#arrowGreen)" stroke="#27ae60" stroke-width="2" x1="490" x2="490" y1="235" y2="260"></line>
+<!-- Arrow markers -->
+<defs>
+<marker id="arrowPHP" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5">
+<polygon fill="#777BB4" points="0 0, 10 3.5, 0 7"></polygon>
+</marker>
+<marker id="arrowGo" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5">
+<polygon fill="#00ADD8" points="0 0, 10 3.5, 0 7"></polygon>
+</marker>
+<marker id="arrowRed" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5">
+<polygon fill="#e74c3c" points="0 0, 10 3.5, 0 7"></polygon>
+</marker>
+<marker id="arrowGreen" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5">
+<polygon fill="#27ae60" points="0 0, 10 3.5, 0 7"></polygon>
+</marker>
+</defs>
+</svg>
+<figcaption>شکل ۴-۱: مقایسه جریان مدیریت خطا در <bdi dir="ltr">PHP</bdi> (<bdi dir="ltr">Exception</bdi>) و <bdi dir="ltr">Go</bdi> (<bdi dir="ltr">error</bdi>)</figcaption>
+</figure>
+<p><strong>مثال تقسیم اعداد با بررسی خطا</strong></p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">import (
+"errors"
+"fmt"
+)
+func divide(a, b float64) (float64, error) {
+    if b == 0 {
+        return 0, errors.New("تقسیم بر صفر مجاز نیست")
+    }
+    return a / b, nil
+}
+
+func main() {
+    result, err := divide(10, 0)
+    if err != nil {
+        fmt.Println("خطا:", err)
+    } else {
+        fmt.Println("نتیجه:", result)
+    }
+}
+</code></pre>
+</figure>
+<p>در PHP معمولاً خطاهای جدی با throw مشخص می‌شوند و باید با try/catch گرفته شوند. در Go مدیریت خطا به صورت صریح در هر مرحله انجام می‌شود و از پرتاب غیرمنتظره جلوگیری می‌کند. یکی از الگوهای بسیار رایج در Go برای مدیریت خطا به این صورت است:</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">val, err := someFunction()
+if err != nil {
+    // Error handling
+}
+</code></pre>
+</figure>
+<p>این الگو باعث می‌شود هر بار که تابعی فراخوانی می‌کنید که ممکن است خطایی تولید کند صریحاً آن را بررسی کنید. این ویژگی باعث خوانایی و وضوح در مدیریت خطا می‌شود.</p>
+
+<div class="quote-box">
+    <p class="quote-text">مدیریت خطا مهم است، اما اگر منطق برنامه را مبهم کند، اشتباه است. هدف نوشتن کدی است که جریان عادی برنامه را واضح نشان دهد و مدیریت خطا نامحسوس باشد.</p>
+    <p class="quote-source">
+        <span class="quote-author">Uncle Bob</span>
+        <span class="quote-role">نویسنده و مشاور نرم‌افزار</span>
+        <span class="quote-separator">|</span>
+        <span class="quote-book">Clean Code</span>
+    </p>
+</div>
+
+<div class="tip"><strong>نکته‌ی حرفه‌ای:</strong> الگوی <bdi dir="ltr"><code>if err != nil</code></bdi> در Go شما را مجبور می‌کند خطا را در همان نقطه‌ی فراخوانی مدیریت کنید. این پرحرف است اما مشکل «کی این خطا را می‌گیرد؟» در <bdi dir="ltr">exception</bdi>‌ها را از بین می‌برد. یک مهندس ارشد Go خطاها را با <bdi dir="ltr"><code>fmt.Errorf("doing X: %w", err)</code></bdi> می‌پیچد تا زنجیره‌ای از خطاها بسازد که وقتی به بالاترین لایه می‌رسد، داستان کاملی از علت بروز مشکل روایت کند.</div>
+
+<table class="comparison-table" dir="rtl">
+<thead>
+<tr><th>ویژگی</th><th>PHP (Exception)</th><th>Go (error)</th></tr>
+</thead>
+<tbody>
+<tr><td>مدل مدیریت خطا</td><td dir="ltr">try / catch / finally</td><td>مقدار بازگشتی error</td></tr>
+<tr><td>جریان اجرا</td><td>پرش خودکار به catch</td><td>بررسی صریح <code>if err != nil</code></td></tr>
+<tr><td>نوع خطا</td><td>کلاس‌های Exception</td><td>اینترفیس <code>error</code></td></tr>
+<tr><td>ساخت خطای سفارشی</td><td dir="ltr"><code>class MyEx extends Exception</code></td><td>پیاده‌سازی <code><span dir="ltr">Error()</span> string</code></td></tr>
+<tr><td>بسته‌بندی خطا</td><td dir="ltr"><code dir="ltr">new Exception($msg, $code, $prev)</code></td><td dir="ltr"><code dir="ltr">fmt.Errorf("...: %w", err)</code></td></tr>
+<tr><td>الزام بررسی</td><td>اختیاری (اگر catch نباشد، خطا بالا می‌رود)</td><td>اجباری (مقدار error باید بررسی شود)</td></tr>
+<tr><td>عملکرد در صورت فراموشی</td><td dir="ltr">Uncaught Exception → crash</td><td>خطا نادیده گرفته می‌شود (سایلنت)</td></tr>
+<tr><td>پشتیبانی از stack trace</td><td>بله (داخلی)</td><td>خیر (نیاز به <code><span dir="ltr">runtime.Callers</span></code>)</td></tr>
+</tbody>
+</table>
+
+<h3 id="error-wrapping-chain">زنجیره‌ی Error Wrapping</h3>
+
+<div class="quote-box">
+    <p class="quote-text">خطاها را فقط بررسی نکنید، آن‌ها را با ظرافت مدیریت کنید. خطاهای نگهبان اتصال بین پکیج‌ها ایجاد می‌کنند. بسته‌بندی خطاها با زمینه و بررسی آن‌ها با errors.Is یا errors.As را ترجیح دهید. این کار زنجیره‌های خطا را صریح و قابل ردیابی می‌کند.</p>
+    <p class="quote-source">
+        <span class="quote-author">Dave Cheney</span>
+        <span class="quote-role">نویسنده و مشاور ارشد Go</span>
+        <span class="quote-separator">|</span>
+        <span class="quote-book">GopherCon 2016 — Don't just check errors, handle them gracefully</span>
+    </p>
+</div>
+<p>یکی از قدرتمندترین ویژگی‌های مدیریت خطا در Go قابلیت <bdi dir="ltr">Error Wrapping</bdi> است. با استفاده از <code dir="ltr">fmt.Errorf</code> و فعل قالب <code>%w</code> می‌توان خطاها را در هم پیچید و زنجیره‌ای از خطاها ساخت:</p>
+
+<figure class="diagram" dir="ltr">
+<svg height="220" viewBox="0 0 600 220" width="600" xmlns="http://www.w3.org/2000/svg">
+<rect fill="#fafafa" height="220" rx="8" width="600" x="0" y="0"></rect>
+<defs><marker id="arrWrap" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#00ADD8" points="0 0, 10 3.5, 0 7"></polygon></marker></defs>
+<text fill="#00ADD8" font-size="14" font-weight="bold" text-anchor="middle" x="300" y="25" direction="rtl" unicode-bidi="embed">زنجیره‌ی <tspan direction="ltr" unicode-bidi="embed">Error</tspan> <tspan direction="ltr" unicode-bidi="embed">Wrapping</tspan></text>
+<rect fill="#e0f7fa" height="50" rx="8" stroke="#00ADD8" stroke-width="2" width="180" x="30" y="55"></rect>
+<text fill="#00ADD8" font-size="12" font-weight="bold" text-anchor="middle" x="120" y="75" direction="rtl" unicode-bidi="embed">خطای سطح ۳ (<tspan direction="ltr" unicode-bidi="embed">API</tspan>)</text>
+<text fill="#666" font-size="10" text-anchor="middle" x="120" y="95" direction="ltr" unicode-bidi="embed">fmt.Errorf("api: %w", svcErr)</text>
+<rect fill="#e8f5e9" height="50" rx="8" stroke="#27ae60" stroke-width="2" width="180" x="240" y="55"></rect>
+<text fill="#27ae60" font-size="12" font-weight="bold" text-anchor="middle" x="330" y="75" direction="rtl" unicode-bidi="embed">خطای سطح ۲ (<tspan direction="ltr" unicode-bidi="embed">Service</tspan>)</text>
+<text fill="#666" font-size="10" text-anchor="middle" x="330" y="95" direction="ltr" unicode-bidi="embed">fmt.Errorf("service: %w", dbErr)</text>
+<rect fill="#fce4ec" height="50" rx="8" stroke="#e74c3c" stroke-width="2" width="180" x="450" y="55"></rect>
+<text fill="#e74c3c" font-size="12" font-weight="bold" text-anchor="middle" x="540" y="75" direction="rtl" unicode-bidi="embed">خطای سطح ۱ (<tspan direction="ltr" unicode-bidi="embed">DB</tspan>)</text>
+<text fill="#666" font-size="10" text-anchor="middle" x="540" y="95" direction="ltr" unicode-bidi="embed">sql.ErrNoRows</text>
+<line marker-end="url(#arrWrap)" stroke="#00ADD8" stroke-width="2" x1="210" x2="240" y1="80" y2="80"></line>
+<line marker-end="url(#arrWrap)" stroke="#00ADD8" stroke-width="2" x1="420" x2="450" y1="80" y2="80"></line>
+<text fill="#888" font-size="10" text-anchor="middle" x="225" y="70" direction="ltr" unicode-bidi="embed">Unwrap()</text>
+<text fill="#888" font-size="10" text-anchor="middle" x="435" y="70" direction="ltr" unicode-bidi="embed">Unwrap()</text>
+<rect fill="#fff3e0" height="70" rx="8" stroke="#f39c12" stroke-width="1.5" width="550" x="30" y="130"></rect>
+<text fill="#e65100" font-size="12" font-weight="bold" text-anchor="middle" x="305" y="152" direction="ltr" unicode-bidi="embed">errors.Is(err, sql.ErrNoRows) → true</text>
+<text fill="#666" font-size="11" text-anchor="middle" x="305" y="172" direction="ltr" unicode-bidi="embed">errors.As(err, &amp;dbErr) → true (extracts *DBError)</text>
+<text fill="#888" font-size="10" text-anchor="middle" x="305" y="190" direction="rtl" unicode-bidi="embed">هر دو تابع زنجیره را با <tspan direction="ltr" unicode-bidi="embed">Unwrap</tspan>() پیمایش می‌کنند</text>
+</svg>
+<figcaption>شکل ۱-۴: زنجیره‌ی <bdi dir="ltr">Error</bdi> <bdi dir="ltr">Wrapping</bdi> و نحوه‌ی پیمایش آن</figcaption>
+</figure>
+
+<h3 id="error-anti-patterns">الگوهای ضد در مدیریت خطا</h3>
+<p>برنامه‌نویسان PHP هنگام مهاجرت به Go معمولاً الگوهای زیر را تکرار می‌کنند که همگی ضدالگوی (<bdi dir="ltr">anti-pattern</bdi>) محسوب می‌شوند:</p>
+<p><strong>۱. نادیده گرفتن خطا:</strong> بدترین الگوی ممکن — خطا را کلاً بررسی نکردن.</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">// Wrong — never do this
+data, _ := os.ReadFile("config.yaml")
+
+// Correct — always check the error
+data, err := os.ReadFile("config.yaml")
+if err != nil {
+    return fmt.Errorf("read config: %w", err)
+}
+</code></pre>
+</figure>
+<p><strong>۲. فقط ثبت خطا بدون برگرداندن:</strong> خطا را ثبت می‌کنند اما به فراخوانی‌کننده اطلاع نمی‌دهند.</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">// Wrong — error is logged but execution continues
+func SaveUser(u *User) {
+    err := db.Save(u)
+    if err != nil {
+        log.Println("save error:", err)
+    }
+}
+
+// Correct — return the error
+func SaveUser(u *User) error {
+    if err := db.Save(u); err != nil {
+        return fmt.Errorf("save user %d: %w", u.ID, err)
+    }
+    return nil
+}
+</code></pre>
+</figure>
+<p><strong>۳. برگرداندن خطا بدون context:</strong> فقط <code>return err</code> بدون اضافه کردن اطلاعات اضافی.</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">// Wrong — without context
+return nil, err
+
+// Correct — with context
+return nil, fmt.Errorf("get user %d: %w", id, err)
+</code></pre>
+</figure>
+<div class="important"><strong>قانون طلایی خطا در Go:</strong> هر خطا باید دو چیز داشته باشد: ۱) Context — اطلاعاتی درباره‌ی اینکه خطا در چه زمینه‌ای رخ داده، ۲) زنجیره — خطای اصلی باید با <code>%w</code> بسته‌بندی شود تا <code>errors.Is</code> و <code>errors.As</code> کار کنند.</div>
+
+<h3 id="multi-error">مدیریت چندخطایی</h3>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">// Better pattern with errors.Join (Go 1.20+)
+func validateAll(data Data) error {
+    return errors.Join(
+    validateName(data.Name),
+    validateEmail(data.Email),
+    validateAge(data.Age),
+)
+    // If all are nil, returns nil
+    // If at least one is non-nil, returns combined error
+}
+</code></pre>
+</figure>
+
+<h3 id="error-performance-benchmark">بنچمارک عملکرد خطا</h3>
+<table class="comparison-table" dir="rtl">
+<thead>
+<tr><th>عملیات</th><th>PHP Exception</th><th>Go error</th><th>تفاوت</th></tr>
+</thead>
+<tbody>
+<tr><td>ساخت خطا</td><td>~2000 ns</td><td>~50 ns</td><td>40x سریع‌تر</td></tr>
+<tr><td>مسیر عادی (بدون خطا)</td><td>0 ns</td><td>~1 ns</td><td>مقایسه‌پذیر</td></tr>
+<tr><td>مسیر خطا</td><td>~5000 ns</td><td>~100 ns</td><td>50x سریع‌تر</td></tr>
+<tr><td>تخصیص حافظه</td><td>شامل stack trace</td><td>1-2 allocation</td><td>خیلی کمتر</td></tr>
+</tbody>
+</table>
+<div class="note"><strong>نکته:</strong> این اعداد تقریبی هستند. اما رابطه‌ی نسبی ثابت است: خطاهای Go بسیار سبک‌تر از Exception‌های PHP هستند.</div>
+
+    <h3 id="errors-astype">تابع errors.AsType — Go 1.26</h3>
+    <p>
+        تابع جدید <code>errors.AsType</code> generic از <code>errors.As</code>
+        است. این تابع type-safe، سریع‌تر و در بیشتر موارد آسان‌تر برای استفاده است.
+        برخلاف <code>errors.As</code> که نیاز به ایجاد متغیر هدف دارد، <code>errors.AsType</code>
+        مستقیماً نوع هدف را مشخص می‌کند:
+    </p>
+    <figure class="code go" dir="ltr">
+        <pre><code class="language-go">// روش قدیمی با errors.As
+var timeoutErr *TimeoutError
+if errors.As(err, &amp;timeoutErr) {
+    fmt.Println("timeout:", timeoutErr.Duration)
+}
+
+// روش جدید با errors.AsType (Go 1.26)
+if timeoutErr, ok := errors.AsType[*TimeoutError](err); ok {
+    fmt.Println("timeout:", timeoutErr.Duration)
+}
+
+// همچنین برای انواع بدون اشاره‌گر
+if code, ok := errors.AsType[ErrorCode](err); ok {
+    fmt.Println("error code:", code)
+}</code></pre>
+    </figure>
+    <p>
+        مزیت اصلی <code>errors.AsType</code> علاوه بر type-safety، حذف نیاز به ایجاد متغیر
+        هدف قبل از فراخوانی و خوانایی بهتر کد است. رفتار <code>errors.As</code> بدون تغییر
+        باقی می‌ماند و هر دو تابع می‌توانند در کنار هم استفاده شوند.
+    </p>
+
+    <div class="quote-box">
+        <p class="quote-text">
+            مدیریت خطا نباید کنترل جریان برنامه باشد. خطاها ارزشی هستند که باید
+            منتقل شوند، نه استثنائی که باید گرفته شوند. این رویکرد به کد اجازه می‌دهد
+            خواناتر باشد و خطاها را در سطح مناسب مدیریت کنند.
+        </p>
+        <p class="quote-source">
+            <span class="quote-author">Kent Beck</span>
+            <span class="quote-separator">—</span>
+            <span class="quote-book">کتاب Simple Design: The Art of Software</span>
+        </p>
+    </div>
+
+<h3 id="error-flow-call-stack">جریان خطا در پشته فراخوانی: از Database تا Handler</h3>
+<p>در یک برنامه‌ی وب واقعی، خطا معمولاً در پایین‌ترین لایه (مثلاً <bdi dir="ltr">Database</bdi>) رخ می‌دهد و باید از طریق لایه‌های میانی به بالاترین لایه منتقل شود. هر لایه باید خطا را با <code dir="ltr">fmt.Errorf</code> و فعل <code>%w</code> بسته‌بندی کند تا ضمن حفظ زنجیره‌ی خطا، زمینه‌ی خود را نیز اضافه نماید. این رویکرد تضمین می‌کند که وقتی خطا به <bdi dir="ltr">Handler</bdi> می‌رسد، پیام آن شامل مسیر کامل از منبع خطا تا لایه‌ی بالاست. بدون این بسته‌بندی، ردیابی علت واقعی خطا در یک سیستم چندلایه بسیار دشوار خواهد بود.</p>
+<p>در لایه‌ی <bdi dir="ltr">Repository</bdi> خطا با اطلاعاتی درباره‌ی عملیات پایگاه‌داده بسته‌بندی می‌شود، مثلاً <code dir="ltr">fmt.Errorf("query user: %w", err)</code>. در لایه‌ی <bdi dir="ltr">Service</bdi> همان خطا با زمینه‌ی منطق کسب‌وکار بسته‌بندی می‌شود مثل <code dir="ltr">fmt.Errorf("get user: %w", err)</code>. در نهایت <bdi dir="ltr">HTTP Handler</bdi> خطا را بررسی کرده و تصمیم می‌گیرد چه کد وضعیت مناسبی به کلاینت برگردانده شود. این الگوی لایه‌ای بسته‌بندی، ردیابی خطا را در سیستم‌های بزرگ ساده‌تر و قابل‌اتکاتر می‌کند.</p>
+
+<figure class="diagram" dir="ltr">
+<svg height="720" viewBox="0 0 800 720" width="800" xmlns="http://www.w3.org/2000/svg">
+<rect fill="#fafafa" height="720" rx="8" width="800" x="0" y="0"></rect>
+<defs>
+<marker id="arrFlowDown" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#4CAF50" points="0 0, 10 3.5, 0 7"></polygon></marker>
+<marker id="arrFlowUp" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#e91e63" points="0 0, 10 3.5, 0 7"></polygon></marker>
+<marker id="arrChain" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#00ADD8" points="0 0, 10 3.5, 0 7"></polygon></marker>
+</defs>
+
+<!-- Title -->
+<text fill="#333" font-size="16" font-weight="bold" text-anchor="middle" x="400" y="28" direction="rtl" unicode-bidi="embed">جریان خطا در <tspan direction="ltr" unicode-bidi="embed">Call Stack</tspan>: از <tspan direction="ltr" unicode-bidi="embed">Database</tspan> تا <tspan direction="ltr" unicode-bidi="embed">Handler</tspan></text>
+
+<!-- ============ LAYER 1: HTTP Handler ============ -->
+<rect fill="#e3f2fd" height="72" rx="8" stroke="#1565C0" stroke-width="2" width="250" x="50" y="50"></rect>
+<text fill="#1565C0" font-size="14" font-weight="bold" text-anchor="middle" x="175" y="73" direction="ltr" unicode-bidi="embed">HTTP Handler</text>
+<text fill="#666" font-size="10" text-anchor="middle" x="175" y="90" direction="rtl" unicode-bidi="embed">بررسی خطا و تصمیم‌گیری</text>
+<text fill="#666" font-size="10" text-anchor="middle" x="175" y="106" direction="rtl" unicode-bidi="embed">درباره‌ی کد وضعیت پاسخ</text>
+
+<!-- Handler annotation box -->
+<rect fill="#ffffff" height="72" rx="6" stroke="#1565C0" stroke-width="1.5" stroke-dasharray="4,2" width="310" x="340" y="50"></rect>
+<text fill="#1565C0" font-size="11" font-weight="bold" x="355" y="70" direction="ltr" unicode-bidi="embed">errors.Is(err, sql.ErrNoRows)</text>
+<text fill="#1565C0" font-size="11" font-weight="bold" x="355" y="86" direction="ltr" unicode-bidi="embed">  → 404 Not Found</text>
+<text fill="#666" font-size="10" x="355" y="104" direction="ltr" unicode-bidi="embed">errors.As(err, &amp;ValidationErr)</text>
+<text fill="#666" font-size="10" x="355" y="118" direction="ltr" unicode-bidi="embed">  → 400 Bad Request</text>
+
+<!-- ============ LAYER 2: Service ============ -->
+<rect fill="#e0f7fa" height="72" rx="8" stroke="#00838F" stroke-width="2" width="250" x="50" y="160"></rect>
+<text fill="#00838F" font-size="14" font-weight="bold" text-anchor="middle" x="175" y="183" direction="ltr" unicode-bidi="embed">Service Layer</text>
+<text fill="#666" font-size="10" text-anchor="middle" x="175" y="200" direction="rtl" unicode-bidi="embed">منطق کسب‌وکار و اعتبارسنجی</text>
+<text fill="#666" font-size="10" text-anchor="middle" x="175" y="216" direction="rtl" unicode-bidi="embed">بسته‌بندی خطا با زمینه‌ی سرویس</text>
+
+<!-- Service wrapping annotation -->
+<rect fill="#fff3e0" height="56" rx="6" stroke="#FF9800" stroke-width="1.5" width="310" x="340" y="168"></rect>
+<text fill="#E65100" font-size="10" font-weight="bold" x="355" y="186" direction="rtl" unicode-bidi="embed">بسته‌بندی با زمینه‌ی سرویس:</text>
+<text fill="#333" font-size="11" font-family="Fira Code, monospace" x="355" y="204" direction="ltr" unicode-bidi="embed">fmt.Errorf("get user: %w", err)</text>
+<rect fill="#e8f5e9" height="16" rx="3" width="52" x="600" y="192"></rect>
+<text fill="#2e7d32" font-size="9" font-weight="bold" x="610" y="204" direction="ltr" unicode-bidi="embed">wrap</text>
+
+<!-- ============ LAYER 3: Repository ============ -->
+<rect fill="#e8f5e9" height="72" rx="8" stroke="#2E7D32" stroke-width="2" width="250" x="50" y="270"></rect>
+<text fill="#2E7D32" font-size="14" font-weight="bold" text-anchor="middle" x="175" y="293" direction="ltr" unicode-bidi="embed">Repository</text>
+<text fill="#666" font-size="10" text-anchor="middle" x="175" y="310" direction="rtl" unicode-bidi="embed">دسترسی به داده‌ها و کوئری‌ها</text>
+<text fill="#666" font-size="10" text-anchor="middle" x="175" y="326" direction="rtl" unicode-bidi="embed">بسته‌بندی خطا با زمینه‌ی پایگاه‌داده</text>
+
+<!-- Repository wrapping annotation -->
+<rect fill="#fff3e0" height="56" rx="6" stroke="#FF9800" stroke-width="1.5" width="310" x="340" y="278"></rect>
+<text fill="#E65100" font-size="10" font-weight="bold" x="355" y="296" direction="rtl" unicode-bidi="embed">بسته‌بندی با زمینه‌ی ریپازیتوری:</text>
+<text fill="#333" font-size="11" font-family="Fira Code, monospace" x="355" y="314" direction="ltr" unicode-bidi="embed">fmt.Errorf("query user: %w", err)</text>
+<rect fill="#e8f5e9" height="16" rx="3" width="52" x="600" y="302"></rect>
+<text fill="#2e7d32" font-size="9" font-weight="bold" x="610" y="314" direction="ltr" unicode-bidi="embed">wrap</text>
+
+<!-- ============ LAYER 4: Database ============ -->
+<rect fill="#fce4ec" height="72" rx="8" stroke="#e91e63" stroke-width="2" width="250" x="50" y="380"></rect>
+<text fill="#e91e63" font-size="14" font-weight="bold" text-anchor="middle" x="175" y="403" direction="ltr" unicode-bidi="embed">Database</text>
+<text fill="#666" font-size="10" text-anchor="middle" x="175" y="420" direction="rtl" unicode-bidi="embed">منشأ خطا: کوئری ناموفق</text>
+<text fill="#666" font-size="10" text-anchor="middle" x="175" y="436" direction="rtl" unicode-bidi="embed">مثلاً سطر پیدا نشد</text>
+
+<!-- Database error origin annotation -->
+<rect fill="#fce4ec" height="56" rx="6" stroke="#e91e63" stroke-width="1.5" width="310" x="340" y="388"></rect>
+<text fill="#e91e63" font-size="10" font-weight="bold" x="355" y="406" direction="rtl" unicode-bidi="embed">منشأ خطا — بدون بسته‌بندی:</text>
+<text fill="#333" font-size="11" font-family="Fira Code, monospace" x="355" y="424" direction="ltr" unicode-bidi="embed">return nil, sql.ErrNoRows</text>
+<rect fill="#fce4ec" height="16" rx="3" width="42" x="610" y="412"></rect>
+<text fill="#e91e63" font-size="9" font-weight="bold" x="618" y="424" direction="ltr" unicode-bidi="embed">root</text>
+
+<!-- ============ SUCCESS FLOW (downward, left side) ============ -->
+<line marker-end="url(#arrFlowDown)" stroke="#4CAF50" stroke-width="2.5" x1="20" x2="20" y1="122" y2="160"></line>
+<line marker-end="url(#arrFlowDown)" stroke="#4CAF50" stroke-width="2.5" x1="20" x2="20" y1="232" y2="270"></line>
+<line marker-end="url(#arrFlowDown)" stroke="#4CAF50" stroke-width="2.5" x1="20" x2="20" y1="342" y2="380"></line>
+<text fill="#4CAF50" font-size="9" font-weight="bold" transform="rotate(-90,12,240)" x="12" y="240" direction="ltr" unicode-bidi="embed">success flow ↓</text>
+
+<!-- ============ ERROR FLOW (upward, right side of stack boxes) ============ -->
+<line marker-end="url(#arrFlowUp)" stroke="#e91e63" stroke-width="2.5" x1="310" x2="310" y1="380" y2="342"></line>
+<line marker-end="url(#arrFlowUp)" stroke="#e91e63" stroke-width="2.5" x1="310" x2="310" y1="270" y2="232"></line>
+<line marker-end="url(#arrFlowUp)" stroke="#e91e63" stroke-width="2.5" x1="310" x2="310" y1="160" y2="122"></line>
+<text fill="#e91e63" font-size="9" font-weight="bold" transform="rotate(90,325,260)" x="325" y="260" direction="ltr" unicode-bidi="embed">error flow ↑</text>
+
+<!-- ============ GROWING ERROR CHAIN ============ -->
+<text fill="#333" font-size="14" font-weight="bold" text-anchor="middle" x="400" y="485" direction="rtl" unicode-bidi="embed">رشد زنجیره‌ی خطا هنگام بازگشت به بالا</text>
+
+<!-- Chain step 1: Database origin -->
+<rect fill="#fce4ec" height="30" rx="5" stroke="#e91e63" stroke-width="1.5" width="120" x="30" y="502"></rect>
+<text fill="#e91e63" font-size="10" text-anchor="middle" x="90" y="522" direction="ltr" unicode-bidi="embed">sql.ErrNoRows</text>
+
+<!-- Chain step 2: After Repository wraps -->
+<rect fill="#fff3e0" height="30" rx="5" stroke="#FF9800" stroke-width="1.5" width="200" x="170" y="502"></rect>
+<text fill="#E65100" font-size="9" text-anchor="middle" x="270" y="522" direction="ltr" unicode-bidi="embed">"query user: sql.ErrNoRows"</text>
+<line marker-end="url(#arrChain)" stroke="#00ADD8" stroke-width="1.5" x1="150" y1="517" x2="170" y2="517"></line>
+
+<!-- Chain step 3: After Service wraps -->
+<rect fill="#e0f7fa" height="30" rx="5" stroke="#00838F" stroke-width="1.5" width="260" x="390" y="502"></rect>
+<text fill="#00838F" font-size="9" text-anchor="middle" x="520" y="522" direction="ltr" unicode-bidi="embed">"get user: query user: sql.ErrNoRows"</text>
+<line marker-end="url(#arrChain)" stroke="#00ADD8" stroke-width="1.5" x1="370" y1="517" x2="390" y2="517"></line>
+
+<!-- Unwrap direction -->
+<text fill="#888" font-size="9" text-anchor="middle" x="400" y="555" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">errors.Is</tspan> و <tspan direction="ltr" unicode-bidi="embed">errors.As</tspan> با فراخوانی <tspan direction="ltr" unicode-bidi="embed">Unwrap()</tspan> زنجیره را از راست به چپ پیمایش می‌کنند</text>
+
+<!-- ============ CODE EXAMPLE INFO BOX ============ -->
+<rect fill="#ffffff" height="95" rx="6" stroke="#00ADD8" stroke-width="1.5" width="720" x="40" y="575"></rect>
+<text fill="#00ADD8" font-size="11" font-weight="bold" x="60" y="595" direction="ltr" unicode-bidi="embed">// Handler: inspect the error chain</text>
+<text fill="#333" font-size="11" font-family="Fira Code, monospace" x="60" y="613" direction="ltr" unicode-bidi="embed">if errors.Is(err, sql.ErrNoRows) {</text>
+<text fill="#333" font-size="11" font-family="Fira Code, monospace" x="60" y="629" direction="ltr" unicode-bidi="embed">    http.Error(w, "Not Found", 404)</text>
+<text fill="#333" font-size="11" font-family="Fira Code, monospace" x="60" y="645" direction="ltr" unicode-bidi="embed">} else {</text>
+<text fill="#333" font-size="11" font-family="Fira Code, monospace" x="60" y="661" direction="ltr" unicode-bidi="embed">    http.Error(w, "Internal Error", 500)</text>
+<text fill="#333" font-size="11" font-family="Fira Code, monospace" x="60" y="677" direction="ltr" unicode-bidi="embed">}</text>
+
+<!-- ============ GOLDEN RULE BAR ============ -->
+<rect fill="#FFF8E1" height="32" rx="6" stroke="#F9A825" stroke-width="2" width="720" x="40" y="682"></rect>
+<text fill="#F57F17" font-size="12" font-weight="bold" text-anchor="middle" x="400" y="703" direction="rtl" unicode-bidi="embed">قانون طلایی: هر لایه خطا را با <tspan direction="ltr" unicode-bidi="embed">fmt.Errorf("context: %w", err)</tspan> بسته‌بندی کنید — اما هر خطا را فقط یک‌بار <tspan direction="ltr" unicode-bidi="embed">wrap</tspan> کنید!</text>
+</svg>
+<figcaption>شکل ۴-۱-ب: جریان مقدار خطا در پشته فراخوانی — از <bdi dir="ltr">Database</bdi> تا <bdi dir="ltr">HTTP Handler</bdi> با بسته‌بندی در هر لایه</figcaption>
+</figure>
+
+<h3 id="سناریوهای-عملیاتی-error">سناریوهای عملیاتی مدیریت خطا</h3>
+<p>در پروژه‌های واقعی، مدیریت خطا فراتر از <code dir="ltr">if err != nil</code> ساده است. هر لایه‌ی برنامه مسئولیت‌های متفاوتی در برخورد با خطا دارد و باید بر اساس نقش خود تصمیم‌گیری کند. برنامه‌نویسان PHP که به <code>try-catch</code> عادت دارند، باید در Go به‌صورت صریح‌تری درباره‌ی نحوه‌ی مدیریت و انتقال خطا فکر کنند. در ادامه مهم‌ترین سناریوهای عملیاتی مدیریت خطا در برنامه‌های Go را بررسی می‌کنیم که هر یک در عمل روزمره به‌طور مکرر استفاده می‌شوند.</p>
+
+<ul>
+<li><strong>مدیریت خطا در <bdi dir="ltr">HTTP Handler</bdi>ها:</strong> در لایه‌ی <bdi dir="ltr">Handler</bdi> باید خطا را به کد وضعیت مناسب تبدیل کنید. خطای اعتبارسنجی باید <code dir="ltr">400 Bad Request</code> برگرداند، خطای عدم وجود منبع باید <code dir="ltr">404 Not Found</code> باشد و خطای داخلی سرور باید <code dir="ltr">500 Internal Server Error</code> شود. هرگز جزئیات خطای داخلی را به کلاینت نفرستید — این هم مشکل امنیتی دارد و هم برای کاربر بی‌فایده است. به‌جای آن خطا را در لاگ ثبت کرده و پیام عمومی برگردانید.</li>
+<li><strong>انتشار خطا در لایه‌های سرویس:</strong> لایه‌ی سرویس نباید درباره‌ی <bdi dir="ltr">HTTP status code</bdi> بداند — وظیفه‌ی آن فقط اجرای منطق کسب‌وکار و بسته‌بندی خطا با <code dir="ltr">fmt.Errorf</code> است. این جداسازی مسئولیت‌ها باعث می‌شود لایه‌ی سرویس از پروتکل انتقال مستقل بماند و بتوان آن را در زمینه‌های دیگر مثل <bdi dir="ltr">CLI</bdi> یا <bdi dir="ltr">gRPC</bdi> نیز استفاده کرد.</li>
+<li><strong>ثبت خطا با زمینه:</strong> هنگام لاگ کردن خطا، همیشه اطلاعات زمینه‌ای اضافه کنید: شناسه‌ی درخواست، شناسه‌ی کاربر، نام عملیات و پارامترهای ورودی. بدون این اطلاعات، پیدا کردن علت خطا در میان هزاران خط لاگ مانند پیدا کردن سوزن در انبار کاه خواهد بود. از <bdi dir="ltr">structured logging</bdi> مثل <bdi dir="ltr">slog</bdi> استفاده کنید تا زمینه‌ها به‌صورت کلید-مقدار ثبت شوند.</li>
+<li><strong>تمایز بین خطای کلاینت (4xx) و خطای سرور (5xx):</strong> این تمایز حیاتی است. خطای 4xx یعنی کلاینت درخواست اشتباهی فرستاده و باید درخواستش را اصلاح کند. خطای 5xx یعنی سرور مشکل داخلی دارد و کلاینت بعداً دوباره تلاش کند. برای تمایز، از خطاهای سفارشی با فیلد <code dir="ltr">StatusCode</code> یا از <code dir="ltr">errors.As</code> برای تشخیص نوع خطا استفاده کنید.</li>
+<li><strong>استفاده از <code dir="ltr">errors.Is</code> برای بررسی خطاهای <bdi dir="ltr">Sentinel</bdi>:</strong> وقتی می‌خواهید بدانید آیا خطای خاصی (مثل <code dir="ltr">sql.ErrNoRows</code> یا <code dir="ltr">os.ErrNotExist</code>) در زنجیره‌ی خطا وجود دارد، از <code dir="ltr">errors.Is</code> استفاده کنید. هرگز از <code>err == sentinelErr</code> استفاده نکنید زیرا اگر خطا <code dir="ltr">wrap</code> شده باشد، مقایسه‌ی برابری <code>false</code> برمی‌گرداند. <code dir="ltr">errors.Is</code> تمام زنجیره را با فراخوانی <code dir="ltr">Unwrap()</code> پیمایش می‌کند.</li>
+<li><strong>استفاده از <code dir="ltr">errors.As</code> برای بررسی نوع خطا:</strong> وقتی نیاز به دسترسی به فیلدهای خطای سفارشی دارید (مثل فیلد <code dir="ltr">Path</code> در <code dir="ltr">NotFoundError</code>)، از <code dir="ltr">errors.As</code> استفاده کنید. این تابع زنجیره‌ی خطا را پیمایش کرده و اولین خطایی که نوع موردنظر را داشته باشد استخراج می‌کند. به‌یاد داشته باشید که به <code dir="ltr">errors.As</code> باید اشاره‌گر به متغیر بدهید، نه خود نوع را.</li>
+</ul>
+
+<div class="tip"><strong>نکته‌ی عملی — بسته‌بندی خطا بدون تکرار:</strong> هر لایه باید خطا را فقط یک‌بار با <code dir="ltr">fmt.Errorf("context: %w", err)</code> بسته‌بندی کند. اگر در یک لایه خطا را دو بار <code dir="ltr">wrap</code> کنید، پیام خطا تکراری و گنگ می‌شود: <code dir="ltr">"failed to get user: failed to get user: query error"</code>. الگوی صحیح این است: هر لایه فقط یک زمینه‌ی جدید اضافه کند و خطای <code dir="ltr">wrap</code> شده را همان‌طور که هست به لایه‌ی بالاتر منتقل کند. همچنین هرگز از <code>%v</code> به‌جای <code>%w</code> استفاده نکنید، زیرا <code>%v</code> زنجیره‌ی خطا را قطع می‌کند و <code dir="ltr">errors.Is/As</code> دیگر قادر به پیمایش آن نخواهد بود.</div>
+
+</div>
+</main>
+</div>
+
+<!-- Footer -->
+<footer class="site-footer">
+<div class="footer-inner">
+<div class="footer-nav">
+<span class="nav-arrow">‹</span>
+<a href="04.00-chapter-4.html" data-prev>۴. مدیریت خطا</a>
+</div>
+<div class="footer-toc">
+<a href="00.01-contents.html">فهرست</a>
+</div>
+<div class="footer-nav">
+<a href="04.02-custom-errors.html" data-next>۴.۲ ساخت خطاهای سفارشی</a>
+<span class="nav-arrow">›</span>
+</div>
+</div>
+</footer>
+
+<!-- Back to Top -->
+<button class="back-to-top" aria-label="بازگشت به بالا">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
+</button>
+
+<!-- Scripts -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/go.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/php.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/sql.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/yaml.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/json.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/dockerfile.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/xml.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/ini.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/plaintext.min.js"></script>
+<script src="assets/js/main.js"></script>
+</body>
+</html>

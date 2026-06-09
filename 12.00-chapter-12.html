@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="fa">
+<head>
+<script>!function(){try{var t=localStorage.getItem('php2go-theme');if(t==='dark'||(!t&&window.matchMedia('(prefers-color-scheme:dark)').matches)){document.documentElement.setAttribute('data-theme','dark')}}catch(e){}}();</script>
+<meta charset="utf-8"/>
+<meta content="ie=edge" http-equiv="x-ua-compatible"/>
+<title>۱۲. بهینه‌سازی عملکرد — PHP to Go</title>
+<meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet"/>
+<link href="assets/css/main.css" rel="stylesheet" type="text/css"/>
+<link href="assets/img/favicon.ico" rel="icon" type="image/x-icon"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" media="screen" class="hljs-light-theme" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css" media="not screen" class="hljs-dark-theme" rel="stylesheet"/>
+</head>
+<body>
+<!-- Progress Bar -->
+<div class="progress-bar"><div class="progress-bar__fill"></div></div>
+
+<!-- Header -->
+<header class="site-header">
+<div class="header-inner">
+<div class="header-left">
+<button class="header-btn sidebar-toggle" aria-label="فهرست">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+</button>
+<a href="00.00-front-matter.html" class="header-logo"><span class="logo-php">PHP</span> to <span class="logo-go">Go</span></a>
+<span class="header-crumbs">بهینه‌سازی عملکرد</span>
+</div>
+<div class="header-right">
+<nav class="header-nav">
+<span class="nav-arrow">‹</span>
+<a href="11.05-end-to-end-testing.html"><span class="nav-label">۱۱.۵ تست End-to-End</span></a>
+<a href="00.01-contents.html">فهرست</a>
+<a href="12.01-execution-speed-and-optimization.html"><span class="nav-label">۱۲.۱ سرعت اجرا و بهینه‌ساز</span></a>
+<span class="nav-arrow">›</span>
+</nav>
+<button class="header-btn search-toggle" aria-label="جستجو">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+</button>
+<button class="header-btn theme-toggle" aria-label="تغییر تم">
+<svg class="theme-icon-light" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+<svg class="theme-icon-dark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+</button>
+</div>
+</div>
+</header>
+
+<!-- Search Modal -->
+<div class="search-overlay">
+<div class="search-modal">
+<div class="search-input-wrap">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+<input type="text" class="search-input" placeholder="جستجو... (Ctrl+K)" dir="rtl"/>
+</div>
+<div class="search-results"></div>
+</div>
+</div>
+
+<!-- Layout -->
+<div class="site-layout">
+<!-- Sidebar -->
+<aside class="sidebar"></aside>
+<div class="sidebar-overlay"></div>
+
+<!-- Main Content -->
+<main class="content-area">
+<div class="content-wrap text">
+<div class="chapter-label">فصل ۱۲</div>
+<h2 id="فصل-دوازدهم">فصل دوازدهم</h2>
+
+<div class="quote-box">
+    <p class="quote-text">باید بهره‌وری‌های کوچک را فراموش کنیم، مثلاً حدود ۹۷٪ مواقع: بهینه‌سازی زودرس ریشه تمام بدی‌هاست. اما نباید فرصت‌هایمان را در آن ۳٪ حیاتی از دست بدهیم. یک برنامه‌نویس خوب توسط چنین استدلالی به خودراضی کشیده نمی‌شود.</p>
+    <p class="quote-source">
+        <span class="quote-author">Donald Knuth</span>
+        <span class="quote-role">استاد بازنشسته دانشگاه استنفورد و نویسنده The Art of Computer Programming</span>
+        <span class="quote-separator">|</span>
+        <span class="quote-book">Structured Programming with Go To Statements, 1974</span>
+    </p>
+</div>
+<p>بهینه‌سازی عملکرد از موضوعات مهم و در عین حال حساس در مهندسی نرم‌افزار است. وقتی از PHP به Go مهاجرت می‌کنید، از مزیت‌های اصلی که انتظار دارید افزایش سرعت و کاهش مصرف حافظه است. اما صرفاً نوشتن کد به زبان Go تضمین‌کننده‌ی عملکرد بهینه نیست. بدون درک عمیق از نحوه‌ی کار کامپایلر، Garbage Collector و مدل حافظه‌ی Go، ممکن است کدی بنویسید که از نظر ظاهری درست باشد اما در عملکرد از PHP کندتر عمل کند.</p>
+<p>در این فصل با یک رویکرد عملی و مبتنی بر اندازه‌گیری، از مفاهیم پایه‌ای سرعت Go شروع می‌کنیم و به تدریج به سمت تکنیک‌های پیشرفته‌ی بهینه‌سازی حرکت می‌کنیم. نکته مهمی که در تمام این فصل آن را تکرار خواهیم کرد این است: <strong>هرگز بدون اندازه‌گیری بهینه‌سازی نکنید</strong> . بهینه‌سازی بر اساس حدس و گمان هم وقت تلف کردن است و هم ممکن است کد را پیچیده‌تر و ناخوانا‌تر کند بدون هیچ بهبود واقعی در عملکرد.</p>
+
+<h3 id="چرا-عملکرد-در-go-اهمیت-بیشتری-دارد">چرا عملکرد در Go اهمیت بیشتری از PHP دارد؟</h3>
+
+<figure class="diagram" dir="ltr">
+<svg height="240" viewBox="0 0 650 240" width="650" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<marker id="arrowCycle" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#00ADD8" points="0 0, 10 3.5, 0 7"></polygon></marker>
+</defs>
+<rect fill="#fafafa" height="240" rx="8" width="650" x="0" y="0"></rect>
+<text fill="#333" font-size="15" font-weight="bold" text-anchor="middle" x="325" y="28" direction="rtl" unicode-bidi="embed">چرخه بهینه‌سازی عملکرد: اندازه‌گیری ← پروفایل ← بهینه‌سازی ← تأیید</text>
+
+<!-- Cycle: 4 boxes in a diamond/square arrangement -->
+<!-- Step 1: Benchmark (top) -->
+<rect fill="#e91e63" height="55" rx="8" width="170" x="240" y="50"></rect>
+<text fill="#fff" font-size="13" font-weight="bold" text-anchor="middle" x="325" y="73" direction="ltr" unicode-bidi="embed">Benchmark</text>
+<text fill="#fce4ec" font-size="9" text-anchor="middle" x="325" y="92" direction="rtl" unicode-bidi="embed">اندازه‌گیری عملکرد فعلی</text>
+
+<!-- Step 2: Profile (right) -->
+<rect fill="#FF9800" height="55" rx="8" width="170" x="440" y="120"></rect>
+<text fill="#fff" font-size="13" font-weight="bold" text-anchor="middle" x="525" y="143" direction="ltr" unicode-bidi="embed">Profile</text>
+<text fill="#fff3e0" font-size="9" text-anchor="middle" x="525" y="162" direction="rtl" unicode-bidi="embed">شناسایی گلوگاه با <tspan direction="ltr" unicode-bidi="embed">pprof</tspan></text>
+
+<!-- Step 3: Optimize (bottom) -->
+<rect fill="#00ADD8" height="55" rx="8" width="170" x="240" y="175"></rect>
+<text fill="#fff" font-size="13" font-weight="bold" text-anchor="middle" x="325" y="198" direction="ltr" unicode-bidi="embed">Optimize</text>
+<text fill="#e0f7fa" font-size="9" text-anchor="middle" x="325" y="217" direction="rtl" unicode-bidi="embed">رفع گلوگاه شناسایی‌شده</text>
+
+<!-- Step 4: Verify (left) -->
+<rect fill="#27ae60" height="55" rx="8" width="170" x="40" y="120"></rect>
+<text fill="#fff" font-size="13" font-weight="bold" text-anchor="middle" x="125" y="143" direction="ltr" unicode-bidi="embed">Verify</text>
+<text fill="#e8f5e9" font-size="9" text-anchor="middle" x="125" y="162" direction="rtl" unicode-bidi="embed">تأیید با <tspan direction="ltr" unicode-bidi="embed">benchstat</tspan></text>
+
+<!-- Arrows forming cycle: Benchmark → Profile → Optimize → Verify → Benchmark -->
+<line marker-end="url(#arrowCycle)" stroke="#555" stroke-width="2" x1="410" x2="480" y1="80" y2="120"></line>
+<line marker-end="url(#arrowCycle)" stroke="#555" stroke-width="2" x1="520" x2="390" y1="175" y2="190"></line>
+<line marker-end="url(#arrowCycle)" stroke="#555" stroke-width="2" x1="240" x2="170" y1="200" y2="175"></line>
+<line marker-end="url(#arrowCycle)" stroke="#555" stroke-width="2" x1="80" x2="240" y1="120" y2="80"></line>
+
+<!-- Center label -->
+<text fill="#777" font-size="9" text-anchor="middle" x="325" y="140" direction="rtl" unicode-bidi="embed">تکرار تا</text>
+<text fill="#777" font-size="9" text-anchor="middle" x="325" y="155" direction="rtl" unicode-bidi="embed">رسیدن به هدف</text>
+</svg>
+<figcaption>شکل ۱۲-۱: چرخه بهینه‌سازی عملکرد — از اندازه‌گیری تا تأیید، تکرارشونده تا رسیدن به هدف</figcaption>
+</figure>
+
+
+<p>مدل اجرایی PHP و Go کاملاً متفاوت است و همین تفاوت باعث می‌شود بهینه‌سازی در Go اهمیت بسیار بیشتری داشته باشد. در PHP هر درخواست HTTP در یک process مجزا پردازش می‌شود و در پایان درخواست، تمام حافظه آزاد می‌شود. این یعنی حتی اگر کد شما نشتی حافظه داشته باشد، آسیب آن محدود به عمر یک درخواست است. اما در Go برنامه شما یک <bdi dir="ltr">long-running process</bdi> است که ماه‌ها بدون ری‌استارت اجرا می‌شود. یک نشتی حافظه کوچک که در PHP بی‌تأثیر بود، در Go به تدریج منجر به مصرف رم چند گیگابایتی و در نهایت <bdi dir="ltr">OOM Kill</bdi> توسط سیستم‌عامل می‌شود.</p>
+<p>همچنین Go زبانی است که برای ساخت زیرساخت‌های با کارایی بالا طراحی شده — سرورهای HTTP stream processing و سرویس‌های مایکروسرویسی با تأخیر میلی‌ثانیه‌ای. در این سطح از مقیاس، هر میکروثانیه و هر کیلوبایت حافظه اهمیت دارد. برنامه‌نویس Go باید آگاهی عمیق‌تری از رفتار حافظه و CPU نسبت به برنامه‌نویس PHP داشته باشد.</p>
+<p>از سوی دیگر، Go کنترل بسیار بیشتری به شما می‌دهد. در PHP مدیریت حافظه کاملاً خودکار و غیرشفاف است و توسعه‌دهنده ابزار محدودی برای تأثیرگذاری دارد. اما در Go شما ابزارهایی مثل <bdi dir="ltr">sync.Pool</bdi> برای بازیافت اشیاء، <bdi dir="ltr">GOGC</bdi> و <bdi dir="ltr">GOMEMLIMIT</bdi> برای تنظیم GC، <bdi dir="ltr">pprof</bdi> برای پروفایلینگ دقیق و <bdi dir="ltr">Escape Analysis</bdi> برای کنترل تخصیص حافظه دارید. این ابزارها قدرتمندند اما فقط در صورتی مؤثرند که بدانید چگونه از آن‌ها استفاده کنید.</p>
+
+<h3 id="ذهنیت-بهینهسازی-اندازهگیری-بهینهسازی-تأیید">ذهنیت بهینه‌سازی: اندازه‌گیری ← بهینه‌سازی ← تأیید</h3>
+<p>ذهنیت صحیح بهینه‌سازی یک فرآیند سه‌مرحله‌ای تکرارشونده است که هر مرحله بدون مرحله‌ی قبلی بی‌معنی است:</p>
+<p><strong>مرحله‌ی ۱ — اندازه‌گیری:</strong> قبل از هر تغییری، عملکرد فعلی را با ابزارهای کمّی بسنجید. از <bdi dir="ltr">go test -bench -benchmem</bdi> برای بنچمارک، از <bdi dir="ltr">pprof</bdi> برای شناسایی گلوگاه‌ها و از <bdi dir="ltr">benchstat</bdi> برای مقایسه آماری استفاده کنید. بدون این داده‌ها، شما فقط حدس می‌زنید.</p>
+<p><strong>مرحله‌ی ۲ — بهینه‌سازی:</strong> فقط روی نقطه‌ای که اندازه‌گیری نشان داده گلوگاه است کار کنید. اگر ۸۰٪ وقت CPU در یک تابع خاص صرف می‌شود، بهینه‌سازی آن تابع تأثیر بیشتری از بهینه‌سازی ده تابع دیگر دارد. از قانون پارتو پیروی کنید: ۲۰٪ تلاش ۸۰٪ بهبود را ایجاد می‌کند.</p>
+<p><strong>مرحله‌ی ۳ — تأیید:</strong> پس از تغییر، دوباره بنچمارک بگیرید و نتایج را با <bdi dir="ltr">benchstat</bdi> مقایسه کنید. اگر بهبود قابل‌توجهی نبود، تغییر را برگردانید. هرگز فرض نکنید که تغییر شما بهتر شده — این را با داده ثابت کنید.</p>
+<div class="warning"><strong>تله‌ی رایج مهاجرت:</strong> بسیاری از توسعه‌دهندگان PHP که به Go می‌آیند، بلافاصله شروع به بهینه‌سازی می‌کنند بدون اینکه ابتدا بنچمارک بگیرند. این رویکرد در PHP کم‌خطر بود چون عملاً امکان بهینه‌سازی عمیق وجود نداشت. اما در Go که ابزارهای قدرتمندی وجود دارد، بهینه‌سازی بی‌داده می‌تواند کد را پیچیده‌تر کند بدون هیچ بهبود واقعی. همیشه اول اندازه‌گیری کنید.</div>
+
+<h3 id="ویژگیهای-عملکرد-Go">ویژگی‌های عملکرد Go</h3>
+<p>Go زبانی است با ویژگی‌های منحصربه‌فرد که عملکرد آن را هم قوی و هم قابل پیش‌بینی می‌کند. درک این ویژگی‌ها پایه‌ی هر بهینه‌سازی مؤثری است:</p>
+<table class="comparison-table" dir="rtl">
+<thead>
+<tr><th>ویژگی</th><th>PHP</th><th>Go</th><th>تأثیر بر بهینه‌سازی</th></tr>
+</thead>
+<tbody>
+<tr><td>مدل اجرا</td><td>Process per request</td><td>long-running process</td><td>نشتی حافظه در Go بحرانی است</td></tr>
+<tr><td>کامپایل</td><td>تفسیری + JIT</td><td>باینری بومی</td><td>Go عملاً overhead تفسیر ندارد</td></tr>
+<tr><td>GC</td><td>Reference Counting</td><td>Concurrent Mark-Sweep</td><td>GC در Go قابل تنظیم است</td></tr>
+<tr><td>همزمانی</td><td>محدود</td><td>Goroutine بومی</td><td>ابزارهای profiling همزمانی وجود دارد</td></tr>
+<tr><td>کنترل حافظه</td><td>حدود صفر</td><td>sync.Pool, GOGC, Escape Analysis</td><td>بهینه‌سازی حافظه عملی ممکن است</td></tr>
+<tr><td>ابزار پروفایلینگ</td><td>Blackfire</td><td>داخلی (pprof, trace)</td><td>بدون نیاز به نصب ابزار اضافی</td></tr>
+</tbody>
+</table>
+
+<p><strong>در این فصل خواننده با مفاهیم زیر آشنا خواهد شد:</strong></p>
+<p>دلایل سرعت بالای Go شامل کامپایلر بهینه، Garbage Collector مدرن، goroutine‌های سبک و کتابخانه استاندارد کارآمد. درک این دلایل به شما کمک می‌کند از نقاط قوت Go به‌درستی بهره ببرید و از نقاط ضعف آن آگاه باشید.</p>
+<p>اصول بهینه‌سازی و پروفایلینگ با pprof و go tool trace. یاد می‌گیرید چگونه قبل از هر تغییری، عملکرد فعلی را اندازه‌گیری کنید و پس از تغییر، تأثیر آن را بسنجید. ابزارهای pprof (CPU و حافظه) و go tool trace ابزارهای اصلی شما در این مسیر خواهند بود.</p>
+<p>نوشتن تست‌های Benchmark با <bdi dir="ltr">testing.B</bdi> برای سنجش عملکرد و مصرف حافظه. این ابزار که در PHP معادل داخلی ندارد، به شما اجازه می‌دهد به‌صورت کمی عملکرد توابع مختلف را مقایسه کنید و تصمیمات بهینه‌سازی را بر اساس داده‌های واقعی بگیرید.</p>
+<p>مدیریت goroutine‌ها با context و sync.WaitGroup برای جلوگیری از نشت حافظه و فشار بر CPU. همچنین بررسی تأثیر defer بر عملکرد در حلقه‌های پرتکرار و انتخاب ساختارهای داده مناسب مانند slice، map و sync.Map.</p>
+<p>درک عمیق رفتار Garbage Collector و تأثیر Stack و Heap در تخصیص حافظه. این بخش یکی از بخش‌های کلیدی فصل است چون رفتار GC در Go مستقیماً بر latency و throughput برنامه‌ی شما تأثیر می‌گذارد. با مفاهیمی مثل Escape Analysis، GOGC، GOMEMLIMIT و sync.Pool آشنا می‌شوید.</p>
+<p>تکنیک‌های کاهش مصرف حافظه شامل استفاده آگاهانه از pointerها، بهره‌گیری از sync.Pool برای اشیاء موقتی، تعیین Capacity در slice، اجتناب از تخصیص‌های غیرضروری در حلقه‌ها و مرتب‌سازی فیلدهای struct برای کاهش padding و تنظیم داده‌های بلااستفاده به nil.</p>
+
+<figure class="diagram" dir="ltr">
+<svg height="380" viewBox="0 0 650 380" width="650" xmlns="http://www.w3.org/2000/svg">
+<text class="title" text-anchor="middle" x="325" y="25" direction="rtl" unicode-bidi="embed">نقشه فصل ۱۲: بهینه‌سازی عملکرد</text>
+<rect class="chapter-box" height="55" width="120" x="10" y="50"></rect>
+<text font-weight="bold" text-anchor="middle" x="70" y="73" direction="rtl" unicode-bidi="embed">۱۲.۱ سرعت</text>
+<text fill="#666" font-size="10" text-anchor="middle" x="70" y="93" direction="rtl" unicode-bidi="embed">دلایل سرعت <tspan direction="ltr" unicode-bidi="embed">Go</tspan></text>
+<rect class="chapter-box" height="55" width="120" x="145" y="50"></rect>
+<text font-weight="bold" text-anchor="middle" x="205" y="73" direction="rtl" unicode-bidi="embed">۱۲.۲ اصول</text>
+<text fill="#666" font-size="10" text-anchor="middle" x="205" y="93" direction="ltr" unicode-bidi="embed">pprof, benchmark</text>
+<rect class="chapter-box" height="55" width="120" x="280" y="50"></rect>
+<text font-weight="bold" text-anchor="middle" x="340" y="73" direction="rtl" unicode-bidi="embed">۱۲.۳ نکات</text>
+<text fill="#666" font-size="10" text-anchor="middle" x="340" y="93" direction="ltr" unicode-bidi="embed">goroutine, defer</text>
+<rect class="chapter-box" height="55" width="120" x="415" y="50"></rect>
+<text font-weight="bold" text-anchor="middle" x="475" y="73" direction="rtl" unicode-bidi="embed">۱۲.۴ <tspan direction="ltr" unicode-bidi="embed">GC</tspan></text>
+<text fill="#666" font-size="10" text-anchor="middle" x="475" y="93" direction="ltr" unicode-bidi="embed">Stack, Heap, GC</text>
+<rect class="chapter-box" height="55" width="90" x="550" y="50"></rect>
+<text font-weight="bold" text-anchor="middle" x="595" y="73" direction="rtl" unicode-bidi="embed">۱۲.۵ تکنیک</text>
+<text fill="#666" font-size="10" text-anchor="middle" x="595" y="93" direction="ltr" unicode-bidi="embed">sync.Pool, nil</text>
+<!-- Flow arrows -->
+<line stroke="#00ADD8" stroke-width="2" x1="130" x2="145" y1="77" y2="77"></line>
+<polygon fill="#00ADD8" points="145,74 145,80 152,77"></polygon>
+<line stroke="#00ADD8" stroke-width="2" x1="265" x2="280" y1="77" y2="77"></line>
+<polygon fill="#00ADD8" points="280,74 280,80 287,77"></polygon>
+<line stroke="#00ADD8" stroke-width="2" x1="400" x2="415" y1="77" y2="77"></line>
+<polygon fill="#00ADD8" points="415,74 415,80 422,77"></polygon>
+<line stroke="#00ADD8" stroke-width="2" x1="535" x2="550" y1="77" y2="77"></line>
+<polygon fill="#00ADD8" points="550,74 550,80 557,77"></polygon>
+<text fill="#666" font-size="12" text-anchor="middle" x="325" y="140" direction="rtl" unicode-bidi="embed">مسیر یادگیری: درک سرعت ← اندازه‌گیری ← بهینه‌سازی عملکرد ← بهینه‌سازی حافظه</text>
+
+<!-- Optimization mindset cycle -->
+<rect fill="#fce4ec" height="45" rx="8" stroke="#e91e63" stroke-width="2" width="560" x="45" y="160"></rect>
+<text font-size="13" font-weight="bold" text-anchor="middle" x="325" y="187" direction="rtl" unicode-bidi="embed">ذهنیت طلایی: اندازه‌گیری ← شناسایی گلوگاه ← بهینه‌سازی ← تأیید → تکرار</text>
+
+<!-- Tools section -->
+<rect fill="#f5f5f5" height="110" rx="6" stroke="#ddd" stroke-width="1" width="580" x="35" y="220"></rect>
+<text font-size="12" font-weight="bold" text-anchor="middle" x="325" y="243" direction="rtl" unicode-bidi="embed">ابزارهای کلیدی فصل ۱۲</text>
+<text font-size="11" text-anchor="middle" x="325" y="263" direction="ltr" unicode-bidi="embed">pprof (CPU/Heap/Block/Goroutine) | go test -bench -benchmem</text>
+<text font-size="11" text-anchor="middle" x="325" y="281" direction="ltr" unicode-bidi="embed">go build -gcflags '-m' (Escape Analysis) | go test -race</text>
+<text font-size="11" text-anchor="middle" x="325" y="299" direction="ltr" unicode-bidi="embed">sync.Pool | runtime.ReadMemStats | GOGC | GOMEMLIMIT</text>
+<text font-size="11" text-anchor="middle" x="325" y="317" direction="ltr" unicode-bidi="embed">benchstat | fieldalignment | go tool trace</text>
+
+<!-- Bottom warning -->
+<rect fill="#fff3e0" height="30" rx="6" stroke="#ff9800" stroke-width="1" width="520" x="65" y="345"></rect>
+<text fill="#e65100" font-size="10" text-anchor="middle" x="325" y="365" direction="rtl" unicode-bidi="embed">توجه: در <tspan direction="ltr" unicode-bidi="embed">PHP</tspan> حافظه هر درخواست آزاد می‌شود — در <tspan direction="ltr" unicode-bidi="embed">Go</tspan> نشتی حافظه انباشته می‌شود!</text>
+</svg>
+<figcaption dir="rtl">شکل ۱۲-۰: نقشه فصل ۱۲ — بهینه‌سازی عملکرد از درک تا عمل</figcaption>
+</figure>
+</div>
+</main>
+</div>
+
+<!-- Footer -->
+<footer class="site-footer">
+<div class="footer-inner">
+<div class="footer-nav">
+<span class="nav-arrow">‹</span>
+<a href="11.05-end-to-end-testing.html" data-prev>۱۱.۵ تست End-to-End</a>
+</div>
+<div class="footer-toc">
+<a href="00.01-contents.html">فهرست</a>
+</div>
+<div class="footer-nav">
+<a href="12.01-execution-speed-and-optimization.html" data-next>۱۲.۱ سرعت اجرا و بهینه‌ساز</a>
+<span class="nav-arrow">›</span>
+</div>
+</div>
+</footer>
+
+<!-- Back to Top -->
+<button class="back-to-top" aria-label="بازگشت به بالا">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
+</button>
+
+<!-- Scripts -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/go.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/php.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/sql.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/yaml.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/json.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/dockerfile.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/xml.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/ini.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/plaintext.min.js"></script>
+<script src="assets/js/main.js"></script>
+</body>
+</html>

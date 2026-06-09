@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="fa">
+<head>
+<script>!function(){try{var t=localStorage.getItem('php2go-theme');if(t==='dark'||(!t&&window.matchMedia('(prefers-color-scheme:dark)').matches)){document.documentElement.setAttribute('data-theme','dark')}}catch(e){}}();</script>
+<meta charset="utf-8"/>
+<meta content="ie=edge" http-equiv="x-ua-compatible"/>
+<title>۲.۲ Type Conversion — PHP to Go</title>
+<meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet"/>
+<link href="assets/css/main.css" rel="stylesheet" type="text/css"/>
+<link href="assets/img/favicon.ico" rel="icon" type="image/x-icon"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" media="screen" class="hljs-light-theme" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css" media="not screen" class="hljs-dark-theme" rel="stylesheet"/>
+</head>
+<body>
+<!-- Progress Bar -->
+<div class="progress-bar"><div class="progress-bar__fill"></div></div>
+
+<!-- Header -->
+<header class="site-header">
+<div class="header-inner">
+<div class="header-left">
+<button class="header-btn sidebar-toggle" aria-label="فهرست">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+</button>
+<a href="00.00-front-matter.html" class="header-logo"><span class="logo-php">PHP</span> to <span class="logo-go">Go</span></a>
+<span class="header-crumbs">انواع داده و ساختارهای کنترلی › Type Conversion</span>
+</div>
+<div class="header-right">
+<nav class="header-nav">
+<span class="nav-arrow">‹</span>
+<a href="02.01-data-types-introduction.html"><span class="nav-label">۲.۱ آشنایی با انواع داده</span></a>
+<a href="00.01-contents.html">فهرست</a>
+<a href="02.03-control-structures.html"><span class="nav-label">۲.۳ ساختارهای کنترلی</span></a>
+<span class="nav-arrow">›</span>
+</nav>
+<button class="header-btn search-toggle" aria-label="جستجو">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+</button>
+<button class="header-btn theme-toggle" aria-label="تغییر تم">
+<svg class="theme-icon-light" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+<svg class="theme-icon-dark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+</button>
+</div>
+</div>
+</header>
+
+<!-- Search Modal -->
+<div class="search-overlay">
+<div class="search-modal">
+<div class="search-input-wrap">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+<input type="text" class="search-input" placeholder="جستجو... (Ctrl+K)" dir="rtl"/>
+</div>
+<div class="search-results"></div>
+</div>
+</div>
+
+<!-- Layout -->
+<div class="site-layout">
+<!-- Sidebar -->
+<aside class="sidebar"></aside>
+<div class="sidebar-overlay"></div>
+
+<!-- Main Content -->
+<main class="content-area">
+<div class="content-wrap text">
+<div class="chapter">فصل ۲.۲</div>
+<h2 id="type-conversion">Type Conversion</h2>
+<p>در زبان <bdi dir="ltr">Go</bdi> برخلاف <bdi dir="ltr">PHP</bdi>، تبدیل نوع به صورت صریح انجام می‌شود و کامپایلر به‌هیچ‌وجه به‌طور خودکار مقادیر را بین انواع مختلف تبدیل نمی‌کند. قاعده‌ی کلی این است که هر زمان بخواهیم مقدار یک متغیر را به نوع دیگری تغییر دهیم، باید نام نوع مقصد را مانند یک تابع فراخوانی کنیم و مقدار مورد نظر را به‌عنوان آرگومان قرار دهیم. این الزام به صراحت باعث می‌شود کد شفاف‌تر، قابل پیش‌بینی‌تر و عاری از تبدیل‌های پنهان یا ناخواسته باشد.</p>
+<figure class="diagram" dir="ltr">
+<svg height="300" viewBox="0 0 600 300" width="600" xmlns="http://www.w3.org/2000/svg">
+<rect fill="#fafafa" height="280" rx="12" stroke="#00ADD8" stroke-width="2" width="580" x="10" y="10"></rect>
+<text fill="#00ADD8" font-size="15" font-weight="bold" text-anchor="middle" x="300" y="38" direction="rtl" unicode-bidi="embed">تبدیل نوع در <tspan direction="ltr" unicode-bidi="embed">Go</tspan> — صریح و بدون خودکار</text>
+<text fill="#333" font-size="13" font-weight="bold" x="50" y="70" direction="rtl" unicode-bidi="embed">تبدیل اعداد:</text>
+<text fill="#333" font-family="monospace" font-size="12" x="70" y="92" direction="ltr" unicode-bidi="embed">var f float64 = 3.14</text>
+<text fill="#333" font-family="monospace" font-size="12" x="70" y="112" direction="ltr" unicode-bidi="embed">var i int = int(f) // 3</text>
+<text fill="#333" font-size="13" font-weight="bold" x="50" y="142" direction="rtl" unicode-bidi="embed">تبدیل <tspan direction="ltr" unicode-bidi="embed">string</tspan> ↔ عدد:</text>
+<text fill="#333" font-family="monospace" font-size="12" x="70" y="164" direction="ltr" unicode-bidi="embed">strconv.Itoa(42) // "42"</text>
+<text fill="#333" font-family="monospace" font-size="12" x="70" y="184" direction="ltr" unicode-bidi="embed">strconv.Atoi("42") // 42, error</text>
+<text fill="#333" font-family="monospace" font-size="12" x="70" y="204" direction="ltr" unicode-bidi="embed">strconv.ParseFloat() // string → float</text>
+<text fill="#333" font-family="monospace" font-size="12" x="70" y="224" direction="ltr" unicode-bidi="embed">strconv.FormatFloat() // float → string</text>
+<text fill="#333" font-size="13" font-weight="bold" x="50" y="255" direction="rtl" unicode-bidi="embed">تبدیل <tspan direction="ltr" unicode-bidi="embed">byte</tspan> ↔ <tspan direction="ltr" unicode-bidi="embed">string</tspan>:</text>
+<text fill="#333" font-family="monospace" font-size="12" x="70" y="275" direction="ltr" unicode-bidi="embed">string([]byte{72, 105}) // "Hi"</text>
+<text fill="#333" font-family="monospace" font-size="12" x="70" y="290" direction="ltr" unicode-bidi="embed">[]byte("Hi") // [72, 105]</text>
+</svg>
+<figcaption>شکل ۷-۲: انواع توابع تبدیل نوع در <bdi dir="ltr">Go</bdi></figcaption>
+</figure>
+<p>بسیاری از تبدیل‌های string نیاز به استفاده از پکیج استاندارد strconv دارند. هنگام تبدیل بین انواع عددی با اندازه مختلف مثل int64 به int32 مراقب overflow باشید.</p>
+<div class="comparison"><strong>تبدیل نوع در Go در مقابل Type Juggling در PHP:</strong>
+<br/><br/>
+در PHP عملگرهای ریاضی و مقایسه‌ای به‌صورت خودکار انواع را تبدیل می‌کنند (Type Juggling). مثلاً <code>"3" + 4</code> بدون خطا نتیجه‌ی <code>7</code> می‌دهد و <code>"foo" == 0</code> مقدار <code>true</code> برمی‌گرداند! این رفتار منبع بسیاری از باگ‌های ناشناخته است.
+<br/><br/>
+در Go چنین تبدیل خودکاری وجود ندارد. <code>"3" + 4</code> خطای کامپایل است. باید صریحاً بنویسید <code dir="ltr">3 + strconv.Atoi("3")</code> یا <code>strconv.Itoa(3) + "4"</code>. این سخت‌گیری در نگاه اول آزاردهنده است اما از دسته‌ای کامل از باگ‌ها جلوگیری می‌کند.
+</div>
+<h3 id="type-assertion">Type Assertion و Type Switch</h3>
+<p>وقتی با interface کار می‌کنید، گاهی باید نوع واقعی مقدار زیرین را استخراج کنید. Go دو ابزار برای این کار دارد:</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">var i interface{} = "hello"
+
+// Type Assertion — extracting actual type
+s := i.(string) // s = "hello"
+n := i.(int) // panic! actual type is string
+
+// Safe Type Assertion with ok
+s, ok := i.(string) // ok = true
+n, ok := i.(int) // ok = false, n = 0
+</code></pre>
+</figure>
+<p>برای بررسی چند نوع از Type Switch استفاده می‌شود:</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">func describe(v interface{}) {
+    switch v := v.(type) {
+        case string:
+        fmt.Println("رشته:", v)
+        case int:
+        fmt.Println("عدد صحیح:", v)
+        case float64:
+        fmt.Println("عدد اعشاری:", v)
+        default:
+        fmt.Println("نوع ناشناخته")
+    }
+}
+</code></pre>
+</figure>
+<div class="note"><strong>ساختار داخلی Interface در Go:</strong> وقتی مقداری در interface ذخیره می‌شود، Go از دو ساختار متفاوت استفاده می‌کند:
+<br/><br/>
+<code>eface</code> — برای interface خالی (<code>interface{}</code>): شامل اشاره‌گری به نوع داده (_type) و اشاره‌گری به مقدار واقعی data. این ساختار ۱۶ بایت حافظه مصرف می‌کند.
+<br/><br/>
+<code>iface</code> — برای interface با متدها: شامل اشاره‌گری به itable و اشاره‌گری به مقدار واقعی. itable در زمان اجرا ساخته و کش می‌شود تا overhead ارزیابی دینامیک کاهش یابد.
+<br/><br/>
+در PHP مشابه این مکانیزم وجود ندارد چون هر مقدار از قبل ساختار zval خود را دارد و نوع‌دهی دینامیک ذاتی زبان است.
+</div>
+<h3 id="unsafe-package">بسته‌ی unsafe و تبدیل‌های سطح پایین</h3>
+<p>برای کارهای پیشرفته و تبدیل مستقیم حافظه، Go بسته‌ی <code>unsafe</code> را ارائه می‌دهد. این بسته امکان دسترسی مستقیم به حافظه و دور زدن سیستم نوع‌دهی ایمن Go را فراهم می‌کند:</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">import "unsafe"
+
+// Convert []byte to string without copying
+func bytesToString(b []byte) string {
+    return *(*string)(unsafe.Pointer(&amp;b))
+}
+
+// Get size of a type in memory
+size := unsafe.Sizeof(int64(0)) // 8
+align := unsafe.Alignof(int64(0)) // 8
+offset := unsafe.Offsetof(struct{ X int; Y string }{}.Y)
+</code></pre>
+</figure>
+<div class="warning"><strong>هشدار:</strong> استفاده از <code>unsafe</code> کد شما را از گارانتی‌های ایمنی حافظه‌ی Go خارج می‌کند و ممکن است با تغییر نسخه‌ی Go کد شما خراب شود. فقط در شرایط خاص (مثل بهینه‌سازی حافظه‌ی بحرانی) از آن استفاده کنید. در PHP هیچ معادلی برای این سطح دسترسی به حافظه وجود ندارد.</div>
+<h3 id="type-assertion-vs-conversion">تفاوت Type Assertion و Type Conversion</h3>
+<p>از رایج‌ترین منابع اشتباه در میان برنامه‌نویسان <bdi dir="ltr">PHP</bdi> که به <bdi dir="ltr">Go</bdi> مهاجرت می‌کنند، خلط کردن دو مفهوم <bdi dir="ltr">type conversion</bdi> و <bdi dir="ltr">type assertion</bdi> است. <bdi dir="ltr">Type Conversion</bdi> تبدیل بین دو نوع مشخص و سازگار است (مثل <code>int(floatVal)</code>)، در حالی که <bdi dir="ltr">Type Assertion</bdi> استخراج نوع واقعی از داخل <code>interface</code> است. این دو مکانیزم کاملاً متفاوت کار می‌کنند و کاربردهای متفاوتی دارند.</p>
+<table class="comparison-table" dir="rtl">
+<thead>
+<tr><th>ویژگی</th><th>Type Conversion</th><th>Type Assertion</th></tr>
+</thead>
+<tbody>
+<tr><td>هدف</td><td>تبدیل بین انواع سازگار</td><td>استخراج نوع واقعی از interface</td></tr>
+<tr><td>ساختار</td><td dir="ltr">int(floatVal)</td><td dir="ltr">val.(int)</td></tr>
+<tr><td>زمان بررسی</td><td>کامپایل</td><td>اجرا</td></tr>
+<tr><td>نوع مقصد</td><td>هر نوع سازگار</td><td>فقط نوع واقعی مقدار</td></tr>
+<tr><td>خطا</td><td>خطای کامپایل در صورت عدم سازگاری</td><td>panic در صورت عدم تطابق</td></tr>
+</tbody>
+</table>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">// Type Conversion — explicit conversion between types
+var f float64 = 3.14
+var i int = int(f) // 3 — fractional part is discarded
+
+// Type Assertion — extracting actual type from interface
+var val interface{} = 42
+
+n := val.(int) // Correct — success — actual type is int
+// s := val.(string) // Wrong — panic! actual type is int not string
+
+// Safe Type Assertion with comma-ok
+s, ok := val.(string) // ok = false, s = "" — no panic
+if !ok {
+    fmt.Println("مقدار string نیست")
+}
+</code></pre>
+</figure>
+<div class="important"><strong>نکته‌ی حیاتی:</strong> هرگز از <bdi dir="ltr">Type Assertion</bdi> بدون <bdi dir="ltr">comma-ok</bdi> استفاده نکنید مگر اینکه صددرصد مطمئن باشید نوع واقعی چیست. <code>val.(string)</code> در صورت عدم تطابق <code>panic</code> تولید می‌کند و برنامه متوقف می‌شود. <code>val, ok := x.(string)</code> ایمن‌تر است و <code>ok</code> را <code>false</code> قرار می‌دهد بدون اینکه برنامه فرو بریزد.</div>
+<h3 id="strconv-deep">بسته‌ی strconv: تبدیل‌های رشته‌ای-عددی</h3>
+<p>بسته‌ی <code>strconv</code> ابزار استاندارد <bdi dir="ltr">Go</bdi> برای تبدیل بین رشته‌ها و انواع عددی است. در <bdi dir="ltr">PHP</bdi> این تبدیل‌ها به‌طور خودکار یا با توابع ساده‌ای مثل <code>intval()</code> و <code>strval()</code> انجام می‌شوند. اما در <bdi dir="ltr">Go</bdi> هر تبدیل خطای احتمالی دارد که باید مدیریت شود. این طراحی عمدی است: هر جای ممکن است خطایی رخ دهد، کامپایلر شما را مجبور می‌کند آن را در نظر بگیرید.</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">import "strconv"
+
+// int ↔ string
+s := strconv.Itoa(42) // "42" — Integer to ASCII
+n, err := strconv.Atoi("42") // 42, nil — ASCII to Integer
+_, err = strconv.Atoi("hello") // 0, error — error is returned
+
+// float ↔ string
+fs := strconv.FormatFloat(3.14, 'f', 2, 64) // "3.14"
+fv, err := strconv.ParseFloat("3.14", 64) // 3.14, nil
+
+// bool ↔ string
+bs := strconv.FormatBool(true) // "true"
+bv, err := strconv.ParseBool("1") // true, nil — "1", "t", "true" are also valid
+
+// Support for different bases
+hex, _ := strconv.ParseInt("ff", 16, 64) // 255
+oct, _ := strconv.ParseInt("17", 8, 64) // 15
+bin, _ := strconv.ParseInt("1010", 2, 64) // 10
+</code></pre>
+</figure>
+<div class="tip"><strong>الگوی رایج:</strong> در <bdi dir="ltr">Go</bdi> الگوی <code>value, err := strconv.Atoi(input)</code> به همراه <code>if err != nil</code> بسیار رایج است. هرگز خطای <code>strconv</code> را نادیده نگیرید — ورودی کاربر همیشه می‌تواند نامعتبر باشد. در <bdi dir="ltr">PHP</bdi> تابع <code>intval("abc")</code> بدون خطا عدد <code>0</code> برمی‌گرداند، اما در <bdi dir="ltr">Go</bdi> تابع <code>Atoi("abc")</code> خطا برمی‌گرداند.</div>
+<h3 id="custom-converters">تبدیل‌کننده‌های سفارشی</h3>
+<p>گاهی نیاز دارید تبدیل‌هایی فراتر از تبدیل‌های استاندارد انجام دهید — مثلاً تبدیل تاریخ از/به رشته، یا تبدیل نوع سفارشی. در <bdi dir="ltr">Go</bdi> دو روش اصلی برای این کار وجود دارد: تعریف متد <code>String()</code> روی نوع سفارشی، و استفاده از <bdi dir="ltr">interface</bdi> هایی مثل <code>Stringer</code> و <code>TextUnmarshaler</code>.</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">// String() method for custom display
+type Status int
+const (
+Active Status = iota
+Inactive
+Pending
+)
+
+func (s Status) String() string {
+    switch s {
+        case Active:
+        return "فعال"
+        case Inactive:
+        return "غیرفعال"
+        case Pending:
+        return "در انتظار"
+        default:
+        return "نامشخص"
+    }
+}
+
+fmt.Println(Active) // Output: Active (String() method called automatically)
+
+// Custom conversion for JSON
+type FlexibleInt int
+
+func (fi *FlexibleInt) UnmarshalJSON(data []byte) error {
+    // Support both number and string cases
+    s := string(data)
+    if s[0] == '"' {
+        s = s[1 : len(s)-1]
+    }
+    n, err := strconv.Atoi(s)
+    if err != nil {
+        return err
+    }
+    *fi = FlexibleInt(n)
+    return nil
+}
+</code></pre>
+</figure>
+<h3 id="conversion-performance">پیامدهای کارایی تبدیل‌ها</h3>
+<p>تبدیل نوع در <bdi dir="ltr">Go</bdi> عموماً بسیار سریع است اما برخی تبدیل‌ها هزینه‌ی پنهان دارند. تبدیل <code>string</code> به <code>[]byte</code> و بالعکس کپی کامل داده ایجاد می‌کند. تبدیل <bdi dir="ltr">Type Assertion</bdi> از طریق <bdi dir="ltr">interface</bdi> مقداری <bdi dir="ltr">overhead</bdi> دارد چون باید جدول متدها را بررسی کند. و تبدیل‌های <code>strconv</code> شامل تجزیه‌ی رشته هستند که از تبدیل‌های مستقیم عددی کندترند.</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">// Comparison of conversion speeds (approximate)
+// int → string: strconv.Itoa() ≈ 40ns
+// string → int: strconv.Atoi() ≈ 50ns (includes parsing)
+// float64 → int: int(f) ≈ 1ns (direct)
+// string → []byte: []byte(s) ≈ 20ns + O(n) copy
+// interface → concrete: x.(int) ≈ 2ns
+
+// Note: strconv conversions are faster than fmt.Sprintf
+s := strconv.Itoa(42) // Correct — fast — specialized
+s = fmt.Sprintf("%d", 42) // Wrong — slower — generic
+</code></pre>
+</figure>
+<figure class="diagram" dir="ltr">
+<svg height="380" viewBox="0 0 600 380" width="600" xmlns="http://www.w3.org/2000/svg">
+<rect fill="#fafafa" height="360" rx="12" stroke="#00ADD8" stroke-width="2" width="580" x="10" y="10"></rect>
+<text fill="#00ADD8" font-size="15" font-weight="bold" text-anchor="middle" x="300" y="35" direction="rtl" unicode-bidi="embed">راهبردهای تبدیل نوع در <tspan direction="ltr" unicode-bidi="embed">Go</tspan></text>
+<!-- Type Conversion -->
+<rect fill="#e3f2fd" height="90" rx="8" stroke="#2196f3" stroke-width="1.5" width="175" x="20" y="55"></rect>
+<text fill="#1565c0" font-size="12" font-weight="bold" text-anchor="middle" x="107" y="75" direction="rtl" unicode-bidi="embed">Type Conversion</text>
+<text fill="#333" font-size="10" text-anchor="middle" x="107" y="95" direction="ltr" unicode-bidi="embed">int(float64)</text>
+<text fill="#333" font-size="10" text-anchor="middle" x="107" y="112" direction="ltr" unicode-bidi="embed">[]byte(string)</text>
+<text fill="#333" font-size="10" text-anchor="middle" x="107" y="129" direction="rtl" unicode-bidi="embed">زمان بررسی: کامپایل</text>
+<!-- strconv -->
+<rect fill="#e8f5e9" height="90" rx="8" stroke="#4caf50" stroke-width="1.5" width="175" x="212" y="55"></rect>
+<text fill="#2e7d32" font-size="12" font-weight="bold" text-anchor="middle" x="299" y="75" direction="rtl" unicode-bidi="embed">بسته‌ی <tspan direction="ltr" unicode-bidi="embed">strconv</tspan></text>
+<text fill="#333" font-size="10" text-anchor="middle" x="299" y="95" direction="ltr" unicode-bidi="embed">Itoa() / Atoi()</text>
+<text fill="#333" font-size="10" text-anchor="middle" x="299" y="112" direction="ltr" unicode-bidi="embed">ParseFloat() / FormatFloat()</text>
+<text fill="#333" font-size="10" text-anchor="middle" x="299" y="129" direction="rtl" unicode-bidi="embed">خطای احتمالی دارد</text>
+<!-- Type Assertion -->
+<rect fill="#fff3e0" height="90" rx="8" stroke="#ff9800" stroke-width="1.5" width="175" x="404" y="55"></rect>
+<text fill="#e65100" font-size="12" font-weight="bold" text-anchor="middle" x="491" y="75" direction="rtl" unicode-bidi="embed">Type Assertion</text>
+<text fill="#333" font-size="10" text-anchor="middle" x="491" y="95" direction="ltr" unicode-bidi="embed">val.(Type)</text>
+<text fill="#333" font-size="10" text-anchor="middle" x="491" y="112" direction="ltr" unicode-bidi="embed">val, ok := x.(Type)</text>
+<text fill="#333" font-size="10" text-anchor="middle" x="491" y="129" direction="rtl" unicode-bidi="embed">زمان بررسی: اجرا</text>
+<!-- unsafe -->
+<rect fill="#fce4ec" height="65" rx="8" stroke="#e74c3c" stroke-width="1.5" width="560" x="20" y="165"></rect>
+<text fill="#c62828" font-size="12" font-weight="bold" text-anchor="middle" x="300" y="185" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">unsafe.Pointer</tspan> — تبدیل بدون کپی (فقط در شرایط خاص)</text>
+<text fill="#333" font-size="10" text-anchor="middle" x="300" y="205" direction="ltr" unicode-bidi="embed">*(*string)(unsafe.Pointer(&amp;b)) — []byte ↔ string بدون کپی</text>
+<text fill="#333" font-size="10" text-anchor="middle" x="300" y="220" direction="rtl" unicode-bidi="embed">توجه: ایمنی حافظه تضمین نمی‌شود — فقط مسیر بحرانی کد</text>
+<!-- Decision flowchart -->
+<rect fill="#fff9c4" height="130" rx="8" stroke="#f9a825" stroke-width="1.5" width="560" x="20" y="245"></rect>
+<text fill="#f57f17" font-size="12" font-weight="bold" text-anchor="middle" x="300" y="268" direction="rtl" unicode-bidi="embed">تصمیم‌گیری: کدام روش؟</text>
+<text fill="#333" font-size="10" x="40" y="290" direction="rtl" unicode-bidi="embed">• انواع عددی به هم → <tspan direction="ltr" unicode-bidi="embed">Type</tspan> <tspan direction="ltr" unicode-bidi="embed">Conversion</tspan> مستقیم (مثل <tspan direction="ltr" unicode-bidi="embed">int</tspan>(<tspan direction="ltr" unicode-bidi="embed">float64</tspan>))</text>
+<text fill="#333" font-size="10" x="40" y="308" direction="rtl" unicode-bidi="embed">• رشته ↔ عدد → <tspan direction="ltr" unicode-bidi="embed">strconv</tspan> (شامل مدیریت خطا)</text>
+<text fill="#333" font-size="10" x="40" y="326" direction="rtl" unicode-bidi="embed">• استخراج نوع از <tspan direction="ltr" unicode-bidi="embed">interface</tspan> → <tspan direction="ltr" unicode-bidi="embed">Type</tspan> <tspan direction="ltr" unicode-bidi="embed">Assertion</tspan> با <tspan direction="ltr" unicode-bidi="embed">comma-ok</tspan></text>
+<text fill="#333" font-size="10" x="40" y="344" direction="rtl" unicode-bidi="embed">• تبدیل بدون کپی در مسیر بحرانی → <tspan direction="ltr" unicode-bidi="embed">unsafe.Pointer</tspan> (با احتیاط)</text>
+<text fill="#333" font-size="10" x="40" y="362" direction="rtl" unicode-bidi="embed">• تبدیل سفارشی → متد <tspan direction="ltr" unicode-bidi="embed">String</tspan>() یا <tspan direction="ltr" unicode-bidi="embed">UnmarshalJSON</tspan>()</text>
+</svg>
+<figcaption>شکل ۸-۲: راهبردهای تبدیل نوع در <bdi dir="ltr">Go</bdi></figcaption>
+</figure>
+
+<h3 id="php-type-juggling-vs-go-explicit">PHP Type Juggling در برابر تبدیل صریح Go</h3>
+<p>یکی از مهم‌ترین تفاوت‌های بنیادین بین PHP و Go در نحوه‌ی برخورد با انواع داده‌ای نهفته است. PHP از مفهومی به‌نام <bdi dir="ltr">Type Juggling</bdi> استفاده می‌کند که در آن کامپایلر به‌طور خودکار انواع را تبدیل می‌کند. مثلاً عبارت <code>"1" + 2</code> بدون خطا نتیجه‌ی <code>3</code> می‌دهد چون PHP رشته‌ی <code>"1"</code> را به عدد تبدیل می‌کند. اما این رفتار ظاهراً مناسب می‌تواند منبع باگ‌های خطرناک شود: عبارت <code>"hello" + 1</code> نتیجه‌ی <code>1</code> می‌دهد چون PHP رشته‌ی غیرعددی را به <code>0</code> تبدیل می‌کند. در Go چنین تبدیل خودکاری وجود ندارد و کامپایلر هر عدم تطابق نوعی را به‌عنوان خطا گزارش می‌دهد. این سخت‌گیری ممکن است در ابتدا آزاردهنده باشد، اما از دسته‌ای کامل از باگ‌های ظریف جلوگیری می‌کند که در PHP به‌سختی قابل ردیابی هستند.</p>
+
+<figure class="diagram" dir="ltr">
+<svg height="580" viewBox="0 0 920 580" width="920" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<marker id="arrPhpGo" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#666" points="0 0, 10 3.5, 0 7"></polygon></marker>
+<marker id="arrSafe" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#4CAF50" points="0 0, 10 3.5, 0 7"></polygon></marker>
+<marker id="arrUnsafe" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#e91e63" points="0 0, 10 3.5, 0 7"></polygon></marker>
+</defs>
+<rect fill="#fafafa" height="560" rx="10" width="920" x="0" y="0"></rect>
+
+<!-- Title -->
+<text fill="#333" font-size="16" font-weight="bold" text-anchor="middle" x="460" y="28" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">PHP</tspan> <tspan direction="ltr" unicode-bidi="embed">Type Juggling</tspan> در برابر تبدیل صریح <tspan direction="ltr" unicode-bidi="embed">Go</tspan></text>
+
+<!-- Divider line -->
+<line stroke="#ccc" stroke-width="1" stroke-dasharray="6,4" x1="460" y1="45" x2="460" y2="440"></line>
+
+<!-- LEFT: PHP Type Juggling -->
+<rect fill="#f3e5f5" height="395" rx="10" stroke="#777BB4" stroke-width="2" width="430" x="15" y="45"></rect>
+<text fill="#777BB4" font-size="15" font-weight="bold" text-anchor="middle" x="230" y="70" direction="ltr" unicode-bidi="embed">PHP — Type Juggling (تبدیل خودکار)</text>
+
+<!-- PHP Example 1 -->
+<rect fill="#fff" height="50" rx="6" stroke="#777BB4" stroke-width="1" width="390" x="35" y="85"></rect>
+<text fill="#777BB4" font-size="12" font-weight="bold" x="50" y="103" direction="ltr" unicode-bidi="embed">"1" + 2 = 3</text>
+<text fill="#555" font-size="9" x="50" y="120" direction="rtl" unicode-bidi="embed">رشته به عدد تبدیل می‌شود — به‌صورت خودکار</text>
+
+<!-- PHP Example 2 -->
+<rect fill="#fce4ec" height="50" rx="6" stroke="#e91e63" stroke-width="1.5" width="390" x="35" y="145"></rect>
+<text fill="#e91e63" font-size="12" font-weight="bold" x="50" y="163" direction="ltr" unicode-bidi="embed">"hello" + 1 = 1</text>
+<text fill="#555" font-size="9" x="50" y="180" direction="rtl" unicode-bidi="embed">رشته غیرعددی ← ۰ — باگ خاموش!</text>
+
+<!-- PHP Example 3 -->
+<rect fill="#fff" height="50" rx="6" stroke="#777BB4" stroke-width="1" width="390" x="35" y="205"></rect>
+<text fill="#777BB4" font-size="12" font-weight="bold" x="50" y="223" direction="ltr" unicode-bidi="embed">true + 1 = 2</text>
+<text fill="#555" font-size="9" x="50" y="240" direction="rtl" unicode-bidi="embed">بولین به عدد: true ← 1, false ← 0</text>
+
+<!-- PHP Comparison -->
+<rect fill="#fce4ec" height="50" rx="6" stroke="#e91e63" stroke-width="1.5" width="390" x="35" y="265"></rect>
+<text fill="#e91e63" font-size="12" font-weight="bold" x="50" y="283" direction="ltr" unicode-bidi="embed">"foo" == 0 → true</text>
+<text fill="#555" font-size="9" x="50" y="300" direction="rtl" unicode-bidi="embed">مقایسه‌ی سست — خطرناک و غیرمنتظره!</text>
+
+<!-- PHP info box -->
+<rect fill="#fce4ec" height="55" rx="6" stroke="#e91e63" stroke-width="1" width="390" x="35" y="325"></rect>
+<text fill="#e91e63" font-size="10" font-weight="bold" x="50" y="343" direction="rtl" unicode-bidi="embed">مشکل اصلی:</text>
+<text fill="#333" font-size="9" x="50" y="358" direction="rtl" unicode-bidi="embed">تبدیل‌های خودکار ممکن است باگ‌های ظریفی ایجاد کنند</text>
+<text fill="#333" font-size="9" x="50" y="372" direction="rtl" unicode-bidi="embed">که ردیابی آن‌ها بسیار دشوار است</text>
+
+<!-- PHP loose comparison -->
+<rect fill="#fff3e0" height="40" rx="6" stroke="#FF9800" stroke-width="1" width="390" x="35" y="390"></rect>
+<text fill="#e65100" font-size="10" font-weight="bold" text-anchor="middle" x="230" y="414" direction="rtl" unicode-bidi="embed">== مقایسه‌ی سست (تبدیل نوع) ▸ === مقایسه‌ی سخت (بدون تبدیل)</text>
+
+<!-- RIGHT: Go Explicit Conversion -->
+<rect fill="#e0f7fa" height="395" rx="10" stroke="#00ADD8" stroke-width="2" width="430" x="475" y="45"></rect>
+<text fill="#00ADD8" font-size="15" font-weight="bold" text-anchor="middle" x="690" y="70" direction="ltr" unicode-bidi="embed">Go — Explicit Conversion (تبدیل صریح)</text>
+
+<!-- Go Example 1 -->
+<rect fill="#e8f5e9" height="50" rx="6" stroke="#4CAF50" stroke-width="1.5" width="390" x="495" y="85"></rect>
+<text fill="#4CAF50" font-size="12" font-weight="bold" x="510" y="103" direction="ltr" unicode-bidi="embed">int(floatVal) — safe numeric conversion</text>
+<text fill="#555" font-size="9" x="510" y="120" direction="rtl" unicode-bidi="embed">تبدیل عددی مستقیم — بخش اعشاری حذف می‌شود</text>
+
+<!-- Go Example 2 -->
+<rect fill="#e8f5e9" height="50" rx="6" stroke="#4CAF50" stroke-width="1.5" width="390" x="495" y="145"></rect>
+<text fill="#4CAF50" font-size="12" font-weight="bold" x="510" y="163" direction="ltr" unicode-bidi="embed">strconv.Atoi("123") → 123, error</text>
+<text fill="#555" font-size="9" x="510" y="180" direction="rtl" unicode-bidi="embed">رشته به عدد — با مدیریت خطا</text>
+
+<!-- Go Example 3 -->
+<rect fill="#e8f5e9" height="50" rx="6" stroke="#4CAF50" stroke-width="1.5" width="390" x="495" y="205"></rect>
+<text fill="#4CAF50" font-size="12" font-weight="bold" x="510" y="223" direction="ltr" unicode-bidi="embed">strconv.Itoa(123) → "123"</text>
+<text fill="#555" font-size="9" x="510" y="240" direction="rtl" unicode-bidi="embed">عدد به رشته — همیشه موفق</text>
+
+<!-- Go compile error -->
+<rect fill="#e8f5e9" height="50" rx="6" stroke="#4CAF50" stroke-width="1.5" width="390" x="495" y="265"></rect>
+<text fill="#4CAF50" font-size="12" font-weight="bold" x="510" y="283" direction="ltr" unicode-bidi="embed">string([]byte{72, 105}) → "Hi"</text>
+<text fill="#555" font-size="9" x="510" y="300" direction="rtl" unicode-bidi="embed">تبدیل slice بایت به رشته — کپی داده</text>
+
+<!-- Go error example -->
+<rect fill="#fce4ec" height="50" rx="6" stroke="#e91e63" stroke-width="1.5" width="390" x="495" y="325"></rect>
+<text fill="#e91e63" font-size="12" font-weight="bold" x="510" y="343" direction="ltr" unicode-bidi="embed">"1" + 2 → COMPILE ERROR!</text>
+<text fill="#555" font-size="9" x="510" y="360" direction="rtl" unicode-bidi="embed">عدم تطابق نوع — کامپایلر اجازه نمی‌دهد</text>
+
+<!-- Go strict comparison -->
+<rect fill="#fff3e0" height="40" rx="6" stroke="#FF9800" stroke-width="1" width="390" x="495" y="390"></rect>
+<text fill="#e65100" font-size="10" font-weight="bold" text-anchor="middle" x="690" y="414" direction="rtl" unicode-bidi="embed">Go فقط == دارد — مقایسه‌ی سخت (همیشه بدون تبدیل نوع)</text>
+
+<!-- BOTTOM: Safe vs Unsafe conversions -->
+<rect fill="#fff9c4" height="115" rx="8" stroke="#f9a825" stroke-width="1.5" width="890" x="15" y="450"></rect>
+<text fill="#f57f17" font-size="13" font-weight="bold" text-anchor="middle" x="460" y="475" direction="rtl" unicode-bidi="embed">تبدیل‌های ایمن و ناایمن در <tspan direction="ltr" unicode-bidi="embed">Go</tspan></text>
+
+<!-- Safe conversions -->
+<rect fill="#e8f5e9" height="70" rx="6" stroke="#4CAF50" stroke-width="1.5" width="420" x="25" y="485"></rect>
+<text fill="#4CAF50" font-size="11" font-weight="bold" x="40" y="503" direction="rtl" unicode-bidi="embed">ایمن (<tspan direction="ltr" unicode-bidi="embed">Safe</tspan>):</text>
+<text fill="#333" font-size="9" x="40" y="519" direction="ltr" unicode-bidi="embed">• int → float64 (no data loss)</text>
+<text fill="#333" font-size="9" x="40" y="533" direction="ltr" unicode-bidi="embed">• string → []byte (copies data, always works)</text>
+<text fill="#333" font-size="9" x="40" y="547" direction="ltr" unicode-bidi="embed">• type assertion with comma-ok (no panic)</text>
+
+<!-- Unsafe conversions -->
+<rect fill="#fce4ec" height="70" rx="6" stroke="#e91e63" stroke-width="1.5" width="420" x="475" y="485"></rect>
+<text fill="#e91e63" font-size="11" font-weight="bold" x="490" y="503" direction="rtl" unicode-bidi="embed">ناایمن (<tspan direction="ltr" unicode-bidi="embed">Unsafe</tspan>):</text>
+<text fill="#333" font-size="9" x="490" y="519" direction="ltr" unicode-bidi="embed">• int64 → int (may overflow on 32-bit)</text>
+<text fill="#333" font-size="9" x="490" y="533" direction="ltr" unicode-bidi="embed">• float64 → int (loses decimal part)</text>
+<text fill="#333" font-size="9" x="490" y="547" direction="ltr" unicode-bidi="embed">• type assertion without ok (may panic!)</text>
+
+<!-- Code example in golden rule bar -->
+<rect fill="#333" height="24" rx="0" width="890" x="15" y="558"></rect>
+<text fill="#ffd54f" font-size="10" font-weight="bold" text-anchor="middle" x="460" y="575" direction="rtl" unicode-bidi="embed">قانون طلایی: در <tspan direction="ltr" unicode-bidi="embed">Go</tspan> هر تبدیل نوع باید صریح باشد — اگر مطمئن نیستید، از <tspan direction="ltr" unicode-bidi="embed">comma-ok</tspan> استفاده کنید</text>
+</svg>
+<figcaption>شکل ۹-۲: مقایسه‌ی <bdi dir="ltr">PHP Type Juggling</bdi> با تبدیل صریح <bdi dir="ltr">Go</bdi> — تبدیل‌های ایمن و ناایمن</figcaption>
+</figure>
+
+<h3 id="سناریوهای-عملیاتی-تبدیل-نوع">سناریوهای عملیاتی</h3>
+<p>در پروژه‌های واقعی، تبدیل نوع یکی از رایج‌ترین عملیات‌هاست و درک صحیح آن از بروز باگ‌های پنهان جلوگیری می‌کند. در ادامه پنج سناریوی عملیاتی کلیدی را بررسی می‌کنیم که هر برنامه‌نویس Go باید به‌خوبی بشناسد. این سناریوها شامل تبدیل رشته به عدد با مدیریت خطا، تبدیل بین انواع عددی، هزینه‌ی تبدیل <bdi dir="ltr">[]byte</bdi> و <bdi dir="ltr">string</bdi>، استفاده از <bdi dir="ltr">type assertion</bdi> با <bdi dir="ltr">interface</bdi> و پیاده‌سازی <bdi dir="ltr">Stringer</bdi> سفارشی است. هر یک از این موارد در عمل با اهمیت بالایی مواجه هستند و تسلط بر آن‌ها کد شما را ایمن‌تر و کارآمدتر می‌کند.</p>
+
+<ul>
+<li><strong>تبدیل رشته به عدد با مدیریت خطا (<code>strconv.Atoi</code>):</strong> یکی از رایج‌ترین عملیات‌ها تبدیل ورودی کاربر از رشته به عدد است. در PHP تابع <code>intval("abc")</code> بدون خطا عدد <code>0</code> برمی‌گرداند اما در Go تابع <code>strconv.Atoi("abc")</code> خطا برمی‌گرداند. همیشه الگوی <code>n, err := strconv.Atoi(input); if err != nil { ... }</code> را رعایت کنید. این رویکرد الزامی تضمین می‌کند که ورودی نامعتبر هرگز به‌صورت خاموش نادیده گرفته نمی‌شود.</li>
+
+<li><strong>تبدیل بین انواع عددی به‌صورت ایمن:</strong> تبدیل <code>int64</code> به <code>int</code> در سیستم‌های ۳۲ بیتی ممکن است باعث <bdi dir="ltr">overflow</bdi> شود. تبدیل <code>float64</code> به <code>int</code> بخش اعشاری را حذف می‌کند. همیشه قبل از تبدیل بررسی کنید که مقدار در محدوده‌ی نوع مقصد قرار دارد. مثلاً <code>if val > math.MaxInt32 { return error }</code> قبل از <code>int32(val)</code> از <bdi dir="ltr">overflow</bdi> جلوگیری می‌کند.</li>
+
+<li><strong>هزینه‌ی تبدیل <bdi dir="ltr">[]byte</bdi> ↔ <bdi dir="ltr">string</bdi>:</strong> هر تبدیل بین <code>[]byte</code> و <code>string</code> یک کپی کامل داده ایجاد می‌کند. اگر در حلقه‌ی حلقه‌ی بحرانی بارها این تبدیل را انجام دهید، عملکرد برنامه به‌شدت افت می‌کند. در مسیرهای بحرانی از <code>unsafe.Pointer</code> برای تبدیل بدون کپی استفاده کنید — اما فقط وقتی مطمئن هستید داده تغییر نمی‌کند. در غیر این صورت، ساده‌ترین راه استفاده از <code>[]byte(s)</code> و <code>string(b)</code> است.</li>
+
+<li><strong>استفاده از <bdi dir="ltr">type assertion</bdi> با <bdi dir="ltr">interface</bdi>:</strong> وقتی با <code>interface{}</code> یا <code>any</code> کار می‌کنید، همیشه از الگوی <bdi dir="ltr">comma-ok</bdi> استفاده کنید: <code>val, ok := x.(string)</code>. این الگو از <code>panic</code> جلوگیری می‌کند و به شما امکان می‌دهد عدم تطابق نوع را به‌صورت ایمن مدیریت کنید. در <bdi dir="ltr">type switch</bdi> نیز هر نوع ممکن را پوشش دهید و <code>default</code> فراموش نشود.</li>
+
+<li><strong>پیاده‌سازی <bdi dir="ltr">Stringer</bdi> سفارشی:</strong> <bdi dir="ltr">interface</bdi> ی <code>fmt.Stringer</code> به نوع‌های سفارشی شما امکان نمایش متنی زیبا می‌دهد. وقتی متد <code>String() string</code> را روی نوع خود تعریف کنید، <code>fmt.Println</code> و <code>log.Printf</code> به‌طور خودکار از آن استفاده می‌کنند. این الگو در PHP معادل متد جادویی <code>__toString()</code> است اما در Go صریح‌تر و پیش‌بین‌پذیرتر عمل می‌کند.</li>
+</ul>
+
+<div class="tip">
+<strong>نکته‌ی حرفه‌ای:</strong> تبدیل صریح نوع در Go یک ویژگی است نه محدودیت — این رویکرد از باگ‌های ظریفی جلوگیری می‌کند که <bdi dir="ltr">PHP Type Juggling</bdi> می‌تواند ایجاد کند. در PHP عبارت <code>"0" == false</code> مقدار <code>true</code> برمی‌گرداند و عبارت <code>"foo" == 0</code> نیز <code>true</code> است! این رفتار غیرمنتظره منبع تعداد زیادی باگ‌های امنیتی در برنامه‌های PHP بوده است. در Go چنین مقایسه‌هایی امکان‌پذیر نیستند چون کامپایلر اجازه‌ی مقایسه‌ی انواع ناسازگار را نمی‌دهد. این سخت‌گیری در ابتدا ممکن است زمان‌بر به‌نظر برسد اما در بلندمدت از دسته‌ای از باگ‌های ردیابی‌نشده جلوگیری می‌کند و قابلیت اطمینان کد را به‌طرز چشمگیری افزایش می‌دهد.
+</div>
+
+</div>
+</main>
+</div>
+
+<!-- Footer -->
+<footer class="site-footer">
+<div class="footer-inner">
+<div class="footer-nav">
+<span class="nav-arrow">‹</span>
+<a href="02.01-data-types-introduction.html" data-prev>۲.۱ آشنایی با انواع داده</a>
+</div>
+<div class="footer-toc">
+<a href="00.01-contents.html">فهرست</a>
+</div>
+<div class="footer-nav">
+<a href="02.03-control-structures.html" data-next>۲.۳ ساختارهای کنترلی</a>
+<span class="nav-arrow">›</span>
+</div>
+</div>
+</footer>
+
+<!-- Back to Top -->
+<button class="back-to-top" aria-label="بازگشت به بالا">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
+</button>
+
+<!-- Scripts -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/go.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/php.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/sql.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/yaml.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/json.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/dockerfile.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/xml.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/ini.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/plaintext.min.js"></script>
+<script src="assets/js/main.js"></script>
+</body>
+</html>

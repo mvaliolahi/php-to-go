@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="fa">
+<head>
+<script>!function(){try{var t=localStorage.getItem('php2go-theme');if(t==='dark'||(!t&&window.matchMedia('(prefers-color-scheme:dark)').matches)){document.documentElement.setAttribute('data-theme','dark')}}catch(e){}}();</script>
+<meta charset="utf-8"/>
+<meta content="ie=edge" http-equiv="x-ua-compatible"/>
+<title>۴.۳ panic — PHP to Go</title>
+<meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet"/>
+<link href="assets/css/main.css" rel="stylesheet" type="text/css"/>
+<link href="assets/img/favicon.ico" rel="icon" type="image/x-icon"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" media="screen" class="hljs-light-theme" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css" media="not screen" class="hljs-dark-theme" rel="stylesheet"/>
+</head>
+<body>
+<!-- Progress Bar -->
+<div class="progress-bar"><div class="progress-bar__fill"></div></div>
+
+<!-- Header -->
+<header class="site-header">
+<div class="header-inner">
+<div class="header-left">
+<button class="header-btn sidebar-toggle" aria-label="فهرست">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+</button>
+<a href="00.00-front-matter.html" class="header-logo"><span class="logo-php">PHP</span> to <span class="logo-go">Go</span></a>
+<span class="header-crumbs">مدیریت خطا › panic</span>
+</div>
+<div class="header-right">
+<nav class="header-nav">
+<span class="nav-arrow">‹</span>
+<a href="04.02-custom-errors.html"><span class="nav-label">۴.۲ ساخت خطاهای سفارشی</span></a>
+<a href="00.01-contents.html">فهرست</a>
+<a href="05.00-chapter-5.html"><span class="nav-label">۵. همزمانی</span></a>
+<span class="nav-arrow">›</span>
+</nav>
+<button class="header-btn search-toggle" aria-label="جستجو">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+</button>
+<button class="header-btn theme-toggle" aria-label="تغییر تم">
+<svg class="theme-icon-light" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+<svg class="theme-icon-dark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+</button>
+</div>
+</div>
+</header>
+
+<!-- Search Modal -->
+<div class="search-overlay">
+<div class="search-modal">
+<div class="search-input-wrap">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+<input type="text" class="search-input" placeholder="جستجو... (Ctrl+K)" dir="rtl"/>
+</div>
+<div class="search-results"></div>
+</div>
+</div>
+
+<!-- Layout -->
+<div class="site-layout">
+<!-- Sidebar -->
+<aside class="sidebar"></aside>
+<div class="sidebar-overlay"></div>
+
+<!-- Main Content -->
+<main class="content-area">
+<div class="content-wrap text">
+<div class="chapter">فصل ۴.۳</div>
+<h2 id="panic">panic</h2>
+<p>وقتی شرایطی پیش می‌آید که برنامه باید فوراً متوقف شود مثل خرابی غیرمنتظره سخت‌افزاری violation داخلی یا خطای برنامه‌نویسی از panic استفاده می‌کنیم.</p>
+<figure class="diagram" dir="ltr">
+<svg height="360" viewBox="0 0 650 360" width="650" xmlns="http://www.w3.org/2000/svg">
+<rect fill="#fafafa" height="360" rx="8" width="650" x="0" y="0"></rect>
+<defs>
+<marker id="arrP2" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#777BB4" points="0 0,10 3.5,0 7"></polygon></marker>
+<marker id="arrB2" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#00ADD8" points="0 0,10 3.5,0 7"></polygon></marker>
+<marker id="arrR" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#e74c3c" points="0 0,10 3.5,0 7"></polygon></marker>
+<marker id="arrGn" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#27ae60" points="0 0,10 3.5,0 7"></polygon></marker>
+</defs>
+<!-- PHP Exception -->
+<text fill="#777BB4" font-size="15" font-weight="bold" text-anchor="middle" x="155" y="28" direction="ltr" unicode-bidi="embed">PHP: throw / catch</text>
+<rect fill="#777BB4" height="40" opacity="0.12" rx="8" stroke="#777BB4" stroke-width="2" width="210" x="50" y="45"></rect>
+<text fill="#333" font-size="12" text-anchor="middle" x="155" y="70" direction="ltr" unicode-bidi="embed">try { ... }</text>
+<rect fill="#e74c3c" height="40" opacity="0.15" rx="8" stroke="#e74c3c" stroke-width="2" width="210" x="50" y="105"></rect>
+<text fill="#333" font-size="12" text-anchor="middle" x="155" y="130" direction="ltr" unicode-bidi="embed">throw new Exception()</text>
+<line marker-end="url(#arrR)" stroke="#e74c3c" stroke-width="2" x1="155" x2="155" y1="85" y2="105"></line>
+<rect fill="#777BB4" height="40" opacity="0.12" rx="8" stroke="#777BB4" stroke-width="2" width="210" x="50" y="165"></rect>
+<text fill="#333" font-size="12" text-anchor="middle" x="155" y="190" direction="ltr" unicode-bidi="embed">catch (Exception $e)</text>
+<path d="M 260 125 Q 290 125 290 155 Q 290 185 260 185" fill="none" marker-end="url(#arrP2)" stroke="#e74c3c" stroke-dasharray="6,3" stroke-width="2"></path>
+<text fill="#e74c3c" font-size="10" x="305" y="158" direction="rtl" unicode-bidi="embed">پرش</text>
+<rect fill="#777BB4" height="40" opacity="0.12" rx="8" stroke="#777BB4" stroke-width="2" width="210" x="50" y="225"></rect>
+<text fill="#333" font-size="12" text-anchor="middle" x="155" y="250" direction="ltr" unicode-bidi="embed">finally { ... }</text>
+<line marker-end="url(#arrP2)" stroke="#777BB4" stroke-width="2" x1="155" x2="155" y1="205" y2="225"></line>
+<!-- Go panic/recover -->
+<text fill="#00ADD8" font-size="15" font-weight="bold" text-anchor="middle" x="490" y="28" direction="ltr" unicode-bidi="embed">Go: panic / recover</text>
+<rect fill="#00ADD8" height="40" opacity="0.12" rx="8" stroke="#00ADD8" stroke-width="2" width="210" x="385" y="45"></rect>
+<text fill="#333" font-size="12" text-anchor="middle" x="490" y="70" direction="ltr" unicode-bidi="embed">func main()</text>
+<rect fill="#00ADD8" height="40" opacity="0.12" rx="8" stroke="#00ADD8" stroke-width="2" width="210" x="385" y="105"></rect>
+<text fill="#333" font-size="12" text-anchor="middle" x="490" y="130" direction="ltr" unicode-bidi="embed">func doWork()</text>
+<line marker-end="url(#arrB2)" stroke="#00ADD8" stroke-width="2" x1="490" x2="490" y1="85" y2="105"></line>
+<rect fill="#e74c3c" height="40" opacity="0.15" rx="8" stroke="#e74c3c" stroke-width="2" width="210" x="385" y="165"></rect>
+<text fill="#333" font-size="12" text-anchor="middle" x="490" y="190" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">panic("خطا!")</tspan></text>
+<line marker-end="url(#arrR)" stroke="#e74c3c" stroke-width="2" x1="490" x2="490" y1="145" y2="165"></line>
+<!-- Panic unwinds -->
+<path d="M 385 185 Q 350 185 350 135 Q 350 70 385 70" fill="none" marker-end="url(#arrR)" stroke="#e74c3c" stroke-dasharray="6,3" stroke-width="2"></path>
+<text fill="#e74c3c" font-size="10" text-anchor="middle" transform="rotate(-90,330,130)" x="330" y="130" direction="ltr" unicode-bidi="embed">unwind stack</text>
+<!-- defer/recover -->
+<rect fill="#27ae60" height="50" opacity="0.12" rx="8" stroke="#27ae60" stroke-width="2" width="210" x="385" y="230"></rect>
+<text fill="#333" font-size="11" text-anchor="middle" x="490" y="252" direction="ltr" unicode-bidi="embed">defer func() {</text>
+<text fill="#333" font-size="11" text-anchor="middle" x="490" y="268" direction="ltr" unicode-bidi="embed">if r := recover(); r != nil { ... }</text>
+<line stroke="#27ae60" stroke-dasharray="4,3" stroke-width="1.5" x1="490" x2="420" y1="55" y2="230"></line>
+<text fill="#27ae60" font-size="10" transform="rotate(-60,415,148)" x="415" y="148" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">defer</tspan> اجرا می‌شود</text>
+<rect fill="#00ADD8" height="40" opacity="0.12" rx="8" stroke="#00ADD8" stroke-width="2" width="210" x="385" y="305"></rect>
+<text fill="#333" font-size="12" text-anchor="middle" x="490" y="330" direction="rtl" unicode-bidi="embed">ادامه برنامه</text>
+<line marker-end="url(#arrGn)" stroke="#27ae60" stroke-width="2" x1="490" x2="490" y1="280" y2="305"></line>
+</svg>
+<figcaption>شکل ۴-۳: مقایسه جریان <bdi dir="ltr">panic/recover</bdi> در <bdi dir="ltr">Go</bdi> با <bdi dir="ltr">throw/catch</bdi> در <bdi dir="ltr">PHP</bdi></figcaption>
+</figure>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">func fail() {
+    panic("اتفاق بحرانی رخ داده!")
+}
+func main() {
+    fail()
+    fmt.Println("این خط هرگز اجرا نمی‌شود")
+}
+</code></pre>
+</figure>
+<p>panic چیزی شبیه throw exception بدون try/catch است. اگر جلوی آن را نگیرید برنامه متوقف می‌شود و stack trace چاپ می‌گردد. برخلاف PHP که هر استثنایی باید توسط catch گرفته شود در Go panic کل پشته فراخوانی را از پایین به بالا unwind می‌کند تا به تابعی با recover برسد یا برنامه متوقف شود.</p>
+<h3 id="panic-در-سطح-اجرا">panic در سطح اجرا: مکانیزم داخلی</h3>
+
+<div class="quote-box">
+    <p class="quote-text">فروپاشی کنید، خراب نکنید. وقتی برنامه‌تان وضعیتی را تشخیص می‌دهد که هرگز نباید رخ دهد، بهتر است فوراً فروپاشی کند تا در وضعیت تعریف‌نشده ادامه دهد. یک برنامه مرده خیلی کمتر از یک برنامه معلول آسیب می‌زند.</p>
+    <p class="quote-source">
+        <span class="quote-author">Andy Hunt و Dave Thomas</span>
+        <span class="quote-separator">|</span>
+        <span class="quote-book">The Pragmatic Programmer — Tip 32</span>
+    </p>
+</div>
+<p>وقتی <code dir="ltr">panic()</code> فراخوانی می‌شود، تابع داخلی <code dir="ltr">runtime.gopanic</code> اجرا می‌شود. این تابع یک ساختار داده‌ی داخلی به نام <code>_panic</code> می‌سازد و آن را به سر goroutine فعلی اضافه می‌کند:</p>
+
+<figure class="diagram" dir="ltr">
+<svg height="300" viewBox="0 0 600 300" width="600" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<marker id="arrDecY" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#27ae60" points="0 0, 10 3.5, 0 7"></polygon></marker>
+<marker id="arrDecN" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#e74c3c" points="0 0, 10 3.5, 0 7"></polygon></marker>
+<marker id="arrDecG" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#666" points="0 0, 10 3.5, 0 7"></polygon></marker>
+</defs>
+<rect fill="#fafafa" height="300" rx="8" width="600" x="0" y="0"></rect>
+<text fill="#00ADD8" font-size="15" font-weight="bold" text-anchor="middle" x="300" y="25" direction="rtl" unicode-bidi="embed">تصمیم‌گیری: <tspan direction="ltr" unicode-bidi="embed">error</tspan> یا <tspan direction="ltr" unicode-bidi="embed">panic</tspan>؟</text>
+<!-- Start -->
+<rect fill="#e0f7fa" height="32" rx="6" stroke="#00ADD8" stroke-width="1.5" width="220" x="190" y="42"></rect>
+<text fill="#00ADD8" font-size="12" text-anchor="middle" x="300" y="63" direction="rtl" unicode-bidi="embed">خطایی رخ داده است</text>
+<!-- Decision 1 -->
+<rect fill="#fff3e0" height="32" rx="6" stroke="#f39c12" stroke-width="1.5" width="240" x="180" y="90"></rect>
+<text fill="#e65100" font-size="11" text-anchor="middle" x="300" y="111" direction="rtl" unicode-bidi="embed">آیا خطا قابل پیش‌بینی است؟</text>
+<line marker-end="url(#arrDecG)" stroke="#666" stroke-width="1.5" x1="300" x2="300" y1="74" y2="90"></line>
+<!-- Yes → error -->
+<rect fill="#e8f5e9" height="32" rx="6" stroke="#27ae60" stroke-width="2" width="180" x="30" y="140"></rect>
+<text fill="#27ae60" font-size="12" font-weight="bold" text-anchor="middle" x="120" y="161" direction="rtl" unicode-bidi="embed">بله → <tspan direction="ltr" unicode-bidi="embed">return error</tspan></text>
+<text fill="#666" font-size="9" text-anchor="middle" x="120" y="178" direction="rtl" unicode-bidi="embed">فایل، شبکه، ورودی نامعتبر</text>
+<line marker-end="url(#arrDecY)" stroke="#27ae60" stroke-width="1.5" x1="220" x2="210" y1="111" y2="140"></line>
+<text fill="#27ae60" font-size="10" x="200" y="128" direction="rtl" unicode-bidi="embed">بله</text>
+<!-- No → Decision 2 -->
+<rect fill="#fff3e0" height="32" rx="6" stroke="#f39c12" stroke-width="1.5" width="260" x="250" y="140"></rect>
+<text fill="#e65100" font-size="11" text-anchor="middle" x="380" y="161" direction="rtl" unicode-bidi="embed">آیا در کتابخانه هستید؟</text>
+<line marker-end="url(#arrDecG)" stroke="#666" stroke-width="1.5" x1="380" x2="340" y1="111" y2="140"></line>
+<text fill="#e74c3c" font-size="10" x="350" y="128" direction="rtl" unicode-bidi="embed">خیر</text>
+<!-- Yes lib → error -->
+<rect fill="#e8f5e9" height="32" rx="6" stroke="#27ae60" stroke-width="2" width="180" x="380" y="195"></rect>
+<text fill="#27ae60" font-size="12" font-weight="bold" text-anchor="middle" x="470" y="216" direction="rtl" unicode-bidi="embed">بله → <tspan direction="ltr" unicode-bidi="embed">return error</tspan></text>
+<text fill="#666" font-size="9" text-anchor="middle" x="470" y="233" direction="rtl" unicode-bidi="embed">کتابخانه‌ها هرگز panic نمی‌کنند</text>
+<line marker-end="url(#arrDecY)" stroke="#27ae60" stroke-width="1.5" x1="430" x2="460" y1="172" y2="195"></line>
+<text fill="#27ae60" font-size="10" x="455" y="188" direction="rtl" unicode-bidi="embed">بله</text>
+<!-- No lib → Decision 3 -->
+<rect fill="#fff3e0" height="32" rx="6" stroke="#f39c12" stroke-width="1.5" width="260" x="30" y="195"></rect>
+<text fill="#e65100" font-size="11" text-anchor="middle" x="160" y="216" direction="rtl" unicode-bidi="embed">آیا invariant نقض شده؟</text>
+<line marker-end="url(#arrDecG)" stroke="#666" stroke-width="1.5" x1="280" x2="200" y1="172" y2="195"></line>
+<text fill="#e74c3c" font-size="10" x="250" y="188" direction="rtl" unicode-bidi="embed">خیر</text>
+<!-- Yes invariant → panic -->
+<rect fill="#fce4ec" height="32" rx="6" stroke="#e74c3c" stroke-width="2" width="180" x="30" y="250"></rect>
+<text fill="#e74c3c" font-size="12" font-weight="bold" text-anchor="middle" x="120" y="271" direction="rtl" unicode-bidi="embed">بله → <tspan direction="ltr" unicode-bidi="embed">panic()</tspan></text>
+<text fill="#666" font-size="9" text-anchor="middle" x="120" y="288" direction="rtl" unicode-bidi="embed">nil pointer, array bounds, logic</text>
+<line marker-end="url(#arrDecN)" stroke="#e74c3c" stroke-width="1.5" x1="120" x2="120" y1="227" y2="250"></line>
+<text fill="#e74c3c" font-size="10" x="100" y="244" direction="rtl" unicode-bidi="embed">بله</text>
+<!-- No invariant → error -->
+<rect fill="#e8f5e9" height="32" rx="6" stroke="#27ae60" stroke-width="2" width="180" x="250" y="250"></rect>
+<text fill="#27ae60" font-size="12" font-weight="bold" text-anchor="middle" x="340" y="271" direction="rtl" unicode-bidi="embed">خیر → <tspan direction="ltr" unicode-bidi="embed">return error</tspan></text>
+<text fill="#666" font-size="9" text-anchor="middle" x="340" y="288" direction="rtl" unicode-bidi="embed">ترجیح همیشه error است</text>
+<line marker-end="url(#arrDecG)" stroke="#666" stroke-width="1.5" x1="200" x2="280" y1="227" y2="250"></line>
+<text fill="#27ae60" font-size="10" x="260" y="244" direction="rtl" unicode-bidi="embed">خیر</text>
+</svg>
+<figcaption dir="rtl">شکل ۳-۴-ب: درخت تصمیم‌گیری برای انتخاب بین <bdi dir="ltr">error</bdi> و <bdi dir="ltr">panic</bdi></figcaption>
+</figure>
+
+
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">// Internal runtime structure (simplified)
+type _panic struct {
+    argp unsafe.Pointer // pointer to defer arguments
+    arg interface{} // value passed to panic()
+    link *_panic // previous panic in chain (panic chaining)
+    recovered bool // has it been recovered?
+    aborted bool // has it been aborted by a new panic?
+}
+</code></pre>
+</figure>
+<div class="note"><strong>نکته‌ی فنی:</strong> هر گوروتین یک لیست پیوندی از <code>_panic</code> دارد. وقتی یک panic در حال unwind است و panic دیگری رخ می‌دهد (مثلاً در تابع <code>defer</code>)، panic جدید به سر لیست اضافه می‌شود. اگر panic اول با <code>recover</code> گرفته شود، panic دوم همچنان فعال باقی می‌ماند و unwind ادامه می‌یابد.</div>
+<p>مراحل اجرای <code>panic</code> به این ترتیب است:</p>
+<ol>
+<li>ساخت ساختار <code>_panic</code> و اضافه شدن به سر لیست گوروتین</li>
+<li>شروع unwind پشته: اجرای تمام توابع <code>defer</code> به ترتیب LIFO</li>
+<li>در هر <code>defer</code> بررسی می‌شود آیا <code dir="ltr">recover()</code> فراخوانی شده</li>
+<li>اگر <code>recover</code> پیدا شود: فلگ <code>recovered = true</code> تنظیم می‌شود و اجرا از بعد از <code>defer</code> ادامه می‌یابد</li>
+<li>اگر هیچ <code>recover</code> پیدا نشود: برنامه متوقف شده و stack trace چاپ می‌شود</li>
+</ol>
+<h3 id="recover">recover کردن panic</h3>
+<p>از <span dir="ltr">recover()</span> برای بازگرداندن کنترل برنامه در صورت وقوع panic استفاده می‌شود ولی فقط در توابعی که با defer تعریف شده‌اند کار می‌کند. این مکانیزم مشابه try/catch در PHP است اما با تفاوت مهم که recover باید صریحاً در defer تعریف شود.</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">func safeDivide(a, b float64) (result float64) {
+    defer func() {
+        if r := recover(); r != nil {
+            fmt.Println("بازیابی از panic:", r)
+            result = 0
+        }
+    }()
+
+    if b == 0 {
+        panic("تقسیم بر صفر")
+    }
+
+    return a / b
+}
+
+func main() {
+    fmt.Println("نتیجه:", safeDivide(10, 0))
+}
+</code></pre>
+</figure>
+<p>در PHP همیشه از try/catch استفاده می‌کنید اما در Go این بازیابی باید صریح و ساختار یافته باشد.</p>
+<h3 id="panic-chaining">Panic Chaining: وقتی چند panic رخ می‌دهد</h3>
+<p>وقتی panic در حال unwind پشته است و در یکی از توابع <code>defer</code> panic جدیدی رخ می‌دهد، panic دوم به زنجیره اضافه می‌شود. وقتی <code>recover</code> فراخوانی می‌شود، فقط آخرین panic بازیابی می‌شود:</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">func main() {
+    defer func() {
+        if r := recover(); r != nil {
+            fmt.Println("بازیابی:", r)
+            // Only second panic is recovered
+        }
+    }()
+
+    defer func() {
+        panic("panic دوم در defer")
+    }()
+
+    panic("panic اول")
+}
+// Output: recovery: second panic in defer
+</code></pre>
+</figure>
+<div class="warning"><strong>هشدار:</strong> panic در <code>defer</code> می‌تواند <code>recover</code> را بی‌اثر کند. اگر در تابع defer بازیابی بعد از <code>recover</code> دوباره panic کنید، کنترل به فراخوانی‌کننده بازنمی‌گردد. این الگوی <em>nested panic</em> یکی از دلایل اصلی که باید استفاده از panic را محدود کنید.</div>
+<h3 id="defer-recover-در-کتابخانه‌ها">الگوی defer/recover در کتابخانه‌ها</h3>
+<p>از رایج‌ترین کاربردهای <code>recover</code> در کتابخانه‌ها، جلوگیری از توقف کل برنامه به‌خاطر panic در یک بخش است. مثلاً بسته‌ی <code>net/http</code> به‌صورت پیش‌فرض panic هر handler را بازیابی می‌کند:</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">// Pattern similar to net/http (simplified)
+func safeHandler(h http.Handler) http.Handler {
+    return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+        defer func() {
+            if err := recover(); err != nil {
+                log.Printf("panic در handler: %v\n%s", err,
+                debug.Stack())
+                http.Error(w, "Internal Server Error", 500)
+            }
+        }()
+        h.ServeHTTP(w, r)
+    })
+}
+</code></pre>
+</figure>
+<div class="comparison"><strong>مقایسه: PHP Exception Hierarchy در برابر Go Panic</strong>
+<p><strong dir="ltr">PHP:</strong> سلسله‌مراتب Exception مشخصی وجود دارد: <code>Exception</code> → <code>RuntimeException</code> → <code>InvalidArgumentException</code>. هر سطح می‌تواند جداگانه <code>catch</code> شود و <code>finally</code> همیشه اجرا می‌شود.</p>
+<p><strong dir="ltr">Go:</strong> panic هیچ سلسله‌مرتباتی ندارد. هر panic فقط یک مقدار <code>interface{}</code> است. <code>recover</code> فقط آخرین panic را برمی‌گرداند. <code>defer</code> (مشابه <code>finally</code>) همیشه اجرا می‌شود حتی بدون panic.</p>
+</div>
+<h3 id="stack-trace-و-عملکرد">Stack Trace و عملکرد</h3>
+<p>وقتی panic رخ می‌دهد، runtime به‌طور خودکار stack trace را چاپ می‌کند. اما اگر بخواهید stack trace را به‌صورت برنامه‌نویسی دریافت کنید، از <code dir="ltr">runtime.Stack</code> یا <code>runtime/debug.Stack</code> استفاده کنید:</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">import "runtime/debug"
+
+defer func() {
+    if r := recover(); r != nil {
+        // debug.Stack() returns full stack trace
+        log.Printf("Panic: %v\n%s", r, debug.Stack())
+    }
+}()
+</code></pre>
+</figure>
+<p>هزینه‌ی ثبت stack trace در Go نسبتاً بالاست — هر فریم پشته باید قدم‌به‌قدم پیمایش شود. به همین دلیل panic نباید در مسیر عادی برنامه استفاده شود. مقایسه‌ی هزینه:</p>
+<table class="comparison-table" dir="rtl">
+<thead>
+<tr><th>عملیات</th><th>هزینه نسبی</th><th>توضیح</th></tr>
+</thead>
+<tbody>
+<tr><td dir="ltr"><code dir="ltr">errors.New()</code></td><td>بسیار پایین</td><td>یک allocation + رشته</td></tr>
+<tr><td dir="ltr"><code dir="ltr">fmt.Errorf("%w", err)</code></td><td>پایین</td><td>دو allocation (رشته + wrapError)</td></tr>
+<tr><td dir="ltr"><code dir="ltr">panic()</code></td><td>بالا</td><td>unwind پشته + اجرای همه defer ها</td></tr>
+<tr><td dir="ltr"><code dir="ltr">recover() + debug.Stack()</code></td><td>بسیار بالا</td><td>capture کامل stack trace</td></tr>
+</tbody>
+</table>
+<div class="important"><strong>قانون طلایی:</strong> اگر خطا قابل پیش‌بینی و مدیریت است (فایل پیدا نشد، ورودی نامعتبر، شبکه قطع شد)، از <code>error</code> استفاده کنید. اگر خطا غیرمنتظره و غیرقابل بازیابت است (نقض invariant داخلی، nil pointer درجای غیرمنتظره)، از <code>panic</code> استفاده کنید. در کتابخانه‌ها هرگز panic نکنید — همیشه <code>error</code> برگردانید.</div>
+
+<div class="quote-box">
+    <p class="quote-text">از assertionها برای مستندسازی چیزهایی که باید درست باشند استفاده کنید. Assertionها راهی هستند که برنامه‌نویس از طریق آن فرضیات خود را به خواننده و به زمان اجرا منتقل می‌کند.</p>
+    <p class="quote-source">
+        <span class="quote-author">Uncle Bob</span>
+        <span class="quote-role">نویسنده و مشاور نرم‌افزار</span>
+        <span class="quote-separator">|</span>
+        <span class="quote-book">Clean Code</span>
+    </p>
+</div>
+
+<div class="tip"><strong>نکته‌ی حرفه‌ای:</strong> <bdi dir="ltr"><code>panic</code></bdi> در Go باید مانند assertionها رفتار شود — آن‌ها فرضیاتی را مستند می‌کنند که حتماً باید درست باشند. اگر <bdi dir="ltr"><code>panic</code></bdi> می‌تواند از ورودی عادی کاربر رخ دهد، آن یک باگ است نه یک تصمیم طراحی. بنابراین فقط زمانی <bdi dir="ltr"><code>panic</code></bdi> کنید که عدم رخداد آن شرط منطقی برنامه‌تان باشد.</div>
+
+<div class="warning"><strong>هشدار:</strong> از panic فقط برای شرایط بحرانی و غیرقابل بازیافت استفاده کنید. برای خطاهای عادی مثل فایل پیدا نشد یا ورودی نامعتبر همیشه از مقادیر <code>error</code> استفاده کنید. panic/recover شبیه goto در برنامه‌نویسی است: قدرتمند اما خطرناک اگر زیاد استفاده شود.</div>
+
+<h3 id="net-http-panic-recovery">بازیابی panic در Handlerهای HTTP</h3>
+<p>از مهم‌ترین کاربردهای <code>recover</code> در برنامه‌های وب، جلوگیری از توقف کل سرور به‌خاطر panic در یک handler است. بسته‌ی <bdi dir="ltr">net/http</bdi> به‌صورت پیش‌فرض این کار را نمی‌کند — وقتی handler ای panic کند، سرور کرش می‌کند. برای جلوگیری از این مشکل باید middleware بازیابی اضافه کنید:</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">func RecoveryMiddleware(next http.Handler) http.Handler {
+    return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+        defer func() {
+            if err := recover(); err != nil {
+                // Record stack trace for debugging
+                log.Printf("panic recovered: %v\n%s", err, debug.Stack())
+                // Send 500 response to client
+                http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+            }
+        }()
+        next.ServeHTTP(w, r)
+    })
+}
+
+// Usage
+mux := http.NewServeMux()
+mux.HandleFunc("/api/users", handleUsers)
+// Wrap with recovery middleware
+handler := RecoveryMiddleware(mux)
+http.ListenAndServe(":8080", handler)
+</code></pre>
+</figure>
+
+<div class="tip"><strong>کتابخانه‌های آماده:</strong> اکثر فریمورک‌های وب Go مثل <bdi dir="ltr">Gin</bdi> ، <bdi dir="ltr">Echo</bdi> و <bdi dir="ltr">Chi</bdi> به‌صورت داخلی middleware بازیابی panic دارند. اگر از این فریمورک‌ها استفاده می‌کنید نیازی به نوشتن این middleware نیست. اما اگر مستقیماً از <code>net/http</code> استفاده می‌کنید، حتماً آن را اضافه کنید.</div>
+
+<h3 id="panic-propagation">انتشار panic و کرش پروسه</h3>
+<p>وقتی panic در یک goroutine رخ می‌دهد و هیچ <code>recover</code> ای آن را نگیرد، کل پروسه از بین می‌رود — نه فقط آن goroutine. این رفتار بسیار متفاوت از PHP است:</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">func main() {
+    go func() {
+        panic("خطا در goroutine فرعی")
+        // Wrong — this panic stops the entire program!
+        // recover only works in the same goroutine
+    }()
+
+    time.Sleep(time.Second)
+    fmt.Println("این خط هرگز اجرا نمی‌شود")
+}
+</code></pre>
+</figure>
+<div class="important"><strong>قانون حیاتی:</strong> هر goroutine که ممکن است panic کند باید <code>defer/recover</code> مخصوص خودش را داشته باشد. <code>recover</code> فقط می‌تواند panic را در همان goroutine بگیرد — هرگز نمی‌تواند panic یک goroutine دیگر را بگیرد. این از مهم‌ترین دلایل برای اضافه‌کردن recovery middleware به HTTP handlerها و background workerهاست.</div>
+
+<figure class="diagram" dir="ltr">
+<svg height="250" viewBox="0 0 600 250" width="600" xmlns="http://www.w3.org/2000/svg">
+<rect fill="#fafafa" height="250" rx="8" width="600" x="0" y="0"></rect>
+<defs>
+<marker id="arrPan" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#e74c3c" points="0 0, 10 3.5, 0 7"></polygon></marker>
+<marker id="arrRec" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#27ae60" points="0 0, 10 3.5, 0 7"></polygon></marker>
+</defs>
+<text fill="#e74c3c" font-size="15" font-weight="bold" text-anchor="middle" x="300" y="25" direction="rtl" unicode-bidi="embed">مکانیزم <tspan direction="ltr" unicode-bidi="embed">panic/recover</tspan> در <tspan direction="ltr" unicode-bidi="embed">Call</tspan> <tspan direction="ltr" unicode-bidi="embed">Stack</tspan></text>
+<!-- Call stack -->
+<rect fill="#e3f2fd" height="35" rx="6" stroke="#2196f3" stroke-width="1.5" width="250" x="175" y="50"></rect>
+<text fill="#1565c0" font-size="12" text-anchor="middle" x="300" y="72" direction="ltr" unicode-bidi="embed">main()</text>
+<rect fill="#e0f7fa" height="35" rx="6" stroke="#00ADD8" stroke-width="1.5" width="250" x="175" y="95"></rect>
+<text fill="#00ADD8" font-size="12" text-anchor="middle" x="300" y="117" direction="ltr" unicode-bidi="embed">handleRequest()</text>
+<rect fill="#e8f5e9" height="35" rx="6" stroke="#27ae60" stroke-width="1.5" width="250" x="175" y="140"></rect>
+<text fill="#2e7d32" font-size="12" text-anchor="middle" x="300" y="162" direction="ltr" unicode-bidi="embed">processData()</text>
+<rect fill="#fce4ec" height="35" rx="6" stroke="#e74c3c" stroke-width="2" width="250" x="175" y="185"></rect>
+<text fill="#e74c3c" font-size="12" font-weight="bold" text-anchor="middle" x="300" y="207" direction="ltr" unicode-bidi="embed">panic("error!")</text>
+<!-- Unwind arrow -->
+<path d="M 425 200 L 460 200 L 460 65 L 425 65" fill="none" marker-end="url(#arrPan)" stroke="#e74c3c" stroke-dasharray="6,3" stroke-width="2"></path>
+<text fill="#e74c3c" font-size="10" x="470" y="140" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">Unwind</tspan>: اجرای <tspan direction="ltr" unicode-bidi="embed">defer</tspan>ها</text>
+<!-- Recover -->
+<rect fill="#e8f5e9" height="35" rx="6" stroke="#27ae60" stroke-width="2" width="250" x="175" y="95"></rect>
+<text fill="#27ae60" font-size="12" font-weight="bold" text-anchor="middle" x="300" y="112" direction="ltr" unicode-bidi="embed">defer func() { recover() }</text>
+<text fill="#27ae60" font-size="10" x="135" y="112" direction="rtl" unicode-bidi="embed">← اینجا متوقف می‌شود</text>
+</svg>
+<figcaption>شکل ۳-۴: مکانیزم <bdi dir="ltr">panic/recover</bdi> در پشته فراخوانی</figcaption>
+</figure>
+
+<table class="comparison-table" dir="rtl">
+<thead>
+<tr><th>ویژگی</th><th>PHP (Exception)</th><th>Go (panic/recover)</th></tr>
+</thead>
+<tbody>
+<tr><td>مکانیزم پرتاب</td><td dir="ltr"><code dir="ltr">throw new Exception()</code></td><td dir="ltr"><code dir="ltr">panic("msg")</code></td></tr>
+<tr><td>مکانیزم دریافت</td><td dir="ltr"><code dir="ltr">catch (Exception $e)</code></td><td dir="ltr"><code dir="ltr">defer + recover()</code></td></tr>
+<tr><td>جریان پس از پرتاب</td><td>پرش به نزدیک‌ترین catch</td><td>unwind پشته تا defer با recover</td></tr>
+<tr><td>استفاده رایج</td><td>تمام خطاها</td><td>فقط شرایط بحرانی (بیشتر خطاها = error value)</td></tr>
+<tr><td dir="ltr">finally / cleanup</td><td dir="ltr"><code>finally { ... }</code></td><td><code>defer</code> (همیشه اجرا می‌شود)</td></tr>
+<tr><td>بدون دریافت</td><td dir="ltr">Uncaught Exception → crash</td><td>برنامه crash می‌شود + stack trace</td></tr>
+<tr><td dir="ltr">Stack trace</td><td>خودکار و داخلی</td><td>خودکار و داخلی</td></tr>
+</tbody>
+</table>
+<h3 id="تمرین">تمرین</h3>
+<p>تمرین ۱: تابعی بنویسید که نام یک فایل را بگیرد و محتوای آن را بخواند. اگر فایل وجود نداشت خطای مناسبی چاپ کند.</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">import (
+"fmt"
+"os"
+)
+
+func readFile(filename string) ([]byte, error) {
+    data, err := os.ReadFile(filename)
+    if err != nil {
+        return nil, fmt.Errorf("خطا در باز کردن فایل %s: %w", filename, err)
+    }
+    return data, nil
+}
+
+func main() {
+    content, err := readFile("notfound.txt")
+
+    if err != nil {
+        fmt.Println(err)
+        os.Exit(1)
+    }
+
+    fmt.Println(string(content))
+}
+</code></pre>
+</figure>
+<p>تمرین ۲: یک panic ایجاد کنید و با defer/recover آن را مدیریت کنید.</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">func safeOperation() {
+    defer func() {
+        if r := recover(); r != nil {
+            fmt.Println("بازیابی از panic:", r)
+        }
+    }()
+    panic("خطای غیرمنتظره!")
+    fmt.Println("این خط اجرا نمی‌شود")
+}
+
+func main() {
+    safeOperation()
+    fmt.Println("برنامه ادامه می‌یابد")
+}
+</code></pre>
+</figure>
+
+<h3 id="panic-recover-unwinding-sequence">توالی Unwind پشته در Panic/Recover</h3>
+<p>وقتی <code dir="ltr">panic</code> رخ می‌دهد، اجرای تابع فعلی بلافاصله متوقف شده و runtime شروع به <bdi dir="ltr">unwind</bdi> کردن پشته فراخوانی می‌کند. این فرآیند به‌صورت مرحله‌ای انجام می‌شود: ابتدا تابعی که <code dir="ltr">panic</code> در آن رخ داده متوقف می‌شود، سپس تمام توابع <code dir="ltr">defer</code> آن به ترتیب <bdi dir="ltr">LIFO</bdi> اجرا می‌شوند. سپس runtime یک قدم به بالاتر می‌رود و همین فرآیند را تکرار می‌کند. اگر در یکی از توابع <code dir="ltr">defer</code> تابع <code dir="ltr">recover()</code> فراخوانی شده باشد، <bdi dir="ltr">unwind</bdi> متوقف شده و برنامه از بعد از تابعی که <code dir="ltr">recover</code> در آن بوده ادامه می‌یابد.</p>
+<p>درک این توالی برای نوشتن کد مقاوم در برابر panic حیاتی است. هر تابع <code dir="ltr">defer</code> در مسیر <bdi dir="ltr">unwind</bdi> فرصتی برای پاکسازی منابع (بستن فایل‌ها، قطع اتصال دیتابیس، آزادسازی قفل‌ها) است. بدون <code dir="ltr">recover</code>، تمام این فرصت‌ها صرف پاکسازی می‌شود و برنامه در نهایت متوقف می‌گردد. اما با <code dir="ltr">recover</code> می‌توان این فرآیند را در نقطه‌ی مناسبی متوقف کرد و از کرش کل برنامه جلوگیری نمود. نمودار زیر این توالی را به‌صورت بصری نمایش می‌دهد.</p>
+
+<figure class="diagram" dir="ltr">
+<svg height="830" viewBox="0 0 800 830" width="800" xmlns="http://www.w3.org/2000/svg">
+<rect fill="#fafafa" height="830" rx="8" width="800" x="0" y="0"></rect>
+<defs>
+<marker id="arrCallFlow" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#00ADD8" points="0 0, 10 3.5, 0 7"></polygon></marker>
+<marker id="arrPanicUp" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#e91e63" points="0 0, 10 3.5, 0 7"></polygon></marker>
+<marker id="arrDeferEx" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#FF9800" points="0 0, 10 3.5, 0 7"></polygon></marker>
+<marker id="arrRecover" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#4CAF50" points="0 0, 10 3.5, 0 7"></polygon></marker>
+</defs>
+
+<!-- Title -->
+<text fill="#333" font-size="16" font-weight="bold" text-anchor="middle" x="400" y="28" direction="rtl" unicode-bidi="embed">توالی <tspan direction="ltr" unicode-bidi="embed">Unwind</tspan> پشته در <tspan direction="ltr" unicode-bidi="embed">Panic/Recover</tspan></text>
+
+<!-- ============ CALL STACK BOXES ============ -->
+<!-- main() -->
+<rect fill="#e3f2fd" height="60" rx="8" stroke="#1565C0" stroke-width="2" width="220" x="50" y="55"></rect>
+<text fill="#1565C0" font-size="14" font-weight="bold" text-anchor="middle" x="160" y="80" direction="ltr" unicode-bidi="embed">main()</text>
+<text fill="#666" font-size="10" text-anchor="middle" x="160" y="100" direction="rtl" unicode-bidi="embed">نقطه‌ی شروع برنامه</text>
+
+<!-- handler() -->
+<rect fill="#e8f5e9" height="60" rx="8" stroke="#4CAF50" stroke-width="2.5" width="220" x="50" y="155"></rect>
+<text fill="#2e7d32" font-size="14" font-weight="bold" text-anchor="middle" x="160" y="178" direction="ltr" unicode-bidi="embed">handler()</text>
+<text fill="#666" font-size="10" text-anchor="middle" x="160" y="198" direction="rtl" unicode-bidi="embed">دارای <tspan direction="ltr" unicode-bidi="embed">defer + recover</tspan></text>
+<!-- Green recover indicator -->
+<circle cx="280" cy="185" fill="#4CAF50" r="8"></circle>
+<text fill="#fff" font-size="8" font-weight="bold" text-anchor="middle" x="280" y="188" direction="ltr" unicode-bidi="embed">✓</text>
+
+<!-- process() -->
+<rect fill="#fff3e0" height="60" rx="8" stroke="#FF9800" stroke-width="2" width="220" x="50" y="255"></rect>
+<text fill="#E65100" font-size="14" font-weight="bold" text-anchor="middle" x="160" y="278" direction="ltr" unicode-bidi="embed">process()</text>
+<text fill="#666" font-size="10" text-anchor="middle" x="160" y="298" direction="rtl" unicode-bidi="embed">دارای <tspan direction="ltr" unicode-bidi="embed">defer</tspan> پاکسازی</text>
+<!-- Orange defer indicator -->
+<circle cx="280" cy="285" fill="#FF9800" r="8"></circle>
+<text fill="#fff" font-size="8" font-weight="bold" text-anchor="middle" x="280" y="288" direction="ltr" unicode-bidi="embed">D</text>
+
+<!-- divide() -->
+<rect fill="#fce4ec" height="60" rx="8" stroke="#e91e63" stroke-width="2.5" width="220" x="50" y="355"></rect>
+<text fill="#e91e63" font-size="14" font-weight="bold" text-anchor="middle" x="160" y="378" direction="ltr" unicode-bidi="embed">divide()</text>
+<text fill="#666" font-size="10" text-anchor="middle" x="160" y="398" direction="ltr" unicode-bidi="embed">panic("divide by zero")</text>
+<!-- Red panic indicator -->
+<circle cx="280" cy="385" fill="#e91e63" r="8"></circle>
+<text fill="#fff" font-size="8" font-weight="bold" text-anchor="middle" x="280" y="388" direction="ltr" unicode-bidi="embed">!</text>
+
+<!-- ============ CALL FLOW ARROWS (downward) ============ -->
+<line marker-end="url(#arrCallFlow)" stroke="#00ADD8" stroke-width="2" x1="160" x2="160" y1="115" y2="155"></line>
+<line marker-end="url(#arrCallFlow)" stroke="#00ADD8" stroke-width="2" x1="160" x2="160" y1="215" y2="255"></line>
+<line marker-end="url(#arrCallFlow)" stroke="#00ADD8" stroke-width="2" x1="160" x2="160" y1="315" y2="355"></line>
+<text fill="#00ADD8" font-size="9" x="35" y="240" direction="ltr" unicode-bidi="embed">call ↓</text>
+
+<!-- ============ RIGHT SIDE: UNWINDING SEQUENCE ============ -->
+
+<!-- Step 1: Panic occurs -->
+<rect fill="#fce4ec" height="50" rx="6" stroke="#e91e63" stroke-width="1.5" width="380" x="350" y="355"></rect>
+<circle cx="370" cy="380" fill="#e91e63" r="12"></circle>
+<text fill="#fff" font-size="11" font-weight="bold" text-anchor="middle" x="370" y="384" direction="ltr" unicode-bidi="embed">1</text>
+<text fill="#e91e63" font-size="11" font-weight="bold" x="392" y="373" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">panic</tspan> رخ می‌دهد — اجرای <tspan direction="ltr" unicode-bidi="embed">divide()</tspan> متوقف می‌شود</text>
+<text fill="#666" font-size="10" x="392" y="393" direction="ltr" unicode-bidi="embed">runtime.gopanic() builds _panic struct</text>
+<!-- Arrow from panic box to divide() -->
+<line marker-end="url(#arrPanicUp)" stroke="#e91e63" stroke-width="1.5" stroke-dasharray="4,2" x1="350" y1="380" x2="288" y2="380"></line>
+
+<!-- Step 2: divide() deferred functions run -->
+<rect fill="#fff3e0" height="50" rx="6" stroke="#FF9800" stroke-width="1.5" width="380" x="350" y="310"></rect>
+<circle cx="370" cy="335" fill="#FF9800" r="12"></circle>
+<text fill="#fff" font-size="11" font-weight="bold" text-anchor="middle" x="370" y="339" direction="ltr" unicode-bidi="embed">2</text>
+<text fill="#E65100" font-size="11" font-weight="bold" x="392" y="328" direction="rtl" unicode-bidi="embed">توابع <tspan direction="ltr" unicode-bidi="embed">defer</tspan> در <tspan direction="ltr" unicode-bidi="embed">divide()</tspan> اجرا می‌شوند</text>
+<text fill="#666" font-size="10" x="392" y="348" direction="rtl" unicode-bidi="embed">پاکسازی منابع محلی (بستن فایل و غیره)</text>
+<line marker-end="url(#arrDeferEx)" stroke="#FF9800" stroke-width="1.5" stroke-dasharray="4,2" x1="350" y1="335" x2="288" y2="360"></line>
+
+<!-- Step 3: Unwind to process() - its defers run -->
+<rect fill="#fff3e0" height="50" rx="6" stroke="#FF9800" stroke-width="1.5" width="380" x="350" y="210"></rect>
+<circle cx="370" cy="235" fill="#FF9800" r="12"></circle>
+<text fill="#fff" font-size="11" font-weight="bold" text-anchor="middle" x="370" y="239" direction="ltr" unicode-bidi="embed">3</text>
+<text fill="#E65100" font-size="11" font-weight="bold" x="392" y="228" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">Unwind</tspan> به <tspan direction="ltr" unicode-bidi="embed">process()</tspan> — <tspan direction="ltr" unicode-bidi="embed">defer</tspan>هایش اجرا می‌شوند</text>
+<text fill="#666" font-size="10" x="392" y="248" direction="rtl" unicode-bidi="embed">مثلاً: <tspan direction="ltr" unicode-bidi="embed">mutex.Unlock()</tspan>، بستن <tspan direction="ltr" unicode-bidi="embed">DB transaction</tspan></text>
+<line marker-end="url(#arrDeferEx)" stroke="#FF9800" stroke-width="1.5" stroke-dasharray="4,2" x1="350" y1="235" x2="288" y2="280"></line>
+
+<!-- Panic flow arrow going up -->
+<path d="M 310 380 L 330 380 L 330 230 L 310 230" fill="none" stroke="#e91e63" stroke-dasharray="6,3" stroke-width="2"></path>
+<text fill="#e91e63" font-size="9" font-weight="bold" transform="rotate(-90,318,305)" x="318" y="305" direction="ltr" unicode-bidi="embed">panic unwind ↑</text>
+
+<!-- Step 4: Unwind to handler() - recover catches -->
+<rect fill="#e8f5e9" height="65" rx="6" stroke="#4CAF50" stroke-width="2" width="380" x="350" y="105"></rect>
+<circle cx="370" cy="135" fill="#4CAF50" r="12"></circle>
+<text fill="#fff" font-size="11" font-weight="bold" text-anchor="middle" x="370" y="139" direction="ltr" unicode-bidi="embed">4</text>
+<text fill="#2e7d32" font-size="11" font-weight="bold" x="392" y="125" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">Unwind</tspan> به <tspan direction="ltr" unicode-bidi="embed">handler()</tspan> — <tspan direction="ltr" unicode-bidi="embed">recover()</tspan> اجرا می‌شود!</text>
+<text fill="#666" font-size="10" x="392" y="143" direction="ltr" unicode-bidi="embed">r := recover()  // r = "divide by zero"</text>
+<text fill="#2e7d32" font-size="10" font-weight="bold" x="392" y="161" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">Unwind</tspan> متوقف می‌شود — کنترل برمی‌گردد</text>
+<line marker-end="url(#arrRecover)" stroke="#4CAF50" stroke-width="1.5" stroke-dasharray="4,2" x1="350" y1="135" x2="288" y2="180"></line>
+
+<!-- Step 5: Program continues -->
+<rect fill="#e3f2fd" height="50" rx="6" stroke="#1565C0" stroke-width="1.5" width="380" x="350" y="55"></rect>
+<circle cx="370" cy="80" fill="#1565C0" r="12"></circle>
+<text fill="#fff" font-size="11" font-weight="bold" text-anchor="middle" x="370" y="84" direction="ltr" unicode-bidi="embed">5</text>
+<text fill="#1565C0" font-size="11" font-weight="bold" x="392" y="73" direction="rtl" unicode-bidi="embed">برنامه از بعد از <tspan direction="ltr" unicode-bidi="embed">handler()</tspan> ادامه می‌یابد</text>
+<text fill="#666" font-size="10" x="392" y="93" direction="ltr" unicode-bidi="embed">main() continues normally after handler() returns</text>
+<line marker-end="url(#arrRecover)" stroke="#4CAF50" stroke-width="1.5" stroke-dasharray="4,2" x1="350" y1="80" x2="288" y2="80"></line>
+
+<!-- ============ ANNOTATION BOXES ============ -->
+<!-- Info: panic stops execution -->
+<rect fill="#fce4ec" height="28" rx="5" stroke="#e91e63" stroke-width="1" width="220" x="50" y="435"></rect>
+<text fill="#e91e63" font-size="10" font-weight="bold" text-anchor="middle" x="160" y="454" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">panic</tspan> اجرا را متوقف می‌کند</text>
+
+<!-- Info: deferred functions run -->
+<rect fill="#fff3e0" height="28" rx="5" stroke="#FF9800" stroke-width="1" width="220" x="290" y="435"></rect>
+<text fill="#E65100" font-size="10" font-weight="bold" text-anchor="middle" x="400" y="454" direction="rtl" unicode-bidi="embed">توابع <tspan direction="ltr" unicode-bidi="embed">defer</tspan> اجرا می‌شوند</text>
+
+<!-- Info: recover stops unwinding -->
+<rect fill="#e8f5e9" height="28" rx="5" stroke="#4CAF50" stroke-width="1" width="220" x="530" y="435"></rect>
+<text fill="#2e7d32" font-size="10" font-weight="bold" text-anchor="middle" x="640" y="454" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">recover</tspan> <tspan direction="ltr" unicode-bidi="embed">unwind</tspan> را متوقف می‌کند</text>
+
+<!-- ============ CODE EXAMPLE INFO BOX ============ -->
+<rect fill="#ffffff" height="165" rx="6" stroke="#00ADD8" stroke-width="1.5" width="720" x="40" y="480"></rect>
+<text fill="#00ADD8" font-size="11" font-weight="bold" x="60" y="500" direction="ltr" unicode-bidi="embed">// handler() — the recovery point</text>
+<text fill="#333" font-size="11" font-family="Fira Code, monospace" x="60" y="518" direction="ltr" unicode-bidi="embed">func handler() {</text>
+<text fill="#333" font-size="11" font-family="Fira Code, monospace" x="60" y="534" direction="ltr" unicode-bidi="embed">    defer func() {</text>
+<text fill="#4CAF50" font-size="11" font-family="Fira Code, monospace" x="60" y="550" direction="ltr" unicode-bidi="embed">        if r := recover(); r != nil {</text>
+<text fill="#4CAF50" font-size="11" font-family="Fira Code, monospace" x="60" y="566" direction="ltr" unicode-bidi="embed">            log.Printf("recovered: %v", r)</text>
+<text fill="#4CAF50" font-size="11" font-family="Fira Code, monospace" x="60" y="582" direction="ltr" unicode-bidi="embed">        }  // ← unwind stops here</text>
+<text fill="#333" font-size="11" font-family="Fira Code, monospace" x="60" y="598" direction="ltr" unicode-bidi="embed">    }()</text>
+<text fill="#333" font-size="11" font-family="Fira Code, monospace" x="60" y="614" direction="ltr" unicode-bidi="embed">    result := process()</text>
+<text fill="#333" font-size="11" font-family="Fira Code, monospace" x="60" y="630" direction="ltr" unicode-bidi="embed">}</text>
+
+<!-- ============ DEFER EXECUTION ORDER ============ -->
+<text fill="#333" font-size="14" font-weight="bold" text-anchor="middle" x="400" y="700" direction="rtl" unicode-bidi="embed">ترتیب اجرای <tspan direction="ltr" unicode-bidi="embed">defer</tspan> در حین <tspan direction="ltr" unicode-bidi="embed">Unwind</tspan> (ترتیب <tspan direction="ltr" unicode-bidi="embed">LIFO</tspan>)</text>
+
+<!-- LIFO chain -->
+<rect fill="#fce4ec" height="24" rx="4" stroke="#e91e63" stroke-width="1" width="150" x="50" y="720"></rect>
+<text fill="#e91e63" font-size="10" text-anchor="middle" x="125" y="736" direction="ltr" unicode-bidi="embed">① divide() defers</text>
+
+<rect fill="#fff3e0" height="24" rx="4" stroke="#FF9800" stroke-width="1" width="150" x="220" y="720"></rect>
+<text fill="#E65100" font-size="10" text-anchor="middle" x="295" y="736" direction="ltr" unicode-bidi="embed">② process() defers</text>
+
+<rect fill="#e8f5e9" height="24" rx="4" stroke="#4CAF50" stroke-width="1" width="150" x="390" y="720"></rect>
+<text fill="#2e7d32" font-size="10" text-anchor="middle" x="465" y="736" direction="ltr" unicode-bidi="embed">③ handler() defer → recover</text>
+
+<rect fill="#e3f2fd" height="24" rx="4" stroke="#1565C0" stroke-width="1" width="130" x="560" y="720"></rect>
+<text fill="#1565C0" font-size="10" text-anchor="middle" x="625" y="736" direction="ltr" unicode-bidi="embed">④ main() continues</text>
+
+<line marker-end="url(#arrDeferEx)" stroke="#666" stroke-width="1" x1="200" y1="732" x2="220" y2="732"></line>
+<line marker-end="url(#arrDeferEx)" stroke="#666" stroke-width="1" x1="370" y1="732" x2="390" y2="732"></line>
+<line marker-end="url(#arrRecover)" stroke="#666" stroke-width="1" x1="540" y1="732" x2="560" y2="732"></line>
+
+<!-- ============ GOLDEN RULE BAR ============ -->
+<rect fill="#FFF8E1" height="32" rx="6" stroke="#F9A825" stroke-width="2" width="720" x="40" y="770"></rect>
+<text fill="#F57F17" font-size="12" font-weight="bold" text-anchor="middle" x="400" y="791" direction="rtl" unicode-bidi="embed">قانون طلایی: <tspan direction="ltr" unicode-bidi="embed">panic</tspan> فقط برای خطاهای غیرقابل بازیافت برنامه‌نویس — و همیشه در <tspan direction="ltr" unicode-bidi="embed">HTTP middleware</tspan> از <tspan direction="ltr" unicode-bidi="embed">recover</tspan> استفاده کنید!</text>
+</svg>
+<figcaption>شکل ۴-۳-ب: توالی <bdi dir="ltr">Unwind</bdi> پشته در <bdi dir="ltr">Panic/Recover</bdi> — از وقوع <bdi dir="ltr">panic</bdi> تا بازیابی</figcaption>
+</figure>
+
+<h3 id="سناریوهای-عملیاتی-panic">سناریوهای عملیاتی panic/recover</h3>
+<p>استفاده از <code dir="ltr">panic</code> و <code dir="ltr">recover</code> در پروژه‌های واقعی باید بسیار محدود و هدفمند باشد. برخلاف PHP که <code>throw</code> و <code>catch</code> بخشی از جریان عادی برنامه هستند، در Go استفاده از <code dir="ltr">panic</code> برای خطاهای معمولی ضدالگوی محسوب می‌شود. با این حال، موقعیت‌هایی وجود دارند که <code dir="ltr">panic</code> بهترین و تنها انتخاب مناسب است. همچنین <code dir="ltr">recover</code> در برخی الگوهای معماری نقش حیاتی ایفا می‌کند. در ادامه مهم‌ترین سناریوهای عملیاتی را بررسی می‌کنیم که هر برنامه‌نویس Go باید بشناسد و در جای مناسب به‌کار ببرد.</p>
+
+<ul>
+<li><strong>تخریب تدریجی در <bdi dir="ltr">HTTP Handler</bdi>ها:</strong> وقتی یک <bdi dir="ltr">HTTP Handler</bdi> دچار <code dir="ltr">panic</code> می‌شود، بدون <code dir="ltr">recover</code> کل سرور از کار می‌افتد. با اضافه‌کردن middleware بازیابی، می‌توان panic را گرفت، خطای <code dir="ltr">500 Internal Server Error</code> به کلاینت فرستاد و در عین حال سرور برای سایر درخواست‌ها فعال ماند. این الگو به‌معنای «تخریب تدریجی» است: یک درخواست شکست می‌خورد اما کل سیستم از کار نمی‌افتد. این یکی از مهم‌ترین الگوهای مقاوم‌سازی در سرورهای وب Go است.</li>
+<li><strong>بازیابی panic در <bdi dir="ltr">middleware</bdi>:</strong> در فریمورک‌های وب مانند <bdi dir="ltr">Gin</bdi>، <bdi dir="ltr">Echo</bdi> و <bdi dir="ltr">Chi</bdi>، middleware بازیابی panic به‌صورت داخلی وجود دارد. اما اگر مستقیماً از <bdi dir="ltr">net/http</bdi> استفاده می‌کنید، حتماً middleware بازیابی اضافه کنید. این middleware باید <code dir="ltr">defer/recover</code> داشته باشد، stack trace را در لاگ ثبت کند و پاسخ <code dir="ltr">500</code> بفرستد. بدون این middleware، حتی یک panic ساده در یک handler می‌تواند کل پروسه را از بین ببرد.</li>
+<li><strong>پرهیز از panic در کد کتابخانه:</strong> کتابخانه‌ها هرگز نباید <code dir="ltr">panic</code> کنند. مصرف‌کننده‌ی کتابخانه باید بتواند خطاها را با <code dir="ltr">error</code> مدیریت کند. اگر کتابخانه panic کند، مصرف‌کننده مجبور می‌شود <code dir="ltr">recover</code> اضافه کند که پیچیدگی کد را به‌شدت افزایش می‌دهد. تنها استثنا زمانی است که برنامه‌نویس فراخوان‌کننده قرارداد استفاده‌ی تابع را نقض کرده باشد، مثلاً <code dir="ltr">nil</code> پاس داده باشد در حالی که مستندات صراحتاً غیر <code dir="ltr">nil</code> بودن را خواسته باشد.</li>
+<li><strong>وقتی panic مناسب است:</strong> تنها زمان‌هایی که <code dir="ltr">panic</code> مناسب است شامل موارد زیر می‌شود: نقض invariant داخلی (وضعیتی که هرگز نباید رخ دهد)، خطای برنامه‌نویس (مثل دسترسی به اندیس خارج از محدوده)، و مقداردهی اولیه‌ی حیاتی ناموفق (مثل بارگذاری قالب required). در تمام این موارد، panic به‌عنوان سیگنالی قوی عمل می‌کند که برنامه در وضعیت نامعتبری قرار گرفته و ادامه‌ی اجرا خطرناک‌تر از توقف است.</li>
+<li><strong>بازیابی panic در راه‌انداز goroutine:</strong> چون <code dir="ltr">recover</code> فقط در همان goroutine کار می‌کند، هر goroutine‌ای که ممکن است panic کند باید <code dir="ltr">defer/recover</code> مخصوص خودش را داشته باشد. الگوی رایج این است که تابعی بنویسید که goroutine را درون خودش با <code dir="ltr">recover</code> بپیچد. این الگو به‌ویژه در سیستم‌هایی که از worker pool استفاده می‌کنند حیاتی است، زیرا panic در یک worker نباید کل pool را از بین ببرد.</li>
+</ul>
+
+<div class="warning"><strong>هشدار عملی — هرگز از panic برای مدیریت خطای عادی استفاده نکنید:</strong> <code dir="ltr">panic</code> فقط برای خطاهای غیرقابل بازیافت برنامه‌نویس مناسب است — نه برای خطاهای قابل پیش‌بینی مثل فایل پیدا نشد، شبکه قطع شد یا ورودی نامعتبر. برای این خطاها همیشه از مقادیر <code dir="ltr">error</code> استفاده کنید. همچنین همیشه در <bdi dir="ltr">HTTP middleware</bdi> از <code dir="ltr">defer/recover</code> استفاده کنید تا از کرش کل سرور به‌خاطر panic در یک handler جلوگیری شود. فراموش نکنید که panic در goroutine فرعی بدون recover، کل پروسه را از بین می‌برد. هر goroutine‌ای که مستقل اجرا می‌شود باید recovery مخصوص خودش را داشته باشد.</div>
+
+</div>
+</main>
+</div>
+
+<!-- Footer -->
+<footer class="site-footer">
+<div class="footer-inner">
+<div class="footer-nav">
+<span class="nav-arrow">‹</span>
+<a href="04.02-custom-errors.html" data-prev>۴.۲ ساخت خطاهای سفارشی</a>
+</div>
+<div class="footer-toc">
+<a href="00.01-contents.html">فهرست</a>
+</div>
+<div class="footer-nav">
+<a href="05.00-chapter-5.html" data-next>۵. همزمانی</a>
+<span class="nav-arrow">›</span>
+</div>
+</div>
+</footer>
+
+<!-- Back to Top -->
+<button class="back-to-top" aria-label="بازگشت به بالا">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
+</button>
+
+<!-- Scripts -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/go.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/php.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/sql.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/yaml.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/json.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/dockerfile.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/xml.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/ini.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/plaintext.min.js"></script>
+<script src="assets/js/main.js"></script>
+</body>
+</html>

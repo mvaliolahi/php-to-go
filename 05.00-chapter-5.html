@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="fa">
+<head>
+<script>!function(){try{var t=localStorage.getItem('php2go-theme');if(t==='dark'||(!t&&window.matchMedia('(prefers-color-scheme:dark)').matches)){document.documentElement.setAttribute('data-theme','dark')}}catch(e){}}();</script>
+<meta charset="utf-8"/>
+<meta content="ie=edge" http-equiv="x-ua-compatible"/>
+<title>۵. همزمانی — PHP to Go</title>
+<meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet"/>
+<link href="assets/css/main.css" rel="stylesheet" type="text/css"/>
+<link href="assets/img/favicon.ico" rel="icon" type="image/x-icon"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" media="screen" class="hljs-light-theme" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css" media="not screen" class="hljs-dark-theme" rel="stylesheet"/>
+</head>
+<body>
+<!-- Progress Bar -->
+<div class="progress-bar"><div class="progress-bar__fill"></div></div>
+
+<!-- Header -->
+<header class="site-header">
+<div class="header-inner">
+<div class="header-left">
+<button class="header-btn sidebar-toggle" aria-label="فهرست">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+</button>
+<a href="00.00-front-matter.html" class="header-logo"><span class="logo-php">PHP</span> to <span class="logo-go">Go</span></a>
+<span class="header-crumbs">همزمانی</span>
+</div>
+<div class="header-right">
+<nav class="header-nav">
+<span class="nav-arrow">‹</span>
+<a href="04.03-panic.html"><span class="nav-label">۴.۳ panic</span></a>
+<a href="00.01-contents.html">فهرست</a>
+<a href="05.01-goroutine.html"><span class="nav-label">۵.۱ Goroutine</span></a>
+<span class="nav-arrow">›</span>
+</nav>
+<button class="header-btn search-toggle" aria-label="جستجو">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+</button>
+<button class="header-btn theme-toggle" aria-label="تغییر تم">
+<svg class="theme-icon-light" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+<svg class="theme-icon-dark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+</button>
+</div>
+</div>
+</header>
+
+<!-- Search Modal -->
+<div class="search-overlay">
+<div class="search-modal">
+<div class="search-input-wrap">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+<input type="text" class="search-input" placeholder="جستجو... (Ctrl+K)" dir="rtl"/>
+</div>
+<div class="search-results"></div>
+</div>
+</div>
+
+<!-- Layout -->
+<div class="site-layout">
+<!-- Sidebar -->
+<aside class="sidebar"></aside>
+<div class="sidebar-overlay"></div>
+
+<!-- Main Content -->
+<main class="content-area">
+<div class="content-wrap text">
+<div class="chapter-label">فصل ۵</div>
+<h2 id="فصل-پنجم">فصل پنجم</h2>
+<p>همزمانی (<bdi dir="ltr">Concurrency</bdi>) قلب تپنده‌ی زبان Go است. اگر از PHP به Go مهاجرت می‌کنید، این فصل یکی از کلیدی‌ترین تغییرات پارادایمی را که تجربه خواهید کرد پوشش می‌دهد. در PHP مدل اجرایی به‌طور ذاتی همزمان نیست — هر درخواست HTTP در یک فرآیند (<bdi dir="ltr">Process</bdi>) مستقل اجرا می‌شود و ارتباط بین فرآیندها تنها از طریق واسطه‌هایی مانند دیتابیس، Redis یا صف‌های پیام ممکن است. اما Go از نخستین روز طراحی‌اش بر اساس مدل <bdi dir="ltr">CSP</bdi> (<bdi dir="ltr">Communicating Sequential Processes</bdi>) بنا شده است و همزمانی را نه به‌عنوان یک افزونه‌ی خارجی، بلکه به‌عنوان بخشی ذاتی و جدایی‌ناپذیر از زبان ارائه می‌دهد.</p>
+
+<div class="quote-box">
+    <p class="quote-text">همزمانی موازی‌سازی نیست. همزمانی درباره پرداختن به چیزهای زیاد در آنِ واحد است. موازی‌سازی درباره انجام چیزهای زیاد در آنِ واحد است. این مفاهیم مرتبط اما متمایز هستند. همزمانی درباره ساختار است، موازی‌سازی درباره اجرا.</p>
+    <p class="quote-source">
+        <span class="quote-author">Rob Pike</span>
+        <span class="quote-role">طراح‌ارشد زبان Go</span>
+        <span class="quote-separator">|</span>
+        <span class="quote-book">Heroku Waza 2012 — Concurrency is not Parallelism</span>
+    </p>
+</div>
+
+<div class="important"><strong>چرا این فصل از اهمیت ویژه‌ای برخوردار است:</strong> درک عمیق همزمانی تفاوت اصلی بین یک برنامه‌نویس متوسط Go و یک مهندس حرفه‌ای Go است. بسیاری از مزایای Go — مقیاس‌پذیری بالا، پاسخ‌دهی سریع، و بهره‌وری منابع — مستقیماً ناشی از مدل همزمانی آن هستند. بدون تسلط بر این مفاهیم، نمی‌توانید از تمام پتانسیل Go بهره ببرید و احتمالاً الگوهای PHP را به‌صورت مکانیکی در Go پیاده خواهید کرد که نتیجه‌ای ناکارآمد و پر از باگ خواهد بود.</div>
+
+<h3 id="چرا-همزمانی-ابرقوه-go-است">چرا همزمانی ابرقوه‌ی Go است</h3>
+<p>برای درک اینکه چرا همزمانی در Go آن‌قدر خاص است باید مدل اجرایی PHP را به‌دقت بررسی کنیم. در PHP هر درخواست HTTP به یک فرآیند اختصاصی نیاز دارد — چه از طریق <bdi dir="ltr">PHP-FPM</bdi> و چه از طریق <bdi dir="ltr">Apache mod_php</bdi>. هر فرآیند حدود ۸ مگابایت حافظه مصرف می‌کند و ساخت آن نیازمند <bdi dir="ltr">syscall</bdi> سیستم‌عامل است. وقتی ۱۰۰۰ درخواست همزمان داشته باشید، به ۱۰۰۰ فرآیند نیاز دارید که مجموعاً حدود ۸ گیگابایت حافظه مصرف می‌کنند. علاوه بر این، تعویض زمینه (<bdi dir="ltr">Context Switch</bdi>) بین فرآیندها هزینه‌ی بالایی دارد چون سیستم‌عامل باید وضعیت کامل فرآیند شامل جدول صفحات حافظه، <bdi dir="ltr">TLB</bdi> ، و تمام ثبت‌کننده‌ها را ذخیره و بازیابی کند.</p>
+
+<p>در Go، یک برنامه‌ی وب می‌تواند ده‌ها هزار درخواست HTTP را درون یک فرآیند واحد مدیریت کند. هر درخواست در یک <bdi dir="ltr">Goroutine</bdi> سبک‌وزن (با حافظه‌ی اولیه تنها ۲ کیلوبایت) اجرا می‌شود و زمان تعویض زمینه بین <bdi dir="ltr">Goroutine</bdi>‌ها تنها حدود ۱۰۰ تا ۲۰۰ نانوثانیه است — در مقایسه با ۱ تا ۲ میکروثانیه برای تعویض <bdi dir="ltr">Thread</bdi> سیستم‌عامل. این تفاوت به‌معنای آن است که Go می‌تواند ده‌ها برابر بیشتر از PHP درخواست همزمان را با همان منابع سخت‌افزاری مدیریت کند.</p>
+
+<h3 id="مدل-همزمان-php-در-برابر-go">مدل همزمان PHP در برابر Go</h3>
+<p>مدل همزمانی PHP عموماً مبتنی بر <strong>فرآیندهای مستقل</strong> است. در Laravel برای اجرای غیرهمزمان کارها از صف‌ها (<bdi dir="ltr">Queue</bdi>) و <bdi dir="ltr">Worker</bdi>‌ها استفاده می‌کنید. این سیستم شامل اجزای متعددی است: یک درایور صف مانند Redis یا دیتابیس، فرآیندهای <bdi dir="ltr">Worker</bdi> که با <bdi dir="ltr">Supervisor</bdi> مدیریت می‌شوند، و سیستم‌های مانیتورینگ مانند <bdi dir="ltr">Horizon</bdi>. هر یک از این اجزا نقطه‌ی شکست بالقوه‌ای هستند و مدیریت آن‌ها پیچیدگی عملیاتی قابل‌توجهی ایجاد می‌کند.</p>
+
+<p>در مقابل، Go همه‌ی این نیازها را درون خود برنامه و بدون وابستگی به ابزارهای خارجی برآورده می‌کند. به‌جای صف Redis، از <bdi dir="ltr">Channel</bdi> داخلی استفاده می‌شود. به‌جای <bdi dir="ltr">Supervisor</bdi> ، <bdi dir="ltr">Scheduler</bdi> داخلی <bdi dir="ltr">Runtime</bdi> مدیریت می‌کند. به‌جای <bdi dir="ltr">Horizon</bdi> ، <bdi dir="ltr">pprof</bdi> و ابزارهای داخلی نظارت می‌کنند. این یکپارچگی نه‌تنها پیچیدگی عملیاتی را کاهش می‌دهد، بلکه کنترل دقیق‌تری بر رفتار سیستم فراهم می‌سازد.</p>
+
+<table class="comparison-table" dir="rtl">
+<thead>
+<tr><th>ویژگی</th><th>PHP</th><th>Go</th></tr>
+</thead>
+<tbody>
+<tr><td>مدل اجرا</td><td>یک فرآیند به ازای هر درخواست</td><td>یک <bdi dir="ltr">Goroutine</bdi> سبک درون یک فرآیند</td></tr>
+<tr><td>مصرف حافظه هر واحد</td><td>~۸ مگابایت</td><td>~۲ کیلوبایت (رشد پویا)</td></tr>
+<tr><td>هزینه ساخت</td><td><bdi dir="ltr">fork() syscall</bdi></td><td>تخصیص <bdi dir="ltr">stack</bdi> + ساخت <bdi dir="ltr">runtime.g</bdi></td></tr>
+<tr><td>ارتباط بین واحدها</td><td>Redis، دیتابیس، فایل</td><td><bdi dir="ltr">Channel</bdi> (داخلی و نوع‌دار)</td></tr>
+<tr><td>مدیریت همزمانی</td><td><bdi dir="ltr">PHP-FPM</bdi> + <bdi dir="ltr">Supervisor</bdi></td><td><bdi dir="ltr">Go Runtime Scheduler</bdi></td></tr>
+<tr><td>لغو عملیات</td><td>محدود (<bdi dir="ltr">connection_aborted()</bdi>)</td><td><bdi dir="ltr">context.Context</bdi> (کامل)</td></tr>
+<tr><td>مقیاس‌پذیری</td><td>محدود به تعداد فرآیندها</td><td>صدها هزار <bdi dir="ltr">Goroutine</bdi></td></tr>
+</tbody>
+</table>
+
+<h3 id="تغییر-پارادایم-از-thread-به-goroutine">تغییر پارادایم: از <bdi dir="ltr">Thread</bdi> به <bdi dir="ltr">Goroutine</bdi></h3>
+<p>در زبان‌هایی مانند Java یا C++، <bdi dir="ltr">Thread</bdi>‌های سیستم‌عامل ابزار اصلی همزمانی هستند. هر <bdi dir="ltr">Thread</bdi> حداقل ۱ مگابایت <bdi dir="ltr">Stack</bdi> اختصاصی دارد (در لینوکس پیش‌فرض ۸ مگابایت)، ساخت آن نیازمند <bdi dir="ltr">syscall</bdi> است، و زمان‌بندی آن توسط کرنل سیستم‌عامل انجام می‌شود. این محدودیت‌ها باعث می‌شوند ایجاد ده‌ها هزار <bdi dir="ltr">Thread</bdi> عملاً غیرممکن باشد.</p>
+
+<p><bdi dir="ltr">Goroutine</bdi>‌ها این محدودیت‌ها را از سه جهت اساسی حل می‌کنند. نخست، <bdi dir="ltr">Stack</bdi> اولیه‌ی بسیار کوچک (۲ کیلوبایت) که به‌صورت پویا رشد می‌کند، اجازه می‌دهد صدها هزار <bdi dir="ltr">Goroutine</bdi> همزمان اجرا شوند. دوم، <bdi dir="ltr">Scheduler</bdi> داخلی Go به‌جای کرنل سیستم‌عامل، زمان‌بندی را در فضای کاربری (<bdi dir="ltr">User Space</bdi>) انجام می‌دهد که بسیار سریع‌تر است. سوم، مدل <bdi dir="ltr">M:N Scheduler</bdi> تعداد بسیار زیادی <bdi dir="ltr">Goroutine</bdi> را روی تعداد محدودی <bdi dir="ltr">Thread</bdi> سیستم‌عامل نگاشت می‌کند و بهره‌وری منابع را به حداکثر می‌رساند.</p>
+
+<figure class="diagram" dir="ltr">
+<svg height="320" viewBox="0 0 700 320" width="700" xmlns="http://www.w3.org/2000/svg">
+<rect fill="#fafafa" height="320" rx="8" width="700" x="0" y="0"></rect>
+<defs>
+<marker id="arrowCmp1" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#777BB4" points="0 0, 10 3.5, 0 7"></polygon></marker>
+<marker id="arrowCmp2" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#00ADD8" points="0 0, 10 3.5, 0 7"></polygon></marker>
+</defs>
+<!-- PHP Side -->
+<text fill="#777BB4" font-size="14" font-weight="bold" text-anchor="middle" x="175" y="25" direction="rtl" unicode-bidi="embed">مدل <tspan direction="ltr" unicode-bidi="embed">PHP</tspan>: یک فرآیند = یک درخواست</text>
+<rect fill="#777BB4" height="50" opacity="0.12" rx="6" stroke="#777BB4" stroke-width="1.5" width="80" x="20" y="45"></rect>
+<text fill="#333" font-size="9" text-anchor="middle" x="60" y="68" direction="ltr" unicode-bidi="embed">Req 1</text>
+<text fill="#999" font-size="8" text-anchor="middle" x="60" y="82" direction="ltr" unicode-bidi="embed">~8MB</text>
+<rect fill="#777BB4" height="50" opacity="0.12" rx="6" stroke="#777BB4" stroke-width="1.5" width="80" x="110" y="45"></rect>
+<text fill="#333" font-size="9" text-anchor="middle" x="150" y="68" direction="ltr" unicode-bidi="embed">Req 2</text>
+<text fill="#999" font-size="8" text-anchor="middle" x="150" y="82" direction="ltr" unicode-bidi="embed">~8MB</text>
+<rect fill="#777BB4" height="50" opacity="0.12" rx="6" stroke="#777BB4" stroke-width="1.5" width="80" x="200" y="45"></rect>
+<text fill="#333" font-size="9" text-anchor="middle" x="240" y="68" direction="ltr" unicode-bidi="embed">Req 3</text>
+<text fill="#999" font-size="8" text-anchor="middle" x="240" y="82" direction="ltr" unicode-bidi="embed">~8MB</text>
+<line stroke="#777BB4" stroke-width="1" x1="60" x2="60" y1="95" y2="115"></line>
+<line stroke="#777BB4" stroke-width="1" x1="150" x2="150" y1="95" y2="115"></line>
+<line stroke="#777BB4" stroke-width="1" x1="240" x2="240" y1="95" y2="115"></line>
+<rect fill="#777BB4" height="30" opacity="0.06" rx="6" stroke="#777BB4" stroke-width="1" width="280" x="20" y="115"></rect>
+<text fill="#555" font-size="10" text-anchor="middle" x="160" y="135" direction="ltr" unicode-bidi="embed">PHP-FPM Worker Pool (OS Scheduler)</text>
+<rect fill="#e74c3c" height="25" opacity="0.1" rx="4" stroke="#e74c3c" stroke-width="1" width="260" x="30" y="155"></rect>
+<text fill="#e74c3c" font-size="9" text-anchor="middle" x="160" y="172" direction="rtl" unicode-bidi="embed">ارتباط فقط از طریق <tspan direction="ltr" unicode-bidi="embed">Redis/DB</tspan> — بدون حافظه مشترک</text>
+<!-- Go Side -->
+<text fill="#00ADD8" font-size="14" font-weight="bold" text-anchor="middle" x="525" y="25" direction="rtl" unicode-bidi="embed">مدل <tspan direction="ltr" unicode-bidi="embed">Go</tspan>: یک فرآیند = هزاران <tspan direction="ltr" unicode-bidi="embed">Goroutine</tspan></text>
+<rect fill="#00ADD8" height="28" opacity="0.2" rx="4" stroke="#00ADD8" stroke-width="1" width="45" x="370" y="45"></rect><text fill="#333" font-size="7" text-anchor="middle" x="392" y="63" direction="ltr" unicode-bidi="embed">G1</text>
+<rect fill="#00ADD8" height="28" opacity="0.2" rx="4" stroke="#00ADD8" stroke-width="1" width="45" x="420" y="45"></rect><text fill="#333" font-size="7" text-anchor="middle" x="442" y="63" direction="ltr" unicode-bidi="embed">G2</text>
+<rect fill="#00ADD8" height="28" opacity="0.2" rx="4" stroke="#00ADD8" stroke-width="1" width="45" x="470" y="45"></rect><text fill="#333" font-size="7" text-anchor="middle" x="492" y="63" direction="ltr" unicode-bidi="embed">G3</text>
+<rect fill="#00ADD8" height="28" opacity="0.2" rx="4" stroke="#00ADD8" stroke-width="1" width="45" x="520" y="45"></rect><text fill="#333" font-size="7" text-anchor="middle" x="542" y="63" direction="ltr" unicode-bidi="embed">G4</text>
+<rect fill="#00ADD8" height="28" opacity="0.15" rx="4" stroke="#00ADD8" stroke-width="1" width="45" x="570" y="45"></rect><text fill="#333" font-size="7" text-anchor="middle" x="592" y="63" direction="ltr" unicode-bidi="embed">...</text>
+<rect fill="#00ADD8" height="28" opacity="0.2" rx="4" stroke="#00ADD8" stroke-width="1" width="45" x="620" y="45"></rect><text fill="#333" font-size="7" text-anchor="middle" x="642" y="63" direction="ltr" unicode-bidi="embed">Gn</text>
+<text fill="#00ADD8" font-size="8" text-anchor="middle" x="510" y="85" direction="rtl" unicode-bidi="embed">هر کدام ~2<tspan direction="ltr" unicode-bidi="embed">KB</tspan> — ارتباط از طریق <tspan direction="ltr" unicode-bidi="embed">Channel</tspan></text>
+<!-- Go Scheduler -->
+<rect fill="#f39c12" height="30" opacity="0.15" rx="8" stroke="#f39c12" stroke-width="2" width="300" x="370" y="100"></rect>
+<text fill="#333" font-size="10" text-anchor="middle" x="520" y="120" direction="ltr" unicode-bidi="embed">Go Runtime Scheduler (M:N — User Space)</text>
+<!-- OS Threads -->
+<rect fill="#999" height="25" opacity="0.15" rx="4" stroke="#999" stroke-width="1" width="90" x="380" y="145"></rect><text fill="#333" font-size="8" text-anchor="middle" x="425" y="162" direction="ltr" unicode-bidi="embed">Thread 1</text>
+<rect fill="#999" height="25" opacity="0.15" rx="4" stroke="#999" stroke-width="1" width="90" x="480" y="145"></rect><text fill="#333" font-size="8" text-anchor="middle" x="525" y="162" direction="ltr" unicode-bidi="embed">Thread 2</text>
+<rect fill="#999" height="25" opacity="0.15" rx="4" stroke="#999" stroke-width="1" width="90" x="580" y="145"></rect><text fill="#333" font-size="8" text-anchor="middle" x="625" y="162" direction="ltr" unicode-bidi="embed">Thread N</text>
+<rect fill="#27ae60" height="25" opacity="0.1" rx="4" stroke="#27ae60" stroke-width="1" width="300" x="370" y="180"></rect>
+<text fill="#27ae60" font-size="9" text-anchor="middle" x="520" y="197" direction="rtl" unicode-bidi="embed">ارتباط ایمن از طریق <tspan direction="ltr" unicode-bidi="embed">Channel</tspan> — بدون نیاز به قفل دستی</text>
+<!-- Bottom comparison -->
+<rect fill="#f5f5f5" height="90" rx="8" stroke="#ddd" stroke-width="1" width="660" x="20" y="215"></rect>
+<text fill="#555" font-size="11" font-weight="bold" text-anchor="middle" x="350" y="238" direction="rtl" unicode-bidi="embed">مقایسه عملکردی</text>
+<rect fill="#777BB4" height="18" opacity="0.15" rx="4" width="200" x="40" y="250"></rect><text fill="#777BB4" font-size="9" text-anchor="middle" x="140" y="263" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">PHP</tspan>: ۱۰۰۰ درخواست = ~۸ گیگابایت حافظه</text>
+<rect fill="#00ADD8" height="18" opacity="0.15" rx="4" width="200" x="260" y="250"></rect><text fill="#00ADD8" font-size="9" text-anchor="middle" x="360" y="263" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">Go</tspan>: ۱۰۰۰ درخواست = ~۲ مگابایت حافظه</text>
+<rect fill="#27ae60" height="18" opacity="0.15" rx="4" width="180" x="480" y="250"></rect><text fill="#27ae60" font-size="9" text-anchor="middle" x="570" y="263" direction="rtl" unicode-bidi="embed">تفاوت: ۴۰۰۰ برابر کمتر!</text>
+<text fill="#888" font-size="9" text-anchor="middle" x="350" y="292" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">PHP</tspan>: <tspan direction="ltr" unicode-bidi="embed">context</tspan> <tspan direction="ltr" unicode-bidi="embed">switch</tspan> ~۱μs | <tspan direction="ltr" unicode-bidi="embed">Go</tspan>: <tspan direction="ltr" unicode-bidi="embed">goroutine</tspan> <tspan direction="ltr" unicode-bidi="embed">switch</tspan> ~۱۰۰<tspan direction="ltr" unicode-bidi="embed">ns</tspan> — ۱۰ برابر سریع‌تر</text>
+</svg>
+<figcaption>شکل ۱-۵: مقایسه مدل پردازشی <bdi dir="ltr">PHP</bdi> و <bdi dir="ltr">Go</bdi> — فرآیندهای سنگین در برابر <bdi dir="ltr">Goroutine</bdi>‌های سبک</figcaption>
+</figure>
+
+<h3 id="مقدمه‌ای-بر-csp">مقدمه‌ای بر <bdi dir="ltr">CSP</bdi></h3>
+<p>مدل <bdi dir="ltr">CSP</bdi> (<bdi dir="ltr">Communicating Sequential Processes</bdi>) یک مدل ریاضی برای توصیف سیستم‌های همزمان است که توسط تونی هور (<bdi dir="ltr">Tony Hoare</bdi>) در سال ۱۹۷۸ ارائه شد. ایده‌ی اصلی <bdi dir="ltr">CSP</bdi> ساده اما قدرتمند است: به‌جای اینکه فرآیندهای همزمان از حافظه‌ی مشترک استفاده کنند، از طریق کانال‌های ارتباطی پیام رد و بدل می‌کنند. هر فرآیند به‌صورت ترتیبی (<bdi dir="ltr">Sequential</bdi>) اجرا می‌شود، اما فرآیندهای مختلف می‌توانند همزمان با یکدیگر ارتباط برقرار کنند.</p>
+
+<p>Go این مدل را با دو سازوکار بنیادی پیاده‌سازی کرده است: <bdi dir="ltr">Goroutine</bdi>‌ها (فرآیندهای سبک‌وزن) و <bdi dir="ltr">Channel</bdi>‌ها (کانال‌های ارتباطی). شعار معروف Go این است: <bdi dir="ltr">"Share memory by communicating, don't communicate by sharing memory"</bdi> — حافظه را با ارتباط به اشتراک بگذارید، نه با اشتراک حافظه ارتباط برقرار کنید. این رویکرد مزایای متعددی دارد: از بین رفتن نیاز به قفل‌های دستی، کاهش خطاهای <bdi dir="ltr">Race Condition</bdi> ، و سادگی ذهنی در طراحی سیستم‌های همزمان.</p>
+
+<div class="note"><strong>یادداشت:</strong> در ادامه این فصل علاوه بر مفاهیم کاربردی همزمانی، به جزئیات داخلی <bdi dir="ltr">Runtime</bdi> زبان Go نیز خواهیم پرداخت. درک ساختارهایی مانند مدل <bdi dir="ltr">GMP Scheduler</bdi> (شامل <bdi dir="ltr">G</bdi> ، <bdi dir="ltr">M</bdi> و <bdi dir="ltr">P</bdi>)، ساختار داخلی <code dir="ltr">runtime.g</code> برای <bdi dir="ltr">Goroutine</bdi> ، ساختار <code>hchan</code> برای <bdi dir="ltr">Channel</bdi> ، مکانیزم انتشار لغو در <bdi dir="ltr">Context</bdi> و یکپارچگی <bdi dir="ltr">ThreadSanitizer</bdi> با فلگ <code>-race</code> به شما کمک می‌کند کدی کارآمدتر و مطمئن‌تر بنویسید. این دانش داخلی تفاوت اصلی بین استفاده‌ی سطحی و تسلط عمیق بر همزمانی در Go است.</div>
+
+<h3 id="الگوی-fork-join">الگوی <bdi dir="ltr">Fork-Join</bdi></h3>
+<p>یکی از پایه‌ای‌ترین الگوهایی که Go بر آن تکیه دارد الگوی <bdi dir="ltr">Fork-Join</bdi> است. این الگو نقطه‌ی ورود ساده اما قدرتمندی برای درک مدل همزمانی در Go است. در نظر بگیرید که با یک <bdi dir="ltr">Task</bdi> بزرگ روبه‌رو هستید — مثلاً پردازش یک فایل عظیم یا ارسال نوتیفیکیشن به هزاران کاربر. در مدل <bdi dir="ltr">Fork-Join</bdi> ابتدا این <bdi dir="ltr">Task</bdi> بزرگ را به چند بخش کوچک‌تر تقسیم می‌کنید (<bdi dir="ltr">Fork</bdi>)، سپس هر بخش را به‌طور هم‌زمان اجرا می‌کنید، و در پایان منتظر می‌مانید تا همه‌ی آن‌ها به اتمام برسند (<bdi dir="ltr">Join</bdi>) و نتیجه‌ی نهایی پس از ادغام نتایج آماده می‌شود.</p>
+
+<p>در زبان PHP به‌خصوص در فریم‌ورک‌هایی مانند Laravel معمولاً اجرای هم‌زمان کارها از طریق <bdi dir="ltr">Queue</bdi> و <bdi dir="ltr">Worker</bdi> انجام می‌شود. مثلاً برای ارسال ایمیل به هزار کاربر شما یک <bdi dir="ltr">Job Queue</bdi> می‌سازید، <bdi dir="ltr">Job</bdi>‌ها را <bdi dir="ltr">dispatch</bdi> می‌کنید و <bdi dir="ltr">Horizon</bdi> یا <bdi dir="ltr">Supervisor</bdi> آن‌ها را مدیریت می‌کنند. این مدل برای بسیاری از پروژه‌ها جواب می‌دهد اما نیاز به یک صف خارجی مثل Redis، فرآیندهای مستقل، مدیریت خطاها، اجرای مجدد <bdi dir="ltr">Job</bdi>‌های ناموفق و پیچیدگی‌های دیگری نیز دارد.</p>
+
+<p>در Go این <bdi dir="ltr">Fork</bdi> یا تقسیم‌بندی با استفاده از <bdi dir="ltr">Goroutine</bdi>‌ها انجام می‌شود — با اضافه کردن تنها یک کلمه‌ی کلیدی <code>go</code>. برای مرحله‌ی <bdi dir="ltr">Join</bdi> ابزارهایی مانند <code>sync.WaitGroup</code> یا <bdi dir="ltr">Channel</bdi> به کار می‌روند. نکته‌ی مهم اینجاست که برخلاف PHP، در Go نیازی به پردازش‌های جداگانه یا صف خارجی نیست — همه‌چیز در درون خود برنامه و تنها با چند خط کد انجام می‌شود.</p>
+
+<figure class="diagram" dir="ltr">
+<svg height="250" viewBox="0 0 550 250" width="550" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<marker id="arrowfj" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5">
+<polygon fill="#00ADD8" points="0 0, 10 3.5, 0 7"></polygon>
+</marker>
+</defs>
+<text class="title" text-anchor="middle" x="275" y="25" direction="rtl" unicode-bidi="embed">الگوی <tspan direction="ltr" unicode-bidi="embed">Fork-Join</tspan></text>
+<!-- Main task -->
+<rect class="box" height="35" width="150" x="200" y="45"></rect>
+<text font-weight="bold" text-anchor="middle" x="275" y="68" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">Task</tspan> اصلی</text>
+<!-- Fork lines -->
+<line marker-end="url(#arrowfj)" stroke="#00ADD8" stroke-width="2" x1="225" x2="100" y1="80" y2="110"></line>
+<line marker-end="url(#arrowfj)" stroke="#00ADD8" stroke-width="2" x1="275" x2="275" y1="80" y2="110"></line>
+<line marker-end="url(#arrowfj)" stroke="#00ADD8" stroke-width="2" x1="325" x2="450" y1="80" y2="110"></line>
+<!-- Sub-tasks -->
+<rect class="box" height="35" width="140" x="30" y="110"></rect>
+<text text-anchor="middle" x="100" y="133" direction="ltr" unicode-bidi="embed">goroutine 1</text>
+<rect class="box" height="35" width="140" x="205" y="110"></rect>
+<text text-anchor="middle" x="275" y="133" direction="ltr" unicode-bidi="embed">goroutine 2</text>
+<rect class="box" height="35" width="140" x="380" y="110"></rect>
+<text text-anchor="middle" x="450" y="133" direction="ltr" unicode-bidi="embed">goroutine 3</text>
+<!-- Join lines -->
+<line marker-end="url(#arrowfj)" stroke="#4caf50" stroke-width="2" x1="100" x2="200" y1="145" y2="180"></line>
+<line marker-end="url(#arrowfj)" stroke="#4caf50" stroke-width="2" x1="275" x2="275" y1="145" y2="180"></line>
+<line marker-end="url(#arrowfj)" stroke="#4caf50" stroke-width="2" x1="450" x2="350" y1="145" y2="180"></line>
+<!-- Join point -->
+<rect class="box-join" height="35" width="200" x="175" y="180"></rect>
+<text font-weight="bold" text-anchor="middle" x="275" y="203" direction="ltr" unicode-bidi="embed">WaitGroup / Channel Join</text>
+<!-- Result -->
+<rect fill="none" height="20" width="150" x="200" y="230"></rect>
+<text fill="#666" font-size="11" text-anchor="middle" x="275" y="245" direction="rtl" unicode-bidi="embed">ادامه برنامه با نتایج</text>
+</svg>
+<figcaption>شکل ۲-۵: الگوی <bdi dir="ltr">Fork-Join</bdi> در <bdi dir="ltr">Go</bdi></figcaption>
+</figure>
+
+<p>به مثال زیر توجه کنید. این مثال الگوی <bdi dir="ltr">Fork-Join</bdi> را با ارسال موازی نوتیفیکیشن به چند کاربر نشان می‌دهد (مفاهیمی مثل <bdi dir="ltr">WaitGroup</bdi> در ادامه توضیح داده خواهد شد):</p>
+
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">package main
+
+import (
+"fmt"
+"sync"
+"time"
+)
+
+func sendNotification(userID int, wg *sync.WaitGroup) {
+    defer wg.Done() // decrement counter
+    fmt.Printf("ارسال پیام به کاربر %d شروع شد...\n", userID)
+    time.Sleep(time.Duration(1+userID%3) * time.Second)
+    fmt.Printf("پیام به کاربر %d ارسال شد.\n", userID)
+}
+
+func main() {
+    userIDs := []int{101, 102, 103, 104, 105}
+    var wg sync.WaitGroup
+    wg.Add(len(userIDs)) // Fork: register goroutine count
+
+    for _, id := range userIDs {
+        go sendNotification(id, &amp;wg) // Fork: each user in separate goroutine
+    }
+
+    wg.Wait() // Join: wait for all to finish
+    fmt.Println("همه پیام‌ها ارسال شدند.")
+}
+</code></pre>
+</figure>
+
+<h3 id="همزمانی-در-برابر-موازی‌سازی">همزمانی در برابر موازی‌سازی</h3>
+<p>یکی از سردرگمی‌های رایج در شروع یادگیری این مباحث اشتباه گرفتن <bdi dir="ltr">Concurrency</bdi> با <bdi dir="ltr">Parallelism</bdi> است. هرچند در زبان فارسی هر دو به‌نوعی به «اجرای هم‌زمان» ترجمه می‌شوند اما مفهومی کاملاً متفاوت دارند.</p>
+
+<p><strong>همزمانی یا <bdi dir="ltr">Concurrency</bdi></strong> به توانایی یک سیستم برای مدیریت و پیشبرد چند <bdi dir="ltr">Task</bdi> در یک بازه‌ی زمانی مشترک گفته می‌شود. در این حالت ممکن است همه‌ی <bdi dir="ltr">Task</bdi>‌ها واقعاً به طور هم‌زمان روی پردازنده اجرا نشوند، بلکه سیستم با استفاده از <bdi dir="ltr">Scheduling</bdi> و <bdi dir="ltr">Context Switching</bdi> بین آن‌ها جابه‌جا می‌شود و این توهم را ایجاد می‌کند که کارها هم‌زمان پیش می‌روند.</p>
+
+<p><strong>موازی‌سازی یا <bdi dir="ltr">Parallelism</bdi></strong> به اجرای واقعی چند <bdi dir="ltr">Task</bdi> در یک لحظه فیزیکی و بر روی چند واحد پردازشی مستقل گفته می‌شود. در موازی‌سازی وظایف واقعاً هم‌زمان اجرا می‌شوند و این امر منجر به افزایش توان محاسباتی می‌گردد.</p>
+
+<p>به زبان ساده: همزمانی بیشتر به <strong>ساختار و سازمان‌دهی</strong> مربوط است — چگونه چند کار را در یک بازه زمانی مدیریت کنیم — و موازی‌سازی بیشتر به <strong>اجرای فیزیکی</strong> اشاره دارد — چگونه چند کار را در یک لحظه روی منابع سخت‌افزاری مستقل اجرا کنیم. Go هر دو را پشتیبانی می‌کند: همزمانی از طریق <bdi dir="ltr">Goroutine</bdi>‌ها و <bdi dir="ltr">Channel</bdi>‌ها، و موازی‌سازی از طریق اجرای واقعی روی چند هسته <bdi dir="ltr">CPU</bdi> با کمک <code>runtime.GOMAXPROCS</code>.</p>
+
+<h3 id="انواع-task-ها">انواع <bdi dir="ltr">Task</bdi>‌ها و تأثیر آن بر طراحی</h3>
+<p>برای درک ارزش واقعی همزمانی در Go باید تفاوت دو نوع <bdi dir="ltr">Task</bdi> را درک کنید:</p>
+
+<p><strong><bdi dir="ltr">I/O-bound</bdi>:</strong> کارهایی که زمان اصلی آن‌ها صرف انتظار برای منابع خارجی می‌شود — خواندن از دیتابیس، دریافت داده از <bdi dir="ltr">API</bdi> خارجی، تعامل با فایل یا شبکه. در این نوع <bdi dir="ltr">Task</bdi>‌ها همزمانی می‌تواند تأخیر (<bdi dir="ltr">Latency</bdi>) را به شدت کاهش دهد. به‌جای اجرای ترتیبی ۵ درخواست <bdi dir="ltr">API</bdi> که هر کدام ۱ ثانیه طول می‌کشد (مجموع ۵ ثانیه)، می‌توان ۵ <bdi dir="ltr">Goroutine</bdi> راه‌اندازی کرد که هر سه به‌صورت همزمان منتظر پاسخ باشند و کل عملیات در حدود ۱ ثانیه تمام شود.</p>
+
+<p><strong><bdi dir="ltr">CPU-bound</bdi>:</strong> وظایفی که بیشتر زمان خود را صرف محاسبه و پردازش در <bdi dir="ltr">CPU</bdi> می‌کنند — رمزنگاری داده‌ها، تولید <bdi dir="ltr">Thumbnail</bdi> از عکس‌ها، فشرده‌سازی فایل‌ها. در این نوع <bdi dir="ltr">Task</bdi>‌ها موازی‌سازی مهم‌تر از همزمانی است. Go از طریق اجرای هم‌زمان واقعی روی چند هسته <bdi dir="ltr">CPU</bdi> با کمک <bdi dir="ltr">Runtime Scheduler</bdi> داخلی می‌تواند این دسته از <bdi dir="ltr">Task</bdi>‌ها را نیز با بهره‌وری بالا انجام دهد.</p>
+
+<div class="tip"><strong>به‌عنوان یک برنامه‌نویس PHP:</strong> اگر تاکنون برای اجرای کارها از <bdi dir="ltr">Queue</bdi> و <bdi dir="ltr">Redis</bdi> استفاده می‌کردید، از این پس در Go می‌توانید همان کار را با <bdi dir="ltr">Goroutine</bdi> و <bdi dir="ltr">Channel</bdi> انجام دهید. اگر مجبور بودید برای موازی شدن از <bdi dir="ltr">Worker</bdi>‌های <bdi dir="ltr">CLI</bdi> در کنار سرور اصلی استفاده کنید، Go به شما امکان مدیریت همه چیز در یک فرآیند واحد را می‌دهد. و اگر <bdi dir="ltr">API</bdi>‌ها باعث تأخیر در پاسخ‌دهی شما می‌شود، Go می‌تواند این <bdi dir="ltr">API</bdi>‌ها را به‌صورت <bdi dir="ltr">Non-blocking</bdi> و همزمان فراخوانی کند.</div>
+
+<h3 id="آنچه-در-این-فصل-خواهید-آموخت">آنچه در این فصل خواهید آموخت</h3>
+<p>در این فصل خواننده با مفاهیم زیر آشنا خواهد شد:</p>
+<p><strong>بخش ۵.۱ — <bdi dir="ltr">Goroutine</bdi>:</strong> مفهوم <bdi dir="ltr">Goroutine</bdi> و تفاوت آن با <bdi dir="ltr">Thread</bdi> سیستم‌عامل و فرآیند PHP، چرخه‌ی حیات <bdi dir="ltr">Goroutine</bdi> ، مدل <bdi dir="ltr">GMP Scheduler</bdi> و الگوریتم <bdi dir="ltr">Work-Stealing</bdi> ، مکانیزم رشد <bdi dir="ltr">Stack</bdi>.</p>
+<p><strong>بخش ۵.۲ — <bdi dir="ltr">Channel</bdi>:</strong> ساختار داخلی <code>hchan</code> ، کانال‌های بافر‌دار و بدون بافر، کانال‌های یک‌طرفه، رفتار کانال <bdi dir="ltr">nil</bdi> و بسته‌شده.</p>
+<p><strong>بخش ۵.۳ — <bdi dir="ltr">Select</bdi>:</strong> مکانیک <bdi dir="ltr">Select</bdi> ، عملیات <bdi dir="ltr">Non-blocking</bdi> ، <bdi dir="ltr">Timeout</bdi> و <bdi dir="ltr">Multiplexing</bdi>.</p>
+<p><strong>بخش ۵.۴ — <bdi dir="ltr">Context</bdi>:</strong> ساختار درختی <bdi dir="ltr">Context</bdi> ، <code>WithCancel</code> ، <code>WithTimeout</code> ، <code>WithDeadline</code> ، و <bdi dir="ltr">Graceful Shutdown</bdi>.</p>
+<p><strong>بخش ۵.۵ — <bdi dir="ltr">WaitGroup</bdi>:</strong> ساختار داخلی <bdi dir="ltr">WaitGroup</bdi> ، قوانین استفاده و اشتباهات رایج.</p>
+<p><strong>بخش ۵.۶ — <bdi dir="ltr">Race Condition</bdi>:</strong> انواع <bdi dir="ltr">Race Condition</bdi> ، <bdi dir="ltr">Mutex</bdi> و <bdi dir="ltr">RWMutex</bdi> ، عملیات <bdi dir="ltr">Atomic</bdi> ، و <bdi dir="ltr">Race Detector</bdi>.</p>
+<p><strong>بخش ۵.۷ — الگوهای همزمانی:</strong> <bdi dir="ltr">Worker Pool</bdi> ، <bdi dir="ltr">Fan-out/Fan-in</bdi> ، <bdi dir="ltr">Pipeline</bdi> ، <bdi dir="ltr">Rate Limiting</bdi> ، <bdi dir="ltr">Semaphore</bdi> ، و <bdi dir="ltr">Graceful Shutdown</bdi>.</p>
+<p><strong>بخش ۵.۸ — کاربردهای عملی:</strong> کلاینت <bdi dir="ltr">HTTP</bdi> همزمان، کوئری‌های دیتابیس موازی، و پردازنده‌ی کارهای پس‌زمینه.</p>
+<p><strong>بخش ۵.۹ — نشت <bdi dir="ltr">Goroutine</bdi>:</strong> الگوهای رایج نشت، تشخیص با <bdi dir="ltr">pprof</bdi> ، و راه‌حل‌ها.</p>
+
+</div>
+</main>
+</div>
+
+<!-- Footer -->
+<footer class="site-footer">
+<div class="footer-inner">
+<div class="footer-nav">
+<span class="nav-arrow">‹</span>
+<a href="04.03-panic.html" data-prev>۴.۳ panic</a>
+</div>
+<div class="footer-toc">
+<a href="00.01-contents.html">فهرست</a>
+</div>
+<div class="footer-nav">
+<a href="05.01-goroutine.html" data-next>۵.۱ Goroutine</a>
+<span class="nav-arrow">›</span>
+</div>
+</div>
+</footer>
+
+<!-- Back to Top -->
+<button class="back-to-top" aria-label="بازگشت به بالا">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
+</button>
+
+<!-- Scripts -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/go.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/php.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/sql.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/yaml.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/json.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/dockerfile.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/xml.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/ini.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/plaintext.min.js"></script>
+<script src="assets/js/main.js"></script>
+</body>
+</html>

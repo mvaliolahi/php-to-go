@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="fa">
+<head>
+<script>!function(){try{var t=localStorage.getItem('php2go-theme');if(t==='dark'||(!t&&window.matchMedia('(prefers-color-scheme:dark)').matches)){document.documentElement.setAttribute('data-theme','dark')}}catch(e){}}();</script>
+<meta charset="utf-8"/>
+<meta content="ie=edge" http-equiv="x-ua-compatible"/>
+<title>۸.۴ Map کردن داده‌ها به Struct — PHP to Go</title>
+<meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet"/>
+<link href="assets/css/main.css" rel="stylesheet" type="text/css"/>
+<link href="assets/img/favicon.ico" rel="icon" type="image/x-icon"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" media="screen" class="hljs-light-theme" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css" media="not screen" class="hljs-dark-theme" rel="stylesheet"/>
+</head>
+<body>
+<!-- Progress Bar -->
+<div class="progress-bar"><div class="progress-bar__fill"></div></div>
+
+<!-- Header -->
+<header class="site-header">
+<div class="header-inner">
+<div class="header-left">
+<button class="header-btn sidebar-toggle" aria-label="فهرست">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+</button>
+<a href="00.00-front-matter.html" class="header-logo"><span class="logo-php">PHP</span> to <span class="logo-go">Go</span></a>
+<span class="header-crumbs">پایگاه داده › Map کردن داده‌ها به Struct</span>
+</div>
+<div class="header-right">
+<nav class="header-nav">
+<span class="nav-arrow">‹</span>
+<a href="08.03-executing-queries.html"><span class="nav-label">۸.۳ اجرای Query</span></a>
+<a href="00.01-contents.html">فهرست</a>
+<a href="08.05-transaction-management.html"><span class="nav-label">۸.۵ مدیریت تراکنش‌ها</span></a>
+<span class="nav-arrow">›</span>
+</nav>
+<button class="header-btn search-toggle" aria-label="جستجو">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+</button>
+<button class="header-btn theme-toggle" aria-label="تغییر تم">
+<svg class="theme-icon-light" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+<svg class="theme-icon-dark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+</button>
+</div>
+</div>
+</header>
+
+<!-- Search Modal -->
+<div class="search-overlay">
+<div class="search-modal">
+<div class="search-input-wrap">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+<input type="text" class="search-input" placeholder="جستجو... (Ctrl+K)" dir="rtl"/>
+</div>
+<div class="search-results"></div>
+</div>
+</div>
+
+<!-- Layout -->
+<div class="site-layout">
+<!-- Sidebar -->
+<aside class="sidebar"></aside>
+<div class="sidebar-overlay"></div>
+
+<!-- Main Content -->
+<main class="content-area">
+<div class="content-wrap text">
+<div class="chapter">فصل ۸.۴</div>
+<h2 id="map-کردن-دادهها-به-struct">Map کردن داده‌ها به Struct</h2>
+
+<figure class="diagram" dir="ltr">
+<svg height="350" viewBox="0 0 580 350" width="580" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<marker id="arrow1701" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#555" points="0 0, 10 3.5, 0 7"></polygon></marker>
+<filter height="104%" id="sh1701" width="104%" x="-2%" y="-2%"><fedropshadow dx="1" dy="1" flood-opacity="0.15" stddeviation="2"></fedropshadow></filter>
+</defs>
+<rect fill="#fafafa" height="350" rx="8" width="580" x="0" y="0"></rect>
+<text fill="#333" font-size="16" font-weight="bold" text-anchor="middle" x="290" y="28" direction="rtl" unicode-bidi="embed">روش‌های نگاشت داده‌ها به <tspan direction="ltr" unicode-bidi="embed">Struct</tspan> در <tspan direction="ltr" unicode-bidi="embed">Go</tspan></text>
+
+<!-- Manual -->
+<rect fill="#FF9800" filter="url(#sh1701)" height="70" rx="6" width="150" x="20" y="60"></rect>
+<text fill="#fff" font-size="11" text-anchor="middle" x="95" y="85" direction="ltr" unicode-bidi="embed">Manual Scan</text>
+<text fill="#fff3e0" font-size="9" text-anchor="middle" x="95" y="102" direction="ltr" unicode-bidi="embed">rows.Scan(&amp;a, &amp;b)</text>
+<text fill="#fff3e0" font-size="9" text-anchor="middle" x="95" y="118" direction="rtl" unicode-bidi="embed">کنترل کامل + کد تکراری</text>
+
+<!-- sqlx -->
+<rect fill="#00ADD8" filter="url(#sh1701)" height="70" rx="6" width="150" x="215" y="60"></rect>
+<text fill="#fff" font-size="11" text-anchor="middle" x="290" y="85" direction="ltr" unicode-bidi="embed">sqlx</text>
+<text fill="#e0f7fa" font-size="9" text-anchor="middle" x="290" y="102" direction="ltr" unicode-bidi="embed">structScan / db tags</text>
+<text fill="#e0f7fa" font-size="9" text-anchor="middle" x="290" y="118" direction="rtl" unicode-bidi="embed">آسان‌تر + انعطاف متوسط</text>
+
+<!-- sqlc -->
+<rect fill="#4CAF50" filter="url(#sh1701)" height="70" rx="6" width="150" x="410" y="60"></rect>
+<text fill="#fff" font-size="11" text-anchor="middle" x="485" y="85" direction="ltr" unicode-bidi="embed">sqlc</text>
+<text fill="#e8f5e9" font-size="9" text-anchor="middle" x="485" y="102" direction="ltr" unicode-bidi="embed">code generation</text>
+<text fill="#e8f5e9" font-size="9" text-anchor="middle" x="485" y="118" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">type-safe</tspan> + خودکار</text>
+
+<!-- Comparison table -->
+<rect fill="#E3F2FD" height="140" rx="6" stroke="#2196F3" width="540" x="20" y="160"></rect>
+<text fill="#1565C0" font-size="11" font-weight="bold" text-anchor="middle" x="290" y="185" direction="rtl" unicode-bidi="embed">مقایسه سه روش</text>
+<text fill="#333" font-size="9" text-anchor="middle" x="95" y="210" direction="ltr" unicode-bidi="embed">Manual: Boilerplate</text>
+<text fill="#333" font-size="9" text-anchor="middle" x="95" y="228" direction="ltr" unicode-bidi="embed">Full control</text>
+<text fill="#333" font-size="9" text-anchor="middle" x="290" y="210" direction="ltr" unicode-bidi="embed">sqlx: Medium effort</text>
+<text fill="#333" font-size="9" text-anchor="middle" x="290" y="228" direction="ltr" unicode-bidi="embed">Struct tags</text>
+<text fill="#333" font-size="9" text-anchor="middle" x="485" y="210" direction="ltr" unicode-bidi="embed">sqlc: Generated</text>
+<text fill="#333" font-size="9" text-anchor="middle" x="485" y="228" direction="ltr" unicode-bidi="embed">Type-safe</text>
+
+<text fill="#E65100" font-size="10" text-anchor="middle" x="290" y="270" direction="ltr" unicode-bidi="embed">Eloquent (PHP): Automatic ORM</text>
+<text fill="#E65100" font-size="9" text-anchor="middle" x="290" y="288" direction="rtl" unicode-bidi="embed">نگاشت خودکار اما با <tspan direction="ltr" unicode-bidi="embed">overhead</tspan> و <tspan direction="ltr" unicode-bidi="embed">magic</tspan></text>
+</svg>
+<figcaption>شکل ۸-۴: مقایسه روش‌های نگاشت داده‌ها به <bdi dir="ltr">Struct</bdi> در <bdi dir="ltr">Go</bdi></figcaption>
+</figure>
+
+<p>بعد از اجرای کوئری‌ها بخش اصلی پردازش نتایج و انتقال داده‌ها به ساختارهایی است که بتوانید به راحتی با آن‌ها کار کنید. پکیج <bdi dir="ltr">database/sql</bdi> ابزارهای متنوعی برای خواندن داده‌ها و نگاشت آن‌ها به متغیرها و ساختارها دارد.</p>
+
+<p>به‌عنوان برنامه‌نویس <bdi dir="ltr">Laravel</bdi> می‌دانید که <bdi dir="ltr">Eloquent</bdi> این کار را به صورت خودکار انجام می‌دهد. در <bdi dir="ltr">Go</bdi> نیاز به کنترل و دقت بیشتری دارید اما مزیت آن سرعت و کنترل دقیق بر عملکرد است.</p>
+
+<h3 id="manual-scanning">روش اول: Manual Scanning</h3>
+<p>ساده‌ترین و مستقیم‌ترین روش استفاده از <bdi dir="ltr">rows.Scan()</bdi> است:</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">type User struct {
+    ID int
+    Name string
+    Email string
+}
+
+var users []User
+rows, err := db.Query("SELECT id, name, email FROM users")
+if err != nil {
+    log.Fatal(err)
+}
+defer rows.Close()
+for rows.Next() {
+    var u User
+    if err := rows.Scan(&amp;u.ID, &amp;u.Name, &amp;u.Email); err != nil {
+        log.Println("خطا:", err)
+        continue
+    }
+    users = append(users, u)
+}
+if err := rows.Err(); err != nil {
+    log.Fatal(err)
+}</code></pre>
+</figure>
+<p><strong>مزایا:</strong> کنترل کامل، بدون وابستگی خارجی، عملکرد بالا. <strong>معایب:</strong> کد تکراری برای هر کوئری، احتمال خطا در تعداد و ترتیب پارامترها.</p>
+
+<figure class="diagram" dir="ltr">
+<svg height="420" viewBox="0 0 760 420" width="760" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<marker id="arrowS804" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#555" points="0 0, 10 3.5, 0 7"></polygon></marker>
+<filter height="104%" id="shS804" width="104%" x="-2%" y="-2%"><fedropshadow dx="1" dy="1" flood-opacity="0.15" stddeviation="2"></fedropshadow></filter>
+</defs>
+<rect fill="#fafafa" height="420" rx="8" width="760" x="0" y="0"></rect>
+<text fill="#333" font-size="15" font-weight="bold" text-anchor="middle" x="330" y="25" direction="rtl" unicode-bidi="embed">نگاشت سطر دیتابیس به <tspan direction="ltr" unicode-bidi="embed">Struct</tspan> با <tspan direction="ltr" unicode-bidi="embed">Scan()</tspan></text>
+
+<!-- Database Row on left -->
+<rect fill="#E3F2FD" height="200" rx="6" stroke="#1565C0" stroke-width="1.5" width="200" x="20" y="50"></rect>
+<text fill="#1565C0" font-size="11" font-weight="bold" text-anchor="middle" x="120" y="70" direction="rtl" unicode-bidi="embed">سطر دیتابیس (<tspan direction="ltr" unicode-bidi="embed">SQL Row</tspan>)</text>
+
+<rect fill="#fff" height="28" rx="3" stroke="#1565C0" stroke-width="1" width="180" x="30" y="82"></rect>
+<text fill="#1565C0" font-size="9" font-weight="bold" text-anchor="start" x="40" y="100" direction="ltr" unicode-bidi="embed">id</text>
+<text fill="#666" font-size="8" text-anchor="end" x="200" y="100" direction="ltr" unicode-bidi="embed">INT → 42</text>
+
+<rect fill="#fff" height="28" rx="3" stroke="#1565C0" stroke-width="1" width="180" x="30" y="115"></rect>
+<text fill="#1565C0" font-size="9" font-weight="bold" text-anchor="start" x="40" y="133" direction="ltr" unicode-bidi="embed">name</text>
+<text fill="#666" font-size="8" text-anchor="end" x="200" y="133" direction="ltr" unicode-bidi="embed">VARCHAR → "علی"</text>
+
+<rect fill="#fff" height="28" rx="3" stroke="#1565C0" stroke-width="1" width="180" x="30" y="148"></rect>
+<text fill="#1565C0" font-size="9" font-weight="bold" text-anchor="start" x="40" y="166" direction="ltr" unicode-bidi="embed">email</text>
+<text fill="#666" font-size="8" text-anchor="end" x="200" y="166" direction="ltr" unicode-bidi="embed">VARCHAR → NULL</text>
+
+<rect fill="#fff" height="28" rx="3" stroke="#1565C0" stroke-width="1" width="180" x="30" y="181"></rect>
+<text fill="#1565C0" font-size="9" font-weight="bold" text-anchor="start" x="40" y="199" direction="ltr" unicode-bidi="embed">created_at</text>
+<text fill="#666" font-size="8" text-anchor="end" x="200" y="199" direction="ltr" unicode-bidi="embed">TIMESTAMP</text>
+
+<!-- Arrows from DB row to Struct -->
+<!-- id → ID (green) -->
+<line marker-end="url(#arrowS804)" stroke="#4CAF50" stroke-width="2" x1="220" x2="350" y1="96" y2="82"></line>
+<!-- name → Name (green) -->
+<line marker-end="url(#arrowS804)" stroke="#4CAF50" stroke-width="2" x1="220" x2="350" y1="129" y2="120"></line>
+<!-- email → Email (RED - NULL pitfall) -->
+<line marker-end="url(#arrowS804)" stroke="#e91e63" stroke-width="2" stroke-dasharray="5,3" x1="220" x2="350" y1="162" y2="158"></line>
+<!-- created_at → CreatedAt (green) -->
+<line marker-end="url(#arrowS804)" stroke="#4CAF50" stroke-width="2" x1="220" x2="350" y1="195" y2="196"></line>
+
+<!-- Type conversion labels on arrows -->
+<rect fill="#e8f5e9" height="14" rx="3" width="70" x="250" y="76"></rect>
+<text fill="#2E7D32" font-size="7" text-anchor="middle" x="285" y="87" direction="ltr" unicode-bidi="embed">INT → int ✓</text>
+
+<rect fill="#e8f5e9" height="14" rx="3" width="95" x="240" y="112"></rect>
+<text fill="#2E7D32" font-size="7" text-anchor="middle" x="287" y="123" direction="ltr" unicode-bidi="embed">VARCHAR → string ✓</text>
+
+<rect fill="#fce4ec" height="14" rx="3" width="110" x="237" y="152"></rect>
+<text fill="#e91e63" font-size="7" text-anchor="middle" x="292" y="163" direction="ltr" unicode-bidi="embed">NULL → string ✗ ERROR!</text>
+
+<rect fill="#e8f5e9" height="14" rx="3" width="120" x="230" y="190"></rect>
+<text fill="#2E7D32" font-size="7" text-anchor="middle" x="290" y="201" direction="ltr" unicode-bidi="embed">TIMESTAMP → time.Time ✓</text>
+
+<!-- Go Struct on right -->
+<rect fill="#e8f5e9" height="200" rx="6" stroke="#4CAF50" stroke-width="1.5" width="230" x="350" y="50"></rect>
+<text fill="#4CAF50" font-size="11" font-weight="bold" text-anchor="middle" x="465" y="70" direction="ltr" unicode-bidi="embed">type User struct</text>
+
+<rect fill="#fff" height="28" rx="3" stroke="#4CAF50" stroke-width="1" width="210" x="360" y="78"></rect>
+<text fill="#333" font-size="9" text-anchor="start" x="370" y="96" direction="ltr" unicode-bidi="embed">ID        int</text>
+<text fill="#4CAF50" font-size="7" text-anchor="end" x="560" y="96" direction="ltr" unicode-bidi="embed">&amp;user.ID</text>
+
+<rect fill="#fff" height="28" rx="3" stroke="#4CAF50" stroke-width="1" width="210" x="360" y="111"></rect>
+<text fill="#333" font-size="9" text-anchor="start" x="370" y="129" direction="ltr" unicode-bidi="embed">Name      string</text>
+<text fill="#4CAF50" font-size="7" text-anchor="end" x="560" y="129" direction="ltr" unicode-bidi="embed">&amp;user.Name</text>
+
+<rect fill="#fce4ec" height="28" rx="3" stroke="#e91e63" stroke-width="1" width="210" x="360" y="144"></rect>
+<text fill="#e91e63" font-size="9" text-anchor="start" x="370" y="162" direction="ltr" unicode-bidi="embed">Email     string</text>
+<text fill="#e91e63" font-size="7" text-anchor="end" x="560" y="162" direction="ltr" unicode-bidi="embed">← PANIC on NULL!</text>
+
+<rect fill="#fff" height="28" rx="3" stroke="#4CAF50" stroke-width="1" width="210" x="360" y="177"></rect>
+<text fill="#333" font-size="9" text-anchor="start" x="370" y="195" direction="ltr" unicode-bidi="embed">CreatedAt time.Time</text>
+<text fill="#4CAF50" font-size="7" text-anchor="end" x="560" y="195" direction="ltr" unicode-bidi="embed">&amp;user.CreatedAt</text>
+
+<!-- Fix box for NULL -->
+<rect fill="#fff" height="85" rx="4" stroke="#4CAF50" stroke-width="1.5" width="230" x="350" y="270"></rect>
+<text fill="#4CAF50" font-size="9" font-weight="bold" text-anchor="middle" x="465" y="288" direction="rtl" unicode-bidi="embed">راه‌حل‌های ستون <tspan direction="ltr" unicode-bidi="embed">Nullable</tspan></text>
+
+<text fill="#4CAF50" font-size="8" font-weight="bold" text-anchor="start" x="360" y="305" direction="ltr" unicode-bidi="embed">① sql.NullString</text>
+<text fill="#333" font-size="7" text-anchor="start" x="370" y="316" direction="ltr" unicode-bidi="embed">Email sql.NullString</text>
+<text fill="#666" font-size="6.5" text-anchor="start" x="370" y="326" direction="ltr" unicode-bidi="embed">if user.Email.Valid { ... }</text>
+
+<text fill="#4CAF50" font-size="8" font-weight="bold" text-anchor="start" x="360" y="340" direction="ltr" unicode-bidi="embed">② *string (Pointer)</text>
+<text fill="#333" font-size="7" text-anchor="start" x="370" y="351" direction="ltr" unicode-bidi="embed">Email *string</text>
+<text fill="#666" font-size="6.5" text-anchor="start" x="370" y="361" direction="ltr" unicode-bidi="embed">if user.Email != nil { ... }</text>
+
+<!-- Error/pitfall box -->
+<rect fill="#fff" height="65" rx="4" stroke="#e91e63" stroke-width="1.5" width="200" x="20" y="270"></rect>
+<text fill="#e91e63" font-size="9" font-weight="bold" text-anchor="middle" x="120" y="288" direction="rtl" unicode-bidi="embed">خطاهای رایج نگاشت</text>
+<text fill="#333" font-size="7.5" text-anchor="start" x="30" y="304" direction="rtl" unicode-bidi="embed">• اسکن <tspan direction="ltr" unicode-bidi="embed">NULL</tspan> به <tspan direction="ltr" unicode-bidi="embed">string</tspan> غیراشاره‌ای</text>
+<text fill="#333" font-size="7.5" text-anchor="start" x="30" y="318" direction="rtl" unicode-bidi="embed">• تعداد پارامترهای <tspan direction="ltr" unicode-bidi="embed">Scan</tspan> نادرست</text>
+<text fill="#333" font-size="7.5" text-anchor="start" x="30" y="332" direction="rtl" unicode-bidi="embed">• ترتیب ستون‌ها با فیلدها متفاوت</text>
+
+<!-- Scan code pattern box -->
+<rect fill="#fff" height="65" rx="4" stroke="#00ADD8" stroke-width="1" width="300" x="230" y="370"></rect>
+<text fill="#00ADD8" font-size="9" font-weight="bold" text-anchor="middle" x="380" y="388" direction="ltr" unicode-bidi="embed">rows.Scan(&amp;user.ID, &amp;user.Name, &amp;user.Email, &amp;user.CreatedAt)</text>
+<text fill="#666" font-size="7.5" text-anchor="middle" x="380" y="403" direction="rtl" unicode-bidi="embed">ترتیب آرگومان‌ها باید دقیقاً با ترتیب <tspan direction="ltr" unicode-bidi="embed">SELECT</tspan> مطابقت داشته باشد</text>
+<text fill="#e91e63" font-size="7.5" text-anchor="middle" x="380" y="416" direction="rtl" unicode-bidi="embed">عدم تطابق → خطای <tspan direction="ltr" unicode-bidi="embed">reflect.NumArg</tspan> یا داده‌ی اشتباه</text>
+
+<!-- Right side info -->
+<rect fill="#fff" height="110" rx="4" stroke="#4CAF50" stroke-width="1" width="140" x="610" y="50"></rect>
+<text fill="#4CAF50" font-size="9" font-weight="bold" text-anchor="middle" x="680" y="68" direction="rtl" unicode-bidi="embed">تبدیل نوع‌ها</text>
+<text fill="#333" font-size="7.5" text-anchor="start" x="620" y="84" direction="ltr" unicode-bidi="embed">INT → int</text>
+<text fill="#333" font-size="7.5" text-anchor="start" x="620" y="97" direction="ltr" unicode-bidi="embed">VARCHAR → string</text>
+<text fill="#333" font-size="7.5" text-anchor="start" x="620" y="110" direction="ltr" unicode-bidi="embed">BOOL → bool</text>
+<text fill="#333" font-size="7.5" text-anchor="start" x="620" y="123" direction="ltr" unicode-bidi="embed">TIMESTAMP → time.Time</text>
+<text fill="#e91e63" font-size="7.5" text-anchor="start" x="620" y="136" direction="ltr" unicode-bidi="embed">NULL → sql.Null* / *T</text>
+<text fill="#333" font-size="7.5" text-anchor="start" x="620" y="149" direction="ltr" unicode-bidi="embed">FLOAT → float64</text>
+
+<!-- Pointer pattern visual -->
+<rect fill="#fff" height="85" rx="4" stroke="#00ADD8" stroke-width="1" width="140" x="610" y="175"></rect>
+<text fill="#00ADD8" font-size="9" font-weight="bold" text-anchor="middle" x="680" y="193" direction="rtl" unicode-bidi="embed">الگوی <tspan direction="ltr" unicode-bidi="embed">Pointer</tspan></text>
+<text fill="#333" font-size="7" text-anchor="middle" x="680" y="208" direction="ltr" unicode-bidi="embed">&amp;user.ID → آدرس حافظه</text>
+<text fill="#666" font-size="6.5" text-anchor="middle" x="680" y="222" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">Scan</tspan> مقدار را مستقیم در</text>
+<text fill="#666" font-size="6.5" text-anchor="middle" x="680" y="234" direction="rtl" unicode-bidi="embed">آدرس حافظه می‌نویسد</text>
+<text fill="#4CAF50" font-size="7" text-anchor="middle" x="680" y="250" direction="ltr" unicode-bidi="embed">Zero alloc per row ✓</text>
+
+<!-- sqlx comparison box -->
+<rect fill="#fff" height="55" rx="4" stroke="#00ADD8" stroke-width="1" width="140" x="610" y="275"></rect>
+<text fill="#00ADD8" font-size="9" font-weight="bold" text-anchor="middle" x="680" y="293" direction="ltr" unicode-bidi="embed">sqlx: db tag</text>
+<text fill="#333" font-size="7" text-anchor="middle" x="680" y="308" direction="ltr" unicode-bidi="embed">Name string `db:"name"`</text>
+<text fill="#666" font-size="6.5" text-anchor="middle" x="680" y="322" direction="rtl" unicode-bidi="embed">نیازی به ترتیب دقیق نیست</text>
+
+<!-- Golden rule bar -->
+<rect fill="#4CAF50" filter="url(#shS804)" height="35" rx="6" width="570" x="20" y="370"></rect>
+<text fill="#fff" font-size="9" text-anchor="middle" x="305" y="392" direction="rtl" unicode-bidi="embed">قانون طلایی: برای ستون‌های <tspan direction="ltr" unicode-bidi="embed">nullable</tspan> همیشه از <tspan direction="ltr" unicode-bidi="embed">sql.Null*</tspan> یا <tspan direction="ltr" unicode-bidi="embed">pointer</tspan> استفاده کنید — اسکن <tspan direction="ltr" unicode-bidi="embed">NULL</tspan> به نوع غیراشاره‌ای = خطا</text>
+</svg>
+<figcaption dir="rtl">شکل ۸-۴-ب: نگاشت سطر دیتابیس به <bdi dir="ltr">Struct</bdi> — تبدیل نوع و مدیریت <bdi dir="ltr">NULL</bdi></figcaption>
+</figure>
+
+<p>در این نمودار می‌بینید که چگونه هر ستون از سطر دیتابیس به فیلد متناظر در <bdi dir="ltr">struct</bdi> نگاشت می‌شود. تبدیل نوع‌ها به‌طور خودکار توسط <bdi dir="ltr">Scan()</bdi> انجام می‌شود: <bdi dir="ltr">INT</bdi> به <bdi dir="ltr">int</bdi>، <bdi dir="ltr">VARCHAR</bdi> به <bdi dir="ltr">string</bdi> و <bdi dir="ltr">TIMESTAMP</bdi> به <bdi dir="ltr">time.Time</bdi>. اما نکته‌ی حیاتی این است که اگر ستونی مقدار <bdi dir="ltr">NULL</bdi> داشته باشد و فیلد <bdi dir="ltr">struct</bdi> از نوع غیراشاره‌ای باشد، <bdi dir="ltr">Scan()</bdi> خطا برمی‌گرداند. به همین دلیل باید یا از انواع <bdi dir="ltr">sql.NullString</bdi> و <bdi dir="ltr">sql.NullInt64</bdi> استفاده کنید یا فیلدها را به‌صورت <bdi dir="ltr">pointer</bdi> تعریف کنید. همچنین ترتیب آرگومان‌های <bdi dir="ltr">Scan()</bdi> باید دقیقاً با ترتیب ستون‌ها در <bdi dir="ltr">SELECT</bdi> مطابقت داشته باشد در غیر این صورت داده‌ها به فیلد اشتباه منتقل می‌شوند.</p>
+
+<p><strong>سناریوهای عملیاتی نگاشت داده‌ها به <bdi dir="ltr">Struct</bdi>:</strong></p>
+<ul>
+<li><strong>نگاشت ستون‌های <bdi dir="ltr">nullable</bdi> با <bdi dir="ltr">sql.NullString</bdi>:</strong> وقتی ستونی در دیتابیس ممکن است <bdi dir="ltr">NULL</bdi> باشد، مثلاً ستون <bdi dir="ltr">email</bdi> یا <bdi dir="ltr">phone</bdi> که اجباری نیست، باید از انواع <bdi dir="ltr">sql.Null*</bdi> استفاده کنید. این انواع دو فیلد دارند: <bdi dir="ltr">Valid</bdi> که نشان می‌دهد مقدار غیر-<bdi dir="ltr">NULL</bdi> است و <bdi dir="ltr">String</bdi> یا <bdi dir="ltr">Int64</bdi> که مقدار واقعی را نگه می‌دارند. مزیت این روش صراحت در بیان nullable بودن ستون است اما در <bdi dir="ltr">JSON</bdi> serialization رفتار عجیبی دارد و نیاز به <bdi dir="ltr">custom marshaler</bdi> دارد.</li>
+<li><strong>استفاده از <bdi dir="ltr">struct tag</bdi> برای نگاشت نام ستون‌ها:</strong> در <bdi dir="ltr">sqlx</bdi> با اضافه کردن <bdi dir="ltr">tag</bdi> مانند <code>`db:"column_name"`</code> می‌توانید نام ستون دیتابیس را به فیلد <bdi dir="ltr">struct</bdi> نگاشت کنید بدون اینکه نام فیلد دقیقاً با نام ستون یکی باشد. این ویژگی وقتی ستون‌های دیتابیس از نام‌گذاری <bdi dir="ltr">snake_case</bdi> و فیلدهای <bdi dir="ltr">struct</bdi> از <bdi dir="ltr">PascalCase</bdi> استفاده می‌کنند بسیار مفید است.</li>
+<li><strong>نگاشت <bdi dir="ltr">struct</bdi> های تو در تو در <bdi dir="ltr">JOIN</bdi>:</strong> وقتی از <bdi dir="ltr">JOIN</bdi> استفاده می‌کنید، فیلدهای جدول‌های مختلف را نمی‌توان مستقیماً به <bdi dir="ltr">struct</bdi> تودرتو نگاشت کرد. باید فیلدهای زیرین <bdi dir="ltr">struct</bdi> تو در تو را جداگانه اسکن کنید مثل <code>&amp;user.Profile.Bio</code>. <bdi dir="ltr">sqlx</bdi> با <bdi dir="ltr">struct tag</bdi> این محدودیت را تا حدودی حل می‌کند اما <bdi dir="ltr">sqlc</bdi> بهترین راه‌حل برای <bdi dir="ltr">JOIN</bdi> های پیچیده است.</li>
+<li><strong>اسکن دسته‌ای چندین سطر:</strong> برای خواندن صدها یا هزاران سطر، الگوی <bdi dir="ltr">slice append</bdi> در حلقه‌ی <bdi dir="ltr">rows.Next()</bdi> کارآمدتر از <bdi dir="ltr">sqlx.Select()</bdi> است چون کنترل بیشتری روی حافظه و خطاها دارید. اما <bdi dir="ltr">sqlx.Select()</bdi> کد تمیزتری تولید می‌کند و برای کاربردهای معمولی کاملاً مناسب است.</li>
+</ul>
+
+<div class="tip"><strong>نکته عملی:</strong> دو الگوی اصلی برای مدیریت ستون‌های <bdi dir="ltr">nullable</bdi> وجود دارد: انواع <bdi dir="ltr">sql.Null*</bdi> و الگوی <bdi dir="ltr">pointer</bdi>. انواع <bdi dir="ltr">sql.Null*</bdi> صراحت بیشتری دارند و به‌خوبی مستند می‌شوند اما در <bdi dir="ltr">JSON</bdi> serialization به‌طور پیش‌فرض شیء پیچیده‌ای تولید می‌کنند مثل <code>{"String":"test","Valid":true}</code>. الگوی <bdi dir="ltr">pointer</bdi> در <bdi dir="ltr">JSON</bdi> به‌درستی <code>null</code> تولید می‌کند اما خطر <bdi dir="ltr">nil dereference</bdi> وجود دارد. پیشنهاد عملی: در <bdi dir="ltr">API</bdi> ها از <bdi dir="ltr">pointer</bdi> استفاده کنید و در لایه‌ی دسترسی داده از <bdi dir="ltr">sql.Null*</bdi>، سپس تبدیل را در لایه‌ی میانی انجام دهید.</div>
+
+<h3 id="sqlx">روش دوم: sqlx</h3>
+<p>کتابخانه <bdi dir="ltr">sqlx</bdi> با افزودن <bdi dir="ltr">struct tags</bdi> نگاشت خودکار را فراهم می‌کند:</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">import "github.com/jmoiron/sqlx"
+
+type User struct {
+    ID int `db:"id" json:"id"`
+    Name string `db:"name" json:"name"`
+    Email string `db:"email" json:"email"`
+}
+
+// Select: multiple rows
+users := []User{}
+err := sqlxdb.Select(&amp;users, "SELECT id, name, email FROM users")
+
+// Get: single row
+var user User
+err = sqlxdb.Get(&amp;user, "SELECT * FROM users WHERE id = $1", 42)</code></pre>
+</figure>
+<p><bdi dir="ltr">sqlx</bdi> از <bdi dir="ltr">struct tags</bdi> با کلید <code>db</code> برای نگاشت ستون‌ها استفاده می‌کند. این روش خطای کمتری دارد اما وابستگی خارجی اضافه می‌کند.</p>
+
+<h3 id="sqlc">روش سوم: sqlc</h3>
+<p><bdi dir="ltr">sqlc</bdi> ابزاری است که از روی کوئری‌های <bdi dir="ltr">SQL</bdi> کد <bdi dir="ltr">Go</bdi> تولید می‌کند. این روش هم <bdi dir="ltr">type-safety</bdi> کامل و هم راحتی <bdi dir="ltr">ORM</bdi> را ارائه می‌دهد:</p>
+<figure class="code sql" dir="ltr">
+<pre><code class="language-sql">-- name: GetUser :one
+SELECT id, name, email FROM users WHERE id = $1;
+
+-- name: ListUsers :many
+SELECT id, name, email FROM users ORDER BY id;
+
+-- name: CreateUser :one
+INSERT INTO users (name, email) VALUES ($1, $2) RETURNING *;</code></pre>
+</figure>
+<p>بعد از اجرای <bdi dir="ltr">sqlc generate</bdi> کد <bdi dir="ltr">Go</bdi> با نوع‌های دقیق تولید می‌شود:</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">// Code generated by sqlc
+user, err := queries.GetUser(ctx, 42)
+users, err := queries.ListUsers(ctx)
+newUser, err := queries.CreateUser(ctx, CreateUserParams{
+    Name: "علی",
+    Email: "ali@example.com",
+})</code></pre>
+</figure>
+
+<div class="tip"><strong>چرا sqlc بهتر است؟</strong> <bdi dir="ltr">sqlc</bdi> کد <bdi dir="ltr">Go</bdi> را از روی <bdi dir="ltr">SQL</bdi> تولید می‌کند نه برعکس. این یعنی شما <bdi dir="ltr">SQL</bdi> بنویسید و <bdi dir="ltr">sqlc</bdi> تایع‌ها و <bdi dir="ltr">struct</bdi> ها را می‌سازد. مزیت اصلی: اگر کوئری <bdi dir="ltr">SQL</bdi> اشتباه باشد یا ستونی حذف شود <bdi dir="ltr">sqlc</bdi> خطای کامپایل می‌دهد نه خطای زمان اجرا.</div>
+
+<h3 id="nullable">مدیریت ستون‌های Nullable</h3>
+<p>همان‌طور که در بخش ۸.۲ دیدید، اگر ستونی <bdi dir="ltr">nullable</bdi> باشد و آن را به نوع غیر-<bdi dir="ltr">pointer</bdi> اسکن کنید خطا رخ می‌دهد. دو راه‌حل اصلی وجود دارد: انواع <code>sql.Null*</code> (مثل <code>sql.NullString</code>) و الگوی <bdi dir="ltr">pointer</bdi> (مثل <code>*string</code>). برای مشاهده‌ی مثال‌های کامل به بخش <a href="08.02-connecting-to-database-with-databasesql.html#مدیریت-null-در-scan">مدیریت NULL در Scan</a> مراجعه کنید.</p>
+
+<h3 id="nested-structs">نگاشت Struct های تو در تو</h3>
+<p>برای <bdi dir="ltr">JOIN</bdi> ها باید فیلدها را جداگانه اسکن کنید:</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">type User struct {
+    ID int
+    Name string
+    Profile Profile
+}
+type Profile struct {
+    Bio string
+    Age int
+}
+
+var user User
+err := db.QueryRow(`
+SELECT u.id, u.name, p.bio, p.age
+FROM users u JOIN profiles p ON u.id = p.user_id
+WHERE u.id = $1
+`, 10).Scan(&amp;user.ID, &amp;user.Name, &amp;user.Profile.Bio, &amp;user.Profile.Age)</code></pre>
+</figure>
+
+<h3 id="custom-scanner">رابط sql.Scanner و driver.Valuer</h3>
+<p>با پیاده‌سازی <bdi dir="ltr">sql.Scanner</bdi> و <bdi dir="ltr">driver.Valuer</bdi> می‌توانید هر نوع پیچیده‌ای را بدون کد تکراری تبدیل کنید. مثال کامل پیاده‌سازی این رابط‌ها برای ستون‌های <bdi dir="ltr">JSONB</bdi> در بخش <a href="08.07-working-with-json-arrays-and-timestamps.html#custom-types">تبدیل سفارشی با sql.Scanner و driver.Valuer</a> آورده شده است.</p>
+
+<div class="comparison"><strong>مقایسه با Eloquent:</strong> در <bdi dir="ltr">Laravel</bdi> مدل‌های <bdi dir="ltr">Eloquent</bdi> با <bdi dir="ltr">ORM</bdi> به‌صورت خودکار ستون‌ها را به فیلدهای مدل نگاشت می‌کنند — حتی <bdi dir="ltr">JOIN</bdi>‌ها و روابط با <code>with()</code> بدون کد اضافی کار می‌کنند. در <bdi dir="ltr">Go</bdi> شما باید صراحتاً هر فیلد را در <code dir="ltr">Scan()</code> مشخص کنید یا از ابزارهایی چون <bdi dir="ltr">sqlx</bdi> و <bdi dir="ltr">sqlc</bdi> برای کاهش کد تکراری استفاده کنید. این رویکرد اگرچه نیازمند کد بیشتری است اما شفافیت و کنترل کاملی روی عملیات نگاشت ارائه می‌دهد.</div>
+</div>
+</div>
+
+<!-- Footer -->
+<footer class="site-footer">
+<div class="footer-inner">
+<div class="footer-nav">
+<span class="nav-arrow">‹</span>
+<a href="08.03-executing-queries.html" data-prev>۸.۳ اجرای Query</a>
+</div>
+<div class="footer-toc">
+<a href="00.01-contents.html">فهرست</a>
+</div>
+<div class="footer-nav">
+<a href="08.05-transaction-management.html" data-next>۸.۵ مدیریت تراکنش‌ها</a>
+<span class="nav-arrow">›</span>
+</div>
+</div>
+</footer>
+
+<!-- Back to Top -->
+<button class="back-to-top" aria-label="بازگشت به بالا">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
+</button>
+
+<!-- Scripts -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/go.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/php.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/sql.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/yaml.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/json.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/dockerfile.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/xml.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/ini.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/plaintext.min.js"></script>
+<script src="assets/js/main.js"></script>
+</body>
+</html>

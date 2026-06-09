@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="fa">
+<head>
+<script>!function(){try{var t=localStorage.getItem('php2go-theme');if(t==='dark'||(!t&&window.matchMedia('(prefers-color-scheme:dark)').matches)){document.documentElement.setAttribute('data-theme','dark')}}catch(e){}}();</script>
+<meta charset="utf-8"/>
+<meta content="ie=edge" http-equiv="x-ua-compatible"/>
+<title>۹.۱ Logging — PHP to Go</title>
+<meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet"/>
+<link href="assets/css/main.css" rel="stylesheet" type="text/css"/>
+<link href="assets/img/favicon.ico" rel="icon" type="image/x-icon"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" media="screen" class="hljs-light-theme" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css" media="not screen" class="hljs-dark-theme" rel="stylesheet"/>
+</head>
+<body>
+<!-- Progress Bar -->
+<div class="progress-bar"><div class="progress-bar__fill"></div></div>
+
+<!-- Header -->
+<header class="site-header">
+<div class="header-inner">
+<div class="header-left">
+<button class="header-btn sidebar-toggle" aria-label="فهرست">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+</button>
+<a href="00.00-front-matter.html" class="header-logo"><span class="logo-php">PHP</span> to <span class="logo-go">Go</span></a>
+<span class="header-crumbs">مانیتورینگ و Observability › Logging</span>
+</div>
+<div class="header-right">
+<nav class="header-nav">
+<span class="nav-arrow">‹</span>
+<a href="09.00-chapter-9.html"><span class="nav-label">۹. مانیتورینگ و Observability</span></a>
+<a href="00.01-contents.html">فهرست</a>
+<a href="09.02-prometheus-and-grafana.html"><span class="nav-label">۹.۲ Prometheus و Grafana</span></a>
+<span class="nav-arrow">›</span>
+</nav>
+<button class="header-btn search-toggle" aria-label="جستجو">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+</button>
+<button class="header-btn theme-toggle" aria-label="تغییر تم">
+<svg class="theme-icon-light" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+<svg class="theme-icon-dark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+</button>
+</div>
+</div>
+</header>
+
+<!-- Search Modal -->
+<div class="search-overlay">
+<div class="search-modal">
+<div class="search-input-wrap">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+<input type="text" class="search-input" placeholder="جستجو... (Ctrl+K)" dir="rtl"/>
+</div>
+<div class="search-results"></div>
+</div>
+</div>
+
+<!-- Layout -->
+<div class="site-layout">
+<!-- Sidebar -->
+<aside class="sidebar"></aside>
+<div class="sidebar-overlay"></div>
+
+<!-- Main Content -->
+<main class="content-area">
+<div class="content-wrap text">
+<div class="chapter">فصل ۹.۱</div>
+<h2 id="logging">Logging</h2>
+
+<figure class="diagram" dir="ltr">
+<svg height="380" viewBox="0 0 620 380" width="620" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<marker id="arrow2201" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#555" points="0 0, 10 3.5, 0 7"></polygon></marker>
+<filter height="104%" id="sh2201" width="104%" x="-2%" y="-2%"><fedropshadow dx="1" dy="1" flood-opacity="0.15" stddeviation="2"></fedropshadow></filter>
+</defs>
+<rect fill="#fafafa" height="380" rx="8" width="620" x="0" y="0"></rect>
+<text fill="#333" font-size="16" font-weight="bold" text-anchor="middle" x="310" y="28" direction="rtl" unicode-bidi="embed">معماری Logging ساخت‌یافته در <tspan direction="ltr" unicode-bidi="embed">Go</tspan></text>
+
+<!-- Log Sources -->
+<rect fill="#00ADD8" filter="url(#sh2201)" height="40" rx="6" width="110" x="30" y="60"></rect>
+<text fill="#fff" font-size="10" text-anchor="middle" x="85" y="85" direction="ltr" unicode-bidi="embed">HTTP Handlers</text>
+<rect fill="#4CAF50" filter="url(#sh2201)" height="40" rx="6" width="110" x="30" y="115"></rect>
+<text fill="#fff" font-size="10" text-anchor="middle" x="85" y="140" direction="ltr" unicode-bidi="embed">DB Operations</text>
+<rect fill="#FF9800" filter="url(#sh2201)" height="40" rx="6" width="110" x="30" y="170"></rect>
+<text fill="#fff" font-size="10" text-anchor="middle" x="85" y="195" direction="ltr" unicode-bidi="embed">Background Jobs</text>
+
+<!-- Logger -->
+<rect fill="#9C27B0" filter="url(#sh2201)" height="100" rx="6" width="150" x="200" y="90"></rect>
+<text fill="#fff" font-size="12" text-anchor="middle" x="275" y="118" direction="ltr" unicode-bidi="embed">slog.Handler</text>
+<text fill="#e1bee7" font-size="9" text-anchor="middle" x="275" y="138" direction="ltr" unicode-bidi="embed">JSONHandler</text>
+<text fill="#e1bee7" font-size="9" text-anchor="middle" x="275" y="155" direction="ltr" unicode-bidi="embed">TextHandler</text>
+<text fill="#e1bee7" font-size="9" text-anchor="middle" x="275" y="172" direction="ltr" unicode-bidi="embed">Custom Handler</text>
+
+<line marker-end="url(#arrow2201)" stroke="#555" stroke-width="2" x1="140" x2="200" y1="80" y2="110"></line>
+<line marker-end="url(#arrow2201)" stroke="#555" stroke-width="2" x1="140" x2="200" y1="135" y2="135"></line>
+<line marker-end="url(#arrow2201)" stroke="#555" stroke-width="2" x1="140" x2="200" y1="190" y2="160"></line>
+
+<!-- Outputs -->
+<rect fill="#777BB4" filter="url(#sh2201)" height="40" rx="6" width="150" x="420" y="60"></rect>
+<text fill="#fff" font-size="10" text-anchor="middle" x="495" y="85" direction="ltr" unicode-bidi="embed">stdout / File</text>
+<rect fill="#e91e63" filter="url(#sh2201)" height="40" rx="6" width="150" x="420" y="115"></rect>
+<text fill="#fff" font-size="10" text-anchor="middle" x="495" y="140" direction="ltr" unicode-bidi="embed">ELK / Loki</text>
+<rect fill="#4CAF50" filter="url(#sh2201)" height="40" rx="6" width="150" x="420" y="170"></rect>
+<text fill="#fff" font-size="10" text-anchor="middle" x="495" y="195" direction="ltr" unicode-bidi="embed">Datadog / Sentry</text>
+
+<line marker-end="url(#arrow2201)" stroke="#555" stroke-width="2" x1="350" x2="420" y1="115" y2="80"></line>
+<line marker-end="url(#arrow2201)" stroke="#555" stroke-width="2" x1="350" x2="420" y1="140" y2="135"></line>
+<line marker-end="url(#arrow2201)" stroke="#555" stroke-width="2" x1="350" x2="420" y1="165" y2="190"></line>
+
+<!-- Levels -->
+<rect fill="#FFF3E0" height="45" rx="6" stroke="#FF9800" width="400" x="110" y="240"></rect>
+<text fill="#E65100" font-size="11" text-anchor="middle" x="310" y="268" direction="rtl" unicode-bidi="embed">سطوح: <tspan direction="ltr" unicode-bidi="embed">DEBUG</tspan> → <tspan direction="ltr" unicode-bidi="embed">INFO</tspan> → <tspan direction="ltr" unicode-bidi="embed">WARN</tspan> → <tspan direction="ltr" unicode-bidi="embed">ERROR</tspan> → <tspan direction="ltr" unicode-bidi="embed">FATAL</tspan></text>
+
+<!-- Log Correlation -->
+<rect fill="#E3F2FD" height="50" rx="6" stroke="#2196F3" width="500" x="60" y="310"></rect>
+<text fill="#1565C0" font-size="10" text-anchor="middle" x="310" y="335" direction="rtl" unicode-bidi="embed">همبستگی لاگ با <tspan direction="ltr" unicode-bidi="embed">Trace</tspan>: <tspan direction="ltr" unicode-bidi="embed">trace_id</tspan> + <tspan direction="ltr" unicode-bidi="embed">span_id</tspan> در هر رکورد لاگ</text>
+<text fill="#1565C0" font-size="9" text-anchor="middle" x="310" y="350" direction="ltr" unicode-bidi="embed">slog.With("trace_id", traceID).Info(...)</text>
+</svg>
+<figcaption>شکل ۹-۱: معماری Logging ساخت‌یافته — منابع، <bdi dir="ltr">Handler</bdi> و مقاصد خروجی</figcaption>
+</figure>
+
+<p>در طول توسعه‌ی نرم‌افزار ثبت Logs از ابزارهای مهم شما برای ردیابی رفتار برنامه تشخیص خطاها تحلیل عملکرد و پشتیبانی پس از انتشار خواهد بود. <bdi dir="ltr">Go</bdi> از پکیج استاندارد <bdi dir="ltr">log</bdi> برای ثبت Logs پشتیبانی می‌کند اما در پروژه‌های بزرگ‌تر می‌توانید از ابزارهای حرفه‌ای‌تری مانند <bdi dir="ltr">slog</bdi> ، <bdi dir="ltr">zap</bdi> یا <bdi dir="ltr">zerolog</bdi> استفاده کنید.</p>
+
+<div class="quote-box">
+    <p class="quote-text">با راحتی فروپاشی کنید. وقتی مشکلی پیش می‌آید، مطمئن شوید اطلاعات کافی برای تشخیص مشکل دارید. لاگ‌گیری خوب درباره حجم نیست — درباره ساختار و زمینه است. چند خط لاگ ساختاریافته و به‌جا، بیشتر از صفحات خروجی بدون ساختار ارزش دارد.</p>
+    <p class="quote-source">
+        <span class="quote-author">Andy Hunt و Dave Thomas</span>
+        <span class="quote-separator">|</span>
+        <span class="quote-book">The Pragmatic Programmer — Tip 34</span>
+    </p>
+</div>
+
+<p>لاگ از این جهات اهمیت دارد: <bdi dir="ltr">Debugging</bdi> (بررسی اتفاقات پیش از خطا)، <bdi dir="ltr">Monitoring</bdi> (ردیابی در زمان اجرا)، تحلیل رفتار کاربران و عملکرد سیستم و ثبت عملیات بحرانی برای امنیت.</p>
+
+<h3 id="basic-log">Logging پایه با پکیج log</h3>
+
+<div class="case-study">
+    <div class="case-study-header">
+        <span class="case-study-badge">مطالعه موردی</span>
+        <span class="case-study-title">مهاجرت Stripe از زاپ به slog ساختاریافته</span>
+    </div>
+    <p>استرایپ، یکی از بزرگ‌ترین پلتفرم‌های پرداخت آنلاین جهان، از ساختاریافته Logs برای ردیابی تراکنش‌های مالی استفاده می‌کند. در یک سیستم پرداخت، هر تراکنش ممکن است از چندین مایکروسرویس عبور کند: احراز هویت، بررسی تقلب، پردازش پرداخت، و ثبت نتیجه. بدون Logsی ساختاریافته، ردیابی یک تراکنش خاص بین این سرویس‌ها شبیه به پیدا کردن سوزن در انبار کاه بود. تیم Stripe ابتدا از کتابخانه zerolog استفاده می‌کرد که عملکرد بالایی داشت ولی وابستگی خارجی بود و با اکوسیستم استاندارد Go هماهنگ نبود.</p>
+    <p>با مهاجرت از zerolog به slog استاندارد Go، تیم استرایپ توانست بدون وابستگی به کتابخانه خارجی، لاگ‌های ساختوریافته‌ای با عملکرد مشابه تولید کند. نکته مهم این بود که <code>slog</code> از همان ابتدا با در نظر گرفتن OpenTelemetry طراحی شده بود و فرمت لاگ‌های آن با span ID و trace ID به‌طور طبیعی سازگار بود. این یعنی تیم دیگر نیازی به تبدیل دستی فرمت لاگ‌ها برای ارسال به سیستم‌های مانیتورینگ نداشت.</p>
+    <p>نتیجه: کاهش تعداد وابستگی‌ها، هماهنگی بیشتر با اکوسیستم استاندارد Go و ساده‌سازی فرآیند عیب‌یابی در میکروسرویس‌ها. slog به تیم اجازه داد لاگ‌ها را مستقیماً به OpenTelemetry متصل کند و از یک trace ID برای دنبال‌کردن کل مسیر یک تراکنش مالی استفاده کند. همچنین ارتقای نسخه Go دیگر نگرانی از نظر سازگاری لاگ‌ها ایجاد نمی‌کرد چون slog بخشی از کتابخانه استاندارد است.</p>
+    <p class="case-study-source">
+        <span class="source-event">GopherCon 2023</span>
+        <span class="source-year">، ۲۰۲۳</span>
+    </p>
+</div>
+<p>پکیج <bdi dir="ltr">log</bdi> در <bdi dir="ltr">Go</bdi> راهی ساده برای نوشتن پیام‌ها در <bdi dir="ltr">stdout</bdi> یا فایل فراهم می‌کند.</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">import "log"
+func main() {
+    log.Println("برنامه شروع شد")
+    log.Println("این فقط یک پیام اطلاع‌رسانی است")
+    log.Fatal("خطای بحرانی!") // os.Exit(1)
+}</code></pre>
+</figure>
+<p>توجه: <bdi dir="ltr">log.Fatal</bdi> بعد از چاپ پیام برنامه را متوقف می‌کند.</p>
+
+<h3 id="file-log">ذخیره لاگ در فایل</h3>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">import (
+"log"
+"os"
+)
+func main() {
+    file, err := os.Create("app.log")
+    if err != nil {
+        log.Fatalf("خطا در ایجاد فایل لاگ: %v", err)
+    }
+    defer file.Close()
+    log.SetOutput(file)
+    log.Println("این پیام در فایل ذخیره می‌شود.")
+}</code></pre>
+</figure>
+
+<h3 id="format">تنظیم فرمت لاگ</h3>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">log.SetFlags(log.Ldate | log.Ltime | log.Lshortfile)
+// log.Ldate // Date
+// log.Ltime // Time
+// log.Lshortfile // File and line number
+// log.Lmicroseconds // Higher time precision</code></pre>
+</figure>
+
+<h3 id="slog-لاگگیری-ساختاریافته-در-go-1.21">slog: Logging ساخت‌یافته در Go 1.21+</h3>
+
+<div class="quote-box">
+    <p class="quote-text">لاگ‌گیری یک دغدغه‌ی عرضی است که نباید منطق کسب‌وکار را آلوده کند. لاگ‌های خود را ساخت‌یافته، معنادار و در سطح مناسب نگه دارید. لاگ‌های بیش از حد به اندازه‌ی لاگ‌های بسیار کم مضر هستند.</p>
+    <p class="quote-source">
+        <span class="quote-author">Uncle Bob</span>
+        <span class="quote-role">نویسنده و مهندس نرم‌افزار</span>
+        <span class="quote-separator">|</span>
+        <span class="quote-book">Clean Code</span>
+    </p>
+</div>
+
+<div class="tip">
+<strong>نکته‌ی حرفه‌ای:</strong> در سرویس‌های <bdi dir="ltr">Go</bdi> تولیدی، از لاگ‌گیری ساخت‌یافته (<bdi dir="ltr">slog</bdi>) با جفت‌های کلید-مقدار استفاده کنید به‌جای پیام‌های <bdi dir="ltr">printf</bdi>-محور. لاگ‌های ساخت‌یافته توسط ابزارهایی مثل <bdi dir="ltr">ELK</bdi> یا <bdi dir="ltr">Loki</bdi> قابل نمایه‌سازی، جستجو و تحلیل هستند، در حالی که لاگ‌های بدون ساختار فقط متنی هستند که کسی نمی‌خواند.
+</div>
+
+<p>از نسخه <bdi dir="ltr">Go 1.21</bdi> پکیج <code>log/slog</code> به پکیج استاندارد اضافه شد. این پکیج Logging ساخت‌یافته (<bdi dir="ltr">structured logging</bdi>) را به‌صورت بومی فراهم می‌کند و جایگزین بهتری برای ترکیب <bdi dir="ltr">log</bdi> با کتابخانه‌های جانبی است. <bdi dir="ltr">slog</bdi> بر اساس رابط <bdi dir="ltr">slog.Handler</bdi> طراحی شده که به شما امکان می‌دهد فرمت خروجی لاگ را بدون تغییر کد برنامه عوض کنید.</p>
+
+<p><strong>معماری داخلی slog:</strong> هر پیام لاگ ابتدا توسط <bdi dir="ltr">slog.Logger</bdi> به یک <bdi dir="ltr">slog.Record</bdi> تبدیل می‌شود و سپس به <bdi dir="ltr">slog.Handler</bdi> ارسال می‌شود. <bdi dir="ltr">Handler</bdi> مسئول تعیین فرمت خروجی (<bdi dir="ltr">JSON</bdi> ، <bdi dir="ltr">Text</bdi> یا سفارشی) و مقصد (<bdi dir="ltr">stdout</bdi> ، فایل و غیره) است.</p>
+
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">import "log/slog"
+
+func main() {
+    // Default logger with Text format
+    slog.Info("سرور شروع شد", "port", 8080, "env", "production")
+
+    // JSON logger — suitable for production
+    logger := slog.New(slog.NewJSONHandler(os.Stdout, &amp;slog.HandlerOptions{
+        Level: slog.LevelDebug,
+    }))
+    slog.SetDefault(logger)
+
+    slog.Info("درخواست دریافت شد",
+    slog.String("method", "GET"),
+    slog.String("path", "/api/users"),
+    slog.Int("status", 200),
+)
+    // JSON output with time, level, msg, method, path, status fields
+}</code></pre>
+</figure>
+
+<p><strong>رابط Handler:</strong> بخش اصلی معماری <bdi dir="ltr">slog</bdi> رابط <bdi dir="ltr">slog.Handler</bdi> است:</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">type Handler interface {
+    Enabled(context.Context, Level) bool // is this level enabled?
+    Handle(context.Context, Record) error // process a record
+    WithAttrs(attrs []Attr) Handler // add permanent attributes
+    WithGroup(name string) Handler // group attributes
+}</code></pre>
+</figure>
+
+<div class="tip"><strong>نکته عملی:</strong> در پروژه‌های واقعی می‌توانید <bdi dir="ltr">Handler</bdi> سفارشی بنویسید که لاگ‌ها را هم‌زمان به <bdi dir="ltr">stdout</bdi> و به یک سرویس مرکزی ارسال کند. همچنین با <bdi dir="ltr">slog.HandlerOptions</bdi> می‌توانید سطوح لاگ و افزودن <bdi dir="ltr">source</bdi> (فایل و شماره خط) را کنترل کنید.</div>
+
+<h3 id="log-correlation">همبستگی لاگ با Trace</h3>
+<p>در سیستم‌های توزیع‌شده از الگوهای مهم اضافه کردن <bdi dir="ltr">trace_id</bdi> و <bdi dir="ltr">span_id</bdi> به هر رکورد لاگ است. این کار به شما امکان می‌دهد لاگ‌ها را با <bdi dir="ltr">Trace</bdi> ها در <bdi dir="ltr">Grafana</bdi> همبسته کنید:</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">// Add trace_id to context and logger
+func withTraceLogger(ctx context.Context) *slog.Logger {
+    span := trace.SpanFromContext(ctx)
+    return slog.Default().With(
+    slog.String("trace_id", span.SpanContext().TraceID().String()),
+    slog.String("span_id", span.SpanContext().SpanID().String()),
+)
+}
+
+// Usage in handler
+logger := withTraceLogger(r.Context())
+logger.Info("پردازش درخواست", "user_id", userID)</code></pre>
+</figure>
+
+<h3 id="سطوح-لاگ-و-فیلترینگ">سطوح لاگ و فیلترینگ</h3>
+<p>سطوح لاگ ابزار قدرتمندی برای کنترل حجم خروجی هستند. در محیط <bdi dir="ltr">development</bdi> سطح <bdi dir="ltr">Debug</bdi> فعال است اما در <bdi dir="ltr">production</bdi> فقط <bdi dir="ltr">Info</bdi> و بالاتر:</p>
+
+<table class="comparison-table" dir="rtl">
+<thead>
+<tr><th>سطح</th><th>کاربرد</th><th>مثال</th></tr>
+</thead>
+<tbody>
+<tr><td><bdi dir="ltr">DEBUG</bdi></td><td>اطلاعات دقیق برای دیباگ</td><td>محتوای متغیرها، کوئری‌ها</td></tr>
+<tr><td><bdi dir="ltr">INFO</bdi></td><td>رویدادهای عادی سیستم</td><td>شروع سرور، پردازش درخواست</td></tr>
+<tr><td><bdi dir="ltr">WARN</bdi></td><td>موارد مشکوک اما غیربحرانی</td><td>اتصال کند، استفاده زیاد حافظه</td></tr>
+<tr><td><bdi dir="ltr">ERROR</bdi></td><td>خطاها که نیاز به بررسی دارند</td><td>خطای دیتابیس، API ناموفق</td></tr>
+<tr><td><bdi dir="ltr">FATAL</bdi></td><td>خطاهای بحرانی — توقف برنامه</td><td>عدم اتصال به دیتابیس در شروع</td></tr>
+</tbody>
+</table>
+
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">// Set log level based on environment
+level := slog.LevelInfo
+if os.Getenv("APP_ENV") == "development" {
+    level = slog.LevelDebug
+}
+logger := slog.New(slog.NewJSONHandler(os.Stdout, &amp;slog.HandlerOptions{
+    Level: level,
+}))</code></pre>
+</figure>
+
+<h3 id="تجمیع-لاگها">الگوی تجمیع لاگ‌ها</h3>
+<figure class="diagram" dir="ltr">
+<svg height="300" viewBox="0 0 650 300" width="650" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<marker id="arrLog1" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#00ADD8" points="0 0,10 3.5,0 7"></polygon></marker>
+<marker id="arrLog2" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#4caf50" points="0 0,10 3.5,0 7"></polygon></marker>
+<marker id="arrLog3" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#ff9800" points="0 0,10 3.5,0 7"></polygon></marker>
+</defs>
+<rect fill="#fafafa" height="300" rx="12" stroke="#ddd" stroke-width="1" width="650" x="0" y="0"></rect>
+<text fill="#333" font-size="15" font-weight="bold" text-anchor="middle" x="325" y="28" direction="rtl" unicode-bidi="embed">مدل‌های تجمیع لاگ — <tspan direction="ltr" unicode-bidi="embed">Sidecar</tspan>، <tspan direction="ltr" unicode-bidi="embed">Direct</tspan> و <tspan direction="ltr" unicode-bidi="embed">OTel Collector</tspan></text>
+
+<!-- Go Application -->
+<rect fill="#00ADD8" height="70" rx="8" stroke="#00ADD8" stroke-width="2" width="120" x="20" y="100"></rect>
+<text fill="#fff" font-size="13" font-weight="bold" text-anchor="middle" x="80" y="128" direction="ltr" unicode-bidi="embed">Go App</text>
+<text fill="#e0f7fa" font-size="9" text-anchor="middle" x="80" y="148" direction="ltr" unicode-bidi="embed">slog.Logger</text>
+
+<!-- Model 1: Sidecar -->
+<rect fill="#e8f5e9" height="130" rx="8" stroke="#4caf50" stroke-width="1.5" width="130" x="175" y="50"></rect>
+<text fill="#4caf50" font-size="10" font-weight="bold" text-anchor="middle" x="240" y="70" direction="ltr" unicode-bidi="embed">Sidecar</text>
+
+<rect fill="#4caf50" height="30" rx="4" stroke="#4caf50" stroke-width="1.5" width="110" x="185" y="80"></rect>
+<text fill="#fff" font-size="9" text-anchor="middle" x="240" y="100" direction="ltr" unicode-bidi="embed">Fluentd / Promtail</text>
+<text fill="#333" font-size="7" text-anchor="middle" x="240" y="125" direction="rtl" unicode-bidi="embed">خواندن از <tspan direction="ltr" unicode-bidi="embed">stdout</tspan></text>
+<text fill="#333" font-size="7" text-anchor="middle" x="240" y="140" direction="rtl" unicode-bidi="embed">یا فایل لاگ</text>
+
+<rect fill="#fff9c4" height="30" rx="4" stroke="#f9a825" stroke-width="1" width="110" x="185" y="148"></rect>
+<text fill="#f57f17" font-size="8" text-anchor="middle" x="240" y="167" direction="rtl" unicode-bidi="embed">تغییر برنامه لازم نیست</text>
+
+<!-- Model 2: Direct -->
+<rect fill="#fff3e0" height="130" rx="8" stroke="#ff9800" stroke-width="1.5" width="130" x="175" y="195"></rect>
+<text fill="#ff9800" font-size="10" font-weight="bold" text-anchor="middle" x="240" y="215" direction="ltr" unicode-bidi="embed">Direct</text>
+
+<rect fill="#ff9800" height="30" rx="4" stroke="#ff9800" stroke-width="1.5" width="110" x="185" y="225"></rect>
+<text fill="#fff" font-size="9" text-anchor="middle" x="240" y="245" direction="ltr" unicode-bidi="embed">slog Custom Handler</text>
+<text fill="#333" font-size="7" text-anchor="middle" x="240" y="265" direction="ltr" unicode-bidi="embed">HTTP → Loki / ES</text>
+
+<rect fill="#fce4ec" height="30" rx="4" stroke="#e91e63" stroke-width="1" width="110" x="185" y="295"></rect>
+<text fill="#e91e63" font-size="8" text-anchor="middle" x="240" y="314" direction="rtl" unicode-bidi="embed">وابستگی به سرویس خارجی</text>
+
+<!-- Model 3: OTel Collector -->
+<rect fill="#e3f2fd" height="230" rx="8" stroke="#00ADD8" stroke-width="1.5" width="160" x="330" y="50"></rect>
+<text fill="#00ADD8" font-size="10" font-weight="bold" text-anchor="middle" x="410" y="70" direction="ltr" unicode-bidi="embed">OTel Collector</text>
+
+<rect fill="#00ADD8" height="30" rx="4" stroke="#00ADD8" stroke-width="1.5" width="140" x="340" y="80"></rect>
+<text fill="#fff" font-size="9" text-anchor="middle" x="410" y="100" direction="ltr" unicode-bidi="embed">OpenTelemetry SDK</text>
+<text fill="#333" font-size="7" text-anchor="middle" x="410" y="120" direction="ltr" unicode-bidi="embed">Receivers → Processors → Exporters</text>
+
+<rect fill="#00ADD8" height="22" rx="3" stroke="#00ADD8" stroke-width="1" width="140" x="340" y="135"></rect>
+<text fill="#fff" font-size="8" text-anchor="middle" x="410" y="150" direction="ltr" unicode-bidi="embed">✓ Logs + Metrics + Traces</text>
+
+<rect fill="#4caf50" height="22" rx="3" stroke="#4caf50" stroke-width="1" width="140" x="340" y="165"></rect>
+<text fill="#fff" font-size="8" text-anchor="middle" x="410" y="180" direction="ltr" unicode-bidi="embed">→ Loki / Elasticsearch</text>
+
+<rect fill="#ff9800" height="22" rx="3" stroke="#ff9800" stroke-width="1" width="140" x="340" y="195"></rect>
+<text fill="#fff" font-size="8" text-anchor="middle" x="410" y="210" direction="ltr" unicode-bidi="embed">→ Datadog / Sentry</text>
+
+<rect fill="#777BB4" height="22" rx="3" stroke="#777BB4" stroke-width="1" width="140" x="340" y="225"></rect>
+<text fill="#fff" font-size="8" text-anchor="middle" x="410" y="240" direction="ltr" unicode-bidi="embed">→ CloudWatch / GCP</text>
+
+<rect fill="#e8f5e9" height="25" rx="4" stroke="#4caf50" stroke-width="1" width="140" x="340" y="258"></rect>
+<text fill="#2e7d32" font-size="8" font-weight="bold" text-anchor="middle" x="410" y="275" direction="rtl" unicode-bidi="embed">پیشنهادی برای <tspan direction="ltr" unicode-bidi="embed">production</tspan></text>
+
+<!-- Arrows from App -->
+<line marker-end="url(#arrLog1)" stroke="#4caf50" stroke-width="2" x1="140" x2="175" y1="125" y2="95"></line>
+<line marker-end="url(#arrLog2)" stroke="#ff9800" stroke-width="2" x1="140" x2="175" y1="145" y2="240"></line>
+<line marker-end="url(#arrLog3)" stroke="#00ADD8" stroke-width="2.5" x1="140" x2="330" y1="135" y2="120"></line>
+
+<!-- Comparison box -->
+<rect fill="#f5f5f5" height="80" rx="6" stroke="#ddd" stroke-width="1" width="130" x="510" y="100"></rect>
+<text fill="#555" font-size="10" font-weight="bold" text-anchor="middle" x="575" y="120" direction="rtl" unicode-bidi="embed">مقایسه</text>
+<text fill="#4caf50" font-size="8" text-anchor="middle" x="575" y="138" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">Sidecar</tspan>: ساده</text>
+<text fill="#ff9800" font-size="8" text-anchor="middle" x="575" y="153" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">Direct</tspan>: سریع</text>
+<text fill="#00ADD8" font-size="8" text-anchor="middle" x="575" y="168" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">OTel</tspan>: کامل</text>
+</svg>
+<figcaption dir="rtl">شکل ۹-۲: سه مدل تجمیع لاگ — <bdi dir="ltr">Sidecar</bdi>، <bdi dir="ltr">Direct</bdi> و <bdi dir="ltr">OTel Collector</bdi></figcaption>
+</figure>
+<p>در محیط <bdi dir="ltr">production</bdi> لاگ‌ها نباید فقط در فایل ذخیره شوند. الگوی استاندارد ارسال لاگ‌ها به یک سیستم مرکزی است:</p>
+<p><strong>مدل Sidecar:</strong> یک <bdi dir="ltr">agent</bdi> (مثل <bdi dir="ltr">Fluentd</bdi> یا <bdi dir="ltr">Promtail</bdi>) در کنار برنامه لاگ‌ها را از فایل یا <bdi dir="ltr">stdout</bdi> می‌خواند و به سیستم مرکزی ارسال می‌کند.</p>
+<p><strong>مدل Direct:</strong> برنامه مستقیماً لاگ‌ها را به <bdi dir="ltr">Loki</bdi> ، <bdi dir="ltr">Elasticsearch</bdi> یا <bdi dir="ltr">Datadog</bdi> ارسال می‌کند.</p>
+<p><strong>مدل OTel Collector:</strong> برنامه لاگ‌ها را به <bdi dir="ltr">OpenTelemetry Collector</bdi> ارسال می‌کند و <bdi dir="ltr">Collector</bdi> آن‌ها را به مقاصد مختلف هدایت می‌کند.</p>
+
+<div class="comparison"><strong>مقایسه با PHP Monolog:</strong> در <bdi dir="ltr">PHP</bdi> از <bdi dir="ltr">Monolog</bdi> با <bdi dir="ltr">HandlerInterface</bdi> استفاده می‌کنید که مفهومی مشابه <bdi dir="ltr">slog.Handler</bdi> در <bdi dir="ltr">Go</bdi> است. اما مزیت <bdi dir="ltr">slog</bdi> این است که بدون وابستگی خارجی در پکیج استاندارد <bdi dir="ltr">Go</bdi> موجود است. همچنین <bdi dir="ltr">Monolog</bdi> در هر درخواست <bdi dir="ltr">PHP</bdi> مجدداً مقداردهی می‌شود اما <bdi dir="ltr">slog</bdi> یک بار در طول عمر برنامه تنظیم می‌شود.</div>
+
+<h3 id="مقایسه-کتابخانههای-لاگ-در-go">مقایسه کتابخانه‌های لاگ در Go</h3>
+<table class="comparison-table" dir="rtl">
+<thead>
+<tr><th>ویژگی</th><th>log</th><th>slog (Go 1.21+)</th><th>zap</th><th>zerolog</th></tr>
+</thead>
+<tbody>
+<tr><td>ساخت‌یافته</td><td>خیر</td><td>بله</td><td>بله</td><td>بله</td></tr>
+<tr><td>سطح‌بندی</td><td>محدود</td><td>بله</td><td>بله</td><td>بله</td></tr>
+<tr><td>عملکرد</td><td>متوسط</td><td>خوب</td><td>بسیار بالا</td><td>بسیار بالا</td></tr>
+<tr><td>وابستگی</td><td>بدون وابستگی</td><td>بدون وابستگی</td><td>نیاز به نصب</td><td>نیاز به نصب</td></tr>
+<tr><td>Handler سفارشی</td><td>خیر</td><td>بله</td><td>بله</td><td>بله</td></tr>
+<tr><td>Context پشتیبانی</td><td>خیر</td><td>بله</td><td>محدود</td><td>محدود</td></tr>
+<tr><td>Allocation کم</td><td>خیر</td><td>متوسط</td><td>بله</td><td>بله</td></tr>
+</tbody>
+</table>
+
+<div class="note"><strong>راهنمای انتخاب:</strong> برای اکثر پروژه‌ها <code>slog</code> بهترین انتخاب است چون استاندارد و بدون وابستگی است. اگر به حداکثر عملکرد نیاز دارید از <code>zap</code> یا <code>zerolog</code> استفاده کنید.</div>
+
+<h3 id="middleware-لاگ">Middleware لاگ‌گیری در برنامه‌های وب</h3>
+<p>در فریم‌ورک‌هایی مانند <bdi dir="ltr">net/http</bdi> یا <bdi dir="ltr">Gin</bdi> می‌توانید <bdi dir="ltr">middleware</bdi> تعریف کنید که به‌صورت خودکار اطلاعات درخواست‌ها را لاگ کند:</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">func loggingMiddleware(next http.Handler) http.Handler {
+    return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+        start := time.Now()
+        wrapped := &amp;responseWriter{ResponseWriter: w, statusCode: 200}
+
+        next.ServeHTTP(wrapped, r)
+
+        slog.Info("HTTP request",
+        slog.String("method", r.Method),
+        slog.String("path", r.URL.Path),
+        slog.Int("status", wrapped.statusCode),
+        slog.Duration("duration", time.Since(start)),
+        slog.String("remote_addr", r.RemoteAddr),
+    )
+    })
+}</code></pre>
+</figure>
+
+<div class="important"><strong>نکته امنیتی:</strong> هرگز اطلاعات حساس مانند پسورد، توکن، شماره کارت یا داده‌های شخصی کاربران را در لاگ ننویسید. استفاده نادرست از لاگ می‌تواند آسیب‌های امنیتی جدی ایجاد کند.</div>
+
+<h3 id="مقایسه-کد-php-vs-go">مقایسه کد: Monolog در PHP در برابر slog در Go</h3>
+<p>برای درک بهتر تفاوت‌ها، بیایید یک سناریوی مشابه را در هر دو زبان پیاده‌سازی کنیم. فرض کنید می‌خواهیم Logging ساخت‌یافته با سطح‌بندی و خروجی <bdi dir="ltr">JSON</bdi> داشته باشیم:</p>
+
+<figure class="code php" dir="ltr">
+<pre><code class="language-php">// PHP — Monolog: Structured JSON logging
+require __DIR__ . '/vendor/autoload.php';
+
+use Monolog\Logger;
+use Monolog\Handler\StreamHandler;
+use Monolog\Handler\RotatingFileHandler;
+use Monolog\Formatter\JsonFormatter;
+
+// Create logger
+$log = new Logger('app');
+
+// JSON output to file with rotation
+$handler = new RotatingFileHandler('app.log', 7, Logger::INFO);
+$handler-&gt;setFormatter(new JsonFormatter());
+$log-&gt;pushHandler($handler);
+
+// Also log to stdout in development
+if (getenv('APP_ENV') === 'development') {
+    $log-&gt;pushHandler(new StreamHandler('php://stdout', Logger::DEBUG));
+}
+
+// Log with context
+$log-&gt;info('Request received', [
+'method' =&gt; 'GET',
+'path' =&gt; '/api/users',
+'status' =&gt; 200,
+'duration_ms' =&gt; 45,
+]);
+
+$log-&gt;error('Database connection failed', [
+'host' =&gt; 'db.example.com',
+'error' =&gt; $e-&gt;getMessage(),
+]);</code></pre>
+</figure>
+
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">// Go — slog: Structured JSON logging
+package main
+
+import (
+"log/slog"
+"os"
+)
+
+func main() {
+    // Create logger with JSON handler
+    level := slog.LevelInfo
+    if os.Getenv("APP_ENV") == "development" {
+        level = slog.LevelDebug
+    }
+    logger := slog.New(slog.NewJSONHandler(os.Stdout, &amp;slog.HandlerOptions{
+        Level: level,
+    }))
+    slog.SetDefault(logger)
+
+    // Log with structured fields
+    slog.Info("Request received",
+    slog.String("method", "GET"),
+    slog.String("path", "/api/users"),
+    slog.Int("status", 200),
+    slog.Int("duration_ms", 45),
+)
+
+    slog.Error("Database connection failed",
+    slog.String("host", "db.example.com"),
+    slog.String("error", err.Error()),
+)
+}</code></pre>
+</figure>
+
+<div class="comparison"><strong>تفاوت‌های کلیدی:</strong> در <bdi dir="ltr">PHP/Monolog</bdi> هر درخواست یک نمونه جدید <bdi dir="ltr">Logger</bdi> می‌سازد (یا از حافظه مشترک استفاده می‌کند). در <bdi dir="ltr">Go/slog</bdi> لاگر یک‌بار در شروع برنامه ساخته شده و بین تمام <bdi dir="ltr">goroutine</bdi> ها به‌صورت <bdi dir="ltr">thread-safe</bdi> استفاده می‌شود. همچنین <bdi dir="ltr">slog</bdi> بدون هیچ وابستگی خارجی در پکیج استاندارد موجود است، در حالی که <bdi dir="ltr">Monolog</bdi> باید با <bdi dir="ltr">Composer</bdi> نصب شود.</div>
+
+<h3 id="context-aware-logging">لاگ‌گیری آگاه از Context</h3>
+<p>یکی از الگوهای مهم در <bdi dir="ltr">Go</bdi> استفاده از <code>context.Context</code> برای انتقال اطلاعات درخواست در سراسر زنجیره فراخوانی است. می‌توانید <bdi dir="ltr">request ID</bdi>، شناسه کاربر و سایر اطلاعات را به <bdi dir="ltr">Context</bdi> اضافه کنید و در هر نقطه‌ای از برنامه به لاگ دسترسی داشته باشید:</p>
+
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">package main
+
+import (
+"context"
+"log/slog"
+"net/http"
+)
+
+// Define context keys for request-scoped data
+type contextKey string
+const (
+requestIDKey contextKey = "request_id"
+userIDKey    contextKey = "user_id"
+)
+
+// Helper: create a logger with context values
+func loggerFromContext(ctx context.Context) *slog.Logger {
+    logger := slog.Default()
+    if reqID, ok := ctx.Value(requestIDKey).(string); ok {
+        logger = logger.With(slog.String("request_id", reqID))
+    }
+    if uid, ok := ctx.Value(userIDKey).(string); ok {
+        logger = logger.With(slog.String("user_id", uid))
+    }
+    return logger
+}
+
+// Middleware: inject request ID into context
+func requestIDMiddleware(next http.Handler) http.Handler {
+    return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+        reqID := r.Header.Get("X-Request-ID")
+        if reqID == "" {
+            reqID = generateUUID() // your UUID generator
+        }
+        ctx := context.WithValue(r.Context(), requestIDKey, reqID)
+        next.ServeHTTP(w, r.WithContext(ctx))
+    })
+}
+
+// Usage in any handler — logger automatically includes request_id
+func getUserHandler(w http.ResponseWriter, r *http.Request) {
+    logger := loggerFromContext(r.Context())
+    logger.Info("Fetching user", slog.String("action", "get_user"))
+    // Output: {"time":"...","level":"INFO","msg":"Fetching user",
+    //          "request_id":"abc-123","user_id":"u-456","action":"get_user"}
+}</code></pre>
+</figure>
+
+<div class="tip"><strong>نکته عملی:</strong> الگوی <code>loggerFromContext</code> بسیار پرکاربرد است. در سیستم‌های واقعی معمولاً یک <bdi dir="ltr">middleware</bdi> <code>request_id</code> را تولید و در <bdi dir="ltr">Context</bdi> قرار می‌دهد و سپس تمام توابع در همان زنجیره درخواست، از همان <bdi dir="ltr">request_id</bdi> در لاگ‌های خود استفاده می‌کنند. این کار ردیابی جریان یک درخواست خاص را بسیار آسان می‌کند.</div>
+
+<h3 id="لاگگیری-در-محیط-concurrent">لاگ‌گیری در محیط Concurrent</h3>
+<p>در <bdi dir="ltr">Go</bdi> برخلاف <bdi dir="ltr">PHP</bdi> که هر درخواست یک فرآیند مجزا است، صدها <bdi dir="ltr">goroutine</bdi> ممکن است همزمان لاگ بنویسند. خوشبختانه <code>slog</code> از نظر <bdi dir="ltr">thread-safety</bdi> ایمن است و نیاز به قفل اضافی ندارد. اما نکاتی وجود دارد که باید رعایت کنید:</p>
+
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">package main
+
+import (
+"context"
+"log/slog"
+"net/http"
+"sync"
+"time"
+)
+
+// SAFE: slog is goroutine-safe — no mutex needed
+func processConcurrentRequests() {
+    var wg sync.WaitGroup
+    for i := 0; i &lt; 10; i++ {
+        wg.Add(1)
+        go func(id int) {
+            defer wg.Done()
+            slog.Info("Processing request",
+            slog.Int("worker_id", id),
+            slog.String("status", "started"),
+        )
+            time.Sleep(100 * time.Millisecond)
+            slog.Info("Processing complete",
+            slog.Int("worker_id", id),
+            slog.String("status", "done"),
+        )
+        }(i)
+    }
+    wg.Wait()
+}
+
+// CAUTION: If writing to a custom file, use sync-safe writer
+type syncedWriter struct {
+    mu io.Writer
+    sync.Mutex
+}
+
+func (w *syncedWriter) Write(p []byte) (int, error) {
+    w.Lock()
+    defer w.Unlock()
+    return w.mu.Write(p)
+}
+
+// Setup logger with custom synced writer
+func setupFileLogger() *slog.Logger {
+    file, _ := os.Create("app.log")
+    safeWriter := &amp;syncedWriter{mu: file}
+    return slog.New(slog.NewJSONHandler(safeWriter, nil))
+}</code></pre>
+</figure>
+
+<div class="warning"><strong>هشدار:</strong> اگر از <bdi dir="ltr">Handler</bdi> سفارشی برای <code>slog</code> استفاده می‌کنید، مطمئن شوید که <bdi dir="ltr">thread-safe</bdi> است. <bdi dir="ltr">Handler</bdi>‌های پیش‌فرض <code>JSONHandler</code> و <code>TextHandler</code> ایمن هستند اما اگر خودتان <bdi dir="ltr">Handler</bdi> نوشته‌اید باید از <code>sync.Mutex</code> برای محافظت دسترسی‌ها استفاده کنید.</div>
+
+<h3 id="نمونه-خروجی-json">نمونه خروجی JSON لاگ در Production</h3>
+<p>درک فرمت خروجی <bdi dir="ltr">JSON</bdi> برای تحلیل لاگ‌ها با ابزارهایی مثل <bdi dir="ltr">Loki</bdi>، <bdi dir="ltr">Elasticsearch</bdi> یا <bdi dir="ltr">Datadog</bdi> ضروری است. هر رکورد شامل فیلدهای استاندارد و فیلدهای سفارشی شماست:</p>
+
+<figure class="code json" dir="ltr">
+<pre><code class="language-json">{
+    "time": "2024-03-15T10:30:45.123Z",
+    "level": "INFO",
+    "msg": "Request received",
+    "request_id": "abc-123-def",
+    "trace_id": "4bf92f3577b34da6a3ce929d0e0e4736",
+    "span_id": "00f067aa0ba902b7",
+    "method": "GET",
+    "path": "/api/users/42",
+    "status": 200,
+    "duration_ms": 45,
+    "remote_addr": "192.168.1.100",
+    "service": "user-api",
+    "version": "1.2.3"
+}
+
+{
+    "time": "2024-03-15T10:30:45.456Z",
+    "level": "ERROR",
+    "msg": "Database query failed",
+    "request_id": "abc-123-def",
+    "trace_id": "4bf92f3577b34da6a3ce929d0e0e4736",
+    "span_id": "00f067aa0ba902b8",
+    "query": "SELECT * FROM users WHERE id = $1",
+    "error": "connection refused",
+    "retry": 3
+}</code></pre>
+</figure>
+
+<p>توجه کنید که <code>request_id</code> و <code>trace_id</code> در هر دو رکورد یکسان هستند — این همبستگی (<bdi dir="ltr">correlation</bdi>) امکان جستجوی تمام لاگ‌های مربوط به یک درخواست خاص را فراهم می‌کند.</p>
+
+<h3 id="log-rotation">چرخش و مدیریت فایل لاگ</h3>
+<p>در محیط <bdi dir="ltr">production</bdi> فایل‌های لاگ نباید بی‌نهایت بزرگ شوند. سه رویکرد رایج برای مدیریت حجم Logs وجود دارد:</p>
+
+<ul>
+<li><strong>ابزار خارجی (پیشنهادی):</strong> از <bdi dir="ltr">logrotate</bdi> (لینوکس) یا <bdi dir="ltr">Fluentd/Promtail</bdi> استفاده کنید. برنامه فقط به <bdi dir="ltr">stdout</bdi> می‌نویسد و ابزار خارجی فایل‌ها را چرخش می‌دهد.</li>
+<li><strong>کتابخانه <bdi dir="ltr">lumberjack</bdi>:</strong> اگر باید مستقیم به فایل بنویسید، <code>gopkg.in/natefinch/lumberjack.v2</code> چرخش خودکار بر اساس حجم و تعداد فایل‌ها را فراهم می‌کند.</li>
+<li><strong>سرویس مرکزی:</strong> ارسال مستقیم به <bdi dir="ltr">Loki/ELK</bdi> از طریق <bdi dir="ltr">OTel Collector</bdi> — بهترین رویکرد برای میکروسرویس‌ها.</li>
+</ul>
+
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">// Option 2: Using lumberjack for log rotation
+import "gopkg.in/natefinch/lumberjack.v2"
+
+func setupRotatingLogger() *slog.Logger {
+    writer := &amp;lumberjack.Logger{
+        Filename:   "/var/log/myapp/app.log",
+        MaxSize:    100, // MB — rotate when file exceeds this
+        MaxBackups: 7,   // keep at most 7 old log files
+        MaxAge:     30,  // days — delete files older than this
+        Compress:   true, // gzip old log files
+    }
+    return slog.New(slog.NewJSONHandler(writer, &amp;slog.HandlerOptions{
+        Level: slog.LevelInfo,
+    }))
+}</code></pre>
+</figure>
+
+<div class="note"><strong>بهترین رویکرد:</strong> در محیط‌های ابری و <bdi dir="ltr">Kubernetes</bdi> بهتر است برنامه فقط به <bdi dir="ltr">stdout/stderr</bdi> بنویسد و جمع‌آوری و چرخش لاگ‌ها را به <bdi dir="ltr">Fluentd</bdi> یا <bdi dir="ltr">Promtail</bdi> بسپارید. این رویکرد جداسازی مسئولیت (<bdi dir="ltr">separation of concerns</bdi>) را رعایت می‌کند و برنامه شما را از جزئیات زیرساخت مستقل می‌کند.</div>
+<h3 id="slog-multi-handler">تابع slog.NewMultiHandler — Go 1.26</h3>
+<p>
+    تابع جدید <code>slog.NewMultiHandler</code> یک <code>MultiHandler</code> ایجاد می‌کند
+    که تمام handler‌های داده‌شده را فراخوانی می‌کند. این تابع راهی ساده و کارآمد برای
+    ارسال لاگ‌ها به چندین مقصد همزمان فراهم می‌کند:
+</p>
+<figure class="code go" dir="ltr">
+    <pre><code class="language-go">import "log/slog"
+
+func setupLogging() *slog.Logger {
+    // Handler برای فایل
+    fileHandler, _ := slog.NewJSONHandler(
+    os.OpenFile("app.json", os.O_APPEND|os.O_CREATE, 0644),
+    &amp;slog.HandlerOptions{Level: slog.LevelInfo},
+)
+
+    // Handler برای stdout
+    textHandler := slog.NewTextHandler(os.Stdout,
+    &amp;slog.HandlerOptions{Level: slog.LevelDebug},
+)
+
+    // Handler برای سیستم نظارت (مثل Datadog)
+    monitoringHandler := NewDatadogHandler()
+
+    // ترکیب همه handler‌ها
+    multiHandler := slog.NewMultiHandler(
+    fileHandler,
+    textHandler,
+    monitoringHandler,
+)
+
+    return slog.New(multiHandler)
+}</code></pre>
+</figure>
+<p>
+    متد <code>Enabled</code> این handler گزارش می‌دهد که آیا هر یک از handler‌ها فعال است.
+    متدهای <code>Handle</code>، <code>WithAttrs</code> و <code>WithGroup</code> متد مربوعه
+    را روی هر handler فعال فراخوانی می‌کنند. این رویکرد جایگزین بهتری برای ایجاد چندین
+    logger جداگانه است و تضمین می‌کند که تمام لاگ‌ها به تمام مقاصد ارسال می‌شوند.
+</p>
+
+<div class="case-study">
+    <div class="case-study-header">
+        <span class="case-study-badge">مطالعه موردی</span>
+        <span class="case-study-title">سیستم Logging توزیع‌شده در Twitch</span>
+    </div>
+    <p>
+        تیم Twitch در ارائه GopherCon 2023 توضیح داد که چگونه از الگوی Multi-Handler
+        برای سیستم Logging خود استفاده می‌کنند. آن‌ها لاگ‌ها را همزمان به سه مقصد
+        ارسال می‌کنند: فایل محلی برای دیباگ، Elasticsearch برای جستجو، و Datadog برای
+        هشداردهی. قبل از MultiHandler، این کار با سه logger جداگانه انجام می‌شد که
+        باعث ناسازگاری در فرمت و محتوای لاگ‌ها می‌شد. مثلاً یک logger ممکن بود timestamp
+        را با فرمت UTC لاگ کند و دیگری با فرمت محلی، یا یکی شامل trace ID باشد و دیگری نباشد.
+        این ناسازگاری زمان عیب‌یابی را به‌شدت افزایش می‌داد چون باید لاگ‌ها را از منابع
+        مختلف به‌طور دستی هماهنگ می‌کردید.
+    </p>
+    <p>
+        با الگوی MultiHandler، یک logger واحد پیام را به همه handler‌ها ارسال می‌کند.
+        این تضمین می‌کند که هر لاگ دقیقاً با همان فرمت، محتوا و ترتیب به همه مقاصد می‌رسد.
+        مزیت دیگر این است که اضافه‌کردن یک مقصد جدید (مثل Amazon CloudWatch) فقط به‌معنای
+        اضافه‌کردن یک handler جدید است، بدون اینکه لازم باشد کد Logging در سراسر برنامه
+        تغییر کند. تیم Twitch گزارش داد که این الگو زمان عیب‌یابی حوادث را ۴۰ درصد کاهش داده
+        و هماهنگی بین تولیدی Logs و سیستم‌های هشداردهی را تضمین کرده است.
+    </p>
+    <p class="case-study-source">
+        <span class="source-event">GopherCon 2023</span>
+        <span class="source-year">— سن‌دیگو، ۲۰۲۳</span>
+    </p>
+</div>
+
+<h3 id="هرم-سطوح-لاگ-و-خط-لوله-ساختاریافته">هرم سطوح لاگ و خط لوله ساختاریافته</h3>
+
+<p>درک بصری سطوح لاگ و جریان داده در خط لوله ساختاریافته (<bdi dir="ltr">structured logging pipeline</bdi>) برای طراحی سیستم لاگ‌گیری مؤثر ضروری است. هر سطح لاگ هدف مشخصی دارد و باید با دقت انتخاب شود. سطح <bdi dir="ltr">DEBUG</bdi> بیشترین حجم خروجی را تولید می‌کند و فقط در محیط توسعه باید فعال باشد. سطح <bdi dir="ltr">FATAL</bdi> کمترین فراوانی را دارد اما بیشترین اهمیت را در <bdi dir="ltr">production</bdi>. درخواست‌های <bdi dir="ltr">HTTP</bdi> معمولاً در سطح <bdi dir="ltr">INFO</bdi> لاگ می‌شوند اما جزئیات هدرها و بدنه درخواست در سطح <bdi dir="ltr">DEBUG</bdi>. خط لوله ساختاریافته تضمین می‌کند که هر رکورد لاگ از منبع تا مقصد با کلید-مقدارهای (<bdi dir="ltr">key-value pairs</bdi>) ثابت حفظ شود و قابلیت جستجو و فیلترینگ در سیستم‌هایی مثل <bdi dir="ltr">ELK</bdi> یا <bdi dir="ltr">Loki</bdi> را داشته باشد.</p>
+
+<figure class="diagram" dir="ltr">
+<svg height="520" viewBox="0 0 720 520" width="720" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<marker id="arrowLvl" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#555" points="0 0,10 3.5,0 7"></polygon></marker>
+<filter height="104%" id="shLvl" width="104%" x="-2%" y="-2%"><fedropshadow dx="1" dy="1" flood-opacity="0.12" stddeviation="2"></fedropshadow></filter>
+</defs>
+<rect fill="#fafafa" height="520" rx="8" width="720" x="0" y="0"></rect>
+<text fill="#333" font-size="16" font-weight="bold" text-anchor="middle" x="360" y="28" direction="rtl" unicode-bidi="embed">هرم سطوح لاگ و خط لوله <tspan direction="ltr" unicode-bidi="embed">Structured Logging</tspan></text>
+
+<!-- LOG LEVEL PYRAMID - Left side -->
+<text fill="#555" font-size="12" font-weight="bold" text-anchor="middle" x="150" y="55" direction="rtl" unicode-bidi="embed">هرم سطوح لاگ</text>
+
+<!-- FATAL - top, narrowest -->
+<polygon fill="#9C27B0" points="90,75 210,75 190,115 110,115" filter="url(#shLvl)"></polygon>
+<text fill="#fff" font-size="11" font-weight="bold" text-anchor="middle" x="150" y="100" direction="ltr" unicode-bidi="embed">FATAL</text>
+
+<!-- ERROR -->
+<polygon fill="#e91e63" points="80,120 220,120 195,165 105,165" filter="url(#shLvl)"></polygon>
+<text fill="#fff" font-size="11" font-weight="bold" text-anchor="middle" x="150" y="148" direction="ltr" unicode-bidi="embed">ERROR</text>
+
+<!-- WARN -->
+<polygon fill="#FF9800" points="70,170 230,170 200,220 100,220" filter="url(#shLvl)"></polygon>
+<text fill="#fff" font-size="11" font-weight="bold" text-anchor="middle" x="150" y="200" direction="ltr" unicode-bidi="embed">WARN</text>
+
+<!-- INFO -->
+<polygon fill="#00ADD8" points="60,225 240,225 205,280 95,280" filter="url(#shLvl)"></polygon>
+<text fill="#fff" font-size="11" font-weight="bold" text-anchor="middle" x="150" y="258" direction="ltr" unicode-bidi="embed">INFO</text>
+
+<!-- DEBUG - bottom, widest -->
+<polygon fill="#4CAF50" points="50,285 250,285 210,345 90,345" filter="url(#shLvl)"></polygon>
+<text fill="#fff" font-size="11" font-weight="bold" text-anchor="middle" x="150" y="320" direction="ltr" unicode-bidi="embed">DEBUG</text>
+
+<!-- Arrows and examples on left pyramid -->
+<text fill="#9C27B0" font-size="8" x="215" y="100" direction="rtl" unicode-bidi="embed">توقف برنامه ← اتصال <tspan direction="ltr" unicode-bidi="embed">DB</tspan> ناموفق</text>
+<text fill="#e91e63" font-size="8" x="225" y="148" direction="rtl" unicode-bidi="embed">خطای غیرقابل بازیافت ← <tspan direction="ltr" unicode-bidi="embed">nil pointer</tspan></text>
+<text fill="#E65100" font-size="8" x="235" y="200" direction="rtl" unicode-bidi="embed">مشکل مشکوک ← <tspan direction="ltr" unicode-bidi="embed">retry</tspan> زیاد، <tspan direction="ltr" unicode-bidi="embed">cache miss</tspan></text>
+<text fill="#0077A0" font-size="8" x="245" y="258" direction="rtl" unicode-bidi="embed">رویداد عادی ← شروع سرور، درخواست <tspan direction="ltr" unicode-bidi="embed">HTTP</tspan></text>
+<text fill="#2E7D32" font-size="8" x="255" y="320" direction="rtl" unicode-bidi="embed">جزئیات دیباگ ← محتوای متغیرها، <tspan direction="ltr" unicode-bidi="embed">query params</tspan></text>
+
+<!-- Volume arrow on left -->
+<line stroke="#888" stroke-width="1.5" x1="30" y1="340" x2="30" y2="75" marker-end="url(#arrowLvl)"></line>
+<text fill="#888" font-size="8" text-anchor="middle" x="30" y="360" direction="rtl" unicode-bidi="embed">حجم کم</text>
+<text fill="#888" font-size="8" text-anchor="middle" x="30" y="68" direction="rtl" unicode-bidi="embed">حجم زیاد</text>
+
+<!-- STRUCTURED LOGGING PIPELINE - Right side -->
+<text fill="#555" font-size="12" font-weight="bold" text-anchor="middle" x="510" y="55" direction="rtl" unicode-bidi="embed">خط لوله <tspan direction="ltr" unicode-bidi="embed">Structured Logging</tspan></text>
+
+<!-- Log Entry Source -->
+<rect fill="#4CAF50" filter="url(#shLvl)" height="50" rx="6" width="180" x="420" y="70"></rect>
+<text fill="#fff" font-size="10" font-weight="bold" text-anchor="middle" x="510" y="90" direction="ltr" unicode-bidi="embed">Log Entry (Key-Value)</text>
+<text fill="#e8f5e9" font-size="8" text-anchor="middle" x="510" y="108" direction="ltr" unicode-bidi="embed">msg="..." port=8080 env="prod"</text>
+
+<line marker-end="url(#arrowLvl)" stroke="#555" stroke-width="2" x1="510" x2="510" y1="120" y2="145"></line>
+
+<!-- slog.Handler -->
+<rect fill="#9C27B0" filter="url(#shLvl)" height="70" rx="6" width="180" x="420" y="148"></rect>
+<text fill="#fff" font-size="11" font-weight="bold" text-anchor="middle" x="510" y="172" direction="ltr" unicode-bidi="embed">slog.Handler</text>
+<text fill="#e1bee7" font-size="8" text-anchor="middle" x="510" y="188" direction="ltr" unicode-bidi="embed">TextHandler | JSONHandler</text>
+<text fill="#e1bee7" font-size="8" text-anchor="middle" x="510" y="205" direction="ltr" unicode-bidi="embed">Custom Handler</text>
+
+<line marker-end="url(#arrowLvl)" stroke="#555" stroke-width="2" x1="510" x2="510" y1="218" y2="243"></line>
+
+<!-- MultiHandler fan-out -->
+<rect fill="#00ADD8" filter="url(#shLvl)" height="40" rx="6" width="180" x="420" y="246"></rect>
+<text fill="#fff" font-size="10" font-weight="bold" text-anchor="middle" x="510" y="272" direction="ltr" unicode-bidi="embed">slog.NewMultiHandler</text>
+
+<!-- Fan-out lines -->
+<line marker-end="url(#arrowLvl)" stroke="#777BB4" stroke-width="1.5" x1="450" x2="380" y1="286" y2="320"></line>
+<line marker-end="url(#arrowLvl)" stroke="#e91e63" stroke-width="1.5" x1="510" x2="510" y1="286" y2="320"></line>
+<line marker-end="url(#arrowLvl)" stroke="#4CAF50" stroke-width="1.5" x1="570" x2="640" y1="286" y2="320"></line>
+
+<!-- Output: stdout/File -->
+<rect fill="#777BB4" filter="url(#shLvl)" height="50" rx="6" width="120" x="310" y="323"></rect>
+<text fill="#fff" font-size="10" font-weight="bold" text-anchor="middle" x="370" y="345" direction="ltr" unicode-bidi="embed">stdout / File</text>
+<text fill="#e8e0f0" font-size="8" text-anchor="middle" x="370" y="362" direction="ltr" unicode-bidi="embed">TextHandler</text>
+
+<!-- Output: ELK/Loki -->
+<rect fill="#e91e63" filter="url(#shLvl)" height="50" rx="6" width="120" x="450" y="323"></rect>
+<text fill="#fff" font-size="10" font-weight="bold" text-anchor="middle" x="510" y="345" direction="ltr" unicode-bidi="embed">ELK / Loki</text>
+<text fill="#fce4ec" font-size="8" text-anchor="middle" x="510" y="362" direction="ltr" unicode-bidi="embed">JSONHandler</text>
+
+<!-- Output: Datadog/Sentry -->
+<rect fill="#4CAF50" filter="url(#shLvl)" height="50" rx="6" width="120" x="590" y="323"></rect>
+<text fill="#fff" font-size="10" font-weight="bold" text-anchor="middle" x="650" y="345" direction="ltr" unicode-bidi="embed">Datadog / Sentry</text>
+<text fill="#e8f5e9" font-size="8" text-anchor="middle" x="650" y="362" direction="ltr" unicode-bidi="embed">Custom Handler</text>
+
+<!-- PHP Monolog vs Go slog comparison -->
+<rect fill="#FFF8E1" height="115" rx="6" stroke="#F9A825" width="340" x="300" y="395"></rect>
+<text fill="#E65100" font-size="11" font-weight="bold" text-anchor="middle" x="470" y="415" direction="rtl" unicode-bidi="embed">مقایسه <tspan direction="ltr" unicode-bidi="embed">PHP Monolog</tspan> vs <tspan direction="ltr" unicode-bidi="embed">Go slog</tspan></text>
+<text fill="#333" font-size="8" text-anchor="start" x="310" y="435" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">Monolog</tspan>: <tspan direction="ltr" unicode-bidi="embed">pushHandler()</tspan> ← هر درخواست نمونه جدید</text>
+<text fill="#333" font-size="8" text-anchor="start" x="310" y="452" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">slog</tspan>: <tspan direction="ltr" unicode-bidi="embed">SetDefault()</tspan> ← یک‌بار، <tspan direction="ltr" unicode-bidi="embed">goroutine-safe</tspan></text>
+<text fill="#333" font-size="8" text-anchor="start" x="310" y="469" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">Monolog</tspan>: نیازمند <tspan direction="ltr" unicode-bidi="embed">Composer</tspan></text>
+<text fill="#333" font-size="8" text-anchor="start" x="310" y="486" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">slog</tspan>: پکیج استاندارد — بدون وابستگی</text>
+<text fill="#4CAF50" font-size="8" font-weight="bold" text-anchor="start" x="310" y="503" direction="rtl" unicode-bidi="embed">✓ <tspan direction="ltr" unicode-bidi="embed">slog</tspan> برای اکثر پروژه‌ها کافی است</text>
+</svg>
+<figcaption>شکل ۹-۳: هرم سطوح لاگ (چپ) و خط لوله <bdi dir="ltr">Structured Logging</bdi> با <bdi dir="ltr">slog.NewMultiHandler</bdi> (راست) — مقایسه <bdi dir="ltr">PHP Monolog</bdi> با <bdi dir="ltr">Go slog</bdi></figcaption>
+</figure>
+
+<p>در خط لوله ساختاریافته هر رکورد لاگ با فیلدهای کلید-مقداری (<bdi dir="ltr">key-value fields</bdi>) تولید می‌شود و سپس از طریق <bdi dir="ltr">slog.Handler</bdi> به فرمت مورد نظر تبدیل و به مقصد ارسال می‌شود. تابع <bdi dir="ltr">slog.NewMultiHandler</bdi> امکان ارسال همزمان یک رکورد لاگ به چندین <bdi dir="ltr">Handler</bdi> (و در نتیجه چندین مقصد) را بدون نیاز به لاگرهای جداگانه فراهم می‌کند. این الگو تضمین می‌کند که تمام مقاصد دقیقاً همان رکورد لاگ را با همان فیلدها و ترتیب دریافت کنند. در مقایسه با <bdi dir="ltr">PHP Monolog</bdi> که در هر درخواست یک نمونه جدید می‌سازد، <bdi dir="ltr">slog</bdi> یک‌بار در شروع برنامه مقداردهی می‌شود و به‌صورت <bdi dir="ltr">goroutine-safe</bdi> بین تمام <bdi dir="ltr">goroutine</bdi>‌ها به اشتراک گذاشته می‌شود. این تفاوت معماری در سیستم‌های با بار بالا اهمیت ویژه‌ای پیدا می‌کند.</p>
+
+<h3 id="سناریوهای-عملیاتی-لاگ">سناریوهای عملیاتی</h3>
+
+<ul>
+<li><strong>انتخاب سطح لاگ در عمل:</strong> تصمیم بین <bdi dir="ltr">INFO</bdi> و <bdi dir="ltr">DEBUG</bdi> یکی از رایج‌ترین چالش‌هاست. قانون تجربی: اگر اطلاعات فقط برای عیب‌یابی فعلی مفید است از <bdi dir="ltr">DEBUG</bdi> استفاده کنید. اگر برای نظارت بلندمدت و تحلیل روندها لازم است <bdi dir="ltr">INFO</bdi> را برگزینید. مثلاً لاگ «درخواست دریافتی» در سطح <bdi dir="ltr">INFO</bdi> مناسب است اما «محتوای <bdi dir="ltr">JSON</bdi> بدنه درخواست» در سطح <bdi dir="ltr">DEBUG</bdi>.</li>
+<li><strong>لاگ ساختاریافته برای <bdi dir="ltr">ELK/Loki</bdi>:</strong> برای جستجوی مؤثر در <bdi dir="ltr">Loki</bdi> یا <bdi dir="ltr">Elasticsearch</bdi> هر فیلد باید کلید مشخصی داشته باشد. از <code>slog.String("user_id", uid)</code> به‌جای <bdi dir="ltr">fmt.Sprintf</bdi> در پیام لاگ استفاده کنید. فیلدهای ساختاریافته امکان فیلترینگ دقیق مانند <code>{service="order-api"} |~ "status=500"</code> را فراهم می‌کنند.</li>
+<li><strong>نمونه‌برداری لاگ (<bdi dir="ltr">log sampling</bdi>) در سرویس‌های پرترافیک:</strong> در سرویس‌هایی با هزاران درخواست در ثانیه، ثبت تمام لاگ‌ها غیرعملی است. با <bdi dir="ltr">slog</bdi> می‌توانید <bdi dir="ltr">Handler</bdi> سفارشی بنویسید که فقط هر N رکورد را ثبت کند یا از الگوریتم <bdi dir="ltr">leaky bucket</bdi> برای محدودسازی نرخ لاگ استفاده نماید.</li>
+<li><strong>لاگ‌گیری چندمقصدی (<bdi dir="ltr">multi-output</bdi>):</strong> با <bdi dir="ltr">slog.NewMultiHandler</bdi> می‌توانید همزمان به <bdi dir="ltr">stdout</bdi> (برای <bdi dir="ltr">Fluentd</bdi>)، فایل محلی (برای دیباگ فوری) و یک سرویس ابری (برای هشداردهی) لاگ ارسال کنید. هر <bdi dir="ltr">Handler</bdi> فرمت و سطح خود را دارد: فایل با <bdi dir="ltr">TextHandler</bdi> و سطح <bdi dir="ltr">DEBUG</bdi>، سرویس ابری با <bdi dir="ltr">JSONHandler</bdi> و سطح <bdi dir="ltr">ERROR</bdi>.</li>
+<li><strong>شناسه‌های همبستگی (<bdi dir="ltr">correlation IDs</bdi>) برای ردیابی درخواست:</strong> در سیستم‌های توزیع‌شده هر درخواست باید <bdi dir="ltr">correlation ID</bdi> منحصربه‌فردی داشته باشد که در تمام لاگ‌های مربوط به همان درخواست تکرار شود. این الگو با <code dir="ltr">slog.With("correlation_id", id)</code> به‌سادگی قابل پیاده‌سازی است و امکان دنبال‌کردن مسیر یک درخواست از <bdi dir="ltr">gateway</bdi> تا دیتابیس را فراهم می‌کند.</li>
+</ul>
+
+<div class="tip"><strong>نکته کلیدی درباره لاگ ساختاریافته:</strong> همیشه از فیلدهای ساختاریافته (<bdi dir="ltr">structured fields</bdi>) با کلید-مقدار استفاده کنید و از <bdi dir="ltr">fmt.Sprintf</bdi> در پیام لاگ پرهیز کنید. تفاوت را ببینید: ❌ <code>slog.Info(fmt.Sprintf("User %s logged in from %s", user, ip))</code> — این لاگ قابل جستجو نیست. ✅ <code>slog.Info("User logged in", slog.String("user_id", user), slog.String("ip", ip))</code> — این لاگ با <code>{user_id="alice"}</code> در <bdi dir="ltr">Loki</bdi> قابل فیلترینگ است. لاگ‌های ساختاریافته به شما امکان می‌دهند دقیقاً رکوردهایی که یک فیلد خاص دارند را پیدا کنید، در حالی که لاگ‌های متنی فقط جستجوی متنی ساده را پشتیبانی می‌کنند.</div>
+
+</div>
+</div>
+
+
+<!-- Footer -->
+<footer class="site-footer">
+<div class="footer-inner">
+<div class="footer-nav">
+<span class="nav-arrow">‹</span>
+<a href="09.00-chapter-9.html" data-prev>۹. مانیتورینگ و Observability</a>
+</div>
+<div class="footer-toc">
+<a href="00.01-contents.html">فهرست</a>
+</div>
+<div class="footer-nav">
+<a href="09.02-prometheus-and-grafana.html" data-next>۹.۲ Prometheus و Grafana</a>
+<span class="nav-arrow">›</span>
+</div>
+</div>
+</footer>
+
+<!-- Back to Top -->
+<button class="back-to-top" aria-label="بازگشت به بالا">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
+</button>
+
+<!-- Scripts -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/go.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/php.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/sql.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/yaml.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/json.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/dockerfile.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/xml.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/ini.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/plaintext.min.js"></script>
+<script src="assets/js/main.js"></script>
+</body>
+</html>

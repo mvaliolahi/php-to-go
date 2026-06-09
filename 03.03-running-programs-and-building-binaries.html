@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="fa">
+<head>
+<script>!function(){try{var t=localStorage.getItem('php2go-theme');if(t==='dark'||(!t&&window.matchMedia('(prefers-color-scheme:dark)').matches)){document.documentElement.setAttribute('data-theme','dark')}}catch(e){}}();</script>
+<meta charset="utf-8"/>
+<meta content="ie=edge" http-equiv="x-ua-compatible"/>
+<title>۳.۳ اجرای برنامه و ساخت فایل خروجی — PHP to Go</title>
+<meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet"/>
+<link href="assets/css/main.css" rel="stylesheet" type="text/css"/>
+<link href="assets/img/favicon.ico" rel="icon" type="image/x-icon"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" media="screen" class="hljs-light-theme" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css" media="not screen" class="hljs-dark-theme" rel="stylesheet"/>
+</head>
+<body>
+<!-- Progress Bar -->
+<div class="progress-bar"><div class="progress-bar__fill"></div></div>
+
+<!-- Header -->
+<header class="site-header">
+<div class="header-inner">
+<div class="header-left">
+<button class="header-btn sidebar-toggle" aria-label="فهرست">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+</button>
+<a href="00.00-front-matter.html" class="header-logo"><span class="logo-php">PHP</span> to <span class="logo-go">Go</span></a>
+<span class="header-crumbs">پکیج‌ها، ماژول‌ها و شی‌گرایی › اجرای برنامه و ساخت فایل خروجی</span>
+</div>
+<div class="header-right">
+<nav class="header-nav">
+<span class="nav-arrow">‹</span>
+<a href="03.02-modules-and-dependency-management.html"><span class="nav-label">۳.۲ ماژول‌ها و مدیریت dependency ها</span></a>
+<a href="00.01-contents.html">فهرست</a>
+<a href="03.04-understanding-program-lifecycle.html"><span class="nav-label">۳.۴ درک چرخه‌ی حیات برنامه</span></a>
+<span class="nav-arrow">›</span>
+</nav>
+<button class="header-btn search-toggle" aria-label="جستجو">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+</button>
+<button class="header-btn theme-toggle" aria-label="تغییر تم">
+<svg class="theme-icon-light" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+<svg class="theme-icon-dark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+</button>
+</div>
+</div>
+</header>
+
+<!-- Search Modal -->
+<div class="search-overlay">
+<div class="search-modal">
+<div class="search-input-wrap">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+<input type="text" class="search-input" placeholder="جستجو... (Ctrl+K)" dir="rtl"/>
+</div>
+<div class="search-results"></div>
+</div>
+</div>
+
+<!-- Layout -->
+<div class="site-layout">
+<!-- Sidebar -->
+<aside class="sidebar"></aside>
+<div class="sidebar-overlay"></div>
+
+<!-- Main Content -->
+<main class="content-area">
+<div class="content-wrap text">
+<div class="chapter">فصل ۳.۳</div>
+<h2 id="اجرای-برنامه-و--ساخت-فایل-خروجی">اجرای برنامه و ساخت فایل خروجی</h2>
+<figure class="diagram" dir="ltr">
+<svg height="200" viewBox="0 0 650 200" width="650" xmlns="http://www.w3.org/2000/svg">
+<defs><marker id="arr33" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#00ADD8" points="0 0, 10 3.5, 0 7"></polygon></marker></defs>
+<text fill="#00ADD8" font-size="15" font-weight="bold" text-anchor="middle" x="325" y="25" direction="rtl" unicode-bidi="embed">فرآیند ساخت و اجرا در <tspan direction="ltr" unicode-bidi="embed">Go</tspan></text>
+<rect fill="#e3f2fd" height="45" rx="8" stroke="#2196f3" stroke-width="1.5" width="130" x="10" y="45"></rect>
+<text fill="#1565c0" font-size="13" text-anchor="middle" x="75" y="72" direction="rtl" unicode-bidi="embed">کد .<tspan direction="ltr" unicode-bidi="embed">go</tspan></text>
+<rect fill="#e0f7fa" height="45" rx="8" stroke="#00ADD8" stroke-width="1.5" width="130" x="170" y="45"></rect>
+<text fill="#00ADD8" font-size="13" text-anchor="middle" x="235" y="72" direction="ltr" unicode-bidi="embed">go build</text>
+<rect fill="#e8f5e9" height="45" rx="8" stroke="#4caf50" stroke-width="1.5" width="130" x="330" y="45"></rect>
+<text fill="#2e7d32" font-size="13" text-anchor="middle" x="395" y="72" direction="rtl" unicode-bidi="embed">باینری مستقل</text>
+<rect fill="#fff3e0" height="45" rx="8" stroke="#ff9800" stroke-width="1.5" width="150" x="490" y="45"></rect>
+<text fill="#e65100" font-size="13" text-anchor="middle" x="565" y="72" direction="rtl" unicode-bidi="embed">./<tspan direction="ltr" unicode-bidi="embed">myapp</tspan> → اجرا</text>
+<line marker-end="url(#arr33)" stroke="#00ADD8" stroke-width="2" x1="140" x2="170" y1="67" y2="67"></line>
+<line marker-end="url(#arr33)" stroke="#00ADD8" stroke-width="2" x1="300" x2="330" y1="67" y2="67"></line>
+<line marker-end="url(#arr33)" stroke="#00ADD8" stroke-width="2" x1="460" x2="490" y1="67" y2="67"></line>
+<!-- go run shortcut -->
+<rect fill="#fce4ec" height="45" rx="8" stroke="#e91e63" stroke-width="1.5" width="130" x="170" y="120"></rect>
+<text fill="#880e4f" font-size="13" text-anchor="middle" x="235" y="147" direction="ltr" unicode-bidi="embed">go run</text>
+<text fill="#888" font-size="12" x="390" y="147" direction="rtl" unicode-bidi="embed">کامپایل موقت + اجرای فوری (بدون فایل باینری)</text>
+<line stroke="#e91e63" stroke-dasharray="5,3" stroke-width="1.5" x1="235" x2="235" y1="90" y2="120"></line>
+<text fill="#555" font-size="11" text-anchor="middle" x="325" y="190" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">go</tspan> <tspan direction="ltr" unicode-bidi="embed">build</tspan> → خروجی قابل دیپلوی | <tspan direction="ltr" unicode-bidi="embed">go</tspan> <tspan direction="ltr" unicode-bidi="embed">run</tspan> → مناسب توسعه</text>
+</svg>
+<figcaption>فرآیند ساخت و اجرای برنامه در <bdi dir="ltr">Go</bdi></figcaption>
+</figure>
+<p>همانطور که تا اینجا گفته شد در Go برخلاف PHP که فایل‌ها را مستقیماً روی سرور تفسیر می‌کنید برنامه‌ها معمولاً کامپایل می‌شوند. با این حال ابزارهای مختلفی برای توسعه و اجرا در اختیار دارید:</p>
+<h3 id="go-run">go run</h3>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">go run main.go
+</code></pre>
+</figure>
+<p>دستور <code dir="ltr">go run</code> برای اجرای سریع و موقتی کد بدون اینکه فایل اجرایی جداگانه تولید شود استفاده می‌شود. این دستور کد را پشت صحنه کامپایل کرده و بلافاصله اجرا می‌کند.</p>
+<p>یا اگر چند فایل دارید:</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">go run main.go utils.go
+</code></pre>
+</figure>
+<p>و برای اجرای یک پروژه کامل با ساختار ماژولار می‌توانید از دستور زیر استفاده کنید:</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">go run .
+</code></pre>
+</figure>
+<p>دستور <code dir="ltr">go build</code> برای کامپایل پروژه و تولید یک فایل اجرایی مستقل استفاده می‌شود. برخلاف <code dir="ltr">go run</code> که کد را اجرا می‌کند، <code dir="ltr">go build</code> فقط فایل باینری تولید می‌کند و آن را اجرا نمی‌کند:</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">go build
+./myapp
+</code></pre>
+</figure>
+<p>در صورت موفقیت فایلی با نام ماژول یا پوشه‌ی جاری ساخته می‌شود (مثلاً <code dir="ltr">myapp</code> یا <code dir="ltr">main</code>) که سپس می‌توانید آن را اجرا کنید یا روی سیستم دیگری <bdi dir="ltr">deploy</bdi> کنید. برخلاف PHP که به مفسر نیاز دارد، فایل اجرایی Go <strong>نیاز به هیچ runtime یا نصب زبانی ندارد</strong> و فقط داشتن آن فایل باینری کافی است.</p>
+<h3 id="مراحل-کامپایل-در-go">مراحل کامپایل در Go</h3>
+<p>وقتی <code>go build</code> اجرا می‌کنید، کامپایلر Go چندین مرحله را پشت صحنه طی می‌کند. درک این مراحل به شما کمک می‌کند تا بهینه‌سازی‌های کامپایلر و رفتار برنامه‌ی خود را بهتر بشناسید:</p>
+<p><strong>۱. Parsing:</strong> کد منبع Go به token تجزیه می‌شود و سپس AST ساخته می‌شود. در این مرحله خطاهای نحوی شناسایی می‌شوند.</p>
+<p><strong>۲. Type Checking:</strong> کامپایلر نوع تمام عبارت‌ها را استنتاج و بررسی می‌کند. مطمئن می‌شود که انواع با هم سازگار هستند، interface ها به‌درستی پیاده‌سازی شده‌اند و قواعد تایپ سیستم رعایت شده‌اند.</p>
+<p><strong>۳. SSA Generation (تولید SSA):</strong> AST به فرم میانی <strong dir="ltr">Static Single Assignment (SSA)</strong> تبدیل می‌شود. در SSA هر متغیر فقط یک بار مقداردهی می‌شود که این امکان بهینه‌سازی‌های قدرتمندی را فراهم می‌کند. می‌توانید SSA تولیدشده را با <code>GOSSAFUNC=main go build</code> مشاهده کنید.</p>
+<p><strong>۴. Optimization:</strong> چندین پاس بهینه‌سازی روی SSA اعمال می‌شود شامل: dead code elimination، inlining، فرار از escape analysis و بهینه‌سازی حلقه‌ها.</p>
+<p><strong>۵. Code Generation:</strong> SSA بهینه‌شده به دستورالعمل‌های ماشین متناسب با معماری هدف (amd64, arm64, ...) تبدیل می‌شود.</p>
+<p><strong>۶. Linking:</strong> لینکر تمام آبجکت‌فایل‌ها و کتابخانه‌ی runtime را با هم ترکیب می‌کند و یک باینری نهایی تولید می‌شود. لینکر Go کاملاً توسط خود تیم Go نوشته شده و به ابزارهای خارجی وابسته نیست.</p>
+<div class="tip"><strong>نکته فنی:</strong> برای مشاهده‌ی مراحل کامپایل می‌توانید از پرچم‌های زیر استفاده کنید: <code>go build -gcflags="-m"</code> برای مشاهده‌ی تصمیمات escape analysis و inlining، <code>go build -gcflags="-S"</code> برای مشاهده‌ی خروجی اسمبلی و <code>go build -x</code> برای مشاهده‌ی تمام دستورات اجراشده.</div>
+<h3 id="لینکر-در-go">لینکر در Go</h3>
+<p>لینکر Go یکی از منحصربه‌فردترین بخش‌های toolchain است. برخلاف زبان‌هایی مثل C که از لینکر سیستم ld استفاده می‌کنند، Go لینکر اختصاصی خود را دارد. این لینکر:</p>
+<p><strong>۱. باینری استاتیک تولید می‌کند:</strong> به‌صورت پیش‌فرض، فایل اجرایی Go هیچ وابستگی دینامیک به کتابخانه‌های سیستمی (مثل glibc) ندارد. این یعنی باینری روی هر توزیع لینوکسی قابل اجراست.</p>
+<p><strong>۲. runtime را لینک می‌کند:</strong> Go runtime (شامل garbage collector، scheduler و سیستم goroutine) مستقیماً در باینری تعبیه می‌شود. به همین دلیل باینری Go نسبتاً بزرگ است (معمولاً ۵ تا ۱۵ مگابایت) حتی برای برنامه‌های ساده.</p>
+<p><strong>۳. اندازه باینری را می‌توان کاهش داد:</strong></p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">// Remove debug info and symbol table
+go build -ldflags="-s -w" -o myapp
+
+// -s: Remove symbol table
+// -w: Remove DWARF debug info
+// Usually reduces binary size by 20-30%
+</code></pre>
+</figure>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">// Inject variable at build time
+var version string // Set via -ldflags
+
+go build -ldflags="-X main.version=1.2.3" -o myapp
+</code></pre>
+</figure>
+<h3 id="cross-compilation">Cross-Compilation</h3>
+<p>یکی از قدرتمندترین ویژگی‌های Go توانایی کامپایل متقاطع است — کامپایل برنامه روی یک سیستم‌عامل/معماری برای اجرا روی سیستم‌عامل/معماری دیگر. این کار فقط با تنظیم دو متغیر محیطی امکان‌پذیر است:</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">// Compile on Mac for Linux
+GOOS=linux GOARCH=amd64 go build -o myapp-linux
+
+// Compile on Linux for Windows
+GOOS=windows GOARCH=amd64 go build -o myapp.exe
+
+// Compile for ARM (like Raspberry Pi)
+GOOS=linux GOARCH=arm64 go build -o myapp-arm
+
+// Compile for macOS Apple Silicon
+GOOS=darwin GOARCH=arm64 go build -o myapp-mac
+</code></pre>
+</figure>
+<p>لیست کامل سیستم‌عامل‌ها و معماری‌های پشتیبانی‌شده با دستور <code>go tool dist list</code> قابل مشاهده است.</p>
+<div class="comparison"><strong>مقایسه با PHP:</strong> در PHP مفهوم کامپایل متقاطع وجود ندارد چون کد PHP به‌صورت تفسیری اجرا می‌شود و به مفسر نصب‌شده روی سرور هدف وابسته است. اما در Go باینری نهایی شامل تمام وابستگی‌ها (حتی runtime) است و بدون هیچ پیش‌نیازی روی سیستم هدف اجرا می‌شود. این تفاوت یکی از بزرگترین مزیت‌های Go برای دیپلوی است.</div>
+<h3 id="build-modes">Build Modes</h3>
+<p>Go از چندین build mode پشتیبانی می‌کند که با پرچم <code>-buildmode</code> مشخص می‌شوند:</p>
+<p><strong dir="ltr">default:</strong> باینری اجرایی استاندارد — حالت پیش‌فرض.</p>
+<p><strong dir="ltr">pie:</strong> Position-Independent Executable — ASLR در محیط‌های تولیدی توصیه می‌شود.</p>
+<p><strong dir="ltr">plugin:</strong> تولید پلاگین قابل بارگذاری پویا (فقط لینوکس) — مشابه concept extension در PHP اما بسیار ابتدایی‌تر.</p>
+<p><strong dir="ltr">c-archive:</strong> تولید کتابخانه‌ی C استاتیک — برای فراخوانی کد Go از C یا Python.</p>
+<p><strong dir="ltr">c-shared:</strong> تولید کتابخانه‌ی مشترک C (.so/.dll) — برای استفاده‌ی Go به‌عنوان library در زبان‌های دیگر.</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">// Build PIE binary for production
+go build -buildmode=pie -o myapp
+
+// Build shared library for C use
+go build -buildmode=c-shared -o mylib.so ./mypkg
+
+// Build static archive
+go build -buildmode=c-archive -o mylib.a ./mypkg
+</code></pre>
+</figure>
+<div class="note"><strong>نکته:</strong> حالت <code>pie</code> در بسیاری از توزیع‌های لینوکس به‌صورت پیش‌فرض فعال است (مثل Fedora و Ubuntu). اگر باینری شما برای محیط‌های با الزامات امنیتی بالا (مثل Docker images سخت‌گیرانه) ساخته می‌شود، <code>-buildmode=pie</code> را در نظر بگیرید.</div>
+
+<h3 id="build-tags">Build Tags و محدودسازی کامپایل</h3>
+<p>Build Tags یکی از قدرتمندترین ویژگی‌های Go برای کامپایل شرطی است. با استفاده از تگ‌ها می‌توانید مشخص کنید که یک فایل فقط در شرایط خاصی (سیستم‌عامل، معماری، یا حالت ساخت) کامپایل شود. این مفهوم در PHP معادل مستقیمی ندارد چون PHP به‌صورت تفسیری اجرا می‌شود.</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">// +build linux darwin
+// This file only compiles on Linux and macOS
+
+package storage
+
+func initFS() {
+    // Unix implementation
+}
+</code></pre>
+</figure>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">// +build windows
+// Only compiles on Windows
+
+package storage
+
+func initFS() {
+    // Windows implementation
+}
+</code></pre>
+</figure>
+<p>از Go 1.17 سینتکس جدیدی نیز اضافه شده:</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">//go:build linux &amp;&amp; amd64
+// Linux AMD64 only
+
+//go:build !windows
+// Anything but Windows
+
+//go:build darwin &amp;&amp; (arm64 || amd64)
+// macOS on both architectures
+</code></pre>
+</figure>
+<p>همچنین می‌توانید تگ‌های سفارشی تعریف کنید:</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">//go:build debug
+// Only compiles with go build -tags=debug
+
+package main
+
+func init() {
+    enableDebugLogging = true
+}
+</code></pre>
+</figure>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">// Build with custom tag
+go build -tags=debug -o myapp
+</code></pre>
+</figure>
+
+<h3 id="ldflags">تزریق متغیر با ldflags</h3>
+<p>یکی از الگوهای رایج در Go تزریق اطلاعات نسخه و ساخت در زمان کامپایل است. این کار با پرچم <code>-ldflags</code> و گزینه‌ی <code>-X</code> انجام می‌شود:</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">package main
+
+// These variables are set at compile time
+var (
+version = "dev" // Set with -X
+commit = "none" // Set with -X
+buildTime = "unknown" // Set with -X
+)
+
+func main() {
+    fmt.Printf("Version: %s\nCommit: %s\nBuilt: %s\n",
+    version, commit, buildTime)
+}
+</code></pre>
+</figure>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">// Inject values at build time
+go build -ldflags="\
+-X main.version=1.2.3 \
+-X main.commit=$(git rev-parse --short HEAD) \
+-X main.buildTime=$(date -u '+%Y-%m-%dT%H:%M:%SZ')" \
+-o myapp
+</code></pre>
+</figure>
+<div class="tip"><strong>نکته عملی:</strong> این الگو در پروژه‌های واقعی بسیار رایج است. اکثر ابزارهای Go (مثل <code>go version</code>) از همین روش برای نمایش اطلاعات نسخه استفاده می‌کنند. در CI/CD خود حتماً این مقادیر را تزریق کنید تا بدانید هر باینری دقیقاً از کدام commit ساخته شده.</div>
+
+<h3 id="race-detector">Race Detector</h3>
+<p>Go ابزار داخلی قدرتمندی برای شناسایی <strong>مسابقه داده</strong> (<bdi dir="ltr">data race</bdi>) دارد. مسابقه داده زمانی رخ می‌دهد که دو goroutine همزمان به یک حافظه دسترسی داشته باشند و حداقل یکی از آن‌ها عمل نوشتن انجام دهد. این باگ‌ها به‌سختی قابل تشخیص هستند چون ممکن است فقط در شرایط خاص تکرار شوند.</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">// Build and run with race detector
+go build -race -o myapp
+go test -race ./...
+go run -race main.go
+</code></pre>
+</figure>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">// Example of code with race
+var counter int
+
+func main() {
+    go func() { counter++ }() // goroutine 1: writing
+    counter++ // main goroutine: writing
+    // Wrong — DATA RACE: two goroutines writing to counter simultaneously
+}
+
+// Correct — solution: use mutex or atomic
+var counter int64
+atomic.AddInt64(&amp;counter, 1) // safe
+</code></pre>
+</figure>
+<div class="warning"><strong>هشدار:</strong> Race detector فقط در زمان توسعه و تست استفاده می‌شود، نه در تولید. این ابزار overhead حافظه‌ی ۵ تا ۱۰ برابری و کاهش سرعت ۲ تا ۲۰ برابری دارد. اما ارزش آن بی‌نظیر است — مسابقه داده‌ای که در تست کشف نشود، در تولید باگ‌های غیرقابل تکرار ایجاد می‌کند.</div>
+
+<h3 id="binary-optimization">بهینه‌سازی اندازه‌ی باینری</h3>
+<p>یکی از انتقادهای رایج به Go اندازه‌ی نسبتاً بزرگ باینری‌های آن است. یک برنامه‌ی ساده‌ی <code dir="ltr">Hello World</code> ممکن است ۵ تا ۸ مگابایت باشد. دلیل اصلی این اندازه، تعبیه‌ی <bdi dir="ltr">Go runtime</bdi> (شامل <bdi dir="ltr">GC</bdi> ، <bdi dir="ltr">scheduler</bdi> و <bdi dir="ltr">goroutine stack</bdi>) در باینری است. اما راه‌هایی برای کاهش اندازه وجود دارد:</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">// Step 1: remove debug information
+go build -ldflags="-s -w" -o myapp
+// -s: Remove symbol table
+// -w: Remove DWARF debug info
+// usually 20-30% size reduction
+
+// Step 2: compress with UPX (optional)
+upx --best myapp
+// usually 50-70% size reduction
+// but overhead on first run
+
+// size comparison:
+// normal binary: ~8 MB
+// with -s -w: ~5.5 MB
+// with -s -w + UPX: ~2 MB
+</code></pre>
+</figure>
+<div class="comparison"><strong>مقایسه با PHP:</strong> در PHP فایل‌های منبع مستقیماً روی سرور اجرا می‌شوند و نیازی به باینری نیست. اما برای دیپلوی باید مفسر PHP، تمام extensionها و فایل‌های پروژه را نصب کنید. در Go فقط یک فایل باینری کافی است — بدون نیاز به runtime، dependency یا حتى سیستم‌عامل (در صورت کامپایل استاتیک).</div>
+
+<figure class="diagram" dir="ltr">
+<svg height="250" viewBox="0 0 650 250" width="650" xmlns="http://www.w3.org/2000/svg">
+<rect fill="#fafafa" height="250" rx="8" width="650" x="0" y="0"></rect>
+<defs><marker id="arrBuild" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#00ADD8" points="0 0, 10 3.5, 0 7"></polygon></marker></defs>
+<text fill="#00ADD8" font-size="15" font-weight="bold" text-anchor="middle" x="325" y="28" direction="rtl" unicode-bidi="embed">خط لوله‌ی ساخت (<tspan direction="ltr" unicode-bidi="embed">Build</tspan> <tspan direction="ltr" unicode-bidi="embed">Pipeline</tspan>)</text>
+<!-- Source -->
+<rect fill="#e3f2fd" height="50" rx="8" stroke="#2196f3" stroke-width="2" width="100" x="15" y="60"></rect>
+<text fill="#1565c0" font-size="12" font-weight="bold" text-anchor="middle" x="65" y="82" direction="ltr" unicode-bidi="embed">.go files</text>
+<text fill="#666" font-size="10" text-anchor="middle" x="65" y="100" direction="rtl" unicode-bidi="embed">کد منبع</text>
+<!-- Build Tags -->
+<rect fill="#fff3e0" height="50" rx="8" stroke="#f39c12" stroke-width="2" width="100" x="135" y="60"></rect>
+<text fill="#e65100" font-size="12" font-weight="bold" text-anchor="middle" x="185" y="82" direction="ltr" unicode-bidi="embed">Build Tags</text>
+<text fill="#666" font-size="10" text-anchor="middle" x="185" y="100" direction="rtl" unicode-bidi="embed">فیلتر فایل‌ها</text>
+<!-- Compiler -->
+<rect fill="#e0f7fa" height="50" rx="8" stroke="#00ADD8" stroke-width="2" width="100" x="255" y="60"></rect>
+<text fill="#00ADD8" font-size="12" font-weight="bold" text-anchor="middle" x="305" y="82" direction="ltr" unicode-bidi="embed">Compiler</text>
+<text fill="#666" font-size="10" text-anchor="middle" x="305" y="100" direction="rtl" unicode-bidi="embed">AST → SSA → Machine</text>
+<!-- ldflags -->
+<rect fill="#fce4ec" height="50" rx="8" stroke="#e91e63" stroke-width="2" width="100" x="375" y="60"></rect>
+<text fill="#880e4f" font-size="12" font-weight="bold" text-anchor="middle" x="425" y="82" direction="ltr" unicode-bidi="embed">ldflags</text>
+<text fill="#666" font-size="10" text-anchor="middle" x="425" y="100" direction="rtl" unicode-bidi="embed">نسخه، <tspan direction="ltr" unicode-bidi="embed">strip</tspan></text>
+<!-- Linker -->
+<rect fill="#e8f5e9" height="50" rx="8" stroke="#27ae60" stroke-width="2" width="100" x="495" y="60"></rect>
+<text fill="#2e7d32" font-size="12" font-weight="bold" text-anchor="middle" x="545" y="82" direction="ltr" unicode-bidi="embed">Linker</text>
+<text fill="#666" font-size="10" text-anchor="middle" x="545" y="100" direction="rtl" unicode-bidi="embed">runtime + binary</text>
+<!-- Arrows -->
+<line marker-end="url(#arrBuild)" stroke="#00ADD8" stroke-width="2" x1="115" x2="135" y1="85" y2="85"></line>
+<line marker-end="url(#arrBuild)" stroke="#00ADD8" stroke-width="2" x1="235" x2="255" y1="85" y2="85"></line>
+<line marker-end="url(#arrBuild)" stroke="#00ADD8" stroke-width="2" x1="355" x2="375" y1="85" y2="85"></line>
+<line marker-end="url(#arrBuild)" stroke="#00ADD8" stroke-width="2" x1="475" x2="495" y1="85" y2="85"></line>
+<!-- Cross-compilation note -->
+<rect fill="#f3e5f5" height="80" rx="8" stroke="#777BB4" stroke-width="1.5" width="290" x="15" y="140"></rect>
+<text fill="#777BB4" font-size="13" font-weight="bold" text-anchor="middle" x="160" y="162" direction="ltr" unicode-bidi="embed">Cross-Compilation</text>
+<text fill="#666" font-size="11" text-anchor="middle" x="160" y="180" direction="ltr" unicode-bidi="embed">GOOS=linux GOARCH=arm64</text>
+<text fill="#666" font-size="11" text-anchor="middle" x="160" y="198" direction="rtl" unicode-bidi="embed">بدون نیاز به کامپایلر متقاطع!</text>
+<!-- Race detector note -->
+<rect fill="#fff3e0" height="80" rx="8" stroke="#f39c12" stroke-width="1.5" width="290" x="345" y="140"></rect>
+<text fill="#e65100" font-size="13" font-weight="bold" text-anchor="middle" x="490" y="162" direction="ltr" unicode-bidi="embed">Race Detector</text>
+<text fill="#666" font-size="11" text-anchor="middle" x="490" y="180" direction="ltr" unicode-bidi="embed">go build -race</text>
+<text fill="#666" font-size="11" text-anchor="middle" x="490" y="198" direction="rtl" unicode-bidi="embed">شناسایی مسابقه داده در تست</text>
+</svg>
+<figcaption>شکل ۳-۳: خط لوله‌ی ساخت باینری در <bdi dir="ltr">Go</bdi></figcaption>
+</figure>
+
+<h3 id="خط-لوله-کامپایل-go-از-منبع-تا-باینری">خط لوله‌ی کامپایل <bdi dir="ltr">Go</bdi>: از منبع تا باینری</h3>
+<p>کامپایلر <bdi dir="ltr">Go</bdi> چندین مرحله‌ی پیوسته را برای تبدیل کد منبع به فایل باینری اجرایی طی می‌کند. هر مرحله خروجی مرحله‌ی قبلی را دریافت کرده و تبدیلی مشخص روی آن انجام می‌دهد. درک این خط لوله به شما کمک می‌کند تا رفتار کامپایلر، خطاهای احتمالی و فرصت‌های بهینه‌سازی را بهتر بشناسید. مرحله‌ی اول، تجزیه‌ی کد منبع به <bdi dir="ltr">token</bdi> و ساخت <bdi dir="ltr">AST</bdi> است. مرحله‌ی دوم، بررسی انواع و تطبیق تایپ‌هاست. مرحله‌ی سوم، تولید فرم میانی <bdi dir="ltr">SSA</bdi> و اعمال بهینه‌سازی‌هاست. مرحله‌ی نهایی، تولید کد ماشین و لینک کردن باینری خروجی است.</p>
+
+<figure class="diagram" dir="ltr">
+<svg height="380" viewBox="0 0 480 380" width="480" xmlns="http://www.w3.org/2000/svg">
+<rect fill="#fafafa" height="380" rx="8" width="480" x="0" y="0"></rect>
+<defs><marker id="arrPipe" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#00ADD8" points="0 0, 10 3.5, 0 7"></polygon></marker></defs>
+<text fill="#00ADD8" font-size="14" font-weight="bold" text-anchor="middle" x="240" y="25" direction="rtl" unicode-bidi="embed">خط لوله‌ی کامپایل <tspan direction="ltr" unicode-bidi="embed">Go</tspan>: <tspan direction="ltr" unicode-bidi="embed">Source → AST → SSA → Machine Code</tspan></text>
+
+<!-- Source .go -->
+<rect fill="#e3f2fd" height="44" rx="7" stroke="#1565c0" stroke-width="1.5" width="90" x="20" y="50"></rect>
+<text fill="#1565c0" font-size="11" font-weight="bold" text-anchor="middle" x="65" y="70" direction="ltr" unicode-bidi="embed">.go Source</text>
+<text fill="#888" font-size="9" text-anchor="middle" x="65" y="86" direction="rtl" unicode-bidi="embed">کد منبع</text>
+
+<!-- Arrow -->
+<line marker-end="url(#arrPipe)" stroke="#00ADD8" stroke-width="1.8" x1="110" x2="130" y1="72" y2="72"></line>
+
+<!-- Lexer/Parser -->
+<rect fill="#fff3e0" height="44" rx="7" stroke="#FF9800" stroke-width="1.5" width="90" x="130" y="50"></rect>
+<text fill="#e65100" font-size="11" font-weight="bold" text-anchor="middle" x="175" y="70" direction="ltr" unicode-bidi="embed">Lexer/Parser</text>
+<text fill="#888" font-size="9" text-anchor="middle" x="175" y="86" direction="rtl" unicode-bidi="embed">تجزیه‌ی <tspan direction="ltr" unicode-bidi="embed">token</tspan></text>
+
+<!-- Arrow -->
+<line marker-end="url(#arrPipe)" stroke="#00ADD8" stroke-width="1.8" x1="220" x2="240" y1="72" y2="72"></line>
+
+<!-- AST -->
+<rect fill="#e0f7fa" height="44" rx="7" stroke="#00ADD8" stroke-width="1.5" width="90" x="240" y="50"></rect>
+<text fill="#00ADD8" font-size="11" font-weight="bold" text-anchor="middle" x="285" y="70" direction="ltr" unicode-bidi="embed">AST</text>
+<text fill="#888" font-size="9" text-anchor="middle" x="285" y="86" direction="rtl" unicode-bidi="embed">درخت نحوی انتزاعی</text>
+
+<!-- Arrow -->
+<line marker-end="url(#arrPipe)" stroke="#00ADD8" stroke-width="1.8" x1="330" x2="350" y1="72" y2="72"></line>
+
+<!-- Type Checker -->
+<rect fill="#fff3e0" height="44" rx="7" stroke="#FF9800" stroke-width="1.5" width="110" x="350" y="50"></rect>
+<text fill="#e65100" font-size="11" font-weight="bold" text-anchor="middle" x="405" y="70" direction="ltr" unicode-bidi="embed">Type Checker</text>
+<text fill="#888" font-size="9" text-anchor="middle" x="405" y="86" direction="rtl" unicode-bidi="embed">بررسی انواع</text>
+
+<!-- Arrow down from Type Checker -->
+<line marker-end="url(#arrPipe)" stroke="#00ADD8" stroke-width="1.8" x1="405" x2="405" y1="94" y2="120"></line>
+
+<!-- SSA -->
+<rect fill="#e0f7fa" height="44" rx="7" stroke="#00ADD8" stroke-width="1.5" width="110" x="350" y="120"></rect>
+<text fill="#00ADD8" font-size="11" font-weight="bold" text-anchor="middle" x="405" y="140" direction="ltr" unicode-bidi="embed">SSA</text>
+<text fill="#888" font-size="9" text-anchor="middle" x="405" y="156" direction="rtl" unicode-bidi="embed">بهینه‌سازی میانی</text>
+
+<!-- Arrow down -->
+<line marker-end="url(#arrPipe)" stroke="#00ADD8" stroke-width="1.8" x1="405" x2="405" y1="164" y2="190"></line>
+
+<!-- Machine Code -->
+<rect fill="#e8f5e9" height="44" rx="7" stroke="#4CAF50" stroke-width="1.5" width="110" x="350" y="190"></rect>
+<text fill="#2e7d32" font-size="11" font-weight="bold" text-anchor="middle" x="405" y="210" direction="ltr" unicode-bidi="embed">Machine Code</text>
+<text fill="#888" font-size="9" text-anchor="middle" x="405" y="226" direction="rtl" unicode-bidi="embed">کد ماشین هدف</text>
+
+<!-- Arrow down -->
+<line marker-end="url(#arrPipe)" stroke="#4CAF50" stroke-width="1.8" x1="405" x2="405" y1="234" y2="260"></line>
+
+<!-- Binary -->
+<rect fill="#e8f5e9" height="44" rx="7" stroke="#4CAF50" stroke-width="2" width="110" x="350" y="260"></rect>
+<text fill="#2e7d32" font-size="11" font-weight="bold" text-anchor="middle" x="405" y="280" direction="ltr" unicode-bidi="embed">Binary</text>
+<text fill="#888" font-size="9" text-anchor="middle" x="405" y="296" direction="rtl" unicode-bidi="embed">فایل اجرایی مستقل</text>
+
+<!-- Info box: go build vs go run vs go install -->
+<rect fill="#f3e5f5" height="130" rx="6" stroke="#9C27B0" stroke-width="1" width="310" x="20" y="120"></rect>
+<text fill="#7B1FA2" font-size="12" font-weight="bold" text-anchor="middle" x="175" y="142" direction="ltr" unicode-bidi="embed">go build vs go run vs go install</text>
+<rect fill="#00ADD8" height="22" rx="3" width="85" x="30" y="155"></rect>
+<text fill="#fff" font-size="9" font-weight="bold" text-anchor="middle" x="72" y="170" direction="ltr" unicode-bidi="embed">go build</text>
+<text fill="#555" font-size="9" x="122" y="170" direction="rtl" unicode-bidi="embed">باینری تولید می‌کند، اجرا نمی‌کند</text>
+<rect fill="#e91e63" height="22" rx="3" width="85" x="30" y="185"></rect>
+<text fill="#fff" font-size="9" font-weight="bold" text-anchor="middle" x="72" y="200" direction="ltr" unicode-bidi="embed">go run</text>
+<text fill="#555" font-size="9" x="122" y="200" direction="rtl" unicode-bidi="embed">کامپایل موقت + اجرا، باینری باقی نمی‌ماند</text>
+<rect fill="#4CAF50" height="22" rx="3" width="85" x="30" y="215"></rect>
+<text fill="#fff" font-size="9" font-weight="bold" text-anchor="middle" x="72" y="230" direction="ltr" unicode-bidi="embed">go install</text>
+<text fill="#555" font-size="9" x="122" y="230" direction="rtl" unicode-bidi="embed">باینری در <tspan direction="ltr" unicode-bidi="embed">GOPATH/bin</tspan> نصب می‌شود</text>
+
+<!-- Cross-compilation box -->
+<rect fill="#E3F2FD" height="36" rx="4" stroke="#1565c0" stroke-width="1" width="310" x="20" y="250"></rect>
+<text fill="#1565c0" font-size="10" font-weight="bold" text-anchor="middle" x="175" y="272" direction="ltr" unicode-bidi="embed">GOOS=linux GOARCH=amd64 go build</text>
+
+<!-- Golden Rule bar -->
+<rect fill="#FF9800" height="24" rx="4" width="440" x="20" y="340"></rect>
+<text fill="#fff" font-size="10" font-weight="bold" text-anchor="middle" x="240" y="357" direction="rtl" unicode-bidi="embed">قاعده‌ی طلایی: در تولید همیشه <tspan direction="ltr" unicode-bidi="embed">-ldflags="-s -w"</tspan> و <tspan direction="ltr" unicode-bidi="embed">-trimpath</tspan> را استفاده کنید</text>
+</svg>
+<figcaption>خط لوله‌ی کامل کامپایل <bdi dir="ltr">Go</bdi>: از کد منبع تا فایل باینری اجرایی</figcaption>
+</figure>
+
+<h3 id="سناریوهای-عملیاتی-ساخت-باینری">سناریوهای عملیاتی</h3>
+<ul>
+<li><strong>ساخت برای پلتفرم‌های مختلف:</strong> با تنظیم <bdi dir="ltr">GOOS</bdi> و <bdi dir="ltr">GOARCH</bdi> می‌توانید باینری مخصوص هر سیستم‌عامل و معماری را تولید کنید. مثلاً <code dir="ltr">GOOS=linux GOARCH=amd64 go build -o app-linux</code> یک باینری لینوکس تولید می‌کند و <code dir="ltr">GOOS=windows GOARCH=amd64 go build -o app.exe</code> باینری ویندوز می‌سازد. این امکان بدون هیچ ابزار اضافی در دسترس است.</li>
+<li><strong>کاهش اندازه‌ی باینری با <code dir="ltr">-ldflags="-s -w"</code>:</strong> پرچم <code dir="ltr">-s</code> جدول نمادها و <code dir="ltr">-w</code> اطلاعات دیباگ <bdi dir="ltr">DWARF</bdi> را حذف می‌کند. ترکیب این دو معمولاً ۲۰ تا ۳۰ درصد از اندازه‌ی باینری می‌کاهد. برای تولید، این پرچم‌ها ضروری هستند.</li>
+<li><strong>استفاده از <code dir="ltr">go install</code> برای ابزارهای سراسری:</strong> دستور <code dir="ltr">go install</code> باینری را در <code dir="ltr">GOPATH/bin</code> قرار می‌دهد و از هر مسیری قابل اجراست. این روش برای نصب ابزارهایی مثل <code dir="ltr">golangci-lint</code> یا <code dir="ltr">air</code> ایده‌آل است.</li>
+<li><strong>کامپایل شرطی با <code dir="ltr">build tags</code>:</strong> با <code dir="ltr">//go:build</code> می‌توانید فایل‌هایی بنویسید که فقط در شرایط خاصی کامپایل شوند. مثلاً پیاده‌سازی متفاوت برای <bdi dir="ltr">Linux</bdi> و <bdi dir="ltr">Windows</bdi> یا فعال‌سازی حالت دیباگ با <code dir="ltr">go build -tags=debug</code>.</li>
+<li><strong>درک کش ساخت (<bdi dir="ltr">build cache</bdi>):</strong> <bdi dir="ltr">Go</bdi> نتایج کامپایل را در <code dir="ltr">~/.cache/go-build</code> ذخیره می‌کند. بیلدهای بعدی فقط فایل‌های تغییرکرده را دوباره کامپایل می‌کنند. دستور <code dir="ltr">go clean -cache</code> کش را پاک می‌کند.</li>
+</ul>
+
+<div class="tip"><strong>نکته‌ی عملی:</strong> برای باینری‌های تولیدی حتماً از <code dir="ltr">-ldflags="-s -w"</code> استفاده کنید تا اندازه کاهش یابد. همچنین با <code dir="ltr">-X main.version=1.2.3</code> می‌توانید اطلاعات نسخه را در زمان ساخت تزریق کنید. ترکیب کامل: <code dir="ltr">go build -ldflags="-s -w -X main.version=$(git describe --tags) -X main.commit=$(git rev-parse --short HEAD)" -trimpath -o myapp</code>. پرچم <code dir="ltr">-trimpath</code> مسیرهای محلی را از باینری حذف می‌کند که برای تکرارپذیری بیلد و امنیت مهم است.</div>
+</div>
+</main>
+</div>
+
+<!-- Footer -->
+<footer class="site-footer">
+<div class="footer-inner">
+<div class="footer-nav">
+<span class="nav-arrow">‹</span>
+<a href="03.02-modules-and-dependency-management.html" data-prev>۳.۲ ماژول‌ها و مدیریت dependency ها</a>
+</div>
+<div class="footer-toc">
+<a href="00.01-contents.html">فهرست</a>
+</div>
+<div class="footer-nav">
+<a href="03.04-understanding-program-lifecycle.html" data-next>۳.۴ درک چرخه‌ی حیات برنامه</a>
+<span class="nav-arrow">›</span>
+</div>
+</div>
+</footer>
+
+<!-- Back to Top -->
+<button class="back-to-top" aria-label="بازگشت به بالا">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
+</button>
+
+<!-- Scripts -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/go.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/php.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/sql.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/yaml.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/json.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/dockerfile.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/xml.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/ini.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/plaintext.min.js"></script>
+<script src="assets/js/main.js"></script>
+</body>
+</html>

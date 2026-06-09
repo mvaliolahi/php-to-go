@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="fa">
+<head>
+<script>!function(){try{var t=localStorage.getItem('php2go-theme');if(t==='dark'||(!t&&window.matchMedia('(prefers-color-scheme:dark)').matches)){document.documentElement.setAttribute('data-theme','dark')}}catch(e){}}();</script>
+<meta charset="utf-8"/>
+<meta content="ie=edge" http-equiv="x-ua-compatible"/>
+<title>۱۲.۳ نکات کاربردی برای بهینه‌سازی — PHP to Go</title>
+<meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet"/>
+<link href="assets/css/main.css" rel="stylesheet" type="text/css"/>
+<link href="assets/img/favicon.ico" rel="icon" type="image/x-icon"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" media="screen" class="hljs-light-theme" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css" media="not screen" class="hljs-dark-theme" rel="stylesheet"/>
+</head>
+<body>
+<!-- Progress Bar -->
+<div class="progress-bar"><div class="progress-bar__fill"></div></div>
+
+<!-- Header -->
+<header class="site-header">
+<div class="header-inner">
+<div class="header-left">
+<button class="header-btn sidebar-toggle" aria-label="فهرست">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+</button>
+<a href="00.00-front-matter.html" class="header-logo"><span class="logo-php">PHP</span> to <span class="logo-go">Go</span></a>
+<span class="header-crumbs">بهینه‌سازی عملکرد › نکات کاربردی برای بهینه‌سازی</span>
+</div>
+<div class="header-right">
+<nav class="header-nav">
+<span class="nav-arrow">‹</span>
+<a href="12.02-optimization-principles.html"><span class="nav-label">۱۲.۲ اصول بهینه‌سازی</span></a>
+<a href="00.01-contents.html">فهرست</a>
+<a href="12.04-memory-optimization-and-gc.html"><span class="nav-label">۱۲.۴ بهینه‌سازی حافظه و Garbage Collector</span></a>
+<span class="nav-arrow">›</span>
+</nav>
+<button class="header-btn search-toggle" aria-label="جستجو">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+</button>
+<button class="header-btn theme-toggle" aria-label="تغییر تم">
+<svg class="theme-icon-light" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+<svg class="theme-icon-dark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+</button>
+</div>
+</div>
+</header>
+
+<!-- Search Modal -->
+<div class="search-overlay">
+<div class="search-modal">
+<div class="search-input-wrap">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+<input type="text" class="search-input" placeholder="جستجو... (Ctrl+K)" dir="rtl"/>
+</div>
+<div class="search-results"></div>
+</div>
+</div>
+
+<!-- Layout -->
+<div class="site-layout">
+<!-- Sidebar -->
+<aside class="sidebar"></aside>
+<div class="sidebar-overlay"></div>
+
+<!-- Main Content -->
+<main class="content-area">
+<div class="content-wrap text">
+<div class="chapter">فصل ۱۲.۳</div>
+<h2 id="نکات-کاربردی-برای-بهینهسازی">نکات کاربردی برای بهینه‌سازی</h2>
+
+<figure class="diagram" dir="ltr">
+<svg height="380" viewBox="0 0 650 380" width="650" xmlns="http://www.w3.org/2000/svg">
+<text class="title" text-anchor="middle" x="325" y="25" direction="rtl" unicode-bidi="embed">تکنیک‌های کاهش تخصیص حافظه در <tspan direction="ltr" unicode-bidi="embed">Go</tspan></text>
+<!-- Row 1 -->
+<rect class="tip-box" height="80" width="200" x="20" y="50"></rect>
+<text font-weight="bold" text-anchor="middle" x="120" y="72" direction="rtl" unicode-bidi="embed">پیش‌تخصیص <tspan direction="ltr" unicode-bidi="embed">Slice</tspan></text>
+<text class="small" text-anchor="middle" x="120" y="90" direction="ltr" unicode-bidi="embed">make([]T, 0, n)</text>
+<text class="small" text-anchor="middle" x="120" y="106" direction="rtl" unicode-bidi="embed">جلوگیری از <tspan direction="ltr" unicode-bidi="embed">reallocation</tspan></text>
+<text class="small" text-anchor="middle" x="120" y="122" direction="rtl" unicode-bidi="embed">و کپی مکرر داده</text>
+<rect class="tip-box" height="80" width="200" x="240" y="50"></rect>
+<text font-weight="bold" text-anchor="middle" x="340" y="72" direction="rtl" unicode-bidi="embed">پیش‌تخصیص <tspan direction="ltr" unicode-bidi="embed">Map</tspan></text>
+<text class="small" text-anchor="middle" x="340" y="90" direction="ltr" unicode-bidi="embed">make(map[K]V, hint)</text>
+<text class="small" text-anchor="middle" x="340" y="106" direction="rtl" unicode-bidi="embed">کاهش <tspan direction="ltr" unicode-bidi="embed">resize</tspan> <tspan direction="ltr" unicode-bidi="embed">bucket</tspan></text>
+<text class="small" text-anchor="middle" x="340" y="122" direction="rtl" unicode-bidi="embed">در <tspan direction="ltr" unicode-bidi="embed">map</tspan> بزرگ</text>
+<rect class="tip-box" height="80" width="170" x="460" y="50"></rect>
+<text font-weight="bold" text-anchor="middle" x="545" y="72" direction="rtl" unicode-bidi="embed">strings.Builder</text>
+<text class="small" text-anchor="middle" x="545" y="90" direction="ltr" unicode-bidi="embed">sb.Grow(n)</text>
+<text class="small" text-anchor="middle" x="545" y="106" direction="rtl" unicode-bidi="embed">به جای + در حلقه</text>
+<text class="small" text-anchor="middle" x="545" y="122" direction="rtl" unicode-bidi="embed">۱ <tspan direction="ltr" unicode-bidi="embed">allocation</tspan> نهایی</text>
+<!-- Row 2 -->
+<rect class="warn-box" height="80" width="200" x="20" y="160"></rect>
+<text font-weight="bold" text-anchor="middle" x="120" y="182" direction="rtl" unicode-bidi="embed">تبدیل []<tspan direction="ltr" unicode-bidi="embed">byte</tspan> ↔ <tspan direction="ltr" unicode-bidi="embed">string</tspan></text>
+<text class="small" text-anchor="middle" x="120" y="200" direction="rtl" unicode-bidi="embed">هر تبدیل = <tspan direction="ltr" unicode-bidi="embed">allocation</tspan> جدید</text>
+<text class="small" text-anchor="middle" x="120" y="216" direction="rtl" unicode-bidi="embed">از <tspan direction="ltr" unicode-bidi="embed">conversion</tspan> اجتناب کنید</text>
+<text class="small" text-anchor="middle" x="120" y="232" direction="rtl" unicode-bidi="embed">مخصوصاً در <tspan direction="ltr" unicode-bidi="embed">hot</tspan> <tspan direction="ltr" unicode-bidi="embed">path</tspan></text>
+<rect class="warn-box" height="80" width="200" x="240" y="160"></rect>
+<text font-weight="bold" text-anchor="middle" x="340" y="182" direction="rtl" unicode-bidi="embed">مدیریت <tspan direction="ltr" unicode-bidi="embed">Goroutine</tspan></text>
+<text class="small" text-anchor="middle" x="340" y="200" direction="ltr" unicode-bidi="embed">context + WaitGroup</text>
+<text class="small" text-anchor="middle" x="340" y="216" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">goroutine</tspan> <tspan direction="ltr" unicode-bidi="embed">leak</tspan> = نشت حافظه</text>
+<text class="small" text-anchor="middle" x="340" y="232" direction="rtl" unicode-bidi="embed">همیشه عمر را کنترل کنید</text>
+<rect class="warn-box" height="80" width="170" x="460" y="160"></rect>
+<text font-weight="bold" text-anchor="middle" x="545" y="182" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">defer</tspan> با احتیاط</text>
+<text class="small" text-anchor="middle" x="545" y="200" direction="rtl" unicode-bidi="embed">در حلقه‌های پرتکرار</text>
+<text class="small" text-anchor="middle" x="545" y="216" direction="rtl" unicode-bidi="embed">از <tspan direction="ltr" unicode-bidi="embed">defer</tspan> استفاده نکنید</text>
+<text class="small" text-anchor="middle" x="545" y="232" direction="rtl" unicode-bidi="embed">مستقیماً پاک‌سازی کنید</text>
+<!-- Bottom danger -->
+<rect class="danger-box" height="90" width="410" x="120" y="270"></rect>
+<text font-size="14" font-weight="bold" text-anchor="middle" x="325" y="295" direction="rtl" unicode-bidi="embed">اشتباهات رایج در بهینه‌سازی</text>
+<text class="small" text-anchor="middle" x="325" y="315" direction="rtl" unicode-bidi="embed">۱. بهینه‌سازی بدون اندازه‌گیری (حدس زدن به جای <tspan direction="ltr" unicode-bidi="embed">profiling</tspan>)</text>
+<text class="small" text-anchor="middle" x="325" y="333" direction="rtl" unicode-bidi="embed">۲. نادیده گرفتن خوانایی کد برای سرعت کم‌اهمیت</text>
+<text class="small" text-anchor="middle" x="325" y="351" direction="rtl" unicode-bidi="embed">۳. استفاده بیش از حد از <tspan direction="ltr" unicode-bidi="embed">pointer</tspan> و افزایش فشار <tspan direction="ltr" unicode-bidi="embed">GC</tspan></text>
+</svg>
+<figcaption dir="rtl">شکل ۱۲-۳: راهنمای بصری تکنیک‌های کاهش تخصیص حافظه</figcaption>
+</figure>
+
+<h3 id="پیشتخصیص-slice-با-benchmarks">پیش‌تخصیص Slice با Benchmarks</h3>
+<p>وقتی اندازه‌ی نهایی یک slice از قبل مشخص یا قابل تخمین است، preallocation از تخصیص‌های مکرر و کپی‌شدن داده‌ها جلوگیری می‌کند. هر بار که <bdi dir="ltr">append</bdi> capacity فعلی را پر کند، Go یک آرایه‌ی جدید با ظرفیت دوبرابر تخصیص می‌دهد، داده‌ها را کپی می‌کند و آرایه‌ی قدیمی را رها می‌کند. این فرآیند در حلقه‌های بزرگ پرهزینه است:</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">// Bad: append without initial capacity — repeated allocations
+func buildSliceBad(items []int) []int {
+    var result []int
+    for _, item := range items {
+        result = append(result, item*2)
+    }
+    return result
+}
+
+// Good: pre-allocate with make — no reallocation
+func buildSliceGood(items []int) []int {
+    result := make([]int, 0, len(items))
+    for _, item := range items {
+        result = append(result, item*2)
+    }
+    return result
+}
+
+// If you also want to initialize
+func buildSliceBest(items []int) []int {
+    result := make([]int, len(items))
+    for i, item := range items {
+        result[i] = item * 2
+    }
+    return result
+}
+</code></pre>
+</figure>
+<p>نتایج بنچمارک با ۱۰,۰۰۰ عنصر: روش بد حدود <strong>۲۰ تخصیص</strong> (هر بار دوبرابر شدن)، روش خوب <strong>۱ تخصیص</strong> ، و روش بهترین هم <strong>۱ تخصیص</strong> اما با سرعت اندکی بیشتر چون از <bdi dir="ltr">append</bdi> استفاده نمی‌کند.</p>
+
+<h3 id="پیشتخصیص-map-با-make-hint">پیش‌تخصیص Map با make hint</h3>
+<p>از Go 1.11 می‌توانید تعداد تقریبی عناصر map را با <bdi dir="ltr">make(map[K]V, hint)</bdi> مشخص کنید. این hint به Go اجازه می‌دهد bucket‌های کافی از ابتدا تخصیص دهد و از resize مکرر جلوگیری کند. البته برخلاف slice، این hint فقط یک پیشنهاد است و تضمین نمی‌کند که هیچ resize اتفاق نیفتد:</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">// Bad: map without hint — repeated bucket resizes
+m := make(map[string]int)
+
+// Good: map with hint for 1000 entries
+m := make(map[string]int, 1000)
+
+// Practical example: build map from slice
+func buildLookupMap(items []Item) map[string]Item {
+    result := make(map[string]Item, len(items))
+    for _, item := range items {
+        result[item.ID] = item
+    }
+    return result
+}
+</code></pre>
+</figure>
+<div class="note"><strong>قانون عملی:</strong> هر زمان که اندازه‌ی نهایی یک slice یا map را می‌دانید یا می‌توانید تخمین بزنید، از <code>make([]T, 0, n)</code> یا <code>make(map[K]V, n)</code> استفاده کنید. این کار از reallocation و کپی‌شدن مکرر جلوگیری می‌کند و عملکرد را به‌طور قابل توجهی بهبود می‌بخشد.</div>
+
+<h3 id="stringsbuilder-vs-الحاق-با-+">strings.Builder vs الحاق با +</h3>
+<p>از منابع رایج تخصیص حافظه در Go، الحاق رشته‌ها با عملگر <code>+</code> در حلقه‌هاست. هر الحاق یک رشته جدید ایجاد می‌کند و رشته قبلی به GC سپرده می‌شود. در حلقه‌های بزرگ این باعث تخصیص حافظه زیاد و فشار به GC می‌شود. <bdi dir="ltr">strings.Builder</bdi> از <bdi dir="ltr">[]byte</bdi> داخلی استفاده می‌کند و با <bdi dir="ltr">Grow()</bdi> ظرفیت آن از قبل مشخص می‌شود:</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">// Bad: each + creates a new allocation
+func badConcat(parts []string) string {
+    result := ""
+    for _, p := range parts {
+        result += p // a new string is created each time
+    }
+    return result
+}
+
+// Good: using strings.Builder
+func goodConcat(parts []string) string {
+    var b strings.Builder
+    b.Grow(len(parts) * 16) // pre-allocate approximate capacity
+    for _, p := range parts {
+        b.WriteString(p) // without extra allocation
+    }
+    return b.String()
+}
+</code></pre>
+</figure>
+<p>نتایج بنچمارک (با ۱۰۰۰ رشته‌ی ۱۰ کاراکتری): روش <code>+</code> حدود <strong>۲۰۰۰ تخصیص</strong> و <strong>۵۰۰ μs/op</strong> ، <code>strings.Builder</code> بدون <code>Grow</code> حدود <strong>۱۰ تخصیص</strong> و <strong>۳ μs/op</strong> ، و <code>strings.Builder</code> با <code>Grow</code> فقط <strong>۱ تخصیص</strong> و <strong>۱.۵ μs/op</strong> . تفاوت ۳۰۰ برابری در عملکرد.</p>
+<div class="tip"><strong>نکته داخلی:</strong> <code dir="ltr">strings.Builder</code> از <code>[]byte</code> داخلی استفاده می‌کند که با <code dir="ltr">Grow()</code> ظرفیت آن از قبل مشخص می‌شود. <code>WriteString</code> فقط داده را به slice اضافه می‌کند بدون allocation جدید. متد <code dir="ltr">String()</code> با یک بار کپی، رشته نهایی را برمی‌گرداند.</div>
+
+<h3 id="تبدیل-byte-slice-و-string">تبدیل Byte Slice و String</h3>
+<p>در Go رشته‌ها و byte slice‌ها ساختارهای متفاوتی دارند و هر تبدیل بین آن‌ها یک کپی و allocation جدید ایجاد می‌کند. در hot path‌ها (مسیرهایی که مکرراً اجرا می‌شوند) این تبدیل‌ها پرهزینه هستند:</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">// Bad: frequent string ↔ []byte conversion
+func processBad(data string) []byte {
+    return []byte(data) // new allocation on each call
+}
+
+// Good: work directly with []byte without conversion
+func processGood(data []byte) []byte {
+    return append(data[:0:0], data...) // if you need a copy
+}
+
+// Better: if only reading, don't convert at all
+func processBest(data []byte) {
+    // Work directly on []byte
+    for i, b := range data {
+        data[i] = toUpper(b)
+    }
+}
+</code></pre>
+</figure>
+<p>نکته مهم: از Go 1.20 تبدیل <code>string([]byte)</code> و <code>[]byte(string)</code> در برخی حالات خاص (مثل استفاده در map lookup) به‌صورت بهینه انجام می‌شود، اما در حالت کلی همچنان کپی ایجاد می‌شود. همیشه با بنچمارک بررسی کنید.</p>
+
+<h3 id="مدیریت-صحیح-goroutineها">مدیریت صحیح goroutineها</h3>
+<p>goroutine‌ها سبک و سریع هستند، اما ایجاد هزاران goroutine بدون مدیریت منجر به نشت حافظه یا خستگی CPU می‌شود. هر goroutine فعال حداقل ۲KB stack مصرف می‌کند و اگر منتظر channel یا lock بماند، حافظه‌ی بیشتری اشغال می‌کند. از <bdi dir="ltr">context</bdi> و <bdi dir="ltr">sync.WaitGroup</bdi> برای کنترل عمر goroutine‌ها استفاده کنید و با <bdi dir="ltr">pprof goroutine</bdi> بررسی کنید آیا goroutineهایی بی‌دلیل باز مانده‌اند:</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">// Bad: goroutine without lifetime control — potential leak
+func processBad(urls []string) {
+    for _, url := range urls {
+        go fetch(url) // who waits for it?
+    }
+    // Function returns but goroutines are still active!
+}
+
+// Good: lifetime control with context and WaitGroup
+func processGood(ctx context.Context, urls []string) error {
+    var wg sync.WaitGroup
+    errCh := make(chan error, len(urls))
+
+    for _, url := range urls {
+        wg.Add(1)
+        go func(u string) {
+            defer wg.Done()
+            select {
+                case &lt;-ctx.Done():
+                errCh &lt;- ctx.Err()
+                default:
+                errCh &lt;- fetch(u)
+            }
+        }(url)
+    }
+
+    go func() {
+        wg.Wait()
+        close(errCh)
+    }()
+
+    return &lt;-errCh
+}
+</code></pre>
+</figure>
+
+<h3 id="استفاده-درست-از-defer">استفاده درست از defer</h3>
+<p>defer در Go ابزاری عالی برای پاک‌سازی منابع است و خوانایی کد را بهبود می‌بخشد. اما در hot paths، هزینه‌ی defer قابل توجه است چون Go باید فراخوانی را در stack defer ذخیره کند. در بنچمارک‌ها، استفاده از defer در حلقه‌ای با ۱ میلیون تکرار می‌تواند ۱۰-۲۰٪ کندتر باشد:</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">// Bad: defer in tight loop
+func processFilesBad(filenames []string) error {
+    for _, name := range filenames {
+        f, err := os.Open(name)
+        if err != nil {
+            return err
+        }
+        defer f.Close() // all files stay open until function ends!
+        // ... processing ...
+    }
+    return nil
+}
+
+// Good: helper function for immediate cleanup
+func processFilesGood(filenames []string) error {
+    for _, name := range filenames {
+        if err := processFile(name); err != nil {
+            return err
+        }
+    }
+    return nil
+}
+
+func processFile(name string) error {
+    f, err := os.Open(name)
+    if err != nil {
+        return err
+    }
+    defer f.Close() // only one file open at a time
+    // ... processing ...
+    return nil
+}
+</code></pre>
+</figure>
+
+<h3 id="انتخاب-ساختار-داده-مناسب">انتخاب ساختار داده مناسب</h3>
+<p>انتخاب ساختار داده مناسب بسته به الگوی دسترسی، تأثیر بزرگی بر عملکرد دارد. slice برای دسترسی ترتیبی، map برای جستجوی سریع با کلید، و <bdi dir="ltr">sync.Map</bdi> برای دسترسی همزمان بهتر هستند. اما <bdi dir="ltr">sync.Map</bdi> فقط زمانی بهتر از <code>map + sync.RWMutex</code> است که الگوی دسترسی <strong>read-heavy و write-light</strong> باشد یا کلیدها disjoint بین goroutine‌ها باشند:</p>
+<table class="comparison-table" dir="rtl">
+<thead>
+<tr><th>ساختار</th><th>بهترین استفاده</th><th>ضعف</th></tr>
+</thead>
+<tbody>
+<tr><td>slice</td><td>دسترسی ترتیبی، append</td><td>جستجوی O(n)</td></tr>
+<tr><td>map</td><td>جستجوی O(1) با کلید</td><td>همزمانی نیاز به mutex</td></tr>
+<tr><td dir="ltr">sync.Map</td><td>read-heavy همزمان</td><td>write-heavy کندتر از map+mutex</td></tr>
+<tr><td dir="ltr">intset (map[int]struct{})</td><td>مجموعه اعداد</td><td>ترتیب ندارد</td></tr>
+</tbody>
+</table>
+
+<h3 id="inlining-و-بهینهسازی-کامپایلر">Inlining و بهینه‌سازی کامپایلر</h3>
+<p>کامپایلر Go بهینه‌سازی‌های خودکار متعددی انجام می‌دهد. اصل‌ترین آن‌ها <bdi dir="ltr">inlining</bdi> است: کامپایلر توابع کوچک را مستقیماً در محل فراخوانی کپی می‌کند تا overhead فراخوانی تابع حذف شود. اما inlining فقط برای توابع ساده کار می‌کند:</p>
+<figure class="code bash" dir="ltr">
+<pre><code class="language-bash"># View compiler inlining decisions
+$ go build -gcflags="-m" ./...
+
+# Sample output:
+# ./main.go:10:6: can inline Add
+# ./main.go:20:12: inlining call to Add
+# ./main.go:15:6: cannot inline complexFunc: function too complex
+</code></pre>
+</figure>
+<p>قوانین inlining در Go: توابعی با complexity پایین (حدود ۸۰ node در AST) و بدون فراخوانی‌های پیچیده (مثل <code>defer</code> ، <code>go</code> ، <code>select</code> ، <code>recover</code>) قابل inlining هستند. توابع متد روی interface قابل inlining نیستند چون نوع واقعی در زمان اجرا مشخص می‌شود. فلگ <code>-l</code> درlining را غیرفعال می‌کند (مفید برای دیباگ).</p>
+<div class="note"><strong>نکته:</strong> بهترین راه اطمینان از inlining، نوشتن توابع کوچک و ساده است. اگر تابعی بیش از حد بزرگ شد، آن را به توابع کوچک‌تر بشکنید. این هم خوانایی را بهبود می‌دهد و هم شانس inlining را افزایش می‌دهد.</div>
+
+<h3 id="مقایسه-عملکرد-روشهای-الحاق-رشته">مقایسه عملکرد روش‌های الحاق رشته</h3>
+<p>یکی از مهم‌ترین تصمیمات عملکردی در Go، انتخاب روش مناسب برای ترکیب رشته‌هاست. تفاوت بین روش‌های مختلف الحاق رشته می‌تواند چندین مرتبه‌ای باشد و تأثیر مستقیمی بر latency و مصرف حافظه‌ی برنامه داشته باشد. در نمودار زیر، پنج روش رایج الحاق رشته بر اساس زمان اجرای نسبی مقایسه شده‌اند. همان‌طور که می‌بینید، روش‌هایی با پیچیدگی <bdi dir="ltr">O(n²)</bdi> عملکرد بسیار ضعیف‌تری نسبت به روش‌های <bdi dir="ltr">O(n)</bdi> دارند و این تفاوت با افزایش تعداد الحاق‌ها به‌صورت نمایی رشد می‌کند.</p>
+
+<figure class="diagram" dir="ltr">
+<svg height="530" viewBox="0 0 780 530" width="780" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<marker id="arrowSpeedup" markerHeight="7" markerWidth="10" orient="auto" refx="10" refy="3.5">
+<polygon fill="#2E7D32" points="0 0, 10 3.5, 0 7"></polygon>
+</marker>
+<linearGradient id="barGreen" x1="0" y1="0" x2="0" y2="1">
+<stop offset="0%" stop-color="#66BB6A"/>
+<stop offset="100%" stop-color="#388E3C"/>
+</linearGradient>
+<linearGradient id="barRed" x1="0" y1="0" x2="0" y2="1">
+<stop offset="0%" stop-color="#EF5350"/>
+<stop offset="100%" stop-color="#C62828"/>
+</linearGradient>
+</defs>
+<rect fill="#fafafa" height="530" rx="8" width="780" x="0" y="0"></rect>
+
+<!-- Title -->
+<text font-size="14" font-weight="bold" text-anchor="middle" x="310" y="25" direction="rtl" unicode-bidi="embed">مقایسه عملکرد روش‌های الحاق رشته در <tspan direction="ltr" unicode-bidi="embed">Go</tspan></text>
+<text font-size="9" fill="#999" text-anchor="middle" x="310" y="42" direction="rtl" unicode-bidi="embed">مقیاس لگاریتمی — بنچمارک: ۱۰۰۰ الحاق × ۱۰ کاراکتر</text>
+
+<!-- Y-axis -->
+<line x1="95" y1="55" x2="95" y2="395" stroke="#bbb" stroke-width="1"/>
+<line x1="90" y1="60" x2="95" y2="60" stroke="#bbb" stroke-width="1"/>
+<text x="86" y="64" direction="ltr" unicode-bidi="embed" font-size="8" text-anchor="end" fill="#888">500μs</text>
+<line x1="90" y1="152" x2="95" y2="152" stroke="#bbb" stroke-width="1"/>
+<text x="86" y="156" direction="ltr" unicode-bidi="embed" font-size="8" text-anchor="end" fill="#888">100μs</text>
+<line x1="90" y1="267" x2="95" y2="267" stroke="#bbb" stroke-width="1"/>
+<text x="86" y="271" direction="ltr" unicode-bidi="embed" font-size="8" text-anchor="end" fill="#888">10μs</text>
+<line x1="90" y1="390" x2="95" y2="390" stroke="#bbb" stroke-width="1"/>
+<text x="86" y="394" direction="ltr" unicode-bidi="embed" font-size="8" text-anchor="end" fill="#888">1μs</text>
+
+<!-- Grid lines -->
+<line x1="95" y1="60" x2="560" y2="60" stroke="#f0f0f0" stroke-width="0.5" stroke-dasharray="4,4"/>
+<line x1="95" y1="152" x2="560" y2="152" stroke="#f0f0f0" stroke-width="0.5" stroke-dasharray="4,4"/>
+<line x1="95" y1="267" x2="560" y2="267" stroke="#f0f0f0" stroke-width="0.5" stroke-dasharray="4,4"/>
+<line x1="95" y1="390" x2="560" y2="390" stroke="#ddd" stroke-width="0.5"/>
+
+<!-- Bar 1: += operator (500μs) - RED -->
+<rect x="108" y="60" width="72" height="330" fill="url(#barRed)" rx="4"/>
+<text x="144" y="52" direction="ltr" unicode-bidi="embed" font-size="11" font-weight="bold" fill="#C62828">500μs</text>
+<rect x="116" y="72" width="56" height="18" fill="#fff" fill-opacity="0.92" rx="3"/>
+<text x="144" y="85" direction="ltr" unicode-bidi="embed" font-size="10" font-weight="bold" fill="#C62828" text-anchor="middle">O(n²)</text>
+<text x="144" y="106" direction="rtl" unicode-bidi="embed" font-size="8" fill="#fff" text-anchor="middle">~۲۰۰۰ <tspan direction="ltr" unicode-bidi="embed">alloc</tspan></text>
+
+<!-- Bar 2: fmt.Sprintf (350μs) - RED -->
+<rect x="198" y="79" width="72" height="311" fill="url(#barRed)" rx="4" opacity="0.82"/>
+<text x="234" y="72" direction="ltr" unicode-bidi="embed" font-size="11" font-weight="bold" fill="#C62828">350μs</text>
+<rect x="206" y="91" width="56" height="18" fill="#fff" fill-opacity="0.92" rx="3"/>
+<text x="234" y="104" direction="ltr" unicode-bidi="embed" font-size="10" font-weight="bold" fill="#C62828" text-anchor="middle">O(n²)</text>
+<text x="234" y="125" direction="rtl" unicode-bidi="embed" font-size="8" fill="#fff" text-anchor="middle">~۱۵۰۰ <tspan direction="ltr" unicode-bidi="embed">alloc</tspan></text>
+
+<!-- Bar 3: strings.Join (15μs) - GREEN -->
+<rect x="288" y="246" width="72" height="144" fill="url(#barGreen)" rx="4"/>
+<text x="324" y="240" direction="ltr" unicode-bidi="embed" font-size="11" font-weight="bold" fill="#388E3C">15μs</text>
+<rect x="296" y="258" width="56" height="18" fill="#fff" fill-opacity="0.92" rx="3"/>
+<text x="324" y="271" direction="ltr" unicode-bidi="embed" font-size="10" font-weight="bold" fill="#388E3C" text-anchor="middle">O(n)</text>
+<text x="324" y="291" direction="rtl" unicode-bidi="embed" font-size="8" fill="#fff" text-anchor="middle">~۱ <tspan direction="ltr" unicode-bidi="embed">alloc</tspan></text>
+
+<!-- Bar 4: bytes.Buffer (5μs) - GREEN -->
+<rect x="378" y="305" width="72" height="85" fill="url(#barGreen)" rx="4" opacity="0.9"/>
+<text x="414" y="299" direction="ltr" unicode-bidi="embed" font-size="11" font-weight="bold" fill="#388E3C">5μs</text>
+<rect x="386" y="315" width="56" height="18" fill="#fff" fill-opacity="0.92" rx="3"/>
+<text x="414" y="328" direction="ltr" unicode-bidi="embed" font-size="10" font-weight="bold" fill="#388E3C" text-anchor="middle">O(n)</text>
+<text x="414" y="348" direction="rtl" unicode-bidi="embed" font-size="8" fill="#fff" text-anchor="middle">~۱ <tspan direction="ltr" unicode-bidi="embed">alloc</tspan></text>
+
+<!-- Bar 5: strings.Builder (1.5μs) - DARKEST GREEN -->
+<rect x="468" y="369" width="72" height="21" fill="#2E7D32" rx="4"/>
+<text x="504" y="362" direction="ltr" unicode-bidi="embed" font-size="11" font-weight="bold" fill="#1B5E20">1.5μs ★</text>
+<rect x="476" y="371" width="56" height="16" fill="#fff" fill-opacity="0.92" rx="3"/>
+<text x="504" y="383" direction="ltr" unicode-bidi="embed" font-size="9" font-weight="bold" fill="#1B5E20" text-anchor="middle">O(n)</text>
+
+<!-- X-axis labels -->
+<text x="144" y="408" direction="ltr" unicode-bidi="embed" font-size="10" text-anchor="middle" fill="#666">+=</text>
+<text x="234" y="408" direction="ltr" unicode-bidi="embed" font-size="8.5" text-anchor="middle" fill="#666">fmt.Sprintf</text>
+<text x="324" y="408" direction="ltr" unicode-bidi="embed" font-size="8.5" text-anchor="middle" fill="#666">strings.Join</text>
+<text x="414" y="408" direction="ltr" unicode-bidi="embed" font-size="8.5" text-anchor="middle" fill="#666">bytes.Buffer</text>
+<text x="504" y="408" direction="ltr" unicode-bidi="embed" font-size="8.5" text-anchor="middle" fill="#666">strings.Builder</text>
+
+<!-- Speedup arrow -->
+<line x1="144" y1="422" x2="500" y2="422" stroke="#2E7D32" stroke-width="1.5" stroke-dasharray="6,3" marker-end="url(#arrowSpeedup)"/>
+<rect x="275" y="414" width="85" height="16" fill="#fafafa" rx="3"/>
+<text x="317" y="426" direction="rtl" unicode-bidi="embed" font-size="10" font-weight="bold" fill="#2E7D32" text-anchor="middle">×۳۳۳ سریع‌تر</text>
+
+<!-- Right side: Info box -->
+<rect x="580" y="55" width="190" height="155" fill="#E8F5E9" rx="6" stroke="#A5D6A7" stroke-width="1"/>
+<text x="675" y="74" direction="rtl" unicode-bidi="embed" font-size="11" font-weight="bold" fill="#2E7D32" text-anchor="middle">چرا این تفاوت؟</text>
+<line x1="595" y1="80" x2="755" y2="80" stroke="#A5D6A7" stroke-width="0.5"/>
+<text x="595" y="97" direction="rtl" unicode-bidi="embed" font-size="8.5" fill="#333">▪ <tspan direction="ltr" unicode-bidi="embed">+=</tspan> هر بار رشته‌ی جدید می‌سازد</text>
+<text x="595" y="114" direction="rtl" unicode-bidi="embed" font-size="8.5" fill="#333">▪ <tspan direction="ltr" unicode-bidi="embed">fmt.Sprintf</tspan> <tspan direction="ltr" unicode-bidi="embed">overhead</tspan> پارس دارد</text>
+<text x="595" y="131" direction="rtl" unicode-bidi="embed" font-size="8.5" fill="#333">▪ <tspan direction="ltr" unicode-bidi="embed">strings.Join</tspan> یک‌بار <tspan direction="ltr" unicode-bidi="embed">join</tspan> می‌کند</text>
+<text x="595" y="148" direction="rtl" unicode-bidi="embed" font-size="8.5" fill="#333">▪ <tspan direction="ltr" unicode-bidi="embed">bytes.Buffer</tspan> بافر داخلی دارد</text>
+<text x="595" y="165" direction="rtl" unicode-bidi="embed" font-size="8.5" fill="#333">▪ <tspan direction="ltr" unicode-bidi="embed">strings.Builder</tspan> بهینه‌ترین</text>
+<text x="600" y="182" direction="rtl" unicode-bidi="embed" font-size="8" fill="#555">  <tspan direction="ltr" unicode-bidi="embed">Grow()</tspan> → ۱ <tspan direction="ltr" unicode-bidi="embed">allocation</tspan></text>
+<text x="600" y="198" direction="rtl" unicode-bidi="embed" font-size="8" fill="#555">  <tspan direction="ltr" unicode-bidi="embed">String()</tspan> → بدون کپی اضافی</text>
+
+<!-- Right side: Code example -->
+<rect x="580" y="220" width="190" height="140" fill="#1E1E1E" rx="6"/>
+<text x="590" y="238" direction="ltr" unicode-bidi="embed" font-size="8.5" fill="#569CD6" font-family="Fira Code, monospace">var</text>
+<text x="612" y="238" direction="ltr" unicode-bidi="embed" font-size="8.5" fill="#9CDCFE" font-family="Fira Code, monospace">b strings.Builder</text>
+<text x="590" y="255" direction="ltr" unicode-bidi="embed" font-size="8.5" fill="#9CDCFE" font-family="Fira Code, monospace">b.Grow(totalSize)</text>
+<text x="590" y="275" direction="ltr" unicode-bidi="embed" font-size="8.5" fill="#C586C0" font-family="Fira Code, monospace">for</text>
+<text x="610" y="275" direction="ltr" unicode-bidi="embed" font-size="8.5" fill="#9CDCFE" font-family="Fira Code, monospace">_, s :=</text>
+<text x="660" y="275" direction="ltr" unicode-bidi="embed" font-size="8.5" fill="#C586C0" font-family="Fira Code, monospace">range</text>
+<text x="693" y="275" direction="ltr" unicode-bidi="embed" font-size="8.5" fill="#9CDCFE" font-family="Fira Code, monospace">parts {</text>
+<text x="600" y="292" direction="ltr" unicode-bidi="embed" font-size="8.5" fill="#DCDCAA" font-family="Fira Code, monospace">b.WriteString</text>
+<text x="693" y="292" direction="ltr" unicode-bidi="embed" font-size="8.5" fill="#CE9178" font-family="Fira Code, monospace">(s)</text>
+<text x="590" y="309" direction="ltr" unicode-bidi="embed" font-size="8.5" fill="#9CDCFE" font-family="Fira Code, monospace">}</text>
+<text x="590" y="329" direction="ltr" unicode-bidi="embed" font-size="8.5" fill="#C586C0" font-family="Fira Code, monospace">return</text>
+<text x="633" y="329" direction="ltr" unicode-bidi="embed" font-size="8.5" fill="#DCDCAA" font-family="Fira Code, monospace">b.String()</text>
+<rect x="590" y="342" width="170" height="14" fill="#2E7D32" rx="3" opacity="0.2"/>
+<text x="595" y="353" direction="rtl" unicode-bidi="embed" font-size="7.5" fill="#81C784">✓ ۱ <tspan direction="ltr" unicode-bidi="embed">allocation</tspan>، بدون کپی اضافی</text>
+
+<!-- Golden rule bar -->
+<rect x="10" y="450" width="760" height="42" fill="#FFF8E1" rx="6" stroke="#FFC107" stroke-width="1.5"/>
+<text x="25" y="468" direction="rtl" unicode-bidi="embed" font-size="11" font-weight="bold" fill="#F57F17">⚡ قانون طلایی:</text>
+<text x="118" y="468" direction="rtl" unicode-bidi="embed" font-size="9.5" fill="#555">در حلقه‌های الحاق رشته، همیشه از <tspan direction="ltr" unicode-bidi="embed">strings.Builder</tspan> با <tspan direction="ltr" unicode-bidi="embed">Grow()</tspan> استفاده کنید. برای قالب‌بندی یکباره، <tspan direction="ltr" unicode-bidi="embed">fmt.Sprintf</tspan> مناسب‌تر است.</text>
+<text x="118" y="483" direction="rtl" unicode-bidi="embed" font-size="8.5" fill="#888">هرگز از عملگر <tspan direction="ltr" unicode-bidi="embed">+=</tspan> برای الحاق مکرر رشته‌ها در حلقه استفاده نکنید — پیچیدگی <tspan direction="ltr" unicode-bidi="embed">O(n²)</tspan> دارد.</text>
+
+<!-- Color legend -->
+<rect x="10" y="500" width="12" height="12" fill="#e91e63" rx="2"/>
+<text x="27" y="510" direction="rtl" unicode-bidi="embed" font-size="8" fill="#666">ناکارآمد (<tspan direction="ltr" unicode-bidi="embed">O(n²)</tspan>)</text>
+<rect x="130" y="500" width="12" height="12" fill="#4CAF50" rx="2"/>
+<text x="147" y="510" direction="rtl" unicode-bidi="embed" font-size="8" fill="#666">کارآمد (<tspan direction="ltr" unicode-bidi="embed">O(n)</tspan>)</text>
+<text x="670" y="510" direction="ltr" unicode-bidi="embed" font-size="7" fill="#aaa">بنچمارک: Go 1.22 / amd64</text>
+</svg>
+<figcaption dir="rtl">شکل ۱۲-۳-ب: مقایسه عملکرد روش‌های الحاق رشته در <bdi dir="ltr">Go</bdi> (مقیاس لگاریتمی)</figcaption>
+</figure>
+
+<h3 id="سناریوهای-عملیاتی-الحاق-رشته">سناریوهای عملیاتی الحاق رشته</h3>
+<p>انتخاب روش مناسب الحاق رشته در Go بستگی به زمینه‌ی استفاده دارد. هر روشی نقاط قوت و ضعف خود را دارد و در سناریوهای مختلف عملکرد متفاوتی نشان می‌دهد. درک این تفاوت‌ها به شما کمک می‌کند در هر موقعیت بهترین تصمیم را بگیرید و از تخصیص حافظه‌ی غیرضروری جلوگیری کنید. در ادامه رایج‌ترین سناریوهای عملیاتی و روش بهینه برای هر کدام را بررسی می‌کنیم. به یاد داشته باشید که خوانایی کد نیز یک فاکتور مهم است و نباید برای میکروبهینه‌سازی فدا شود.</p>
+<ul>
+<li><strong>ساخت بدنه‌ی پاسخ <bdi dir="ltr">HTTP</bdi>:</strong> وقتی بدنه‌ی پاسخ یک درخواست <bdi dir="ltr">HTTP</bdi> را از بخش‌های مختلف (هدرها، <bdi dir="ltr">JSON</bdi>، <bdi dir="ltr">HTML</bdi>) ترکیب می‌کنید، از <bdi dir="ltr">strings.Builder</bdi> با <bdi dir="ltr">Grow()</bdi> استفاده کنید. این روش فقط یک تخصیص حافظه انجام می‌دهد و از فشار به <bdi dir="ltr">GC</bdi> جلوگیری می‌کند. در سرورهای با بار بالا، این تفاوت می‌تواند تأثیر قابل‌توجهی بر <bdi dir="ltr">latency</bdi> و <bdi dir="ltr">throughput</bdi> داشته باشد. اگر بخش‌ها از قبل مشخص هستند، <bdi dir="ltr">strings.Join</bdi> نیز گزینه‌ی مناسبی است.</li>
+<li><strong>قالب‌بندی پیام‌های لاگ:</strong> اگر پیام لاگ را یک‌بار قالب‌بندی می‌کنید و نیازی به الحاق مکرر ندارید، <bdi dir="ltr">fmt.Sprintf</bdi> بهترین انتخاب است. خوانایی کد در اینجا مهم‌تر از میکروبهینه‌سازی است و <bdi dir="ltr">fmt.Sprintf</bdi> وضوح بیشتری نسبت به ترکیب <bdi dir="ltr">strings.Builder</bdi> دارد. اما اگر در حلقه پیام‌های لاگ متعدد تولید می‌کنید، ابتدا بخش‌ها را با <bdi dir="ltr">strings.Builder</bdi> ترکیب کنید و سپس لاگ نهایی را ثبت نمایید.</li>
+<li><strong>تولید فایل <bdi dir="ltr">CSV</bdi>:</strong> برای ساخت فایل‌های <bdi dir="ltr">CSV</bdi> بزرگ، از <bdi dir="ltr">strings.Builder</bdi> استفاده کنید و با <bdi dir="ltr">Grow()</bdi> ظرفیت تقریبی را مشخص نمایید. هر ردیف را با <bdi dir="ltr">WriteString</bdi> اضافه کنید و از <bdi dir="ltr">encoding/csv</bdi> برای <bdi dir="ltr">escape</bdi> صحیح کاراکترها بهره ببرید. این روش برای تولید گزارش‌های بزرگ با هزاران ردیف بسیار کارآمدتر از الحاق ساده است. اگر ردیف‌ها را مستقیم در <bdi dir="ltr">io.Writer</bdi> می‌نویسید، اصلاً نیازی به ساخت رشته ندارید.</li>
+<li><strong>ساخت خروجی <bdi dir="ltr">template</bdi>:</strong> اگر خروجی <bdi dir="ltr">template</bdi> را در چند مرحله ترکیب می‌کنید (مثلاً <bdi dir="ltr">header</bdi>، <bdi dir="ltr">body</bdi>، <bdi dir="ltr">footer</bdi>)، از <bdi dir="ltr">strings.Join</bdi> استفاده کنید چون تعداد بخش‌ها محدود و از قبل مشخص است. اما اگر محتوای پویا دارید که در حلقه ساخته می‌شود، <bdi dir="ltr">strings.Builder</bdi> را ترجیح دهید. بهتر آنکه مستقیماً در <bdi dir="ltr">io.Writer</bdi> بنویسید و اصلاً رشته‌ای نسازید.</li>
+</ul>
+
+<div class="tip"><strong>نکته کاربردی:</strong> قانون ساده‌ای به یاد داشته باشید: اگر فقط یک بار رشته‌ای را قالب‌بندی می‌کنید، از <code dir="ltr">fmt.Sprintf</code> استفاده کنید — خوانایی و سادگی مهم‌تر از میکروبهینه‌سازی است. اما اگر در حلقه‌ای رشته‌ها را الحاق می‌کنید (حتی اگر فقط ۱۰ بار)، حتماً از <code dir="ltr">strings.Builder</code> استفاده کنید. تفاوت عملکرد با افزایش تعداد الحاق‌ها به‌صورت نمایی (<code dir="ltr">O(n²)</code> در مقابل <code dir="ltr">O(n)</code>) رشد می‌کند. همیشه قبل از بهینه‌سازی، با <code dir="ltr">go test -bench</code> اندازه‌گیری کنید و فقط <code dir="ltr">hot path</code>‌ها را بهینه کنید. قانون کلی: اگر بیش از ۵ الحاق دارید، <code dir="ltr">strings.Builder</code> را انتخاب کنید.</div>
+</div>
+</main>
+</div>
+
+<!-- Footer -->
+<footer class="site-footer">
+<div class="footer-inner">
+<div class="footer-nav">
+<span class="nav-arrow">‹</span>
+<a href="12.02-optimization-principles.html" data-prev>۱۲.۲ اصول بهینه‌سازی</a>
+</div>
+<div class="footer-toc">
+<a href="00.01-contents.html">فهرست</a>
+</div>
+<div class="footer-nav">
+<a href="12.04-memory-optimization-and-gc.html" data-next>۱۲.۴ بهینه‌سازی حافظه و Garbage Collector</a>
+<span class="nav-arrow">›</span>
+</div>
+</div>
+</footer>
+
+<!-- Back to Top -->
+<button class="back-to-top" aria-label="بازگشت به بالا">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
+</button>
+
+<!-- Scripts -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/go.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/php.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/sql.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/yaml.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/json.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/dockerfile.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/xml.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/ini.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/plaintext.min.js"></script>
+<script src="assets/js/main.js"></script>
+</body>
+</html>

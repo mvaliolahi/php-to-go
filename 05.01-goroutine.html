@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="fa">
+<head>
+<script>!function(){try{var t=localStorage.getItem('php2go-theme');if(t==='dark'||(!t&&window.matchMedia('(prefers-color-scheme:dark)').matches)){document.documentElement.setAttribute('data-theme','dark')}}catch(e){}}();</script>
+<meta charset="utf-8"/>
+<meta content="ie=edge" http-equiv="x-ua-compatible"/>
+<title>۵.۱ Goroutine — PHP to Go</title>
+<meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet"/>
+<link href="assets/css/main.css" rel="stylesheet" type="text/css"/>
+<link href="assets/img/favicon.ico" rel="icon" type="image/x-icon"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" media="screen" class="hljs-light-theme" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css" media="not screen" class="hljs-dark-theme" rel="stylesheet"/>
+</head>
+<body>
+<!-- Progress Bar -->
+<div class="progress-bar"><div class="progress-bar__fill"></div></div>
+
+<!-- Header -->
+<header class="site-header">
+<div class="header-inner">
+<div class="header-left">
+<button class="header-btn sidebar-toggle" aria-label="فهرست">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+</button>
+<a href="00.00-front-matter.html" class="header-logo"><span class="logo-php">PHP</span> to <span class="logo-go">Go</span></a>
+<span class="header-crumbs">همزمانی › Goroutine</span>
+</div>
+<div class="header-right">
+<nav class="header-nav">
+<span class="nav-arrow">‹</span>
+<a href="05.00-chapter-5.html"><span class="nav-label">۵. همزمانی</span></a>
+<a href="00.01-contents.html">فهرست</a>
+<a href="05.02-channel.html"><span class="nav-label">۵.۲ Channel</span></a>
+<span class="nav-arrow">›</span>
+</nav>
+<button class="header-btn search-toggle" aria-label="جستجو">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+</button>
+<button class="header-btn theme-toggle" aria-label="تغییر تم">
+<svg class="theme-icon-light" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+<svg class="theme-icon-dark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+</button>
+</div>
+</div>
+</header>
+
+<!-- Search Modal -->
+<div class="search-overlay">
+<div class="search-modal">
+<div class="search-input-wrap">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+<input type="text" class="search-input" placeholder="جستجو... (Ctrl+K)" dir="rtl"/>
+</div>
+<div class="search-results"></div>
+</div>
+</div>
+
+<!-- Layout -->
+<div class="site-layout">
+<!-- Sidebar -->
+<aside class="sidebar"></aside>
+<div class="sidebar-overlay"></div>
+
+<!-- Main Content -->
+<main class="content-area">
+<div class="content-wrap text">
+<div class="chapter">فصل ۵.۱</div>
+<h2 id="goroutine">Goroutine</h2>
+
+<div class="note"><strong>یادداشت:</strong> مفهوم <bdi dir="ltr">Goroutine</bdi> یکی از ویژگی‌های کلیدی Go است که آن را از PHP متمایز می‌کند. در PHP همزمانی به‌صورت پیش‌فرض وجود ندارد و نیازمند ابزارهای جانبی مانند <bdi dir="ltr">Fiber</bdi> ، <bdi dir="ltr">parallel</bdi> یا <bdi dir="ltr">Swoole</bdi> است. اما در Go همزمانی بخشی ذاتی از زبان است و با یک کلمه‌ی کلیدی ساده (<code>go</code>) قابل دسترسی می‌باشد.</div>
+
+<p>در Go برای دستیابی به همزمانی کافی است فقط کلمه کلیدی <code>go</code> را قبل از فراخوانی تابع اضافه کنیم. همین کار کفایت می‌کند تا یک <bdi dir="ltr">Task</bdi> در یک مسیر مستقل هم‌زمان و سبک‌وزن اجرا شود. به این مسیر اجرایی جدید <bdi dir="ltr">Goroutine</bdi> گفته می‌شود. به بیان ساده <bdi dir="ltr">Goroutine</bdi> یک <bdi dir="ltr">Thread</bdi> بسیار سبک‌وزن است که نه از طریق سیستم‌عامل بلکه توسط <bdi dir="ltr">Runtime</bdi> زبان Go مدیریت می‌شود.</p>
+
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">go sayHello() // run function in a new goroutine
+go func() { // run anonymous function in goroutine
+    fmt.Println("سلام")
+}()
+</code></pre>
+</figure>
+
+<p>این کار یعنی <code>sayHello()</code> به‌صورت هم‌زمان اجرا خواهد شد و اجرای برنامه بدون آن‌که منتظر اتمام آن تابع بماند به خط بعدی ادامه می‌دهد. در واقع Go با الهام از مدل <bdi dir="ltr">CSP</bdi> سعی کرده به‌جای استفاده از <bdi dir="ltr">Memory Sharing</bdi> مسیر ارتباط بین <bdi dir="ltr">Task</bdi>‌ها را از طریق <bdi dir="ltr">Message Passing</bdi> فراهم کند.</p>
+
+<div class="quote-box">
+    <p class="quote-text">همزمانی سخت است. حالت مشترک ریشه‌ی بیشتر باگ‌های همزمانی است. بهترین راه برای اجتناب از حالت مشترک، اصلاً حالت مشترک نداشتن است — به‌جای آن از طریق پیام‌ها ارتباط برقرار کنید.</p>
+    <p class="quote-source">
+        <span class="quote-author">Andy Hunt و Dave Thomas</span>
+        <span class="quote-role">نویسندگان و مشاوران نرم‌افزار</span>
+        <span class="quote-separator">|</span>
+        <span class="quote-book">The Pragmatic Programmer</span>
+    </p>
+</div>
+
+<div class="tip"><strong>نکته‌ی حرفه‌ای:</strong> مدیریت چرخه‌ی حیات <bdi dir="ltr">Goroutine</bdi> حیاتی است — هر <bdi dir="ltr">Goroutine</bdi> که شروع می‌کنید باید شرط خروج مشخصی داشته باشد، در غیر این صورت نشت <bdi dir="ltr">Goroutine</bdi> رخ می‌دهد (مبحث فصل ۵.۹). قاعده‌ی ساده: اگر <code>go func()</code> می‌نویسید، بلافاصله از خود بپرسید «این چه زمانی تمام می‌شود؟».</div>
+
+<figure class="diagram" dir="ltr">
+<svg height="240" viewBox="0 0 700 240" width="700" xmlns="http://www.w3.org/2000/svg">
+<rect fill="#fafafa" height="240" rx="8" width="700" x="0" y="0"></rect>
+<defs>
+<marker id="aP" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#777BB4" points="0 0,10 3.5,0 7"></polygon></marker>
+</defs>
+<text fill="#777BB4" font-size="15" font-weight="bold" text-anchor="middle" x="350" y="25" direction="rtl" unicode-bidi="embed">مدل پردازشی <tspan direction="ltr" unicode-bidi="embed">PHP</tspan>: هر درخواست = یک <tspan direction="ltr" unicode-bidi="embed">Process</tspan> مستقل</text>
+<rect fill="#777BB4" height="80" opacity="0.15" rx="6" stroke="#777BB4" stroke-width="2" width="120" x="30" y="45"></rect>
+<text fill="#333" font-size="11" text-anchor="middle" x="90" y="80" direction="ltr" unicode-bidi="embed">Process 1</text>
+<text fill="#666" font-size="10" text-anchor="middle" x="90" y="98" direction="ltr" unicode-bidi="embed">Request A</text>
+<text fill="#999" font-size="9" text-anchor="middle" x="90" y="112" direction="ltr" unicode-bidi="embed">~8MB RAM</text>
+<rect fill="#777BB4" height="80" opacity="0.15" rx="6" stroke="#777BB4" stroke-width="2" width="120" x="170" y="45"></rect>
+<text fill="#333" font-size="11" text-anchor="middle" x="230" y="80" direction="ltr" unicode-bidi="embed">Process 2</text>
+<text fill="#666" font-size="10" text-anchor="middle" x="230" y="98" direction="ltr" unicode-bidi="embed">Request B</text>
+<text fill="#999" font-size="9" text-anchor="middle" x="230" y="112" direction="ltr" unicode-bidi="embed">~8MB RAM</text>
+<rect fill="#777BB4" height="80" opacity="0.15" rx="6" stroke="#777BB4" stroke-width="2" width="120" x="310" y="45"></rect>
+<text fill="#333" font-size="11" text-anchor="middle" x="370" y="80" direction="ltr" unicode-bidi="embed">Process 3</text>
+<text fill="#666" font-size="10" text-anchor="middle" x="370" y="98" direction="ltr" unicode-bidi="embed">Request C</text>
+<text fill="#999" font-size="9" text-anchor="middle" x="370" y="112" direction="ltr" unicode-bidi="embed">~8MB RAM</text>
+<text fill="#999" font-size="22" x="480" y="80" direction="ltr" unicode-bidi="embed">...</text>
+<rect fill="#777BB4" height="80" opacity="0.15" rx="6" stroke="#777BB4" stroke-width="2" width="120" x="530" y="45"></rect>
+<text fill="#333" font-size="11" text-anchor="middle" x="590" y="80" direction="ltr" unicode-bidi="embed">Process N</text>
+<text fill="#666" font-size="10" text-anchor="middle" x="590" y="98" direction="ltr" unicode-bidi="embed">Request N</text>
+<text fill="#999" font-size="9" text-anchor="middle" x="590" y="112" direction="ltr" unicode-bidi="embed">~8MB RAM</text>
+<line marker-end="url(#aP)" stroke="#777BB4" stroke-width="1.5" x1="90" x2="90" y1="135" y2="160"></line>
+<line marker-end="url(#aP)" stroke="#777BB4" stroke-width="1.5" x1="230" x2="230" y1="135" y2="160"></line>
+<line marker-end="url(#aP)" stroke="#777BB4" stroke-width="1.5" x1="370" x2="370" y1="135" y2="160"></line>
+<line marker-end="url(#aP)" stroke="#777BB4" stroke-width="1.5" x1="590" x2="590" y1="135" y2="160"></line>
+<rect fill="#777BB4" height="55" opacity="0.08" rx="8" stroke="#777BB4" stroke-width="1.5" width="620" x="30" y="160"></rect>
+<text fill="#555" font-size="12" text-anchor="middle" x="340" y="185" direction="ltr" unicode-bidi="embed">PHP-FPM / Apache Worker Pool</text>
+<text fill="#888" font-size="10" text-anchor="middle" x="340" y="202" direction="rtl" unicode-bidi="embed">هر پردازش حافظه و منابع مستقل دارد → مقیاس‌پذیری محدود</text>
+</svg>
+<figcaption>شکل ۵-۱: مدل پردازشی <bdi dir="ltr">PHP</bdi> - هر درخواست در یک <bdi dir="ltr">Process</bdi> مستقل اجرا می‌شود</figcaption>
+</figure>
+
+<h3 id="مقایسه-goroutine-و-thread-و-process">مقایسه <bdi dir="ltr">Goroutine</bdi> و <bdi dir="ltr">Thread</bdi> و فرآیند PHP</h3>
+
+<div class="case-study">
+    <div class="case-study-header">
+        <span class="case-study-badge">مطالعه موردی</span>
+        <span class="case-study-title">تأثیر Goroutine در مقیاس Uber</span>
+    </div>
+    <p>Uber به‌طور گسترده از goroutine‌ها برای مدیریت صدها هزار درخواست همزمان استفاده می‌کند. در مقایسه با مدل thread-per-request جاوا که هر thread حدود ۱ مگابایت حافظه مصرف می‌کند، هر goroutine تنها حدود ۲ تا ۸ کیلوبایت حافظه استک اولیه دارد. این تفاوت به Uber اجازه می‌دهد میلیون‌ها goroutine را در یک سرور اجرا کند. در عمل، این یعنی یک سرور Go با ۸ گیگابایت حافظه می‌تواند حدود یک میلیون goroutine فعال داشته باشد، در حالی که همان سرور با مدل thread جاوا تنها حدود ۸ هزار thread می‌تواند نگه دارد.</p>
+    <p>مدل همزمانی goroutine مزیت مهم دیگری هم دارد: زمان ایجاد. ایجاد یک thread جدید در سیستم‌عامل حدود ۱ تا ۱۰ میکروسثانیه طول می‌کشد و شامل تخصیص حافظه، تنظیم stack و ثبت در scheduler سیستم‌عامل است. اما ایجاد یک goroutine تنها حدود ۳۰۰ نانوثانیه طول می‌کشد چون Go scheduler داخلی این کار را با کارایی بسیار بالاتری انجام می‌دهد. این تفاوت در مقیاس صدها هزار درخواست بر ثانیه، تفاوت بین یک سیستم پاسخگو و یک سیستم فروپاشیده است.</p>
+    <p>از چالش‌های اصلی: نشتی goroutine (goroutine leak) که در آن goroutine‌ها هرگز خاتمه نمی‌یابند و حافظه نشت می‌کند. این مشکل در سیستم‌های تولیدی بسیار شایع است و Uber ابزارهای مانیتورینگ مخصوصی برای ردیابی goroutine‌های زامبی توسعه داده است. این ابزارها تعداد goroutine فعال را به‌صورت مداوم مانیتور می‌کنند و اگر روند افزایشی غیرعادی مشاهده کنند، هشدار می‌دهند. بدون این مانیتورینگ، نشتی goroutine می‌تواند به تدریج منابع سرور را تخلیه کند و باعث قطعی سرویس شود.</p>
+    <p class="case-study-source">
+        <span class="source-event">GopherCon 2019</span>
+        <span class="source-year">، ۲۰۱۹</span>
+    </p>
+</div>
+<p>هر <bdi dir="ltr">Goroutine</bdi> در ابتدا با یک <bdi dir="ltr">Stack</bdi> بسیار کوچک معمولاً ۲ کیلوبایت شروع به کار می‌کند. این <bdi dir="ltr">Stack</bdi> به‌صورت پویا رشد می‌کند. یعنی شما می‌توانید بی‌آنکه فشار زیادی به حافظه وارد شود هزاران یا حتی صدها هزار <bdi dir="ltr">Goroutine</bdi> را به‌صورت هم‌زمان اجرا کنید. این سبک‌وزنی حاصل طراحی دقیق <bdi dir="ltr">Runtime</bdi> Go است که با استفاده از یک <bdi dir="ltr">Scheduler</bdi> داخلی تمام <bdi dir="ltr">Goroutine</bdi>‌ها را بر روی تعداد محدودی <bdi dir="ltr">Thread</bdi> سیستم‌عامل توزیع می‌کند.</p>
+
+<table class="comparison-table" dir="rtl">
+<thead>
+<tr><th>ویژگی</th><th>فرآیند PHP</th><th><bdi dir="ltr">OS Thread</bdi></th><th><bdi dir="ltr">Goroutine</bdi></th></tr>
+</thead>
+<tbody>
+<tr><td>حافظه اولیه</td><td>~۸ مگابایت</td><td>~۱ مگابایت (پیش‌فرض لینوکس: ۸ مگابایت)</td><td>~۲ کیلوبایت</td></tr>
+<tr><td>هزینه ساخت</td><td><bdi dir="ltr">fork() syscall</bdi></td><td><bdi dir="ltr">pthread_create</bdi> + <bdi dir="ltr">syscall</bdi></td><td>تخصیص <bdi dir="ltr">stack</bdi> + <code>runtime.g</code></td></tr>
+<tr><td>زمان ساخت</td><td>~۱ میلی‌ثانیه</td><td>~۱۰ میکروثانیه</td><td>~۱ میکروثانیه</td></tr>
+<tr><td>هزینه <bdi dir="ltr">Context Switch</bdi></td><td>~۱۰-۱۰۰ میکروثانیه</td><td>~۱-۲ میکروثانیه</td><td>~۱۰۰-۲۰۰ نانوثانیه</td></tr>
+<tr><td>زمان‌بندی توسط</td><td>کرنل OS</td><td>کرنل OS</td><td><bdi dir="ltr">Go Runtime</bdi></td></tr>
+<tr><td>رشد <bdi dir="ltr">Stack</bdi></td><td>ثابت</td><td>ثابت</td><td>پویا (دو برابر شدن)</td></tr>
+<tr><td>مقیاس‌پذیری</td><td>صدها</td><td>هزاران</td><td>صدها هزار تا میلیون‌ها</td></tr>
+</tbody>
+</table>
+
+<div class="tip"><strong>جزئیات داخلی — ساختار <code dir="ltr">runtime.g</code>:</strong> هر <bdi dir="ltr">Goroutine</bdi> در <bdi dir="ltr">Runtime</bdi> زبان Go توسط ساختار داده‌ای به نام <code dir="ltr">runtime.g</code> نمایش داده می‌شود. این ساختار شامل فیلدهای متعددی است: <code>stack</code> (اطلاعات <bdi dir="ltr">Stack</bdi> شامل پایین و بالای <bdi dir="ltr">Stack</bdi>)، <code>sched</code> (وضعیت ذخیره‌شده برای <bdi dir="ltr">Context Switch</bdi> شامل ثبت‌کننده‌ها)، <code>atomicstatus</code> (وضعیت <bdi dir="ltr">Goroutine</bdi> مثل <code>_Grunnable</code> ، <code>_Grunning</code> ، <code>_Gwaiting</code>)، <code>m</code> (اشاره‌گر به <bdi dir="ltr">M</bdi> که در حال اجرای این <bdi dir="ltr">G</bdi> است)، <code>preempt</code> (پرچم پیش‌گیرانه) و فیلدهای بسیاری دیگر. از آنجا که این ساختار حدود چند صد بایت حافظه مصرف می‌کند، هزینه‌ی ساخت هر <bdi dir="ltr">Goroutine</bdi> بسیار کم است. برای مقایسه، یک <bdi dir="ltr">Thread</bdi> سیستم‌عامل معمولاً حداقل ۱ مگابایت <bdi dir="ltr">Stack</bdi> اختصاصی دارد (در لینوکس پیش‌فرض ۸ مگابایت) و ساخت آن نیازمند <bdi dir="ltr">syscall</bdi> و تخصیص حافظه توسط OS است.</div>
+
+<h3 id="stack-management">مدیریت <bdi dir="ltr">Stack</bdi> و رشد پویا</h3>
+<p>مدیریت <bdi dir="ltr">Stack</bdi> در Go دو مرحله تکاملی داشته است. در نسخه‌های ابتدایی Go (تا قبل از Go 1.3) از مکانیزم <strong dir="ltr">Split Stacks</strong> استفاده می‌شد. در این روش وقتی <bdi dir="ltr">Stack</bdi> فعلی پر می‌شد یک بخش جدید <bdi dir="ltr">Stack</bdi> تخصیص داده می‌شد و به بخش قبلی متصل می‌گردید. اما این روش مشکلی داشت: فراخوانی‌های متوالی که در مرز بین دو بخش <bdi dir="ltr">Stack</bdi> قرار می‌گرفتند باعث <strong dir="ltr">Stack Thrashing</strong> می‌شدند یعنی تخصیص و آزادسازی مکرر بخش‌های <bdi dir="ltr">Stack</bdi> که به شدت کارایی را کاهش می‌داد.</p>
+
+<p>از Go 1.3 به بعد مکانیزم <strong dir="ltr">Contiguous Stacks</strong> جایگزین شد. در این روش وقتی <bdi dir="ltr">Stack</bdi> فعلی پر می‌شود یک <bdi dir="ltr">Block</bdi> جدید حافظه با اندازه‌ی دو برابر تخصیص داده می‌شود، محتویات <bdi dir="ltr">Stack</bdi> قدیمی به جای جدید کپی می‌شود و <bdi dir="ltr">Stack</bdi> قدیمی آزاد می‌شود. این کار توسط تابع <code dir="ltr">runtime.newstack</code> انجام می‌شود. مزیت اصلی این روش حذف مشکل <bdi dir="ltr">Thrashing</bdi> و سادگی پیاده‌سازی است. همچنین کوچک‌سازی <bdi dir="ltr">Stack</bdi> (<bdi dir="ltr">Shrinking</bdi>) در زمان <bdi dir="ltr">Garbage Collection</bdi> انجام می‌شود: اگر کمتر از یک‌چهارم <bdi dir="ltr">Stack</bdi> استفاده شده باشد، اندازه‌ی آن به نصف کاهش می‌یابد.</p>
+
+<figure class="diagram" dir="ltr">
+<svg height="280" viewBox="0 0 600 280" width="600" xmlns="http://www.w3.org/2000/svg">
+<rect fill="#fafafa" height="280" rx="8" width="600" x="0" y="0"></rect>
+<defs>
+<marker id="aStk1" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#00ADD8" points="0 0,10 3.5,0 7"></polygon></marker>
+<marker id="aStk2" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#27ae60" points="0 0,10 3.5,0 7"></polygon></marker>
+</defs>
+<text fill="#00ADD8" font-size="14" font-weight="bold" text-anchor="middle" x="300" y="25" direction="rtl" unicode-bidi="embed">رشد پویای <tspan direction="ltr" unicode-bidi="embed">Stack</tspan> در <tspan direction="ltr" unicode-bidi="embed">Goroutine</tspan></text>
+<!-- Initial 2KB -->
+<rect fill="#00ADD8" height="60" opacity="0.2" rx="6" stroke="#00ADD8" stroke-width="2" width="80" x="40" y="50"></rect>
+<text fill="#333" font-size="10" text-anchor="middle" x="80" y="75" direction="ltr" unicode-bidi="embed">2 KB</text>
+<text fill="#666" font-size="9" text-anchor="middle" x="80" y="100" direction="rtl" unicode-bidi="embed">شروع</text>
+<!-- Arrow -->
+<line marker-end="url(#aStk1)" stroke="#00ADD8" stroke-width="2" x1="120" x2="170" y1="80" y2="80"></line>
+<text fill="#00ADD8" font-size="9" x="145" y="72" direction="rtl" unicode-bidi="embed">پر شد</text>
+<!-- 4KB -->
+<rect fill="#00ADD8" height="80" opacity="0.2" rx="6" stroke="#00ADD8" stroke-width="2" width="100" x="170" y="40"></rect>
+<text fill="#333" font-size="10" text-anchor="middle" x="220" y="75" direction="ltr" unicode-bidi="embed">4 KB</text>
+<text fill="#666" font-size="9" text-anchor="middle" x="220" y="110" direction="rtl" unicode-bidi="embed">×2 رشد</text>
+<!-- Arrow -->
+<line marker-end="url(#aStk1)" stroke="#00ADD8" stroke-width="2" x1="270" x2="320" y1="80" y2="80"></line>
+<text fill="#00ADD8" font-size="9" x="295" y="72" direction="rtl" unicode-bidi="embed">پر شد</text>
+<!-- 8KB -->
+<rect fill="#00ADD8" height="100" opacity="0.2" rx="6" stroke="#00ADD8" stroke-width="2" width="120" x="320" y="30"></rect>
+<text fill="#333" font-size="10" text-anchor="middle" x="380" y="75" direction="ltr" unicode-bidi="embed">8 KB</text>
+<text fill="#666" font-size="9" text-anchor="middle" x="380" y="120" direction="rtl" unicode-bidi="embed">×2 رشد</text>
+<!-- Arrow -->
+<line marker-end="url(#aStk2)" stroke="#27ae60" stroke-width="2" x1="440" x2="490" y1="80" y2="80"></line>
+<text fill="#27ae60" font-size="9" x="465" y="72" direction="ltr" unicode-bidi="embed">GC</text>
+<!-- Shrunk -->
+<rect fill="#27ae60" height="70" opacity="0.15" rx="6" stroke="#27ae60" stroke-width="2" width="100" x="490" y="45"></rect>
+<text fill="#333" font-size="10" text-anchor="middle" x="540" y="75" direction="ltr" unicode-bidi="embed">4 KB</text>
+<text fill="#666" font-size="9" text-anchor="middle" x="540" y="105" direction="rtl" unicode-bidi="embed">کوچک‌سازی</text>
+<!-- Explanation -->
+<rect fill="#f5f5f5" height="80" rx="8" stroke="#ddd" stroke-width="1" width="560" x="20" y="160"></rect>
+<text fill="#555" font-size="10" text-anchor="middle" x="300" y="182" direction="rtl" unicode-bidi="embed">مکانیزم <tspan direction="ltr" unicode-bidi="embed">Contiguous Stack</tspan>(از Go 1.3):</text>
+<text fill="#666" font-size="9" text-anchor="middle" x="300" y="200" direction="rtl" unicode-bidi="embed">۱. وقتی <tspan direction="ltr" unicode-bidi="embed">Stack</tspan>پر می‌شود → حافظه‌ی دو برابر تخصیص → کپی → آزادسازی قدیمی</text>
+<text fill="#666" font-size="9" text-anchor="middle" x="300" y="216" direction="rtl" unicode-bidi="embed">۲. کوچک‌سازی در <tspan direction="ltr" unicode-bidi="embed">GC</tspan>: اگر کمتر از ¼ استفاده شده → نصف شدن</text>
+<text fill="#888" font-size="9" text-anchor="middle" x="300" y="232" direction="rtl" unicode-bidi="embed">حداکثر اندازه: ۱ گیگابایت (پیش‌فرض) | قابل تغییر با <tspan direction="ltr" unicode-bidi="embed">runtime/debug.SetMaxStack</tspan></text>
+</svg>
+<figcaption>شکل ۵-۲: رشد و کوچک‌سازی پویای <bdi dir="ltr">Stack</bdi> در <bdi dir="ltr">Goroutine</bdi></figcaption>
+</figure>
+
+<div class="note"><strong>مقایسه هزینه <bdi dir="ltr">Context Switch</bdi>:</strong> تعویض زمینه بین دو <bdi dir="ltr">Goroutine</bdi> در Go بسیار سبک‌تر از تعویض بین دو <bdi dir="ltr">Thread</bdi> سیستم‌عامل است. در یک <bdi dir="ltr">Thread Switch</bdi> ، OS باید وضعیت تمام ثبت‌کننده‌ها (شامل ثبت‌کننده‌های <bdi dir="ltr">SIMD</bdi>)، <bdi dir="ltr">TLB</bdi> (<bdi dir="ltr">Translation Lookaside Buffer</bdi>) و <bdi dir="ltr">Cache</bdi> لایه‌های CPU را احتمالاً <bdi dir="ltr">Invalidate</bdi> کند. اما در <bdi dir="ltr">Goroutine Switch</bdi> فقط چندین ثبت‌کننده (حدود ۱۶ عدد شامل <bdi dir="ltr">SP</bdi> ، <bdi dir="ltr">PC</bdi> ، <bdi dir="ltr">BP</bdi> و غیره) ذخیره و بازیابی می‌شوند. هزینه‌ی تقریبی <bdi dir="ltr">Goroutine Switch</bdi> حدود ۱۰۰-۲۰۰ نانوثانیه است در حالی که <bdi dir="ltr">Thread Switch</bdi> سیستم‌عامل معمولاً ۱-۲ میکروثانیه طول می‌کشد (یعنی ۵ تا ۱۰ برابر بیشتر).</div>
+
+<h3 id="scheduler">مدل <bdi dir="ltr">GMP Scheduler</bdi></h3>
+<p>یکی از ویژگی‌های کلیدی زبان Go سیستم <bdi dir="ltr">Scheduler</bdi> آن است که تحت عنوان <bdi dir="ltr">M:N Scheduler</bdi> شناخته می‌شود. در این مدل <bdi dir="ltr">M</bdi> = تعداد <bdi dir="ltr">Thread</bdi>‌های سیستم‌عامل و <bdi dir="ltr">N</bdi> = تعداد <bdi dir="ltr">Goroutine</bdi>‌های فعال در برنامه است. <bdi dir="ltr">Scheduler</bdi> به گونه‌ای طراحی شده که بتواند بدون اینکه توسعه‌دهنده مجبور باشد مستقیماً با مفاهیم پیچیده‌ی مدیریت <bdi dir="ltr">Thread</bdi> سر و کار داشته باشد، تعداد بسیار زیادی <bdi dir="ltr">N</bdi> را به صورت بهینه و هوشمند روی تعداد محدودی <bdi dir="ltr">M</bdi> نگاشت کند.</p>
+
+<p><bdi dir="ltr">Scheduler</bdi> زبان Go بر اساس مدل سه‌وجهی <strong><bdi dir="ltr">G-M-P</bdi></strong> کار می‌کند:</p>
+
+<p><strong><bdi dir="ltr">G (Goroutine)</bdi>:</strong> هر <bdi dir="ltr">Goroutine</bdi> توسط ساختار <code dir="ltr">runtime.g</code> نمایش داده می‌شود. شامل <bdi dir="ltr">Stack</bdi> ، شمارنده برنامه، وضعیت و غیره است. هر <bdi dir="ltr">G</bdi> در یکی از وضعیت‌های <code>_Gidle</code> ، <code>_Grunnable</code> ، <code>_Grunning</code> ، <code>_Gsyscall</code> ، <code>_Gwaiting</code> یا <code>_Gdead</code> قرار دارد.</p>
+
+<p><strong><bdi dir="ltr">M (Machine)</bdi>:</strong> هر <bdi dir="ltr">M</bdi> نماینده‌ی یک <bdi dir="ltr">Thread</bdi> واقعی سیستم‌عامل است (<code dir="ltr">runtime.m</code>). تعداد <bdi dir="ltr">M</bdi>‌ها می‌تواند بیشتر از <bdi dir="ltr">P</bdi>‌ها باشد (مثلاً وقتی <bdi dir="ltr">Goroutine</bdi> در <bdi dir="ltr">Syscall</bdi> مسدود شده باشد). هر <bdi dir="ltr">M</bdi> بدون <bdi dir="ltr">P</bdi> نمی‌تواند <bdi dir="ltr">G</bdi> اجرا کند.</p>
+
+<p><strong><bdi dir="ltr">P (Processor)</bdi>:</strong> هر <bdi dir="ltr">P</bdi> نماینده‌ی یک منبع مجازی اجرایی است (<code dir="ltr">runtime.p</code>). تعداد <bdi dir="ltr">P</bdi>‌ها برابر با <code>GOMAXPROCS</code> (پیش‌فرض: تعداد هسته‌های <bdi dir="ltr">CPU</bdi>) است. هر <bdi dir="ltr">P</bdi> یک صف محلی (<bdi dir="ltr">Local Run Queue</bdi>) با ظرفیت ۲۵۶ <bdi dir="ltr">Goroutine</bdi> دارد.</p>
+
+<figure class="diagram" dir="ltr">
+<svg height="380" viewBox="0 0 750 380" width="750" xmlns="http://www.w3.org/2000/svg">
+<rect fill="#fafafa" height="380" rx="8" width="750" x="0" y="0"></rect>
+<defs>
+<marker id="aSch1" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#00ADD8" points="0 0,10 3.5,0 7"></polygon></marker>
+<marker id="aSch2" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#777BB4" points="0 0,10 3.5,0 7"></polygon></marker>
+<marker id="aSch3" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#f39c12" points="0 0,10 3.5,0 7"></polygon></marker>
+</defs>
+<text fill="#00ADD8" font-size="15" font-weight="bold" text-anchor="middle" x="375" y="25" direction="rtl" unicode-bidi="embed">مدل <tspan direction="ltr" unicode-bidi="embed">GMP</tspan> <tspan direction="ltr" unicode-bidi="embed">Scheduler</tspan> در <tspan direction="ltr" unicode-bidi="embed">Go</tspan></text>
+
+<!-- Global Queue -->
+<rect fill="#e74c3c" height="45" opacity="0.1" rx="8" stroke="#e74c3c" stroke-width="1.5" width="400" x="280" y="40"></rect>
+<text fill="#e74c3c" font-size="11" text-anchor="middle" x="480" y="60" direction="ltr" unicode-bidi="embed">Global Run Queue</text>
+<text fill="#888" font-size="9" text-anchor="middle" x="480" y="76" direction="rtl" unicode-bidi="embed">صف سراسری — همه Pها به آن دسترسی دارند</text>
+
+<!-- P1 -->
+<rect fill="#f39c12" height="120" opacity="0.1" rx="10" stroke="#f39c12" stroke-width="2" width="200" x="30" y="110"></rect>
+<text fill="#f39c12" font-size="13" font-weight="bold" text-anchor="middle" x="130" y="132" direction="ltr" unicode-bidi="embed">P1 (Processor)</text>
+<rect fill="#f39c12" height="22" opacity="0.2" rx="4" width="55" x="40" y="140"></rect><text fill="#333" font-size="8" text-anchor="middle" x="67" y="155" direction="ltr" unicode-bidi="embed">G1</text>
+<rect fill="#f39c12" height="22" opacity="0.2" rx="4" width="55" x="100" y="140"></rect><text fill="#333" font-size="8" text-anchor="middle" x="127" y="155" direction="ltr" unicode-bidi="embed">G2</text>
+<rect fill="#f39c12" height="22" opacity="0.2" rx="4" width="55" x="160" y="140"></rect><text fill="#333" font-size="8" text-anchor="middle" x="187" y="155" direction="ltr" unicode-bidi="embed">G3</text>
+<text fill="#666" font-size="8" text-anchor="middle" x="130" y="175" direction="rtl" unicode-bidi="embed">صف محلی (ظرفیت ۲۵۶)</text>
+<!-- M1 under P1 -->
+<rect fill="#777BB4" height="35" opacity="0.2" rx="6" stroke="#777BB4" stroke-width="1.5" width="80" x="90" y="195"></rect>
+<text fill="#333" font-size="10" text-anchor="middle" x="130" y="217" direction="ltr" unicode-bidi="embed">M1 (Thread)</text>
+<line stroke="#777BB4" stroke-width="1" x1="130" x2="130" y1="165" y2="195"></line>
+<!-- Running G -->
+<rect fill="#00ADD8" height="25" opacity="0.3" rx="4" stroke="#00ADD8" stroke-width="1.5" width="70" x="95" y="240"></rect>
+<text fill="#00ADD8" font-size="9" text-anchor="middle" x="130" y="257" direction="ltr" unicode-bidi="embed">G (running)</text>
+<line marker-end="url(#aSch1)" stroke="#00ADD8" stroke-width="1" x1="130" x2="130" y1="230" y2="240"></line>
+
+<!-- P2 -->
+<rect fill="#f39c12" height="120" opacity="0.1" rx="10" stroke="#f39c12" stroke-width="2" width="200" x="280" y="110"></rect>
+<text fill="#f39c12" font-size="13" font-weight="bold" text-anchor="middle" x="380" y="132" direction="ltr" unicode-bidi="embed">P2 (Processor)</text>
+<rect fill="#f39c12" height="22" opacity="0.2" rx="4" width="55" x="290" y="140"></rect><text fill="#333" font-size="8" text-anchor="middle" x="317" y="155" direction="ltr" unicode-bidi="embed">G4</text>
+<rect fill="#f39c12" height="22" opacity="0.2" rx="4" width="55" x="350" y="140"></rect><text fill="#333" font-size="8" text-anchor="middle" x="377" y="155" direction="ltr" unicode-bidi="embed">G5</text>
+<text fill="#666" font-size="8" text-anchor="middle" x="380" y="175" direction="rtl" unicode-bidi="embed">صف محلی (ظرفیت ۲۵۶)</text>
+<!-- M2 under P2 -->
+<rect fill="#777BB4" height="35" opacity="0.2" rx="6" stroke="#777BB4" stroke-width="1.5" width="80" x="340" y="195"></rect>
+<text fill="#333" font-size="10" text-anchor="middle" x="380" y="217" direction="ltr" unicode-bidi="embed">M2 (Thread)</text>
+<line stroke="#777BB4" stroke-width="1" x1="380" x2="380" y1="165" y2="195"></line>
+<rect fill="#00ADD8" height="25" opacity="0.3" rx="4" stroke="#00ADD8" stroke-width="1.5" width="70" x="345" y="240"></rect>
+<text fill="#00ADD8" font-size="9" text-anchor="middle" x="380" y="257" direction="ltr" unicode-bidi="embed">G (running)</text>
+<line marker-end="url(#aSch1)" stroke="#00ADD8" stroke-width="1" x1="380" x2="380" y1="230" y2="240"></line>
+
+<!-- Work Stealing Arrow -->
+<line marker-end="url(#aSch3)" stroke="#f39c12" stroke-dasharray="6,3" stroke-width="2" x1="280" x2="210" y1="155" y2="155"></line>
+<text fill="#f39c12" font-size="8" x="245" y="148" direction="ltr" unicode-bidi="embed">Work Stealing</text>
+
+<!-- Hand-off section -->
+<rect fill="#f5f5f5" height="80" rx="8" stroke="#ddd" stroke-width="1" width="710" x="20" y="285"></rect>
+<text fill="#555" font-size="11" font-weight="bold" text-anchor="middle" x="375" y="308" direction="rtl" unicode-bidi="embed">مکانیزم <tspan direction="ltr" unicode-bidi="embed">Hand-off</tspan> و <tspan direction="ltr" unicode-bidi="embed">Work-Stealing</tspan></text>
+<text fill="#666" font-size="9" text-anchor="middle" x="375" y="326" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">Hand-off:</tspan>وقتی G وارد <tspan direction="ltr" unicode-bidi="embed">Syscall</tspan>مسدودکننده می‌شود، P از M جدا شده و به M دیگر داده می‌شود</text>
+<text fill="#666" font-size="9" text-anchor="middle" x="375" y="344" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">Work-Stealing:</tspan>وقتی صف محلی P خالی شود، نیمی از Gها را از صف محلی P دیگر می‌دزدد</text>
+<text fill="#888" font-size="9" text-anchor="middle" x="375" y="360" direction="rtl" unicode-bidi="embed">تعداد P = <tspan direction="ltr" unicode-bidi="embed">GOMAXPROCS</tspan>(پیش‌فرض: تعداد هسته‌های CPU) | Mها می‌توانند بیشتر از Pها باشند</text>
+</svg>
+<figcaption>شکل ۵-۳: مدل <bdi dir="ltr">GMP</bdi> <bdi dir="ltr">Scheduler</bdi> — G (<bdi dir="ltr">Goroutine</bdi>) و M (<bdi dir="ltr">Thread</bdi>) و P (<bdi dir="ltr">Processor</bdi>)</figcaption>
+</figure>
+
+<h4 id="work-stealing">الگوریتم <bdi dir="ltr">Work-Stealing</bdi></h4>
+<p>وقتی یک <bdi dir="ltr">P</bdi> صف محلی خود را خالی می‌یابد، به ترتیب زیر عمل می‌کند:</p>
+<p>۱. ابتدا صف محلی خود را بررسی می‌کند — اگر خالی بود، به مرحله بعد.</p>
+<p>۲. صف سراسری (<bdi dir="ltr">Global Run Queue</bdi>) را بررسی می‌کند — اگر <bdi dir="ltr">G</bdi>‌ای وجود داشت آن را می‌گیرد.</p>
+<p>۳. از صف محلی <bdi dir="ltr">P</bdi> دیگر نیمی از <bdi dir="ltr">Goroutine</bdi>‌ها را می‌دزدد (<bdi dir="ltr">Work-Stealing</bdi>) — این کار تضمین می‌کند که بار کار به‌صورت مساوی بین <bdi dir="ltr">P</bdi>‌ها توزیع شود.</p>
+<p>۴. اگر هیچ جا <bdi dir="ltr">G</bdi>‌ای یافت نشد، <bdi dir="ltr">M</bdi> خود را آزاد می‌کند و به استخر <bdi dir="ltr">Thread</bdi>‌های غیرفعال برمی‌گردد.</p>
+
+<p>مکانیزم <bdi dir="ltr">Hand-off</bdi> تضمین می‌کند که هیچ <bdi dir="ltr">P</bdi> بی‌کار نماند: وقتی <bdi dir="ltr">G</bdi> وارد <bdi dir="ltr">Syscall</bdi> مسدودکننده می‌شود، <bdi dir="ltr">P</bdi> از <bdi dir="ltr">M</bdi> جدا شده و به <bdi dir="ltr">M</bdi> دیگری داده می‌شود تا سایر <bdi dir="ltr">G</bdi>‌ها اجرا شوند. وقتی <bdi dir="ltr">Syscall</bdi> برگردد، <bdi dir="ltr">M</bdi> سعی می‌کند دوباره یک <bdi dir="ltr">P</bdi> بگیرد.</p>
+
+<h3 id="goroutine-lifecycle">چرخه‌ی حیات <bdi dir="ltr">Goroutine</bdi></h3>
+<p>هر <bdi dir="ltr">Goroutine</bdi> در طول عمر خود از چندین وضعیت عبور می‌کند. درک این وضعیت‌ها برای دیباگ و بهینه‌سازی حیاتی است:</p>
+<p><strong><code>_Gidle</code>:</strong> تازه ایجاد شده، هنوز مقداردهی نشده.</p>
+<p><strong><code>_Grunnable</code>:</strong> آماده اجرا، در صف محلی <bdi dir="ltr">P</bdi> یا صف سراسری منتظر است.</p>
+<p><strong><code>_Grunning</code>:</strong> در حال اجرا روی <bdi dir="ltr">M</bdi> با <bdi dir="ltr">P</bdi> مشخص.</p>
+<p><strong><code>_Gsyscall</code>:</strong> در حال اجرای <bdi dir="ltr">Syscall</bdi> مسدودکننده (مثل خواندن فایل یا شبکه).</p>
+<p><strong><code>_Gwaiting</code>:</strong> در حال انتظار — مثلاً منتظر عملیات <bdi dir="ltr">Channel</bdi> ، <bdi dir="ltr">Timer</bdi> ، یا <bdi dir="ltr">GC</bdi>.</p>
+<p><strong><code>_Gdead</code>:</strong> کارش تمام شده، ساختار <code>runtime.g</code> بازیافت شده است.</p>
+
+<div class="warning"><strong>نکته مهم:</strong> اگر تابع <code>main()</code> تمام شود، تمام <bdi dir="ltr">Goroutine</bdi>‌ها بلافاصله متوقف می‌شوند — صرف‌نظر از اینکه کارشان تمام شده یا نه. این تفاوت اساسی با <bdi dir="ltr">Thread</bdi>‌های Java یا Python است که متد <code>join()</code> دارند. در Go باید صراحتاً منتظر اتمام <bdi dir="ltr">Goroutine</bdi>‌ها بمانید.</div>
+
+<h3 id="مثال‌های-عملی">مثال‌های عملی</h3>
+
+<p><strong>مثال ۱: اولین <bdi dir="ltr">Goroutine</bdi></strong></p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">package main
+
+import (
+"fmt"
+"time"
+)
+
+func sayHello() {
+    fmt.Println("سلام از Goroutine")
+}
+
+func main() {
+    go sayHello()
+    fmt.Println("سلام از Main")
+    time.Sleep(1 * time.Second) // without this line, sayHello may not run!
+}
+</code></pre>
+</figure>
+<p>در این مثال اگر <code>Sleep</code> را حذف کنید احتمالاً <code>sayHello</code> اصلاً اجرا نخواهد شد. چون <bdi dir="ltr">Goroutine</bdi> در پس‌زمینه اجرا می‌شود و اگر <code>main()</code> زودتر تمام شود کل برنامه خاتمه می‌یابد. این یک نکته‌ی بسیار کلیدی در مدیریت <bdi dir="ltr">Lifecycle</bdi> است — هرگز نباید از <code>time.Sleep</code> برای همگام‌سازی استفاده کنید، بلکه باید از <code>sync.WaitGroup</code> یا <bdi dir="ltr">Channel</bdi> استفاده نمایید.</p>
+
+<p><strong>مثال ۲: اجرای موازی پنج <bdi dir="ltr">Task</bdi></strong></p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">package main
+
+import (
+"fmt"
+"sync"
+"time"
+)
+
+func task(i int, wg *sync.WaitGroup) {
+    defer wg.Done()
+    fmt.Printf("شروع کار %d\n", i)
+    time.Sleep(500 * time.Millisecond)
+    fmt.Printf("پایان کار %d\n", i)
+}
+
+func main() {
+    var wg sync.WaitGroup
+    for i := 1; i &lt;= 5; i++ {
+        wg.Add(1)
+        go task(i, &amp;wg) // correct way: Add before go
+    }
+    wg.Wait() // wait for all to finish
+    fmt.Println("همه کارها تمام شدند")
+}
+</code></pre>
+</figure>
+<p>خروجی این برنامه به‌ترتیب اجرا نخواهد بود. بسته به زمان‌بندی و سرعت سیستم توزیع اجرا ممکن است تغییر کند. توجه کنید که در Go هیچ متد <code>join()</code> مثل <bdi dir="ltr">Thread</bdi> در Java یا Python نداریم، بنابراین باید از ابزارهایی مانند <code>sync.WaitGroup</code> یا <bdi dir="ltr">Channel</bdi> برای هماهنگی استفاده کرد.</p>
+
+<p><strong>مثال ۳: <bdi dir="ltr">Closure</bdi> و اشتباه رایج <bdi dir="ltr">Variable Capture</bdi></strong></p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">// Wrong: all goroutines may see final value of i
+for i := 0; i &lt; 5; i++ {
+    go func() {
+        fmt.Println(i) // capture of i — final value!
+    }()
+}
+
+// Correct — right: pass i as parameter
+for i := 0; i &lt; 5; i++ {
+    go func(n int) {
+        fmt.Println(n) // each goroutine has its own value
+    }(i)
+}
+</code></pre>
+</figure>
+<p>این یکی از رایج‌ترین اشتباهات در کار با <bdi dir="ltr">Goroutine</bdi> است. در حلقه‌ی اول، تمام <bdi dir="ltr">Goroutine</bdi>‌ها به متغیر <code>i</code> یکسان ارجاع دارند و چون <bdi dir="ltr">Goroutine</bdi>‌ها ممکن است دیرتر اجرا شوند، مقدار نهایی <code>i</code> را خواهند دید. در حلقه‌ی دوم، <code>i</code> به عنوان پارامتر پاس داده می‌شود و هر <bdi dir="ltr">Goroutine</bdi> یک کپی مستقل از مقدار دارد.</p>
+
+<p><strong>مثال ۴: شبیه‌سازی پردازش موازی درخواست‌ها</strong></p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">package main
+
+import (
+"fmt"
+"math/rand"
+"sync"
+"time"
+)
+
+type Response struct {
+    URL string
+    Code int
+    Took time.Duration
+}
+
+func fetchAPI(url string, wg *sync.WaitGroup, results chan&lt;- Response) {
+    defer wg.Done()
+    start := time.Now()
+    delay := time.Duration(100+rand.Intn(400)) * time.Millisecond
+    time.Sleep(delay) // simulate network delay
+    results &lt;- Response{
+        URL: url,
+        Code: 200,
+        Took: time.Since(start),
+    }
+}
+
+func main() {
+    urls := []string{
+        "/api/users",
+        "/api/orders",
+        "/api/products",
+        "/api/settings",
+    }
+    var wg sync.WaitGroup
+    results := make(chan Response, len(urls))
+
+    start := time.Now()
+    wg.Add(len(urls))
+    for _, url := range urls {
+        go fetchAPI(url, &amp;wg, results)
+    }
+
+    go func() {
+        wg.Wait()
+        close(results)
+    }()
+
+    for resp := range results {
+        fmt.Printf("%s → %d (%v)\n", resp.URL, resp.Code, resp.Took)
+    }
+    fmt.Printf("زمان کل: %v\n", time.Since(start))
+}
+</code></pre>
+</figure>
+<p>در این مثال چهار درخواست <bdi dir="ltr">API</bdi> به‌صورت موازی اجرا می‌شوند. زمان کل اجرا تقریباً برابر با زمان طولانی‌ترین درخواست خواهد بود، نه مجموع همه. این همان مزیت عملی همزمانی است.</p>
+
+<p><strong>مثال ۵: استفاده از <code>runtime.Gosched</code> برای تسلیم اجرا</strong></p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">package main
+
+import (
+"fmt"
+"runtime"
+)
+
+func main() {
+    // runtime.GOMAXPROCS sets the number of CPU cores
+    fmt.Println("GOMAXPROCS:", runtime.GOMAXPROCS(0))
+    fmt.Println("تعداد CPUها:", runtime.NumCPU())
+
+    go func() {
+        for i := 0; i &lt; 5; i++ {
+            fmt.Printf("Goroutine: %d\n", i)
+            runtime.Gosched() // yield execution to another goroutine
+        }
+    }()
+
+    for i := 0; i &lt; 5; i++ {
+        fmt.Printf("Main: %d\n", i)
+        runtime.Gosched()
+    }
+}
+</code></pre>
+</figure>
+<p>تابع <code>runtime.Gosched()</code> به <bdi dir="ltr">Scheduler</bdi> اعلام می‌کند که <bdi dir="ltr">Goroutine</bdi> فعلی مایل است اجرا را به <bdi dir="ltr">Goroutine</bdi> دیگری تسلیم کند. این تابع در عمل کمتر استفاده می‌شود چون <bdi dir="ltr">Scheduler</bdi> Go به‌صورت خودکار <bdi dir="ltr">Preemption</bdi> را مدیریت می‌کند، اما در برخی موارد خاص مثل حلقه‌های فشرده‌ی محاسباتی (<bdi dir="ltr">CPU-bound</bdi>) ممکن است مفید باشد.</p>
+
+<p><strong>مثال ۶: بررسی تعداد <bdi dir="ltr">Goroutine</bdi>‌های فعال</strong></p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">package main
+
+import (
+"fmt"
+"runtime"
+"sync"
+"time"
+)
+
+func main() {
+    fmt.Println("شروع - Goroutineها:", runtime.NumGoroutine())
+
+    var wg sync.WaitGroup
+    for i := 0; i &lt; 100; i++ {
+        wg.Add(1)
+        go func(id int) {
+            defer wg.Done()
+            time.Sleep(2 * time.Second)
+        }(i)
+    }
+
+    fmt.Println("بعد از ساخت - Goroutineها:", runtime.NumGoroutine())
+    wg.Wait()
+    fmt.Println("بعد از اتمام - Goroutineها:", runtime.NumGoroutine())
+}
+</code></pre>
+</figure>
+<p>تابع <code>runtime.NumGoroutine()</code> تعداد <bdi dir="ltr">Goroutine</bdi>‌های فعال را برمی‌گرداند. این تابع برای نظارت بر سلامت برنامه و تشخیص نشت <bdi dir="ltr">Goroutine</bdi> بسیار مفید است. اگر تعداد <bdi dir="ltr">Goroutine</bdi>‌ها به‌صورت مداوم افزایش یابد و هرگز کاهش نیابد، نشت رخ داده است.</p>
+
+<table class="comparison-table" dir="rtl">
+<thead>
+<tr><th>ویژگی</th><th>PHP</th><th>Go</th></tr>
+</thead>
+<tbody>
+<tr><td>مدل همزمانی</td><td>فرآیند/Thread جداگانه برای هر درخواست</td><td><bdi dir="ltr">Goroutine</bdi> سبک‌وزن (~2KB) درون یک فرآیند</td></tr>
+<tr><td>ابزار همزمانی</td><td><bdi dir="ltr">Fiber</bdi> ، <bdi dir="ltr">Swoole</bdi> ، <bdi dir="ltr">parallel</bdi> (خارجی)</td><td><code>go</code> کلمه کلیدی داخلی</td></tr>
+<tr><td>ارتباط بین <bdi dir="ltr">Task</bdi>‌ها</td><td><bdi dir="ltr">Redis</bdi> ، دیتابیس، فایل</td><td><bdi dir="ltr">Channel</bdi> (داخلی و نوع‌دار)</td></tr>
+<tr><td>مصرف حافظه هر واحد</td><td>~۸ مگابایت به ازای هر فرآیند</td><td>~۲ کیلوبایت به ازای هر <bdi dir="ltr">Goroutine</bdi> (رشد خودکار)</td></tr>
+<tr><td>مدیریت همزمانی</td><td>وابسته به وب‌سرور (<bdi dir="ltr">PHP-FPM</bdi>)</td><td><bdi dir="ltr">Runtime</bdi> داخلی Go (<bdi dir="ltr">GMP Scheduler</bdi>)</td></tr>
+<tr><td>مقیاس‌پذیری</td><td>محدود به تعداد فرآیندها</td><td>صدها هزار <bdi dir="ltr">Goroutine</bdi></td></tr>
+<tr><td><bdi dir="ltr">Scheduling</bdi></td><td>سیستم‌عامل (<bdi dir="ltr">O(1)</bdi> یا <bdi dir="ltr">CFS</bdi>)</td><td><bdi dir="ltr">Go Runtime</bdi> (<bdi dir="ltr">M:N Scheduler</bdi>)</td></tr>
+</tbody>
+</table>
+
+
+    <h3 id="container-aware-gomaxprocs">تنظیم خودکار GOMAXPROCS در کانتینرها — Go 1.25</h3>
+    <p>
+        رفتار پیش‌فرض <code>GOMAXPROCS</code> در Go 1.25 تغییر مهمی کرده است. در نسخه‌های قبلی،
+        <code>GOMAXPROCS</code> به تعداد CPU‌های منطقی در زمان شروع (<code>runtime.NumCPU</code>)
+        تنظیم می‌شد. اما در محیط‌های کانتینری مانند Kubernetes، این رفتار مشکل‌ساز بود چون
+        کانتینر ممکن است محدودیت CPU کمتری نسبت به کل CPU‌های سیستم داشته باشد.
+    </p>
+    <p>
+        Go 1.25 دو تغییر مهم معرفی می‌کند:
+    </p>
+    <ul>
+        <li>در لینوکس، runtime اکنون محدودیت پهنای باند CPU گروه cgroup (cgroup CPU bandwidth limit) را در نظر می‌گیرد. اگر این محدودیت کمتر از تعداد CPU‌های منطقی باشد، <code>GOMAXPROCS</code> به حد پایین‌تر تنظیم می‌شود.</li>
+        <li>در تمام سیستم‌عامل‌ها، runtime به‌صورت دوره‌ای <code>GOMAXPROCS</code> را به‌روزرسانی می‌کند اگر تعداد CPU‌های منطقی یا محدودیت cgroup تغییر کند.</li>
+    </ul>
+    <figure class="code go" dir="ltr">
+        <pre><code class="language-go">// مثال: تأثیر GOMAXPROCS خودکار در کانتینر
+// با محدودیت CPU: 2 core در Kubernetes
+// قبل از Go 1.25: GOMAXPROCS = 64 (تعداد CPU‌های میزبان!)
+// بعد از Go 1.25: GOMAXPROCS = 2 (محدودیت cgroup)
+
+fmt.Println("GOMAXPROCS:", runtime.GOMAXPROCS(0))
+
+// غیرفعال کردن رفتار جدید (اگر نیاز بود)
+// تنظیم متغیر محیطی: GODEBUG=containermaxprocs=0</code></pre>
+    </figure>
+    <p>
+        هر دو رفتار جدید به‌طور خودکار غیرفعال می‌شوند اگر <code>GOMAXPROCS</code> به‌صورت دستی
+        تنظیم شده باشد. همچنین می‌توان آن‌ها را با تنظیمات GODEBUG (<code>containermaxprocs=0</code>
+        و <code>updatemaxprocs=0</code>) غیرفعال کرد.
+    </p>
+
+    <div class="case-study">
+        <div class="case-study-header">
+            <span class="case-study-badge">مطالعه موردی</span>
+            <span class="case-study-title">بهبود عملکرد Uber با GOMAXPROCS خودکار</span>
+        </div>
+        <p>
+            شرکت Uber در ارائه GopherCon 2023 توضیح داد که چگونه تنظیم نادرست GOMAXPROCS
+            در کانتینرهای Kubernetes منجر به کاهش ۴۰ درصدی عملکرد سرویس‌های Go شده بود.
+            سرویس‌هایی که روی گره‌های ۶۴ هسته‌ای اجرا می‌شدند اما فقط ۴ CPU محدودیت داشتند،
+            با ۶۴ نخ OS کار می‌کردند که باعث context switch شدید و کاهش عملکرد می‌شد.
+            این مشکل به این دلیل بود که Go runtime به‌طور پیش‌فرض <code>GOMAXPROCS</code> را
+            بر اساس تعداد هسته‌های فیزیکی ماشین تنظیم می‌کرد، نه محدودیت‌های کانتینر. نتیجه این
+            بود که Go سعی می‌کرد ۶۴ نخ همزمان اجرا کند در حالی که فقط ۴ هسته در دسترس بود و
+            این باعث افزایش شدید context switch و cache thrashing می‌شد.
+        </p>
+        <p>
+            با تنظیم صحیح <code>GOMAXPROCS</code>، عملکرد سرویس‌ها تا ۶۰ درصد بهبود یافت.
+            بسیاری از تیم‌ها قبل از این کشف، از ابزار <code>automaxprocs</code> استفاده می‌کردند
+            که یک بسته Go بود که <code>GOMAXPROCS</code> را با خواندن cgroup کانتینر تنظیم می‌کرد.
+            اما این بسته یک وابستگی اضافی بود و فراموش‌کردن آن در سرویس‌های جدید رایج بود.
+            این مشکل اکنون در Go 1.25 به‌طور خودکار حل شده است؛ runtime Go به‌طور پیش‌فرض
+            محدودیت‌های CPU کانتینر را می‌خواند و <code>GOMAXPROCS</code> را متناسب تنظیم می‌کند.
+            این تغییر ساده اما تأثیرگذار، یکی از مهم‌ترین بهبودهای عملکرد در اکوسیستم Go کانتینری بود.
+        </p>
+        <p class="case-study-source">
+            <span class="source-event">GopherCon 2023</span>
+            <span class="source-year">— سن‌دیگو، ۲۰۲۳</span>
+        </p>
+    </div>
+
+<h3 id="goroutine-lifecycle-diagram">نمودار وضعیت‌های چرخه‌ی حیات <bdi dir="ltr">Goroutine</bdi></h3>
+
+<p>همان‌طور که در بخش قبل دیدیم، هر <bdi dir="ltr">Goroutine</bdi> در طول اجرای خود از وضعیت‌های مختلفی عبور می‌کند. این نمودار وضعیت (<bdi dir="ltr">State Machine</bdi>) به‌صورت بصری نشان می‌دهد که یک <bdi dir="ltr">Goroutine</bdi> چگونه از وضعیت ایجاد تا مرگ طی می‌کند و چه عواملی باعث انتقال بین وضعیت‌ها می‌شوند. درک این چرخه برای دیباگ مشکلاتی مثل نشت <bdi dir="ltr">Goroutine</bdi> و <bdi dir="ltr">Deadlock</bdi> بسیار حیاتی است. هر فلش در نمودار نشان‌دهنده‌ی یک رویداد یا عملیاتی است که باعث تغییر وضعیت می‌شود و هر جعبه رنگی نمایانگر یک وضعیت مشخص در <bdi dir="ltr">Runtime</bdi> Go است.</p>
+
+<figure class="diagram" dir="ltr">
+<svg height="520" viewBox="0 0 780 520" width="780" xmlns="http://www.w3.org/2000/svg">
+<rect fill="#fafafa" height="520" rx="8" width="780" x="0" y="0"></rect>
+<defs>
+<marker id="aLC1" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#666" points="0 0,10 3.5,0 7"></polygon></marker>
+<marker id="aLC2" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#00ADD8" points="0 0,10 3.5,0 7"></polygon></marker>
+<marker id="aLC3" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#27ae60" points="0 0,10 3.5,0 7"></polygon></marker>
+<marker id="aLC4" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#e74c3c" points="0 0,10 3.5,0 7"></polygon></marker>
+<marker id="aLC5" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#f39c12" points="0 0,10 3.5,0 7"></polygon></marker>
+</defs>
+<text fill="#333" font-size="15" font-weight="bold" text-anchor="middle" x="390" y="25" direction="rtl" unicode-bidi="embed">نمودار وضعیت چرخه‌ی حیات <tspan direction="ltr" unicode-bidi="embed">Goroutine</tspan></text>
+
+<!-- Created (Gidle) -->
+<rect fill="#777BB4" height="50" opacity="0.15" rx="10" stroke="#777BB4" stroke-width="2" width="140" x="50" y="50"></rect>
+<text fill="#777BB4" font-size="13" font-weight="bold" text-anchor="middle" x="120" y="72" direction="ltr" unicode-bidi="embed">Created</text>
+<text fill="#777BB4" font-size="9" text-anchor="middle" x="120" y="90" direction="ltr" unicode-bidi="embed">_Gidle</text>
+
+<!-- Arrow: Created -> Runnable -->
+<line marker-end="url(#aLC1)" stroke="#666" stroke-width="2" x1="190" x2="250" y1="75" y2="75"></line>
+<text fill="#666" font-size="9" text-anchor="middle" x="220" y="68" direction="ltr" unicode-bidi="embed">go f()</text>
+
+<!-- Runnable -->
+<rect fill="#00ADD8" height="50" opacity="0.15" rx="10" stroke="#00ADD8" stroke-width="2" width="140" x="250" y="50"></rect>
+<text fill="#00ADD8" font-size="13" font-weight="bold" text-anchor="middle" x="320" y="72" direction="ltr" unicode-bidi="embed">Runnable</text>
+<text fill="#00ADD8" font-size="9" text-anchor="middle" x="320" y="90" direction="ltr" unicode-bidi="embed">_Grunnable</text>
+
+<!-- Arrow: Runnable -> Running -->
+<line marker-end="url(#aLC2)" stroke="#00ADD8" stroke-width="2" x1="390" x2="450" y2="75" y1="75"></line>
+<text fill="#00ADD8" font-size="8" text-anchor="middle" x="420" y="68" direction="rtl" unicode-bidi="embed">انتخاب توسط <tspan direction="ltr" unicode-bidi="embed">Scheduler</tspan></text>
+
+<!-- Running -->
+<rect fill="#27ae60" height="50" opacity="0.15" rx="10" stroke="#27ae60" stroke-width="2" width="140" x="450" y="50"></rect>
+<text fill="#27ae60" font-size="13" font-weight="bold" text-anchor="middle" x="520" y="72" direction="ltr" unicode-bidi="embed">Running</text>
+<text fill="#27ae60" font-size="9" text-anchor="middle" x="520" y="90" direction="ltr" unicode-bidi="embed">_Grunning</text>
+
+<!-- Arrow: Running -> Dead -->
+<line marker-end="url(#aLC4)" stroke="#e74c3c" stroke-width="2" x1="590" x2="650" y1="75" y2="75"></line>
+<text fill="#e74c3c" font-size="8" text-anchor="middle" x="620" y="68" direction="ltr" unicode-bidi="embed">return</text>
+
+<!-- Dead -->
+<rect fill="#e74c3c" height="50" opacity="0.12" rx="10" stroke="#e74c3c" stroke-width="2" width="120" x="650" y="50"></rect>
+<text fill="#e74c3c" font-size="13" font-weight="bold" text-anchor="middle" x="710" y="72" direction="ltr" unicode-bidi="embed">Dead</text>
+<text fill="#e74c3c" font-size="9" text-anchor="middle" x="710" y="90" direction="ltr" unicode-bidi="embed">_Gdead</text>
+
+<!-- Arrow: Running -> Blocked (down) -->
+<line marker-end="url(#aLC5)" stroke="#f39c12" stroke-width="2" x1="520" x2="520" y1="100" y2="170"></line>
+<text fill="#f39c12" font-size="9" text-anchor="end" x="510" y="130" direction="rtl" unicode-bidi="embed">انتشار روی <tspan direction="ltr" unicode-bidi="embed">Channel</tspan></text>
+<text fill="#f39c12" font-size="9" text-anchor="end" x="510" y="145" direction="rtl" unicode-bidi="embed">دریافت از <tspan direction="ltr" unicode-bidi="embed">Channel</tspan> خالی</text>
+<text fill="#f39c12" font-size="9" text-anchor="end" x="510" y="160" direction="ltr" unicode-bidi="embed">I/O wait / select / Timer</text>
+
+<!-- Blocked -->
+<rect fill="#f39c12" height="55" opacity="0.15" rx="10" stroke="#f39c12" stroke-width="2" width="180" x="430" y="170"></rect>
+<text fill="#f39c12" font-size="13" font-weight="bold" text-anchor="middle" x="520" y="192" direction="ltr" unicode-bidi="embed">Blocked</text>
+<text fill="#f39c12" font-size="9" text-anchor="middle" x="520" y="210" direction="ltr" unicode-bidi="embed">_Gwaiting</text>
+
+<!-- Arrow: Blocked -> Runnable (curved left) -->
+<path d="M 430 197 L 320 197 L 320 100" fill="none" marker-end="url(#aLC2)" stroke="#00ADD8" stroke-width="2"></path>
+<text fill="#00ADD8" font-size="8" text-anchor="end" x="425" y="220" direction="rtl" unicode-bidi="embed">بیدار شدن: داده رسید / <tspan direction="ltr" unicode-bidi="embed">I/O</tspan> تمام شد / <tspan direction="ltr" unicode-bidi="embed">Timer</tspan> سر رسید</text>
+
+<!-- Arrow: Running -> Runnable (preemption, curved down-left) -->
+<path d="M 450 90 L 370 90 L 370 140 L 320 140 L 320 100" fill="none" marker-end="url(#aLC2)" stroke="#00ADD8" stroke-width="1.5" stroke-dasharray="5,3"></path>
+<text fill="#00ADD8" font-size="8" text-anchor="middle" x="390" y="135" direction="ltr" unicode-bidi="embed">Preemption / Gosched</text>
+
+<!-- Syscall state -->
+<rect fill="#9b59b6" height="55" opacity="0.12" rx="10" stroke="#9b59b6" stroke-width="2" width="160" x="120" y="170"></rect>
+<text fill="#9b59b6" font-size="13" font-weight="bold" text-anchor="middle" x="200" y="192" direction="ltr" unicode-bidi="embed">Syscall</text>
+<text fill="#9b59b6" font-size="9" text-anchor="middle" x="200" y="210" direction="ltr" unicode-bidi="embed">_Gsyscall</text>
+
+<!-- Arrow: Running -> Syscall -->
+<path d="M 450 75 L 410 75 L 410 120 L 280 120 L 280 170" fill="none" marker-end="url(#aLC1)" stroke="#9b59b6" stroke-width="1.5"></path>
+<text fill="#9b59b6" font-size="8" text-anchor="middle" x="345" y="115" direction="ltr" unicode-bidi="embed">blocking syscall</text>
+
+<!-- Arrow: Syscall -> Runnable -->
+<path d="M 200 170 L 200 140 L 320 140 L 320 100" fill="none" marker-end="url(#aLC2)" stroke="#00ADD8" stroke-width="1.5"></path>
+<text fill="#00ADD8" font-size="8" text-anchor="middle" x="175" y="155" direction="ltr" unicode-bidi="embed">syscall returns</text>
+
+<!-- Info boxes section -->
+<rect fill="#f5f5f5" height="230" rx="8" stroke="#ddd" stroke-width="1" width="740" x="20" y="270"></rect>
+<text fill="#555" font-size="11" font-weight="bold" text-anchor="middle" x="390" y="290" direction="rtl" unicode-bidi="embed">اطلاعات هر وضعیت — چه اتفاقی می‌افتد؟</text>
+
+<!-- Created info -->
+<rect fill="#777BB4" height="40" opacity="0.08" rx="4" width="220" x="35" y="300"></rect>
+<text fill="#777BB4" font-size="9" font-weight="bold" text-anchor="middle" x="145" y="315" direction="ltr" unicode-bidi="embed">Created (_Gidle)</text>
+<text fill="#666" font-size="8" text-anchor="middle" x="145" y="330" direction="rtl" unicode-bidi="embed">ساختار <tspan direction="ltr" unicode-bidi="embed">runtime.g</tspan> تخصیص داده شده، هنوز در صف نیست</text>
+
+<!-- Runnable info -->
+<rect fill="#00ADD8" height="40" opacity="0.08" rx="4" width="220" x="270" y="300"></rect>
+<text fill="#00ADD8" font-size="9" font-weight="bold" text-anchor="middle" x="380" y="315" direction="ltr" unicode-bidi="embed">Runnable (_Grunnable)</text>
+<text fill="#666" font-size="8" text-anchor="middle" x="380" y="330" direction="rtl" unicode-bidi="embed">در صف محلی P یا صف سراسری — آماده اجرا</text>
+
+<!-- Running info -->
+<rect fill="#27ae60" height="40" opacity="0.08" rx="4" width="220" x="505" y="300"></rect>
+<text fill="#27ae60" font-size="9" font-weight="bold" text-anchor="middle" x="615" y="315" direction="ltr" unicode-bidi="embed">Running (_Grunning)</text>
+<text fill="#666" font-size="8" text-anchor="middle" x="615" y="330" direction="rtl" unicode-bidi="embed">در حال اجرا روی M/P — کد واقعی اجرا می‌شود</text>
+
+<!-- Blocked info -->
+<rect fill="#f39c12" height="40" opacity="0.08" rx="4" width="220" x="35" y="350"></rect>
+<text fill="#f39c12" font-size="9" font-weight="bold" text-anchor="middle" x="145" y="365" direction="ltr" unicode-bidi="embed">Blocked (_Gwaiting)</text>
+<text fill="#666" font-size="8" text-anchor="middle" x="145" y="380" direction="rtl" unicode-bidi="embed">منتظر Channel، I/O، Select، Timer یا GC</text>
+
+<!-- Syscall info -->
+<rect fill="#9b59b6" height="40" opacity="0.08" rx="4" width="220" x="270" y="350"></rect>
+<text fill="#9b59b6" font-size="9" font-weight="bold" text-anchor="middle" x="380" y="365" direction="ltr" unicode-bidi="embed">Syscall (_Gsyscall)</text>
+<text fill="#666" font-size="8" text-anchor="middle" x="380" y="380" direction="rtl" unicode-bidi="embed">فراخوانی سیستم‌عامل مسدودکننده — P جدا می‌شود</text>
+
+<!-- Dead info -->
+<rect fill="#e74c3c" height="40" opacity="0.08" rx="4" width="220" x="505" y="350"></rect>
+<text fill="#e74c3c" font-size="9" font-weight="bold" text-anchor="middle" x="615" y="365" direction="ltr" unicode-bidi="embed">Dead (_Gdead)</text>
+<text fill="#666" font-size="8" text-anchor="middle" x="615" y="380" direction="rtl" unicode-bidi="embed">تابع برگشت — ساختار بازیافت و دوباره استفاده می‌شود</text>
+
+<!-- Code example -->
+<rect fill="#fff" height="45" rx="4" stroke="#ddd" stroke-width="1" width="710" x="35" y="400"></rect>
+<text fill="#333" font-size="9" font-family="Fira Code, monospace" direction="ltr" unicode-bidi="embed" x="50" y="418">go f() → Created → Runnable → Running → ch&lt;-v → Blocked → Runnable → Running → return → Dead</text>
+<text fill="#888" font-size="8" text-anchor="middle" x="390" y="438" direction="rtl" unicode-bidi="embed">نمونه مسیر اجرا: ارسال روی کانال باعث مسدود شدن و سپس بیدار شدن می‌شود</text>
+
+<!-- Golden rule bar -->
+<rect fill="#00ADD8" height="30" rx="6" width="740" x="20" y="465"></rect>
+<text fill="#fff" font-size="11" font-weight="bold" text-anchor="middle" x="390" y="485" direction="rtl" unicode-bidi="embed">قانون طلایی: هر <tspan direction="ltr" unicode-bidi="embed">Goroutine</tspan> باید شرط خروج مشخصی داشته باشد — <tspan direction="ltr" unicode-bidi="embed">Goroutine</tspan> یتیم = نشت حافظه</text>
+</svg>
+<figcaption>شکل ۵-۴: نمودار وضعیت چرخه‌ی حیات <bdi dir="ltr">Goroutine</bdi> — انتقال بین وضعیت‌های <code>_Gidle</code> تا <code>_Gdead</code></figcaption>
+</figure>
+
+<h3 id="سناریوهای-عملیاتی-goroutine">سناریوهای عملیاتی <bdi dir="ltr">Goroutine</bdi></h3>
+
+<p>در پروژه‌های واقعی، <bdi dir="ltr">Goroutine</bdi>‌ها نقش‌های متنوعی ایفا می‌کنند. شناخت این الگوهای عملیاتی به شما کمک می‌کند در هر موقعیت تصمیم درستی درباره نحوه استفاده از همزمانی بگیرید. هر الگو مزایا و معایب خاص خود را دارد و انتخاب صحیح بین آن‌ها می‌تواند تفاوت بین یک سیستم مقیاس‌پذیر و یک سیستم شکننده باشد. در ادامه رایج‌ترین سناریوهای عملیاتی آشنا می‌شویم.</p>
+
+<ul>
+<li><strong>الگوی <bdi dir="ltr">HTTP Handler Per Request</bdi>:</strong> در سرورهای <bdi dir="ltr">HTTP</bdi> نوشته‌شده با Go (مثل <code>net/http</code>)، هر درخواست ورودی به‌صورت خودکار در یک <bdi dir="ltr">Goroutine</bdi> مجزا پردازش می‌شود. این مدل مشابه PHP-FPM است، اما با این تفاوت اساسی که هر درخواست تنها حدود ۲ کیلوبایت حافظه مصرف می‌کند نه ۸ مگابایت. به همین دلیل یک سرور Go می‌تواند ده‌ها هزار درخواست همزمان را بدون نیاز به تنظیم <bdi dir="ltr">Worker Pool</bdi> مدیریت کند. نکته مهم این است که باید مطمئن شوید هر <bdi dir="ltr">Handler</bdi> پس از ارسال پاسخ تمام شود و <bdi dir="ltr">Goroutine</bdi> یتیمی باقی نماند.</li>
+<li><strong>الگوی <bdi dir="ltr">Worker Goroutines</bdi> برای کارهای پس‌زمینه:</strong> بسیاری از برنامه‌ها نیاز به انجام کارهای غیرهمزمان دارند — مثلاً ارسال ایمیل، پردازش تصویر، یا نوشتن در دیتابیس. در این حالت مجموعه‌ای از <bdi dir="ltr">Worker Goroutine</bdi> ایجاد می‌کنید که از یک <bdi dir="ltr">Channel</bdi> کار دریافت می‌کنند. مزیت این الگو این است که تعداد <bdi dir="ltr">Worker</bdi>‌ها قابل کنترل است و از ایجاد تعداد بیش از حد <bdi dir="ltr">Goroutine</bdi> جلوگیری می‌شود. در PHP این کار معمولاً با صف‌هایی مثل Laravel Queue و Redis انجام می‌شود.</li>
+<li><strong>الگوی <bdi dir="ltr">Fan-out</bdi> برای فراخوانی‌های موازی <bdi dir="ltr">API</bdi>:</strong> وقتی نیاز دارید چند سرویس خارجی را همزمان فراخوانی کنید، برای هر فراخوانی یک <bdi dir="ltr">Goroutine</bdi> ایجاد می‌کنید (<bdi dir="ltr">Fan-out</bdi>) و نتایج را از طریق <bdi dir="ltr">Channel</bdi> جمع‌آوری می‌کنید (<bdi dir="ltr">Fan-in</bdi>). زمان کل اجرا برابر با طولانی‌ترین فراخوانی خواهد بود، نه مجموع همه. این الگو در میکروسرویس‌ها بسیار رایج است و تفاوت عملکرد چشمگیری ایجاد می‌کند.</li>
+<li><strong>الگوی <bdi dir="ltr">Pipeline</bdi> با مراحل به‌عنوان <bdi dir="ltr">Goroutine</bdi>:</strong> در پردازش داده‌ها می‌توان هر مرحله از خط لوله (<bdi dir="ltr">Pipeline</bdi>) را به یک <bdi dir="ltr">Goroutine</bdi> اختصاص داد. مثلاً مرحله خواندن داده، مرحله تبدیل، مرحله فیلتر و مرحله نوشتن خروجی هر کدام یک <bdi dir="ltr">Goroutine</bdi> مستقل هستند که از طریق <bdi dir="ltr">Channel</bdi> به هم متصل شده‌اند. این الگو شبیه <bdi dir="ltr">Unix Pipe</bdi> عمل می‌کند و مزیتش این است که هر مرحله می‌تواند با سرعت مستقل خود کار کند.</li>
+</ul>
+
+<div class="tip"><strong>نکته عملی — شرط خروج مشخص برای هر <bdi dir="ltr">Goroutine</bdi>:</strong> مهم‌ترین قاعده در کار با <bdi dir="ltr">Goroutine</bdi> این است: هر <bdi dir="ltr">Goroutine</bdi> باید شرط خروج مشخصی داشته باشد. بدون شرط خروج، <bdi dir="ltr">Goroutine</bdi> ممکن است برای همیشه اجرا شود و حافظه نشت کند (<bdi dir="ltr">Goroutine Leak</bdi>). بهترین روش این است که هر <bdi dir="ltr">Goroutine</bdi> یا از یک <bdi dir="ltr">Channel</bdi> سیگنال توقف دریافت کند، یا از <code>context.Context</code> برای لغو استفاده نماید، یا در یک حلقه <code>for</code> با شرط خروج واضح کار کند. هرگز <bdi dir="ltr">Goroutine</bdi>‌ای نسازید که نتوانید آن را متوقف کنید — این قانون ساده از بسیاری از باگ‌های تولیدی جلوگیری می‌کند.</div>
+
+
+</div>
+</main>
+</div>
+
+<!-- Footer -->
+<footer class="site-footer">
+<div class="footer-inner">
+<div class="footer-nav">
+<span class="nav-arrow">‹</span>
+<a href="05.00-chapter-5.html" data-prev>۵. همزمانی</a>
+</div>
+<div class="footer-toc">
+<a href="00.01-contents.html">فهرست</a>
+</div>
+<div class="footer-nav">
+<a href="05.02-channel.html" data-next>۵.۲ Channel</a>
+<span class="nav-arrow">›</span>
+</div>
+</div>
+</footer>
+
+<!-- Back to Top -->
+<button class="back-to-top" aria-label="بازگشت به بالا">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
+</button>
+
+<!-- Scripts -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/go.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/php.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/sql.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/yaml.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/json.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/dockerfile.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/xml.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/ini.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/plaintext.min.js"></script>
+<script src="assets/js/main.js"></script>
+</body>
+</html>

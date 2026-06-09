@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="fa">
+<head>
+<script>!function(){try{var t=localStorage.getItem('php2go-theme');if(t==='dark'||(!t&&window.matchMedia('(prefers-color-scheme:dark)').matches)){document.documentElement.setAttribute('data-theme','dark')}}catch(e){}}();</script>
+<meta charset="utf-8"/>
+<meta content="ie=edge" http-equiv="x-ua-compatible"/>
+<title>۵.۴ Context — PHP to Go</title>
+<meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet"/>
+<link href="assets/css/main.css" rel="stylesheet" type="text/css"/>
+<link href="assets/img/favicon.ico" rel="icon" type="image/x-icon"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" media="screen" class="hljs-light-theme" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css" media="not screen" class="hljs-dark-theme" rel="stylesheet"/>
+</head>
+<body>
+<!-- Progress Bar -->
+<div class="progress-bar"><div class="progress-bar__fill"></div></div>
+
+<!-- Header -->
+<header class="site-header">
+<div class="header-inner">
+<div class="header-left">
+<button class="header-btn sidebar-toggle" aria-label="فهرست">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+</button>
+<a href="00.00-front-matter.html" class="header-logo"><span class="logo-php">PHP</span> to <span class="logo-go">Go</span></a>
+<span class="header-crumbs">همزمانی › Context</span>
+</div>
+<div class="header-right">
+<nav class="header-nav">
+<span class="nav-arrow">‹</span>
+<a href="05.03-select.html"><span class="nav-label">۵.۳ Select</span></a>
+<a href="00.01-contents.html">فهرست</a>
+<a href="05.05-waitgroup.html"><span class="nav-label">۵.۵ WaitGroup</span></a>
+<span class="nav-arrow">›</span>
+</nav>
+<button class="header-btn search-toggle" aria-label="جستجو">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+</button>
+<button class="header-btn theme-toggle" aria-label="تغییر تم">
+<svg class="theme-icon-light" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+<svg class="theme-icon-dark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+</button>
+</div>
+</div>
+</header>
+
+<!-- Search Modal -->
+<div class="search-overlay">
+<div class="search-modal">
+<div class="search-input-wrap">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+<input type="text" class="search-input" placeholder="جستجو... (Ctrl+K)" dir="rtl"/>
+</div>
+<div class="search-results"></div>
+</div>
+</div>
+
+<!-- Layout -->
+<div class="site-layout">
+<!-- Sidebar -->
+<aside class="sidebar"></aside>
+<div class="sidebar-overlay"></div>
+
+<!-- Main Content -->
+<main class="content-area">
+<div class="content-wrap text">
+<div class="chapter">فصل ۵.۴</div>
+<div class="important"><strong>مهم:</strong> پکیج <code>context</code> یکی از ابزارهای کلیدی Go برای مدیریت درخواست‌ها، لغو عملیات و تعیین deadline است. در PHP مفهوم مشابهی وجود ندارد و مدیریت timeout معمولاً در سطح وب‌سرور انجام می‌شود. اما در Go باید صراحتاً از Context استفاده کنید.</div>
+<h2 id="context">Context</h2>
+<p>در نظر بگیرید یک سیستم پرداخت آنلاین دارید. کاربر روی دکمه پرداخت کلیک می‌کند و سرویس شما باید هم‌زمان چند کار از جمله ثبت تراکنش در دیتابیس، ارتباط با درگاه بانکی، ارسال ایمیل تأیید و نوتیفیکیشن به کاربر انجام دهد. اگر کاربر وسط کار مرورگر را بست یا ارتباط با درگاه بانکی بیش از ده ثانیه طول کشید احتمالا شما نمی‌خواهید منابع سیستم بیهوده مصرف شود. در Laravel معمولاً باید هر کدام از این بخش‌ها را جداگانه مدیریت کنید مثلاً Job مربوط به ایمیل را دستی کنسل کنید یا با ابزارهایی مثل Horizon وضعیت Workerها را بررسی کنید.</p>
+<p>در Go این مسئله با context.Context به‌صورت یکپارچه و داخلی حل می‌شود. شما یک Context با قابلیت لغو یا timeout تعریف می‌کنید و آن را به تمام Goroutine‌های مرتبط پاس می‌دهید. اگر یکی از شرایط رخ دهد مثلاً timeout ده ثانیه‌ای بگذرد یا کاربر ارتباطش را قطع کند همه Goroutineهای مرتبط با آن Context سیگنال cancellation را دریافت می‌کنند و عملیاتشان را متوقف می‌کنند. به این ترتیب ارسال ایمیل، تراکنش در دیتابیس یا هر عملیات جانبی دیگری نیمه‌کاره رها نمی‌شود و منابع آزاد می‌شوند.</p>
+<figure class="diagram" dir="ltr">
+<svg height="280" viewBox="0 0 700 280" width="700" xmlns="http://www.w3.org/2000/svg">
+<rect fill="#fafafa" height="280" rx="8" width="700" x="0" y="0"></rect>
+<defs>
+<marker id="aCtx" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#00ADD8" points="0 0,10 3.5,0 7"></polygon></marker>
+</defs>
+<text fill="#00ADD8" font-size="15" font-weight="bold" text-anchor="middle" x="350" y="25" direction="rtl" unicode-bidi="embed">سلسله‌مراتب <tspan direction="ltr" unicode-bidi="embed">Context</tspan></text>
+<!-- Background -->
+<rect fill="#00ADD8" height="55" opacity="0.08" rx="8" stroke="#00ADD8" stroke-width="2" width="640" x="30" y="50"></rect>
+<text fill="#333" font-size="13" text-anchor="middle" x="350" y="72" direction="ltr" unicode-bidi="embed">context.Background()</text>
+<text fill="#666" font-size="10" text-anchor="middle" x="350" y="92" direction="rtl" unicode-bidi="embed">ریشه‌ی <tspan direction="ltr" unicode-bidi="embed">Context</tspan> - نقطه شروع</text>
+<!-- WithCancel -->
+<line marker-end="url(#aCtx)" stroke="#00ADD8" stroke-width="1.5" x1="200" x2="120" y1="105" y2="140"></line>
+<rect fill="#e74c3c" height="45" opacity="0.1" rx="8" stroke="#e74c3c" stroke-width="2" width="180" x="30" y="140"></rect>
+<text fill="#333" font-size="12" text-anchor="middle" x="120" y="160" direction="ltr" unicode-bidi="embed">WithCancel</text>
+<text fill="#666" font-size="9" text-anchor="middle" x="120" y="176" direction="rtl" unicode-bidi="embed">لغو دستی با <tspan direction="ltr" unicode-bidi="embed">cancel()</tspan></text>
+<!-- WithTimeout -->
+<line marker-end="url(#aCtx)" stroke="#00ADD8" stroke-width="1.5" x1="350" x2="350" y1="105" y2="140"></line>
+<rect fill="#f39c12" height="45" opacity="0.1" rx="8" stroke="#f39c12" stroke-width="2" width="180" x="260" y="140"></rect>
+<text fill="#333" font-size="12" text-anchor="middle" x="350" y="160" direction="ltr" unicode-bidi="embed">WithTimeout</text>
+<text fill="#666" font-size="9" text-anchor="middle" x="350" y="176" direction="rtl" unicode-bidi="embed">لغو خودکار بعد از مدت زمان</text>
+<!-- WithDeadline -->
+<line marker-end="url(#aCtx)" stroke="#00ADD8" stroke-width="1.5" x1="500" x2="580" y1="105" y2="140"></line>
+<rect fill="#f39c12" height="45" opacity="0.1" rx="8" stroke="#f39c12" stroke-width="2" width="180" x="490" y="140"></rect>
+<text fill="#333" font-size="12" text-anchor="middle" x="580" y="160" direction="ltr" unicode-bidi="embed">WithDeadline</text>
+<text fill="#666" font-size="9" text-anchor="middle" x="580" y="176" direction="rtl" unicode-bidi="embed">لغو در زمان مشخص</text>
+<!-- Children -->
+<line stroke="#e74c3c" stroke-dasharray="4,3" stroke-width="1.2" x1="120" x2="120" y1="185" y2="210"></line>
+<rect fill="#27ae60" height="35" opacity="0.1" rx="6" stroke="#27ae60" stroke-width="1.5" width="160" x="40" y="210"></rect>
+<text fill="#333" font-size="10" text-anchor="middle" x="120" y="232" direction="ltr" unicode-bidi="embed">Goroutine A: ctx.Done()</text>
+<line stroke="#f39c12" stroke-dasharray="4,3" stroke-width="1.2" x1="350" x2="350" y1="185" y2="210"></line>
+<rect fill="#27ae60" height="35" opacity="0.1" rx="6" stroke="#27ae60" stroke-width="1.5" width="160" x="270" y="210"></rect>
+<text fill="#333" font-size="10" text-anchor="middle" x="350" y="232" direction="ltr" unicode-bidi="embed">Goroutine B: ctx.Done()</text>
+<line stroke="#f39c12" stroke-dasharray="4,3" stroke-width="1.2" x1="580" x2="580" y1="185" y2="210"></line>
+<rect fill="#27ae60" height="35" opacity="0.1" rx="6" stroke="#27ae60" stroke-width="1.5" width="160" x="500" y="210"></rect>
+<text fill="#333" font-size="10" text-anchor="middle" x="580" y="232" direction="ltr" unicode-bidi="embed">Goroutine C: ctx.Done()</text>
+<!-- Key -->
+<rect fill="#f5f5f5" height="20" rx="4" stroke="#ddd" stroke-width="1" width="500" x="100" y="255"></rect>
+<text fill="#555" font-size="10" text-anchor="middle" x="350" y="269" direction="rtl" unicode-bidi="embed">لغو والد → تمام فرزندان نیز لغو می‌شوند | هر <tspan direction="ltr" unicode-bidi="embed">Context</tspan> از والد خود مشتق شده</text>
+</svg>
+<figcaption>شکل ۵-۱۰: سلسله‌مراتب <bdi dir="ltr">Context</bdi> - هر <bdi dir="ltr">Context</bdi> فرزند از والد مشتق می‌شود</figcaption>
+</figure>
+<p>در واقع context.Context یک شیء immutable است که اطلاعاتی مانند deadline، cancellation signal و values را در خودش دارد. این شیء به عنوان پارامتری به توابع و Goroutine ها پاس داده می‌شود تا همه بتوانند یک نقطه کنترل مشترک برای لغو عملیات یا ارسال اطلاعات داشته باشند. </p>
+<div class="tip"><strong>جزئیات داخلی — ساختار درختی Context و انتشار لغو:</strong> Context‌ها در Go یک ساختار درختی تشکیل می‌دهند. هر Context فرزند (مثلاً ساخته‌شده با <code>WithCancel</code> یا <code>WithTimeout</code>) یک اشاره‌گر به Context والد خود دارد. وقتی <code dir="ltr">cancel()</code> فراخوانی می‌شود:
+<ul>
+<li>کانال <code>Done</code> بسته می‌شود (یک struct خالی ارسال می‌شود).</li>
+<li>تابع <code>cancel</code> به صورت بازگشتی تمام Context‌های فرزند را نیز لغو می‌کند.</li>
+<li>فرزند از لیست فرزندان والد حذف می‌شود (برای جلوگیری از نشت حافظه).</li>
+<li>اگر Context دارای <code>timer</code> باشد (مثل <code>WithDeadline</code> و <code>WithTimeout</code>)، تایمر متوقف می‌شود.</li>
+</ul>
+نکته مهم درباره <code>WithDeadline</code> و <code>WithTimeout</code>: این توابع یک goroutine داخلی timer راه‌اندازی می‌کنند که در زمان مشخص شده کانال <code>Done</code> را می‌بندد. اگر <code dir="ltr">cancel()</code> قبل از اتمام مهلت فراخوانی شود، این goroutine timer متوقف می‌شود. به همین دلیل فراخوانی <code dir="ltr">cancel()</code> حتی وقتی مهلت زمانی گذشته باشد ضروری است — در غیر این صورت goroutine timer تا زمان رسیدن به deadline باقی می‌ماند و باعث نشت goroutine می‌شود.
+</div>
+<h3 id="cancellation">Cancellation</h3>
+<p>لغو یا Cancellation یعنی بتوانیم یک عملیات در حال اجرا را قبل از این که به پایان طبیعی خودش برسد بدون این که لازم باشد کل برنامه را ببندیم متوقف کنیم. در سیستم‌های واقعی مثل صف پردازش ایمیل یا عملیات سنگین پایگاه داده خیلی وقت‌ها لازم می‌شود اجرای یک بخش خاص را متوقف کنیم چون دیگر نیازی به آن نیست یا کاربر درخواستش را لغو کرده است. در Go این کار به شکل خیلی تمیز با context.Context انجام می‌شود.</p>
+<p>در کد زیر با استفاده از context.WithCancel یک Context جدید می‌سازیم که قابلیت لغو دارد. این Context همراه با یک تابع cancel برگردانده می‌شود. هر وقت cancel صدا زده شود به همه Goroutineهایی که آن Context را دریافت کرده‌اند سیگنال لغو ارسال می‌شود.</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">ctx, cancel := context.WithCancel(context.Background())
+defer cancel()
+go func(ctx context.Context) {
+    for {
+        select {
+            case &lt;-ctx.Done():
+            fmt.Println("عملیات لغو شد")
+            return
+            default:
+            fmt.Println("در حال کار کردن...")
+            time.Sleep(500 * time.Millisecond)
+        }
+    }
+}(ctx)
+time.Sleep(2 * time.Second)
+cancel()
+</code></pre>
+</figure>
+<p>در این مثال یک Goroutine داریم که در یک حلقه بی‌نهایت اجرا می‌شود. اما در هر چرخه بررسی می‌کند که آیا سیگنال لغو رسیده یا نه وقتی <span dir="ltr">cancel()</span> در تابع اصلی صدا زده می‌شود کانال داخلی ctx.Done بسته می‌شود و Goroutine متوجه می‌شود که باید کارش را متوقف کند. به این ترتیب Goroutine به شکل کنترل‌شده و تمیز از بین می‌رود. نکته مهم این است که اگر این بررسی وجود نداشته باشد Goroutine تا بی‌نهایت ادامه می‌دهد و حتی بعد از این که دیگر به آن نیازی نداریم هم منابع سیستم را مصرف می‌کند. به همین دلیل Cancellation به ما کمک می‌کند هم از Goroutine leak جلوگیری کنیم و هم عملیات را هماهنگ و ایمن‌تر مدیریت کنیم.</p>
+<h3 id="مدیریت-timeout-و-deadline">مدیریت Timeout و Deadline</h3>
+<p>یکی از ویژگی‌های کلیدی Context این است که می‌تواند برای یک عملیات یک مهلت زمانی مشخص کند. این قابلیت در دو شکل وجود دارد <strong dir="ltr">Timeout</strong> که بعد از گذشت مدت زمان مشخص باعث لغو عملیات می‌شود و <strong dir="ltr">Deadline</strong> که یک زمان دقیق برای پایان عملیات تعیین می‌کند. این مکانیزم‌ها باعث می‌شوند عملیات طولانی یا گیرکرده به‌طور خودکار متوقف شوند و منابع سیستم بی‌جهت مصرف نشوند. مثال زیر نشان می‌دهد چگونه یک Timeout سه‌ثانیه‌ای تعریف می‌کنیم:
+</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+defer cancel()
+select {
+    case &lt;-time.After(5 * time.Second):
+    fmt.Println("عملیات کامل شد")
+    case &lt;-ctx.Done():
+    fmt.Println("تایم‌اوت اتفاق افتاد:", ctx.Err())
+}
+</code></pre>
+</figure>
+<p>در این حالت اگر عملیات بیشتر از سه ثانیه طول بکشد Context به صورت خودکار لغو می‌شود و <span dir="ltr">ctx.Done()</span> فعال خواهد شد. این مکانیزم برای کارهایی مثل درخواست‌های HTTP، کوئری‌های دیتابیس یا فراخوانی سرویس‌های خارجی بسیار ضروری است چون تضمین می‌کند که سیستم تا بی‌نهایت منتظر پاسخ نمی‌ماند.</p>
+<p>حال یک مثال کاربردی‌تر را در بستر وب بررسی کنیم. در Go هر درخواست HTTP به‌طور پیش‌فرض یک Context مختص به خودش دارد. اگر کاربر مرورگر را ببندد یا سرور Timeout تنظیم‌شده را رد کند این Context به صورت خودکار لغو می‌شود. با استفاده از آن می‌توانیم Goroutineهایی که برای پردازش درخواست راه‌اندازی کرده‌ایم را نیز هم‌زمان متوقف کنیم.
+</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">func handler(w http.ResponseWriter, r *http.Request) {
+    ctx := r.Context() // request-specific Context
+    dataCh := make(chan string)
+    go func() {
+        time.Sleep(5 * time.Second)
+        dataCh &lt;- "داده آماده است"
+    }()
+    select {
+        case data := &lt;-dataCh:
+        fmt.Fprintf(w, "داده: %s", data)
+        case &lt;-ctx.Done():
+        http.Error(w, "درخواست لغو شد یا تایم‌اوت", http.StatusRequestTimeout)
+    }
+}
+</code></pre>
+</figure>
+<p>در این مثال اگر کاربر زودتر ارتباط را قطع کند یا مهلت زمانی درخواست تمام شود Context به طور خودکار سیگنال لغو ارسال می‌کند. همین باعث می‌شود Goroutineهایی که برای این درخواست ساخته شده‌اند بیهوده ادامه ندهند و منابع سیستم آزاد شوند. این رویکرد یک تفاوت مهم با PHP و فریم‌ورک‌هایی مثل Laravel دارد. در Laravel مدیریت Timeout یا لغو عملیات معمولاً به ابزارهای خارجی مثل queue system یا middleware سپرده می‌شود و به صورت یکپارچه در خود زبان وجود ندارد. اما در Go این قابلیت بخشی از کتابخانه استاندارد است و با الگوی ساده و هماهنگ Context پیاده‌سازی می‌شود.</p>
+<h3 id="ترکیب-context-با-goroutine-و-channel">ترکیب Context با Goroutine و Channel</h3>
+<p>یکی از ویژگی‌های کلیدی Context درون خودش یک کانال به نام <span dir="ltr">Done()</span> دارد. این کانال نقش سیگنال هماهنگ‌کننده را بازی می‌کند و هر Goroutine ای که Context را دریافت کرده باشد می‌تواند با استفاده از یک select متوجه شود که عملیات باید متوقف شود یا همچنان ادامه پیدا کند. به همین دلیل Context ابزاری قدرتمند برای مدیریت کارهای هم‌زمان است زیرا به‌جای این که برای هر Goroutine مکانیزم لغو جداگانه‌ای طراحی کنیم کافی است همه آن‌ها را به یک Context مشترک متصل کنیم.</p>
+<p>به عنوان نمونه در کد زیر یک Goroutine کار تولید اعداد را انجام می‌دهد و نتیجه را از طریق کانال برای بخش اصلی برنامه ارسال می‌کند. در داخل حلقه با استفاده از select بررسی می‌شود که آیا سیگنال لغو از Context دریافت شده یا خیر اگر Context لغو شده باشد Goroutine بلافاصله متوقف می‌شود و منابع آن آزاد می‌شوند.</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">func doWork(ctx context.Context, ch chan&lt;- int) {
+    for i := 0; i &lt; 5; i++ {
+        select {
+            case &lt;-ctx.Done():
+            fmt.Println("لغو شد")
+            return
+            case ch &lt;- i:
+            time.Sleep(1 * time.Second)
+        }
+    }
+}
+</code></pre>
+</figure>
+<p>در تابع اصلی نیز یک Context با محدودیت زمانی سه ثانیه ساخته شده است. بنابراین حتی اگر حلقه کاری در doWork طولانی‌تر باشد بعد از سه ثانیه Context به صورت خودکار سیگنال لغو ارسال می‌کند و Goroutine متوقف می‌شود.</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">func main() {
+    ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+    defer cancel()
+    ch := make(chan int)
+    go doWork(ctx, ch)
+    for val := range ch {
+        fmt.Println("دریافت:", val)
+    }
+}
+</code></pre>
+</figure>
+<p>مزیت این مدل آن است که نیازی به ارسال دستور توقف از بیرون به Goroutine ها نداریم. Context همه‌چیز را هماهنگ می‌کند و تمام Goroutine هوایی که به آن متصل هستند به طور همزمان از سیگنال لغو مطلع می‌شوند. با این حال برای استفاده صحیح از Context چند اصل مهم وجود دارد:</p>
+<p>Context تنها باید برای مدیریت لغو، مهلت زمانی و نگهداری داده‌های سبک مثل شناسه کاربر استفاده شود و نه به عنوان جایگزینی برای پارامترهای معمولی.</p>
+<p>همیشه Context را به صورت پارامتر به توابع پاس بدهید و از global context پرهیز کنید.</p>
+<p>هر Goroutine باید به طور مرتب <span dir="ltr">ctx.Done()</span> را بررسی کند تا در زمان مناسب متوقف شود.</p>
+<p>بعد از ساخت Contextهای قابل لغو مانند WithCancel یا WithTimeout حتماً با استفاده از defer <span dir="ltr">cancel()</span> منابع آزاد کنید.</p>
+<p>ایجاد Contextهای غیرضروری یا عدم استفاده از <span dir="ltr">cancel()</span> می‌تواند باعث هدررفت منابع یا leak شود.</p>
+<p>به این ترتیب Context نه‌تنها هماهنگی لغو بین Goroutine ها را ساده می‌کند بلکه چارچوبی تمیز و ایمن برای مدیریت چرخه‌ی حیات عملیات هم‌زمان در Go فراهم می‌سازد.
+</p>
+<h2 id="context-در-درخواست‌های-http">Context در درخواست‌های HTTP</h2>
+<p>یکی از کاربردهای پرکاربرد Context، در handler‌های HTTP است. هر درخواست HTTP در Go به‌طور خودکار یک Context مختص به خود دارد که از طریق <code dir="ltr">r.Context()</code> قابل دسترسی است. این Context در حالت عادی با اتمام درخواست لغو می‌شود، اما می‌توانید آن را با Context‌های سفارشی (با timeout یا cancellation) جایگزین کنید.</p>
+<div class="note">
+<strong>نکته:</strong> در PHP هر درخواست HTTP در یک فرآیند جداگانه پردازش می‌شود و وقتی کاربر ارتباط را قطع کند، فرآیند به‌طور خودکار متوقف می‌شود. اما در Go یک سرور واحد هزاران درخواست را به‌صورت همزمان پردازش می‌کند. اگر کاربر مرورگر را ببندد، بدون Context، گوروتینِ پردازش‌کننده درخواست همچنان به کار خود ادامه می‌دهد و منابع مصرف می‌کند.
+</div>
+<h3 id="دسترسی-به-context-درخواست">دسترسی به Context درخواست</h3>
+<p>هر <code dir="ltr">http.Request</code> در Go یک فیلد داخلی از نوع <code dir="ltr">context.Context</code> دارد. با فراخوانی <code dir="ltr">r.Context()</code> می‌توانید به آن دسترسی پیدا کنید:</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">func handler(w http.ResponseWriter, r *http.Request) {
+    ctx := r.Context()
+
+    select {
+        case &lt;-time.After(5 * time.Second):
+        w.Write([]byte("عملیات کامل شد"))
+        case &lt;-ctx.Done():
+        // Client disconnected or timeout occurred
+        log.Println("درخواست لغو شد:", ctx.Err())
+    }
+}
+</code></pre>
+</figure>
+<p>وقتی کاربر مرورگر را ببندد یا دکمه توقف را بزند، <code dir="ltr">ctx.Done()</code> بلافاصله سیگنال می‌فرستد و پردازش اضافی متوقف می‌شود. در PHP این رفتار تا حدودی توسط وب‌سرور مدیریت می‌شود (تابع <code dir="ltr">connection_aborted()</code>) اما در Go باید صراحتاً از Context استفاده کنید.</p>
+<h3 id="تنظیم-مقادیر-در-context-درخواست">تنظیم مقادیر در Context درخواست</h3>
+<p>یکی از الگوهای رایج در اپلیکیشن‌های وب، ذخیره اطلاعات درخواست مثل شناسه کاربر، role و request ID در Context است. این کار با <code dir="ltr">context.WithValue</code> انجام می‌شود:</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">// Typed keys to prevent collision
+type contextKey string
+
+const (
+userIDKey contextKey = "userID"
+userRoleKey contextKey = "userRole"
+requestIDKey contextKey = "requestID"
+)
+
+// Middleware to add authentication info to Context
+func authMiddleware(next http.Handler) http.Handler {
+    return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+        // Extract token from header
+        token := r.Header.Get("Authorization")
+        userID, role := verifyToken(token)
+
+        // Store in request Context
+        ctx := context.WithValue(r.Context(), userIDKey, userID)
+        ctx = context.WithValue(ctx, userRoleKey, role)
+
+        // Send request with new Context
+        next.ServeHTTP(w, r.WithContext(ctx))
+    })
+}
+
+// Read values from Context in handler
+func protectedHandler(w http.ResponseWriter, r *http.Request) {
+    ctx := r.Context()
+
+    userID, ok := ctx.Value(userIDKey).(int)
+    if !ok {
+        http.Error(w, "احراز هویت نشده", http.StatusUnauthorized)
+        return
+    }
+
+    role, _ := ctx.Value(userRoleKey).(string)
+    fmt.Fprintf(w, "کاربر %d با نقش %s", userID, role)
+}
+</code></pre>
+</figure>
+<div class="warning">
+<strong>هشدار:</strong> از <code dir="ltr">context.WithValue</code> فقط برای داده‌های scoped به درخواست (مثل شناسه کاربر، توکن، request ID) استفاده کنید. هرگز از آن برای پاس دادن پارامترهای عملیاتی (مثل تنظیمات دیتابیس، logger) استفاده نکنید — این مقادیر باید به‌عنوان پارامتر معمولی به توابع پاس داده شوند.
+</div>
+<div class="note"><strong>جزئیات داخلی — context.Value و ساختار درختی:</strong> وقتی از <code dir="ltr">context.WithValue(parent, key, value)</code> استفاده می‌کنید، یک Context جدید با ساختار <code>valueCtx</code> ساخته می‌شود که شامل اشاره‌گری به والد، کلید و مقدار است. وقتی <code dir="ltr">ctx.Value(key)</code> فراخوانی می‌شود، جستجو از Context فعلی شروع شده و به صورت بازگشتی در زنجیره‌ی والدین به بالا حرکت می‌کند تا کلید پیدا شود. این یعنی:
+<ul>
+<li>هزینه‌ی <code>Value</code> متناسب با عمق زنجیره Context است.</li>
+<li>کلیدها از نوع <code>interface{}</code> هستند و مقایسه با <code>==</code> انجام می‌شود، بنابراین همیشه از کلیدهای نوع‌دار سفارشی استفاده کنید (هرگز از <code>string</code> مستقیم استفاده نکنید تا از تداخل جلوگیری شود).</li>
+<li>چون Context‌ها immutable هستند، مقدار یک کلید نمی‌تواند تغییر کند — فقط می‌توان با ساخت Context فرزند جدید مقدار جدیدی برای همان کلید تعریف کرد (سایه‌اندازی یا shadowing).</li>
+</ul>
+</div>
+<h3 id="احراز-هویت-و-مجوز-با-context">احراز هویت و مجوز با Context</h3>
+<p>ترکیب Middleware و Context یک الگوی قدرتمند برای احراز هویت و کنترل دسترسی است. در PHP فریم‌ورک‌هایی مثل Laravel از Middleware و سیستم Guard استفاده می‌کنند. در Go نیز می‌توانیم الگوی مشابهی را با Context پیاده‌سازی کنیم:</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">// Middleware checking user role
+func requireRole(role string, next http.Handler) http.Handler {
+    return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+        ctx := r.Context()
+        userRole, _ := ctx.Value(userRoleKey).(string)
+
+        if userRole != role {
+            http.Error(w, "دسترسی غیرمجاز", http.StatusForbidden)
+            return
+        }
+
+        next.ServeHTTP(w, r)
+    })
+}
+
+// Middleware chain
+func main() {
+    mux := http.NewServeMux()
+    mux.HandleFunc("/admin", adminHandler)
+    mux.HandleFunc("/profile", profileHandler)
+
+    // Apply middlewares in order
+    handler := authMiddleware(requireRole("admin", mux))
+
+    log.Fatal(http.ListenAndServe(":8080", handler))
+}
+</code></pre>
+</figure>
+<table class="comparison-table" dir="rtl">
+<thead>
+<tr><th>ویژگی</th><th>Laravel (PHP)</th><th>Go با Context</th></tr>
+</thead>
+<tbody>
+<tr><td>ذخیره اطلاعات کاربر</td><td dir="ltr"><code dir="ltr">Auth::user()</code> (Facade)</td><td dir="ltr"><code dir="ltr">ctx.Value(userIDKey)</code></td></tr>
+<tr><td>Middleware احراز هویت</td><td>کلاس Middleware با <code>$<span dir="ltr">next($request)</span></code></td><td>تابع بسته‌شونده با <code><span dir="ltr">next.ServeHTTP()</span></code></td></tr>
+<tr><td>لغو درخواست</td><td><code><span dir="ltr">connection_aborted()</span></code> (محدود)</td><td><code><span dir="ltr">ctx.Done()</span></code> (کامل)</td></tr>
+<tr><td>تعیین timeout</td><td><code><span dir="ltr">set_time_limit()</span></code> (فرآیند کلی)</td><td><code><span dir="ltr">context.WithTimeout()</span></code> (هر درخواست مستقل)</td></tr>
+<tr><td dir="ltr">Request ID</td><td>پکیج‌های third-party</td><td dir="ltr"><code dir="ltr">context.WithValue()</code> + Middleware</td></tr>
+</tbody>
+</table>
+<h3 id="لغو-درخواست‌های-طولانی-با-context">لغو درخواست‌های طولانی با Context</h3>
+
+<figure class="diagram" dir="ltr">
+<svg width="700" height="240" viewBox="0 0 700 240" xmlns="http://www.w3.org/2000/svg">
+<rect fill="#fafafa" height="240" rx="8" width="700" x="0" y="0"></rect>
+<defs>
+<marker id="aCn1" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#e74c3c" points="0 0,10 3.5,0 7"></polygon></marker>
+<marker id="aCn2" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#00ADD8" points="0 0,10 3.5,0 7"></polygon></marker>
+</defs>
+<text fill="#e74c3c" font-size="15" font-weight="bold" text-anchor="middle" x="350" y="25" direction="rtl" unicode-bidi="embed">انتشار لغو از والد به فرزندان</text>
+<!-- Parent -->
+<rect fill="#e74c3c" height="45" opacity="0.12" rx="8" stroke="#e74c3c" stroke-width="2" width="160" x="270" y="45"></rect>
+<text fill="#333" font-size="12" text-anchor="middle" x="350" y="68" direction="ltr" unicode-bidi="embed">cancel()</text>
+<text fill="#e74c3c" font-size="10" text-anchor="middle" x="350" y="82" direction="rtl" unicode-bidi="embed">والد لغو می‌شود</text>
+<!-- Arrows down -->
+<line marker-end="url(#aCn1)" stroke="#e74c3c" stroke-width="2" x1="280" x2="130" y1="90" y2="130"></line>
+<line marker-end="url(#aCn1)" stroke="#e74c3c" stroke-width="2" x1="350" x2="350" y1="90" y2="130"></line>
+<line marker-end="url(#aCn1)" stroke="#e74c3c" stroke-width="2" x1="420" x2="570" y1="90" y2="130"></line>
+<!-- Children -->
+<rect fill="#00ADD8" height="45" opacity="0.12" rx="8" stroke="#00ADD8" stroke-width="2" width="150" x="40" y="130"></rect>
+<text fill="#333" font-size="11" text-anchor="middle" x="115" y="150" direction="ltr" unicode-bidi="embed">ctx.Done() ← A</text>
+<text fill="#00ADD8" font-size="9" text-anchor="middle" x="115" y="166" direction="rtl" unicode-bidi="embed">گوریوتین A متوقف</text>
+<rect fill="#00ADD8" height="45" opacity="0.12" rx="8" stroke="#00ADD8" stroke-width="2" width="150" x="275" y="130"></rect>
+<text fill="#333" font-size="11" text-anchor="middle" x="350" y="150" direction="ltr" unicode-bidi="embed">ctx.Done() ← B</text>
+<text fill="#00ADD8" font-size="9" text-anchor="middle" x="350" y="166" direction="rtl" unicode-bidi="embed">گوریوتین B متوقف</text>
+<rect fill="#00ADD8" height="45" opacity="0.12" rx="8" stroke="#00ADD8" stroke-width="2" width="150" x="510" y="130"></rect>
+<text fill="#333" font-size="11" text-anchor="middle" x="585" y="150" direction="ltr" unicode-bidi="embed">ctx.Done() ← C</text>
+<text fill="#00ADD8" font-size="9" text-anchor="middle" x="585" y="166" direction="rtl" unicode-bidi="embed">گوریوتین C متوقف</text>
+<!-- Result -->
+<rect fill="#27ae60" height="35" opacity="0.12" rx="8" stroke="#27ae60" stroke-width="2" width="500" x="100" y="195"></rect>
+<text fill="#27ae60" font-size="11" text-anchor="middle" x="350" y="217" direction="rtl" unicode-bidi="embed">تمام فرزندان سیگنال لغو را دریافت می‌کنند → منابع آزاد می‌شوند</text>
+</svg>
+<figcaption dir="rtl">شکل ۵-۱۰-ب: انتشار لغو — فراخوانی <bdi dir="ltr">cancel()</bdi> والد، تمام فرزندان متوقف می‌شوند</figcaption>
+</figure>
+
+
+<p>وقتی درخواستی شامل عملیات سنگین مثل کوئری دیتابیس، فراخوانی API خارجی یا پردازش فایل است، باید حتماً Context را به تمام توابع فرعی پاس بدهید تا در صورت لغو درخواست عملیات اضافی متوقف شود:</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">func searchHandler(w http.ResponseWriter, r *http.Request) {
+    ctx := r.Context()
+
+    // Set maximum deadline of 10 seconds for entire operation
+    ctx, cancel := context.WithTimeout(ctx, 10*time.Second)
+    defer cancel()
+
+    // Pass Context to all sub-operations
+    user, err := fetchUser(ctx, userID)
+    if err != nil {
+        if ctx.Err() == context.DeadlineExceeded {
+            http.Error(w, "مهلت زمانی تمام شد", http.StatusGatewayTimeout)
+            return
+        }
+        http.Error(w, err.Error(), http.StatusInternalServerError)
+        return
+    }
+
+    orders, err := fetchOrders(ctx, user.ID)
+    if err != nil {
+        if ctx.Err() == context.Canceled {
+            log.Println("درخواست توسط کاربر لغو شد")
+            return
+        }
+        http.Error(w, err.Error(), http.StatusInternalServerError)
+        return
+    }
+
+    json.NewEncoder(w).Encode(map[string]interface{}{
+        "user": user,
+        "orders": orders,
+    })
+}
+
+// Sub-functions receive Context
+func fetchUser(ctx context.Context, id int) (*User, error) {
+    // Simulate database query with cancellation support
+    query := "SELECT * FROM users WHERE id = $1"
+    row := db.QueryRowContext(ctx, query, id)
+    // ...
+}
+
+func fetchOrders(ctx context.Context, userID int) ([]Order, error) {
+    // Simulate external API request with cancellation support
+    req, _ := http.NewRequestWithContext(ctx, "GET", apiURL, nil)
+    resp, err := http.DefaultClient.Do(req)
+    // ...
+}
+</code></pre>
+</figure>
+<div class="important">
+<strong>نکته کلیدی:</strong> تمام توابع کتابخانه استاندارد Go که عملیات I/O انجام می‌دهند (مثل <code dir="ltr">db.QueryContext</code> ، <code dir="ltr">http.NewRequestWithContext</code> ، <code dir="ltr">exec.CommandContext</code>) از Context پشتیبانی می‌کنند. همیشه نسخه <code>Context</code>‌دار این توابع را استفاده کنید تا قابلیت لغو عملیات را داشته باشید.
+</div>
+
+<h3 id="context-در-طراحی-api">Context در طراحی API</h3>
+<p>در Go قرارداد این است که <code>context.Context</code> همیشه اولین پارامتر تابع باشد و نام آن <code>ctx</code> باشد. این قرارداد در تمام کتابخانه‌های استاندارد و پروژه‌های متن‌باز رعایت می‌شود:</p>
+
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">// Correct — right: ctx as first parameter
+func FetchUser(ctx context.Context, id int) (*User, error)
+
+// Wrong — incorrect: ctx elsewhere
+func FetchUser(id int, ctx context.Context) (*User, error)
+</code></pre>
+</figure>
+
+<h3 id="propagation-value-در-context">انتقال مقادیر در Context — بهترین شیوه‌ها</h3>
+<p>هرچند <code>context.WithValue</code> ابزاری مفید است، سوءاستفاده از آن یک <bdi dir="ltr">Anti-pattern</bdi> شناخته‌شده است. مقادیر ذخیره‌شده در <bdi dir="ltr">Context</bdi> از نوع <code>interface{}</code> هستند و امنیت نوع (<bdi dir="ltr">Type Safety</bdi>) ندارند. بهترین شیوه‌ها:</p>
+<p><strong>۱. همیشه از کلیدهای نوع‌دار سفارشی استفاده کنید:</strong></p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">// Correct — right: custom typed key
+type contextKey string
+const requestIDKey contextKey = "requestID"
+
+ctx := context.WithValue(parent, requestIDKey, "abc-123")
+id, ok := ctx.Value(requestIDKey).(string)
+
+// Wrong — incorrect: string key — risk of collision
+ctx := context.WithValue(parent, "requestID", "abc-123")
+</code></pre>
+</figure>
+<p><strong>۲. فقط داده‌های scoped به درخواست ذخیره کنید:</strong> شناسه درخواست، اطلاعات احراز هویت، و توکن‌ها مناسب هستند. اما تنظیمات دیتابیس، <bdi dir="ltr">Logger</bdi> و وابستگی‌ها نباید در <bdi dir="ltr">Context</bdi> قرار گیرند.</p>
+<p><strong>۳. هرگز مقادیر ضروری عملیات را در Context نگذارید:</strong> اگر تابعی بدون مقدار خاصی در <bdi dir="ltr">Context</bdi> کار نمی‌کند، آن مقدار باید پارامتر معمولی تابع باشد.</p>
+
+<h3 id="graceful-shutdown-با-context">Graceful Shutdown سرور HTTP با Context</h3>
+<p>یکی از کاربردهای کلیدی <bdi dir="ltr">Context</bdi> خاموش کردن کنترل‌شده‌ی سرور <bdi dir="ltr">HTTP</bdi> است. وقتی سیگنال <bdi dir="ltr">SIGTERM</bdi> به برنامه ارسال می‌شود، باید تمام درخواست‌های در حال پردازش کامل شوند و سپس سرور بسته شود:</p>
+
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">func main() {
+    mux := http.NewServeMux()
+    mux.HandleFunc("/", handler)
+
+    srv := &amp;http.Server{
+        Addr: ":8080",
+        Handler: mux,
+    }
+
+    // Start server in goroutine
+    go func() {
+        if err := srv.ListenAndServe(); err != http.ErrServerClosed {
+            log.Fatalf("خطای سرور: %v", err)
+        }
+    }()
+
+    // Wait for stop signal
+    quit := make(chan os.Signal, 1)
+    signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
+    &lt;-quit
+    log.Println("در حال خاموش کردن سرور...")
+
+    // Graceful shutdown with 30 second timeout
+    ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+    defer cancel()
+
+    if err := srv.Shutdown(ctx); err != nil {
+        log.Fatalf("خطا در خاموش کردن: %v", err)
+    }
+    log.Println("سرور با موفقیت خاموش شد")
+}
+</code></pre>
+</figure>
+<p>متد <code>srv.Shutdown(ctx)</code> سرور را بدون پذیرش درخواست جدید خاموش می‌کند، اما تمام درخواست‌های در حال پردازش اجازه می‌یابند تا کامل شوند. اگر پس از ۳۰ ثانیه هنوز درخواستی باقی بماند، <bdi dir="ltr">Context</bdi> لغو می‌شود و سرور اجباری بسته می‌شود.</p>
+
+    <h3 id="context-without-cancel">تابع context.WithoutCancel — Go 1.24</h3>
+    <p>
+        تابع جدید <code>context.WithoutCancel</code> یک context جدید برمی‌گرداند که از لغو
+        context والد تأثیر نمی‌پذیرد. این تابع زمانی مفید است که بخواهید عملیاتی را حتی پس
+        از لغو درخواست اصلی ادامه دهید، مانند ثبت لاگ، ارسال متریک، یا پاکسازی منابع:
+    </p>
+    <figure class="code go" dir="ltr">
+        <pre><code class="language-go">func handler(w http.ResponseWriter, r *http.Request) {
+    ctx := r.Context()
+
+    // ادامه عملیات ثبت لاگ حتی بعد از لغو درخواست
+    bgCtx := context.WithoutCancel(ctx)
+    go func() {
+        // این عملیات لغو نمیشود وقتی درخواست لغو میشود
+        logRequest(bgCtx, r)
+        sendMetrics(bgCtx, r)
+    }()
+
+    // پردازش اصلی درخواست
+    processRequest(ctx)
+}</code></pre>
+    </figure>
+
+    <h3 id="context-with-deadline-cause">توابع WithDeadlineCause و WithTimeoutCause — Go 1.24</h3>
+    <p>
+        توابع جدید <code>context.WithDeadlineCause</code> و <code>context.WithTimeoutCause</code>
+        به شما اجازه می‌دهند علت لغو context را مشخص کنید. این علت می‌تواند با تابع
+        <code>context.Cause</code> بازیابی شود و به‌خصوص برای دیباگ و تشخیص دلیل لغو در
+        سیستم‌های پیچیده بسیار مفید است:
+    </p>
+    <figure class="code go" dir="ltr">
+        <pre><code class="language-go">var ErrDatabaseTimeout = errors.New("database query timeout")
+
+func queryWithTimeout(ctx context.Context) {
+    // ایجاد context با timeout و علت مشخص
+    ctx, cancel := context.WithTimeoutCause(ctx, 5*time.Second, ErrDatabaseTimeout)
+    defer cancel()
+
+    result, err := db.Query(ctx, "SELECT ...")
+    if err != nil {
+        if cause := context.Cause(ctx); cause != nil {
+            // علت دقیق لغو را بررسی کنید
+            if errors.Is(cause, ErrDatabaseTimeout) {
+                log.Error("query timed out", "cause", cause)
+            }
+        }
+    }
+}</code></pre>
+    </figure>
+
+    <h3 id="context-after-func">تابع context.AfterFunc — Go 1.24</h3>
+    <p>
+        تابع <code>context.AfterFunc</code> یک تابع را برای اجرا بعد از لغو context ثبت می‌کند.
+        این تابع جایگزین بهتری برای الگوی رایج راه‌اندازی goroutine با <code>select</code> است
+        و از نشتی goroutine جلوگیری می‌کند:
+    </p>
+    <figure class="code go" dir="ltr">
+        <pre><code class="language-go">func watchFile(ctx context.Context, path string) {
+    // اجرای پاکسازی بعد از لغو context
+    stop := context.AfterFunc(ctx, func() {
+        log.Println("context canceled, cleaning up file watch:", path)
+        cleanupWatch(path)
+    })
+    defer stop() // توقف پاکسازی اگر context هنوز لغو نشده
+
+    // نظارت روی فایل
+    for {
+        select {
+            case &lt;-ctx.Done():
+            return
+            case ev := &lt;-watcher.Events:
+            handleEvent(ev)
+        }
+    }
+}</code></pre>
+    </figure>
+
+    <div class="quote-box">
+        <p class="quote-text">
+            در مهندسی نرم‌افزار، تصمیمات معماری مهم‌ترین تصمیمات هستند. یک معماری خوب،
+            جزئیات پیاده‌سازی را نهفته نگه می‌دارد و به هر بخش اجازه می‌دهد بدون وابستگی
+            به جزئیات داخلی بخش‌های دیگر، مستقل تکامل یابد.
+        </p>
+        <p class="quote-source">
+            <span class="quote-author">Kent Beck</span>
+            <span class="quote-separator">—</span>
+            <span class="quote-book">کتاب Software Design: Taming Complexity</span>
+        </p>
+    </div>
+
+<h2 id="درخت-انتشار-لغو-context">درخت انتشار لغو <bdi dir="ltr">Context</bdi></h2>
+<p>یکی از مهم‌ترین ویژگی‌های <bdi dir="ltr">Context</bdi> در Go مدل درختی انتشار لغو است. وقتی یک <bdi dir="ltr">Context</bdi> والد لغو می‌شود، این سیگنال لغو به صورت خودکار و بازگشتی به تمام <bdi dir="ltr">Context</bdi>‌های فرزند و نوه منتشر می‌شود. این رفتار تضمین می‌کند که هیچ <bdi dir="ltr">Goroutine</bdi> ای پس از لغو درخواست اصلی به کار بیهوده ادامه ندهد و منابع سیستم از جمله اتصالات دیتابیس، <bdi dir="ltr">HTTP</bdi> و حافظه آزاد شوند. در PHP معمولاً هر درخواست مستقل است و لغو یک فرآیند تأثیری روی دیگران ندارد اما در Go که یک سرور هزاران درخواست را به صورت همزمان پردازش می‌کند این مکانیزم حیاتی است.</p>
+
+<figure class="diagram" dir="ltr">
+<svg height="520" viewBox="0 0 780 520" width="780" xmlns="http://www.w3.org/2000/svg">
+<rect fill="#fafafa" height="520" rx="8" width="780" x="0" y="0"></rect>
+<defs>
+<marker id="aTree1" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#00ADD8" points="0 0,10 3.5,0 7"></polygon></marker>
+<marker id="aTreeR" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#e74c3c" points="0 0,10 3.5,0 7"></polygon></marker>
+</defs>
+<!-- Title -->
+<text fill="#00ADD8" font-size="15" font-weight="bold" text-anchor="middle" x="390" y="25" direction="rtl" unicode-bidi="embed">درخت انتشار لغو <tspan direction="ltr" unicode-bidi="embed">Context</tspan> — از ریشه تا برگ‌ها</text>
+
+<!-- Level 0: Background root -->
+<rect fill="#00ADD8" height="50" opacity="0.1" rx="8" stroke="#00ADD8" stroke-width="2.5" width="220" x="280" y="42"></rect>
+<text fill="#00ADD8" font-size="13" font-weight="bold" text-anchor="middle" x="390" y="63" direction="ltr" unicode-bidi="embed">context.Background()</text>
+<text fill="#666" font-size="9" text-anchor="middle" x="390" y="82" direction="rtl" unicode-bidi="embed">ریشه — بدون <tspan direction="ltr" unicode-bidi="embed">deadline</tspan> ، بدون <tspan direction="ltr" unicode-bidi="embed">cancel</tspan></text>
+
+<!-- Lines from root to children -->
+<line marker-end="url(#aTree1)" stroke="#00ADD8" stroke-width="1.5" x1="320" x2="150" y1="92" y2="128"></line>
+<line marker-end="url(#aTree1)" stroke="#00ADD8" stroke-width="1.5" x1="390" x2="390" y1="92" y2="128"></line>
+<line marker-end="url(#aTree1)" stroke="#00ADD8" stroke-width="1.5" x1="460" x2="630" y1="92" y2="128"></line>
+
+<!-- Level 1: WithCancel -->
+<rect fill="#4CAF50" height="52" opacity="0.12" rx="8" stroke="#4CAF50" stroke-width="2" width="200" x="50" y="128"></rect>
+<text fill="#4CAF50" font-size="12" font-weight="bold" text-anchor="middle" x="150" y="150" direction="ltr" unicode-bidi="embed">WithCancel</text>
+<text fill="#555" font-size="9" text-anchor="middle" x="150" y="166" direction="rtl" unicode-bidi="embed">لغو دستی با <tspan direction="ltr" unicode-bidi="embed">cancel()</tspan></text>
+<text fill="#888" font-size="8" text-anchor="middle" x="150" y="178" direction="ltr" unicode-bidi="embed">props: cancel func</text>
+
+<!-- Level 1: WithTimeout -->
+<rect fill="#FF9800" height="52" opacity="0.12" rx="8" stroke="#FF9800" stroke-width="2" width="200" x="290" y="128"></rect>
+<text fill="#FF9800" font-size="12" font-weight="bold" text-anchor="middle" x="390" y="150" direction="ltr" unicode-bidi="embed">WithTimeout</text>
+<text fill="#555" font-size="9" text-anchor="middle" x="390" y="166" direction="rtl" unicode-bidi="embed">لغو خودکار بعد از مدت زمان</text>
+<text fill="#888" font-size="8" text-anchor="middle" x="390" y="178" direction="ltr" unicode-bidi="embed">props: timeout, cancel func</text>
+
+<!-- Level 1: WithDeadline -->
+<rect fill="#9C27B0" height="52" opacity="0.12" rx="8" stroke="#9C27B0" stroke-width="2" width="200" x="530" y="128"></rect>
+<text fill="#9C27B0" font-size="12" font-weight="bold" text-anchor="middle" x="630" y="150" direction="ltr" unicode-bidi="embed">WithDeadline</text>
+<text fill="#555" font-size="9" text-anchor="middle" x="630" y="166" direction="rtl" unicode-bidi="embed">لغو در زمان مشخص</text>
+<text fill="#888" font-size="8" text-anchor="middle" x="630" y="178" direction="ltr" unicode-bidi="embed">props: deadline time, cancel func</text>
+
+<!-- Lines from Level 1 to Level 2 (grandchildren) -->
+<line stroke="#4CAF50" stroke-width="1.2" stroke-dasharray="4,3" x1="120" x2="90" y1="180" y2="218"></line>
+<line stroke="#4CAF50" stroke-width="1.2" stroke-dasharray="4,3" x1="180" x2="220" y1="180" y2="218"></line>
+<line stroke="#FF9800" stroke-width="1.2" stroke-dasharray="4,3" x1="360" x2="350" y1="180" y2="218"></line>
+<line stroke="#FF9800" stroke-width="1.2" stroke-dasharray="4,3" x1="420" x2="480" y1="180" y2="218"></line>
+<line stroke="#9C27B0" stroke-width="1.2" stroke-dasharray="4,3" x1="600" x2="590" y1="180" y2="218"></line>
+<line stroke="#9C27B0" stroke-width="1.2" stroke-dasharray="4,3" x1="660" x2="700" y1="180" y2="218"></line>
+
+<!-- Level 2: Grandchildren -->
+<rect fill="#4CAF50" height="42" opacity="0.07" rx="6" stroke="#4CAF50" stroke-width="1.5" width="130" x="25" y="218"></rect>
+<text fill="#333" font-size="9" text-anchor="middle" x="90" y="236" direction="ltr" unicode-bidi="embed">WithTimeout(ctx, 5s)</text>
+<text fill="#666" font-size="8" text-anchor="middle" x="90" y="252" direction="rtl" unicode-bidi="embed">گوریوتین <tspan direction="ltr" unicode-bidi="embed">DB Query</tspan></text>
+
+<rect fill="#4CAF50" height="42" opacity="0.07" rx="6" stroke="#4CAF50" stroke-width="1.5" width="130" x="155" y="218"></rect>
+<text fill="#333" font-size="9" text-anchor="middle" x="220" y="236" direction="ltr" unicode-bidi="embed">WithCancel(ctx)</text>
+<text fill="#666" font-size="8" text-anchor="middle" x="220" y="252" direction="rtl" unicode-bidi="embed">گوریوتین <tspan direction="ltr" unicode-bidi="embed">Cache</tspan></text>
+
+<rect fill="#FF9800" height="42" opacity="0.07" rx="6" stroke="#FF9800" stroke-width="1.5" width="130" x="285" y="218"></rect>
+<text fill="#333" font-size="9" text-anchor="middle" x="350" y="236" direction="ltr" unicode-bidi="embed">WithCancel(ctx)</text>
+<text fill="#666" font-size="8" text-anchor="middle" x="350" y="252" direction="rtl" unicode-bidi="embed">گوریوتین <tspan direction="ltr" unicode-bidi="embed">API Call</tspan></text>
+
+<rect fill="#FF9800" height="42" opacity="0.07" rx="6" stroke="#FF9800" stroke-width="1.5" width="130" x="415" y="218"></rect>
+<text fill="#333" font-size="9" text-anchor="middle" x="480" y="236" direction="ltr" unicode-bidi="embed">WithTimeout(ctx, 2s)</text>
+<text fill="#666" font-size="8" text-anchor="middle" x="480" y="252" direction="rtl" unicode-bidi="embed">گوریوتین <tspan direction="ltr" unicode-bidi="embed">Email</tspan></text>
+
+<rect fill="#9C27B0" height="42" opacity="0.07" rx="6" stroke="#9C27B0" stroke-width="1.5" width="130" x="525" y="218"></rect>
+<text fill="#333" font-size="9" text-anchor="middle" x="590" y="236" direction="ltr" unicode-bidi="embed">WithCancel(ctx)</text>
+<text fill="#666" font-size="8" text-anchor="middle" x="590" y="252" direction="rtl" unicode-bidi="embed">گوریوتین <tspan direction="ltr" unicode-bidi="embed">Logger</tspan></text>
+
+<rect fill="#9C27B0" height="42" opacity="0.07" rx="6" stroke="#9C27B0" stroke-width="1.5" width="130" x="665" y="218"></rect>
+<text fill="#333" font-size="9" text-anchor="middle" x="730" y="236" direction="ltr" unicode-bidi="embed">WithTimeout(ctx, 3s)</text>
+<text fill="#666" font-size="8" text-anchor="middle" x="730" y="252" direction="rtl" unicode-bidi="embed">گوریوتین <tspan direction="ltr" unicode-bidi="embed">Notify</tspan></text>
+
+<!-- Cancel propagation section -->
+<text fill="#e74c3c" font-size="13" font-weight="bold" text-anchor="middle" x="390" y="290" direction="rtl" unicode-bidi="embed">فراخوانی <tspan direction="ltr" unicode-bidi="embed">cancel()</tspan> والد — انتشار لغو به پایین</text>
+
+<!-- Red X marks propagation from Level 0 -->
+<line marker-end="url(#aTreeR)" stroke="#e74c3c" stroke-width="2.5" x1="310" x2="150" y1="300" y2="330"></line>
+<line marker-end="url(#aTreeR)" stroke="#e74c3c" stroke-width="2.5" x1="390" x2="390" y1="300" y2="330"></line>
+<line marker-end="url(#aTreeR)" stroke="#e74c3c" stroke-width="2.5" x1="470" x2="630" y1="300" y2="330"></line>
+
+<!-- Level 1 cancelled -->
+<rect fill="#e74c3c" height="40" opacity="0.12" rx="8" stroke="#e74c3c" stroke-width="2" width="200" x="50" y="330"></rect>
+<text fill="#e74c3c" font-size="11" text-anchor="middle" x="150" y="348" direction="ltr" unicode-bidi="embed">WithCancel ✗</text>
+<text fill="#666" font-size="8" text-anchor="middle" x="150" y="362" direction="ltr" unicode-bidi="embed">Done() closed → Err() = Canceled</text>
+
+<rect fill="#e74c3c" height="40" opacity="0.12" rx="8" stroke="#e74c3c" stroke-width="2" width="200" x="290" y="330"></rect>
+<text fill="#e74c3c" font-size="11" text-anchor="middle" x="390" y="348" direction="ltr" unicode-bidi="embed">WithTimeout ✗</text>
+<text fill="#666" font-size="8" text-anchor="middle" x="390" y="362" direction="ltr" unicode-bidi="embed">Done() closed → Err() = Canceled</text>
+
+<rect fill="#e74c3c" height="40" opacity="0.12" rx="8" stroke="#e74c3c" stroke-width="2" width="200" x="530" y="330"></rect>
+<text fill="#e74c3c" font-size="11" text-anchor="middle" x="630" y="348" direction="ltr" unicode-bidi="embed">WithDeadline ✗</text>
+<text fill="#666" font-size="8" text-anchor="middle" x="630" y="362" direction="ltr" unicode-bidi="embed">Done() closed → Err() = Canceled</text>
+
+<!-- Red propagation to grandchildren -->
+<line stroke="#e74c3c" stroke-width="1.5" stroke-dasharray="3,3" x1="120" x2="90" y1="370" y2="398"></line>
+<line stroke="#e74c3c" stroke-width="1.5" stroke-dasharray="3,3" x1="180" x2="220" y1="370" y2="398"></line>
+<line stroke="#e74c3c" stroke-width="1.5" stroke-dasharray="3,3" x1="360" x2="350" y1="370" y2="398"></line>
+<line stroke="#e74c3c" stroke-width="1.5" stroke-dasharray="3,3" x1="420" x2="480" y1="370" y2="398"></line>
+<line stroke="#e74c3c" stroke-width="1.5" stroke-dasharray="3,3" x1="600" x2="590" y1="370" y2="398"></line>
+<line stroke="#e74c3c" stroke-width="1.5" stroke-dasharray="3,3" x1="660" x2="700" y1="370" y2="398"></line>
+
+<!-- Level 2 cancelled grandchildren -->
+<rect fill="#e74c3c" height="35" opacity="0.08" rx="6" stroke="#e74c3c" stroke-width="1.5" width="130" x="25" y="398"></rect>
+<text fill="#e74c3c" font-size="9" text-anchor="middle" x="90" y="416" direction="ltr" unicode-bidi="embed">DB Query ✗</text>
+<text fill="#888" font-size="8" text-anchor="middle" x="90" y="428" direction="ltr" unicode-bidi="embed">ctx.Done() → return</text>
+
+<rect fill="#e74c3c" height="35" opacity="0.08" rx="6" stroke="#e74c3c" stroke-width="1.5" width="130" x="155" y="398"></rect>
+<text fill="#e74c3c" font-size="9" text-anchor="middle" x="220" y="416" direction="ltr" unicode-bidi="embed">Cache ✗</text>
+<text fill="#888" font-size="8" text-anchor="middle" x="220" y="428" direction="ltr" unicode-bidi="embed">ctx.Done() → return</text>
+
+<rect fill="#e74c3c" height="35" opacity="0.08" rx="6" stroke="#e74c3c" stroke-width="1.5" width="130" x="285" y="398"></rect>
+<text fill="#e74c3c" font-size="9" text-anchor="middle" x="350" y="416" direction="ltr" unicode-bidi="embed">API Call ✗</text>
+<text fill="#888" font-size="8" text-anchor="middle" x="350" y="428" direction="ltr" unicode-bidi="embed">ctx.Done() → return</text>
+
+<rect fill="#e74c3c" height="35" opacity="0.08" rx="6" stroke="#e74c3c" stroke-width="1.5" width="130" x="415" y="398"></rect>
+<text fill="#e74c3c" font-size="9" text-anchor="middle" x="480" y="416" direction="ltr" unicode-bidi="embed">Email ✗</text>
+<text fill="#888" font-size="8" text-anchor="middle" x="480" y="428" direction="ltr" unicode-bidi="embed">ctx.Done() → return</text>
+
+<rect fill="#e74c3c" height="35" opacity="0.08" rx="6" stroke="#e74c3c" stroke-width="1.5" width="130" x="525" y="398"></rect>
+<text fill="#e74c3c" font-size="9" text-anchor="middle" x="590" y="416" direction="ltr" unicode-bidi="embed">Logger ✗</text>
+<text fill="#888" font-size="8" text-anchor="middle" x="590" y="428" direction="ltr" unicode-bidi="embed">ctx.Done() → return</text>
+
+<rect fill="#e74c3c" height="35" opacity="0.08" rx="6" stroke="#e74c3c" stroke-width="1.5" width="130" x="665" y="398"></rect>
+<text fill="#e74c3c" font-size="9" text-anchor="middle" x="730" y="416" direction="ltr" unicode-bidi="embed">Notify ✗</text>
+<text fill="#888" font-size="8" text-anchor="middle" x="730" y="428" direction="ltr" unicode-bidi="embed">ctx.Done() → return</text>
+
+<!-- Info box: Done() channel -->
+<rect fill="#fff8e1" height="32" rx="6" stroke="#FF9800" stroke-width="1" width="350" x="215" y="445"></rect>
+<text fill="#555" font-size="9" text-anchor="middle" x="390" y="463" direction="rtl" unicode-bidi="embed">کانال <tspan direction="ltr" unicode-bidi="embed">Done()</tspan> بسته می‌شود → <tspan direction="ltr" unicode-bidi="embed">&lt;-ctx.Done()</tspan> سیگنال دریافت می‌کند → <tspan direction="ltr" unicode-bidi="embed">Goroutine</tspan> متوقف می‌شود</text>
+
+<!-- Golden rule bar -->
+<rect fill="#00ADD8" height="28" rx="6" width="720" x="30" y="485"></rect>
+<text fill="#fff" font-size="11" font-weight="bold" text-anchor="middle" x="390" y="503" direction="rtl" unicode-bidi="embed">قاعده طلایی: لغو والد = لغو تمام فرزندان و نوادگان — سیگنال لغو فقط به پایین منتشر می‌شود، هرگز به بالا</text>
+</svg>
+<figcaption>شکل ۵-۱۰-ج: درخت انتشار لغو <bdi dir="ltr">Context</bdi> — وقتی <bdi dir="ltr">cancel()</bdi> روی والد فراخوانی می‌شود، تمام فرزندان و نوادگان متوقف می‌شوند</figcaption>
+</figure>
+
+<p>همان‌طور که در نمودار بالا مشاهده می‌کنید، ساختار درختی <bdi dir="ltr">Context</bdi> شبیه یک درخت خانوادگی است. ریشه <bdi dir="ltr">context.Background()</bdi> است و هر شاخه با توابع <bdi dir="ltr">WithCancel</bdi> ، <bdi dir="ltr">WithTimeout</bdi> یا <bdi dir="ltr">WithDeadline</bdi> ایجاد می‌شود. نکته کلیدی این است که لغو فقط به سمت پایین حرکت می‌کند یعنی اگر فرزندی لغو شود تأثیری روی والد یا خواهر و برادرهایش ندارد. اما اگر والدی لغو شود تمام نوادگان او نیز لغو می‌شوند. این رفتار دقیقاً شبیه لغو یک درخواست <bdi dir="ltr">HTTP</bdi> در سرور است وقتی کاربر مرورگر را می‌بندد تمام عملیات‌های فرعی مانند کوئری دیتابیس و فراخوانی <bdi dir="ltr">API</bdi> باید متوقف شوند.</p>
+
+<h3 id="سناریوهای-عملیاتی-context">سناریوهای عملیاتی <bdi dir="ltr">Context</bdi></h3>
+<p>در پروژه‌های واقعی، <bdi dir="ltr">Context</bdi> نقش حیاتی در مدیریت چرخه حیات عملیات‌ها دارد. در ادامه پنج سناریو عملیاتی رایج را بررسی می‌کنیم که هر کدام نشان‌دهنده کاربرد خاصی از قابلیت‌های <bdi dir="ltr">Context</bdi> هستند. این سناریوها به شما کمک می‌کنند درک عملی و ملموسی از نحوه استفاده از <bdi dir="ltr">Context</bdi> در موقعیت‌های مختلف داشته باشید و بتوانید در پروژه‌های خود تصمیمات درست‌تری بگیرید.</p>
+
+<ul>
+<li><strong>انتشار <tspan direction="ltr" unicode-bidi="embed">timeout</tspan> در درخواست <tspan direction="ltr" unicode-bidi="embed">HTTP</tspan>:</strong> وقتی یک درخواست <tspan direction="ltr" unicode-bidi="embed">HTTP</tspan> با مهلت زمانی مشخص وارد سرور می‌شود، <tspan direction="ltr" unicode-bidi="embed">Context</tspan> درخواست همراه با <tspan direction="ltr" unicode-bidi="embed">deadline</tspan> به تمام توابع فرعی پاس داده می‌شود. اگر کاربر مرورگر را ببندد یا <tspan direction="ltr" unicode-bidi="embed">timeout</tspan> تمام شود تمام کوئری‌های دیتابیس و فراخوانی‌های <tspan direction="ltr" unicode-bidi="embed">API</tspan> خارجی که از همان <tspan direction="ltr" unicode-bidi="embed">Context</tspan> استفاده می‌کنند به صورت خودکار لغو می‌شوند. این رویکرد در <tspan direction="ltr" unicode-bidi="embed">PHP</tspan> وجود ندارد و باید هر بخش را جداگانه مدیریت کنید.</li>
+<li><strong>لغو کوئری دیتابیس:</strong> توابع <tspan direction="ltr" unicode-bidi="embed">db.QueryContext()</tspan> و <tspan direction="ltr" unicode-bidi="embed">db.ExecContext()</tspan> از <tspan direction="ltr" unicode-bidi="embed">Context</tspan> پشتیبانی می‌کنند. وقتی <tspan direction="ltr" unicode-bidi="embed">Context</tspan> لغو شود درایور دیتابیس کوئری در حال اجرا را متوقف می‌کند و اتصال را آزاد می‌کند. بدون این مکانیزم یک کوئری سنگین می‌تواند اتصالات دیتابیس را اشغال کند و باعث از کار افتادن سرویس شود. در <tspan direction="ltr" unicode-bidi="embed">Laravel</tspan> معمولاً باید <tspan direction="ltr" unicode-bidi="embed">timeout</tspan> را در سطح دیتابیس تنظیم کنید نه در سطح اپلیکیشن.</li>
+<li><strong>خاموش کردن کنترل‌شده <tspan direction="ltr" unicode-bidi="embed">Worker Goroutine</tspan>‌ها:</strong> در سیستم‌هایی که <tspan direction="ltr" unicode-bidi="embed">Worker Pool</tspan> دارند وقتی سیگنال <tspan direction="ltr" unicode-bidi="embed">SIGTERM</tspan> دریافت می‌شود باید به تمام <tspan direction="ltr" unicode-bidi="embed">Worker</tspan>‌ها سیگنال توقف ارسال شود. با استفاده از <tspan direction="ltr" unicode-bidi="embed">signal.NotifyContext()</tspan> یک <tspan direction="ltr" unicode-bidi="embed">Context</tspan> ساخته می‌شود که با دریافت سیگنال سیستم‌عامل لغو می‌شود و تمام <tspan direction="ltr" unicode-bidi="embed">Worker</tspan>‌ها از طریق <tspan direction="ltr" unicode-bidi="embed">ctx.Done()</tspan> مطلع می‌شوند و کارشان را به صورت تمیز تمام می‌کنند.</li>
+<li><strong>زنجیره فراخوانی <tspan direction="ltr" unicode-bidi="embed">API</tspan> با بودجه <tspan direction="ltr" unicode-bidi="embed">deadline</tspan>:</strong> وقتی چند سرویس به صورت زنجیره‌ای فراخوانی می‌شوند، هر سرویس باید بخشی از مهلت زمانی کل را مصرف کند. مثلاً اگر مهلت کل ده ثانیه است و سرویس اول سه ثانیه طول کشید سرویس دوم فقط هفت ثانیه فرصت دارد. با <tspan direction="ltr" unicode-bidi="embed">Context</tspan> این بودجه‌بندی به صورت خودکار انجام می‌شود زیرا <tspan direction="ltr" unicode-bidi="embed">deadline</tspan> فرزند هرگز از والد فراتر نمی‌رود.</li>
+<li><strong>انتشار لغو در فراخوانی میکروسرویس‌ها:</strong> در یک معماری میکروسرویس وقتی سرویس <tspan direction="ltr" unicode-bidi="embed">A</tspan> سرویس <tspan direction="ltr" unicode-bidi="embed">B</tspan> را صدا می‌زند و سرویس <tspan direction="ltr" unicode-bidi="embed">B</tspan> سرویس <tspan direction="ltr" unicode-bidi="embed">C</tspan> را، لغو در هر نقطه باید به تمام سرویس‌های پایین‌دست منتقل شود. <tspan direction="ltr" unicode-bidi="embed">Context</tspan> و <tspan direction="ltr" unicode-bidi="embed">gRPC</tspan> این زنجیره لغو را به صورت خودکار مدیریت می‌کنند. در <tspan direction="ltr" unicode-bidi="embed">PHP</tspan> معمولاً هر سرویس مستقل عمل می‌کند و لغو یک سرویس تأثیری روی دیگران ندارد.</li>
+</ul>
+
+<div class="tip"><strong>نکته عملی — <tspan direction="ltr" unicode-bidi="embed">Context</tspan> همیشه اولین پارامتر و هرگز فیلد <tspan direction="ltr" unicode-bidi="embed">struct</tspan> نباید باشد:</strong> در Go قرارداد بسیار مهمی وجود دارد که <tspan direction="ltr" unicode-bidi="embed">context.Context</tspan> باید همیشه به عنوان اولین پارامتر تابع پاس داده شود و نام آن <tspan direction="ltr" unicode-bidi="embed">ctx</tspan> باشد. هرگز <tspan direction="ltr" unicode-bidi="embed">Context</tspan> را در یک <tspan direction="ltr" unicode-bidi="embed">struct</tspan> ذخیره نکنید. دلیل این قرارداد این است که <tspan direction="ltr" unicode-bidi="embed">Context</tspan> یک شیء با چرخه حیات مشخص است و باید با پایان عملیات والد لغو شود. اگر <tspan direction="ltr" unicode-bidi="embed">Context</tspan> در <tspan direction="ltr" unicode-bidi="embed">struct</tspan> ذخیره شود چرخه حیات آن نامشخص می‌شود و ممکن است <tspan direction="ltr" unicode-bidi="embed">Goroutine</tspan>‌هایی که از آن استفاده می‌کنند هرگز سیگنال لغو دریافت نکنند. همچنین ذخیره <tspan direction="ltr" unicode-bidi="embed">Context</tspan> در <tspan direction="ltr" unicode-bidi="embed">struct</tspan> باعث وابستگی پنهان می‌شود و تست‌نویسی را بسیار دشوار می‌سازد. همیشه امضای تابع باید <tspan direction="ltr" unicode-bidi="embed">func DoSomething(ctx context.Context, ...)</tspan> باشد نه اینکه <tspan direction="ltr" unicode-bidi="embed">ctx</tspan> از داخل <tspan direction="ltr" unicode-bidi="embed">struct</tspan> خوانده شود. این قرارداد در تمام کتابخانه‌های استاندارد Go رعایت می‌شود و ابزارهایی مثل <tspan direction="ltr" unicode-bidi="embed">go vet</tspan> نیز آن را بررسی می‌کنند.</div>
+
+</div>
+</main>
+</div>
+
+<!-- Footer -->
+<footer class="site-footer">
+<div class="footer-inner">
+<div class="footer-nav">
+<span class="nav-arrow">‹</span>
+<a href="05.03-select.html" data-prev>۵.۳ Select</a>
+</div>
+<div class="footer-toc">
+<a href="00.01-contents.html">فهرست</a>
+</div>
+<div class="footer-nav">
+<a href="05.05-waitgroup.html" data-next>۵.۵ WaitGroup</a>
+<span class="nav-arrow">›</span>
+</div>
+</div>
+</footer>
+
+<!-- Back to Top -->
+<button class="back-to-top" aria-label="بازگشت به بالا">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
+</button>
+
+<!-- Scripts -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/go.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/php.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/sql.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/yaml.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/json.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/dockerfile.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/xml.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/ini.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/plaintext.min.js"></script>
+<script src="assets/js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,924 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="fa">
+<head>
+<script>!function(){try{var t=localStorage.getItem('php2go-theme');if(t==='dark'||(!t&&window.matchMedia('(prefers-color-scheme:dark)').matches)){document.documentElement.setAttribute('data-theme','dark')}}catch(e){}}();</script>
+<meta charset="utf-8"/>
+<meta content="ie=edge" http-equiv="x-ua-compatible"/>
+<title>۱۲.۴ بهینه‌سازی حافظه و Garbage Collector — PHP to Go</title>
+<meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet"/>
+<link href="assets/css/main.css" rel="stylesheet" type="text/css"/>
+<link href="assets/img/favicon.ico" rel="icon" type="image/x-icon"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" media="screen" class="hljs-light-theme" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css" media="not screen" class="hljs-dark-theme" rel="stylesheet"/>
+</head>
+<body>
+<!-- Progress Bar -->
+<div class="progress-bar"><div class="progress-bar__fill"></div></div>
+
+<!-- Header -->
+<header class="site-header">
+<div class="header-inner">
+<div class="header-left">
+<button class="header-btn sidebar-toggle" aria-label="فهرست">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+</button>
+<a href="00.00-front-matter.html" class="header-logo"><span class="logo-php">PHP</span> to <span class="logo-go">Go</span></a>
+<span class="header-crumbs">بهینه‌سازی عملکرد › بهینه‌سازی حافظه و Garbage Collector</span>
+</div>
+<div class="header-right">
+<nav class="header-nav">
+<span class="nav-arrow">‹</span>
+<a href="12.03-practical-optimization-tips.html"><span class="nav-label">۱۲.۳ نکات کاربردی برای بهینه‌سازی</span></a>
+<a href="00.01-contents.html">فهرست</a>
+<a href="12.05-practical-techniques-for-memory-reduction.html"><span class="nav-label">۱۲.۵ تکنیک‌های عملی برای کاهش مصرف حافظه</span></a>
+<span class="nav-arrow">›</span>
+</nav>
+<button class="header-btn search-toggle" aria-label="جستجو">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+</button>
+<button class="header-btn theme-toggle" aria-label="تغییر تم">
+<svg class="theme-icon-light" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+<svg class="theme-icon-dark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+</button>
+</div>
+</div>
+</header>
+
+<!-- Search Modal -->
+<div class="search-overlay">
+<div class="search-modal">
+<div class="search-input-wrap">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+<input type="text" class="search-input" placeholder="جستجو... (Ctrl+K)" dir="rtl"/>
+</div>
+<div class="search-results"></div>
+</div>
+</div>
+
+<!-- Layout -->
+<div class="site-layout">
+<!-- Sidebar -->
+<aside class="sidebar"></aside>
+<div class="sidebar-overlay"></div>
+
+<!-- Main Content -->
+<main class="content-area">
+<div class="content-wrap text">
+<div class="chapter">فصل ۱۲.۴</div>
+<div class="tip"><strong>نکته:</strong> در PHP مدیریت حافظه توسط Garbage Collector زبان انجام می‌شود و توسعه‌دهنده کنترل مستقیمی بر آن ندارد. اما در Go با درک نحوه کار GC و استفاده از تکنیک‌هایی مانند <code dir="ltr">sync.Pool</code> و اجتناب از تخصیص‌های غیرضروری، می‌توانید عملکرد برنامه خود را به‌طور قابل توجهی بهبود ببخشید.</div>
+<h2 id="بهینهسازی-حافظه-و-garbage-collector">بهینه‌سازی حافظه و Garbage Collector</h2>
+<p>مدیریت بهینه‌ی حافظه از عوامل کلیدی در <strong>پایداری</strong> ، <strong>کارایی</strong> و <strong>مقیاس‌پذیری</strong> اپلیکیشن‌های Go است. یکی از ویژگی‌های Go داشتن Garbage Collector مدرن و کارآمد آن است اما سوء‌استفاده یا ناآگاهی از رفتار حافظه می‌تواند منجر به <strong>تأخیرهای غیرضروری</strong> ، <strong>افزایش فشار روی <bdi dir="ltr">CPU</bdi></strong> و <strong>مصرف رم بالا</strong> شود. GC در Go یک <bdi dir="ltr">Concurrent Mark-and-Sweep collector</bdi> است:</p>
+<p><strong dir="ltr">Concurrent</strong> : در بیشتر مراحل همراه اجرای برنامه عمل می‌کند و نیاز به stop-the-world ندارد.</p>
+<p><strong dir="ltr">Low-latency</strong> : توقف‌های کوتاه دارد — معمولاً زیر ۵۰۰ میکروثانیه.</p>
+<p><strong dir="ltr">Generational نیست</strong> : برخلاف JVM تمام اشیاء را یکسان بررسی می‌کند و از تقسیم‌بندی بر اساس سن شیء بهره نمی‌برد.</p>
+<p>در PHP هر درخواست یک process جداگانه است و حافظه در پایان درخواست آزاد می‌شود. اما در Go برنامه یک process long-running است و memory leak به‌مرور زمان انباشته می‌شود. به همین دلیل درک و مدیریت حافظه در Go اهمیت بسیار بیشتری دارد.</p>
+
+<div class="quote-box">
+    <p class="quote-text">مصرف منابع خود را بشناسید. هر بایتی که تخصیص می‌دهید، بایتی است که جمع‌آور زباله باید ردیابی کند. در سیستم‌های با توان عملیاتی بالا، الگوهای تخصیص حافظه اهمیت بیشتری از سرعت خام CPU دارند.</p>
+    <p class="quote-source">
+        <span class="quote-author">Andy Hunt و Dave Thomas</span>
+        <span class="quote-role">نویسندگان مهندسی نرم‌افزار</span>
+        <span class="quote-separator">|</span>
+        <span class="quote-book">The Pragmatic Programmer</span>
+    </p>
+</div>
+<div class="tip">
+<strong>نکته‌ی حرفه‌ای:</strong> جمع‌آور زباله <bdi dir="ltr">Go</bdi> برای تأخیر کم طراحی شده، نه حداکثر توان عملیاتی. اگر به حداکثر توان عملیاتی نیاز دارید، تخصیص‌ها را با استفاده از <bdi dir="ltr">sync.Pool</bdi> برای اشیاء تخصیص‌داده‌شده مکرر کاهش دهید، sliceها را با <bdi dir="ltr">make([]T, 0, n)</bdi> پیش‌تخصیص کنید، و وقتی داده کوچک است ترجیحاً از نوع مقداری به جای نوع اشاره‌گری استفاده کنید.
+</div>
+
+<figure class="diagram" dir="ltr">
+<svg height="380" viewBox="0 0 650 380" width="650" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<marker id="arrowg" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5">
+<polygon fill="#555" points="0 0, 10 3.5, 0 7"></polygon>
+</marker>
+</defs>
+<text class="title" text-anchor="middle" x="325" y="25" direction="rtl" unicode-bidi="embed">چرخه <tspan direction="ltr" unicode-bidi="embed">Garbage</tspan> <tspan direction="ltr" unicode-bidi="embed">Collector</tspan> در <tspan direction="ltr" unicode-bidi="embed">Go</tspan></text>
+<rect class="box-mem" height="50" width="610" x="20" y="55"></rect>
+<text font-weight="bold" text-anchor="middle" x="325" y="77" direction="rtl" unicode-bidi="embed">فاز تخصیص حافظه: برنامه اشیاء جدید روی <tspan direction="ltr" unicode-bidi="embed">Heap</tspan> ایجاد می‌کند</text>
+<text class="small" text-anchor="middle" x="325" y="95" direction="rtl" unicode-bidi="embed">مصرف حافظه افزایش می‌یابد تا به آستانه <tspan direction="ltr" unicode-bidi="embed">GC</tspan> برسد</text>
+<line marker-end="url(#arrowg)" stroke="#555" stroke-width="2" x1="325" x2="325" y1="105" y2="130"></line>
+<rect class="box-mark" height="60" width="610" x="20" y="130"></rect>
+<text font-weight="bold" text-anchor="middle" x="325" y="155" direction="rtl" unicode-bidi="embed">فاز <tspan direction="ltr" unicode-bidi="embed">Mark</tspan>: شناسایی اشیاء قابل دسترس</text>
+<text class="small" text-anchor="middle" x="325" y="175" direction="rtl" unicode-bidi="embed">از <tspan direction="ltr" unicode-bidi="embed">root</tspan>‌ها (<tspan direction="ltr" unicode-bidi="embed">stack</tspan>, <tspan direction="ltr" unicode-bidi="embed">global</tspan>) شروع می‌شود و تمام اشیاء قابل دسترس را علامت‌گذاری می‌کند</text>
+<line marker-end="url(#arrowg)" stroke="#555" stroke-width="2" x1="325" x2="325" y1="190" y2="215"></line>
+<rect class="box-sweep" height="60" width="610" x="20" y="215"></rect>
+<text font-weight="bold" text-anchor="middle" x="325" y="240" direction="rtl" unicode-bidi="embed">فاز <tspan direction="ltr" unicode-bidi="embed">Sweep</tspan>: آزادسازی حافظه بلااستفاده</text>
+<text class="small" text-anchor="middle" x="325" y="260" direction="rtl" unicode-bidi="embed">اشیاء علامت‌نخورده آزاد می‌شوند و حافظه برگردانده می‌شود</text>
+<line marker-end="url(#arrowg)" stroke="#555" stroke-width="2" x1="325" x2="325" y1="275" y2="300"></line>
+<rect fill="#e8f5e9" height="45" rx="8" stroke="#4caf50" stroke-width="2" width="350" x="150" y="300"></rect>
+<text font-weight="bold" text-anchor="middle" x="325" y="322" direction="rtl" unicode-bidi="embed">حافظه آزاد شده | برنامه ادامه می‌یابد</text>
+<text class="small" text-anchor="middle" x="325" y="338" direction="rtl" unicode-bidi="embed">چرخه تکرار می‌شود</text>
+<path d="M 500 322 Q 580 322 580 200 Q 580 80 500 80" fill="none" marker-end="url(#arrowg)" stroke="#ff9800" stroke-dasharray="5,3" stroke-width="2"></path>
+<text class="small" fill="#ff9800" text-anchor="middle" transform="rotate(90 595 200)" x="595" y="200" direction="rtl" unicode-bidi="embed">تکرار چرخه</text>
+<rect fill="none" height="20" width="200" x="20" y="355"></rect>
+<text class="small" text-anchor="middle" x="120" y="370" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">Concurrent</tspan>: همزمان با برنامه</text>
+<rect fill="none" height="20" width="200" x="230" y="355"></rect>
+<text class="small" text-anchor="middle" x="330" y="370" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">Low-latency</tspan>: توقف‌های کوتاه</text>
+<rect fill="none" height="20" width="200" x="440" y="355"></rect>
+<text class="small" text-anchor="middle" x="540" y="370" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">Non-generational</tspan>: بدون نسل</text>
+</svg>
+<figcaption>شکل ۱۲-۴-۱: چرخه <bdi dir="ltr">Garbage</bdi> <bdi dir="ltr">Collector</bdi> در <bdi dir="ltr">Go</bdi> (<bdi dir="ltr">Mark-and-Sweep</bdi>)</figcaption>
+</figure>
+
+<h3 id="stack-و-heap">Stack و Heap</h3>
+
+<div class="case-study">
+    <div class="case-study-header">
+        <span class="case-study-badge">مطالعه موردی</span>
+        <span class="case-study-title">بهینه‌سازی حافظه در Twitch با Go</span>
+    </div>
+    <p>Twitch برای مدیریت میلیون‌ها اتصال همزمان WebSocket از Go استفاده می‌کند. یکی از بزرگترین چالش‌ها، فشار GC ناشی از تخصیص مکرر بافرهای موقت بود. در هر اتصال WebSocket، داده‌ها به بافرهای موقت خوانده می‌شوند، پردازش می‌شوند و سپس بافر آزاد می‌شود. با میلیون‌ها اتصال همزمان، این الگوی تخصیص-و-آزادسازی باعث می‌شد GC هر چند ثانیه یکبار اجرا شود و هر بار چند میلی‌ثانیه مکث ایجاد کند. این مکث‌ها برای یک سرویس استریم زنده قابل‌قبول نبود.</p>
+    <p>با استفاده از sync.Pool برای بازاستفاده از بافرها و تنظیم GOGC، تیم Twitch توانست تأخیر GC را به‌طور چشمگیری کاهش دهد. sync.Pool یک      pool از اشیاء قابل بازاستفاده است که به GC اجازه می‌دهد اشیاء بلااستفاده را در زمان کمبود حافظه پاک کند. وقتی یک بافر لازم است، ابتدا از pool گرفته می‌شود و فقط اگر pool خالی بود، بافر جدیدی ایجاد می‌شود. پس از استفاده، بافر به pool برمی‌گردد تا دوباره استفاده شود. این ساده‌سازی ظریف اما تأثیرگذار بود.</p>
+    <p>نتیجه: کاهش ۴۰ درصدی زمان مکث GC، کاهش ۲۵ درصدی مصرف حافظه کل، و افزایش ۳۰ درصدی توان عملیاتی اتصالات. این بهینه‌سازی بدون تغییر در منطق اصلی برنامه انجام شد — فقط نحوه مدیریت حافظه بافرها تغییر کرد. این مثال عالی از این اصل است که بهینه‌سازی حافظه اغلب نیازی به بازنویسی منطق ندارد، بلکه فقط درک بهتر رفتار GC و الگوی تخصیص برنامه لازم است.</p>
+    <p class="case-study-source">
+        <span class="source-event">GopherCon 2019</span>
+        <span class="source-year">، ۲۰۱۹</span>
+    </p>
+</div>
+<p>در Go حافظه به‌طور کلی به دو ناحیه‌ی اصلی تقسیم می‌شود:</p>
+<p><strong dir="ltr">Stack</strong> : حافظه محلی، سریع، خودکار آزاد می‌شود. معمولاً برای مقادیر محلی توابع استفاده می‌شود. تخصیص روی stack تنها جابجایی یک اشاره‌گر است و هزینه‌ای نزدیک به صفر دارد.</p>
+<p><strong dir="ltr">Heap</strong> : حافظه مشترک و تحت نظر GC است. مقادیری که عمر بلندتری دارند یا به خارج از scope منتقل می‌شوند روی heap ذخیره می‌شوند و آزادسازی آنها هزینه‌بر است. هر تخصیص روی heap به معنای کار اضافه برای GC در آینده است.</p>
+<p>Go به صورت خودکار تصمیم می‌گیرد که مقدار روی stack یا heap باشد. این تصمیم از طریق <strong dir="ltr">Escape Analysis</strong> در زمان کامپایل انجام می‌شود.</p>
+<table class="comparison-table" dir="rtl">
+<thead>
+<tr><th>ویژگی</th><th>Stack</th><th>Heap</th></tr>
+</thead>
+<tbody>
+<tr><td>سرعت تخصیص</td><td>بسیار سریع (جابجایی اشاره‌گر)</td><td>کندتر (جستجوی بلوک آزاد)</td></tr>
+<tr><td>مدیریت آزادسازی</td><td>خودکار (خروج از scope)</td><td dir="ltr">Garbage Collector</td></tr>
+<tr><td>قابلیت دسترسی</td><td>فقط تابع محلی</td><td>مشترک بین توابع</td></tr>
+<tr><td>محدودیت حجم</td><td>محدود (معمولاً ۱-۸ MB)</td><td>بزرگ (محدود به حافظه سیستم)</td></tr>
+<tr><td dir="ltr">Escape Analysis</td><td>اگر در scope بماند</td><td>اگر از تابع فرار کند</td></tr>
+<tr><td>تأثیر بر GC</td><td>بدون تأثیر</td><td>فشار به GC</td></tr>
+</tbody>
+</table>
+
+<h3 id="escape-analysis">Escape Analysis</h3>
+
+<div class="quote-box">
+    <p class="quote-text">جمع‌آور زباله Go برای تأخیر کم طراحی شده، نه حداکثر throughput. متغیر GOGC این مصالحه را کنترل می‌کند: مقدار بالاتر یعنی کار GC کمتر اما حافظه بیشتر؛ مقدار پایین‌تر یعنی کار GC بیشتر اما حافظه کمتر. مقدار پیش‌فرض ۱۰۰ نقطه شروع خوبی است، اما حجم کاری عملیاتی اغلب نیاز به تنظیم دارد.</p>
+    <p class="quote-source">
+        <span class="quote-author">Rick Hudson</span>
+        <span class="quote-role">توسعه‌دهنده GC در Go</span>
+        <span class="quote-separator">|</span>
+        <span class="quote-book">GopherCon 2018</span>
+    </p>
+</div>
+<p>Escape Analysis یعنی بررسی اینکه آیا یک متغیر فقط داخل همان تابع باقی می‌ماند یا به بیرون از تابع هم می‌رود. اگر فقط داخل تابع استفاده شود روی <strong dir="ltr">stack</strong> ذخیره می‌شود که سریع‌تر و سبک‌تر است. اگر به بیرون منتقل شود — مثلاً به return برود یا به goroutine داده شود — روی <strong dir="ltr">heap</strong> قرار می‌گیرد و نیاز به بررسی توسط Garbage Collector دارد.</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">type User struct {
+    Name string
+}
+
+// On stack — return value is copied
+func stackAllocated() User {
+    return User{Name: "Ali"}
+}
+
+// On heap — pointer escapes outside function
+func heapAllocated() *User {
+    return &amp;User{Name: "Sara"}
+}
+</code></pre>
+</figure>
+<p>برای مشاهده تحلیل کامپایلر از فلگ <code dir="ltr">-m</code> استفاده کنید:</p>
+<figure class="code bash" dir="ltr">
+<pre><code class="language-bash">$ go build -gcflags '-m' main.go
+# Output:
+# ./main.go:12:6: moved to heap: User{Name: "Sara"}
+# ./main.go:10:6: stackAllocated User does not escape
+</code></pre>
+</figure>
+<div class="warning"><strong>تله‌ی رایج:</strong> بسیاری از برنامه‌نویسان تازه‌کار Go فکر می‌کنند استفاده از اشاره‌گر همیشه بهتر است چون از کپی‌شدن مقدار جلوگیری می‌کند. اما در واقعیت، اشاره‌گر باعث escape شدن متغیر به heap می‌شود و هزینه‌ی GC را افزایش می‌دهد. قانون ساده: اگر ساختار کوچک‌تر از یک cache line باشد، value برگردانید نه اشاره‌گر.</div>
+
+<h3 id="pprof-تحلیل-حافظه-با-ابزار-پروفایلینگ">pprof: تحلیل حافظه با ابزار پروفایلینگ</h3>
+<p>اولین قدم در بهینه‌سازی حافظه، اندازه‌گیری و شناسایی مشکلات است. Go ابزار قدرتمندی به نام <bdi dir="ltr">pprof</bdi> برای پروفایلینگ CPU و حافظه ارائه می‌دهد. بدون پروفایلینگ، هر تلاشی برای بهینه‌سازی حافظه صرفاً حدس و گمان است.</p>
+
+<figure class="diagram" dir="ltr">
+<svg height="280" viewBox="0 0 620 280" width="620" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<marker id="arrowp" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5">
+<polygon fill="#555" points="0 0, 10 3.5, 0 7"></polygon>
+</marker>
+<filter height="104%" id="shp" width="104%" x="-2%" y="-2%"><fedropshadow dx="1" dy="1" flood-opacity="0.15" stddeviation="2"></fedropshadow></filter>
+</defs>
+<rect fill="#fafafa" height="280" rx="8" width="620" x="0" y="0"></rect>
+<text fill="#333" font-size="16" font-weight="bold" text-anchor="middle" x="310" y="28" direction="rtl" unicode-bidi="embed">جریان کار تحلیل حافظه با <tspan direction="ltr" unicode-bidi="embed">pprof</tspan></text>
+<rect fill="#00ADD8" filter="url(#shp)" height="45" rx="6" width="170" x="30" y="55"></rect>
+<text fill="#fff" font-size="11" text-anchor="middle" x="115" y="82" direction="ltr" unicode-bidi="embed">go test -memprofile</text>
+<text fill="#e0f7fa" font-size="9" text-anchor="middle" x="115" y="95" direction="rtl" unicode-bidi="embed">تولید فایل پروفایل</text>
+<line marker-end="url(#arrowp)" stroke="#555" stroke-width="2" x1="200" x2="240" y1="78" y2="78"></line>
+<rect fill="#4CAF50" filter="url(#shp)" height="45" rx="6" width="170" x="240" y="55"></rect>
+<text fill="#fff" font-size="11" text-anchor="middle" x="325" y="82" direction="ltr" unicode-bidi="embed">go tool pprof</text>
+<text fill="#e8f5e9" font-size="9" text-anchor="middle" x="325" y="95" direction="rtl" unicode-bidi="embed">تحلیل تعاملی</text>
+<line marker-end="url(#arrowp)" stroke="#555" stroke-width="2" x1="410" x2="440" y1="78" y2="78"></line>
+<rect fill="#FF9800" filter="url(#shp)" height="45" rx="6" width="150" x="440" y="55"></rect>
+<text fill="#fff" font-size="11" text-anchor="middle" x="515" y="82" direction="ltr" unicode-bidi="embed">top / web / list</text>
+<text fill="#fff3e0" font-size="9" text-anchor="middle" x="515" y="95" direction="rtl" unicode-bidi="embed">شناسایی نقطه تخصیص</text>
+<rect fill="#e91e63" filter="url(#shp)" height="40" rx="6" width="280" x="30" y="130"></rect>
+<text fill="#fff" font-size="10" text-anchor="middle" x="170" y="155" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">net/http/pprof</tspan> — پروفایلینگ زنده در <tspan direction="ltr" unicode-bidi="embed">production</tspan></text>
+<rect fill="#9C27B0" filter="url(#shp)" height="40" rx="6" width="280" x="320" y="130"></rect>
+<text fill="#fff" font-size="10" text-anchor="middle" x="460" y="155" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">runtime.ReadMemStats</tspan> — خواندن آمار حافظه در کد</text>
+<rect fill="#E3F2FD" height="60" rx="6" stroke="#2196F3" width="540" x="40" y="200"></rect>
+<text fill="#1565C0" font-size="11" text-anchor="middle" x="310" y="222" direction="rtl" unicode-bidi="embed">فرمان‌های کلیدی <tspan direction="ltr" unicode-bidi="embed">pprof</tspan>: <tspan direction="ltr" unicode-bidi="embed">top20</tspan> (بیشترین تخصیص) | <tspan direction="ltr" unicode-bidi="embed">web</tspan> (نمودار گراف) | <tspan direction="ltr" unicode-bidi="embed">list</tspan> <tspan direction="ltr" unicode-bidi="embed">funcName</tspan> (کد خط به خط)</text>
+<text fill="#1565C0" font-size="11" text-anchor="middle" x="310" y="248" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">pprof</tspan> با فلگ -<tspan direction="ltr" unicode-bidi="embed">inuse_objects</tspan> (تعداد اشیاء) یا -<tspan direction="ltr" unicode-bidi="embed">alloc_objects</tspan> (تخصیص تجمیعی)</text>
+</svg>
+<figcaption>شکل ۱۲-۴-۲: جریان کار تحلیل حافظه با <bdi dir="ltr">pprof</bdi></figcaption>
+</figure>
+
+<p><strong>روش ۱: پروفایلینگ در تست</strong></p>
+<figure class="code bash" dir="ltr">
+<pre><code class="language-bash"># Generate memory profile file
+$ go test -memprofile=mem.prof -bench=. ./...
+
+# Interactive analysis
+$ go tool pprof mem.prof
+
+# View top 20 functions with most memory allocation
+(pprof) top20
+
+# Graphical chart (requires graphviz)
+(pprof) web
+
+# View line-by-line code of a specific function
+(pprof) list myFunction
+
+# Number of active objects (in use)
+(pprof) top -inuse_objects
+
+# Cumulative allocation (total allocation)
+(pprof) top -alloc_objects
+</code></pre>
+</figure>
+
+<p><strong>روش ۲: پروفایلینگ زنده با <code dir="ltr">net/http/pprof</code></strong></p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">import _ "net/http/pprof"
+
+// In main program, run a goroutine for pprof
+go func() {
+    log.Println(http.ListenAndServe("localhost:6060", nil))
+}()
+</code></pre>
+</figure>
+<figure class="code bash" dir="ltr">
+<pre><code class="language-bash"># Snapshot memory profile
+$ go tool pprof http://localhost:6060/debug/pprof/heap
+
+# CPU profile for 30 seconds
+$ go tool pprof http://localhost:6060/debug/pprof/profile?seconds=30
+</code></pre>
+</figure>
+
+<p><strong>روش ۳: خواندن آمار حافظه در کد</strong></p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">var mem runtime.MemStats
+runtime.ReadMemStats(&amp;mem)
+fmt.Printf("Alloc: %d bytes | TotalAlloc: %d | Sys: %d | NumGC: %d\n",
+mem.Alloc, mem.TotalAlloc, mem.Sys, mem.NumGC)
+</code></pre>
+</figure>
+<div class="tip"><strong>نکته عملی:</strong> <code dir="ltr">runtime.ReadMemStats</code> یک STW (Stop-The-World) کوتاه ایجاد می‌کند. در محیط production از فراخوانی مکرر آن خودداری کنید. به‌جای آن از متریک‌های pprof یا <code dir="ltr">debug.SetGCPercent</code> استفاده کنید.</div>
+
+<h3 id="syncpool-بازیافت-اشیاء-و-کاهش-فشار-gc">sync.Pool: بازیافت اشیاء و کاهش فشار GC</h3>
+<p><bdi dir="ltr">sync.Pool</bdi> ابزار کلیدی Go برای کاهش فشار GC در برنامه‌های با بار بالا است. thread-safe مورد استفاده قرار گیرد. وقتی شیئی دیگر لازم نیست، به pool بازگردانده می‌شود و دفعه‌ی بعد بدون تخصیص حافظه‌ی جدید قابل استفاده است.</p>
+<p><strong>چرا sync.Pool مهم است؟</strong> هر تخصیص جدید روی heap یک شیء اضافه برای GC ایجاد می‌کند. اگر برنامه شما در هر ثانیه هزاران شیء موقت ایجاد کند (مثلاً بافرهای خواندن، شیءهای response)، GC باید همه آن‌ها را ردیابی و آزاد کند. با sync.Pool اشیاء بازیافت می‌شوند و تخصیص جدید نیاز نیست.</p>
+<p><strong>معماری داخلی:</strong> هر <code dir="ltr">sync.Pool</code> دو سطح ذخیره‌سازی دارد: <strong dir="ltr">local</strong> (محلی به هر P/پردازنده) و <strong dir="ltr">victim</strong> (اشیاء از چرخه GC قبلی). وقتی <code dir="ltr">Get()</code> فراخوانی می‌شود، ابتدا در local pool پردازنده جاری جستجو می‌شود، سپس در victim pool. وقتی <code dir="ltr">Put()</code> فراخوانی می‌شود، شیء در local pool ذخیره می‌شود. در هر چرخه GC، اشیاء local به victim منتقل می‌شوند و victim قبلی حذف می‌شوند.</p>
+
+<figure class="diagram" dir="ltr">
+<svg height="320" viewBox="0 0 620 320" width="620" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<marker id="arrowpool" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5">
+<polygon fill="#555" points="0 0, 10 3.5, 0 7"></polygon>
+</marker>
+<filter height="104%" id="shpool" width="104%" x="-2%" y="-2%"><fedropshadow dx="1" dy="1" flood-opacity="0.15" stddeviation="2"></fedropshadow></filter>
+</defs>
+<rect fill="#fafafa" height="320" rx="8" width="620" x="0" y="0"></rect>
+<text fill="#333" font-size="16" font-weight="bold" text-anchor="middle" x="310" y="28" direction="rtl" unicode-bidi="embed">چرخه حیات <tspan direction="ltr" unicode-bidi="embed">sync.Pool</tspan></text>
+<!-- Get -->
+<rect fill="#00ADD8" filter="url(#shpool)" height="50" rx="6" width="130" x="30" y="60"></rect>
+<text fill="#fff" font-size="12" text-anchor="middle" x="95" y="83" direction="ltr" unicode-bidi="embed">pool.Get()</text>
+<text fill="#e0f7fa" font-size="9" text-anchor="middle" x="95" y="100" direction="rtl" unicode-bidi="embed">دریافت شیء</text>
+<!-- Pool -->
+<rect fill="#9C27B0" filter="url(#shpool)" height="80" rx="6" width="160" x="220" y="45"></rect>
+<text fill="#fff" font-size="12" text-anchor="middle" x="300" y="70" direction="ltr" unicode-bidi="embed">sync.Pool</text>
+<text fill="#e1bee7" font-size="9" text-anchor="middle" x="300" y="88" direction="rtl" unicode-bidi="embed">مجموعه اشیاء بازسازی‌شده</text>
+<text fill="#e1bee7" font-size="9" text-anchor="middle" x="300" y="105" direction="rtl" unicode-bidi="embed">پیوست‌شده به P هر <tspan direction="ltr" unicode-bidi="embed">goroutine</tspan></text>
+<line marker-end="url(#arrowpool)" stroke="#555" stroke-width="2" x1="160" x2="220" y1="85" y2="80"></line>
+<line marker-end="url(#arrowpool)" stroke="#555" stroke-width="2" x1="380" x2="440" y1="80" y2="85"></line>
+<!-- Put -->
+<rect fill="#4CAF50" filter="url(#shpool)" height="50" rx="6" width="130" x="440" y="60"></rect>
+<text fill="#fff" font-size="12" text-anchor="middle" x="505" y="83" direction="ltr" unicode-bidi="embed">pool.Put()</text>
+<text fill="#e8f5e9" font-size="9" text-anchor="middle" x="505" y="100" direction="rtl" unicode-bidi="embed">بازگرداندن شیء</text>
+<!-- New -->
+<rect fill="#FF9800" filter="url(#shpool)" height="45" rx="6" width="180" x="50" y="160"></rect>
+<text fill="#fff" font-size="10" text-anchor="middle" x="140" y="182" direction="rtl" unicode-bidi="embed">اگر <tspan direction="ltr" unicode-bidi="embed">Pool</tspan> خالی باشد → <tspan direction="ltr" unicode-bidi="embed">New</tspan>() فراخوانی می‌شود</text>
+<line marker-end="url(#arrowpool)" stroke="#FF9800" stroke-width="1.5" x1="140" x2="140" y1="160" y2="110"></line>
+<!-- GC -->
+<rect fill="#e91e63" filter="url(#shpool)" height="45" rx="6" width="250" x="320" y="160"></rect>
+<text fill="#fff" font-size="10" text-anchor="middle" x="445" y="180" direction="rtl" unicode-bidi="embed">توجه: اشیاء <tspan direction="ltr" unicode-bidi="embed">pool</tspan> در هر چرخه <tspan direction="ltr" unicode-bidi="embed">GC</tspan> ممکن است حذف شوند!</text>
+<text fill="#fce4ec" font-size="9" text-anchor="middle" x="445" y="197" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">Pool</tspan> برای کش موقت است، نه ذخیره‌سازی دائمی</text>
+<line marker-end="url(#arrowpool)" stroke="#e91e63" stroke-dasharray="4,3" stroke-width="1.5" x1="380" x2="445" y1="125" y2="160"></line>
+<!-- Use case -->
+<rect fill="#E3F2FD" height="75" rx="6" stroke="#2196F3" width="540" x="40" y="225"></rect>
+<text fill="#1565C0" font-size="11" font-weight="bold" text-anchor="middle" x="310" y="248" direction="rtl" unicode-bidi="embed">موارد استفاده‌ی رایج <tspan direction="ltr" unicode-bidi="embed">sync.Pool</tspan></text>
+<text fill="#1565C0" font-size="10" text-anchor="middle" x="180" y="268" direction="ltr" unicode-bidi="embed">bytes.Buffer | JSON Encoder | Response Writer</text>
+<text fill="#1565C0" font-size="10" text-anchor="middle" x="430" y="268" direction="ltr" unicode-bidi="embed">Compression Buffers | Temp Objects</text>
+<text fill="#1565C0" font-size="10" text-anchor="middle" x="310" y="290" direction="rtl" unicode-bidi="embed">قانون: شیء باید کوتاه‌عمر باشد و وضعیتش قبل از <tspan direction="ltr" unicode-bidi="embed">Put</tspan> بازیابی شود</text>
+</svg>
+<figcaption>شکل ۱۲-۴-۳: چرخه حیات <bdi dir="ltr">sync.Pool</bdi> — دریافت، استفاده، بازگرداندن</figcaption>
+</figure>
+
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">package bufferpool
+
+import (
+"bytes"
+"sync"
+)
+
+// Global pool of byte buffers
+var bufPool = sync.Pool{
+    New: func() interface{} {
+        return new(bytes.Buffer)
+    },
+}
+
+// GetBuffer returns a buffer from pool
+func GetBuffer() *bytes.Buffer {
+    buf := bufPool.Get().(*bytes.Buffer)
+    buf.Reset() // important: clear previous state
+    return buf
+}
+
+// PutBuffer returns buffer to pool
+func PutBuffer(buf *bytes.Buffer) {
+    bufPool.Put(buf)
+}
+</code></pre>
+</figure>
+
+<p><strong>مثال کاربردی: استفاده در handlerهای HTTP</strong></p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">func JSONHandler(w http.ResponseWriter, r *http.Request) {
+    buf := GetBuffer()
+    defer PutBuffer(buf)
+
+    data := map[string]string{"message": "سلام دنیا"}
+    if err := json.NewEncoder(buf).Encode(data); err != nil {
+        http.Error(w, err.Error(), http.StatusInternalServerError)
+        return
+    }
+    w.Header().Set("Content-Type", "application/json")
+    w.Write(buf.Bytes())
+}
+</code></pre>
+</figure>
+
+<p><strong>مثال پیشرفته: Pool برای byte slice بزرگ</strong></p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">var largeBufPool = sync.Pool{
+    New: func() any {
+        buf := make([]byte, 0, 64*1024) // 64KB buffer
+        return &amp;buf
+    },
+}
+
+func processLargeData(data []byte) error {
+    bufPtr := largeBufPool.Get().(*[]byte)
+    buf := (*bufPtr)[:0] // reset length without losing capacity
+
+    // Using buffer
+    buf = append(buf, data...)
+    // ... processing ...
+
+    // Return to pool
+    *bufPtr = buf
+    largeBufPool.Put(bufPtr)
+    return nil
+}
+</code></pre>
+</figure>
+
+<div class="important"><strong>قوانین حیاتی sync.Pool:</strong> اولاً، همیشه قبل از <code dir="ltr">Put</code> وضعیت شیء را ریست کنید (مثلاً <code dir="ltr">buf.Reset()</code>). ثانیاً، هرگز اشیاء با وضعیت حساس (مثل اطلاعات کاربر) را در pool قرار ندهید چون ممکن است بین goroutine‌های مختلف به اشتراک گذاشته شوند. ثالثاً، pool برای ذخیره‌سازی بلندمدت نیست — اشیاء در هر چرخه‌ی GC ممکن است حذف شوند. رابعاً، هرگز reference به شیء pool را بعد از Put نگه ندارید.</div>
+
+<h3 id="stringsbuilder-و-الحاق-رشتهها">strings.Builder و الحاق رشته‌ها</h3>
+<p>یکی از منابع رایج تخصیص حافظه در Go، الحاق رشته‌ها است. در Go رشته‌ها immutable هستند و هر الحاق یک رشته‌ی جدید ایجاد می‌کند. این رفتار در حلقه‌ها پرهزینه است:</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">// Bad: each + creates a new allocation
+func badConcat(parts []string) string {
+    result := ""
+    for _, p := range parts {
+        result += p // allocation + copy on each iteration
+    }
+    return result
+}
+
+// Good: with strings.Builder only one final allocation
+func goodConcat(parts []string) string {
+    var sb strings.Builder
+    for _, p := range parts {
+        sb.WriteString(p) // without extra allocation
+    }
+    return sb.String()
+}
+
+// Best: pre-allocate capacity
+func bestConcat(parts []string) string {
+    total := 0
+    for _, p := range parts {
+        total += len(p)
+    }
+    var sb strings.Builder
+    sb.Grow(total) // one-time allocation — no reallocation
+    for _, p := range parts {
+        sb.WriteString(p)
+    }
+    return sb.String()
+}
+</code></pre>
+</figure>
+<p>نتایج بنچمارک (با ۱۰۰۰ رشته‌ی ۱۰ کاراکتری): روش <code>+</code> حدود <strong>۲۰۰۰ تخصیص</strong> و <strong>۵۰۰ μs/op</strong> ، <code>strings.Builder</code> حدود <strong>۱۰ تخصیص</strong> و <strong>۳ μs/op</strong> ، و <code>strings.Builder</code> با <code dir="ltr">Grow</code> فقط <strong>۱ تخصیص</strong> و <strong>۱.۵ μs/op</strong> . تفاوت ۳۰۰ برابری بین بدترین و بهترین.</p>
+
+<h3 id="پیشتخصیص-slice-و-map">پیش‌تخصیص Slice و Map</h3>
+<p>وقتی اندازه‌ی نهایی یک slice یا map از قبل مشخص یا قابل تخمین است، preallocation از تخصیص‌های مکرر و کپی‌شدن داده‌ها جلوگیری می‌کند:</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">// Bad: append creates repeated allocations
+func badSlice(items []int) []int {
+    var result []int
+    for _, item := range items {
+        result = append(result, item*2)
+    }
+    return result
+}
+
+// Good: pre-allocate with make
+func goodSlice(items []int) []int {
+    result := make([]int, 0, len(items))
+    for _, item := range items {
+        result = append(result, item*2)
+    }
+    return result
+}
+
+// Pre-allocate map (from Go 1.11 with hint)
+m := make(map[string]int, 1000) // hint for 1000 entries
+</code></pre>
+</figure>
+<p>نتایج بنچمارک slice (با ۱۰,۰۰۰ عنصر): روش بد <strong>۲۰ تخصیص</strong> (هر بار دوبرابر شدن)، روش خوب <strong>۱ تخصیص</strong> . سرعت اجرای خوب حدود ۲-۳ برابر سریع‌تر.</p>
+<div class="note"><strong>قانون عملی:</strong> هر زمان که اندازه‌ی نهایی یک slice را می‌دانید یا می‌توانید تخمین بزنید، از <code>make([]T, 0, n)</code> استفاده کنید. این کار از reallocation و کپی‌شدن مکرر جلوگیری می‌کند و عملکرد را به‌طور قابل توجهی بهبود می‌بخشد.</div>
+
+<h3 id="تنظیم-gc-با-gogc-و-gomemlimit">تنظیم GC با GOGC و GOMEMLIMIT</h3>
+<p>Go دو متغیر محیطی مهم برای کنترل رفتار Garbage Collector دارد:</p>
+<p><strong dir="ltr">GOGC:</strong> این متغیر نسبت حافظه‌ی Heap بعد از GC به حافظه‌ی قبل از GC را تعیین می‌کند. مقدار پیش‌فرض <code>GOGC=100</code> یعنی وقتی Heap به ۱۰۰ مگابایت می‌رسد، GC اجرا می‌شود و حافظه را به حدود ۵۰ مگابایت کاهش می‌دهد (نسبت ۲:۱). مقدار بالاتر = GC کمتر = مصرف حافظه بیشتر. مقدار پایین‌تر = GC بیشتر = تأخیر کمتر:</p>
+<figure class="code bash" dir="ltr">
+<pre><code class="language-bash"># Less GC, more throughput, more memory
+$ GOGC=200 ./myapp
+
+# More GC, less latency, less memory
+$ GOGC=50 ./myapp
+
+# Disable GC (only for testing!)
+$ GOGC=off ./myapp
+</code></pre>
+</figure>
+<p><strong dir="ltr">GOMEMLIMIT:</strong> (از Go 1.19) حداکثر حافظه‌ای که GC اجازه دارد مصرف کند را تعیین می‌کند. این متغیر مشکل GOGC را حل می‌کند: با GOGC تنها نمی‌توان هم عملکرد خوب داشت و هم حافظه را محدود کرد. اما با <code>GOMEMLIMIT</code> می‌توان حد بالای حافظه را مشخص کرد و اجازه داد GC خودش تصمیم بگیرد چه زمانی اجرا شود:</p>
+<figure class="code bash" dir="ltr">
+<pre><code class="language-bash"># Memory limit to 1 gigabyte
+$ GOMEMLIMIT=1GiB ./myapp
+
+# Combine GOGC and GOMEMLIMIT (best performance)
+$ GOGC=200 GOMEMLIMIT=2GiB ./myapp
+</code></pre>
+</figure>
+<div class="tip"><strong>نکته عملی:</strong> در محیط‌های container (Docker/Kubernetes)، <code>GOMEMLIMIT</code> باید حدود ۸۰-۹۰٪ حافظه‌ی container تنظیم شود تا فضایی برای Stack و buffers باقی بماند. مثلاً اگر container 512MB حافظه دارد: <code>GOMEMLIMIT=460MiB</code>.</div>
+
+<figure class="diagram" dir="ltr">
+<svg height="260" viewBox="0 0 620 260" width="620" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<marker id="arrowgc" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5">
+<polygon fill="#555" points="0 0, 10 3.5, 0 7"></polygon>
+</marker>
+<filter height="104%" id="shgc" width="104%" x="-2%" y="-2%"><fedropshadow dx="1" dy="1" flood-opacity="0.15" stddeviation="2"></fedropshadow></filter>
+</defs>
+<rect fill="#fafafa" height="260" rx="8" width="620" x="0" y="0"></rect>
+<text fill="#333" font-size="16" font-weight="bold" text-anchor="middle" x="310" y="28" direction="rtl" unicode-bidi="embed">پارامترهای تنظیم <tspan direction="ltr" unicode-bidi="embed">GC</tspan> در <tspan direction="ltr" unicode-bidi="embed">Production</tspan></text>
+<!-- GOGC -->
+<rect fill="#00ADD8" filter="url(#shgc)" height="55" rx="6" width="180" x="30" y="55"></rect>
+<text fill="#fff" font-size="12" text-anchor="middle" x="120" y="78" direction="ltr" unicode-bidi="embed">GOGC=100</text>
+<text fill="#e0f7fa" font-size="9" text-anchor="middle" x="120" y="95" direction="rtl" unicode-bidi="embed">پیش‌فرض — تعادل عملکرد/حافظه</text>
+<!-- GOGC high -->
+<rect fill="#4CAF50" filter="url(#shgc)" height="55" rx="6" width="180" x="220" y="55"></rect>
+<text fill="#fff" font-size="12" text-anchor="middle" x="310" y="78" direction="ltr" unicode-bidi="embed">GOGC=200-400</text>
+<text fill="#e8f5e9" font-size="9" text-anchor="middle" x="310" y="95" direction="rtl" unicode-bidi="embed">عملکرد بیشتر — حافظه بیشتر</text>
+<!-- GOMEMLIMIT -->
+<rect fill="#FF9800" filter="url(#shgc)" height="55" rx="6" width="180" x="410" y="55"></rect>
+<text fill="#fff" font-size="12" text-anchor="middle" x="500" y="78" direction="ltr" unicode-bidi="embed">GOMEMLIMIT</text>
+<text fill="#fff3e0" font-size="9" text-anchor="middle" x="500" y="95" direction="rtl" unicode-bidi="embed">سقف حافظه — حیاتی برای <tspan direction="ltr" unicode-bidi="embed">container</tspan></text>
+<!-- Recommendation -->
+<rect fill="#E3F2FD" height="80" rx="6" stroke="#2196F3" width="560" x="30" y="150"></rect>
+<text fill="#1565C0" font-size="12" font-weight="bold" text-anchor="middle" x="310" y="175" direction="rtl" unicode-bidi="embed">تنظیمات پیشنهادی برای <tspan direction="ltr" unicode-bidi="embed">Production</tspan></text>
+<text fill="#1565C0" font-size="10" text-anchor="middle" x="310" y="198" direction="ltr" unicode-bidi="embed">GOGC=200 GOMEMLIMIT=80% of container memory</text>
+<text fill="#1565C0" font-size="10" text-anchor="middle" x="310" y="218" direction="rtl" unicode-bidi="embed">مثلاً در <tspan direction="ltr" unicode-bidi="embed">container</tspan> با 1<tspan direction="ltr" unicode-bidi="embed">GB</tspan> رم: <tspan direction="ltr" unicode-bidi="embed">GOMEMLIMIT</tspan>=900<tspan direction="ltr" unicode-bidi="embed">MiB</tspan> <tspan direction="ltr" unicode-bidi="embed">GOGC</tspan>=200</text>
+</svg>
+<figcaption>شکل ۱۲-۴-۴: پارامترهای تنظیم <bdi dir="ltr">GC</bdi> در محیط <bdi dir="ltr">Production</bdi></figcaption>
+</figure>
+
+<h3 id="تنظیمات-پیشرفته-gc-برای-production">تنظیمات پیشرفته GC برای Production</h3>
+<p>در محیط‌های production با بار بالا، تنظیم GC می‌تواند تأثیر قابل‌توجهی بر عملکرد داشته باشد. در اینجا چند الگوی رایج را بررسی می‌کنیم:</p>
+<p><strong>الگوی Ballast:</strong> قبل از معرفی <code>GOMEMLIMIT</code> ، الگوی ballast رایج بود. در این الگو یک slice بزرگ حافظه تخصیص می‌دهید تا GC را فریب دهید و فکر کند heap بزرگ‌تر از واقعیت است:</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">func main() {
+    // Ballast allocation — causes GC to run less frequently
+    ballast := make([]byte, 100*1024*1024) // 100 MB
+
+    // ... run program ...
+
+    runtime.KeepAlive(ballast) // prevent compiler optimization
+}
+</code></pre>
+</figure>
+<div class="note"><strong>نکته:</strong> با معرفی <code>GOMEMLIMIT</code> در Go 1.19، الگوی ballast دیگر لازم نیست. <code>GOMEMLIMIT</code> همان اثر را بدون تخصیص حافظه‌ی واقعی فراهم می‌کند. اگر هنوز از ballast استفاده می‌کنید، به <code>GOMEMLIMIT</code> مهاجرت کنید.</div>
+<p><strong>تنظیم GC با کد Go:</strong> علاوه بر متغیرهای محیطی، می‌توانید GC را از داخل برنامه نیز تنظیم کنید:</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">// Set GOGC programmatically
+debug.SetGCPercent(200) // equivalent to GOGC=200
+
+// Set GOMEMLIMIT programmatically (Go 1.19+)
+debug.SetMemoryLimit(2 * 1024 * 1024 * 1024) // 2 GB
+
+// Manually trigger GC (usually not recommended)
+runtime.GC()
+
+// Release memory returned to OS
+debug.FreeOSMemory()
+</code></pre>
+</figure>
+
+<h3 id="همترازی-حافظه-memory-alignment">Memory Alignment</h3>
+<p>در Go، ترتیب فیلدهای struct تأثیر مستقیم روی مصرف حافظه دارد. کامپایلر Go align می‌کند. فیلدهای بزرگ‌تر (مثل <code>int64</code>) باید در آدرس‌های مضرب ۸ قرار بگیرند. اگر فیلدهای کوچک و بزرگ به‌صورت نامنظم ترکیب شوند، فضای padding بین آن‌ها ایجاد می‌شود:</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">// Bad: 24 bytes (due to padding)
+type Bad struct {
+    A bool // 1 byte + 7 bytes padding
+    B int64 // 8 bytes
+    C int32 // 4 bytes + 4 bytes padding
+}
+
+// Good: 16 bytes (no extra padding)
+type Good struct {
+    B int64 // 8 bytes
+    C int32 // 4 bytes
+    A bool // 1 byte + 3 bytes padding
+}
+</code></pre>
+</figure>
+<p>قانون ساده: فیلدها را از بزرگ به کوچک مرتب کنید (<code>int64</code> قبل از <code>int32</code> قبل از <code>bool</code>). با این کار فضای padding کاهش می‌یابد و مصرف حافظه بهینه‌تر می‌شود. وقتی هزاران نمونه از یک struct دارید (مثلاً در slice)، حتی ۸ بایت تفاوت می‌تواند به صدها مگابایت حافظه تبدیل شود.</p>
+<div class="note"><strong>ابزار بررسی:</strong> با <code dir="ltr">unsafe.Sizeof()</code> و <code dir="ltr">unsafe.Offsetof()</code> می‌توانید اندازه واقعی struct و offset هر فیلد را بررسی کنید. همچنین ابزار <code>fieldalignment</code> در <code>golang.org/x/tools</code> به‌صورت خودکار فیلدها را مرتب می‌کند:</div>
+<figure class="code bash" dir="ltr">
+<pre><code class="language-bash">$ go install golang.org/x/tools/go/analysis/passes/fieldalignment/cmd/fieldalignment@latest
+$ fieldalignment -fix ./...
+</code></pre>
+</figure>
+
+<h3 id="finalizer-ها-و-ملاحظات">Finalizer‌ها و ملاحظات</h3>
+<p>Go از طریق <code dir="ltr">runtime.SetFinalizer</code> امکان ثبت تابعی را می‌دهد که هنگام جمع‌آوری شیء توسط GC فراخوانی شود. اما استفاده از finalizer‌ها در Go بسیار محدود و معمولاً توصیه نمی‌شود:</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">// Register finalizer — use with caution!
+runtime.SetFinalizer(obj, func(o *MyObject) {
+    o.Close() // cleanup resources
+})
+</code></pre>
+</figure>
+<div class="warning"><strong>هشدار درباره Finalizer:</strong> اولاً، هیچ تضمینی وجود ندارد که finalizer اصلاً اجرا شود (برنامه ممکن است قبل از اجرای GC خاتمه یابد). ثانیاً، ترتیب اجرای finalizer‌ها نامشخص است. ثالثاً، finalizer resurrection. رابعاً، finalizer‌ها عملکرد GC را کاهش می‌دهند. به‌جای finalizer از <code dir="ltr">defer</code> یا الگوی <code dir="ltr">io.Closer</code> استفاده کنید.</div>
+
+<p>تنها مورد معقول استفاده از finalizer برای اشیایی است که منابع سیستم‌عاملی (مثل file descriptor یا handle) در اختیار دارند و هیچ سازوکار دیگری برای پاک‌سازی وجود ندارد. اما حتی در این حالت، الگوی <bdi dir="ltr">io.Closer</bdi> ترجیح داده می‌شود:</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">// Better: io.Closer pattern instead of finalizer
+type Resource struct {
+    handle int
+}
+
+func (r *Resource) Close() error {
+    if r.handle != 0 {
+        // Release resource
+        r.handle = 0
+    }
+    return nil
+}
+
+func useResource() {
+    r := &amp;Resource{handle: 42}
+    defer r.Close() // deterministic cleanup — not dependent on GC
+    // ... use r ...
+}
+</code></pre>
+</figure>
+
+<div class="comparison"><strong>مقایسه با PHP:</strong> در PHP مدیریت حافظه به‌صورت خودکار و request-based است — هر درخواست فضای حافظه خود را دارد و در پایان درخواست تمام حافظه آزاد می‌شود. این یعنی memory leak در PHP کمتر مشکل‌ساز است چون عمر برنامه کوتاه است. اما در Go برنامه ماه‌ها ممکن است اجرا شود و نشتی حافظه کوچک به بروز مشکلات بزرگ منجر شود. ابزارهایی مثل <code>sync.Pool</code> ، <code>GOMEMLIMIT</code> و <code>pprof</code> در PHP معادل مستقیمی ندارند چون مدل اجرایی PHP نیازی به آن‌ها نمی‌داند.</div>
+
+    <h3 id="swiss-table-maps">پیاده‌سازی map با Swiss Tables — Go 1.24</h3>
+    <p>
+        در Go 1.24، پیاده‌سازی داخلی <code>map</code> بر اساس Swiss Tables بازنویسی شده است.
+        این ساختار داده جدید عملیات map را از طریق locality بهتر و مقیاس‌پذیری CPU بهبود می‌بخشد.
+        تغییرات شامل بهبود عملکرد تخصیص حافظه اشیاء کوچک و یک mutex داخلی جدید runtime است.
+    </p>
+    <p>
+        نتایج بنچمارک بسته به برنامه متفاوت است، اما به‌طور میانگین ۲ تا ۳ درصد کاهش سربار CPU
+        در مجموعه‌ای از بنچمارک‌های نماینده مشاهده شده است. این بهبود به‌خصوص برای برنامه‌هایی
+        که به‌طور سنگین از map استفاده می‌کنند، مشهودتر است.
+    </p>
+    <figure class="code go" dir="ltr">
+        <pre><code class="language-go">// رفتار map تغییری نکرده، فقط پیاده‌سازی داخلی بهبود یافته
+m := make(map[string]int)
+m["key"] = 42
+
+// اگر نیاز به غیرفعال کردن Swiss Tables بود (برای دیباگ)
+// GOEXPERIMENT=noswissmap go build .
+// GOEXPERIMENT=nospinbitmutex go build .</code></pre>
+    </figure>
+
+    <h3 id="green-tea-gc">جمع‌آور زباله Green Tea — Go 1.25 آزمایشی، Go 1.26 پیش‌فرض</h3>
+    <p>
+        جمع‌آور زباله جدید Green Tea که در Go 1.25 به‌صورت آزمایشی معرفی شد، اکنون در
+        Go 1.26 به‌طور پیش‌فرض فعال است. این جمع‌آور زباله از طریق بهبود locality و
+        مقیاس‌پذیری CPU، عملکرد marking و اسکن اشیاء کوچک را بهبود می‌بخشد.
+    </p>
+    <p>
+        نتایج بنچمارک متفاوت است، اما انتظار می‌رود بین ۱۰ تا ۴۰ درصد کاهش سربار جمع‌آوری
+        زباله در برنامه‌های واقعی که به‌طور سنگین از GC استفاده می‌کنند. بهبودهای اضافی در حدود
+        ۱۰ درصد سربار GC هنگام اجرا بر روی پلتفرم‌های جدیدتر amd64 (Intel Ice Lake یا AMD Zen 4
+        و جدیدتر) انتظار می‌رود، زیرا GC اکنون از دستورالعمل‌های برداری برای اسکن اشیاء کوچک
+        استفاده می‌کند.
+    </p>
+    <figure class="code bash" dir="ltr">
+        <pre><code class="language-bash"># غیرفعال کردن GC جدید (در صورت نیاز)
+GOEXPERIMENT=nogreenteagc go build -o myapp .
+
+# توجه: این تنظیم در Go 1.27 حذف خواهد شد
+# اگر به هر دلیلی نیاز به غیرفعال کردن دارید، لطفاً issue ثبت کنید</code></pre>
+    </figure>
+
+    <div class="warning">
+        <strong>توجه مهم:</strong> تابع <code>debug.FreeOSMemory()</code> در نسخه‌های اخیر Go
+        منسوخ شده است. به‌جای آن از تنظیم <code>GOGC</code> و <code>GOMEMLIMIT</code> برای
+        کنترل رفتار GC استفاده کنید. runtime اکنون به‌طور خودکار حافظه آزاد شده را به
+        سیستم‌عامل برمی‌گرداند.
+    </div>
+
+    <div class="case-study">
+        <div class="case-study-header">
+            <span class="case-study-badge">مطالعه موردی</span>
+            <span class="case-study-title">بهبود ۳۰ درصدی عملکرد GC در Shopify</span>
+        </div>
+        <p>
+            شرکت Shopify در ارائه Go North America 2024 تجربه خود را از ارتقای سرویس‌های Go
+            به نسخه 1.24 به اشتراک گذاشت. با فعال‌سازی Swiss Tables و بهبودهای runtime،
+            آن‌ها کاهش ۳۰ درصدی در latency p99 و کاهش ۲۵ درصدی در مصرف حافظه
+            سرویس‌های پردازش پرداخت مشاهده کردند. این بهبود بدون هیچ تغییری در کد برنامه
+            به‌دست آمد و فقط با ارتقای نسخه Go محقق شد.
+        </p>
+        <p>
+            Swiss Tables یک ساختار داده hash map جدید است که از طراحی Google Abseil الهام گرفته
+            و به‌طور خاص برای الگوهای استفاده مدرن بهینه شده. مزیت اصلی آن کاهش cache miss
+            در پردازنده است چون داده‌ها به‌طور فشرده‌تری ذخیره می‌شوند و عملیات جستجو
+            کمتر به حافظه دسترسی دارد. برای Shopify که هزاران درخواست پرداخت را در ثانیه پردازش
+            می‌کند، حتی کاهش چند درصدی در latency هم معنادار است. نکته جالب این است که این
+            بهبود کاملاً شفاف بود — توسعه‌دهندگان فقط شماره نسخه Go را در Dockerfile تغییر دادند
+            و بلافاصله بهبود عملکرد را در داشبورد مشاهده کردند.
+        </p>
+        <p class="case-study-source">
+            <span class="source-event">Go North America 2024</span>
+            <span class="source-year">— ۲۰۲۴</span>
+        </p>
+    </div>
+
+<h3 id="الگوریتم-سه-رنگی-gc-در-go">الگوریتم سه‌رنگی GC در Go — مرحله به مرحله</h3>
+<p>قلب تپنده‌ی Garbage Collector در Go الگوریتم Tri-Color Marking است که به‌صورت همزمان (concurrent) با اجرای برنامه کار می‌کند. درک این الگوریتم برای هر توسعه‌دهنده‌ی Go ضروری است، زیرا رفتار حافظه‌ی برنامه‌تان مستقیماً تحت تأثیر نحوه کار این الگوریتم قرار دارد. الگوریتم سه‌رنگی اشیاء روی heap را به سه دسته تقسیم می‌کند: سیاه (قابل دسترس و کاملاً بررسی‌شده)، خاکستری (قابل دسترس اما هنوز بررسی نشده) و سفید (احتمالاً غیرقابل دسترس). فرآیند marking از root‌ها شروع می‌شود و به‌تدریج تمام اشیاء قابل دسترس را از خاکستری به سیاه تبدیل می‌کند. در پایان، اشیاء سفید باقی‌مانده زباله محسوب شده و حافظه‌ی آنها آزاد می‌شود.</p>
+
+<figure class="diagram" dir="ltr">
+<svg height="680" viewBox="0 0 750 680" width="750" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<marker id="arrowgc3" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5">
+<polygon fill="#555" points="0 0, 10 3.5, 0 7"></polygon>
+</marker>
+<filter height="104%" id="shgc3" width="104%" x="-2%" y="-2%"><fedropshadow dx="1" dy="1" flood-opacity="0.12" stddeviation="2"></fedropshadow></filter>
+</defs>
+<rect fill="#fafafa" height="680" rx="8" width="750" x="0" y="0"></rect>
+<text fill="#333" font-size="16" font-weight="bold" text-anchor="middle" x="375" y="28" direction="rtl" unicode-bidi="embed">الگوریتم سه‌رنگی <tspan direction="ltr" unicode-bidi="embed">GC</tspan> در <tspan direction="ltr" unicode-bidi="embed">Go</tspan> — مرحله به مرحله</text>
+
+<!-- Step 1: All objects white -->
+<rect fill="#fff" height="75" rx="6" stroke="#ccc" stroke-width="1.5" width="340" x="20" y="50"></rect>
+<text fill="#333" font-size="12" font-weight="bold" x="30" y="70" direction="rtl" unicode-bidi="embed">مرحله ۱: همه اشیاء سفید هستند</text>
+<circle cx="60" cy="100" fill="#fafafa" r="14" stroke="#bbb" stroke-width="2"></circle>
+<text fill="#999" font-size="9" text-anchor="middle" x="60" y="104" direction="ltr" unicode-bidi="embed">A</text>
+<circle cx="100" cy="100" fill="#fafafa" r="14" stroke="#bbb" stroke-width="2"></circle>
+<text fill="#999" font-size="9" text-anchor="middle" x="100" y="104" direction="ltr" unicode-bidi="embed">B</text>
+<circle cx="140" cy="100" fill="#fafafa" r="14" stroke="#bbb" stroke-width="2"></circle>
+<text fill="#999" font-size="9" text-anchor="middle" x="140" y="104" direction="ltr" unicode-bidi="embed">C</text>
+<circle cx="180" cy="100" fill="#fafafa" r="14" stroke="#bbb" stroke-width="2"></circle>
+<text fill="#999" font-size="9" text-anchor="middle" x="180" y="104" direction="ltr" unicode-bidi="embed">D</text>
+<circle cx="220" cy="100" fill="#fafafa" r="14" stroke="#bbb" stroke-width="2"></circle>
+<text fill="#999" font-size="9" text-anchor="middle" x="220" y="104" direction="ltr" unicode-bidi="embed">E</text>
+<circle cx="260" cy="100" fill="#fafafa" r="14" stroke="#bbb" stroke-width="2"></circle>
+<text fill="#999" font-size="9" text-anchor="middle" x="260" y="104" direction="ltr" unicode-bidi="embed">F</text>
+<text fill="#999" font-size="9" text-anchor="middle" x="320" y="104" direction="ltr" unicode-bidi="embed">...</text>
+
+<!-- Step 2: Root objects marked gray -->
+<rect fill="#fff" height="95" rx="6" stroke="#9C27B0" stroke-width="1.5" width="340" x="390" y="50"></rect>
+<text fill="#333" font-size="12" font-weight="bold" x="400" y="70" direction="rtl" unicode-bidi="embed">مرحله ۲: اشیاء <tspan direction="ltr" unicode-bidi="embed">root</tspan> خاکستری می‌شوند</text>
+<text fill="#777" font-size="9" x="400" y="85" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">stack</tspan> و <tspan direction="ltr" unicode-bidi="embed">globals</tspan> نقطه شروع هستند</text>
+<!-- Root box -->
+<rect fill="#4CAF50" height="20" rx="4" width="50" x="420" y="100"></rect>
+<text fill="#fff" font-size="9" font-weight="bold" text-anchor="middle" x="445" y="114" direction="ltr" unicode-bidi="embed">Root</text>
+<line stroke="#4CAF50" stroke-width="1.5" marker-end="url(#arrowgc3)" x1="470" y1="110" x2="510" y2="110"></line>
+<circle cx="530" cy="110" fill="#9C27B0" r="14" stroke="#7B1FA2" stroke-width="2"></circle>
+<text fill="#fff" font-size="9" font-weight="bold" text-anchor="middle" x="530" y="114" direction="ltr" unicode-bidi="embed">A</text>
+<circle cx="570" cy="110" fill="#fafafa" r="14" stroke="#bbb" stroke-width="2"></circle>
+<text fill="#999" font-size="9" text-anchor="middle" x="570" y="114" direction="ltr" unicode-bidi="embed">B</text>
+<circle cx="610" cy="110" fill="#9C27B0" r="14" stroke="#7B1FA2" stroke-width="2"></circle>
+<text fill="#fff" font-size="9" font-weight="bold" text-anchor="middle" x="610" y="114" direction="ltr" unicode-bidi="embed">C</text>
+<circle cx="650" cy="110" fill="#fafafa" r="14" stroke="#bbb" stroke-width="2"></circle>
+<text fill="#999" font-size="9" text-anchor="middle" x="650" y="114" direction="ltr" unicode-bidi="embed">D</text>
+<circle cx="690" cy="110" fill="#fafafa" r="14" stroke="#bbb" stroke-width="2"></circle>
+<text fill="#999" font-size="9" text-anchor="middle" x="690" y="114" direction="ltr" unicode-bidi="embed">E</text>
+
+<!-- Arrow between step 1 and 2 -->
+<text fill="#9C27B0" font-size="20" font-weight="bold" text-anchor="middle" x="375" y="100" direction="ltr" unicode-bidi="embed">→</text>
+
+<!-- Step 3: Pick gray → mark black → references gray -->
+<rect fill="#fff" height="120" rx="6" stroke="#333" stroke-width="1.5" width="710" x="20" y="155"></rect>
+<text fill="#333" font-size="12" font-weight="bold" x="30" y="175" direction="rtl" unicode-bidi="embed">مرحله ۳: یک شیء خاکستری انتخاب → سیاه می‌شود → ارجاعاتش خاکستری</text>
+<text fill="#777" font-size="9" x="30" y="190" direction="rtl" unicode-bidi="embed">A انتخاب شد: A سیاه شد. ارجاعات A (B و D) خاکستری شدند.</text>
+<!-- Objects with relationships -->
+<circle cx="60" cy="230" fill="#333" r="16" stroke="#111" stroke-width="2"></circle>
+<text fill="#fff" font-size="9" font-weight="bold" text-anchor="middle" x="60" y="234" direction="ltr" unicode-bidi="embed">A</text>
+<line stroke="#555" stroke-width="1.5" marker-end="url(#arrowgc3)" x1="76" y1="222" x2="120" y2="222"></line>
+<circle cx="140" cy="230" fill="#9C27B0" r="16" stroke="#7B1FA2" stroke-width="2"></circle>
+<text fill="#fff" font-size="9" font-weight="bold" text-anchor="middle" x="140" y="234" direction="ltr" unicode-bidi="embed">B</text>
+<line stroke="#555" stroke-width="1.5" marker-end="url(#arrowgc3)" x1="156" y1="222" x2="200" y2="222"></line>
+<circle cx="220" cy="230" fill="#fafafa" r="16" stroke="#bbb" stroke-width="2"></circle>
+<text fill="#999" font-size="9" text-anchor="middle" x="220" y="234" direction="ltr" unicode-bidi="embed">E</text>
+<line stroke="#555" stroke-width="1.5" marker-end="url(#arrowgc3)" x1="76" y1="238" x2="270" y2="238"></line>
+<circle cx="290" cy="245" fill="#9C27B0" r="16" stroke="#7B1FA2" stroke-width="2"></circle>
+<text fill="#fff" font-size="9" font-weight="bold" text-anchor="middle" x="290" y="249" direction="ltr" unicode-bidi="embed">D</text>
+<line stroke="#555" stroke-width="1.5" marker-end="url(#arrowgc3)" x1="306" y1="238" x2="350" y2="225"></line>
+<circle cx="370" cy="218" fill="#fafafa" r="16" stroke="#bbb" stroke-width="2"></circle>
+<text fill="#999" font-size="9" text-anchor="middle" x="370" y="222" direction="ltr" unicode-bidi="embed">F</text>
+<circle cx="610" cy="225" fill="#9C27B0" r="16" stroke="#7B1FA2" stroke-width="2"></circle>
+<text fill="#fff" font-size="9" font-weight="bold" text-anchor="middle" x="610" y="229" direction="ltr" unicode-bidi="embed">C</text>
+<text fill="#777" font-size="9" text-anchor="middle" x="510" y="235" direction="rtl" unicode-bidi="embed">C خاکستری است (از <tspan direction="ltr" unicode-bidi="embed">root</tspan> دیگر)</text>
+<!-- Legend for step 3 -->
+<circle cx="480" cy="258" fill="#333" r="8" stroke="#111" stroke-width="1.5"></circle>
+<text fill="#555" font-size="9" x="492" y="262" direction="rtl" unicode-bidi="embed">سیاه = بررسی‌شده</text>
+<circle cx="580" cy="258" fill="#9C27B0" r="8" stroke="#7B1FA2" stroke-width="1.5"></circle>
+<text fill="#555" font-size="9" x="592" y="262" direction="rtl" unicode-bidi="embed">خاکستری = بررسی‌نشده</text>
+<circle cx="690" cy="258" fill="#fafafa" r="8" stroke="#bbb" stroke-width="1.5"></circle>
+<text fill="#555" font-size="9" x="702" y="262" direction="rtl" unicode-bidi="embed">سفید</text>
+
+<!-- Step 4: Continue until no gray -->
+<rect fill="#fff" height="90" rx="6" stroke="#4CAF50" stroke-width="1.5" width="340" x="20" y="285"></rect>
+<text fill="#333" font-size="12" font-weight="bold" x="30" y="305" direction="rtl" unicode-bidi="embed">مرحله ۴: تکرار تا تمام شدن خاکستری‌ها</text>
+<text fill="#777" font-size="9" x="30" y="320" direction="rtl" unicode-bidi="embed">هر خاکستری → سیاه، ارجاعاتش → خاکستری</text>
+<circle cx="60" cy="350" fill="#333" r="14" stroke="#111" stroke-width="2"></circle>
+<text fill="#fff" font-size="9" font-weight="bold" text-anchor="middle" x="60" y="354" direction="ltr" unicode-bidi="embed">A</text>
+<circle cx="100" cy="350" fill="#333" r="14" stroke="#111" stroke-width="2"></circle>
+<text fill="#fff" font-size="9" font-weight="bold" text-anchor="middle" x="100" y="354" direction="ltr" unicode-bidi="embed">B</text>
+<circle cx="140" cy="350" fill="#333" r="14" stroke="#111" stroke-width="2"></circle>
+<text fill="#fff" font-size="9" font-weight="bold" text-anchor="middle" x="140" y="354" direction="ltr" unicode-bidi="embed">C</text>
+<circle cx="180" cy="350" fill="#333" r="14" stroke="#111" stroke-width="2"></circle>
+<text fill="#fff" font-size="9" font-weight="bold" text-anchor="middle" x="180" y="354" direction="ltr" unicode-bidi="embed">D</text>
+<circle cx="220" cy="350" fill="#333" r="14" stroke="#111" stroke-width="2"></circle>
+<text fill="#fff" font-size="9" font-weight="bold" text-anchor="middle" x="220" y="354" direction="ltr" unicode-bidi="embed">E</text>
+<circle cx="260" cy="350" fill="#fafafa" r="14" stroke="#bbb" stroke-width="2"></circle>
+<text fill="#999" font-size="9" text-anchor="middle" x="260" y="354" direction="ltr" unicode-bidi="embed">F</text>
+<circle cx="300" cy="350" fill="#fafafa" r="14" stroke="#bbb" stroke-width="2"></circle>
+<text fill="#999" font-size="9" text-anchor="middle" x="300" y="354" direction="ltr" unicode-bidi="embed">G</text>
+<text fill="#4CAF50" font-size="10" font-weight="bold" x="30" y="370" direction="rtl" unicode-bidi="embed">دیگر شیء خاکستری وجود ندارد — marking تمام شد!</text>
+
+<!-- Step 5: Sweep white objects -->
+<rect fill="#fff" height="95" rx="6" stroke="#e91e63" stroke-width="1.5" width="340" x="390" y="285"></rect>
+<text fill="#333" font-size="12" font-weight="bold" x="400" y="305" direction="rtl" unicode-bidi="embed">مرحله ۵: <tspan direction="ltr" unicode-bidi="embed">Sweep</tspan> — اشیاء سفید = زباله</text>
+<text fill="#777" font-size="9" x="400" y="320" direction="rtl" unicode-bidi="embed">حافظه‌ی اشیاء سفید آزاد می‌شود</text>
+<circle cx="440" cy="350" fill="#333" r="14" stroke="#111" stroke-width="2"></circle>
+<text fill="#fff" font-size="9" font-weight="bold" text-anchor="middle" x="440" y="354" direction="ltr" unicode-bidi="embed">A</text>
+<circle cx="480" cy="350" fill="#333" r="14" stroke="#111" stroke-width="2"></circle>
+<text fill="#fff" font-size="9" font-weight="bold" text-anchor="middle" x="480" y="354" direction="ltr" unicode-bidi="embed">B</text>
+<circle cx="520" cy="350" fill="#333" r="14" stroke="#111" stroke-width="2"></circle>
+<text fill="#fff" font-size="9" font-weight="bold" text-anchor="middle" x="520" y="354" direction="ltr" unicode-bidi="embed">C</text>
+<!-- White objects with X marks = garbage -->
+<circle cx="600" cy="350" fill="#e91e63" r="14" stroke="#c2185b" stroke-width="2" opacity="0.7"></circle>
+<text fill="#fff" font-size="9" font-weight="bold" text-anchor="middle" x="600" y="354" direction="ltr" unicode-bidi="embed">F</text>
+<line stroke="#fff" stroke-width="2" x1="590" y1="340" x2="610" y2="360"></line>
+<line stroke="#fff" stroke-width="2" x1="610" y1="340" x2="590" y2="360"></line>
+<circle cx="640" cy="350" fill="#e91e63" r="14" stroke="#c2185b" stroke-width="2" opacity="0.7"></circle>
+<text fill="#fff" font-size="9" font-weight="bold" text-anchor="middle" x="640" y="354" direction="ltr" unicode-bidi="embed">G</text>
+<line stroke="#fff" stroke-width="2" x1="630" y1="340" x2="650" y2="360"></line>
+<line stroke="#fff" stroke-width="2" x1="650" y1="340" x2="630" y2="360"></line>
+<text fill="#e91e63" font-size="9" font-weight="bold" x="680" y="354" direction="rtl" unicode-bidi="embed">زباله!</text>
+
+<!-- Write Barrier section -->
+<rect fill="#FFF3E0" height="130" rx="6" stroke="#FF9800" stroke-width="2" width="710" x="20" y="400"></rect>
+<text fill="#E65100" font-size="13" font-weight="bold" text-anchor="middle" x="375" y="422" direction="rtl" unicode-bidi="embed">سد نوشتن (<tspan direction="ltr" unicode-bidi="embed">Write Barrier</tspan>) — حیاتی برای صحت همزمانی</text>
+<text fill="#BF360C" font-size="10" text-anchor="middle" x="375" y="442" direction="rtl" unicode-bidi="embed">وقتی <tspan direction="ltr" unicode-bidi="embed">mutator</tspan> (برنامه) در حین <tspan direction="ltr" unicode-bidi="embed">marking</tspan> یک اشاره‌گر از شیء سیاه به شیء سفید اضافه می‌کند:</text>
+<!-- Before write barrier -->
+<circle cx="140" cy="480" fill="#333" r="18" stroke="#111" stroke-width="2"></circle>
+<text fill="#fff" font-size="10" font-weight="bold" text-anchor="middle" x="140" y="484" direction="ltr" unicode-bidi="embed">سیاه</text>
+<line stroke="#e91e63" stroke-width="2" stroke-dasharray="5,3" x1="158" y1="480" x2="262" y2="480"></line>
+<text fill="#e91e63" font-size="10" font-weight="bold" text-anchor="middle" x="210" y="472" direction="ltr" unicode-bidi="embed">new ptr</text>
+<circle cx="280" cy="480" fill="#fafafa" r="18" stroke="#bbb" stroke-width="2"></circle>
+<text fill="#999" font-size="10" text-anchor="middle" x="280" y="484" direction="ltr" unicode-bidi="embed">سفید</text>
+<!-- After write barrier -->
+<text fill="#FF9800" font-size="18" font-weight="bold" text-anchor="middle" x="360" y="484" direction="ltr" unicode-bidi="embed">→</text>
+<circle cx="440" cy="480" fill="#333" r="18" stroke="#111" stroke-width="2"></circle>
+<text fill="#fff" font-size="10" font-weight="bold" text-anchor="middle" x="440" y="484" direction="ltr" unicode-bidi="embed">سیاه</text>
+<line stroke="#4CAF50" stroke-width="2" x1="458" y1="480" x2="562" y2="480"></line>
+<circle cx="580" cy="480" fill="#9C27B0" r="18" stroke="#7B1FA2" stroke-width="2"></circle>
+<text fill="#fff" font-size="10" font-weight="bold" text-anchor="middle" x="580" y="484" direction="ltr" unicode-bidi="embed">خاکستری!</text>
+<text fill="#2E7D32" font-size="9" font-weight="bold" text-anchor="middle" x="520" y="510" direction="rtl" unicode-bidi="embed">سد نوشتن شیء سفید را خاکستری کرد — از گم‌شدن جلوگیری شد!</text>
+<text fill="#BF360C" font-size="9" text-anchor="middle" x="375" y="526" direction="rtl" unicode-bidi="embed">بدون <tspan direction="ltr" unicode-bidi="embed">write barrier</tspan>، شیء سفید ناپدید می‌شد چون هیچ خاکستری‌ای به آن اشاره نمی‌کرد. این <tspan direction="ltr" unicode-bidi="embed">tri-color invariant</tspan> را حفظ می‌کند.</text>
+
+<!-- Color legend -->
+<rect fill="#f5f5f5" height="45" rx="6" stroke="#ddd" stroke-width="1" width="710" x="20" y="545"></rect>
+<text fill="#333" font-size="11" font-weight="bold" text-anchor="middle" x="375" y="564" direction="rtl" unicode-bidi="embed">معنی سه رنگ</text>
+<circle cx="100" cy="578" fill="#333" r="8"></circle>
+<text fill="#333" font-size="10" x="112" y="582" direction="rtl" unicode-bidi="embed">سیاه: قابل دسترس، بررسی‌شده</text>
+<circle cx="310" cy="578" fill="#9C27B0" r="8"></circle>
+<text fill="#333" font-size="10" x="322" y="582" direction="rtl" unicode-bidi="embed">خاکستری: قابل دسترس، بررسی‌نشده</text>
+<circle cx="520" cy="578" fill="#fafafa" r="8" stroke="#bbb" stroke-width="1.5"></circle>
+<text fill="#333" font-size="10" x="532" y="582" direction="rtl" unicode-bidi="embed">سفید: احتمالاً غیرقابل دسترس</text>
+<circle cx="670" cy="578" fill="#e91e63" r="8"></circle>
+<text fill="#333" font-size="10" x="682" y="582" direction="ltr" unicode-bidi="embed">= زباله</text>
+
+<!-- Golden rule bar -->
+<rect fill="#FFF3E0" height="30" rx="6" stroke="#FF9800" stroke-width="1.5" width="710" x="20" y="600"></rect>
+<text fill="#E65100" font-size="11" font-weight="bold" text-anchor="middle" x="375" y="620" direction="rtl" unicode-bidi="embed">قانون طلایی: <tspan direction="ltr" unicode-bidi="embed">Write Barrier</tspan> تضمین می‌کند هیچ شیء قابل دسترسی‌ای به‌اشتباه جمع‌آوری نشود — حتی وقتی <tspan direction="ltr" unicode-bidi="embed">mutator</tspan> و <tspan direction="ltr" unicode-bidi="embed">GC</tspan> همزمان کار می‌کنند.</text>
+
+<!-- Additional note about concurrent phases -->
+<rect fill="#E3F2FD" height="40" rx="6" stroke="#2196F3" stroke-width="1" width="710" x="20" y="638"></rect>
+<text fill="#1565C0" font-size="10" text-anchor="middle" x="375" y="655" direction="rtl" unicode-bidi="embed">نکته: مراحل <tspan direction="ltr" unicode-bidi="embed">Mark</tspan> (۲-۴) به‌صورت <tspan direction="ltr" unicode-bidi="embed">concurrent</tspan> اجرا می‌شوند — فقط مراحل کوتاه <tspan direction="ltr" unicode-bidi="embed">STW</tspan> (شناسایی <tspan direction="ltr" unicode-bidi="embed">root</tspan>‌ها و پایان <tspan direction="ltr" unicode-bidi="embed">mark</tspan>) نیاز به توقف کامل دارند.</text>
+<text fill="#1565C0" font-size="10" text-anchor="middle" x="375" y="672" direction="rtl" unicode-bidi="embed">به همین دلیل توقف‌های <tspan direction="ltr" unicode-bidi="embed">GC</tspan> در <tspan direction="ltr" unicode-bidi="embed">Go</tspan> معمولاً زیر ۵۰۰ میکروثانیه هستند — حتی در برنامه‌های با <tspan direction="ltr" unicode-bidi="embed">heap</tspan> بزرگ.</text>
+</svg>
+<figcaption>شکل ۱۲-۴-۵: الگوریتم سه‌رنگی <bdi dir="ltr">GC</bdi> در <bdi dir="ltr">Go</bdi> — از marking تا sweep با <bdi dir="ltr">write barrier</bdi></figcaption>
+</figure>
+
+<p>نمودار فوق فرآیند الگوریتم سه‌رنگی را پنج مرحله‌ی اصلی نشان می‌دهد. در مرحله‌ی اول، همه‌ی اشیاء روی heap سفید هستند و GC هنوز شروع نکرده. در مرحله‌ی دوم، root‌ها (اشیاء مستقیماً قابل دسترس از stack و متغیرهای سراسری) خاکستری标记 می‌شوند. مرحله‌ی سوم قلب الگوریتم است: GC یک شیء خاکستری را انتخاب می‌کند، آن را سیاه می‌کند (یعنی بررسی‌شده) و تمام اشیایی که به آن ارجاع دارند خاکستری می‌شوند. این فرآیند در مرحله‌ی چهارم تکرار می‌شود تا هیچ شیء خاکستری باقی نماند. در مرحله‌ی پنجم، اشیاء سفید باقی‌مانده زباله هستند و حافظه‌ی آنها آزاد می‌شود. اما نکته‌ی حیاتی write barrier است: چون برنامه (mutator) همزمان با GC در حال اجراست، ممکن است یک اشاره‌گر از شیء سیاه به شیء سفید اضافه کند. بدون write barrier، این شیء سفید ناپدید می‌شد چون هیچ خاکستری‌ای دیگر به آن اشاره نمی‌کرد. write barrier با خاکستری کردن شیء سفید هدف، این مشکل را حل می‌کند.</p>
+
+<h3 id="سناریوهای-عملیاتی-بهینهسازی-حافظه-و-gc">سناریوهای عملیاتی: بهینه‌سازی حافظه و GC</h3>
+<p>درک تئوری الگوریتم GC مهم است، اما در عمل نیاز دارید تکنیک‌های خاصی را برای کاهش فشار GC و بهینه‌سازی مصرف حافظه به‌کار ببرید. این سناریوهای عملیاتی بر اساس تجربیات تیم‌هایی مثل Twitch، Uber و Dropbox تنظیم شده‌اند و هر کدام راهکار مشخصی برای یک مشکل واقعی ارائه می‌دهند. به‌یاد داشته باشید که بهینه‌سازی GC بدون اندازه‌گیری اولیه بی‌فایده است — همیشه ابتدا با pprof مشکل را شناسایی کنید و سپس راهکار مناسب را اعمال کنید. بسیاری از تیم‌ها بدون پروفایلینگ، GOGC را تنظیم می‌کنند و نتایج عکس می‌گیرند چون مشکل واقعی اصلاً GC نبوده.</p>
+<ul>
+<li><strong>کاهش فشار GC با <bdi dir="ltr">sync.Pool</bdi>:</strong> اگر برنامه‌ی شما در هر ثانیه هزاران شیء موقت (بافر، response struct، encoder) ایجاد می‌کند، GC باید همه‌ی آنها را ردیابی کند. با <bdi dir="ltr">sync.Pool</bdi> اشیاء بازیافت می‌شوند و تخصیص جدید نیاز نیست. نکته‌ی مهم: همیشه قبل از <bdi dir="ltr">Put</bdi> وضعیت شیء را ریست کنید و هرگز اشیاء با داده‌ی حساس را pool نکنید. در Twitch با این تکنیک ۴۰ درصد کاهش تأخیر GC و ۲۵ درصد کاهش مصرف حافظه حاصل شد.</li>
+<li><strong>تنظیم متغیر <bdi dir="ltr">GOGC</bdi>:</strong> مقدار پیش‌فرض <bdi dir="ltr">GOGC=100</bdi> برای بسیاری از سرویس‌ها مناسب نیست. اگر سرویس شما تأخیر حساس است (مثل real-time)، <bdi dir="ltr">GOGC=50</bdi> را امتحان کنید — GC بیشتر اجرا می‌شود اما هر بار حافظه‌ی کمتری باقی می‌ماند و تأخیر کمتر می‌شود. اگر throughput مهم‌تر است، <bdi dir="ltr">GOGC=200-400</bdi> تعداد اجرای GC را کاهش می‌دهد اما مصرف حافظه بیشتر می‌شود. هر مقدار را با benchstat تست کنید.</li>
+<li><strong>درک تأخیر GC با <bdi dir="ltr">GODEBUG=gctrace=1</bdi>:</strong> این متغیر محیطی اطلاعات هر چرخه‌ی GC را در stderr چاپ می‌کند: زمان <bdi dir="ltr">STW</bdi>، اندازه‌ی heap قبل و بعد، تعداد goroutine‌ها و ... این ابزار برای شناسایی الگوهای مشکوک GC مثل اجرای مکرر، STW طولانی یا رشد مداوم heap بی‌نظیر است. در production از <bdi dir="ltr">GODEBUG=gctrace=1</bdi> به‌صورت موقت استفاده کنید و لاگ‌ها را تحلیل کنید.</li>
+<li><strong>اجتناب از finalizer‌ها:</strong> <bdi dir="ltr">runtime.SetFinalizer</bdi> تابعی ثبت می‌کند که هنگام جمع‌آوری شیء فراخوانی شود. اما finalizer‌ها عملکرد GC را کاهش می‌دهند (باید اشیاء را در صف مخصوص قرار دهند)، ترتیب اجرایشان نامشخص است، و هیچ تضمینی وجود ندارد که اصلاً اجرا شوند. به‌جای finalizer از <bdi dir="ltr">defer</bdi> یا الگوی <bdi dir="ltr">io.Closer</bdi> استفاده کنید که پاک‌سازی قطعی و قابل پیش‌بینی ارائه می‌دهند.</li>
+<li><strong>پیش‌تخصیص برای کاهش کار GC:</strong> هر تخصیص جدید روی heap یک شیء اضافه برای GC ایجاد می‌کند. با <bdi dir="ltr">make([]T, 0, n)</bdi> برای slice و <bdi dir="ltr">strings.Builder.Grow()</bdi> برای رشته‌ها، تعداد تخصیص‌ها را به حداقل برسانید. هرچه اشیاء کمتری روی heap باشند، GC سریع‌تر marking را تمام می‌کند و تأخیر کمتری ایجاد می‌کند. در بنچمارک‌های واقعی، پیش‌تخصیص می‌تواند تا ۳ برابر سرعت را افزایش دهد و ۹۰ درصد تخصیص‌ها را حذف کند.</li>
+</ul>
+
+<div class="tip"><strong>نکته حیاتی درباره <code dir="ltr">GOGC</code>:</strong> مقدار پیش‌فرض <code dir="ltr">GOGC=100</code> یعنی GC زمانی اجرا می‌شود که heap به دو برابر اندازه‌ی پس از آخرین GC رسیده باشد. افزایش <code dir="ltr">GOGC</code> (مثلاً ۲۰۰ یا ۴۰۰) فرکانس اجرای GC را کاهش می‌دهد اما مصرف حافظه افزایش می‌یابد. کاهش آن (مثلاً ۵۰) فرکانس GC را بیشتر اما مصرف حافظه کمتر می‌کند. در محیط‌های container حتماً از <code dir="ltr">GOMEMLIMIT</code> (از Go 1.19) استفاده کنید — این متغیر سقف حافظه را تعیین می‌کند و از OOM kill جلوگیری می‌کند. ترکیب پیشنهادی: <code dir="ltr">GOGC=200 GOMEMLIMIT=80% container_memory</code>. بدون <code dir="ltr">GOMEMLIMIT</code>، افزایش <code dir="ltr">GOGC</code> می‌تواند منجر به مصرف حافظه‌ی نامحدود و OOM در container شود.</div>
+
+
+</div>
+</main>
+</div>
+
+<!-- Footer -->
+<footer class="site-footer">
+<div class="footer-inner">
+<div class="footer-nav">
+<span class="nav-arrow">‹</span>
+<a href="12.03-practical-optimization-tips.html" data-prev>۱۲.۳ نکات کاربردی برای بهینه‌سازی</a>
+</div>
+<div class="footer-toc">
+<a href="00.01-contents.html">فهرست</a>
+</div>
+<div class="footer-nav">
+<a href="12.05-practical-techniques-for-memory-reduction.html" data-next>۱۲.۵ تکنیک‌های عملی برای کاهش مصرف حافظه</a>
+<span class="nav-arrow">›</span>
+</div>
+</div>
+</footer>
+
+<!-- Back to Top -->
+<button class="back-to-top" aria-label="بازگشت به بالا">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
+</button>
+
+<!-- Scripts -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/go.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/php.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/sql.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/yaml.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/json.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/dockerfile.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/xml.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/ini.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/plaintext.min.js"></script>
+<script src="assets/js/main.js"></script>
+</body>
+</html>

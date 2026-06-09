@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="fa">
+<head>
+<script>!function(){try{var t=localStorage.getItem('php2go-theme');if(t==='dark'||(!t&&window.matchMedia('(prefers-color-scheme:dark)').matches)){document.documentElement.setAttribute('data-theme','dark')}}catch(e){}}();</script>
+<meta charset="utf-8"/>
+<meta content="ie=edge" http-equiv="x-ua-compatible"/>
+<title>۷.۱ ساخت یک وب‌سرور پایدار و ایمن — PHP to Go</title>
+<meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet"/>
+<link href="assets/css/main.css" rel="stylesheet" type="text/css"/>
+<link href="assets/img/favicon.ico" rel="icon" type="image/x-icon"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" media="screen" class="hljs-light-theme" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css" media="not screen" class="hljs-dark-theme" rel="stylesheet"/>
+</head>
+<body>
+<!-- Progress Bar -->
+<div class="progress-bar"><div class="progress-bar__fill"></div></div>
+
+<!-- Header -->
+<header class="site-header">
+<div class="header-inner">
+<div class="header-left">
+<button class="header-btn sidebar-toggle" aria-label="فهرست">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+</button>
+<a href="00.00-front-matter.html" class="header-logo"><span class="logo-php">PHP</span> to <span class="logo-go">Go</span></a>
+<span class="header-crumbs">ساخت وب‌سرور › ساخت یک وب‌سرور پایدار و ایمن</span>
+</div>
+<div class="header-right">
+<nav class="header-nav">
+<span class="nav-arrow">‹</span>
+<a href="07.00-chapter-7.html"><span class="nav-label">۷. ساخت وب‌سرور</span></a>
+<a href="00.01-contents.html">فهرست</a>
+<a href="07.02-routing-management.html"><span class="nav-label">۷.۲ مدیریت Routing</span></a>
+<span class="nav-arrow">›</span>
+</nav>
+<button class="header-btn search-toggle" aria-label="جستجو">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+</button>
+<button class="header-btn theme-toggle" aria-label="تغییر تم">
+<svg class="theme-icon-light" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+<svg class="theme-icon-dark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+</button>
+</div>
+</div>
+</header>
+
+<!-- Search Modal -->
+<div class="search-overlay">
+<div class="search-modal">
+<div class="search-input-wrap">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+<input type="text" class="search-input" placeholder="جستجو... (Ctrl+K)" dir="rtl"/>
+</div>
+<div class="search-results"></div>
+</div>
+</div>
+
+<!-- Layout -->
+<div class="site-layout">
+<!-- Sidebar -->
+<aside class="sidebar"></aside>
+<div class="sidebar-overlay"></div>
+
+<!-- Main Content -->
+<main class="content-area">
+<div class="content-wrap text">
+<div class="chapter">فصل ۷.۱</div>
+<div class="comparison"><strong>مقایسه با PHP:</strong> در PHP شما هرگز مستقیماً وب‌سرور نمی‌سازید. Apache یا Nginx با PHP-FPM این کار را انجام می‌دهند. اما در Go ساختن یک وب‌سرور کامل فقط با کتابخانه استاندارد امکان‌پذیر است و نیازی به وب‌سرور جانبی ندارید.</div>
+<h2 id="ساخت-یک-وبسرور-پایدار-و-ایمن">ساخت یک وب‌سرور پایدار و ایمن</h2>
+<table class="comparison-table" dir="rtl">
+<thead>
+<tr><th>ویژگی</th><th>PHP (Apache/Nginx + FPM)</th><th>Go (net/http)</th></tr>
+</thead>
+<tbody>
+<tr><td>وب‌سرور</td><td>نیاز به Apache یا Nginx</td><td>وب‌سرور داخلی — بدون نیاز به سرور جانبی</td></tr>
+<tr><td>مدل اجرا</td><td>فرآیند جداگانه برای هر درخواست</td><td>Goroutine سبک برای هر درخواست</td></tr>
+<tr><td dir="ltr">Graceful Shutdown</td><td>توسط Supervisor/systemd مدیریت می‌شود</td><td>کنترل کامل با <span dir="ltr">os.Signal</span> و Context</td></tr>
+<tr><td>تنظیم Timeouts</td><td>در سطح وب‌سرور Nginx/Apache</td><td dir="ltr">ReadTimeout, WriteTimeout, IdleTimeout</td></tr>
+<tr><td>استقرار</td><td>نیاز به PHP-FPM + Web Server</td><td>یک فایل باینری مستقل</td></tr>
+</tbody>
+</table>
+<figure class="diagram" dir="ltr">
+<svg height="380" viewBox="0 0 620 380" width="620" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<marker id="arrowhead1" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#555" points="0 0, 10 3.5, 0 7"></polygon></marker>
+<filter height="104%" id="shadow1" width="104%" x="-2%" y="-2%"><fedropshadow dx="1" dy="1" flood-opacity="0.15" stddeviation="2"></fedropshadow></filter>
+</defs>
+<rect fill="#fff" height="380" rx="8" width="620" x="0" y="0"></rect>
+<text fill="#333" font-size="16" font-weight="bold" text-anchor="middle" x="310" y="28" direction="rtl" unicode-bidi="embed">معماری وب‌سرور <tspan direction="ltr" unicode-bidi="embed">Go</tspan></text>
+<!-- Client -->
+<rect fill="#777BB4" filter="url(#shadow1)" height="50" rx="6" width="120" x="30" y="60"></rect>
+<text fill="#fff" font-size="13" text-anchor="middle" x="90" y="90" direction="ltr" unicode-bidi="embed">Client</text>
+<!-- Arrow -->
+<line marker-end="url(#arrowhead1)" stroke="#555" stroke-width="2" x1="150" x2="220" y1="85" y2="85"></line>
+<text fill="#666" font-size="10" text-anchor="middle" x="185" y="78" direction="ltr" unicode-bidi="embed">HTTP</text>
+<!-- net/http Server -->
+<rect fill="#00ADD8" filter="url(#shadow1)" height="70" rx="6" width="180" x="220" y="50"></rect>
+<text fill="#fff" font-size="13" text-anchor="middle" x="310" y="78" direction="ltr" unicode-bidi="embed">net/http Server</text>
+<text fill="#e0f7fa" font-size="11" text-anchor="middle" x="310" y="98" direction="ltr" unicode-bidi="embed">ServeMux + Timeouts</text>
+<!-- Middleware -->
+<rect fill="#4CAF50" filter="url(#shadow1)" height="50" rx="6" width="180" x="220" y="150"></rect>
+<text fill="#fff" font-size="12" text-anchor="middle" x="310" y="180" direction="ltr" unicode-bidi="embed">Middleware Chain</text>
+<line marker-end="url(#arrowhead1)" stroke="#555" stroke-width="2" x1="310" x2="310" y1="120" y2="150"></line>
+<!-- Handlers -->
+<rect fill="#FF9800" filter="url(#shadow1)" height="40" rx="6" width="100" x="170" y="240"></rect>
+<text fill="#fff" font-size="11" text-anchor="middle" x="220" y="265" direction="ltr" unicode-bidi="embed">homeHandler</text>
+<rect fill="#FF9800" filter="url(#shadow1)" height="40" rx="6" width="100" x="290" y="240"></rect>
+<text fill="#fff" font-size="11" text-anchor="middle" x="340" y="265" direction="ltr" unicode-bidi="embed">aboutHandler</text>
+<rect fill="#FF9800" filter="url(#shadow1)" height="40" rx="6" width="100" x="410" y="240"></rect>
+<text fill="#fff" font-size="11" text-anchor="middle" x="460" y="265" direction="ltr" unicode-bidi="embed">apiHandler</text>
+<line marker-end="url(#arrowhead1)" stroke="#555" stroke-width="2" x1="280" x2="220" y1="200" y2="240"></line>
+<line marker-end="url(#arrowhead1)" stroke="#555" stroke-width="2" x1="310" x2="340" y1="200" y2="240"></line>
+<line marker-end="url(#arrowhead1)" stroke="#555" stroke-width="2" x1="350" x2="460" y1="200" y2="240"></line>
+<!-- Graceful Shutdown -->
+<rect fill="#9C27B0" filter="url(#shadow1)" height="50" rx="6" width="150" x="440" y="50"></rect>
+<text fill="#fff" font-size="11" text-anchor="middle" x="515" y="75" direction="ltr" unicode-bidi="embed">Graceful Shutdown</text>
+<text fill="#e1bee7" font-size="10" text-anchor="middle" x="515" y="92" direction="ltr" unicode-bidi="embed">os.Signal + Context</text>
+<line stroke="#9C27B0" stroke-dasharray="5,5" stroke-width="2" x1="400" x2="440" y1="85" y2="75"></line>
+<!-- Response -->
+<line marker-end="url(#arrowhead1)" stroke="#555" stroke-dasharray="4,4" stroke-width="2" x1="150" x2="220" y1="105" y2="105"></line>
+<text fill="#666" font-size="10" text-anchor="middle" x="185" y="120" direction="ltr" unicode-bidi="embed">Response</text>
+</svg>
+<figcaption>شکل ۷-۱: معماری وب‌سرور <bdi dir="ltr">Go</bdi> با <bdi dir="ltr">ServeMux</bdi> ، <bdi dir="ltr">Middleware</bdi> و <bdi dir="ltr">Graceful</bdi> <bdi dir="ltr">Shutdown</bdi></figcaption>
+</figure>
+<p>پکیج استاندارد net/http مبنای ساخت وب‌سرور در Go است. در محیط production باید علاوه بر پاسخ‌دهی به درخواست‌ها، خطاها را مدیریت، لاگ‌گیری انجام دهید و سرور را به صورت امن راه‌اندازی کنید.</p>
+
+<div class="quote-box">
+    <p class="quote-text">وب یک مکانیزم تحویل است و معماری برنامه‌تان نباید به آن وابسته باشد. وب یک جزئیات است و جزئیات هرگز نباید معماری را هدایت کنند.</p>
+    <p class="quote-source">
+        <span class="quote-author">Uncle Bob</span>
+        <span class="quote-role">نویسنده و مشاور مهندسی نرم‌افزار</span>
+        <span class="quote-separator">|</span>
+        <span class="quote-book">Clean Architecture</span>
+    </p>
+</div>
+<div class="tip">
+<strong>نکته‌ی حرفه‌ای:</strong> در <bdi dir="ltr">Go</bdi> منطق کسب‌وکار شما نباید <code dir="ltr">net/http</code> را ایمپورت کند. در عوض، هندلرهایتان را به‌عنوان آداپتورهای نازک تعریف کنید که منطق کسب‌وکار خالص را فراخوانی می‌کنند. این یعنی می‌توانید کل برنامه‌تان را بدون راه‌اندازی هیچ سرور <bdi dir="ltr">HTTP</bdi> آزمایش کنید.
+</div>
+
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">package main
+import (
+"fmt"
+"log"
+"net/http"
+"time"
+)
+func homeHandler(w http.ResponseWriter, r *http.Request) {
+    if r.URL.Path != "/" {
+        http.NotFound(w, r)
+        return
+    }
+    fmt.Fprintln(w, "سلام، به وب‌سرور Go خوش آمدید!")
+}
+func main() {
+    mux := http.NewServeMux()
+    mux.HandleFunc("/", homeHandler)
+    server := &amp;http.Server{
+        Addr: ":8080",
+        Handler: mux,
+        ReadTimeout: 5 * time.Second,
+        WriteTimeout: 10 * time.Second,
+        IdleTimeout: 120 * time.Second,
+    }
+    log.Println("سرور در حال اجرا روی http://localhost:8080")
+    err := server.ListenAndServe()
+    if err != nil {
+        log.Fatalf("خطای سرور: %v", err)
+    }
+}
+</code></pre>
+</figure>
+<h3 id="داخلی-های-httpserver">داخلی‌های http.Server</h3>
+<p>ساختار <code dir="ltr">http.Server</code> قلب وب‌سرور Go است. فیلدهای مهم آن علاوه بر <code>Addr</code> و <code>Handler</code> شامل موارد زیر هستند:</p>
+<div class="note"><strong>رابط http.Handler:</strong> هسته اصلی سیستم وب Go بر اساس رابط <code dir="ltr">http.Handler</code> استوار است. هر نوعی که متد <code dir="ltr">ServeHTTP(http.ResponseWriter, *http.Request)</code> را پیاده‌سازی کند، می‌تواند به عنوان هندلر عمل کند. <code>ServeMux</code> خودش یک <code dir="ltr">http.Handler</code> است که درخواست‌ها را بر اساس الگوی مسیر به هندلر مناسب هدایت می‌کند.</div>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">server := &amp;http.Server{
+    Addr: ":8080",
+    Handler: mux,
+    ReadTimeout: 5 * time.Second, // timeout for reading entire request (including body)
+    ReadHeaderTimeout: 2 * time.Second, // timeout for reading headers
+    WriteTimeout: 10 * time.Second, // timeout for writing response
+    IdleTimeout: 120 * time.Second, // keep-alive connection timeout
+    MaxHeaderBytes: 1 &lt;&lt; 20, // max 1MB for headers (default 1MB)
+    ErrorLog: log.New(os.Stderr, "HTTP: ", log.LstdFlags), // dedicated log
+}
+</code></pre>
+</figure>
+<p>هر timeout نقش مهمی در محافظت از سرور دارد:</p>
+<p><strong dir="ltr">ReadTimeout</strong> : حداکثر زمان مجاز برای خواندن کل درخواست (شامل هدرها و body). اگر کلاینت بیش از این مقدار زمان صرف ارسال درخواست کند، سرور اتصال را قطع می‌کند.</p>
+<p><strong dir="ltr">ReadHeaderTimeout</strong> : حداکثر زمان مجاز برای خواندن هدرها. از حملات Slowloris جلوگیری می‌کند که در آن مهاجم هدرها را کُند ارسال می‌کند تا منابع سرور را اشغال کند.</p>
+<p><strong dir="ltr">WriteTimeout</strong> : حداکثر زمان مجاز برای نوشتن پاسخ. باید به اندازه‌ای بزرگ باشد که هندلرهای زمان‌بر بتوانند کارشان را تمام کنند.</p>
+<p><strong dir="ltr">IdleTimeout</strong> : زمانی که اتصال keep-alive بدون درخواست بماند قبل از بسته شدن. در HTTP/1.1 اتصال‌ها به صورت پیش‌فرض باز می‌مانند.</p>
+<p><strong dir="ltr">MaxHeaderBytes</strong> : محدود کردن حجم هدرها برای جلوگیری از حملات oversized headers.</p>
+<div class="warning"><strong>هشدار:</strong> تنظیم نکردن timeout‌ها یکی از اشتباهات امنیتی رایج در سرورهای Go است. بدون <code>ReadHeaderTimeout</code> ، یک مهاجم می‌تواند هزاران اتصال نیمه‌باز ایجاد کند و منابع سرور را تخلیه کند (حمله Slowloris). همیشه timeout‌ها را به‌صورت صریح تنظیم کنید.</div>
+<h3 id="پشتیبانی-از-http2">پشتیبانی از HTTP/2</h3>
+
+<div class="quote-box">
+    <p class="quote-text">اصل پارانویا: نمی‌توان بیش از حد محتاط بود. هر ورودی را دشمن فرض کنید تا خلاف آن ثابت شود. هر شبکه را نفوذشده فرض کنید. هر فراخوانی سیستمی را محتمل شکست فرض کنید. این طرزفکر بدبینی نیست — این انضباط مهندسی است.</p>
+    <p class="quote-source">
+        <span class="quote-author">Andy Hunt و Dave Thomas</span>
+        <span class="quote-separator">|</span>
+        <span class="quote-book">The Pragmatic Programmer — Tip 42</span>
+    </p>
+</div>
+<p>پکیج <code dir="ltr">net/http</code> به صورت خودکار از <bdi dir="ltr">HTTP/2</bdi> پشتیبانی می‌کند. وقتی سرور با <code dir="ltr">ListenAndServeTLS</code> اجرا می‌شود (یعنی <bdi dir="ltr">HTTPS</bdi> فعال باشد)، <bdi dir="ltr">HTTP/2</bdi> به صورت خودکار برای کلاینت‌هایی که از آن پشتیبانی می‌کنند فعال می‌شود. برای این کار نیازی به تنظیمات اضافه نیست:</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">// Run server with HTTPS — HTTP/2 is automatically enabled
+err := server.ListenAndServeTLS("cert.pem", "key.pem")
+</code></pre>
+</figure>
+<div class="tip"><strong>نکته:</strong> برای غیرفعال کردن HTTP/2، می‌توانید از <code dir="ltr">http2.ConfigureServer()</code> با تنظیمات خالی یا متغیر محیطی <code>GODEBUG=http2server=0</code> استفاده کنید.</div>
+<h3 id="graceful-shutdown">Graceful Shutdown</h3>
+<p>یکی از تفاوت‌های کلیدی بین یک سرور آزمایشی و یک سرور آماده‌ی production، نحوه خاموش شدن آن است. در PHP وقتی PHP-FPM را متوقف می‌کنید، فرآیندهای در حال اجرا به‌طور طبیعی پایان می‌یابند. اما در Go وقتی <code>Ctrl+C</code> می‌زنید، سرور بلافاصله قطع می‌شود و تمام درخواست‌های در حال پردازش از بین می‌روند. این مشکل در محیط production با کاربران واقعی قابل‌قبول نیست.</p>
+<p><strong dir="ltr">Graceful Shutdown</strong> به این معناست که سرور هنگام دریافت سیگنال توقف، ابتدا از پذیرش درخواست‌های جدید خودداری کند، سپس صبر کند تا تمام درخواست‌های در حال پردازش کامل شوند و در نهایت منابع (اتصال دیتابیس، فایل‌ها و غیره) را آزاد کند.</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">package main
+
+import (
+"context"
+"log"
+"net/http"
+"os"
+"os/signal"
+"syscall"
+"time"
+)
+
+func main() {
+    mux := http.NewServeMux()
+    mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+        time.Sleep(3 * time.Second) // simulate time-consuming work
+        w.Write([]byte("پاسخ سرور"))
+    })
+
+    server := &amp;http.Server{
+        Addr: ":8080",
+        Handler: mux,
+        ReadTimeout: 5 * time.Second,
+        WriteTimeout: 10 * time.Second,
+        IdleTimeout: 120 * time.Second,
+    }
+
+    // Run server in separate goroutine
+    go func() {
+        log.Println("سرور در حال اجرا روی :8080")
+        if err := server.ListenAndServe(); err != http.ErrServerClosed {
+            log.Fatalf("خطای سرور: %v", err)
+        }
+    }()
+
+    // Wait for stop signal
+    quit := make(chan os.Signal, 1)
+    signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
+    sig := &lt;-quit
+    log.Printf("دریافت سیگنال %v، در حال خاموش شدن آرام...", sig)
+
+    // Give 30 second deadline to active requests
+    ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+    defer cancel()
+
+    if err := server.Shutdown(ctx); err != nil {
+        log.Printf("خطا در خاموش شدن: %v", err)
+    }
+    log.Println("سرور با موفقیت متوقف شد")
+}
+</code></pre>
+</figure>
+<div class="tip"><strong>نکته:</strong> تابع <code dir="ltr">server.Shutdown()</code> ابتدا listener را می‌بندد تا درخواست جدیدی پذیرفته نشود، سپس منتظر تمامی درخواست‌های فعال می‌ماند. اگر deadline context تمام شود، سرور اجباری متوقف می‌شود. مهلت ۳۰ ثانیه برای اکثر اپلیکیشن‌ها مناسب است اما بسته به ماهیت درخواست‌هایتان قابل تنظیم است.</div>
+<div class="comparison"><strong>مقایسه با PHP:</strong> در PHP مفهوم Graceful Shutdown معمولاً توسط Supervisor یا systemd مدیریت می‌شود. وقتی سیگنال SIGTERM ارسال می‌شود، PHP-FPM ابتدا درخواست‌های فعال را تکمیل می‌کند و سپس فرآیندها را متوقف می‌سازد. اما در Go شما کنترل کاملی روی این فرآیند دارید و می‌توانید به‌صورت دقیق منابع را آزاد کنید (مثل بستن اتصال دیتابیس، flush کردن Logs و غیره).</div>
+<h3 id="تنظیم-tls-و-https">تنظیم TLS و HTTPS</h3>
+<p>در محیط <bdi dir="ltr">production</bdi> استفاده از <bdi dir="ltr">HTTPS</bdi> الزامی است. پکیج <bdi dir="ltr">crypto/tls</bdi> در Go امکانات کامل مدیریت <bdi dir="ltr">TLS</bdi> را فراهم می‌کند. برای راه‌اندازی سرور <bdi dir="ltr">HTTPS</bdi> دو روش اصلی وجود دارد: استفاده از گواهی‌نامه‌ی دستی و دریافت خودکار از <bdi dir="ltr">Let's Encrypt</bdi>.</p>
+<p>در روش اول، فایل‌های گواهی‌نامه را مستقیماً به <code dir="ltr">ListenAndServeTLS</code> می‌دهید. این روش برای محیط‌هایی مناسب است که گواهی‌نامه را از قبل دارید یا از یک مرجع گواهی تجاری استفاده می‌کنید:</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">server := &amp;http.Server{
+    Addr: ":443",
+    Handler: mux,
+    ReadTimeout: 5 * time.Second,
+    WriteTimeout: 10 * time.Second,
+    IdleTimeout: 120 * time.Second,
+    TLSConfig: &amp;tls.Config{
+        MinVersion: tls.VersionTLS12, // minimum TLS 1.2
+        CurvePreferences: []tls.CurveID{
+            tls.X25519,
+            tls.CurveP256,
+        },
+        PreferServerCipherSuites: true,
+        CipherSuites: []uint16{
+            tls.TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,
+            tls.TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,
+            tls.TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305,
+            tls.TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305,
+            tls.TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,
+            tls.TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,
+        },
+    },
+}
+
+log.Fatal(server.ListenAndServeTLS("cert.pem", "key.pem"))
+</code></pre>
+</figure>
+<p>در روش دوم که برای <bdi dir="ltr">production</bdi> توصیه می‌شود، از <bdi dir="ltr">golang.org/x/crypto/acme/autocert</bdi> برای دریافت خودکار گواهی‌نامه از <bdi dir="ltr">Let's Encrypt</bdi> استفاده می‌کنید. این کتابخانه گواهی‌نامه‌ها را به صورت خودکار دریافت، تمدید و ذخیره می‌کند:</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">import "golang.org/x/crypto/acme/autocert"
+
+func main() {
+    mux := http.NewServeMux()
+    mux.HandleFunc("/", homeHandler)
+
+    // Automatic Let's Encrypt certificate management
+    certManager := &amp;autocert.Manager{
+        Prompt: autocert.AcceptTOS,
+        HostPolicy: autocert.HostWhitelist("example.com", "www.example.com"),
+        Cache: autocert.DirCache("certs"), // store certificates on disk
+    }
+
+    // HTTPS server
+    server := &amp;http.Server{
+        Addr: ":443",
+        Handler: mux,
+        TLSConfig: certManager.TLSConfig(),
+        ReadTimeout: 5 * time.Second,
+        WriteTimeout: 10 * time.Second,
+        IdleTimeout: 120 * time.Second,
+    }
+
+    // HTTP server → automatic redirect to HTTPS
+    go func() {
+        http.ListenAndServe(":80", certManager.HTTPHandler(nil))
+    }()
+
+    log.Fatal(server.ListenAndServeTLS("", "")) // certificate from autocert
+}
+</code></pre>
+</figure>
+<div class="tip"><strong>نکته:</strong> <code dir="ltr">autocert.Manager</code> گواهی‌نامه‌ها را در دایرکتوری مشخص‌شده کش می‌کند و قبل از انقضا به صورت خودکار تمدید می‌کند. برای محیطی با چندین نمونه سرور، باید از <bdi dir="ltr">Cache</bdi> مشترک (مثل <bdi dir="ltr">Redis</bdi> یا <bdi dir="ltr">S3</bdi>) استفاده کنید تا همه نمونه‌ها به یک گواهی‌نامه دسترسی داشته باشند.</div>
+<h3 id="هدرهای-امنیتی-ضروری">هدرهای امنیتی ضروری</h3>
+<p>هدرهای امنیتی یکی از لایه‌های دفاعی مهم در برابر حملات رایج وب هستند. در PHP معمولاً این هدرها توسط وب‌سرور یا پکیج‌های امنیتی تنظیم می‌شوند، اما در Go باید خودتان آن‌ها را از طریق <bdi dir="ltr">middleware</bdi> اضافه کنید. جدول زیر اصلی‌ترین هدرهای امنیتی و نقش آن‌ها را نشان می‌دهد:</p>
+<table class="comparison-table" dir="rtl">
+<thead>
+<tr><th>هدر</th><th>نقش امنیتی</th><th>مقدار پیشنهادی</th></tr>
+</thead>
+<tbody>
+<tr><td dir="ltr">Content-Security-Policy</td><td>جلوگیری از <bdi dir="ltr">XSS</bdi> با کنترل منابع بارگذاری</td><td dir="ltr">default-src 'self'; script-src 'self'</td></tr>
+<tr><td dir="ltr">Strict-Transport-Security</td><td>اجبار مرورگر به استفاده از <bdi dir="ltr">HTTPS</bdi></td><td dir="ltr">max-age=63072000; includeSubDomains</td></tr>
+<tr><td dir="ltr">X-Content-Type-Options</td><td>جلوگیری از <bdi dir="ltr">MIME sniffing</bdi></td><td dir="ltr">nosniff</td></tr>
+<tr><td dir="ltr">X-Frame-Options</td><td>جلوگیری از <bdi dir="ltr">Clickjacking</bdi></td><td dir="ltr">DENY</td></tr>
+<tr><td dir="ltr">Referrer-Policy</td><td>کنترل اطلاعات ارسالی در هدر <bdi dir="ltr">Referer</bdi></td><td dir="ltr">origin-when-cross-origin</td></tr>
+<tr><td dir="ltr">Permissions-Policy</td><td>کنترل دسترسی به <bdi dir="ltr">API</bdi> های مرورگر</td><td dir="ltr">camera=(), microphone=(), geolocation=()</td></tr>
+</tbody>
+</table>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">func securityHeaders(next http.Handler) http.Handler {
+    return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+        // Protection against Clickjacking
+        w.Header().Set("X-Frame-Options", "DENY")
+        // Prevent MIME-type sniffing
+        w.Header().Set("X-Content-Type-Options", "nosniff")
+        // Enforce HTTPS
+        w.Header().Set("Strict-Transport-Security",
+        "max-age=63072000; includeSubDomains; preload")
+        // Control loaded resources (CSP)
+        w.Header().Set("Content-Security-Policy",
+        "default-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; frame-ancestors 'none'")
+        // Control Referer sending
+        w.Header().Set("Referrer-Policy", "origin-when-cross-origin")
+        // Disable camera and microphone access
+        w.Header().Set("Permissions-Policy",
+        "camera=(), microphone=(), geolocation=()")
+
+        next.ServeHTTP(w, r)
+    })
+}
+</code></pre>
+</figure>
+<h3 id="middleware-برای-cors">Middleware برای CORS</h3>
+<p>اگر <bdi dir="ltr">API</bdi> شما توسط کلاینت‌های خارجی (مثل اپلیکیشن <bdi dir="ltr">SPA</bdi>) فراخوانی می‌شود، باید <bdi dir="ltr">CORS</bdi> (<bdi dir="ltr">Cross-Origin Resource Sharing</bdi>) را پیکربندی کنید. بدون هدرهای <bdi dir="ltr">CORS</bdi> مناسب، مرورگر درخواست‌های بین‌دامنه‌ای را مسدود می‌کند:</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">func corsMiddleware(allowedOrigins []string) func(http.Handler) http.Handler {
+    return func(next http.Handler) http.Handler {
+        return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+            origin := r.Header.Get("Origin")
+            // Check if client domain is allowed
+            allowed := false
+            for _, o := range allowedOrigins {
+                if origin == o {
+                    allowed = true
+                    break
+                }
+            }
+            if allowed {
+                w.Header().Set("Access-Control-Allow-Origin", origin)
+                w.Header().Set("Access-Control-Allow-Methods",
+                "GET, POST, PUT, DELETE, OPTIONS")
+                w.Header().Set("Access-Control-Allow-Headers",
+                "Content-Type, Authorization, X-CSRF-Token")
+                w.Header().Set("Access-Control-Allow-Credentials", "true")
+                w.Header().Set("Access-Control-Max-Age", "86400")
+            }
+            // Response to preflight request
+            if r.Method == http.MethodOptions {
+                w.WriteHeader(http.StatusNoContent)
+                return
+            }
+            next.ServeHTTP(w, r)
+        })
+    }
+}
+</code></pre>
+</figure>
+<div class="warning"><strong>هشدار:</strong> هرگز از <code dir="ltr">Access-Control-Allow-Origin: *</code> همراه با <code dir="ltr">Access-Control-Allow-Credentials: true</code> استفاده نکنید. این ترکیب توسط مرورگرها مسدود می‌شود و یک خطای امنیتی جدی محسوب می‌شود. به جای ستاره، دامنه‌های مجاز را به صورت صریح مشخص کنید.</div>
+<h3 id="rate-limiting-محدود-کردن-نرخ-درخواست">Rate Limiting: محدود کردن نرخ درخواست</h3>
+<p>حملات <bdi dir="ltr">DDoS</bdi> و <bdi dir="ltr">Brute Force</bdi> از شایع‌ترین حملات علیه وب‌سرورها هستند. <bdi dir="ltr">Rate Limiting</bdi> با محدود کردن تعداد درخواست‌های هر کلاینت در بازه زمانی مشخص، از این حملات جلوگیری می‌کند. در PHP معمولاً این کار توسط وب‌سرور (<bdi dir="ltr">Nginx</bdi>) یا سرویس‌هایی مثل <bdi dir="ltr">Cloudflare</bdi> انجام می‌شود، اما در Go می‌توانید آن را در خود برنامه پیاده‌سازی کنید:</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">type rateLimiter struct {
+    mu sync.Mutex
+    visitors map[string]*visitor
+    rate int // max request count
+    window time.Duration // time window
+}
+
+type visitor struct {
+    count int
+    lastSeen time.Time
+}
+
+func (rl *rateLimiter) allow(ip string) bool {
+    rl.mu.Lock()
+    defer rl.mu.Unlock()
+
+    v, exists := rl.visitors[ip]
+    if !exists || time.Since(v.lastSeen) &gt; rl.window {
+        rl.visitors[ip] = &amp;visitor{count: 1, lastSeen: time.Now()}
+        return true
+    }
+    v.count++
+    v.lastSeen = time.Now()
+    return v.count &lt;= rl.rate
+}
+
+// Periodic cleanup of expired entries
+func (rl *rateLimiter) cleanup() {
+    for {
+        time.Sleep(rl.window)
+        rl.mu.Lock()
+        for ip, v := range rl.visitors {
+            if time.Since(v.lastSeen) &gt; rl.window {
+                delete(rl.visitors, ip)
+            }
+        }
+        rl.mu.Unlock()
+    }
+}
+
+func rateLimitMiddleware(rl *rateLimiter) func(http.Handler) http.Handler {
+    return func(next http.Handler) http.Handler {
+        return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+            ip := r.RemoteAddr
+            if !rl.allow(ip) {
+                w.Header().Set("Retry-After", "60")
+                http.Error(w, "تعداد درخواست‌ها بیش از حد مجاز است",
+                http.StatusTooManyRequests)
+                return
+            }
+            next.ServeHTTP(w, r)
+        })
+    }
+}
+</code></pre>
+</figure>
+<div class="tip"><strong>نکته:</strong> پیاده‌سازی ساده بالا برای یک سرور تکی مناسب است. برای محیط‌های توزیع‌شده با چندین نمونه سرور، باید شمارنده‌ها را در <bdi dir="ltr">Redis</bdi> ذخیره کنید. همچنین کتابخانه <code dir="ltr">golang.org/x/time/rate</code> الگوریتم <bdi dir="ltr">Token Bucket</bdi> کارآمدتری را ارائه می‌دهد که برای <bdi dir="ltr">production</bdi> توصیه می‌شود.</div>
+<h3 id="محدود-کردن-حجم-request-body">محدود کردن حجم Request Body</h3>
+<p>یکی از ساده‌ترین و مؤثرترین راه‌های محافظت از سرور در برابر حملات <bdi dir="ltr">Denial of Service</bdi> ، محدود کردن حجم <bdi dir="ltr">body</bdi> درخواست است. بدون این محدودیت، یک مهاجم می‌تواند با ارسال <bdi dir="ltr">body</bdi> بسیار بزرگ، حافظه سرور را تخلیه کند:</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">func maxBodySizeMiddleware(maxBytes int64) func(http.Handler) http.Handler {
+    return func(next http.Handler) http.Handler {
+        return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+            // Limit body size to maxBytes bytes
+            r.Body = http.MaxBytesReader(w, r.Body, maxBytes)
+            next.ServeHTTP(w, r)
+        })
+    }
+}
+
+// Usage: limit to 1 megabyte
+handler := maxBodySizeMiddleware(1 &lt;&lt; 20)(mux)
+</code></pre>
+</figure>
+<div class="important"><strong>مهم:</strong> <code dir="ltr">http.MaxBytesReader</code> نه تنها حجم خوانده‌شده را محدود می‌کند، بلکه اگر کلاینت بیش از حد مجاز ارسال کند، اتصال را نیز قطع می‌کند. این رفتار بسیار مهم‌تر از فقط برگرداندن خطاست — بدون قطع اتصال، کلاینت می‌تواند به ارسال داده ادامه دهد و منابع سرور را مصرف کند.</div>
+<h3 id="جلوگیری-از-حمله-slowloris">جلوگیری از حمله Slowloris</h3>
+<p>حمله <bdi dir="ltr">Slowloris</bdi> نوعی حمله <bdi dir="ltr">DoS</bdi> است که در آن مهاجم اتصالات را به آرامی باز نگه می‌دارد با ارسال تدریجی هدرها یا <bdi dir="ltr">body</bdi>. این حمله بدون نیاز به پهنای باند زیاد، می‌تواند منابع سرور را تخلیه کند. تنظیم <code dir="ltr">ReadHeaderTimeout</code> و <code dir="ltr">ReadTimeout</code> راه‌حل اصلی است، اما می‌توانید لایه‌های محافظتی بیشتری اضافه کنید:</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">server := &amp;http.Server{
+    Addr: ":8080",
+    Handler: mux,
+    ReadTimeout: 5 * time.Second, // max time to read entire request
+    ReadHeaderTimeout: 2 * time.Second, // max time to read headers — anti-Slowloris
+    WriteTimeout: 10 * time.Second, // max time to write response
+    IdleTimeout: 120 * time.Second, // keep-alive timeout
+    MaxHeaderBytes: 1 &lt;&lt; 20, // max 1MB headers
+}
+</code></pre>
+</figure>
+<p>علاوه بر تنظیمات <code dir="ltr">http.Server</code> ، می‌توانید تعداد اتصالات همزمان از هر <bdi dir="ltr">IP</bdi> را نیز محدود کنید. این کار با شمارش اتصالات فعال از هر آدرس و مسدود کردن موقت آدرس‌های مشکوک انجام می‌شود. همچنین استفاده از یک <bdi dir="ltr">proxy</bdi> معکوس (مثل <bdi dir="ltr">Nginx</bdi>) جلوی سرور <bdi dir="ltr">Go</bdi> لایه محافظتی اضافی در برابر این نوع حملات فراهم می‌کند.</p>
+<figure class="diagram" dir="ltr">
+<svg height="400" viewBox="0 0 650 400" width="650" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<marker id="arrow1b" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#555" points="0 0, 10 3.5, 0 7"></polygon></marker>
+<filter height="104%" id="sh1b" width="104%" x="-2%" y="-2%"><fedropshadow dx="1" dy="1" flood-opacity="0.15" stddeviation="2"></fedropshadow></filter>
+</defs>
+<rect fill="#fafafa" height="400" rx="8" width="650" x="0" y="0"></rect>
+<text fill="#333" font-size="16" font-weight="bold" text-anchor="middle" x="325" y="28" direction="rtl" unicode-bidi="embed">معماری وب‌سرور امن <tspan direction="ltr" unicode-bidi="embed">Go</tspan></text>
+<!-- Client -->
+<rect fill="#777BB4" filter="url(#sh1b)" height="40" rx="6" width="90" x="30" y="50"></rect>
+<text fill="#fff" font-size="11" text-anchor="middle" x="75" y="75" direction="ltr" unicode-bidi="embed">Client</text>
+<!-- TLS -->
+<line marker-end="url(#arrow1b)" stroke="#555" stroke-width="2" x1="120" x2="160" y1="70" y2="70"></line>
+<rect fill="#4CAF50" filter="url(#sh1b)" height="40" rx="6" width="100" x="160" y="50"></rect>
+<text fill="#fff" font-size="10" text-anchor="middle" x="210" y="75" direction="ltr" unicode-bidi="embed">TLS/HTTPS</text>
+<!-- Middleware chain -->
+<line marker-end="url(#arrow1b)" stroke="#555" stroke-width="2" x1="260" x2="300" y1="70" y2="70"></line>
+<rect fill="#e91e63" filter="url(#sh1b)" height="35" rx="4" width="80" x="300" y="55"></rect>
+<text fill="#fff" font-size="9" text-anchor="middle" x="340" y="77" direction="ltr" unicode-bidi="embed">RateLimit</text>
+<line marker-end="url(#arrow1b)" stroke="#555" stroke-width="2" x1="380" x2="420" y1="70" y2="70"></line>
+<rect fill="#FF9800" filter="url(#sh1b)" height="35" rx="4" width="80" x="420" y="55"></rect>
+<text fill="#fff" font-size="9" text-anchor="middle" x="460" y="77" direction="ltr" unicode-bidi="embed">Headers</text>
+<line marker-end="url(#arrow1b)" stroke="#555" stroke-width="2" x1="500" x2="540" y1="70" y2="70"></line>
+<rect fill="#9C27B0" filter="url(#sh1b)" height="35" rx="4" width="80" x="540" y="55"></rect>
+<text fill="#fff" font-size="9" text-anchor="middle" x="580" y="77" direction="ltr" unicode-bidi="embed">CORS</text>
+<!-- Server box -->
+<rect fill="#00ADD8" filter="url(#sh1b)" height="50" rx="6" width="200" x="220" y="130"></rect>
+<text fill="#fff" font-size="12" text-anchor="middle" x="320" y="155" direction="ltr" unicode-bidi="embed">net/http Server</text>
+<text fill="#e0f7fa" font-size="9" text-anchor="middle" x="320" y="170" direction="ltr" unicode-bidi="embed">Timeouts + MaxHeaderBytes</text>
+<line marker-end="url(#arrow1b)" stroke="#555" stroke-width="2" x1="580" x2="580" y1="90" y2="130"></line>
+<!-- Security layers -->
+<rect fill="#FFF3E0" height="140" rx="6" stroke="#FF9800" width="280" x="30" y="220"></rect>
+<text fill="#E65100" font-size="12" font-weight="bold" text-anchor="middle" x="170" y="245" direction="rtl" unicode-bidi="embed">لایه‌های امنیتی</text>
+<text fill="#666" font-size="10" text-anchor="middle" x="170" y="268" direction="rtl" unicode-bidi="embed">• <tspan direction="ltr" unicode-bidi="embed">ReadHeaderTimeout</tspan> ← ضد <tspan direction="ltr" unicode-bidi="embed">Slowloris</tspan></text>
+<text fill="#666" font-size="10" text-anchor="middle" x="170" y="288" direction="rtl" unicode-bidi="embed">• <tspan direction="ltr" unicode-bidi="embed">MaxBytesReader</tspan> ← ضد حجم زیاد</text>
+<text fill="#666" font-size="10" text-anchor="middle" x="170" y="308" direction="rtl" unicode-bidi="embed">• <tspan direction="ltr" unicode-bidi="embed">Rate</tspan> <tspan direction="ltr" unicode-bidi="embed">Limiting</tspan> ← ضد <tspan direction="ltr" unicode-bidi="embed">DDoS</tspan></text>
+<text fill="#666" font-size="10" text-anchor="middle" x="170" y="328" direction="rtl" unicode-bidi="embed">• <tspan direction="ltr" unicode-bidi="embed">Security</tspan> <tspan direction="ltr" unicode-bidi="embed">Headers</tspan> ← ضد <tspan direction="ltr" unicode-bidi="embed">XSS/Clickjacking</tspan></text>
+<text fill="#666" font-size="10" text-anchor="middle" x="170" y="348" direction="rtl" unicode-bidi="embed">• <tspan direction="ltr" unicode-bidi="embed">TLS</tspan> 1.2+ ← رمزنگاری انتقال</text>
+<!-- Graceful shutdown -->
+<rect fill="#9C27B0" filter="url(#sh1b)" height="50" rx="6" width="200" x="360" y="220"></rect>
+<text fill="#fff" font-size="11" text-anchor="middle" x="460" y="242" direction="ltr" unicode-bidi="embed">Graceful Shutdown</text>
+<text fill="#e1bee7" font-size="9" text-anchor="middle" x="460" y="260" direction="ltr" unicode-bidi="embed">os.Signal + Context + Cleanup</text>
+<line marker-end="url(#arrow1b)" stroke="#9C27B0" stroke-dasharray="5,5" stroke-width="2" x1="420" x2="420" y1="180" y2="220"></line>
+<!-- Resource cleanup -->
+<rect fill="#4CAF50" filter="url(#sh1b)" height="60" rx="6" width="200" x="360" y="310"></rect>
+<text fill="#fff" font-size="10" text-anchor="middle" x="460" y="335" direction="rtl" unicode-bidi="embed">پاکسازی منابع</text>
+<text fill="#e8f5e9" font-size="9" text-anchor="middle" x="460" y="355" direction="rtl" unicode-bidi="embed">بستن <tspan direction="ltr" unicode-bidi="embed">DB</tspan>، <tspan direction="ltr" unicode-bidi="embed">Flush</tspan> لاگ، قطع <tspan direction="ltr" unicode-bidi="embed">Redis</tspan></text>
+<line marker-end="url(#arrow1b)" stroke="#4CAF50" stroke-width="2" x1="460" x2="460" y1="270" y2="310"></line>
+</svg>
+<figcaption>شکل ۷-۱-ب: معماری کامل وب‌سرور امن <bdi dir="ltr">Go</bdi> با لایه‌های امنیتی و خاموش شدن آرام</figcaption>
+</figure>
+<h3 id="graceful-shutdown-با-پاکسازی-منابع">Graceful Shutdown با پاکسازی منابع</h3>
+<p>در محیط <bdi dir="ltr">production</bdi> واقعی، خاموش شدن آرام فقط به معنای صبر برای اتمام درخواست‌ها نیست. باید منابع مختلفی مثل اتصال دیتابیس، <bdi dir="ltr">Redis</bdi> ، فایل‌های باز و <bdi dir="ltr">buffer</bdi> های لاگ را نیز به صورت صحیح آزاد کنید. الگوی زیر یک مثال کامل از خاموش شدن آرام با پاکسازی منابع ارائه می‌دهد:</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">func main() {
+    db := openDatabase()
+    defer db.Close()
+
+    redisClient := openRedis()
+    defer redisClient.Close()
+
+    mux := http.NewServeMux()
+    // ... register routes ...
+
+    server := &amp;http.Server{
+        Addr: ":8080",
+        Handler: mux,
+    }
+
+    go func() {
+        log.Println("سرور در حال اجرا روی :8080")
+        if err := server.ListenAndServe(); err != http.ErrServerClosed {
+            log.Fatalf("خطای سرور: %v", err)
+        }
+    }()
+
+    quit := make(chan os.Signal, 1)
+    signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
+    sig := &lt;-quit
+    log.Printf("دریافت سیگنال %v، در حال خاموش شدن...", sig)
+
+    // 30 second deadline for active requests to finish
+    ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+    defer cancel()
+
+    // First shut down the server (new requests are rejected)
+    if err := server.Shutdown(ctx); err != nil {
+        log.Printf("خطا در خاموش شدن سرور: %v", err)
+    }
+
+    // Then release resources
+    log.Println("بستن اتصال دیتابیس...")
+    db.Close()
+
+    log.Println("بستن اتصال Redis...")
+    redisClient.Close()
+
+    log.Println("سرور با موفقیت متوقف شد")
+}
+</code></pre>
+</figure>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- ENRICHMENT: SVG — http.Server Internal Connection Handling    -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<figure class="diagram" dir="ltr">
+<svg height="720" viewBox="0 0 880 720" width="880" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<marker id="arrowEnr1a" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#555" points="0 0, 10 3.5, 0 7"></polygon></marker>
+<marker id="arrowEnr1b" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#e91e63" points="0 0, 10 3.5, 0 7"></polygon></marker>
+<filter height="104%" id="shEnr1" width="104%" x="-2%" y="-2%"><fedropshadow dx="1" dy="1" flood-opacity="0.15" stddeviation="2"></fedropshadow></filter>
+<linearGradient id="gradServer" x1="0" y1="0" x2="0" y2="1">
+<stop offset="0%" stop-color="#00ADD8"/>
+<stop offset="100%" stop-color="#0097A7"/>
+</linearGradient>
+</defs>
+
+<!-- Background -->
+<rect fill="#fafafa" height="720" rx="10" width="880" x="0" y="0"></rect>
+
+<!-- Title -->
+<text fill="#333" font-size="17" font-weight="bold" text-anchor="middle" x="440" y="30" direction="rtl" unicode-bidi="embed">چرخه‌ی حیات اتصال در <tspan direction="ltr" unicode-bidi="embed">http.Server</tspan></text>
+
+<!-- ─── CLIENTS (top-left) ─── -->
+<rect fill="#777BB4" filter="url(#shEnr1)" height="42" rx="6" width="100" x="30" y="55"></rect>
+<text fill="#fff" font-size="12" text-anchor="middle" x="80" y="81" direction="ltr" unicode-bidi="embed">Client 1</text>
+<rect fill="#777BB4" filter="url(#shEnr1)" height="42" rx="6" width="100" x="30" y="110"></rect>
+<text fill="#fff" font-size="12" text-anchor="middle" x="80" y="136" direction="ltr" unicode-bidi="embed">Client 2</text>
+<rect fill="#777BB4" filter="url(#shEnr1)" height="42" rx="6" width="100" x="30" y="165"></rect>
+<text fill="#fff" font-size="12" text-anchor="middle" x="80" y="191" direction="ltr" unicode-bidi="embed">Client N</text>
+
+<!-- Ellipsis between Client 2 and N -->
+<text fill="#777BB4" font-size="18" text-anchor="middle" x="80" y="158" direction="ltr" unicode-bidi="embed">⋯</text>
+
+<!-- ─── ACCEPT → GOROUTINE SPAWN ─── -->
+<line marker-end="url(#arrowEnr1a)" stroke="#555" stroke-width="2" x1="130" x2="200" y1="100" y2="100"></line>
+<text fill="#666" font-size="10" text-anchor="middle" x="165" y="93" direction="ltr" unicode-bidi="embed">TCP</text>
+
+<rect fill="url(#gradServer)" filter="url(#shEnr1)" height="155" rx="8" width="200" x="200" y="55"></rect>
+<text fill="#fff" font-size="13" font-weight="bold" text-anchor="middle" x="300" y="80" direction="ltr" unicode-bidi="embed">net.Listener</text>
+<text fill="#e0f7fa" font-size="10" text-anchor="middle" x="300" y="97" direction="ltr" unicode-bidi="embed">Accept() → new conn</text>
+
+<!-- Goroutine per connection -->
+<rect fill="#00ADD8" opacity="0.25" height="24" rx="4" width="170" x="215" y="108"></rect>
+<text fill="#006064" font-size="9" text-anchor="middle" x="300" y="125" direction="ltr" unicode-bidi="embed">go c.serve(ctx)  ← goroutine/conn</text>
+
+<rect fill="#00ADD8" opacity="0.25" height="24" rx="4" width="170" x="215" y="138"></rect>
+<text fill="#006064" font-size="9" text-anchor="middle" x="300" y="155" direction="ltr" unicode-bidi="embed">go c.serve(ctx)  ← goroutine/conn</text>
+
+<rect fill="#00ADD8" opacity="0.25" height="24" rx="4" width="170" x="215" y="168"></rect>
+<text fill="#006064" font-size="9" text-anchor="middle" x="300" y="185" direction="ltr" unicode-bidi="embed">go c.serve(ctx)  ← goroutine/conn</text>
+
+<!-- ─── TIMEOUT TIMELINE (right side of Listener) ─── -->
+<rect fill="#FFF3E0" height="155" rx="6" stroke="#FF9800" stroke-width="1.5" width="175" x="430" y="55"></rect>
+<text fill="#E65100" font-size="12" font-weight="bold" text-anchor="middle" x="517" y="78" direction="rtl" unicode-bidi="embed">زمان‌بندی‌های محافظ</text>
+
+<text fill="#FF9800" font-size="10" text-anchor="middle" x="517" y="102" direction="ltr" unicode-bidi="embed">ReadHeaderTimeout</text>
+<rect fill="#FF9800" height="8" rx="2" width="80" x="477" y="110"></rect>
+<text fill="#BF360C" font-size="9" text-anchor="middle" x="517" y="130" direction="ltr" unicode-bidi="embed">~2s  ضد Slowloris</text>
+
+<text fill="#FF9800" font-size="10" text-anchor="middle" x="517" y="150" direction="ltr" unicode-bidi="embed">ReadTimeout</text>
+<rect fill="#FF9800" height="8" rx="2" width="120" x="457" y="158"></rect>
+<text fill="#BF360C" font-size="9" text-anchor="middle" x="517" y="175" direction="ltr" unicode-bidi="embed">~5s  خواندن کامل درخواست</text>
+
+<text fill="#FF9800" font-size="10" text-anchor="middle" x="517" y="195" direction="ltr" unicode-bidi="embed">WriteTimeout</text>
+<rect fill="#FF9800" height="8" rx="2" width="140" x="447" y="200"></rect>
+
+<!-- ─── SLOWLORIS WARNING BOX ─── -->
+<rect fill="#FCE4EC" height="72" rx="6" stroke="#e91e63" stroke-width="1.5" width="175" x="640" y="55"></rect>
+<text fill="#e91e63" font-size="11" font-weight="bold" text-anchor="middle" x="727" y="78" direction="ltr" unicode-bidi="embed">⚠ Slowloris Attack</text>
+<text fill="#880E4F" font-size="9" text-anchor="middle" x="727" y="97" direction="rtl" unicode-bidi="embed">بدون <tspan direction="ltr" unicode-bidi="embed">ReadHeaderTimeout</tspan></text>
+<text fill="#880E4F" font-size="9" text-anchor="middle" x="727" y="112" direction="rtl" unicode-bidi="embed">مهاجم هدرها را کُند ارسال</text>
+<text fill="#880E4F" font-size="9" text-anchor="middle" x="727" y="127" direction="rtl" unicode-bidi="embed">می‌کند → اتصال نیمه‌باز →</text>
+<text fill="#880E4F" font-size="9" text-anchor="middle" x="727" y="142" direction="rtl" unicode-bidi="embed">تخلیه‌ی منابع سرور!</text>
+
+<!-- Connector from timeout box to slowloris -->
+<line stroke="#e91e63" stroke-dasharray="4,4" stroke-width="1.5" x1="605" x2="640" y1="90" y2="90"></line>
+
+<!-- ─── REQUEST → SERVEMUX → HANDLER FLOW ─── -->
+<!-- Connection serve flow -->
+<line marker-end="url(#arrowEnr1a)" stroke="#555" stroke-width="2" x1="300" x2="300" y1="210" y2="250"></line>
+<text fill="#666" font-size="10" text-anchor="middle" x="340" y="235" direction="ltr" unicode-bidi="embed">c.readRequest()</text>
+
+<!-- Request object -->
+<rect fill="#E3F2FD" filter="url(#shEnr1)" height="38" rx="6" width="160" x="220" y="250"></rect>
+<text fill="#1565C0" font-size="11" text-anchor="middle" x="300" y="274" direction="ltr" unicode-bidi="embed">http.Request</text>
+
+<!-- Arrow to ServeMux -->
+<line marker-end="url(#arrowEnr1a)" stroke="#555" stroke-width="2" x1="380" x2="460" y1="269" y2="269"></line>
+<text fill="#666" font-size="10" text-anchor="middle" x="420" y="262" direction="ltr" unicode-bidi="embed">ServeHTTP</text>
+
+<!-- ServeMux (Multiplexer) -->
+<rect fill="url(#gradServer)" filter="url(#shEnr1)" height="55" rx="8" width="180" x="460" y="242"></rect>
+<text fill="#fff" font-size="13" font-weight="bold" text-anchor="middle" x="550" y="266" direction="ltr" unicode-bidi="embed">ServeMux</text>
+<text fill="#e0f7fa" font-size="10" text-anchor="middle" x="550" y="284" direction="ltr" unicode-bidi="embed">Longest prefix match</text>
+
+<!-- Arrow to Handler -->
+<line marker-end="url(#arrowEnr1a)" stroke="#555" stroke-width="2" x1="640" x2="700" y1="269" y2="269"></line>
+<text fill="#666" font-size="10" text-anchor="middle" x="670" y="262" direction="ltr" unicode-bidi="embed">match</text>
+
+<!-- Handler -->
+<rect fill="#4CAF50" filter="url(#shEnr1)" height="55" rx="8" width="140" x="700" y="242"></rect>
+<text fill="#fff" font-size="12" font-weight="bold" text-anchor="middle" x="770" y="266" direction="ltr" unicode-bidi="embed">Handler</text>
+<text fill="#e8f5e9" font-size="10" text-anchor="middle" x="770" y="284" direction="ltr" unicode-bidi="embed">ServeHTTP(w, r)</text>
+
+<!-- ResponseWriter back -->
+<line marker-end="url(#arrowEnr1a)" stroke="#4CAF50" stroke-dasharray="5,5" stroke-width="2" x1="770" x2="770" y1="297" y2="340"></line>
+<rect fill="#E8F5E9" height="34" rx="6" width="150" x="695" y="340"></rect>
+<text fill="#2E7D32" font-size="10" text-anchor="middle" x="770" y="362" direction="ltr" unicode-bidi="embed">http.ResponseWriter</text>
+
+<!-- ─── KEEP-ALIVE / CONNECTION POOL ─── -->
+<rect fill="#E0F7FA" height="110" rx="6" stroke="#00ADD8" stroke-width="1.5" width="250" x="200" y="320"></rect>
+<text fill="#006064" font-size="12" font-weight="bold" text-anchor="middle" x="325" y="345" direction="rtl" unicode-bidi="embed">اتصال <tspan direction="ltr" unicode-bidi="embed">Keep-Alive</tspan></text>
+
+<text fill="#00838F" font-size="10" text-anchor="middle" x="325" y="368" direction="rtl" unicode-bidi="embed">پس از ارسال پاسخ، اتصال بسته نمی‌شود</text>
+<text fill="#00838F" font-size="10" text-anchor="middle" x="325" y="386" direction="rtl" unicode-bidi="embed">منتظر درخواست بعدی روی همان <tspan direction="ltr" unicode-bidi="embed">TCP</tspan></text>
+<text fill="#00838F" font-size="10" text-anchor="middle" x="325" y="404" direction="rtl" unicode-bidi="embed">اگر بدون درخواست بماند → <tspan direction="ltr" unicode-bidi="embed">IdleTimeout</tspan></text>
+<text fill="#00838F" font-size="10" text-anchor="middle" x="325" y="422" direction="ltr" unicode-bidi="embed">→ conn.close()</text>
+
+<!-- IdleTimeout bar -->
+<rect fill="#FF9800" opacity="0.3" height="10" rx="2" width="200" x="225" y="428"></rect>
+<text fill="#BF360C" font-size="9" text-anchor="middle" x="325" y="438" direction="ltr" unicode-bidi="embed">IdleTimeout ~120s</text>
+
+<!-- Arrow from keep-alive back to readRequest (loop) -->
+<path d="M 200 380 Q 160 380 160 310 Q 160 269 220 269" fill="none" stroke="#00ADD8" stroke-dasharray="5,3" stroke-width="1.5" marker-end="url(#arrowEnr1a)"></path>
+<text fill="#00ADD8" font-size="9" text-anchor="middle" x="145" y="330" direction="ltr" unicode-bidi="embed">next request</text>
+
+<!-- ─── SERVER CONFIG BOX ─── -->
+<rect fill="#E8EAF6" height="180" rx="8" stroke="#3F51B5" stroke-width="1.5" width="310" x="30" y="470"></rect>
+<text fill="#1A237E" font-size="13" font-weight="bold" text-anchor="middle" x="185" y="495" direction="rtl" unicode-bidi="embed">تنظیمات حیاتی <tspan direction="ltr" unicode-bidi="embed">http.Server</tspan></text>
+
+<!-- Code snippet inside box -->
+<rect fill="#fff" height="138" rx="4" width="285" x="42" y="505"></rect>
+<text fill="#333" font-family="Fira Code, monospace" font-size="9.5" x="52" y="522" direction="ltr" unicode-bidi="embed">server := &amp;http.Server{</text>
+<text fill="#00ADD8" font-family="Fira Code, monospace" font-size="9.5" x="62" y="538" direction="ltr" unicode-bidi="embed">Addr:              ":8080",</text>
+<text fill="#FF9800" font-family="Fira Code, monospace" font-size="9.5" x="62" y="554" direction="ltr" unicode-bidi="embed">ReadTimeout:       5 * time.Second,</text>
+<text fill="#FF9800" font-family="Fira Code, monospace" font-size="9.5" x="62" y="570" direction="ltr" unicode-bidi="embed">ReadHeaderTimeout: 2 * time.Second,</text>
+<text fill="#FF9800" font-family="Fira Code, monospace" font-size="9.5" x="62" y="586" direction="ltr" unicode-bidi="embed">WriteTimeout:      10 * time.Second,</text>
+<text fill="#FF9800" font-family="Fira Code, monospace" font-size="9.5" x="62" y="602" direction="ltr" unicode-bidi="embed">IdleTimeout:       120 * time.Second,</text>
+<text fill="#00ADD8" font-family="Fira Code, monospace" font-size="9.5" x="62" y="618" direction="ltr" unicode-bidi="embed">MaxHeaderBytes:    1 &lt;&lt; 20,  // 1MB</text>
+<text fill="#333" font-family="Fira Code, monospace" font-size="9.5" x="52" y="634" direction="ltr" unicode-bidi="embed">}</text>
+
+<!-- ─── INFO BOX: Key Points ─── -->
+<rect fill="#E8F5E9" height="180" rx="8" stroke="#4CAF50" stroke-width="1.5" width="490" x="360" y="470"></rect>
+<text fill="#1B5E20" font-size="13" font-weight="bold" text-anchor="middle" x="605" y="495" direction="rtl" unicode-bidi="embed">نکات کلیدی چرخه‌ی حیات اتصال</text>
+
+<text fill="#2E7D32" font-size="10.5" text-anchor="middle" x="605" y="520" direction="rtl" unicode-bidi="embed">① هر اتصال جدید = یک <tspan direction="ltr" unicode-bidi="embed">goroutine</tspan> مستقل (نه <tspan direction="ltr" unicode-bidi="embed">thread</tspan> سنگین)</text>
+<text fill="#2E7D32" font-size="10.5" text-anchor="middle" x="605" y="542" direction="rtl" unicode-bidi="embed">② <tspan direction="ltr" unicode-bidi="embed">ServeMux</tspan> با بلندترین تطبیق پیشوند، هندلر مناسب را انتخاب می‌کند</text>
+<text fill="#2E7D32" font-size="10.5" text-anchor="middle" x="605" y="564" direction="rtl" unicode-bidi="embed">③ <tspan direction="ltr" unicode-bidi="embed">ReadHeaderTimeout</tspan> مهم‌ترین سپر ضد حمله‌ی <tspan direction="ltr" unicode-bidi="embed">Slowloris</tspan> است</text>
+<text fill="#2E7D32" font-size="10.5" text-anchor="middle" x="605" y="586" direction="rtl" unicode-bidi="embed">④ <tspan direction="ltr" unicode-bidi="embed">Keep-Alive</tspan> اتصال را باز نگه می‌دارد تا <tspan direction="ltr" unicode-bidi="embed">IdleTimeout</tspan> تمام شود</text>
+<text fill="#2E7D32" font-size="10.5" text-anchor="middle" x="605" y="608" direction="rtl" unicode-bidi="embed">⑤ بدون <tspan direction="ltr" unicode-bidi="embed">timeout</tspan> ، یک کلاینت کند می‌تواند <tspan direction="ltr" unicode-bidi="embed">goroutine</tspan> را indefinitely اشغال کند</text>
+<text fill="#2E7D32" font-size="10.5" text-anchor="middle" x="605" y="630" direction="rtl" unicode-bidi="embed">⑥ <tspan direction="ltr" unicode-bidi="embed">WriteTimeout</tspan> باید بزرگ‌تر از زمان پردازش هندلر باشد</text>
+
+<!-- ─── GOLDEN RULE BAR ─── -->
+<rect fill="#FF9800" height="36" rx="6" width="820" x="30" y="672"></rect>
+<text fill="#fff" font-size="12" font-weight="bold" text-anchor="middle" x="440" y="695" direction="rtl" unicode-bidi="embed">قانون طلایی: هر سرور <tspan direction="ltr" unicode-bidi="embed">production</tspan> باید <tspan direction="ltr" unicode-bidi="embed">ReadTimeout</tspan> و <tspan direction="ltr" unicode-bidi="embed">WriteTimeout</tspan> صریح داشته باشد — بدون استثنا!</text>
+</svg>
+<figcaption>شکل ۷-۱-ج: چرخه‌ی حیات اتصال در <bdi dir="ltr">http.Server</bdi> — از پذیرش اتصال تا مدیریت درخواست، زمان‌بندی‌ها و رفتار <bdi dir="ltr">Keep-Alive</bdi></figcaption>
+</figure>
+
+<h3 id="سناریوهای-عملیاتی-وبسرور">سناریوهای عملیاتی</h3>
+<p>در محیط‌های واقعی <bdi dir="ltr">production</bdi> ، تنظیم وب‌سرور <bdi dir="ltr">Go</bdi> فراتر از نوشتن یک <code dir="ltr">ListenAndServe</code> ساده است. هر سناریوی استقرار نیازمند تنظیمات متفاوتی است و بدون توجه به این تفاوت‌ها، سرور شما ممکن است در برابر حملات آسیب‌پذیر شود یا عملکرد مناسبی نداشته باشد. در ادامه مهم‌ترین سناریوهای عملیاتی و راه‌حل‌های مربوط به هر کدام را بررسی می‌کنیم:</p>
+<ul>
+<li><strong>تنظیم <bdi dir="ltr">timeout</bdi> مناسب برای سرورهای <bdi dir="ltr">API</bdi>:</strong> برای سرورهای <bdi dir="ltr">REST API</bdi> که درخواست‌های سبک <bdi dir="ltr">JSON</bdi> دریافت می‌کنند، مقادیر <code dir="ltr">ReadTimeout: 5s</code> و <code dir="ltr">WriteTimeout: 10s</code> و <code dir="ltr">ReadHeaderTimeout: 2s</code> مناسب هستند. اگر <bdi dir="ltr">API</bdi> شما عملیات سنگینی مثل آپلود فایل یا پردازش تصویر انجام می‌دهد، <code dir="ltr">WriteTimeout</code> را متناسب با زمان پردازش افزایش دهید. به یاد داشته باشید که <code dir="ltr">ReadTimeout</code> شامل زمان خواندن <bdi dir="ltr">body</bdi> هم می‌شود، بنابراین برای آپلود فایل‌های بزرگ باید آن را بالاتر تنظیم کنید یا از <code dir="ltr">MaxBytesReader</code> استفاده کنید.</li>
+<li><strong>جلوگیری از حمله <bdi dir="ltr">Slowloris</bdi>:</strong> حمله <bdi dir="ltr">Slowloris</bdi> با ارسال بسیار کُند هدرها، اتصالات را باز نگه می‌دهد و منابع سرور را تخلیه می‌کند. تنظیم <code dir="ltr">ReadHeaderTimeout</code> مهم‌ترین خط دفاعی است — اگر کلاینت نتواند هدرها را در این مهلت ارسال کند، اتصال بسته می‌شود. علاوه بر این، محدود کردن تعداد اتصالات همزمان از هر <bdi dir="ltr">IP</bdi> و استفاده از <bdi dir="ltr">reverse proxy</bdi> جلوی سرور <bdi dir="ltr">Go</bdi> لایه‌های محافظتی اضافی فراهم می‌کند.</li>
+<li><strong>خاموش شدن آرام با <bdi dir="ltr">Context</bdi>:</strong> در زمان استقرار نسخه‌ی جدید (<bdi dir="ltr">deployment</bdi>)، باید سرور فعلی بدون قطع درخواست‌های فعال متوقف شود. الگوی <bdi dir="ltr">Graceful Shutdown</bdi> با <code dir="ltr">os.Signal</code> و <code dir="ltr">context.WithTimeout</code> این امکان را فراهم می‌کند. ابتدا <bdi dir="ltr">listener</bdi> بسته می‌شود تا درخواست جدیدی پذیرفته نشود، سپس به درخواست‌های فعال مهلت داده می‌شود تا کامل شوند. اگر <bdi dir="ltr">deadline</bdi> تمام شود، سرور اجباری متوقف می‌شود. مهلت ۳۰ ثانیه برای اکثر اپلیکیشن‌ها مناسب است.</li>
+<li><strong>استقرار پشت <bdi dir="ltr">Reverse Proxy</bdi> (<bdi dir="ltr">Nginx/Caddy</bdi>):</strong> در بسیاری از معماری‌ها، سرور <bdi dir="ltr">Go</bdi> پشت یک <bdi dir="ltr">reverse proxy</bdi> قرار می‌گیرد. در این حالت <bdi dir="ltr">proxy</bdi> وظیفه <bdi dir="ltr">TLS</bdi>، کش فایل‌های ایستا و <bdi dir="ltr">rate limiting</bdi> را بر عهده می‌گیرد. باید توجه داشت که <code dir="ltr">ReadTimeout</code> سرور <bdi dir="ltr">Go</bdi> بزرگ‌تر از <bdi dir="ltr">timeout</bdi> <bdi dir="ltr">proxy</bdi> باشد تا <bdi dir="ltr">proxy</bdi> اتصال را قبل از سرور <bdi dir="ltr">Go</bdi> قطع نکند. همچنین هدر <code dir="ltr">X-Forwarded-For</code> و <code dir="ltr">X-Real-IP</code> برای تشخیص <bdi dir="ltr">IP</bdi> واقعی کلاینت ضروری هستند.</li>
+<li><strong>پیکربندی <bdi dir="ltr">TLS</bdi>:</strong> برای سرورهای مستقلی که بدون <bdi dir="ltr">reverse proxy</bdi> اجرا می‌شوند، استفاده از <bdi dir="ltr">HTTPS</bdi> با <code dir="ltr">MinVersion: tls.VersionTLS12</code> الزامی است. گواهی‌نامه‌ها را با <bdi dir="ltr">autocert</bdi> از <bdi dir="ltr">Let's Encrypt</bdi> به صورت خودکار دریافت و تمدید کنید. رمزنگاری قوی با <code dir="ltr">CipherSuites</code> مدرن و <code dir="ltr">CurvePreferences</code> مناسب، امنیت انتقال داده‌ها را تضمین می‌کند.</li>
+</ul>
+
+<div class="tip"><strong>نکته:</strong> همیشه <code dir="ltr">ReadTimeout</code> و <code dir="ltr">WriteTimeout</code> را در محیط <bdi dir="ltr">production</bdi> به صورت صریح تنظیم کنید. یک سرور بدون <bdi dir="ltr">timeout</bdi> در برابر حمله <bdi dir="ltr">Slowloris</bdi> آسیب‌پذیر است — مهاجم می‌تواند با نگه‌داشتن هزاران اتصال نیمه‌باز، تمام منابع سرور شما را تخلیه کند. تنظیم <code dir="ltr">ReadHeaderTimeout</code> خط اول دفاع در برابر این حمله محسوب می‌شود.</div>
+
+</div>
+</main>
+</div>
+
+<!-- Footer -->
+<footer class="site-footer">
+<div class="footer-inner">
+<div class="footer-nav">
+<span class="nav-arrow">‹</span>
+<a href="07.00-chapter-7.html" data-prev>۷. ساخت وب‌سرور</a>
+</div>
+<div class="footer-toc">
+<a href="00.01-contents.html">فهرست</a>
+</div>
+<div class="footer-nav">
+<a href="07.02-routing-management.html" data-next>۷.۲ مدیریت Routing</a>
+<span class="nav-arrow">›</span>
+</div>
+</div>
+</footer>
+
+<!-- Back to Top -->
+<button class="back-to-top" aria-label="بازگشت به بالا">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
+</button>
+
+<!-- Scripts -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/go.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/php.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/sql.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/yaml.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/json.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/dockerfile.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/xml.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/ini.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/plaintext.min.js"></script>
+<script src="assets/js/main.js"></script>
+</body>
+</html>

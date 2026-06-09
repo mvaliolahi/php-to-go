@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="fa">
+<head>
+<script>!function(){try{var t=localStorage.getItem('php2go-theme');if(t==='dark'||(!t&&window.matchMedia('(prefers-color-scheme:dark)').matches)){document.documentElement.setAttribute('data-theme','dark')}}catch(e){}}();</script>
+<meta charset="utf-8"/>
+<meta content="ie=edge" http-equiv="x-ua-compatible"/>
+<title>۶.۵ جاسازی فایل در برنامه — PHP to Go</title>
+<meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet"/>
+<link href="assets/css/main.css" rel="stylesheet" type="text/css"/>
+<link href="assets/img/favicon.ico" rel="icon" type="image/x-icon"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" media="screen" class="hljs-light-theme" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css" media="not screen" class="hljs-dark-theme" rel="stylesheet"/>
+</head>
+<body>
+<!-- Progress Bar -->
+<div class="progress-bar"><div class="progress-bar__fill"></div></div>
+
+<!-- Header -->
+<header class="site-header">
+<div class="header-inner">
+<div class="header-left">
+<button class="header-btn sidebar-toggle" aria-label="فهرست">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+</button>
+<a href="00.00-front-matter.html" class="header-logo"><span class="logo-php">PHP</span> to <span class="logo-go">Go</span></a>
+<span class="header-crumbs">تعامل با دنیای بیرون › جاسازی فایل در برنامه</span>
+</div>
+<div class="header-right">
+<nav class="header-nav">
+<span class="nav-arrow">‹</span>
+<a href="06.04-reading-line-by-line.html"><span class="nav-label">۶.۴ خواندن خط به خط</span></a>
+<a href="00.01-contents.html">فهرست</a>
+<a href="06.06-json-and-yaml-data-structures.html"><span class="nav-label">۶.۶ ساختارهای داده‌ای JSON و YAML</span></a>
+<span class="nav-arrow">›</span>
+</nav>
+<button class="header-btn search-toggle" aria-label="جستجو">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+</button>
+<button class="header-btn theme-toggle" aria-label="تغییر تم">
+<svg class="theme-icon-light" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+<svg class="theme-icon-dark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+</button>
+</div>
+</div>
+</header>
+
+<!-- Search Modal -->
+<div class="search-overlay">
+<div class="search-modal">
+<div class="search-input-wrap">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+<input type="text" class="search-input" placeholder="جستجو... (Ctrl+K)" dir="rtl"/>
+</div>
+<div class="search-results"></div>
+</div>
+</div>
+
+<!-- Layout -->
+<div class="site-layout">
+<!-- Sidebar -->
+<aside class="sidebar"></aside>
+<div class="sidebar-overlay"></div>
+
+<!-- Main Content -->
+<main class="content-area">
+<div class="content-wrap text">
+<div class="chapter">فصل ۶.۵</div>
+<h2 id="جاسازی-فایل-در-برنامه">جاسازی فایل در برنامه</h2>
+<p>در بسیاری از برنامه‌ها نیاز دارید فایل‌هایی مانند قالب‌های HTML، فایل‌های config، تصاویر، داده‌های ثابت یا منابع متنی را همراه با خود برنامه توزیع کنید. اگر این فایل‌ها در زمان اجرا از دیسک بارگذاری شوند، توزیع، امنیت و اجرای برنامه ممکن است پیچیده‌تر شود. برای حل این مشکل از Go نسخه 1.16 به بعد قابلیتی به نام <strong dir="ltr">embed</strong> معرفی شده است که به شما اجازه می‌دهد فایل‌ها را مستقیماً داخل فایل اجرایی برنامه جاسازی کنید.</p>
+<p>با این کار فایل‌ها دیگر نیازی به وجود جداگانه در کنار فایل اجرایی ندارند و برنامه شما به‌صورت مستقل، بدون وابستگی به مسیرهای خارجی اجرا خواهد شد. این تکنیک مخصوصاً برای اپلیکیشن‌های توزیع‌شونده یا سرورهای کوچک بسیار مفید است.</p>
+<figure class="diagram" dir="ltr">
+<svg  font-family="sans-serif" viewBox="0 0 720 380" xmlns="http://www.w3.org/2000/svg" width="720" height="380">
+<defs>
+<marker id="arrEmbed" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#00ADD8" points="0 0, 10 3.5, 0 7"></polygon></marker>
+</defs>
+<!-- Source files -->
+<rect fill="#fff3e0" height="55" rx="8" stroke="#ff9800" stroke-width="1.5" width="130" x="20" y="50"></rect>
+<text fill="#e65100" font-size="13" text-anchor="middle" x="85" y="75" direction="ltr" unicode-bidi="embed">message.txt</text>
+<text fill="#666" font-size="11" text-anchor="middle" x="85" y="95" direction="rtl" unicode-bidi="embed">فایل متنی</text>
+<rect fill="#f3e5f5" height="55" rx="8" stroke="#9c27b0" stroke-width="1.5" width="130" x="20" y="120"></rect>
+<text fill="#7b1fa2" font-size="13" text-anchor="middle" x="85" y="145" direction="ltr" unicode-bidi="embed">template.html</text>
+<text fill="#666" font-size="11" text-anchor="middle" x="85" y="165" direction="rtl" unicode-bidi="embed">قالب <tspan direction="ltr" unicode-bidi="embed">HTML</tspan></text>
+<rect fill="#e3f2fd" height="55" rx="8" stroke="#2196f3" stroke-width="1.5" width="130" x="20" y="190"></rect>
+<text fill="#1565c0" font-size="13" text-anchor="middle" x="85" y="215" direction="ltr" unicode-bidi="embed">templates/</text>
+<text fill="#666" font-size="11" text-anchor="middle" x="85" y="235" direction="rtl" unicode-bidi="embed">چند فایل</text>
+<!-- go:embed directive -->
+<line marker-end="url(#arrEmbed)" stroke="#00ADD8" stroke-width="2" x1="150" x2="260" y1="145" y2="145"></line>
+<text fill="#00ADD8" font-size="11" text-anchor="middle" x="205" y="135" direction="ltr" unicode-bidi="embed">//go:embed</text>
+<!-- Compile time box -->
+<rect fill="#e0f7fa" height="170" rx="12" stroke="#00ADD8" stroke-width="2" width="200" x="260" y="70"></rect>
+<text fill="#006064" font-size="14" font-weight="bold" text-anchor="middle" x="360" y="100" direction="rtl" unicode-bidi="embed">زمان کامپایل</text>
+<text fill="#666" font-size="12" text-anchor="middle" x="360" y="125" direction="ltr" unicode-bidi="embed">go build</text>
+<line stroke="#00ADD8" stroke-width="0.5" x1="280" x2="440" y1="140" y2="140"></line>
+<text fill="#006064" font-size="12" text-anchor="middle" x="360" y="162" direction="rtl" unicode-bidi="embed">→ <tspan direction="ltr" unicode-bidi="embed">string</tspan> (رشته)</text>
+<text fill="#006064" font-size="12" text-anchor="middle" x="360" y="182" direction="rtl" unicode-bidi="embed">→ []<tspan direction="ltr" unicode-bidi="embed">byte</tspan> (بایت‌آرایه)</text>
+<text fill="#006064" font-size="12" text-anchor="middle" x="360" y="202" direction="rtl" unicode-bidi="embed">→ <tspan direction="ltr" unicode-bidi="embed">embed.FS</tspan> (سیستم‌فایل)</text>
+<text fill="#999" font-size="11" text-anchor="middle" x="360" y="225" direction="rtl" unicode-bidi="embed">فایل‌ها داخل باینری قرار می‌گیرند</text>
+<!-- Arrow to binary -->
+<line marker-end="url(#arrEmbed)" stroke="#00ADD8" stroke-width="2" x1="460" x2="540" y1="155" y2="155"></line>
+<text fill="#00ADD8" font-size="11" text-anchor="middle" x="500" y="145" direction="rtl" unicode-bidi="embed">خروجی</text>
+<!-- Binary -->
+<rect fill="#e8f5e9" height="140" rx="12" stroke="#4caf50" stroke-width="2" width="160" x="540" y="80"></rect>
+<text fill="#2e7d32" font-size="14" font-weight="bold" text-anchor="middle" x="620" y="110" direction="rtl" unicode-bidi="embed">باینری اجرایی</text>
+<text fill="#666" font-size="12" text-anchor="middle" x="620" y="135" direction="ltr" unicode-bidi="embed">myapp</text>
+<line stroke="#4caf50" stroke-width="0.5" x1="560" x2="680" y1="150" y2="150"></line>
+<text fill="#2e7d32" font-size="11" text-anchor="middle" x="620" y="172" direction="rtl" unicode-bidi="embed">فایل‌ها داخلش</text>
+<text fill="#2e7d32" font-size="11" text-anchor="middle" x="620" y="192" direction="rtl" unicode-bidi="embed">بدون وابستگی</text>
+<text fill="#2e7d32" font-size="11" text-anchor="middle" x="620" y="212" direction="rtl" unicode-bidi="embed">قابل توزیع تنها</text>
+<!-- Runtime access -->
+<rect fill="#fce4ec" height="60" rx="10" stroke="#e91e63" stroke-width="1.5" width="160" x="540" y="260"></rect>
+<text fill="#c2185b" font-size="13" text-anchor="middle" x="620" y="285" direction="rtl" unicode-bidi="embed">دسترسی در زمان اجرا</text>
+<text fill="#666" font-size="12" text-anchor="middle" x="620" y="305" direction="rtl" unicode-bidi="embed">بدون خواندن از دیسک</text>
+<line marker-end="url(#arrEmbed)" stroke="#e91e63" stroke-width="1.5" x1="620" x2="620" y1="220" y2="260"></line>
+</svg>
+<figcaption>شکل ۶-۵ — جریان جاسازی فایل‌ها در باینری <bdi dir="ltr">Go</bdi> با پکیج <bdi dir="ltr">embed</bdi></figcaption>
+</figure>
+<h3 id="جاسازی-ساده">جاسازی یک فایل متنی</h3>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">import (
+_ "embed"
+"fmt"
+)
+
+//go:embed message.txt
+var message string
+
+func main() {
+    fmt.Println(message)
+}
+</code></pre>
+</figure>
+<p>در این مثال محتوای فایل <code dir="ltr">message.txt</code> به صورت رشته در متغیر <code>message</code> جاسازی می‌شود و دیگر نیازی به خواندن فایل از دیسک وجود ندارد. علامت <code>_</code> در ایمپورت به این معنی است که پکیج <code>embed</code> مستقیماً استفاده نمی‌شود بلکه فقط جهت فعال‌سازی دستور <code>//go:embed</code> ایمپورت شده است.</p>
+<h3 id="انواع-قابل-جاسازی">انواع قابل جاسازی</h3>
+<p>پکیج <code>embed</code> می‌تواند سه نوع داده را پشتیبانی کند:</p>
+<ul>
+<li><strong dir="ltr"><code>string</code>:</strong> برای فایل‌های متنی ساده</li>
+<li><strong dir="ltr"><code>[]byte</code>:</strong> برای فایل‌های باینری (تصاویر، صوت و غیره)</li>
+<li><strong dir="ltr"><code dir="ltr">embed.FS</code>:</strong> برای مجموعه‌ای از فایل‌ها و دایرکتوری‌ها با قابلیت پیمایش</li>
+</ul>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">import (
+"embed"
+"fmt"
+)
+
+//go:embed message.txt
+var content string // type string
+
+//go:embed logo.png
+var logoData []byte // type []byte
+
+//go:embed templates/*.html
+var templates embed.FS // type embed.FS
+</code></pre>
+</figure>
+<h3 id="جاسازی-چند-فایل">جاسازی چند فایل با embed.FS</h3>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">//go:embed templates/*.html
+var templates embed.FS
+</code></pre>
+</figure>
+<p>در این حالت می‌توانید به فایل‌ها مانند سیستم فایل مجازی دسترسی داشته باشید:</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">content, _ := templates.ReadFile("templates/home.html")
+</code></pre>
+</figure>
+<h3 id="مثال-عملی-قالب-html">مثال عملی: جاسازی قالب HTML</h3>
+<p>ساختار پروژه:</p>
+<figure class="diagram" dir="ltr">
+<svg height="120" viewBox="0 0 320 120" width="320" xmlns="http://www.w3.org/2000/svg">
+<rect fill="#fafafa" height="120" rx="8" stroke="#e0e0e0" stroke-width="1.5" width="320" x="0" y="0"></rect>
+<!-- Tree connector lines -->
+<g fill="none" stroke="#ccc" stroke-linecap="round" stroke-width="1.5">
+<!-- Level 0 vertical line -->
+<line x1="32" x2="32" y1="54" y2="82"></line>
+<!-- Level 0 horizontal connectors -->
+<line x1="32" x2="46" y1="54" y2="54"></line>
+<line x1="32" x2="46" y1="82" y2="82"></line>
+</g>
+<!-- Root -->
+<text fill="#00ADD8" font-family="monospace" font-size="13" font-weight="bold" x="16" y="30" direction="ltr" unicode-bidi="embed">project/</text>
+<!-- Items -->
+<text fill="#555" font-family="monospace" font-size="13" x="50" y="58" direction="ltr" unicode-bidi="embed">main.go</text>
+<text fill="#555" font-family="monospace" font-size="13" x="50" y="86" direction="ltr" unicode-bidi="embed">template.html</text>
+</svg>
+<figcaption dir="rtl">ساختار پروژه</figcaption>
+</figure>
+<p>محتوای فایل <code dir="ltr">template.html</code>:</p>
+<figure class="code html" dir="ltr">
+<pre><code class="language-html">&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;&lt;title&gt;سلام&lt;/title&gt;&lt;/head&gt;
+&lt;body&gt;
+    &lt;h1&gt;{{.Title}}&lt;/h1&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+</figure>
+<p>کد Go:</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">package main
+
+import (
+"embed"
+"html/template"
+"log"
+"net/http"
+)
+
+//go:embed template.html
+var htmlTemplate string
+
+func handler(w http.ResponseWriter, r *http.Request) {
+    tmpl, err := template.New("webpage").Parse(htmlTemplate)
+    if err != nil {
+        http.Error(w, "خطا در بارگذاری قالب", http.StatusInternalServerError)
+        return
+    }
+    data := struct{ Title string }{Title: "صفحه اصلی"}
+    tmpl.Execute(w, data)
+}
+
+func main() {
+    http.HandleFunc("/", handler)
+    log.Println("در حال اجرا روی http://localhost:8080")
+    log.Fatal(http.ListenAndServe(":8080", nil))
+}
+</code></pre>
+</figure>
+<p>فایل <code dir="ltr">template.html</code> در لحظه کامپایل به باینری برنامه اضافه می‌شود و نیازی به فایل در زمان اجرا نیست. نوع <code>string</code> برای embed استفاده شده، که برای فایل‌های متنی مثل HTML مناسب است. می‌توان به‌جای <code>string</code> از <code>[]byte</code> یا <code dir="ltr">embed.FS</code> هم استفاده کرد، بسته به کاربرد.</p>
+<table class="comparison-table" dir="rtl">
+<thead>
+<tr><th>ویژگی</th><th>PHP</th><th>Go</th></tr>
+</thead>
+<tbody>
+<tr><td>جاسازی فایل در باینری</td><td>بدون پشتیبانی رسمی</td><td><code>embed</code> پکیج رسمی (از Go 1.16)</td></tr>
+<tr><td>روش معمول PHP</td><td><code><span dir="ltr">file_get_contents()</span></code> و ذخیره در متغیر</td><td>دستور <code>//go:embed</code></td></tr>
+<tr><td>زمان جاسازی</td><td>دستی در زمان توسعه</td><td>خودکار در زمان کامپایل</td></tr>
+<tr><td>توزیع برنامه</td><td>وابسته به فایل‌های جانبی</td><td>باینری مستقل و قابل توزیع تنها</td></tr>
+<tr><td>انواع داده</td><td>فقط رشته</td><td dir="ltr"><code>string</code> / <code>[]byte</code> / <code dir="ltr">embed.FS</code></td></tr>
+<tr><td>پیمایش دایرکتوری</td><td><code><span dir="ltr">glob()</span></code> + خواندن دستی</td><td><code><span dir="ltr">embed.FS</span></code> با متدهای <code>ReadDir</code> و <code>ReadFile</code></td></tr>
+<tr><td>یکپارچگی با go build</td><td>معادل ندارد</td><td>کاملاً یکپارچه</td></tr>
+</tbody>
+</table>
+<div class="important comparison">
+<strong>محدودیت‌های embed:</strong> فایل‌های embed فقط از دایرکتوری‌های حاوی فایل‌های Go قابل جاسازی هستند (یا دایرکتوری‌های والدی). نمی‌توان فایل‌هایی از مسیرهایی خارج از ماژول را embed کرد. همچنین فایل‌های مخفی (شروع با <code>.</code>) و فایل‌های <code>_</code> شروع‌شونده نادیده گرفته می‌شوند مگر صراحتاً ذکر شوند.
+</div>
+<h3 id="عملکرد-داخلی-embed">عملکرد داخلی //go:embed در زمان کامپایل</h3>
+<p>دستور <code>//go:embed</code> یک directive کامپایلر است، نه یک comment معمولی. وقتی کامپایلر Go (gc) این دستور را می‌بیند، مراحل زیر را انجام می‌دهد:</p>
+<ol>
+<li><strong>تحلیل مسیر فایل:</strong> کامپایلر مسیر فایل نسبت به دایرکتوری فایل Go حاوی directive را بررسی می‌کند</li>
+<li><strong>خواندن محتوا:</strong> محتوای فایل(ها) در زمان کامپایل خوانده می‌شود</li>
+<li><strong>تولید داده:</strong> محتوا به‌صورت بایت‌های خام در بخش data باینری نهایی قرار می‌گیرد</li>
+<li><strong>مقداردهی اولیه:</strong> متغیر هدف در زمان شروع برنامه (قبل از <code dir="ltr">main()</code>) با داده‌های جاسازی‌شده مقداردهی می‌شود</li>
+</ol>
+<div class="note">
+<strong>نکته:</strong> چون <code>//go:embed</code> در زمان کامپایل پردازش می‌شود، فایل‌های جاسازی‌شده بعد از کامپایل قابل تغییر نیستند. اگر فایل اصلی در دیسک تغییر کند، باید برنامه را دوباره کامپایل کنید. این برخلاف خواندن فایل در زمان اجرا با <code dir="ltr">os.ReadFile()</code> است که همیشه آخرین نسخه فایل را می‌خواند.
+</div>
+<h3 id="رابط-fsfs">رابط fs.FS و سیستم فایل مجازی</h3>
+<p>نوع <code dir="ltr">embed.FS</code> رابط <code dir="ltr">fs.FS</code> را پیاده‌سازی می‌کند — رابط استاندارد Go برای سیستم‌فایل فقط‌خواندنی. این یعنی هر تابعی که <code dir="ltr">fs.FS</code> بپذیرد، می‌تواند با فایل‌های embed شده کار کند:</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">// fs.FS interface (from io/fs package)
+type FS interface {
+    Open(name string) (File, error)
+}
+
+// embed.FS implements the fs.FS interface
+// So you can pass it to any function:
+tmpl, _ := template.ParseFS(templates, "*.html") // HTML templates
+http.FS(templates) // serve files via HTTP
+fs.WalkDir(templates, ".", func(path string, d fs.DirEntry, err error) error {
+    fmt.Println("فایل embed:", path)
+    return nil
+})
+</code></pre>
+</figure>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">// Serve embedded static files over HTTP
+//go:embed static/*
+var staticFiles embed.FS
+
+func main() {
+    // http.FS creates an http.FileSystem from embed.FS
+    fileServer := http.FileServer(http.FS(staticFiles))
+    http.Handle("/static/", http.StripPrefix("/static/", fileServer))
+    http.ListenAndServe(":8080", nil)
+}
+</code></pre>
+</figure>
+<div class="comparison">
+<strong>مقایسه با PHP:</strong> در PHP مفهوم embed در باینری وجود ندارد. نزدیک‌ترین معادل استفاده از <code dir="ltr">file_get_contents()</code> برای خواندن فایل‌ها و ذخیره در متغیر است — اما این فایل‌ها در زمان اجرا از دیسک خوانده می‌شوند. در Go، فایل‌ها در زمان کامپایل در باینری جاسازی می‌شوند و نیازی به دیسک ندارند. PHP Stream Wrapperها (مثل <code>php://memory</code>) شبیه‌ترین مفهوم به <code dir="ltr">embed.FS</code> هستند اما در عمل کاملاً متفاوت‌اند.
+</div>
+
+<h3 id="embed-چند-دایرکتوری">جاسازی چند فایل و دایرکتوری</h3>
+<p>دستور <code>//go:embed</code> از الگوهای glob و مسیرهای متعدد پشتیبانی می‌کند. می‌توانید فایل‌های منفرد، دایرکتوری‌ها کامل و الگوهای glob را با هم ترکیب کنید:</p>
+
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">import "embed"
+
+// Embed multiple individual files
+//go:embed logo.png favicon.ico
+var images embed.FS
+
+// Embed all files in a directory (recursive)
+//go:embed templates/**
+var templates embed.FS
+
+// Combine single file and directory
+//go:embed config.json migrations/*
+var appData embed.FS
+
+// Glob pattern: only .html files in templates root
+//go:embed templates/*.html
+var htmlTemplates embed.FS
+
+// Recursive glob pattern: all .html files in all subdirectories
+//go:embed templates/**/*.html
+var allHTMLTemplates embed.FS
+</code></pre>
+</figure>
+
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">// Iterate embedded files
+entries, _ := appData.ReadDir("migrations")
+for _, entry := range entries {
+    fmt.Println(entry.Name(), entry.IsDir())
+}
+
+// Read specific file
+content, err := appData.ReadFile("migrations/001_create_users.sql")
+if err != nil {
+    log.Fatal(err)
+}
+fmt.Println(string(content))
+</code></pre>
+</figure>
+
+<div class="warning">
+<strong>هشدار درباره glob بازگشتی:</strong> الگوی <code>**</code> در <code>//go:embed</code> فقط زیردایرکتوری‌های یک سطح پایین‌تر را شامل می‌شود، نه تمام سطوح. برای جاسازی بازگشتی واقعی، از الگوی <code>dir/**</code> استفاده کنید که تمام فایل‌ها در تمام سطوح دایرکتوری را شامل می‌شود. همچنین فایل‌های مخفی (شروع با <code>.</code>) و فایل‌های شروع‌شونده با <code>_</code> به‌صورت پیش‌فرض نادیده گرفته می‌شوند. برای جاسازی آن‌ها باید صراحتاً نام ببرید: <code>//go:embed .env</code>.
+</div>
+
+<h3 id="embed-httpfilesystem">ترکیب با http.FileSystem و سرو فایل‌های استاتیک</h3>
+<p>یکی از قدرتمندترین کاربردهای <code dir="ltr">embed.FS</code> ، سرو فایل‌های استاتیک (CSS، JS، تصاویر) مستقیماً از باینری بدون نیاز به دیسک است. تابع <code dir="ltr">http.FS()</code> یک <code dir="ltr">embed.FS</code> را به <code dir="ltr">http.FileSystem</code> تبدیل می‌کند که می‌توان آن را با <code dir="ltr">http.FileServer</code> استفاده کرد:</p>
+
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">package main
+
+import (
+"embed"
+"io/fs"
+"log"
+"net/http"
+)
+
+//go:embed static/*
+var staticFiles embed.FS
+
+func main() {
+    // Convert embed.FS to read-only subsystem at "static" path
+    subFS, err := fs.Sub(staticFiles, "static")
+    if err != nil {
+        log.Fatal(err)
+    }
+
+    // Create FileServer from subsystem
+    fileServer := http.FileServer(http.FS(subFS))
+
+    // Serve static files at /static/
+    http.Handle("/static/", http.StripPrefix("/static/", fileServer))
+
+    // Now the following files are served from binary:
+    // /static/css/style.css
+    // /static/js/app.js
+    // /static/img/logo.png
+
+    log.Println("سرور در حال اجرا روی :8080")
+    log.Fatal(http.ListenAndServe(":8080", nil))
+}
+</code></pre>
+</figure>
+
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">// Combine embed.FS with template for HTML template rendering
+//go:embed views/*.html
+var viewFS embed.FS
+
+func main() {
+    // ParseFS reads template files from embed.FS
+    tmpl, err := template.ParseFS(viewFS, "views/*.html")
+    if err != nil {
+        log.Fatal(err)
+    }
+
+    http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+        tmpl.ExecuteTemplate(w, "index.html", map[string]string{
+            "Title": "صفحه اصلی",
+        })
+    })
+
+    http.ListenAndServe(":8080", nil)
+}
+</code></pre>
+</figure>
+
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">// Using fs.Sub to remove directory prefix
+// Without fs.Sub: file path is "static/css/style.css"
+// With fs.Sub: file path becomes "css/style.css"
+
+subFS, _ := fs.Sub(staticFiles, "static")
+content, _ := fs.ReadFile(subFS, "css/style.css")
+// Instead of: staticFiles.ReadFile("static/css/style.css")
+</code></pre>
+</figure>
+
+<div class="important">
+<strong>نکته‌ی عملی درباره fs.Sub:</strong> تابع <code dir="ltr">fs.Sub()</code> یک subsystem ایجاد می‌کند که ریشه‌ی آن یک زیردایرکتوری از <code dir="ltr">embed.FS</code> است. این تابع برای <code dir="ltr">http.FileServer</code> ضروری است زیرا <code dir="ltr">embed.FS</code> مسیرهای کامل (مثل <code>static/css/style.css</code>) را ذخیره می‌کند اما <code>http.FileServer</code> مسیر نسبی نسبت به URL را طلب می‌کند. بدون <code dir="ltr">fs.Sub()</code> ، فایل‌ها در مسیر اشتباه جستجو می‌شوند و 404 دریافت می‌کنید.
+</div>
+
+<figure class="diagram" dir="ltr">
+<svg  font-family="sans-serif" viewBox="0 0 720 340" xmlns="http://www.w3.org/2000/svg" width="720" height="340">
+<defs>
+<marker id="arrE2" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#00ADD8" points="0 0, 10 3.5, 0 7"></polygon></marker>
+</defs>
+<rect fill="#fafafa" height="340" rx="8" width="720" x="0" y="0"></rect>
+<text fill="#333" font-size="16" font-weight="bold" text-anchor="middle" x="360" y="30" direction="rtl" unicode-bidi="embed">مقایسه جاسازی فایل: <tspan direction="ltr" unicode-bidi="embed">PHP</tspan> در مقابل <tspan direction="ltr" unicode-bidi="embed">Go</tspan></text>
+<!-- PHP approach -->
+<rect fill="#777BB4" height="270" opacity="0.06" rx="10" stroke="#777BB4" stroke-width="1.5" width="310" x="20" y="50"></rect>
+<text fill="#777BB4" font-size="15" font-weight="bold" text-anchor="middle" x="175" y="80" direction="rtl" unicode-bidi="embed">روش <tspan direction="ltr" unicode-bidi="embed">PHP</tspan></text>
+<rect fill="#f3e5f5" height="45" rx="6" stroke="#777BB4" stroke-width="1" width="250" x="50" y="100"></rect>
+<text fill="#4a148c" font-size="12" text-anchor="middle" x="175" y="120" direction="ltr" unicode-bidi="embed">__DIR__ . '/config.php'</text>
+<text fill="#666" font-size="10" text-anchor="middle" x="175" y="137" direction="rtl" unicode-bidi="embed">مسیر نسبی — وابسته به محل فایل</text>
+<rect fill="#f3e5f5" height="45" rx="6" stroke="#777BB4" stroke-width="1" width="250" x="50" y="160"></rect>
+<text fill="#4a148c" font-size="12" text-anchor="middle" x="175" y="180" direction="ltr" unicode-bidi="embed">file_get_contents($path)</text>
+<text fill="#666" font-size="10" text-anchor="middle" x="175" y="197" direction="rtl" unicode-bidi="embed">خواندن از دیسک در هر درخواست</text>
+<rect fill="#fce4ec" height="45" rx="6" stroke="#e91e63" stroke-width="1" width="250" x="50" y="220"></rect>
+<text fill="#c2185b" font-size="11" text-anchor="middle" x="175" y="240" direction="rtl" unicode-bidi="embed">فایل‌ها باید همراه باینری باشند</text>
+<text fill="#c2185b" font-size="11" text-anchor="middle" x="175" y="258" direction="rtl" unicode-bidi="embed">خطر تغییر/حذف فایل در تولید</text>
+<text fill="#c2185b" font-size="11" text-anchor="middle" x="175" y="276" direction="rtl" unicode-bidi="embed">مسئله مسیر نسبی/مطلق</text>
+<text fill="#777BB4" font-size="11" text-anchor="middle" x="175" y="305" direction="ltr" unicode-bidi="embed">composer install → vendor/ لازم است</text>
+<!-- Go approach -->
+<rect fill="#00ADD8" height="270" opacity="0.06" rx="10" stroke="#00ADD8" stroke-width="1.5" width="310" x="390" y="50"></rect>
+<text fill="#00ADD8" font-size="15" font-weight="bold" text-anchor="middle" x="545" y="80" direction="rtl" unicode-bidi="embed">روش <tspan direction="ltr" unicode-bidi="embed">Go</tspan></text>
+<rect fill="#e0f7fa" height="45" rx="6" stroke="#00ADD8" stroke-width="1" width="250" x="420" y="100"></rect>
+<text fill="#006064" font-size="12" text-anchor="middle" x="545" y="120" direction="ltr" unicode-bidi="embed">//go:embed config.yaml</text>
+<text fill="#666" font-size="10" text-anchor="middle" x="545" y="137" direction="rtl" unicode-bidi="embed">جاسازی در زمان کامپایل</text>
+<rect fill="#e0f7fa" height="45" rx="6" stroke="#00ADD8" stroke-width="1" width="250" x="420" y="160"></rect>
+<text fill="#006064" font-size="12" text-anchor="middle" x="545" y="180" direction="ltr" unicode-bidi="embed">embed.FS.ReadFile()</text>
+<text fill="#666" font-size="10" text-anchor="middle" x="545" y="197" direction="rtl" unicode-bidi="embed">خواندن از حافظه — بدون دیسک</text>
+<rect fill="#e8f5e9" height="45" rx="6" stroke="#4caf50" stroke-width="1" width="250" x="420" y="220"></rect>
+<text fill="#2e7d32" font-size="11" text-anchor="middle" x="545" y="240" direction="rtl" unicode-bidi="embed">فایل‌ها داخل باینری هستند</text>
+<text fill="#2e7d32" font-size="11" text-anchor="middle" x="545" y="258" direction="rtl" unicode-bidi="embed">بدون خطر تغییر/حذف فایل</text>
+<text fill="#2e7d32" font-size="11" text-anchor="middle" x="545" y="276" direction="rtl" unicode-bidi="embed">بدون مسئله مسیر</text>
+<text fill="#00ADD8" font-size="11" text-anchor="middle" x="545" y="305" direction="ltr" unicode-bidi="embed">go build → باینری مستقل</text>
+</svg>
+<figcaption>شکل ۶-۵-ب — مقایسه رویکرد <bdi dir="ltr">PHP</bdi> و <bdi dir="ltr">Go</bdi> به جاسازی فایل‌ها</figcaption>
+</figure>
+
+<h3 id="embed-عملی-میکروسرویس">مثال عملی: میکروسرویس با قالب‌ها و فایل‌های استاتیک embed شده</h3>
+<p>در یک میکروسرویس واقعی معمولاً هم قالب‌های HTML و هم فایل‌های استاتیک (CSS، JS) را embed می‌کنید. این کار توزیع برنامه را بسیار ساده می‌کند — فقط یک باینری کافی است:</p>
+
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">package main
+
+import (
+"embed"
+"html/template"
+"io/fs"
+"log"
+"net/http"
+)
+
+//go:embed templates/*.html
+var templateFS embed.FS
+
+//go:embed static/**
+var staticFS embed.FS
+
+var tmpl *template.Template
+
+func main() {
+    // Parse templates from embed.FS
+    var err error
+    tmpl, err = template.ParseFS(templateFS, "templates/*.html")
+    if err != nil {
+        log.Fatal(err)
+    }
+
+    // Serve static files
+    staticSub, _ := fs.Sub(staticFS, "static")
+    http.Handle("/static/", http.StripPrefix("/static/",
+    http.FileServer(http.FS(staticSub))))
+
+    // Root route
+    http.HandleFunc("/", homeHandler)
+
+    log.Println("سرور در حال اجرا روی :8080")
+    log.Fatal(http.ListenAndServe(":8080", nil))
+}
+
+func homeHandler(w http.ResponseWriter, r *http.Request) {
+    tmpl.ExecuteTemplate(w, "index.html", map[string]any{
+        "Title": "میکروسرویس Go",
+        "Version": "1.0.0",
+    })
+}
+</code></pre>
+</figure>
+
+<div class="tip">
+<strong>نکته‌ی عملی:</strong> development، ممکن است نخواهید فایل‌ها را embed کنید تا بتوانید بدون بازسازی باینری، تغییرات قالب را ببینید. یک الگوی رایج این است: در حالت توسعه از دیسک بخوانید و در حالت تولید از <code dir="ltr">embed.FS</code>. می‌توانید با یک flag build این رفتار را کنترل کنید.
+</div>
+
+<h3 id="خط-لوله-کامپایل-embed">خط لوله کامپایل //go:embed: از کد منبع تا باینری مستقل</h3>
+<p>برای درک عمیق‌تر نحوه کار <code dir="ltr">//go:embed</code>، باید خط لوله کامپایل را از نزدیک بررسی کنیم. شکل زیر نشان می‌دهد که چگونه فایل‌های منبع <bdi dir="ltr">Go</bdi> و فایل‌های موجود در سیستم‌فایل در طول فرآیند کامپایل با هم ترکیب می‌شوند و به یک باینری مستقل تبدیل می‌شوند. تفاوت اساسی با <bdi dir="ltr">PHP</bdi> در این است که <bdi dir="ltr">PHP</bdi> هر بار فایل‌ها را از دیسک می‌خواند و هیچ مکانیزم رسمی برای جاسازی فایل‌ها در باینری ندارد. اما <bdi dir="ltr">Go</bdi> در زمان کامپایل فایل‌ها را در باینری قرار می‌دهد و در زمان اجرا بدون دسترسی به دیسک اصلی، مستقیماً از حافظه می‌خواند. این تفاوت بنیادین، مدل استقرار و توزیع برنامه‌های <bdi dir="ltr">Go</bdi> را متحول می‌کند.</p>
+
+<figure class="diagram" dir="ltr">
+<svg font-family="sans-serif" viewBox="0 0 800 520" xmlns="http://www.w3.org/2000/svg" width="800" height="520">
+<defs>
+<marker id="arrEmbed2" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#00ADD8" points="0 0, 10 3.5, 0 7"></polygon></marker>
+<marker id="arrGreen2" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#4CAF50" points="0 0, 10 3.5, 0 7"></polygon></marker>
+<marker id="arrPurple2" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#9C27B0" points="0 0, 10 3.5, 0 7"></polygon></marker>
+<marker id="arrOrange2" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#FF9800" points="0 0, 10 3.5, 0 7"></polygon></marker>
+</defs>
+<rect fill="#fafafa" height="520" rx="8" stroke="#e0e0e0" stroke-width="1.5" width="800" x="0" y="0"></rect>
+<text fill="#333" font-size="16" font-weight="bold" text-anchor="middle" x="400" y="28" direction="rtl" unicode-bidi="embed">خط لوله کامپایل <tspan direction="ltr" unicode-bidi="embed">//go:embed</tspan>: از کد منبع تا باینری مستقل</text>
+
+<!-- LEFT: Source Code + Filesystem -->
+<rect fill="#fff3e0" height="200" opacity="0.15" rx="12" stroke="#FF9800" stroke-dasharray="6,3" stroke-width="2" width="190" x="20" y="45"></rect>
+<text fill="#e65100" font-size="13" font-weight="bold" text-anchor="middle" x="115" y="70" direction="rtl" unicode-bidi="embed">کد منبع و فایل‌ها</text>
+
+<!-- Source code box -->
+<rect fill="#e3f2fd" height="55" rx="6" stroke="#2196f3" stroke-width="1.5" width="160" x="35" y="85"></rect>
+<text fill="#1565c0" font-size="11" font-weight="bold" text-anchor="middle" x="115" y="105" direction="ltr" unicode-bidi="embed">main.go</text>
+<text fill="#555" font-size="9" text-anchor="middle" x="115" y="120" direction="ltr" unicode-bidi="embed">//go:embed static/*</text>
+<text fill="#555" font-size="9" text-anchor="middle" x="115" y="132" direction="ltr" unicode-bidi="embed">var files embed.FS</text>
+
+<!-- File system boxes -->
+<rect fill="#FF9800" height="30" rx="4" stroke="#FF9800" stroke-width="1" width="70" x="35" y="155"></rect>
+<text fill="#fff" font-size="9" font-weight="bold" text-anchor="middle" x="70" y="175" direction="ltr" unicode-bidi="embed">style.css</text>
+<rect fill="#FF9800" height="30" rx="4" stroke="#FF9800" stroke-width="1" width="55" x="115" y="155"></rect>
+<text fill="#fff" font-size="9" font-weight="bold" text-anchor="middle" x="142" y="175" direction="ltr" unicode-bidi="embed">app.js</text>
+<rect fill="#FF9800" height="30" rx="4" stroke="#FF9800" stroke-width="1" width="60" x="35" y="195"></rect>
+<text fill="#fff" font-size="9" font-weight="bold" text-anchor="middle" x="65" y="215" direction="ltr" unicode-bidi="embed">logo.png</text>
+<rect fill="#FF9800" height="30" rx="4" stroke="#FF9800" stroke-width="1" width="75" x="105" y="195"></rect>
+<text fill="#fff" font-size="9" font-weight="bold" text-anchor="middle" x="142" y="215" direction="ltr" unicode-bidi="embed">index.html</text>
+
+<!-- CENTER: Go Compiler -->
+<rect fill="#00ADD8" height="230" opacity="0.08" rx="12" stroke="#00ADD8" stroke-width="2" width="220" x="260" y="45"></rect>
+<text fill="#00ADD8" font-size="14" font-weight="bold" text-anchor="middle" x="370" y="70" direction="ltr" unicode-bidi="embed">Go Compiler (gc)</text>
+
+<!-- Step 1: Parse -->
+<rect fill="#e0f7fa" height="40" rx="6" stroke="#00ADD8" stroke-width="1.5" width="190" x="275" y="85"></rect>
+<text fill="#006064" font-size="11" text-anchor="middle" x="370" y="102" direction="rtl" unicode-bidi="embed">۱. تحلیل دستور <tspan direction="ltr" unicode-bidi="embed">//go:embed</tspan></text>
+<text fill="#999" font-size="9" text-anchor="middle" x="370" y="118" direction="rtl" unicode-bidi="embed">شناسایی فایل‌های مورد نظر</text>
+
+<!-- Step 2: Read -->
+<rect fill="#e0f7fa" height="40" rx="6" stroke="#00ADD8" stroke-width="1.5" width="190" x="275" y="135"></rect>
+<text fill="#006064" font-size="11" text-anchor="middle" x="370" y="152" direction="rtl" unicode-bidi="embed">۲. خواندن محتوای فایل‌ها</text>
+<text fill="#999" font-size="9" text-anchor="middle" x="370" y="168" direction="rtl" unicode-bidi="embed">از دیسک در زمان کامپایل</text>
+
+<!-- Step 3: Embed -->
+<rect fill="#e0f7fa" height="40" rx="6" stroke="#00ADD8" stroke-width="1.5" width="190" x="275" y="185"></rect>
+<text fill="#006064" font-size="11" text-anchor="middle" x="370" y="202" direction="rtl" unicode-bidi="embed">۳. جاسازی در بخش <tspan direction="ltr" unicode-bidi="embed">data</tspan> باینری</text>
+<text fill="#999" font-size="9" text-anchor="middle" x="370" y="218" direction="rtl" unicode-bidi="embed">فایل‌ها تبدیل به بایت‌های خام می‌شوند</text>
+
+<!-- Step 4: Init -->
+<rect fill="#e0f7fa" height="40" rx="6" stroke="#00ADD8" stroke-width="1.5" width="190" x="275" y="235"></rect>
+<text fill="#006064" font-size="11" text-anchor="middle" x="370" y="252" direction="rtl" unicode-bidi="embed">۴. مقداردهی قبل از <tspan direction="ltr" unicode-bidi="embed">main()</tspan></text>
+<text fill="#999" font-size="9" text-anchor="middle" x="370" y="268" direction="rtl" unicode-bidi="embed">متغیرها با داده جاسازی پر می‌شوند</text>
+
+<!-- Arrows from left to center -->
+<line marker-end="url(#arrEmbed2)" stroke="#00ADD8" stroke-width="2" x1="195" x2="275" y1="110" y2="105"></line>
+<line marker-end="url(#arrOrange2)" stroke="#FF9800" stroke-width="1.5" x1="145" x2="275" y1="170" y2="155"></line>
+<line marker-end="url(#arrOrange2)" stroke="#FF9800" stroke-width="1.5" x1="145" x2="275" y1="210" y2="205"></line>
+
+<!-- RIGHT: Compiled Binary -->
+<rect fill="#4CAF50" height="200" opacity="0.08" rx="12" stroke="#4CAF50" stroke-width="2" width="200" x="530" y="45"></rect>
+<text fill="#2e7d32" font-size="14" font-weight="bold" text-anchor="middle" x="630" y="70" direction="rtl" unicode-bidi="embed">باینری کامپایل‌شده</text>
+
+<!-- Binary box -->
+<rect fill="#e8f5e9" height="60" rx="8" stroke="#4CAF50" stroke-width="1.5" width="170" x="545" y="85"></rect>
+<text fill="#2e7d32" font-size="12" font-weight="bold" text-anchor="middle" x="630" y="105" direction="ltr" unicode-bidi="embed">myapp (binary)</text>
+<text fill="#555" font-size="10" text-anchor="middle" x="630" y="122" direction="rtl" unicode-bidi="embed">بدون وابستگی خارجی</text>
+<text fill="#555" font-size="10" text-anchor="middle" x="630" y="138" direction="rtl" unicode-bidi="embed">قابل توزیع تنها</text>
+
+<!-- Embedded FS inside binary -->
+<rect fill="#4CAF50" height="40" rx="6" stroke="#4CAF50" stroke-width="1.5" width="170" x="545" y="160"></rect>
+<text fill="#fff" font-size="12" font-weight="bold" text-anchor="middle" x="630" y="178" direction="ltr" unicode-bidi="embed">embed.FS</text>
+<text fill="#e8f5e9" font-size="9" text-anchor="middle" x="630" y="194" direction="rtl" unicode-bidi="embed">سیستم‌فایل مجازی در حافظه</text>
+
+<!-- Arrow from center to right -->
+<line marker-end="url(#arrGreen2)" stroke="#4CAF50" stroke-width="2" x1="465" x2="545" y1="155" y2="110"></line>
+
+<!-- PHP comparison -->
+<rect fill="#777BB4" height="100" opacity="0.06" rx="10" stroke="#777BB4" stroke-width="1.5" width="340" x="20" y="290"></rect>
+<text fill="#777BB4" font-size="13" font-weight="bold" text-anchor="middle" x="190" y="318" direction="rtl" unicode-bidi="embed">روش <tspan direction="ltr" unicode-bidi="embed">PHP</tspan> (دسترسی در زمان اجرا)</text>
+<rect fill="#f3e5f5" height="28" rx="4" stroke="#777BB4" stroke-width="1" width="300" x="40" y="330"></rect>
+<text fill="#4a148c" font-size="10" text-anchor="middle" x="190" y="349" direction="ltr" unicode-bidi="embed">file_get_contents('/path/to/file')</text>
+<rect fill="#fce4ec" height="28" rx="4" stroke="#e91e63" stroke-width="1" width="300" x="40" y="362"></rect>
+<text fill="#c2185b" font-size="10" text-anchor="middle" x="190" y="381" direction="rtl" unicode-bidi="embed">فایل باید در دیسک موجود باشد — وابسته به مسیر</text>
+
+<!-- Go approach -->
+<rect fill="#00ADD8" height="100" opacity="0.06" rx="10" stroke="#00ADD8" stroke-width="1.5" width="340" x="440" y="290"></rect>
+<text fill="#00ADD8" font-size="13" font-weight="bold" text-anchor="middle" x="610" y="318" direction="rtl" unicode-bidi="embed">روش <tspan direction="ltr" unicode-bidi="embed">Go</tspan> (جاسازی در زمان کامپایل)</text>
+<rect fill="#e0f7fa" height="28" rx="4" stroke="#00ADD8" stroke-width="1" width="300" x="460" y="330"></rect>
+<text fill="#006064" font-size="10" text-anchor="middle" x="610" y="349" direction="ltr" unicode-bidi="embed">embed.FS.ReadFile("static/style.css")</text>
+<rect fill="#e8f5e9" height="28" rx="4" stroke="#4CAF50" stroke-width="1" width="300" x="460" y="362"></rect>
+<text fill="#2e7d32" font-size="10" text-anchor="middle" x="610" y="381" direction="rtl" unicode-bidi="embed">فایل داخل باینری است — بدون وابستگی به دیسک</text>
+
+<!-- embed.FS → http.FS adapter flow -->
+<rect fill="#9C27B0" height="130" opacity="0.06" rx="10" stroke="#9C27B0" stroke-width="1.5" width="740" x="30" y="410"></rect>
+<text fill="#9C27B0" font-size="13" font-weight="bold" text-anchor="middle" x="400" y="435" direction="rtl" unicode-bidi="embed">جریان تبدیل <tspan direction="ltr" unicode-bidi="embed">embed.FS</tspan> به <tspan direction="ltr" unicode-bidi="embed">http.Handler</tspan></text>
+
+<!-- embed.FS -->
+<rect fill="#4CAF50" height="40" rx="6" stroke="#4CAF50" stroke-width="1.5" width="140" x="50" y="450"></rect>
+<text fill="#fff" font-size="12" font-weight="bold" text-anchor="middle" x="120" y="475" direction="ltr" unicode-bidi="embed">embed.FS</text>
+
+<!-- Arrow -->
+<line marker-end="url(#arrPurple2)" stroke="#9C27B0" stroke-width="2" x1="190" x2="260" y1="470" y2="470"></line>
+<text fill="#9C27B0" font-size="9" text-anchor="middle" x="225" y="462" direction="ltr" unicode-bidi="embed">http.FS()</text>
+
+<!-- http.FS -->
+<rect fill="#9C27B0" height="40" rx="6" stroke="#9C27B0" stroke-width="1.5" width="160" x="260" y="450"></rect>
+<text fill="#fff" font-size="12" font-weight="bold" text-anchor="middle" x="340" y="475" direction="ltr" unicode-bidi="embed">http.FileSystem</text>
+
+<!-- Arrow -->
+<line marker-end="url(#arrPurple2)" stroke="#9C27B0" stroke-width="2" x1="420" x2="490" y1="470" y2="470"></line>
+<text fill="#9C27B0" font-size="9" text-anchor="middle" x="455" y="462" direction="ltr" unicode-bidi="embed">FileServer()</text>
+
+<!-- http.FileServer -->
+<rect fill="#9C27B0" height="40" rx="6" stroke="#9C27B0" stroke-width="1.5" width="170" x="490" y="450"></rect>
+<text fill="#fff" font-size="12" font-weight="bold" text-anchor="middle" x="575" y="475" direction="ltr" unicode-bidi="embed">http.Handler</text>
+
+<!-- Arrow -->
+<line marker-end="url(#arrPurple2)" stroke="#9C27B0" stroke-width="2" x1="660" x2="690" y1="470" y2="470"></line>
+
+<!-- Client -->
+<rect fill="#e3f2fd" height="40" rx="6" stroke="#2196f3" stroke-width="1.5" width="70" x="690" y="450"></rect>
+<text fill="#1565c0" font-size="11" font-weight="bold" text-anchor="middle" x="725" y="475" direction="ltr" unicode-bidi="embed">Client</text>
+
+<!-- Sub note -->
+<text fill="#555" font-size="9" text-anchor="middle" x="400" y="505" direction="rtl" unicode-bidi="embed">ترتیب: <tspan direction="ltr" unicode-bidi="embed">embed.FS → http.FS() → http.FileServer() → http.Handle()</tspan></text>
+
+<!-- Golden rule bar -->
+<rect fill="#4CAF50" height="28" rx="4" stroke="none" width="740" x="30" y="488" y2="516"></rect>
+<text fill="#fff" font-size="12" font-weight="bold" text-anchor="middle" x="400" y="507" direction="rtl" unicode-bidi="embed">قانون طلایی: یک باینری = یک استقرار — بدون وابستگی به فایل‌های جانبی</text>
+</svg>
+<figcaption>شکل ۶-۵-ج — خط لوله کامپایل <bdi dir="ltr">//go:embed</bdi>: مقایسه روش <bdi dir="ltr">PHP</bdi> و <bdi dir="ltr">Go</bdi> و جریان تبدیل <bdi dir="ltr">embed.FS</bdi> به <bdi dir="ltr">http.Handler</bdi></figcaption>
+</figure>
+
+<h3 id="سناریوهای-عملیاتی-embed">سناریوهای عملیاتی</h3>
+<p>پکیج <code dir="ltr">embed</code> در بسیاری از سناریوهای واقعی عملیاتی نقش حیاتی دارد و می‌تواند معماری استقرار و توزیع برنامه‌های <bdi dir="ltr">Go</bdi> را متحول کند. هر سناریویی که در ادامه بررسی می‌کنیم، بدون <code dir="ltr">embed</code> نیازمند فایل‌های جانبی، تنظیمات مسیر پیچیده و وابستگی‌های خارجی بود. اما با <code dir="ltr">embed</code>، همه‌چیز در یک باینری مستقل جمع می‌شود و استقرار برنامه به سادگی کپی کردن یک فایل اجرایی کاهش می‌یابد. این رویکرد مخصوصاً در محیط‌های <bdi dir="ltr">Docker</bdi>، <bdi dir="ltr">Kubernetes</bdi> و سرورهای ابری که سادگی استقرار اهمیت بالایی دارد، ارزشمند است.</p>
+
+<ul>
+<li><strong>Embedding static web assets (SPA):</strong> برنامه‌های تک‌صفحه‌ای (<bdi dir="ltr">SPA</bdi>) معمولاً شامل فایل‌های <code dir="ltr">HTML</code>، <code dir="ltr">CSS</code>، <code dir="ltr">JavaScript</code> و تصاویر هستند. با <code dir="ltr">embed</code> می‌توانید تمام این فایل‌ها را در باینری جاسازی کنید و یک وب‌سرور کامل را در یک فایل اجرایی توزیع کنید. این رویکرد از <code dir="ltr">http.FS()</code> برای سرو فایل‌ها و <code dir="ltr">fs.Sub()</code> برای حذف پیشوند مسیر استفاده می‌کند. در نتیجه، سرور <bdi dir="ltr">Go</bdi> شما بدون <bdi dir="ltr">Nginx</bdi> یا وب‌سرور دیگر، مستقیماً فایل‌های استاتیک را سرو می‌کند.</li>
+<li><strong>Embedding database migrations:</strong> فایل‌های مایگریشن <bdi dir="ltr">SQL</bdi> (مثل <code>001_create_users.sql</code>) را با <code dir="ltr">embed.FS</code> جاسازی کنید تا همیشه با کد برنامه همگام باشند. در زمان شروع برنامه، مایگریشن‌ها از <code dir="ltr">embed.FS</code> خوانده و روی دیتابیس اعمال می‌شوند. این الگو تضمین می‌کند که نسخه‌ی مایگریشن همیشه با نسخه‌ی کد مطابقت دارد و دیگر نیازی به مدیریت جداگانه‌ی فایل‌های مایگریشن ندارید.</li>
+<li><strong>Embedding config templates:</strong> قالب‌های پیکربندی (مثل قالب‌های <code dir="ltr">YAML</code> یا <code dir="ltr">TOML</code>) را در باینری جاسازی کنید و در زمان اجرا با مقادیر واقعی پر کنید. این الگو مخصوصاً برای ابزارهای <bdi dir="ltr">CLI</bdi> مفید است که باید فایل‌های پیکربندی نمونه تولید کنند. کاربر نیازی ندارد فایل‌های قالب را جداگانه دانلود کند — همه‌چیز داخل باینری است.</li>
+<li><strong>Embedding TLS certificates:</strong> گواهی‌نامه‌های <bdi dir="ltr">TLS</bdi> و کلیدهای خصوصی را با <code dir="ltr">embed</code> جاسازی کنید تا سرور <bdi dir="ltr">HTTPS</bdi> شما بدون وابستگی به فایل‌های خارجی راه‌اندازی شود. این الگو برای سرویس‌های داخلی که از گواهی‌نامه‌های خودامضا استفاده می‌کنند بسیار کاربردی است. البته باید مراقب باشید که باینری حاوی کلید خصوصی به‌طور ایمن ذخیره شود.</li>
+<li><strong>Single-binary deployment:</strong> مهم‌ترین مزیت <code dir="ltr">embed</code> این است که برنامه <bdi dir="ltr">Go</bdi> شما به یک باینری مستقل تبدیل می‌شود. نیازی به <code>vendor/</code>، فایل‌های <code>.env</code>، دایرکتوری <code>static/</code> یا هر وابستگی دیگری نیست. فقط یک فایل اجرایی کافی است. این الگو استقرار را به‌شدت ساده می‌کند: <code>go build → scp myapp server: → ./myapp</code>. در محیط <bdi dir="ltr">Docker</bdi>، ایمیج <bdi dir="ltr">FROM scratch</bdi> با فقط یک فایل اجرایی، کوچک‌ترین ایمیج ممکن را تولید می‌کند.</li>
+</ul>
+
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">// Single-binary web server with embedded SPA
+package main
+
+import (
+"embed"
+"io/fs"
+"log"
+"net/http"
+)
+
+//go:embed dist/*
+var staticFiles embed.FS
+
+func main() {
+    // Create subsystem rooted at "dist"
+    subFS, err := fs.Sub(staticFiles, "dist")
+    if err != nil {
+        log.Fatal(err)
+    }
+
+    // Serve SPA: static files + fallback to index.html
+    fileServer := http.FileServer(http.FS(subFS))
+    http.Handle("/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+        // Try to serve static file first
+        path := r.URL.Path
+        if _, err := fs.Stat(subFS, path[1:]); err != nil {
+            // File not found → serve index.html for SPA routing
+            r.URL.Path = "/"
+        }
+        fileServer.ServeHTTP(w, r)
+    }))
+
+    log.Println("سرور SPA در حال اجرا روی :8080")
+    log.Fatal(http.ListenAndServe(":8080", nil))
+}
+</code></pre>
+</figure>
+
+<div class="tip">
+<strong>نکته‌ی کلیدی درباره استقرار تک‌باینری:</strong> قدرت واقعی <code dir="ltr">embed</code> در استقرار تک‌باینری نمایان می‌شود. وقتی تمام فایل‌های استاتیک، قالب‌ها، مایگریشن‌ها و پیکربندی‌ها داخل باینری هستند، دیگر نیازی به مدیریت فایل‌های جانبی ندارید. این یعنی: بدون مشکل «فایل در سرور پیدا نشد»، بدون ناسازگاری نسخه‌ی فایل با کد، بدون نیاز به حجم زیاد ایمیج <bdi dir="ltr">Docker</bdi>. یک باینری <bdi dir="ltr">Go</bdi> با <code dir="ltr">embed</code> می‌تواند روی ایمیج <code>FROM scratch</code> اجرا شود — کوچک‌ترین ایمیج <bdi dir="ltr">Docker</bdi> ممکن. این همان فلسفه‌ای است که ابزارهایی مثل <code>go install</code> بر پایه‌ی آن ساخته شده‌اند: یک دستور برای نصب، بدون وابستگی.
+</div>
+</div>
+</main>
+</div>
+
+<!-- Footer -->
+<footer class="site-footer">
+<div class="footer-inner">
+<div class="footer-nav">
+<span class="nav-arrow">‹</span>
+<a href="06.04-reading-line-by-line.html" data-prev>۶.۴ خواندن خط به خط</a>
+</div>
+<div class="footer-toc">
+<a href="00.01-contents.html">فهرست</a>
+</div>
+<div class="footer-nav">
+<a href="06.06-json-and-yaml-data-structures.html" data-next>۶.۶ ساختارهای داده‌ای JSON و YAML</a>
+<span class="nav-arrow">›</span>
+</div>
+</div>
+</footer>
+
+<!-- Back to Top -->
+<button class="back-to-top" aria-label="بازگشت به بالا">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
+</button>
+
+<!-- Scripts -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/go.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/php.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/sql.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/yaml.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/json.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/dockerfile.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/xml.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/ini.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/plaintext.min.js"></script>
+<script src="assets/js/main.js"></script>
+</body>
+</html>

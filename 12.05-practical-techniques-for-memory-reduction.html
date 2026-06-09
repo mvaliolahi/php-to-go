@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="fa">
+<head>
+<script>!function(){try{var t=localStorage.getItem('php2go-theme');if(t==='dark'||(!t&&window.matchMedia('(prefers-color-scheme:dark)').matches)){document.documentElement.setAttribute('data-theme','dark')}}catch(e){}}();</script>
+<meta charset="utf-8"/>
+<meta content="ie=edge" http-equiv="x-ua-compatible"/>
+<title>۱۲.۵ تکنیک‌های عملی برای کاهش مصرف حافظه — PHP to Go</title>
+<meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet"/>
+<link href="assets/css/main.css" rel="stylesheet" type="text/css"/>
+<link href="assets/img/favicon.ico" rel="icon" type="image/x-icon"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" media="screen" class="hljs-light-theme" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css" media="not screen" class="hljs-dark-theme" rel="stylesheet"/>
+</head>
+<body>
+<!-- Progress Bar -->
+<div class="progress-bar"><div class="progress-bar__fill"></div></div>
+
+<!-- Header -->
+<header class="site-header">
+<div class="header-inner">
+<div class="header-left">
+<button class="header-btn sidebar-toggle" aria-label="فهرست">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+</button>
+<a href="00.00-front-matter.html" class="header-logo"><span class="logo-php">PHP</span> to <span class="logo-go">Go</span></a>
+<span class="header-crumbs">بهینه‌سازی عملکرد › تکنیک‌های عملی برای کاهش مصرف حافظه</span>
+</div>
+<div class="header-right">
+<nav class="header-nav">
+<span class="nav-arrow">‹</span>
+<a href="12.04-memory-optimization-and-gc.html"><span class="nav-label">۱۲.۴ بهینه‌سازی حافظه و Garbage Collector</span></a>
+<a href="00.01-contents.html">فهرست</a>
+<a href="#"><span class="nav-label"></span></a>
+<span class="nav-arrow">›</span>
+</nav>
+<button class="header-btn search-toggle" aria-label="جستجو">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+</button>
+<button class="header-btn theme-toggle" aria-label="تغییر تم">
+<svg class="theme-icon-light" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+<svg class="theme-icon-dark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+</button>
+</div>
+</div>
+</header>
+
+<!-- Search Modal -->
+<div class="search-overlay">
+<div class="search-modal">
+<div class="search-input-wrap">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+<input type="text" class="search-input" placeholder="جستجو... (Ctrl+K)" dir="rtl"/>
+</div>
+<div class="search-results"></div>
+</div>
+</div>
+
+<!-- Layout -->
+<div class="site-layout">
+<!-- Sidebar -->
+<aside class="sidebar"></aside>
+<div class="sidebar-overlay"></div>
+
+<!-- Main Content -->
+<main class="content-area">
+<div class="content-wrap text">
+<div class="chapter">فصل ۱۲.۵</div>
+<h2 id="تکنیکهای-عملی-برای-کاهش-مصرف-حافظه">تکنیک‌های عملی برای کاهش مصرف حافظه</h2>
+
+<figure class="diagram" dir="ltr">
+<svg height="460" viewBox="0 0 650 460" width="650" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<marker id="arrowmem" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5">
+<polygon fill="#00ADD8" points="0 0, 10 3.5, 0 7"></polygon>
+</marker>
+</defs>
+<rect fill="#fafafa" height="460" rx="8" width="650" x="0" y="0"></rect>
+<text class="title" text-anchor="middle" x="325" y="25" direction="rtl" unicode-bidi="embed">چک‌لیست کاهش مصرف حافظه در <tspan direction="ltr" unicode-bidi="embed">Go</tspan></text>
+<!-- Row 1 -->
+<rect fill="#00ADD8" height="55" rx="6" width="200" x="20" y="50"></rect>
+<text fill="#fff" font-weight="bold" text-anchor="middle" x="120" y="72" direction="rtl" unicode-bidi="embed">مرتب‌سازی فیلدهای <tspan direction="ltr" unicode-bidi="embed">struct</tspan></text>
+<text fill="#e0f7fa" font-size="9" text-anchor="middle" x="120" y="92" direction="rtl" unicode-bidi="embed">بزرگ→کوچک: <tspan direction="ltr" unicode-bidi="embed">int64</tspan> قبل از <tspan direction="ltr" unicode-bidi="embed">bool</tspan></text>
+
+<rect fill="#4CAF50" height="55" rx="6" width="200" x="240" y="50"></rect>
+<text fill="#fff" font-weight="bold" text-anchor="middle" x="340" y="72" direction="rtl" unicode-bidi="embed">استفاده از انواع کوچک‌تر</text>
+<text fill="#e8f5e9" font-size="9" text-anchor="middle" x="340" y="92" direction="rtl" unicode-bidi="embed">int64→int32 اگر مقدار < ۲ میلیارد</text>
+
+<rect fill="#FF9800" height="55" rx="6" width="170" x="460" y="50"></rect>
+<text fill="#fff" font-weight="bold" text-anchor="middle" x="545" y="72" direction="rtl" unicode-bidi="embed">String Interning</text>
+<text fill="#fff3e0" font-size="9" text-anchor="middle" x="545" y="92" direction="rtl" unicode-bidi="embed">کاهش رشته‌های تکراری</text>
+
+<!-- Row 2 -->
+<rect fill="#9C27B0" height="55" rx="6" width="200" x="20" y="120"></rect>
+<text fill="#fff" font-weight="bold" text-anchor="middle" x="120" y="142" direction="rtl" unicode-bidi="embed">Pooling HTTP Response Body</text>
+<text fill="#e1bee7" font-size="9" text-anchor="middle" x="120" y="162" direction="rtl" unicode-bidi="embed">بازخوانی و بستن <tspan direction="ltr" unicode-bidi="embed">body</tspan></text>
+
+<rect fill="#e91e63" height="55" rx="6" width="200" x="240" y="120"></rect>
+<text fill="#fff" font-weight="bold" text-anchor="middle" x="340" y="142" direction="rtl" unicode-bidi="embed">Memory-Mapped I/O</text>
+<text fill="#fce4ec" font-size="9" text-anchor="middle" x="340" y="162" direction="ltr" unicode-bidi="embed">mmap برای فایل‌های بزرگ</text>
+
+<rect fill="#2196F3" height="55" rx="6" width="170" x="460" y="120"></rect>
+<text fill="#fff" font-weight="bold" text-anchor="middle" x="545" y="142" direction="rtl" unicode-bidi="embed">Byte Slice Pooling</text>
+<text fill="#e3f2fd" font-size="9" text-anchor="middle" x="545" y="162" direction="ltr" unicode-bidi="embed">sync.Pool for buffers</text>
+
+<!-- Row 3 -->
+<rect fill="#795548" height="55" rx="6" width="200" x="20" y="190"></rect>
+<text fill="#fff" font-weight="bold" text-anchor="middle" x="120" y="212" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">Pointers</tspan> آگاهانه</text>
+<text fill="#efebe9" font-size="9" text-anchor="middle" x="120" y="232" direction="rtl" unicode-bidi="embed">کوچک: <tspan direction="ltr" unicode-bidi="embed">by</tspan> <tspan direction="ltr" unicode-bidi="embed">value</tspan> / بزرگ: <tspan direction="ltr" unicode-bidi="embed">by</tspan> <tspan direction="ltr" unicode-bidi="embed">pointer</tspan></text>
+
+<rect fill="#607D8B" height="55" rx="6" width="200" x="240" y="190"></rect>
+<text fill="#fff" font-weight="bold" text-anchor="middle" x="340" y="212" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">nil</tspan> کردن داده بلااستفاده</text>
+<text fill="#eceff1" font-size="9" text-anchor="middle" x="340" y="232" direction="ltr" unicode-bidi="embed">largeSlice = nil</text>
+
+<rect fill="#009688" height="55" rx="6" width="170" x="460" y="190"></rect>
+<text fill="#fff" font-weight="bold" text-anchor="middle" x="545" y="212" direction="rtl" unicode-bidi="embed">Escape Analysis</text>
+<text fill="#e0f2f1" font-size="9" text-anchor="middle" x="545" y="232" direction="ltr" unicode-bidi="embed">go build -gcflags '-m'</text>
+
+<!-- Summary checklist -->
+<rect fill="#E3F2FD" height="160" rx="6" stroke="#2196F3" width="610" x="20" y="270"></rect>
+<text fill="#1565C0" font-size="12" font-weight="bold" text-anchor="middle" x="325" y="293" direction="rtl" unicode-bidi="embed">چک‌لیست نهایی کاهش مصرف حافظه</text>
+<text fill="#1565C0" font-size="10" text-anchor="middle" x="325" y="315" direction="rtl" unicode-bidi="embed">۱. آیا فیلدهای <tspan direction="ltr" unicode-bidi="embed">struct</tspan> را از بزرگ به کوچک مرتب کرده‌اید؟</text>
+<text fill="#1565C0" font-size="10" text-anchor="middle" x="325" y="335" direction="rtl" unicode-bidi="embed">۲. آیا از انواع کوچک‌تر (<tspan direction="ltr" unicode-bidi="embed">int32</tspan> به جای <tspan direction="ltr" unicode-bidi="embed">int64</tspan>) استفاده کرده‌اید؟</text>
+<text fill="#1565C0" font-size="10" text-anchor="middle" x="325" y="355" direction="rtl" unicode-bidi="embed">۳. آیا رشته‌های تکراری را <tspan direction="ltr" unicode-bidi="embed">interning</tspan> کرده‌اید؟</text>
+<text fill="#1565C0" font-size="10" text-anchor="middle" x="325" y="375" direction="rtl" unicode-bidi="embed">۴. آیا از <tspan direction="ltr" unicode-bidi="embed">sync.Pool</tspan> برای بافرهای موقتی استفاده می‌کنید؟</text>
+<text fill="#1565C0" font-size="10" text-anchor="middle" x="325" y="395" direction="rtl" unicode-bidi="embed">۵. آیا داده‌های بزرگ بلااستفاده را <tspan direction="ltr" unicode-bidi="embed">nil</tspan> کرده‌اید؟</text>
+<text fill="#1565C0" font-size="10" text-anchor="middle" x="325" y="415" direction="rtl" unicode-bidi="embed">۶. آیا با <tspan direction="ltr" unicode-bidi="embed">go</tspan> <tspan direction="ltr" unicode-bidi="embed">build</tspan> -<tspan direction="ltr" unicode-bidi="embed">gcflags</tspan> '-m' بررسی کرده‌اید کدام متغیرها به <tspan direction="ltr" unicode-bidi="embed">heap</tspan> فرار می‌کنند؟</text>
+</svg>
+<figcaption dir="rtl">شکل ۱۲-۵: چک‌لیست جامع تکنیک‌های کاهش مصرف حافظه</figcaption>
+</figure>
+
+<h3 id="مرتبسازی-فیلدهای-struct-تحلیل-padding">مرتب‌سازی فیلدهای struct (تحلیل Padding)</h3>
+<p>یکی از مؤثرترین و در عین حال ساده‌ترین تکنیک‌های کاهش مصرف حافظه، مرتب‌سازی صحیح فیلدهای struct است. کامپایلر Go alignment. اگر فیلدها به‌صورت نامنظم ترکیب شوند، فضای padding بین آن‌ها ایجاد می‌شود که حافظه‌ی بلااستفاده است.</p>
+<p>قانون ساده: <strong>فیلدها را از بزرگ‌ترین نوع به کوچک‌ترین مرتب کنید.</strong> یعنی <code>int64</code> و <code>float64</code> اول، سپس <code>int32</code> ، سپس <code>int16</code> و در نهایت <code>bool</code> و <code>byte</code>. این ترتیب تضمین می‌کند که padding حداقل باشد.</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">// Bad: 32 bytes — lots of wasted space
+type BadOrder struct {
+    Active bool // 1 byte + 7 bytes padding
+    ID int64 // 8 bytes
+    Code int32 // 4 bytes + 4 bytes padding
+    Flag bool // 1 byte + 7 bytes padding
+    Score float64 // 8 bytes
+}
+// Total size: 1+7+8+4+4+1+7+8 = 40 bytes!
+
+// Good: 24 bytes — no extra padding
+type GoodOrder struct {
+    ID int64 // 8 bytes (offset 0)
+    Score float64 // 8 bytes (offset 8)
+    Code int32 // 4 bytes (offset 16)
+    Active bool // 1 byte (offset 20)
+    Flag bool // 1 byte (offset 21)
+    // 2 bytes padding at end (offset 22-23)
+}
+// Total size: 8+8+4+1+1+2 = 24 bytes
+
+// Check actual size
+fmt.Println(unsafe.Sizeof(BadOrder{})) // 40
+fmt.Println(unsafe.Sizeof(GoodOrder{})) // 24
+</code></pre>
+</figure>
+<p>این تفاوت ۱۶ بایتی ممکن است کم به نظر برسد، اما وقتی میلیون‌ها نمونه از این struct در یک slice داشته باشید، تفاوت قابل‌توجهی پیدا می‌شود. مثلاً برای یک slice با ۱ میلیون عنصر: ۴۰MB مقابل ۲۴MB — صرفه‌جویی ۴۰٪.</p>
+<div class="important"><strong>نکته مهم:</strong> همیشه فیلدهای struct را از بزرگ به کوچک مرتب کنید. از ابزار <code dir="ltr">fieldalignment</code> برای بررسی خودکار استفاده کنید: <code>go install golang.org/x/tools/go/analysis/passes/fieldalignment/cmd/fieldalignment@latest</code> و سپس <code>fieldalignment -fix ./...</code></div>
+
+<h3 id="استفاده-از-انواع-کوچکتر">استفاده از انواع کوچک‌تر</h3>
+<p>بسیاری از برنامه‌نویسان Go به‌صورت پیش‌فرض از <code>int64</code> یا <code>int</code> استفاده می‌کنند، حتی وقتی محدوده‌ی مقدارها کوچک‌تر است. اگر مقادیر شما همیشه کمتر از ۲ میلیارد (<bdi dir="ltr">2³¹-1</bdi>) است، <code>int32</code> کافی است. اگر کمتر از ۳۲۷۶۷ است، <code>int16</code> و اگر کمتر از ۱۲۷ است، <code>int8</code>:</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">// Bad: using int64 for small values
+type Product struct {
+    ID int64 // do we really need int64?
+    CategoryID int64 // we have fewer than 1000 categories
+    Stock int64 // stock never exceeds 65535
+    Rating float64 // rating 1 to 5 — float32 is sufficient
+}
+
+// Good: using appropriate types
+type Product struct {
+    ID int64 // really needs int64 (over 2 billion products)
+    CategoryID int32 // fewer than 1000 — int32 is more than enough
+    Stock uint16 // max 65535 — uint16 is sufficient
+    Rating float32 // float32 precision is sufficient for rating
+}
+// Saving: 8+8+8+8=32 bytes → 8+4+2+4=18 bytes (44% reduction)
+</code></pre>
+</figure>
+<div class="warning"><strong>هشدار:</strong> در Go نوع <code>int</code> بر اساس معماری سیستم ۳۲ یا ۶۴ بیتی است. اگر کد شما باید در هر دو معماری یکسان کار کند، از انواع صریح (<code>int32</code> ، <code>int64</code>) استفاده کنید. همچنین توجه کنید که بعضی عملیات ریاضی روی انواع کوچک‌تر ممکن است به <code>int</code> تبدیل شوند و overhead ایجاد کنند — همیشه بنچمارک بگیرید.</div>
+
+<h3 id="string-interning-برای-کاهش-تکرار">String Interning برای کاهش تکرار</h3>
+<p>String interning تکنیکی است که در آن فقط یک کپی از هر رشته‌ی یکتا در حافظه نگهداری می‌شود و تمام ارجاعات به همان کپی اشاره می‌کنند. این تکنیک وقتی مفید است که رشته‌های تکراری زیادی دارید (مثلاً نام شهرها، دسته‌بندی‌ها، وضعیت‌ها):</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">// Simple thread-safe string pool
+var stringPool = struct {
+    sync.RWMutex
+    m map[string]string
+}{m: make(map[string]string)}
+
+// Intern stores a string in pool or returns existing one
+func Intern(s string) string {
+    stringPool.RLock()
+    if interned, ok := stringPool.m[s]; ok {
+        stringPool.RUnlock()
+        return interned
+    }
+    stringPool.RUnlock()
+
+    stringPool.Lock()
+    defer stringPool.Unlock()
+
+    // double-check after acquiring write lock
+    if interned, ok := stringPool.m[s]; ok {
+        return interned
+    }
+    stringPool.m[s] = s
+    return s
+}
+
+// Usage example: CSV data with repeated city names
+type Record struct {
+    City string // without interning: each string is an independent copy
+    Value int
+}
+
+// With interning:
+type RecordOptimized struct {
+    City string // with interning: all point to one string
+    Value int
+}
+
+func parseRecord(cityName string, value int) RecordOptimized {
+    return RecordOptimized{
+        City: Intern(cityName), // only one copy of each city name
+        Value: value,
+    }
+}
+</code></pre>
+</figure>
+<p>اگر شما ۱ میلیون رکورد با ۵۰ نام شهر مختلف داشته باشید، بدون interning ۱ میلیون کپی مستقل از نام شهرها در حافظه وجود دارد. با interning فقط ۵۰ کپی ذخیره می‌شود. اگر هر نام شهر ۲۰ کاراکتر باشد، صرفه‌جویی حدود ۱۹ مگابایت خواهد بود.</p>
+
+<h3 id="pooling-http-response-body">Pooling HTTP Response Body</h3>
+<p>یکی از منابع رایج نشتی حافظه در برنامه‌های Go، خواندن ناقص response body درخواست‌های HTTP است. اگر <code dir="ltr">resp.Body</code> را کامل نخوانید و نبندید، اتصال HTTP نمی‌تواند بازیافت شود و حافظه نشت می‌کند:</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">// Bad: memory leak from response body
+func fetchBad(url string) ([]byte, error) {
+    resp, err := http.Get(url)
+    if err != nil {
+        return nil, err
+    }
+    // Forgot to read and close body!
+    return json.Marshal(resp) // Wrong!
+}
+
+// Good: fully read and close body
+func fetchGood(url string) ([]byte, error) {
+    resp, err := http.Get(url)
+    if err != nil {
+        return nil, err
+    }
+    defer func() {
+        io.Copy(io.Discard, resp.Body) // read remaining data
+        resp.Body.Close()
+    }()
+    return io.ReadAll(resp.Body)
+}
+
+// Better: use buffer pool for reading
+var bufPool = sync.Pool{
+    New: func() any { return bytes.NewBuffer(make([]byte, 0, 4096)) },
+}
+
+func fetchBest(url string) ([]byte, error) {
+    resp, err := http.Get(url)
+    if err != nil {
+        return nil, err
+    }
+    defer func() {
+        io.Copy(io.Discard, resp.Body)
+        resp.Body.Close()
+    }()
+
+    buf := bufPool.Get().(*bytes.Buffer)
+    buf.Reset()
+    defer bufPool.Put(buf)
+
+    _, err = io.Copy(buf, resp.Body)
+    if err != nil {
+        return nil, err
+    }
+    result := make([]byte, buf.Len())
+    copy(result, buf.Bytes())
+    return result, nil
+}
+</code></pre>
+</figure>
+<div class="tip"><strong>نکته حیاتی:</strong> همیشه <code>io.Copy(io.Discard, resp.Body)</code> قبل از <code>resp.Body.Close()</code> فراخوانی کنید. این تضمین می‌کند که اتصال HTTP بتواند reuse شود. بدون این کار، اتصال بسته می‌شود و حافظه‌ی شبکه انباشته می‌گردد.</div>
+
+<h3 id="memorymapped-io-برای-فایلهای-بزرگ">Memory-Mapped I/O برای فایل‌های بزرگ</h3>
+<p>وقتی با فایل‌های بسیار بزرگ (صدها مگابایت تا چند گیگابایت) کار می‌کنید، خواندن کل فایل در حافظه غیرعملی است. <bdi dir="ltr">Memory-mapped I/O (mmap)</bdi> به سیستم‌عامل اجازه می‌دهد فایل را مستقیماً در فضای آدرس فرآیند نگاشت کند بدون اینکه کل فایل را در RAM بارگذاری کند. فقط صفحاتی که واقعاً خوانده می‌شوند از دیسک بارگذاری می‌شوند:</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">import "golang.org/x/exp/mmap"
+
+// Read large file with mmap
+func readLargeFile(path string) ([]byte, error) {
+    r, err := mmap.Open(path)
+    if err != nil {
+        return nil, err
+    }
+    defer r.Close()
+
+    // Read only needed section
+    buf := make([]byte, 1024)
+    _, err = r.ReadAt(buf, 0) // read first 1KB
+    return buf, err
+}
+</code></pre>
+</figure>
+<div class="note"><strong>نکته:</strong> mmap برای سناریوهایی مثل خواندن فایل‌های ایندکس، پایگاه‌داده‌های فقط‌خواندنی و پردازش لاگ‌های بزرگ مناسب است. اما mmap سربار خاص خود را دارد و برای فایل‌های کوچک (< ۱MB) معمولاً سریع‌تر است که فایل را مستقیم خواند.</div>
+
+<h3 id="byte-slice-pooling-برای-بافرها">Byte Slice Pooling برای بافرها</h3>
+<p>بسیاری از عملیات در Go به byte slice موقتی نیاز دارند — خواندن از شبکه، رمزنگاری، فشرده‌سازی و غیره. بدون pooling، هر عملیات یک slice جدید تخصیص می‌دهد که بلافاصله بعد از استفاده به GC سپرده می‌شود. با <bdi dir="ltr">sync.Pool</bdi> می‌توان این بافرها را بازیافت کرد:</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">// Pool of byte buffers with different sizes
+var bufPool = sync.Pool{
+    New: func() any {
+        buf := make([]byte, 0, 4096)
+        return &amp;buf
+    },
+}
+
+func processData(input []byte) ([]byte, error) {
+    // Get buffer from pool
+    bufPtr := bufPool.Get().(*[]byte)
+    buf := (*bufPtr)[:0] // reset without losing capacity
+
+    // ... process data in buf ...
+    buf = append(buf, input...)
+
+    // Copy result (since buf is returned to pool)
+    result := make([]byte, len(buf))
+    copy(result, buf)
+
+    // Return buffer to pool
+    *bufPtr = buf
+    bufPool.Put(bufPtr)
+
+    return result, nil
+}
+</code></pre>
+</figure>
+<p>نکته مهم: همیشه نتیجه‌ی نهایی را کپی کنید قبل از اینکه بافر را به pool برگردانید. اگر مستقیماً <code>buf</code> را برگردانید و سپس <code>Put</code> کنید، goroutine دیگری ممکن است همان بافر را بگیرد و داده‌های شما را بازنویسی کند.</p>
+
+<h3 id="استفاده-آگاهانه-از-pointers">استفاده آگاهانه از pointers</h3>
+<p>اشاره‌گرها زمانی مفید هستند که بخواهید از کپی داده‌های بزرگ جلوگیری کنید یا داده‌ها بین goroutineها به اشتراک گذاشته شوند. اما استفاده بیش از حد از pointer باعث <bdi dir="ltr">heap allocation</bdi> بیشتر و فشار به GC می‌شود. قانون ساده: داده‌های کوچک (کمتر از ۶۴ بایت) را <strong>با مقدار</strong> (by value) منتقل کنید و فقط داده‌های بزرگ را با pointer:</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">// Small — by value is better (32 bytes)
+type Point struct{ X, Y, Z, W float64 }
+
+func (p Point) Distance() float64 { ... } // good: value receiver
+
+// Large — by pointer is better
+type BigData struct {
+    Data [1024]byte
+    Name string
+    Values []float64
+}
+
+func (d *BigData) Process() { ... } // good: pointer receiver
+</code></pre>
+</figure>
+
+<h3 id="nil-کردن-داده-بلااستفاده">nil کردن داده بلااستفاده</h3>
+<p>وقتی داده‌ی بزرگی دیگر استفاده نمی‌شود، آن را به <code>nil</code> تغییر دهید تا GC بتواند آن را آزاد کند. این به‌خصوص در long-running process‌ها مهم است چون متغیرهای محلی ممکن است تا پایان scope در حافظه باقی بمانند:</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">func processHugeData() {
+    // Large data allocation
+    largeSlice := make([]byte, 100*1024*1024) // 100MB
+
+    // ... processing ...
+    result := compress(largeSlice)
+
+    // Important: release large data immediately
+    largeSlice = nil // GC can free 100MB
+
+    // ... continue with result ...
+    saveResult(result)
+}
+</code></pre>
+</figure>
+
+<h3 id="چک-لیست-نهایی">چک‌لیست نهایی</h3>
+<p>این چک‌لیست را قبل از هر deployment در production مرور کنید:</p>
+<p>۱. آیا فیلدهای struct را از بزرگ به کوچک مرتب کرده‌اید؟</p>
+<p>۲. آیا از انواع کوچک‌تر (<code>int32</code> به جای <code>int64</code>) استفاده کرده‌اید؟</p>
+<p>۳. آیا رشته‌های تکراری را interning کرده‌اید؟</p>
+<p>۴. آیا از <bdi dir="ltr">sync.Pool</bdi> برای بافرهای موقتی استفاده می‌کنید؟</p>
+<p>۵. آیا HTTP response body‌ها را کامل می‌خوانید و می‌بندید؟</p>
+<p>۶. آیا داده‌های بزرگ بلااستفاده را nil کرده‌اید؟</p>
+<p>۷. آیا با <code>go build -gcflags '-m'</code> بررسی کرده‌اید کدام متغیرها به heap فرار می‌کنند؟</p>
+<p>۸. آیا با <code>go test -bench=. -benchmem</code> مصرف حافظه را اندازه‌گیری می‌کنید؟</p>
+<p>۹. آیا <code>GOMEMLIMIT</code> را برای container تنظیم کرده‌اید؟</p>
+<p>۱۰. آیا از pointer فقط جایی استفاده می‌کنید که واقعاً نیاز است؟</p>
+
+<div class="comparison"><strong>مقایسه با PHP:</strong> در PHP مفهومی مشابه <code dir="ltr">sync.Pool</code> یا string interning وجود ندارد چون هر درخواست process جداگانه‌ای دارد و حافظه بین درخواست‌ها به اشتراک گذاشته نمی‌شود (مگر با APCu). اما در Go چون همه درخواست‌ها در یک process پردازش می‌شوند، <code dir="ltr">sync.Pool</code> و string interning می‌توانند اشیاء را بین goroutineها به اشتراک بگذارند و تعداد allocationها را به‌طور قابل‌توجهی کاهش دهند. تکنیک‌هایی مثل struct alignment و memory-mapped I/O در PHP عملاً قابل استفاده نیستند چون توسعه‌دهنده کنترلی روی چیدمان حافظه ندارد.</div>
+
+    <h3 id="reflect-iterators-go-1.26">ایتراتورهای بسته reflect — Go 1.26</h3>
+    <p>
+        بسته <code>reflect</code> در Go 1.26 متدهای جدیدی برای پیمایش انواع و مقادیر
+        با استفاده از ایتراتورها دریافت کرده است. این متدها حافظه کمتری نسبت به
+        روش‌های قبلی (ایجاد slice از فیلدها یا متدها) مصرف می‌کنند:
+    </p>
+    <figure class="code go" dir="ltr">
+        <pre><code class="language-go">// متدهای جدید Type
+t := reflect.TypeOf(MyStruct{})
+
+// پیمایش فیلدها بدون ایجاد slice
+for field := range t.Fields() {
+    fmt.Println(field.Name, field.Type)
+}
+
+// پیمایش متدها
+for method := range t.Methods() {
+    fmt.Println(method.Name, method.Type)
+}
+
+// پیمایش پارامترهای ورودی تابع
+for in := range t.Ins() {
+    fmt.Println("input:", in)
+}
+
+// پیمایش پارامترهای خروجی تابع
+for out := range t.Outs() {
+    fmt.Println("output:", out)
+}
+
+// متدهای جدید Value
+v := reflect.ValueOf(myInstance)
+for field := range v.Fields() {
+    fmt.Println(field.Type, field.Value)
+}
+for method := range v.Methods() {
+    fmt.Println(method.Name)
+}</code></pre>
+    </figure>
+    <p>
+        reflected types در کتابخانه‌های
+        سریالی‌سازی و ORM مفید هستند، زیرا نیاز به ایجاد slice‌های موقت از فیلدها یا
+        متدها را حذف می‌کنند و حافظه کمتری مصرف می‌کنند.
+    </p>
+
+    <div class="case-study">
+        <div class="case-study-header">
+            <span class="case-study-badge">مطالعه موردی</span>
+            <span class="case-study-title">بهبود عملکرد سریالی‌سازی با reflect در Cloudflare</span>
+        </div>
+        <p>
+            تیم Cloudflare در ارائه GoLab 2024 توضیح داد که چگونه بسته‌های reflection-based
+            یکی از بزرگ‌ترین منابع مصرف حافظه در سیستم‌های سریالی‌سازی آن‌ها بود. بسته
+            <code>reflect</code> برای بررسی ساختار انواع داده‌ها در زمان اجرا استفاده می‌شود،
+            ولی هر بار که <code>reflect.ValueOf()</code> یا <code>reflect.TypeOf()</code> فراخوانی
+            می‌شود، یک شیء موقت جدید روی heap ایجاد می‌شود. در سیستم‌های سریالی‌سازی که
+            هر درخواست شامل بازتاب ده‌ها فیلد است، این تخصیص‌های موقت به‌سرعت جمع می‌شوند
+            و فشار سنگینی روی GC ایجاد می‌کنند.
+        </p>
+        <p>
+            با استفاده از ایتراتورهای جدید reflect در Go 1.26، آن‌ها توانستند تخصیص حافظه موقت را در
+            پردازش بیش از ۱۰۰ میلیون درخواست در ثانیه کاهش دهند و مصرف حافظه سرویس‌های
+            سریالی‌سازی را تا ۲۰ درصد بهبود بخشند. ایتراتورهای جدید اجازه می‌دهند بدون ایجاد
+            slice‌های موقت، روی فیلدهای یک struct پیمایش انجام دهید. قبلاً <code>reflect.Value.NumField()</code>
+            و <code>reflect.Value.Field(i)</code> نیازمند ایجاد slice از تمام فیلدها بود، ولی حالا
+            با الگوی iterator می‌توان فیلد به فیلد پیمایش کرد و فقط فیلد مورد نیاز را در حافظه نگه داشت.
+            این الگو نه‌تنها مصرف حافظه را کاهش می‌دهد، بلکه cache locality را هم بهبود می‌بخشد.
+        </p>
+        <p class="case-study-source">
+            <span class="source-event">GoLab 2024</span>
+            <span class="source-year">— فلورانس، ۲۰۲۴</span>
+        </p>
+    </div>
+
+<h3 id="مقایسه-تکنیکهای-کاهش-حافظه">مقایسه تأثیر و دشواری تکنیک‌های کاهش حافظه</h3>
+<p>همه‌ی تکنیک‌های کاهش مصرف حافظه تأثیر یکسانی ندارند و پیاده‌سازی برخی از آن‌ها ساده‌تر از دیگری است. برای تصمیم‌گیری مؤثر، باید هم میزان صرفه‌جویی حافظه و هم سطح دشواری پیاده‌سازی را در نظر بگیرید. بهترین استراتژی این است که ابتدا تکنیک‌هایی با تأثیر بالا و دشواری پایین را پیاده‌سازی کنید تا بیشترین بازدهی را با کمترین تلاش به‌دست آورید. نمودار زیر مقایسه‌ی بصری شش تکنیک اصلی را بر اساس این دو معیار نشان می‌دهد.</p>
+
+<figure class="diagram" dir="ltr">
+<svg height="520" viewBox="0 0 780 520" width="780" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<linearGradient id="impactHigh" x1="0" y1="0" x2="1" y2="0">
+<stop offset="0%" stop-color="#66BB6A"/>
+<stop offset="100%" stop-color="#2E7D32"/>
+</linearGradient>
+<linearGradient id="impactMed" x1="0" y1="0" x2="1" y2="0">
+<stop offset="0%" stop-color="#FFA726"/>
+<stop offset="100%" stop-color="#E65100"/>
+</linearGradient>
+<linearGradient id="impactLow" x1="0" y1="0" x2="1" y2="0">
+<stop offset="0%" stop-color="#EF5350"/>
+<stop offset="100%" stop-color="#B71C1C"/>
+</linearGradient>
+</defs>
+<rect fill="#fafafa" height="520" rx="8" width="780" x="0" y="0"></rect>
+
+<!-- Title -->
+<text font-size="14" font-weight="bold" text-anchor="middle" x="390" y="25" direction="rtl" unicode-bidi="embed">مقایسه تکنیک‌های کاهش مصرف حافظه: تأثیر و دشواری</text>
+<text font-size="9" fill="#999" text-anchor="middle" x="390" y="42" direction="rtl" unicode-bidi="embed">صرفه‌جویی نسبی حافظه و سطح دشواری پیاده‌سازی هر تکنیک</text>
+
+<!-- Column headers -->
+<text x="50" y="62" direction="rtl" unicode-bidi="embed" font-size="9" font-weight="bold" fill="#666" text-anchor="middle">دشواری</text>
+<line x1="85" y1="55" x2="85" y2="385" stroke="#e0e0e0" stroke-width="0.5"/>
+<text x="330" y="62" direction="rtl" unicode-bidi="embed" font-size="9" font-weight="bold" fill="#666" text-anchor="middle">صرفه‌جویی حافظه</text>
+<line x1="540" y1="55" x2="540" y2="385" stroke="#e0e0e0" stroke-width="0.5"/>
+<text x="660" y="62" direction="rtl" unicode-bidi="embed" font-size="9" font-weight="bold" fill="#666" text-anchor="middle">تکنیک</text>
+
+<!-- Row 1: sync.Pool - 70% - medium -->
+<rect x="15" y="72" width="750" height="46" fill="#f5f5f5" rx="4"/>
+<rect x="22" y="80" width="56" height="22" fill="#FF9800" rx="11"/>
+<text x="50" y="95" direction="rtl" unicode-bidi="embed" font-size="9" fill="#fff" text-anchor="middle" font-weight="bold">متوسط</text>
+<rect x="95" y="84" width="280" height="18" fill="url(#impactHigh)" rx="4"/>
+<text x="380" y="97" direction="ltr" unicode-bidi="embed" font-size="9" font-weight="bold" fill="#2E7D32">70%</text>
+<text x="760" y="96" direction="rtl" unicode-bidi="embed" font-size="11" font-weight="bold" fill="#333" text-anchor="end"><tspan direction="ltr" unicode-bidi="embed">sync.Pool</tspan> برای اشیاء موقتی</text>
+
+<!-- Row 2: string interning - 60% - medium -->
+<rect x="15" y="124" width="750" height="46" fill="#fafafa" rx="4"/>
+<rect x="22" y="132" width="56" height="22" fill="#FF9800" rx="11"/>
+<text x="50" y="147" direction="rtl" unicode-bidi="embed" font-size="9" fill="#fff" text-anchor="middle" font-weight="bold">متوسط</text>
+<rect x="95" y="136" width="240" height="18" fill="url(#impactHigh)" rx="4" opacity="0.85"/>
+<text x="340" y="149" direction="ltr" unicode-bidi="embed" font-size="9" font-weight="bold" fill="#388E3C">60%</text>
+<text x="760" y="148" direction="rtl" unicode-bidi="embed" font-size="11" font-weight="bold" fill="#333" text-anchor="end"><tspan direction="ltr" unicode-bidi="embed">String Interning</tspan> برای رشته‌های تکراری</text>
+
+<!-- Row 3: slice preallocation - 55% - easy -->
+<rect x="15" y="176" width="750" height="46" fill="#f5f5f5" rx="4"/>
+<rect x="22" y="184" width="56" height="22" fill="#4CAF50" rx="11"/>
+<text x="50" y="199" direction="rtl" unicode-bidi="embed" font-size="9" fill="#fff" text-anchor="middle" font-weight="bold">آسان</text>
+<rect x="95" y="188" width="220" height="18" fill="url(#impactHigh)" rx="4" opacity="0.75"/>
+<text x="320" y="201" direction="ltr" unicode-bidi="embed" font-size="9" font-weight="bold" fill="#388E3C">55%</text>
+<text x="760" y="200" direction="rtl" unicode-bidi="embed" font-size="11" font-weight="bold" fill="#333" text-anchor="end">پیش‌تخصیص <tspan direction="ltr" unicode-bidi="embed">Slice</tspan></text>
+
+<!-- Row 4: avoiding []byte↔string - 45% - easy -->
+<rect x="15" y="228" width="750" height="46" fill="#fafafa" rx="4"/>
+<rect x="22" y="236" width="56" height="22" fill="#4CAF50" rx="11"/>
+<text x="50" y="251" direction="rtl" unicode-bidi="embed" font-size="9" fill="#fff" text-anchor="middle" font-weight="bold">آسان</text>
+<rect x="95" y="240" width="180" height="18" fill="url(#impactMed)" rx="4"/>
+<text x="280" y="253" direction="ltr" unicode-bidi="embed" font-size="9" font-weight="bold" fill="#E65100">45%</text>
+<text x="760" y="252" direction="rtl" unicode-bidi="embed" font-size="11" font-weight="bold" fill="#333" text-anchor="end">اجتناب از تبدیل <tspan direction="ltr" unicode-bidi="embed">[]byte↔string</tspan></text>
+
+<!-- Row 5: struct alignment - 40% - easy -->
+<rect x="15" y="280" width="750" height="46" fill="#f5f5f5" rx="4"/>
+<rect x="22" y="288" width="56" height="22" fill="#4CAF50" rx="11"/>
+<text x="50" y="303" direction="rtl" unicode-bidi="embed" font-size="9" fill="#fff" text-anchor="middle" font-weight="bold">آسان</text>
+<rect x="95" y="292" width="160" height="18" fill="url(#impactMed)" rx="4" opacity="0.85"/>
+<text x="260" y="305" direction="ltr" unicode-bidi="embed" font-size="9" font-weight="bold" fill="#E65100">40%</text>
+<text x="760" y="304" direction="rtl" unicode-bidi="embed" font-size="11" font-weight="bold" fill="#333" text-anchor="end">مرتب‌سازی فیلدهای <tspan direction="ltr" unicode-bidi="embed">struct</tspan> (<tspan direction="ltr" unicode-bidi="embed">alignment</tspan>)</text>
+
+<!-- Row 6: map preallocation - 25% - easy -->
+<rect x="15" y="332" width="750" height="46" fill="#fafafa" rx="4"/>
+<rect x="22" y="340" width="56" height="22" fill="#4CAF50" rx="11"/>
+<text x="50" y="355" direction="rtl" unicode-bidi="embed" font-size="9" fill="#fff" text-anchor="middle" font-weight="bold">آسان</text>
+<rect x="95" y="344" width="100" height="18" fill="url(#impactLow)" rx="4"/>
+<text x="200" y="357" direction="ltr" unicode-bidi="embed" font-size="9" font-weight="bold" fill="#B71C1C">25%</text>
+<text x="760" y="356" direction="rtl" unicode-bidi="embed" font-size="11" font-weight="bold" fill="#333" text-anchor="end">پیش‌تخصیص <tspan direction="ltr" unicode-bidi="embed">Map</tspan></text>
+
+<!-- Info box -->
+<rect x="15" y="390" width="365" height="70" fill="#E3F2FD" rx="6" stroke="#90CAF9" stroke-width="1"/>
+<text x="25" y="410" direction="rtl" unicode-bidi="embed" font-size="10" font-weight="bold" fill="#1565C0">📊 راهنمای نمودار:</text>
+<text x="25" y="426" direction="rtl" unicode-bidi="embed" font-size="8.5" fill="#333">نوار سبز = تأثیر بالا | نوار نارنجی = تأثیر متوسط | نوار قرمز = تأثیر کم‌تر</text>
+<text x="25" y="442" direction="rtl" unicode-bidi="embed" font-size="8.5" fill="#333">شانس بالای <tspan direction="ltr" unicode-bidi="embed">ROI</tspan>: تکنیک‌های آسان با تأثیر بالا را ابتدا پیاده‌سازی کنید</text>
+
+<!-- Recommendation box -->
+<rect x="400" y="390" width="365" height="70" fill="#E8F5E9" rx="6" stroke="#A5D6A7" stroke-width="1"/>
+<text x="410" y="410" direction="rtl" unicode-bidi="embed" font-size="10" font-weight="bold" fill="#2E7D32">✅ توصیه عملی — اولویت‌بندی:</text>
+<text x="410" y="426" direction="rtl" unicode-bidi="embed" font-size="8.5" fill="#333">۱. <tspan direction="ltr" unicode-bidi="embed">slice</tspan>/<tspan direction="ltr" unicode-bidi="embed">map</tspan> پیش‌تخصیص (آسان + فوری)</text>
+<text x="410" y="442" direction="rtl" unicode-bidi="embed" font-size="8.5" fill="#333">۲. <tspan direction="ltr" unicode-bidi="embed">struct</tspan> مرتب‌سازی (آسان + مؤثر) ۳. <tspan direction="ltr" unicode-bidi="embed">sync.Pool</tspan> (بیشترین تأثیر)</text>
+
+<!-- Golden rule bar -->
+<rect x="10" y="470" width="760" height="42" fill="#FFF8E1" rx="6" stroke="#FFC107" stroke-width="1.5"/>
+<text x="25" y="488" direction="rtl" unicode-bidi="embed" font-size="11" font-weight="bold" fill="#F57F17">⚡ قانون طلایی:</text>
+<text x="118" y="488" direction="rtl" unicode-bidi="embed" font-size="9.5" fill="#555">ابتدا با <tspan direction="ltr" unicode-bidi="embed">pprof</tspan> اندازه‌گیری کنید، فقط <tspan direction="ltr" unicode-bidi="embed">hot path</tspan>‌ها را بهینه کنید، و تکنیک‌های آسان با تأثیر بالا را اولویت دهید.</text>
+<text x="118" y="503" direction="rtl" unicode-bidi="embed" font-size="8.5" fill="#888">بهینه‌سازی بدون اندازه‌گیری = حدس زدن. از <tspan direction="ltr" unicode-bidi="embed">go tool pprof</tspan> و <tspan direction="ltr" unicode-bidi="embed">benchmem</tspan> شروع کنید.</text>
+</svg>
+<figcaption dir="rtl">شکل ۱۲-۵-ب: مقایسه تأثیر و دشواری تکنیک‌های کاهش مصرف حافظه در <bdi dir="ltr">Go</bdi></figcaption>
+</figure>
+
+<h3 id="سناریوهای-عملیاتی-کاهش-حافظه">سناریوهای عملیاتی کاهش حافظه</h3>
+<p>هر تکنیک کاهش مصرف حافظه در Go برای سناریوهای خاصی طراحی شده و در زمینه‌های متفاوت کارایی متفاوتی دارد. به‌کارگیری تکنیک مناسب در جای درست، نه‌تنها مصرف حافظه را کاهش می‌دهد، بلکه عملکرد کلی برنامه را نیز بهبود می‌بخشد. در مقابل، استفاده نادرست از تکنیک‌های بهینه‌سازی می‌تواند پیچیدگی کد را بدون مزیت واقعی افزایش دهد و حتی باگ‌های جدیدی ایجاد کند. در ادامه مهم‌ترین سناریوهای عملیاتی و بهترین رویکرد برای هر کدام را بررسی می‌کنیم و نشان می‌دهیم کدام تکنیک در چه شرایطی بیشترین بازدهی را دارد.</p>
+<ul>
+<li><strong>استفاده از <bdi dir="ltr">sync.Pool</bdi> برای اشیاء <bdi dir="ltr">HTTP handler</bdi>:</strong> در سرورهای <bdi dir="ltr">HTTP</bdi> با بار بالا، هر درخواست نیاز به بافرها و اشیاء موقتی دارد. بدون <bdi dir="ltr">sync.Pool</bdi>، هر درخواست تخصیص‌های جدید ایجاد می‌کند که بلافاصله پس از پایان درخواست به <bdi dir="ltr">GC</bdi> سپرده می‌شوند. با <bdi dir="ltr">sync.Pool</bdi>، اشیاء بین درخواست‌ها بازیافت می‌شوند و تعداد تخصیص‌ها به‌شدت کاهش می‌یابد. این تکنیک در فریمورک‌هایی مثل <bdi dir="ltr">Gin</bdi> و <bdi dir="ltr">Fiber</bdi> به‌طور گسترده استفاده می‌شود و می‌تواند تعداد <bdi dir="ltr">allocation</bdi> را تا ۹۰٪ کاهش دهد. فقط مراقب باشید که اشیاء را قبل از بازگرداندن به <bdi dir="ltr">pool</bdi> به‌درستی پاک‌سازی کنید.</li>
+<li><strong>پیش‌تخصیص <bdi dir="ltr">slice</bdi> در مسیرهای پرتکرار:</strong> وقتی اندازه‌ی نهایی <bdi dir="ltr">slice</bdi> را می‌دانید یا می‌توانید تخمین بزنید، همیشه از <bdi dir="ltr">make([]T, 0, n)</bdi> استفاده کنید. این کار از رشد مکرر <bdi dir="ltr">slice</bdi> و کپی‌شدن داده‌ها جلوگیری می‌کند. در <bdi dir="ltr">hot path</bdi>‌ها (مثل پردازش هر درخواست)، حتی یک <bdi dir="ltr">reallocation</bdi> اضافی هم قابل توجه است. اگر اندازه‌ی دقیق را نمی‌دانید، حدس بالاتر بهتر از حدس پایین‌تر است، چون یک <bdi dir="ltr">reallocation</bdi> کمتر هم بهتر از کپی مکرر داده‌هاست.</li>
+<li><strong>ترتیب فیلدهای <bdi dir="ltr">struct</bdi> برای <bdi dir="ltr">alignment</bdi>:</strong> وقتی میلیون‌ها نمونه از یک <bdi dir="ltr">struct</bdi> دارید (مثل رکوردهای دیتابیس)، مرتب‌سازی فیلدها از بزرگ به کوچک می‌تواند تا ۴۰٪ حافظه صرفه‌جویی کند. این تکنیک به‌خصوص در <bdi dir="ltr">struct</bdi>‌هایی با ترکیب فیلدهای بزرگ و کوچک مؤثر است. از ابزار <bdi dir="ltr">fieldalignment</bdi> برای بررسی خودکار استفاده کنید: <bdi dir="ltr">fieldalignment -fix ./...</bdi>. این ساده‌ترین و کم‌خطرترین تکنیک است چون رفتار برنامه را تغییر نمی‌دهد و فقط چیدمان حافظه را بهینه می‌کند.</li>
+<li><strong>کاهش تخصیص در <bdi dir="ltr">JSON marshaling</bdi>:</strong> <bdi dir="ltr">encoding/json</bdi> در هر فراخوانی از <bdi dir="ltr">reflect</bdi> استفاده می‌کند و بافرهای موقتی تخصیص می‌دهد. برای کاهش تخصیص‌ها، از <bdi dir="ltr">sync.Pool</bdi> برای بافرها استفاده کنید. یا بهتر، از کدهای تولیدشده (<bdi dir="ltr">code generation</bdi>) مثل <bdi dir="ltr">easyjson</bdi> یا <bdi dir="ltr">go-json</bdi> استفاده کنید که بدون <bdi dir="ltr">reflect</bdi> کار می‌کنند و هم سریع‌ترند و هم حافظه‌ی کمتری مصرف می‌کنند. این تکنیک در <bdi dir="ltr">API</bdi>‌هایی که هر ثانیه هزاران درخواست <bdi dir="ltr">JSON</bdi> پردازش می‌کنند بسیار مؤثر است.</li>
+</ul>
+
+<div class="warning"><strong>هشدار عملی:</strong> قبل از هرگونه بهینه‌سازی حافظه، حتماً با <code dir="ltr">go tool pprof</code> اندازه‌گیری کنید. از <code dir="ltr">go test -bench=. -benchmem</code> برای شناسایی <code dir="ltr">hot path</code>‌ها استفاده کنید و فقط همان مسیرها را بهینه کنید. بهینه‌سازی کدهایی که زیاد اجرا نمی‌شوند، فقط پیچیدگی را افزایش می‌دهد و سودی ندارد. قاعده‌ی <code dir="ltr">80/20</code> را به یاد داشته باشید: ۸۰٪ مصرف حافظه در ۲۰٪ کد رخ می‌دهد. همچنین بعد از هر تغییر، دوباره بنچمارک بگیرید تا مطمئن شوید بهینه‌سازی واقعاً مؤثر بوده است. بدون اندازه‌گیری، بهینه‌سازی فقط حدس زدن است.</div>
+
+</div>
+</main>
+</div>
+
+<!-- Footer -->
+<footer class="site-footer">
+<div class="footer-inner">
+<div class="footer-nav">
+<span class="nav-arrow">‹</span>
+<a href="12.04-memory-optimization-and-gc.html" data-prev>۱۲.۴ بهینه‌سازی حافظه و Garbage Collector</a>
+</div>
+<div class="footer-toc">
+<a href="00.01-contents.html">فهرست</a>
+</div>
+<div class="footer-nav">
+<a href="#" data-next></a>
+<span class="nav-arrow">›</span>
+</div>
+</div>
+</footer>
+
+<!-- Back to Top -->
+<button class="back-to-top" aria-label="بازگشت به بالا">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
+</button>
+
+<!-- Scripts -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/go.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/php.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/sql.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/yaml.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/json.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/dockerfile.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/xml.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/ini.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/plaintext.min.js"></script>
+<script src="assets/js/main.js"></script>
+</body>
+</html>

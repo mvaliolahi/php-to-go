@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="fa">
+<head>
+<script>!function(){try{var t=localStorage.getItem('php2go-theme');if(t==='dark'||(!t&&window.matchMedia('(prefers-color-scheme:dark)').matches)){document.documentElement.setAttribute('data-theme','dark')}}catch(e){}}();</script>
+<meta charset="utf-8"/>
+<meta content="ie=edge" http-equiv="x-ua-compatible"/>
+<title>۲.۵ اشاره‌گرها — PHP to Go</title>
+<meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet"/>
+<link href="assets/css/main.css" rel="stylesheet" type="text/css"/>
+<link href="assets/img/favicon.ico" rel="icon" type="image/x-icon"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" media="screen" class="hljs-light-theme" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css" media="not screen" class="hljs-dark-theme" rel="stylesheet"/>
+</head>
+<body>
+<!-- Progress Bar -->
+<div class="progress-bar"><div class="progress-bar__fill"></div></div>
+
+<!-- Header -->
+<header class="site-header">
+<div class="header-inner">
+<div class="header-left">
+<button class="header-btn sidebar-toggle" aria-label="فهرست">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+</button>
+<a href="00.00-front-matter.html" class="header-logo"><span class="logo-php">PHP</span> to <span class="logo-go">Go</span></a>
+<span class="header-crumbs">انواع داده و ساختارهای کنترلی › اشاره‌گرها</span>
+</div>
+<div class="header-right">
+<nav class="header-nav">
+<span class="nav-arrow">‹</span>
+<a href="02.04-functions-and-methods.html"><span class="nav-label">۲.۴ توابع و متدها</span></a>
+<a href="00.01-contents.html">فهرست</a>
+<a href="02.06-generics.html"><span class="nav-label">۲.۶ جنریک‌ها</span></a>
+<span class="nav-arrow">›</span>
+</nav>
+<button class="header-btn search-toggle" aria-label="جستجو">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+</button>
+<button class="header-btn theme-toggle" aria-label="تغییر تم">
+<svg class="theme-icon-light" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+<svg class="theme-icon-dark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+</button>
+</div>
+</div>
+</header>
+
+<!-- Search Modal -->
+<div class="search-overlay">
+<div class="search-modal">
+<div class="search-input-wrap">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+<input type="text" class="search-input" placeholder="جستجو... (Ctrl+K)" dir="rtl"/>
+</div>
+<div class="search-results"></div>
+</div>
+</div>
+
+<!-- Layout -->
+<div class="site-layout">
+<!-- Sidebar -->
+<aside class="sidebar"></aside>
+<div class="sidebar-overlay"></div>
+
+<!-- Main Content -->
+<main class="content-area">
+<div class="content-wrap text">
+<div class="chapter">فصل ۲.۵</div>
+<div class="note"><strong>یادداشت:</strong> مفهوم pointer در Go بسیار ساده‌تر از C/C++ است. Go از pointer arithmetic پشتیبانی نمی‌کند و اشاره‌گرها فقط برای ارجاع و انتقال مرجع به کار می‌روند. برای توسعه‌دهندگان PHP که با reference passing آشنا هستند (<code>&amp;$var</code>)، اشاره‌گرهای Go مفهومی مشابه اما امن‌تر ارائه می‌دهند.</div>
+<h2 id="اشارهگرها">اشاره‌گرها</h2>
+<p>یکی از مفاهیم کلیدی و نسبتاً پیشرفته در زبان Go مفهوم <strong>اشاره‌گر</strong> است. در حالی که در PHP همه چیز به صورت مرجع ولی اغلب به شکل ضمنی و غیرقابل کنترل رفتار می‌کند در Go اشاره‌گرها به‌صورت صریح و قابل مدیریت هستند. این ویژگی در نوشتن کدهای بهینه، کنترل حافظه و طراحی ساختارهای مؤثر کاربرد فراوانی دارد.</p>
+<p>به‌طور ساده یک اشاره‌گر متغیری است که به جای نگه‌داشتن یک مقدار <strong>آدرس حافظه‌ی متغیر دیگری</strong> را در خود ذخیره می‌کند.</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">var a int = 10
+var p *int = &amp;a // p is a pointer to a
+fmt.Println(*p) // Output: 10
+</code></pre>
+</figure>
+<figure class="diagram" dir="ltr">
+<svg height="220" viewBox="0 0 550 220" width="550" xmlns="http://www.w3.org/2000/svg">
+<defs><marker id="arr8" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#4caf50" points="0 0, 10 3.5, 0 7"></polygon></marker></defs>
+<text fill="#00ADD8" font-size="14" font-weight="bold" text-anchor="middle" x="275" y="25" direction="rtl" unicode-bidi="embed">نمودار وضعیت: <tspan direction="ltr" unicode-bidi="embed">var</tspan> a <tspan direction="ltr" unicode-bidi="embed">int</tspan> = 10, <tspan direction="ltr" unicode-bidi="embed">var</tspan> p *<tspan direction="ltr" unicode-bidi="embed">int</tspan> = &<tspan direction="ltr" unicode-bidi="embed">amp</tspan>;a</text>
+<!-- Variable a -->
+<rect fill="#e3f2fd" height="90" rx="8" stroke="#2196f3" stroke-width="2" width="160" x="50" y="50"></rect>
+<text fill="#1565c0" font-size="14" font-weight="bold" text-anchor="middle" x="130" y="75" direction="ltr" unicode-bidi="embed">a (int)</text>
+<text fill="#333" font-family="monospace" font-size="22" text-anchor="middle" x="130" y="105" direction="ltr" unicode-bidi="embed">10</text>
+<text fill="#888" font-size="10" text-anchor="middle" x="130" y="130" direction="rtl" unicode-bidi="embed">آدرس: 0<tspan direction="ltr" unicode-bidi="embed">xC0001</tspan></text>
+<!-- Pointer p -->
+<rect fill="#e8f5e9" height="90" rx="8" stroke="#4caf50" stroke-width="2" width="160" x="320" y="50"></rect>
+<text fill="#2e7d32" font-size="14" font-weight="bold" text-anchor="middle" x="400" y="75" direction="ltr" unicode-bidi="embed">p (*int)</text>
+<text fill="#333" font-family="monospace" font-size="16" text-anchor="middle" x="400" y="105" direction="ltr" unicode-bidi="embed">0xC0001</text>
+<text fill="#888" font-size="10" text-anchor="middle" x="400" y="130" direction="ltr" unicode-bidi="embed">p = &amp;a</text>
+<!-- Arrow from p to a -->
+<line marker-end="url(#arr8)" stroke="#4caf50" stroke-width="2.5" x1="320" x2="210" y1="95" y2="95"></line>
+<!-- *p explanation -->
+<rect fill="#fff3e0" height="35" rx="6" stroke="#ff9800" stroke-width="1.5" width="310" x="120" y="170"></rect>
+<text fill="#e65100" font-size="12" text-anchor="middle" x="275" y="192" direction="rtl" unicode-bidi="embed">*p = 20 → مقدار a از طریق اشاره‌گر تغییر می‌کند</text>
+</svg>
+<figcaption dir="rtl">شکل ۸-۲: نمودار وضعیت اشاره‌گر</figcaption>
+</figure>
+<p>a&amp; آدرس حافظه‌ی متغیر a را بازمی‌گرداند. p* مقدار موجود در آدرس ذخیره‌شده در p را می‌خواند یا تغییر می‌دهد.</p>
+<p>می‌توان بدون کپی کردن مقادیر بزرگ به‌سادگی آدرس آن‌ها را به توابع فرستاد.</p>
+<p> برخلاف PHP که پارامترها به صورت پیش‌فرض by-value هستند در Go برای تأثیر گذاشتن بر مقدار اصلی باید از اشاره‌گر استفاده شود.</p>
+<p>با اشاره گر می‌توانید ساختارهای داده‌ای پیچیده مثل لیست پیوندی،‌ درخت و … ایجاد کنید.
+</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">func increment(x *int) {
+    *x++
+}
+val := 5
+increment(&amp;val)
+fmt.Println(val) // 6
+var p *int
+if p != nil {
+    fmt.Println(*p)
+} else {
+    fmt.Println("Pointer is nil")
+}
+</code></pre>
+</figure>
+<p>توجه داشته باشید اشاره‌گرهایی که هنوز به آدرسی متصل نشده‌اند مقدار nil دارند:</p>
+<h3 id="value-vs-reference">value در برابر reference</h3>
+<p>از تفاوت‌های مهم Go و PHP که برنامه‌نویسان PHP مرتباً با آن دست‌وپنجه نرم می‌کنند، رفتار متفاوت انواع داده در انتساب و انتقال به توابع است. در PHP آرایه‌ها بر اساس Copy-on-Write عمل می‌کنند، اما در Go رفتار هر نوع داده‌ای متفاوت است و شناخت این تفاوت‌ها برای جلوگیری از باگ‌های ظریف ضروری است.</p>
+<div class="comparison"><strong>جدول مقایسه رفتار انواع داده:</strong>
+<br/><br/>
+<strong>Value Types:</strong> هنگام انتساب یا انتقال به تابع، یک کپی مستقل ایجاد می‌شود. تغییر کپی، اصلی را تغییر نمی‌دهد.
+<br/>• انواع پایه: <code>int</code>, <code>float64</code>, <code>bool</code>, <code>string</code>
+<br/>• <code>struct</code> و <code>array</code> با طول ثابت
+<br/><br/>
+<strong>Reference Types:</strong> هنگام انتساب، همان داده زیرین به‌اشتراک گذاشته می‌شود. تغییر یکی، دیگری را هم تغییر می‌دهد.
+<br/>• <code>slice</code>, <code>map</code>, <code>channel</code>, <code>pointer</code>, <code>function</code>, <code>interface</code>
+</div>
+<figure class="diagram" dir="ltr">
+<svg height="310" viewBox="0 0 620 310" width="620" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<marker id="arrVal1" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#777BB4" points="0 0, 10 3.5, 0 7"></polygon></marker>
+<marker id="arrRef1" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#4caf50" points="0 0, 10 3.5, 0 7"></polygon></marker>
+</defs>
+<rect fill="#fafafa" height="310" rx="12" stroke="#ddd" stroke-width="1" width="620" x="0" y="0"></rect>
+<text fill="#333" font-size="15" font-weight="bold" text-anchor="middle" x="310" y="28" direction="rtl" unicode-bidi="embed">مقایسه حافظه: انواع مقداری در برابر انواع مرجع‌دار</text>
+
+<!-- Value Types Section -->
+<rect fill="#e8eaf6" height="235" rx="8" stroke="#777BB4" stroke-width="2" width="280" x="15" y="45"></rect>
+<text fill="#777BB4" font-size="13" font-weight="bold" text-anchor="middle" x="155" y="68" direction="rtl" unicode-bidi="embed">انواع مقداری (<tspan direction="ltr" unicode-bidi="embed">Value Types</tspan>)</text>
+
+<!-- c1 struct -->
+<rect fill="#fff" height="70" rx="6" stroke="#777BB4" stroke-width="1.5" width="115" x="30" y="80"></rect>
+<text fill="#777BB4" font-size="11" font-weight="bold" text-anchor="middle" x="87" y="98" direction="ltr" unicode-bidi="embed">c1 (Config)</text>
+<text fill="#333" font-size="10" text-anchor="middle" x="87" y="115" direction="ltr" unicode-bidi="embed">Timeout: 30</text>
+<text fill="#333" font-size="10" text-anchor="middle" x="87" y="130" direction="ltr" unicode-bidi="embed">Retries: 3</text>
+<text fill="#888" font-size="8" text-anchor="middle" x="87" y="145" direction="ltr" unicode-bidi="embed">addr: 0xA001</text>
+
+<!-- c2 struct (copy) -->
+<rect fill="#fff" height="70" rx="6" stroke="#777BB4" stroke-width="1.5" width="115" x="165" y="80"></rect>
+<text fill="#777BB4" font-size="11" font-weight="bold" text-anchor="middle" x="222" y="98" direction="ltr" unicode-bidi="embed">c2 (Config)</text>
+<text fill="#333" font-size="10" text-anchor="middle" x="222" y="115" direction="ltr" unicode-bidi="embed">Timeout: 30</text>
+<text fill="#333" font-size="10" text-anchor="middle" x="222" y="130" direction="ltr" unicode-bidi="embed">Retries: 3</text>
+<text fill="#888" font-size="8" text-anchor="middle" x="222" y="145" direction="ltr" unicode-bidi="embed">addr: 0xA050</text>
+
+<!-- Copy arrow -->
+<line marker-end="url(#arrVal1)" stroke="#777BB4" stroke-dasharray="5,3" stroke-width="1.5" x1="145" x2="165" y1="115" y2="115"></line>
+<text fill="#777BB4" font-size="8" text-anchor="middle" x="155" y="108" direction="rtl" unicode-bidi="embed">کپی</text>
+
+<!-- Modification -->
+<rect fill="#fff3e0" height="35" rx="4" stroke="#ff9800" stroke-width="1" width="240" x="35" y="165"></rect>
+<text fill="#e65100" font-size="10" text-anchor="middle" x="155" y="182" direction="ltr" unicode-bidi="embed">c2.Timeout = 60</text>
+<text fill="#e65100" font-size="9" text-anchor="middle" x="155" y="194" direction="rtl" unicode-bidi="embed">فقط c2 تغییر می‌کند، c1 دست‌نخورده می‌ماند</text>
+
+<!-- Result boxes -->
+<rect fill="#e8f5e9" height="30" rx="4" stroke="#4caf50" stroke-width="1" width="115" x="30" y="210"></rect>
+<text fill="#2e7d32" font-size="9" text-anchor="middle" x="87" y="230" direction="ltr" unicode-bidi="embed">c1.Timeout = 30 ✓</text>
+<rect fill="#fff3e0" height="30" rx="4" stroke="#ff9800" stroke-width="1" width="115" x="165" y="210"></rect>
+<text fill="#e65100" font-size="9" text-anchor="middle" x="222" y="230" direction="ltr" unicode-bidi="embed">c2.Timeout = 60</text>
+
+<!-- Independent label -->
+<rect fill="#777BB4" height="24" rx="4" width="240" x="35" y="250"></rect>
+<text fill="#fff" font-size="10" font-weight="bold" text-anchor="middle" x="155" y="267" direction="rtl" unicode-bidi="embed">مستقل — هر کپی حافظه مجزا دارد</text>
+
+<!-- Reference Types Section -->
+<rect fill="#e8f5e9" height="235" rx="8" stroke="#4caf50" stroke-width="2" width="280" x="325" y="45"></rect>
+<text fill="#4caf50" font-size="13" font-weight="bold" text-anchor="middle" x="465" y="68" direction="rtl" unicode-bidi="embed">انواع مرجع‌دار (<tspan direction="ltr" unicode-bidi="embed">Reference Types</tspan>)</text>
+
+<!-- s1 slice header -->
+<rect fill="#fff" height="45" rx="6" stroke="#4caf50" stroke-width="1.5" width="115" x="340" y="80"></rect>
+<text fill="#4caf50" font-size="11" font-weight="bold" text-anchor="middle" x="397" y="98" direction="ltr" unicode-bidi="embed">s1 (slice)</text>
+<text fill="#333" font-size="9" text-anchor="middle" x="397" y="113" direction="ltr" unicode-bidi="embed">ptr → 0xB100</text>
+
+<!-- s2 slice header -->
+<rect fill="#fff" height="45" rx="6" stroke="#4caf50" stroke-width="1.5" width="115" x="475" y="80"></rect>
+<text fill="#4caf50" font-size="11" font-weight="bold" text-anchor="middle" x="532" y="98" direction="ltr" unicode-bidi="embed">s2 (slice)</text>
+<text fill="#333" font-size="9" text-anchor="middle" x="532" y="113" direction="ltr" unicode-bidi="embed">ptr → 0xB100</text>
+
+<!-- Shared underlying array -->
+<rect fill="#c8e6c9" height="50" rx="6" stroke="#4caf50" stroke-width="2" width="250" x="340" y="140"></rect>
+<text fill="#2e7d32" font-size="10" font-weight="bold" text-anchor="middle" x="465" y="158" direction="rtl" unicode-bidi="embed">آرایه زیرین مشترک (0xB100)</text>
+<text fill="#333" font-size="10" text-anchor="middle" x="465" y="178" direction="ltr" unicode-bidi="embed">[1, 2, 3]</text>
+
+<!-- Arrows from slice headers to shared array -->
+<line marker-end="url(#arrRef1)" stroke="#4caf50" stroke-width="2" x1="397" x2="410" y1="125" y2="140"></line>
+<line marker-end="url(#arrRef1)" stroke="#4caf50" stroke-width="2" x1="532" x2="520" y1="125" y2="140"></line>
+
+<!-- Modification -->
+<rect fill="#fce4ec" height="35" rx="4" stroke="#e91e63" stroke-width="1" width="240" x="345" y="200"></rect>
+<text fill="#e91e63" font-size="10" text-anchor="middle" x="465" y="217" direction="ltr" unicode-bidi="embed">s2[0] = 99</text>
+<text fill="#e91e63" font-size="9" text-anchor="middle" x="465" y="229" direction="rtl" unicode-bidi="embed">هر دو متغیر تغییر را می‌بینند!</text>
+
+<!-- Result -->
+<rect fill="#e91e63" height="24" rx="4" width="240" x="345" y="250"></rect>
+<text fill="#fff" font-size="10" font-weight="bold" text-anchor="middle" x="465" y="267" direction="rtl" unicode-bidi="embed">مشترک — هر دو به همان داده اشاره می‌کنند</text>
+</svg>
+<figcaption dir="rtl">شکل ۹-۲: تفاوت حافظه‌ی انواع مقداری و مرجع‌دار — کپی مستقل در برابر اشتراک داده</figcaption>
+</figure>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">// Wrong — struct value is copied
+type Config struct { Timeout int }
+c1 := Config{Timeout: 30}
+c2 := c1 // independent copy
+c2.Timeout = 60
+fmt.Println(c1.Timeout) // 30 — unchanged
+
+// Correct — slice is a reference
+s1 := []int{1, 2, 3}
+s2 := s1 // same underlying array
+s2[0] = 99
+fmt.Println(s1[0]) // 99 — changed!
+</code></pre>
+</figure>
+<div class="important"><strong>نکته حیاتی برای توسعه‌دهندگان PHP:</strong> در PHP آرایه‌ها با انتساب کپی می‌شوند (<code>$b = $a</code> یک کپی ایجاد می‌کند). اما در Go رفتار slice شبیه object در PHP است — انتساب باعث به‌اشتراک‌گذاری داده می‌شود. اگر نیاز به کپی واقعی slice دارید از <code dir="ltr">copy()</code> استفاده کنید.</div>
+<h3 id="pointer-receiver">اشاره‌گر در Receiver متدها</h3>
+<p>وقتی متدی روی struct تعریف می‌کنید، باید تصمیم بگیرید که receiver مقداری باشد یا اشاره‌گری. این تصمیم مستقیماً بر این مسئله تأثیر می‌گذارد که آیا متد می‌تواند struct اصلی را تغییر دهد یا فقط روی یک کپی کار می‌کند.</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">type Counter struct {
+    count int
+}
+
+// Value receiver — works on a copy
+func (c Counter) IncrementValue() {
+    c.count++ // only copy changes!
+}
+
+// Pointer receiver — works on original
+func (c *Counter) IncrementPointer() {
+    c.count++ // original changes
+}
+
+c := Counter{count: 0}
+c.IncrementValue() // count still 0!
+c.IncrementPointer() // count now 1
+</code></pre>
+</figure>
+<p>قاعده کلی در Go این است: <strong>اگر نیاز به تغییر دارید یا struct بزرگ است، از pointer receiver استفاده کنید.</strong> حتی اگر تغییری نیاز نباشد، برای سازگاری همه متدهای یک struct باید یا همگی مقداری یا همگی اشاره‌گری باشند. در عمل، استفاده از pointer receiver برای همه متدها رایج‌تر و ایمن‌تر است.</p>
+<h3 id="when-pointers">چه‌هنگام از اشاره‌گر استفاده کنیم؟</h3>
+<p>استفاده از اشاره‌گر در Go سودمند است اما نباید بیش‌ازحد به‌کار رود. این راهنما به شما کمک می‌کند تصمیم بگیرید:</p>
+<ul>
+<li><strong>وقتی باید مقدار اصلی تغییر کند:</strong> ارسال اشاره‌گر به تابع اجازه می‌دهد مستقیماً مقدار اصلی را ویرایش کنید.</li>
+<li><strong>وقتی داده بزرگ است:</strong> کپی کردن struct‌های حجیم (مثل بافرهای تصویر یا مستندات JSON) پرهزینه است. ارسال اشاره‌گر فقط ۸ بایت (یک آدرس حافظه) کپی می‌کند.</li>
+<li><strong>وقتی باید نشان دهید مقداری ممکن است نباشد:</strong> اشاره‌گر <code>nil</code> می‌تواند باشد و این روشی برای نشان دادن "مقدار موجود نیست" است (مثل NULL در دیتابیس PHP).</li>
+</ul>
+<div class="warning"><strong>هشدار:</strong> نیازی به اشاره‌گر برای slice، map و channel نیست! این انواع ذاتاً مرجع‌دار هستند و ارسال آن‌ها به تابع بدون اشاره‌گر هم باعث به‌اشتراک‌گذاری داده می‌شود. استفاده از <code>*[]int</code> یا <code>*map[string]int</code> هم لازم نیست و هم کد را پیچیده‌تر می‌کند.</div>
+<p>Go از نظر ایمنی حافظه بسیار محتاط عمل می‌کند. حتی اگر اشاره‌گری به متغیر محلی یک تابع برگردانید، کامپایلر Go به‌صورت خودکار تشخیص می‌دهد (از طریق Escape Analysis) که متغیر باید روی heap قرار گیرد تا پس از خروج از تابع همچنان معتبر بماند. این برخلاف C است که برگرداندن اشاره‌گر به متغیر محلی باعث رفتار تعریف‌نشده می‌شود.</p>
+<h3 id="escape-analysis">Escape Analysis: چگونه Go تصمیم می‌گیرد چه چیزی روی Heap قرار گیرد</h3>
+
+<div class="quote-box">
+    <p class="quote-text">یک برنامه‌نویس کاربردی باید بداند چگونه با اشاره‌گرها کار کند و حافظه را مستقیماً مدیریت نماید. اگر اشاره‌گرها را نمی‌فهمید، نمی‌فهمید کامپیوترها چگونه کار می‌کنند.</p>
+    <p class="quote-source">
+        <span class="quote-author">Andy Hunt &amp; Dave Thomas</span>
+        <span class="quote-role">نویسندگان و مهندسان نرم‌افزار</span>
+        <span class="quote-separator">|</span>
+        <span class="quote-book">The Pragmatic Programmer</span>
+    </p>
+</div>
+<div class="tip">
+<strong>نکته‌ی حرفه‌ای:</strong> درک <bdi dir="ltr">Escape Analysis</bdi> کلید انتخاب بین <bdi dir="ltr">pointer receiver</bdi> و <bdi dir="ltr">value receiver</bdi> است. اگر متد شما <bdi dir="ltr">receiver</bdi> را به <bdi dir="ltr">interface</bdi> تبدیل می‌کند (مثلاً <code>fmt.Println(u)</code> درون متد)، مقدار به <bdi dir="ltr">heap</bdi> فرار می‌کند و <bdi dir="ltr">value receiver</bdi> هزینه‌ی کپی اضافی دارد. در این حالت <bdi dir="ltr">pointer receiver</bdi> بهتر است چون فقط ۸ بایت کپی می‌شود. اما اگر <bdi dir="ltr">struct</bdi> کوچک است (زیر ۶۴ بایت) و درون متد فرار نمی‌کند، <bdi dir="ltr">value receiver</bdi> سریع‌تر است چون تخصیص <bdi dir="ltr">heap</bdi> را حذف می‌کند. از <code>go build -gcflags="-m"</code> برای مشاهده‌ی تصمیمات کامپایلر استفاده کنید.
+</div>
+
+<div class="quote-box">
+    <p class="quote-text">کامپایلر Go تحلیل فرار را برای تعیین اینکه کدام متغیرها می‌توانند با اطمینان روی پشته به جای هیپ تخصیص داده شوند، انجام می‌دهد. تخصیص‌های پشته اساساً رایگان هستند، در حالی که تخصیص‌های هیپ به جمع‌آوری زباله نیاز دارند. درک تحلیل فرار به شما کمک می‌کند کدی بنویسید که تخصیص‌های هیپ را به حداقل برساند.</p>
+    <p class="quote-source">
+        <span class="quote-author">Rick Hudson و Austin Clements</span>
+        <span class="quote-role">تیم توسعه کامپایلر Go</span>
+    </p>
+</div>
+<p>از مهم‌ترین بهینه‌سازی‌های کامپایلر Go، <strong dir="ltr">Escape Analysis</strong> است. این تحلیل تعیین می‌کند که آیا یک متغیر می‌تواند روی stack تخصیص یابد (سریع و خودکار آزاد می‌شود) یا باید روی heap قرار گیرد (نیاز به garbage collector برای آزادسازی).</p>
+<div class="note"><strong>قواعد اصلی Escape Analysis:</strong>
+<br/><br/>
+<strong>۱. متغیر روی stack می‌ماند اگر:</strong>
+<br/>• فقط در همان تابع استفاده شود
+<br/>• آدرس آن خارج از تابع منتشر نشود
+<br/>• اندازه‌ی آن در زمان کامپایل مشخص باشد
+<br/><br/>
+<strong>۲. متغیر به heap escape می‌کند اگر:</strong>
+<br/>• آدرس آن از تابع برگردانده شود (return &amp;localVar)
+<br/>• در closure ذخیره شود و closure از تابع فرار کند
+<br/>• به عنوان آرگومان به interface{} ارسال شود (مثلاً fmt.Println)
+<br/>• اندازه‌ی آن خیلی بزرگ باشد و روی stack جا نشود
+<br/>• در زمان کامپایل اندازه‌ی آن مشخص نباشد (مثل slice با اندازه‌ی دینامیک)
+</div>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">// variable on stack — compiler output: "does not escape"
+func stackAlloc() int {
+    x := 42
+    return x // value is copied, address doesn't escape
+}
+
+// variable escapes to heap — compiler output: "escapes to heap"
+func heapAlloc() *int {
+    x := 42
+    return &amp;x // address of x escapes → heap
+}
+
+// escape due to interface
+func interfaceEscape() {
+    x := 42
+    fmt.Println(x) // x is passed to fmt.Println
+    // fmt.Println has interface{} parameter → heap
+}
+</code></pre>
+</figure>
+<div class="tip"><strong>نحوه‌ی بررسی Escape Analysis:</strong> با پرچم <code>-gcflags="-m"</code> می‌توانید گزارش Escape Analysis کامپایلر را ببینید: <code>go build -gcflags="-m" ./...</code>. این ابزار برای بهینه‌سازی کد بحرانی بسیار مفید است.</div>
+<div class="comparison"><strong>مقایسه‌ی مدیریت حافظه در Go و PHP:</strong>
+<br/><br/>
+<strong dir="ltr">Go:</strong> متغیرهای محلی روی stack تخصیص می‌یابند (بسیار سریع — فقط حرکت یک pointer). فقط متغیرهایی که «فرار» می‌کنند روی heap قرار می‌گیرند. Garbage Collector مبتنی بر mark-and-sweep بدون نیاز به reference counting. هیچ overhead زمان اجرا برای رهگیری ارجاع‌ها وجود ندارد.
+<br/><br/>
+<strong dir="ltr">PHP:</strong> هر مقدار در ساختار zval با reference counting ذخیره می‌شود. هر انتساب شمارنده‌ی ارجاع را افزایش می‌دهد و هر از بین رفتن متغیر آن را کاهش می‌دهد. وقتی شمارنده صفر شود حافظه آزاد می‌شود. Copy-on-Write نیز از همین مکانیزم استفاده می‌کند. این روش overhead بیشتری دارد اما برای dynamic typing ضروری است.
+</div>
+<h3 id="pointer-pitfall">اشاره‌گر به Interface: یک تله‌ی رایج</h3>
+<p>برنامه‌نویسان PHP گاهی به‌اشتباه اشاره‌گر به interface ایجاد می‌کنند. در Go این کار تقریباً هرگز لازم نیست و نشان‌دهنده‌ی سوءتفاهم درباره‌ی نحوه‌ی کار interface است:</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">// Wrong — pointer to interface
+var w *io.Writer = &amp;os.Stdout // Not necessary!
+
+// Correct — interface is inherently a reference
+var w io.Writer = os.Stdout // Sufficient
+
+// Interface internally has a pointer to actual data
+// Similar to object in PHP which is passed by-reference inherently
+</code></pre>
+</figure>
+<div class="warning"><strong>توضیح:</strong> interface در Go از قبل شامل یک اشاره‌گر به داده‌ی واقعی است. بنابراین <code>*Interface</code> عملاً یک اشاره‌گر به اشاره‌گر است و هم لازم نیست و هم کد را پیچیده‌تر می‌کند. به یاد داشته باشید: interface را مستقیم استفاده کنید، اشاره‌گر به آن نگیرید.</div>
+<h3 id="no-pointer-arithmetic">چرا Go حساب اشاره‌گر ندارد؟</h3>
+<p>یکی از تفاوت‌های اساسی <bdi dir="ltr">Go</bdi> با <bdi dir="ltr">C/C++</bdi> عدم پشتیبانی از حساب اشاره‌گر (<bdi dir="ltr">pointer arithmetic</bdi>) است. در <bdi dir="ltr">C</bdi> می‌نوشتید <code>p++</code> تا اشاره‌گر را به عنصر بعدی آرایه منتقل کنید. <bdi dir="ltr">Go</bdi> این قابلیت را عمداً حذف کرده است چون دلیل اصلی بسیاری از آسیب‌پذیری‌های امنیتی (سرریز بافر، دسترسی غیرمجاز به حافظه) و باگ‌های ردیابی‌نشده است. به‌جای حساب اشاره‌گر، <bdi dir="ltr">Go</bdi> از <code>slice</code> با اندیس‌گذاری ایمن استفاده می‌کند.</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">// Wrong — not allowed in Go:
+// p := &amp;arr[0]
+// p++ // compile error
+// p += 4 // compile error
+
+// Correct — idiomatic Go approach:
+arr := []int{10, 20, 30, 40}
+for i, v := range arr {
+    fmt.Printf("arr[%d] = %d\n", i, v)
+}
+
+// If you really need low-level access:
+// Use unsafe.Pointer + uintptr only in special cases
+</code></pre>
+</figure>
+<h3 id="pointer-to-pointer">اشاره‌گر به اشاره‌گر: **int</h3>
+<p>گاهی نیاز دارید تابعی بنویسید که خود اشاره‌گر را تغییر دهد (مثلاً تخصیص حافظه‌ی جدید). در این حالت از اشاره‌گر به اشاره‌گر استفاده می‌کنید. این الگو در <bdi dir="ltr">Go</bdi> نادر است اما در کار با ساختارهای داده‌ی پیوندی (مثل لیست‌های پیوندی) ضروری است.</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">type Node struct {
+    Value int
+    Next *Node
+}
+
+// Change linked list head — requires **Node
+func prepend(head **Node, value int) {
+    *head = &amp;Node{Value: value, Next: *head}
+}
+
+func main() {
+    var list *Node // nil
+    prepend(&amp;list, 3)
+    prepend(&amp;list, 2)
+    prepend(&amp;list, 1)
+    // list: 1 → 2 → 3 → nil
+}
+</code></pre>
+</figure>
+<div class="note"><strong>چه زمانی از **T استفاده کنیم؟</strong> فقط وقتی تابعی نیاز دارد خود اشاره‌گر را تغییر دهد (مثلاً مقداردهی اولیه یا تخصیص مجدد). اگر فقط می‌خواهید مقدار مورد اشاره را تغییر دهید، <code>*T</code> کافی است. <code>**T</code> در کد معمولی بسیار نادر است و وجود آن معمولاً نشان‌دهنده‌ی نیاز به بازطراحی است.</div>
+<h3 id="pointer-vs-value-benchmarks">ارسال struct بزرگ: اشاره‌گر در برابر مقدار</h3>
+<p>یکی از سؤالات رایج این است: «چه‌وقت باید از اشاره‌گر برای ارسال <code>struct</code> به تابع استفاده کنیم؟» پاسخ به اندازه‌ی <code>struct</code> و نیاز به تغییر بستگی دارد. برای <code>struct</code>‌های کوچک (تا حدود ۶۴ بایت)، ارسال مقداری معمولاً به‌دلیل بهینه‌سازی‌های کامپایلر سریع‌تر یا هم‌سرعت است. برای <code>struct</code>‌های بزرگ، ارسال اشاره‌گر فقط ۸ بایت کپی می‌کند.</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">// Small struct — value receiver is faster or equal
+type Point struct{ X, Y float64 } // 16 bytes
+
+func (p Point) Distance() float64 {
+    return math.Hypot(p.X, p.Y) // 16 bytes copy — practically free
+}
+
+// Large struct — pointer receiver is better
+type BigData struct {
+    Records [10000]Record // 10000 × 100 bytes ≈ 1MB
+    Meta Metadata
+}
+
+func (b *BigData) Process() { // only 8 bytes copy
+    // If value receiver, 1MB copy would happen!
+}
+</code></pre>
+</figure>
+<figure class="diagram" dir="ltr">
+<svg height="300" viewBox="0 0 600 300" width="600" xmlns="http://www.w3.org/2000/svg">
+<rect fill="#fafafa" height="280" rx="12" stroke="#00ADD8" stroke-width="2" width="580" x="10" y="10"></rect>
+<text fill="#00ADD8" font-size="15" font-weight="bold" text-anchor="middle" x="300" y="35" direction="rtl" unicode-bidi="embed">طرح حافظه: اشاره‌گر در برابر مقدار</text>
+<!-- Stack frame -->
+<rect fill="#e3f2fd" height="200" rx="8" stroke="#2196f3" stroke-width="1.5" width="270" x="20" y="55"></rect>
+<text fill="#1565c0" font-size="13" font-weight="bold" text-anchor="middle" x="155" y="75" direction="rtl" unicode-bidi="embed">ارسال مقداری (<tspan direction="ltr" unicode-bidi="embed">by</tspan> <tspan direction="ltr" unicode-bidi="embed">value</tspan>)</text>
+<rect fill="#fff" height="25" rx="3" stroke="#2196f3" stroke-width="1" width="230" x="40" y="85"></rect>
+<text fill="#333" font-size="10" text-anchor="middle" x="155" y="103" direction="ltr" unicode-bidi="embed">User{Name, Email, Age, ...} ← کپی کامل</text>
+<rect fill="#fff" height="25" rx="3" stroke="#2196f3" stroke-width="1" width="230" x="40" y="115"></rect>
+<text fill="#333" font-size="10" text-anchor="middle" x="155" y="133" direction="ltr" unicode-bidi="embed">فراخوانی: data copy O(n)</text>
+<text fill="#27ae60" font-size="11" font-weight="bold" text-anchor="middle" x="155" y="165" direction="rtl" unicode-bidi="embed">امن: تغییر تأثیر روی اصلی ندارد</text>
+<text fill="#27ae60" font-size="11" font-weight="bold" text-anchor="middle" x="155" y="185" direction="rtl" unicode-bidi="embed">همزمانی: بدون <tspan direction="ltr" unicode-bidi="embed">data</tspan> <tspan direction="ltr" unicode-bidi="embed">race</tspan></text>
+<text fill="#e74c3c" font-size="11" font-weight="bold" text-anchor="middle" x="155" y="210" direction="rtl" unicode-bidi="embed">پرهزینه برای <tspan direction="ltr" unicode-bidi="embed">struct</tspan> بزرگ</text>
+<text fill="#e74c3c" font-size="11" font-weight="bold" text-anchor="middle" x="155" y="230" direction="rtl" unicode-bidi="embed">نمی‌تواند اصلی را تغییر دهد</text>
+<!-- Pointer frame -->
+<rect fill="#e8f5e9" height="200" rx="8" stroke="#4caf50" stroke-width="1.5" width="270" x="310" y="55"></rect>
+<text fill="#2e7d32" font-size="13" font-weight="bold" text-anchor="middle" x="445" y="75" direction="rtl" unicode-bidi="embed">ارسال اشاره‌گری (<tspan direction="ltr" unicode-bidi="embed">by</tspan> <tspan direction="ltr" unicode-bidi="embed">pointer</tspan>)</text>
+<rect fill="#fff" height="25" rx="3" stroke="#4caf50" stroke-width="1" width="230" x="330" y="85"></rect>
+<text fill="#333" font-size="10" text-anchor="middle" x="445" y="103" direction="ltr" unicode-bidi="embed">*User → آدرس 0xC0001 ← فقط ۸ بایت</text>
+<rect fill="#fff" height="25" rx="3" stroke="#4caf50" stroke-width="1" width="230" x="330" y="115"></rect>
+<text fill="#333" font-size="10" text-anchor="middle" x="445" y="133" direction="ltr" unicode-bidi="embed">فراخوانی: فقط کپی ۸ بایت</text>
+<text fill="#27ae60" font-size="11" font-weight="bold" text-anchor="middle" x="445" y="165" direction="rtl" unicode-bidi="embed">سریع برای <tspan direction="ltr" unicode-bidi="embed">struct</tspan> بزرگ</text>
+<text fill="#27ae60" font-size="11" font-weight="bold" text-anchor="middle" x="445" y="185" direction="rtl" unicode-bidi="embed">می‌تواند اصلی را تغییر دهد</text>
+<text fill="#e74c3c" font-size="11" font-weight="bold" text-anchor="middle" x="445" y="210" direction="rtl" unicode-bidi="embed">خطر <tspan direction="ltr" unicode-bidi="embed">data</tspan> <tspan direction="ltr" unicode-bidi="embed">race</tspan> در همزمانی</text>
+<text fill="#e74c3c" font-size="11" font-weight="bold" text-anchor="middle" x="445" y="230" direction="rtl" unicode-bidi="embed">ممکن است <tspan direction="ltr" unicode-bidi="embed">GC</tspan> فشار بیشتری داشته باشد</text>
+<!-- Recommendation -->
+<rect fill="#fff9c4" height="25" rx="4" stroke="#f9a825" stroke-width="1" width="560" x="20" y="265"></rect>
+<text fill="#f57f17" font-size="11" font-weight="bold" text-anchor="middle" x="300" y="282" direction="rtl" unicode-bidi="embed">قانون تجربی: <tspan direction="ltr" unicode-bidi="embed">struct</tspan> زیر ۶۴ بایت → <tspan direction="ltr" unicode-bidi="embed">value</tspan> • بالای ۶۴ بایت یا نیاز به تغییر → <tspan direction="ltr" unicode-bidi="embed">pointer</tspan></text>
+</svg>
+<figcaption dir="rtl">شکل ۱۰-۲: مقایسه‌ی ارسال مقداری و اشاره‌گری</figcaption>
+</figure>
+<h3 id="pointer-mistakes">اشتباهات رایج با اشاره‌گرها</h3>
+<p>برنامه‌نویسان <bdi dir="ltr">PHP</bdi> که تازه با اشاره‌گرها آشنا شده‌اند مرتکب اشتباهات رایجی می‌شوند. آگاهی از این اشتباهات به شما کمک می‌کند از آن‌ها اجتناب کنید.</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">// Wrong 1: dereference nil pointer
+var p *int
+fmt.Println(*p) // panic: runtime error: invalid memory address
+
+// Correct — fix: check nil before dereference
+if p != nil {
+    fmt.Println(*p)
+}
+
+// Wrong 2: pointer to local variable (Go safe but bad habit)
+func create() *int {
+    x := 42
+    return &amp;x // Correct — safe in Go! (escape analysis)
+    // In C this was undefined behavior
+}
+
+// Wrong 3: pointer to slice/map (unnecessary and confusing)
+func badProcess(m *map[string]int) { // Wrong — unnecessary!
+    (*m)["key"] = 1
+}
+func goodProcess(m map[string]int) { // Correct — map is inherently a reference
+    m["key"] = 1
+}
+
+// Wrong 4: loop variable capture (Go 1.22 fixed this)
+// Before Go 1.22:
+for _, v := range values {
+    v := v // needed for correct capture
+    go func() { fmt.Println(v) }()
+}
+// Go 1.22+: loop variable is new in each iteration
+</code></pre>
+</figure>
+<div class="important"><strong>خلاصه‌ی قوانین اشاره‌گر برای مهاجران PHP:</strong> در <bdi dir="ltr">PHP</bdi> از <code>&amp;$var</code> برای ارسال مرجع استفاده می‌کردید. در <bdi dir="ltr">Go</bdi> این کار با اشاره‌گر انجام می‌شود اما فرق مهمی دارد: <bdi dir="ltr">Go</bdi> هرگز تبدیل خودکار بین مقدار و اشاره‌گر انجام نمی‌دهد. اگر می‌خواهید تابعی مقدار اصلی را تغییر دهد، باید صراحتاً از <code>*Type</code> استفاده کنید. این شفافیت نقطه‌ی قوت <bdi dir="ltr">Go</bdi> است نه ضعف آن.</div>
+
+    <h3 id="new-with-expression-go-1.26">تابع new با عبارت مقداردهی — Go 1.26</h3>
+    <p>
+        در Go 1.26، تابع داخلی <code>new</code> که قبلاً فقط یک نوع را به عنوان عملوند می‌پذیرفت و یک
+        اشاره‌گر به مقدار صفر آن نوع برمی‌گرداند، اکنون می‌تواند یک عبارت را به عنوان عملوند بپذیرد
+        که مقدار اولیه متغیر را مشخص می‌کند. این ویژگی به‌خصوص هنگام کار با بسته‌های سریالی‌سازی
+        مانند <code>encoding/json</code> یا Protocol Buffers که از اشاره‌گر برای نشان دادن مقادیر اختیاری
+        استفاده می‌کنند، بسیار مفید است:
+    </p>
+    <figure class="code go" dir="ltr">
+        <pre><code class="language-go">// قبل از Go 1.26: نیاز به متغیر موقت
+age := yearsSince(born)
+person := Person{
+    Name: name,
+    Age:  &amp;age, // اشاره‌گر به متغیر موقت
+}
+
+// Go 1.26: مقداردهی مستقیم با new
+person := Person{
+    Name: name,
+    Age:  new(yearsSince(born)), // عبارت مستقیم!
+}</code></pre>
+    </figure>
+    <p>
+        این تغییر موجب می‌شود که بتوانید فیلدهای اختیاری اشاره‌گری را در یک عبارت ساده پر کنید،
+        بدون نیاز به تعریف متغیرهای موقت. رفتار <code>new(T)</code> بدون عبارت تغییری نکرده و
+        همچنان اشاره‌گر به مقدار صفر <code>T</code> را برمی‌گرداند.
+    </p>
+
+    <div class="case-study">
+        <div class="case-study-header">
+            <span class="case-study-badge">مطالعه موردی</span>
+            <span class="case-study-title">استفاده از new در بسته‌های سریالی‌سازی Uber</span>
+        </div>
+        <p>
+            تیم Uber در ارائه GopherCon 2024 توضیح داد که چگونه در سیستم سریالی‌سازی داخلی خود
+            از الگوی Optional Pointer به‌طور گسترده استفاده می‌کنند. این الگو زمانی کاربرد دارد
+            که نیاز به تمایز بین «مقدار صفر» و «عدم وجود مقدار» باشد. مثلاً در API‌های gRPC،
+            فیلد <code>*int64</code> با مقدار <code>nil</code> به معنای «فیلد تنظیم نشده» است،
+            ولی فیلد <code>int64</code> با مقدار <code>0</code> می‌تواند به معنای «مقدار صفر واقعی»
+            یا «عدم وجود مقدار» باشد. این ابهام در سیستم‌های توزیع‌شده باعث باگ‌های ظریف و سختی می‌شد.
+        </p>
+        <p>
+            با قابلیت جدید <code>new()</code> در Go 1.26، آن‌ها توانستند بیش از ۳۰۰۰ خط کد مربوط
+            به متغیرهای موقت را حذف کنند و خوانایی کد به‌طور قابل‌توجهی افزایش یابد. قبلاً برای
+            ایجاد یک اشاره‌گر به مقدار صفر، باید یک متغیر موقت تعریف می‌شد: <code>v := 0; p := &v</code>.
+            حالا با <code>p := new(int)</code> همان نتیجه با یک خط کد تمیزتر به‌دست می‌آید. این تغییر
+            به‌خصوص در API‌های gRPC که از فیلدهای اختیاری <code>*int64</code> و <code>*string</code>
+            استفاده می‌کنند، مؤثر بود و خوانایی و نگهداری کد را بهبود بخشید.
+        </p>
+        <p class="case-study-source">
+            <span class="source-event">GopherCon 2024</span>
+            <span class="source-year">— شیکاگو، ۲۰۲۴</span>
+        </p>
+    </div>
+
+    <h3 id="stack-heap-anatomy">آشنایی عمیق با Stack، Heap و آناتومی اشاره‌گر</h3>
+    <p>
+        برای درک کامل اشاره‌گرها در <bdi dir="ltr">Go</bdi>، شناخت ساختار حافظه‌ی برنامه ضروری است. حافظه‌ی هر برنامه‌ی <bdi dir="ltr">Go</bdi> به دو ناحیه‌ی اصلی تقسیم می‌شود: <bdi dir="ltr">Stack</bdi> (پشته) و <bdi dir="ltr">Heap</bdi> (تپه). ناحیه‌ی <bdi dir="ltr">Stack</bdi> بسیار سریع است و برای متغیرهای محلی توابع استفاده می‌شود — وقتی تابع بازمی‌گردد، تمام متغیرهای محلی آن فوراً و بدون هیچ هزینه‌ای آزاد می‌شوند. اما ناحیه‌ی <bdi dir="ltr">Heap</bdi> برای تخصیص‌های دینامیک به‌کار می‌رود و مدیریت آن بر عهده‌ی <bdi dir="ltr">Garbage Collector</bdi> است که هزینه‌ی پردازشی دارد. کامپایلر <bdi dir="ltr">Go</bdi> با تحلیل فرار (<bdi dir="ltr">Escape Analysis</bdi>) هوشمندانه تصمیم می‌گیرد هر متغیر در کدام ناحیه قرار گیرد و این یکی از بزرگ‌ترین مزیت‌های <bdi dir="ltr">Go</bdi> نسبت به <bdi dir="ltr">C/C++</bdi> است که برنامه‌نویس باید خودش <code>malloc</code> و <code>free</code> را مدیریت کند.
+    </p>
+    <p>
+        در نمودار زیر می‌بینید که چگونه متغیرهای محلی روی <bdi dir="ltr">Stack</bdi> قرار می‌گیرند و چگونه اشاره‌گرها می‌توانند به هر دو ناحیه اشاره کنند. وقتی آدرس یک متغیر محلی از تابع خارج شود (مثلاً با <code>return &amp;x</code>)، کامپایلر آن متغیر را به <bdi dir="ltr">Heap</bdi> «فرار» می‌دهد تا پس از خروج از تابع همچنان معتبر بماند. این مکانیزم خودکار برخلاف <bdi dir="ltr">PHP</bdi> است که همه‌ی مقادیر ذاتاً روی <bdi dir="ltr">Heap</bdi> تخصیص می‌یابند و با <bdi dir="ltr">reference counting</bdi> مدیریت می‌شوند.
+    </p>
+
+    <figure class="diagram" dir="ltr">
+    <svg height="700" viewBox="0 0 850 700" width="850" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+    <marker id="arrStackP" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#00ADD8" points="0 0, 10 3.5, 0 7"></polygon></marker>
+    <marker id="arrHeapP" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#FF9800" points="0 0, 10 3.5, 0 7"></polygon></marker>
+    <marker id="arrPtrP" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#4CAF50" points="0 0, 10 3.5, 0 7"></polygon></marker>
+    <marker id="arrEscapeP" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#e91e63" points="0 0, 10 3.5, 0 7"></polygon></marker>
+    </defs>
+
+    <!-- Background -->
+    <rect fill="#fafafa" height="700" rx="12" stroke="#ddd" stroke-width="1" width="850" x="0" y="0"></rect>
+
+    <!-- Title -->
+    <text fill="#333" font-size="16" font-weight="bold" text-anchor="middle" x="425" y="28" direction="rtl" unicode-bidi="embed">آناتومی حافظه: <tspan direction="ltr" unicode-bidi="embed">Stack</tspan> در برابر <tspan direction="ltr" unicode-bidi="embed">Heap</tspan> — اشاره‌گرها و تحلیل فرار</text>
+
+    <!-- ===== STACK REGION (Left) ===== -->
+    <rect fill="#e0f7fa" height="400" rx="10" stroke="#00ADD8" stroke-width="2" width="385" x="15" y="45"></rect>
+    <text fill="#00ADD8" font-size="14" font-weight="bold" text-anchor="middle" x="207" y="68" direction="rtl" unicode-bidi="embed">ناحیه‌ی <tspan direction="ltr" unicode-bidi="embed">Stack</tspan> — تخصیص سریع و خودکار</text>
+
+    <!-- main() frame -->
+    <rect fill="#fff" height="120" rx="6" stroke="#00ADD8" stroke-width="1.5" width="355" x="28" y="80"></rect>
+    <rect fill="#00ADD8" height="22" rx="4" width="355" x="28" y="80"></rect>
+    <text fill="#fff" font-size="11" font-weight="bold" text-anchor="middle" x="205" y="96" direction="ltr" unicode-bidi="embed">func main()</text>
+
+    <rect fill="#e0f7fa" height="22" rx="3" stroke="#00ADD8" stroke-width="1" width="160" x="38" y="108"></rect>
+    <text fill="#333" font-size="10" text-anchor="middle" x="118" y="123" direction="ltr" unicode-bidi="embed">x int = 42</text>
+    <text fill="#888" font-size="8" text-anchor="end" x="375" y="123" direction="ltr" unicode-bidi="embed">addr: 0xA001</text>
+
+    <rect fill="#c8e6c9" height="22" rx="3" stroke="#4CAF50" stroke-width="1" width="160" x="38" y="134"></rect>
+    <text fill="#2e7d32" font-size="10" font-weight="bold" text-anchor="middle" x="118" y="149" direction="ltr" unicode-bidi="embed">p *int = &amp;x</text>
+    <text fill="#888" font-size="8" text-anchor="end" x="375" y="149" direction="ltr" unicode-bidi="embed">→ آدرس x</text>
+
+    <!-- Stack pointer arrow from p to x -->
+    <line marker-end="url(#arrPtrP)" stroke="#4CAF50" stroke-width="2" x1="118" x2="118" y1="134" y2="130"></line>
+
+    <rect fill="#e0f7fa" height="22" rx="3" stroke="#00ADD8" stroke-width="1" width="160" x="38" y="160"></rect>
+    <text fill="#333" font-size="10" text-anchor="middle" x="118" y="175" direction="ltr" unicode-bidi="embed">s []int = {1,2,3}</text>
+    <text fill="#888" font-size="8" text-anchor="end" x="375" y="175" direction="rtl" unicode-bidi="embed">سرآیند روی <tspan direction="ltr" unicode-bidi="embed">stack</tspan></text>
+
+    <!-- process() frame -->
+    <rect fill="#fff" height="95" rx="6" stroke="#00ADD8" stroke-width="1.5" width="355" x="28" y="210"></rect>
+    <rect fill="#00ADD8" height="22" rx="4" width="355" x="28" y="210"></rect>
+    <text fill="#fff" font-size="11" font-weight="bold" text-anchor="middle" x="205" y="226" direction="ltr" unicode-bidi="embed">func process(data *BigStruct)</text>
+
+    <rect fill="#c8e6c9" height="22" rx="3" stroke="#4CAF50" stroke-width="1" width="160" x="38" y="238"></rect>
+    <text fill="#2e7d32" font-size="10" font-weight="bold" text-anchor="middle" x="118" y="253" direction="ltr" unicode-bidi="embed">data *BigStruct</text>
+    <text fill="#FF9800" font-size="8" font-weight="bold" text-anchor="end" x="375" y="253" direction="rtl" unicode-bidi="embed">← اشاره به <tspan direction="ltr" unicode-bidi="embed">heap</tspan></text>
+
+    <rect fill="#e0f7fa" height="22" rx="3" stroke="#00ADD8" stroke-width="1" width="160" x="38" y="264"></rect>
+    <text fill="#333" font-size="10" text-anchor="middle" x="118" y="279" direction="ltr" unicode-bidi="embed">local int = 7</text>
+    <text fill="#00ADD8" font-size="8" font-weight="bold" text-anchor="end" x="375" y="279" direction="rtl" unicode-bidi="embed">فقط <tspan direction="ltr" unicode-bidi="embed">stack</tspan> ✓</text>
+
+    <!-- createPtr() frame -->
+    <rect fill="#fff" height="95" rx="6" stroke="#e91e63" stroke-width="1.5" width="355" x="28" y="318"></rect>
+    <rect fill="#e91e63" height="22" rx="4" width="355" x="28" y="318"></rect>
+    <text fill="#fff" font-size="11" font-weight="bold" text-anchor="middle" x="205" y="334" direction="ltr" unicode-bidi="embed">func createPtr() *Config</text>
+
+    <rect fill="#fce4ec" height="22" rx="3" stroke="#e91e63" stroke-width="1" width="160" x="38" y="346"></rect>
+    <text fill="#e91e63" font-size="10" font-weight="bold" text-anchor="middle" x="118" y="361" direction="ltr" unicode-bidi="embed">c Config{...}</text>
+    <text fill="#e91e63" font-size="8" font-weight="bold" text-anchor="end" x="375" y="361" direction="rtl" unicode-bidi="embed">فرار به <tspan direction="ltr" unicode-bidi="embed">heap</tspan>!</text>
+
+    <rect fill="#fce4ec" height="22" rx="3" stroke="#e91e63" stroke-width="1" width="160" x="38" y="372"></rect>
+    <text fill="#e91e63" font-size="10" font-weight="bold" text-anchor="middle" x="118" y="387" direction="ltr" unicode-bidi="embed">return &amp;c</text>
+    <text fill="#e91e63" font-size="8" font-weight="bold" text-anchor="end" x="375" y="387" direction="ltr" unicode-bidi="embed">escapes to heap!</text>
+
+    <!-- Stack info box -->
+    <rect fill="#fff" height="30" rx="4" stroke="#00ADD8" stroke-width="1" width="355" x="28" y="410"></rect>
+    <text fill="#00ADD8" font-size="10" text-anchor="middle" x="205" y="430" direction="rtl" unicode-bidi="embed">تخصیص: <tspan direction="ltr" unicode-bidi="embed">O(1)</tspan> فقط حرکت <tspan direction="ltr" unicode-bidi="embed">pointer</tspan> • آزادسازی: خودکار با خروج از تابع</text>
+
+    <!-- ===== HEAP REGION (Right) ===== -->
+    <rect fill="#fff3e0" height="400" rx="10" stroke="#FF9800" stroke-width="2" width="385" x="450" y="45"></rect>
+    <text fill="#FF9800" font-size="14" font-weight="bold" text-anchor="middle" x="642" y="68" direction="rtl" unicode-bidi="embed">ناحیه‌ی <tspan direction="ltr" unicode-bidi="embed">Heap</tspan> — تخصیص دینامیک و <tspan direction="ltr" unicode-bidi="embed">GC</tspan></text>
+
+    <!-- Heap object 1: BigStruct -->
+    <rect fill="#fff" height="75" rx="6" stroke="#FF9800" stroke-width="1.5" width="350" x="465" y="80"></rect>
+    <text fill="#FF9800" font-size="11" font-weight="bold" text-anchor="middle" x="640" y="98" direction="ltr" unicode-bidi="embed">BigStruct @ 0xD001</text>
+    <text fill="#333" font-size="9" text-anchor="middle" x="640" y="115" direction="ltr" unicode-bidi="embed">Records [10000]Record | Meta Metadata</text>
+    <text fill="#FF9800" font-size="9" text-anchor="middle" x="640" y="132" direction="ltr" unicode-bidi="embed">≈ 1 MB allocation — large struct</text>
+    <rect fill="#ffe0b2" height="12" rx="2" width="330" x="475" y="100"></rect>
+
+    <!-- Heap object 2: escaped Config -->
+    <rect fill="#fff" height="60" rx="6" stroke="#e91e63" stroke-width="1.5" width="350" x="465" y="168"></rect>
+    <text fill="#e91e63" font-size="11" font-weight="bold" text-anchor="middle" x="640" y="188" direction="ltr" unicode-bidi="embed">Config @ 0xD200 (escaped!)</text>
+    <text fill="#333" font-size="9" text-anchor="middle" x="640" y="205" direction="ltr" unicode-bidi="embed">Timeout: 30 | Retries: 3</text>
+    <text fill="#e91e63" font-size="8" text-anchor="middle" x="640" y="220" direction="rtl" unicode-bidi="embed">دلیل فرار: <tspan direction="ltr" unicode-bidi="embed">return &amp;c</tspan></text>
+
+    <!-- Heap object 3: slice backing array -->
+    <rect fill="#fff" height="55" rx="6" stroke="#FF9800" stroke-width="1.5" width="350" x="465" y="240"></rect>
+    <text fill="#FF9800" font-size="11" font-weight="bold" text-anchor="middle" x="640" y="258" direction="ltr" unicode-bidi="embed">[]int backing array @ 0xD300</text>
+    <text fill="#333" font-size="9" text-anchor="middle" x="640" y="275" direction="ltr" unicode-bidi="embed">[1, 2, 3]</text>
+    <text fill="#888" font-size="8" text-anchor="middle" x="640" y="289" direction="rtl" unicode-bidi="embed">سرآیند روی <tspan direction="ltr" unicode-bidi="embed">stack</tspan>، داده روی <tspan direction="ltr" unicode-bidi="embed">heap</tspan></text>
+
+    <!-- Heap object 4: interface-escaped -->
+    <rect fill="#fff" height="55" rx="6" stroke="#e91e63" stroke-width="1.5" width="350" x="465" y="308"></rect>
+    <text fill="#e91e63" font-size="11" font-weight="bold" text-anchor="middle" x="640" y="326" direction="ltr" unicode-bidi="embed">int @ 0xD400 (fmt.Println escape)</text>
+    <text fill="#333" font-size="9" text-anchor="middle" x="640" y="343" direction="ltr" unicode-bidi="embed">value: 42 — escaped via interface{}</text>
+    <text fill="#e91e63" font-size="8" text-anchor="middle" x="640" y="357" direction="rtl" unicode-bidi="embed">دلیل فرار: ارسال به <tspan direction="ltr" unicode-bidi="embed">fmt.Println(interface{})</tspan></text>
+
+    <!-- Heap object 5: closure capture -->
+    <rect fill="#fff" height="55" rx="6" stroke="#e91e63" stroke-width="1.5" width="350" x="465" y="376"></rect>
+    <text fill="#e91e63" font-size="11" font-weight="bold" text-anchor="middle" x="640" y="394" direction="ltr" unicode-bidi="embed">counter int @ 0xD500 (closure escape)</text>
+    <text fill="#333" font-size="9" text-anchor="middle" x="640" y="411" direction="ltr" unicode-bidi="embed">captured by func() int { counter++; return counter }</text>
+    <text fill="#e91e63" font-size="8" text-anchor="middle" x="640" y="425" direction="rtl" unicode-bidi="embed">دلیل فرار: ضبط در <tspan direction="ltr" unicode-bidi="embed">closure</tspan></text>
+
+    <!-- Heap info box -->
+    <rect fill="#fff" height="30" rx="4" stroke="#FF9800" stroke-width="1" width="350" x="465" y="410"></rect>
+    <text fill="#FF9800" font-size="10" text-anchor="middle" x="640" y="430" direction="rtl" unicode-bidi="embed">تخصیص: پرهزینه • آزادسازی: <tspan direction="ltr" unicode-bidi="embed">GC mark &amp; sweep</tspan> • خطر <tspan direction="ltr" unicode-bidi="embed">pause</tspan></text>
+
+    <!-- Pointer arrows from stack to heap -->
+    <line marker-end="url(#arrPtrP)" stroke="#4CAF50" stroke-width="2.5" stroke-dasharray="6,3" x1="198" y1="249" x2="465" y2="130"></line>
+    <text fill="#4CAF50" font-size="8" font-weight="bold" text-anchor="middle" x="330" y="185" direction="ltr" unicode-bidi="embed">*BigStruct ptr</text>
+
+    <line marker-end="url(#arrEscapeP)" stroke="#e91e63" stroke-width="2" stroke-dasharray="4,3" x1="198" y1="387" x2="465" y2="195"></line>
+    <text fill="#e91e63" font-size="8" font-weight="bold" text-anchor="middle" x="330" y="300" direction="ltr" unicode-bidi="embed">escape: return &amp;c</text>
+
+    <!-- Slice header arrow to heap backing array -->
+    <line marker-end="url(#arrHeapP)" stroke="#FF9800" stroke-width="1.5" stroke-dasharray="4,3" x1="198" y1="175" x2="465" y2="265"></line>
+
+    <!-- ===== POINTER ANATOMY SECTION ===== -->
+    <rect fill="#e8f5e9" height="85" rx="8" stroke="#4CAF50" stroke-width="2" width="820" x="15" y="458"></rect>
+    <text fill="#4CAF50" font-size="13" font-weight="bold" text-anchor="middle" x="425" y="478" direction="rtl" unicode-bidi="embed">آناتومی اشاره‌گر: آدرس حافظه → مقدار</text>
+
+    <!-- Pointer anatomy visual -->
+    <rect fill="#fff" height="30" rx="4" stroke="#4CAF50" stroke-width="1.5" width="155" x="35" y="490"></rect>
+    <text fill="#4CAF50" font-size="11" font-weight="bold" text-anchor="middle" x="112" y="510" direction="ltr" unicode-bidi="embed">p *int = &amp;x</text>
+
+    <text fill="#4CAF50" font-size="20" text-anchor="middle" x="210" y="510" direction="ltr" unicode-bidi="embed">→</text>
+
+    <rect fill="#fff" height="30" rx="4" stroke="#4CAF50" stroke-width="1.5" width="155" x="230" y="490"></rect>
+    <text fill="#333" font-size="10" text-anchor="middle" x="307" y="504" direction="ltr" unicode-bidi="embed">p stores: 0xA001</text>
+    <text fill="#888" font-size="8" text-anchor="middle" x="307" y="516" direction="rtl" unicode-bidi="embed">آدرس حافظه</text>
+
+    <text fill="#4CAF50" font-size="20" text-anchor="middle" x="405" y="510" direction="ltr" unicode-bidi="embed">→ *p</text>
+
+    <rect fill="#fff" height="30" rx="4" stroke="#00ADD8" stroke-width="1.5" width="155" x="440" y="490"></rect>
+    <text fill="#333" font-size="10" text-anchor="middle" x="517" y="504" direction="ltr" unicode-bidi="embed">value: 42</text>
+    <text fill="#888" font-size="8" text-anchor="middle" x="517" y="516" direction="rtl" unicode-bidi="embed">مقدار واقعی</text>
+
+    <!-- Operators info box -->
+    <rect fill="#fff" height="22" rx="4" stroke="#4CAF50" stroke-width="1" width="180" x="620" y="492"></rect>
+    <text fill="#4CAF50" font-size="9" text-anchor="middle" x="710" y="507" direction="ltr" unicode-bidi="embed">&amp;x → address | *p → deref</text>
+
+    <!-- ===== ESCAPE ANALYSIS CONDITIONS ===== -->
+    <rect fill="#fce4ec" height="72" rx="8" stroke="#e91e63" stroke-width="2" width="820" x="15" y="550"></rect>
+    <text fill="#e91e63" font-size="13" font-weight="bold" text-anchor="middle" x="425" y="570" direction="rtl" unicode-bidi="embed">شرایط فرار به <tspan direction="ltr" unicode-bidi="embed">Heap</tspan> (<tspan direction="ltr" unicode-bidi="embed">Escape Analysis</tspan>)</text>
+
+    <rect fill="#fff" height="20" rx="3" stroke="#e91e63" stroke-width="1" width="195" x="25" y="580"></rect>
+    <text fill="#e91e63" font-size="9" text-anchor="middle" x="122" y="594" direction="ltr" unicode-bidi="embed">① return &amp;localVar</text>
+
+    <rect fill="#fff" height="20" rx="3" stroke="#e91e63" stroke-width="1" width="195" x="225" y="580"></rect>
+    <text fill="#e91e63" font-size="9" text-anchor="middle" x="322" y="594" direction="ltr" unicode-bidi="embed">② interface{} conversion</text>
+
+    <rect fill="#fff" height="20" rx="3" stroke="#e91e63" stroke-width="1" width="195" x="425" y="580"></rect>
+    <text fill="#e91e63" font-size="9" text-anchor="middle" x="522" y="594" direction="ltr" unicode-bidi="embed">③ closure capture</text>
+
+    <rect fill="#fff" height="20" rx="3" stroke="#e91e63" stroke-width="1" width="195" x="625" y="580"></rect>
+    <text fill="#e91e63" font-size="9" text-anchor="middle" x="722" y="594" direction="ltr" unicode-bidi="embed">④ too large for stack</text>
+
+    <text fill="#333" font-size="9" text-anchor="middle" x="425" y="615" direction="rtl" unicode-bidi="embed">بررسی: <tspan direction="ltr" unicode-bidi="embed">go build -gcflags="-m" ./...</tspan></text>
+
+    <!-- ===== PHP vs Go COMPARISON ===== -->
+    <rect fill="#f3e5f5" height="50" rx="6" stroke="#777BB4" stroke-width="1.5" width="405" x="15" y="632"></rect>
+    <text fill="#777BB4" font-size="11" font-weight="bold" text-anchor="middle" x="207" y="650" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">PHP</tspan>: همه‌چیز روی <tspan direction="ltr" unicode-bidi="embed">Heap</tspan> • <tspan direction="ltr" unicode-bidi="embed">Reference Counting</tspan> • <tspan direction="ltr" unicode-bidi="embed">Copy-on-Write</tspan></text>
+    <text fill="#777BB4" font-size="10" text-anchor="middle" x="207" y="668" direction="rtl" unicode-bidi="embed">هر <tspan direction="ltr" unicode-bidi="embed">zval</tspan> شمارنده‌ی ارجاع دارد — <tspan direction="ltr" unicode-bidi="embed">overhead</tspan> بالا</text>
+
+    <rect fill="#e8f5e9" height="50" rx="6" stroke="#4CAF50" stroke-width="1.5" width="405" x="430" y="632"></rect>
+    <text fill="#2e7d32" font-size="11" font-weight="bold" text-anchor="middle" x="632" y="650" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">Go</tspan>: اولویت <tspan direction="ltr" unicode-bidi="embed">Stack</tspan> • <tspan direction="ltr" unicode-bidi="embed">Escape Analysis</tspan> خودکار • <tspan direction="ltr" unicode-bidi="embed">GC</tspan> بدون شمارش</text>
+    <text fill="#2e7d32" font-size="10" text-anchor="middle" x="632" y="668" direction="rtl" unicode-bidi="embed">متغیرهای محلی رایگان — فقط فرارکنندگان <tspan direction="ltr" unicode-bidi="embed">GC</tspan> دارند</text>
+
+    <!-- Golden Rule Bar -->
+    <rect fill="#FFD600" height="28" rx="6" stroke="#F9A825" stroke-width="1.5" width="820" x="15" y="665"></rect>
+    <text fill="#333" font-size="11" font-weight="bold" text-anchor="middle" x="425" y="684" direction="rtl" unicode-bidi="embed">قانون طلایی: متغیرها پیش‌فرض روی <tspan direction="ltr" unicode-bidi="embed">Stack</tspan> هستند • فقط وقتی ضروری است به <tspan direction="ltr" unicode-bidi="embed">Heap</tspan> فرار می‌کنند • با <tspan direction="ltr" unicode-bidi="embed">go build -gcflags="-m"</tspan> بررسی کنید</text>
+    </svg>
+    <figcaption dir="rtl">شکل ۱۱-۲: آناتومی حافظه <bdi dir="ltr">Stack</bdi> در برابر <bdi dir="ltr">Heap</bdi> — اشاره‌گرها، تحلیل فرار و مقایسه با <bdi dir="ltr">PHP</bdi></figcaption>
+    </figure>
+
+    <p>
+        همان‌طور که در نمودار می‌بینید، متغیر <code>x</code> در تابع <code>main</code> روی <bdi dir="ltr">Stack</bdi> قرار می‌گیرد و اشاره‌گر <code>p</code> مستقیماً به همان آدرس روی <bdi dir="ltr">Stack</bdi> اشاره می‌کند. اما وقتی تابع <code>createPtr</code> آدرس متغیر محلی <code>c</code> را برمی‌گرداند، کامپایلر تشخیص می‌دهد که این متغیر باید روی <bdi dir="ltr">Heap</bdi> تخصیص یابد تا پس از پایان تابع همچنان معتبر بماند. این تصمیم‌گیری خودکار توسط <bdi dir="ltr">Escape Analysis</bdi> انجام می‌شود و برنامه‌نویس نیازی به نگرانی درباره‌ی آن ندارد. در مقابل، <bdi dir="ltr">PHP</bdi> همه‌ی مقادیر را روی <bdi dir="ltr">Heap</bdi> نگه می‌دارد و از <bdi dir="ltr">reference counting</bdi> برای مدیریت حافظه استفاده می‌کند که <bdi dir="ltr">overhead</bdi> بیشتری دارد.
+    </p>
+    <p>
+        نکته‌ی مهم دیگر این است که <bdi dir="ltr">slice</bdi>‌ها در <bdi dir="ltr">Go</bdi> یک ساختار دو بخشی دارند: سرآیند (<bdi dir="ltr">header</bdi>) شامل اشاره‌گر، طول و ظرفیت روی <bdi dir="ltr">Stack</bdi> قرار می‌گیرد، اما آرایه‌ی زیرین (<bdi dir="ltr">backing array</bdi>) همیشه روی <bdi dir="ltr">Heap</bdi> تخصیص می‌یابد. این طراحی هوشمندانه باعث می‌شود انتقال <bdi dir="ltr">slice</bdi> به توابع بسیار سبک باشد (فقط ۲۴ بایت کپی می‌شود) اما داده‌های واقعی مشترک بمانند.
+    </p>
+
+    <h3 id="pointer-practical-scenarios">سناریوهای عملیاتی اشاره‌گرها</h3>
+    <ul>
+    <li><strong>ارسال <bdi dir="ltr">struct</bdi> بزرگ با اشاره‌گر در برابر مقدار:</strong> وقتی <bdi dir="ltr">struct</bdi> شما بزرگ است (مثلاً بیش از ۶۴ بایت یا شامل آرایه‌های طولانی)، ارسال با اشاره‌گر فقط ۸ بایت کپی می‌کند اما ارسال مقداری کل ساختار را کپی می‌کند. برای <bdi dir="ltr">struct</bdi>‌های کوچک مثل <code>Point{X, Y float64}</code> ارسال مقداری سریع‌تر یا هم‌سرعت است چون داده‌ی کمتری از <bdi dir="ltr">cache</bdi> نشت می‌کند. همیشه با <bdi dir="ltr">benchmark</bdi> تصمیم نهایی را بگیرید.</li>
+    <li><strong>اشاره‌گری <bdi dir="ltr">receiver</bdi> برای متدهایی که وضعیت را تغییر می‌دهند:</strong> اگر متدی نیاز دارد فیلدهای <bdi dir="ltr">struct</bdi> را ویرایش کند (مثل <code>Increment()</code> روی <code>Counter</code>)، حتماً از <bdi dir="ltr">pointer receiver</bdi> استفاده کنید. حتی اگر متدی تغییری ایجاد نکند، برای سازگاری همه‌ی متدهای یک نوع باید یا همگی مقداری یا همگی اشاره‌گری باشند — ترجیحاً همگی اشاره‌گری.</li>
+    <li><strong>جلوگیری از اشاره‌گرهای آویزان (<bdi dir="ltr">dangling pointers</bdi>):</strong> برخلاف <bdi dir="ltr">C</bdi>، <bdi dir="ltr">Go</bdi> از اشاره‌گرهای آویزان جلوگیری می‌کند. اگر اشاره‌گری به متغیر محلی برگردانده شود، <bdi dir="ltr">Escape Analysis</bdi> آن را روی <bdi dir="ltr">Heap</bdi> قرار می‌دهد. اما مراقب باشید که اشاره‌گر به <bdi dir="ltr">nil</bdi> را <bdi dir="ltr">dereference</bdi> نکنید — همیشه قبل از <code>*p</code> بررسی <code>p != nil</code> انجام دهید.</li>
+    <li><strong>بررسی <bdi dir="ltr">Escape Analysis</bdi> با <code>go build -gcflags="-m"</code>:</strong> این پرچم پرکاربردترین ابزار بهینه‌سازی حافظه در <bdi dir="ltr">Go</bdi> است. خروجی آن نشان می‌دهد کدام متغیرها فرار می‌کنند و چرا. مثلاً <code>"leak(&amp;x): argument does not escape"</code> یعنی بهینه است و <code>"&amp;x escapes to heap"</code> یعنی نیاز به بازبینی دارد. از <code>-gcflags="-m -m"</code> برای جزئیات بیشتر استفاده کنید.</li>
+    <li><strong>استفاده از <code>new()</code> برای تخصیص صریح <bdi dir="ltr">Heap</bdi>:</strong> تابع <code>new(T)</code> یک مقدار صفر از نوع <code>T</code> روی <bdi dir="ltr">Heap</bdi> تخصیص می‌دهد و اشاره‌گر آن را برمی‌گرداند. اما در عمل، کامپایلر ممکن است حتی با <code>new</code> متغیر را روی <bdi dir="ltr">Stack</bdi> نگه دارد اگر فرار نکند. تابع <code>make</code> نیز برای <bdi dir="ltr">slice</bdi>، <bdi dir="ltr">map</bdi> و <bdi dir="ltr">channel</bdi> استفاده می‌شود و همیشه روی <bdi dir="ltr">Heap</bdi> تخصیص می‌دهد.</li>
+    </ul>
+
+    <div class="tip"><strong>نکته‌ی کلیدی — اولویت مقدار برای کوچک، اشاره‌گر برای بزرگ:</strong> در <bdi dir="ltr">Go</bdi> پیشنهاد می‌شود برای <bdi dir="ltr">struct</bdi>‌های کوچک (زیر ۶۴ بایت) از ارسال مقداری استفاده کنید چون <bdi dir="ltr">cache locality</bdi> بهتری دارد و <bdi dir="ltr">overhead</bdi> <bdi dir="ltr">GC</bdi> ایجاد نمی‌کند. اما برای <bdi dir="ltr">struct</bdi>‌های بزرگ یا وقتی نیاز به تغییر مقدار اصلی دارید، از اشاره‌گر استفاده کنید. <bdi dir="ltr">Escape Analysis</bdi> به کامپایلر کمک می‌کند تصمیمات هوشمندانه بگیرد: متغیرهایی که فرار نمی‌کنند روی <bdi dir="ltr">Stack</bdi> رایگان هستند و فقط متغیرهایی که واقعاً نیاز دارند روی <bdi dir="ltr">Heap</bdi> قرار می‌گیرند. بنابراین به جای نگرانی درباره‌ی جزئیات تخصیص، کدی تمیز و خوانا بنویسید و <bdi dir="ltr">Escape Analysis</bdi> را به کامپایلر بسپارید.</div>
+
+</div>
+</main>
+</div>
+
+<!-- Footer -->
+<footer class="site-footer">
+<div class="footer-inner">
+<div class="footer-nav">
+<span class="nav-arrow">‹</span>
+<a href="02.04-functions-and-methods.html" data-prev>۲.۴ توابع و متدها</a>
+</div>
+<div class="footer-toc">
+<a href="00.01-contents.html">فهرست</a>
+</div>
+<div class="footer-nav">
+<a href="02.06-generics.html" data-next>۲.۶ جنریک‌ها</a>
+<span class="nav-arrow">›</span>
+</div>
+</div>
+</footer>
+
+<!-- Back to Top -->
+<button class="back-to-top" aria-label="بازگشت به بالا">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
+</button>
+
+<!-- Scripts -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/go.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/php.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/sql.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/yaml.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/json.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/dockerfile.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/xml.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/ini.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/plaintext.min.js"></script>
+<script src="assets/js/main.js"></script>
+</body>
+</html>

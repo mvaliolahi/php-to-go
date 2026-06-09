@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="fa">
+<head>
+<script>!function(){try{var t=localStorage.getItem('php2go-theme');if(t==='dark'||(!t&&window.matchMedia('(prefers-color-scheme:dark)').matches)){document.documentElement.setAttribute('data-theme','dark')}}catch(e){}}();</script>
+<meta charset="utf-8"/>
+<meta content="ie=edge" http-equiv="x-ua-compatible"/>
+<title>۳.۶ Interface — PHP to Go</title>
+<meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet"/>
+<link href="assets/css/main.css" rel="stylesheet" type="text/css"/>
+<link href="assets/img/favicon.ico" rel="icon" type="image/x-icon"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" media="screen" class="hljs-light-theme" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css" media="not screen" class="hljs-dark-theme" rel="stylesheet"/>
+</head>
+<body>
+<!-- Progress Bar -->
+<div class="progress-bar"><div class="progress-bar__fill"></div></div>
+
+<!-- Header -->
+<header class="site-header">
+<div class="header-inner">
+<div class="header-left">
+<button class="header-btn sidebar-toggle" aria-label="فهرست">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+</button>
+<a href="00.00-front-matter.html" class="header-logo"><span class="logo-php">PHP</span> to <span class="logo-go">Go</span></a>
+<span class="header-crumbs">پکیج‌ها، ماژول‌ها و شی‌گرایی › Interface</span>
+</div>
+<div class="header-right">
+<nav class="header-nav">
+<span class="nav-arrow">‹</span>
+<a href="03.05-object-oriented-programming.html"><span class="nav-label">۳.۵ شی‌گرایی</span></a>
+<a href="00.01-contents.html">فهرست</a>
+<a href="03.07-constructor-and-factory.html"><span class="nav-label">۳.۷ Constructor و Factory</span></a>
+<span class="nav-arrow">›</span>
+</nav>
+<button class="header-btn search-toggle" aria-label="جستجو">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+</button>
+<button class="header-btn theme-toggle" aria-label="تغییر تم">
+<svg class="theme-icon-light" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+<svg class="theme-icon-dark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+</button>
+</div>
+</div>
+</header>
+
+<!-- Search Modal -->
+<div class="search-overlay">
+<div class="search-modal">
+<div class="search-input-wrap">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+<input type="text" class="search-input" placeholder="جستجو... (Ctrl+K)" dir="rtl"/>
+</div>
+<div class="search-results"></div>
+</div>
+</div>
+
+<!-- Layout -->
+<div class="site-layout">
+<!-- Sidebar -->
+<aside class="sidebar"></aside>
+<div class="sidebar-overlay"></div>
+
+<!-- Main Content -->
+<main class="content-area">
+<div class="content-wrap text">
+<div class="chapter">فصل ۳.۶</div>
+<h2 id="interface">Interface</h2>
+<div class="tip"><strong>نکته:</strong> یکی از تفاوت‌های بنیادین interface در Go با PHP این است که در Go نیازی به اعلام صریح <code>implements</code> نیست. هر struct که متدهای مورد نیاز یک interface را پیاده‌سازی کند، به‌طور خودکار با آن interface سازگار تلقی می‌شود. این مفهوم را "Duck Typing ساختاریافته" می‌نامند.</div>
+<figure class="diagram" dir="ltr">
+<svg height="250" viewBox="0 0 600 250" width="600" xmlns="http://www.w3.org/2000/svg">
+<text fill="#00ADD8" font-size="15" font-weight="bold" text-anchor="middle" x="300" y="25" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">Interface</tspan> در <tspan direction="ltr" unicode-bidi="embed">Go</tspan> — پیاده‌سازی ضمنی</text>
+<!-- Interface -->
+<rect fill="#e0f7fa" height="50" rx="8" stroke="#00ADD8" stroke-width="2" width="200" x="200" y="45"></rect>
+<text fill="#00ADD8" font-size="14" font-weight="bold" text-anchor="middle" x="300" y="68" direction="ltr" unicode-bidi="embed">Notifier</text>
+<text fill="#666" font-size="11" text-anchor="middle" x="300" y="87" direction="ltr" unicode-bidi="embed">Notify() string</text>
+<!-- User -->
+<rect fill="#e8f5e9" height="55" rx="8" stroke="#4caf50" stroke-width="1.5" width="160" x="30" y="140"></rect>
+<text fill="#2e7d32" font-size="13" font-weight="bold" text-anchor="middle" x="110" y="163" direction="ltr" unicode-bidi="embed">User</text>
+<text fill="#666" font-size="11" text-anchor="middle" x="110" y="183" direction="ltr" unicode-bidi="embed">Notify() string</text>
+<!-- Email -->
+<rect fill="#e8f5e9" height="55" rx="8" stroke="#4caf50" stroke-width="1.5" width="160" x="220" y="140"></rect>
+<text fill="#2e7d32" font-size="13" font-weight="bold" text-anchor="middle" x="300" y="163" direction="ltr" unicode-bidi="embed">Email</text>
+<text fill="#666" font-size="11" text-anchor="middle" x="300" y="183" direction="ltr" unicode-bidi="embed">Notify() string</text>
+<!-- SMS -->
+<rect fill="#e8f5e9" height="55" rx="8" stroke="#4caf50" stroke-width="1.5" width="160" x="410" y="140"></rect>
+<text fill="#2e7d32" font-size="13" font-weight="bold" text-anchor="middle" x="490" y="163" direction="ltr" unicode-bidi="embed">SMS</text>
+<text fill="#666" font-size="11" text-anchor="middle" x="490" y="183" direction="ltr" unicode-bidi="embed">Notify() string</text>
+<!-- Arrows -->
+<defs><marker id="arrI" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#4caf50" points="0 0, 10 3.5, 0 7"></polygon></marker></defs>
+<line marker-end="url(#arrI)" stroke="#4caf50" stroke-width="1.5" x1="110" x2="250" y1="140" y2="95"></line>
+<line marker-end="url(#arrI)" stroke="#4caf50" stroke-width="1.5" x1="300" x2="300" y1="140" y2="95"></line>
+<line marker-end="url(#arrI)" stroke="#4caf50" stroke-width="1.5" x1="490" x2="350" y1="140" y2="95"></line>
+<text fill="#555" font-size="12" text-anchor="middle" x="300" y="230" direction="rtl" unicode-bidi="embed">بدون implements — هر struct با متد <tspan direction="ltr" unicode-bidi="embed">Notify()</tspan>خودکار سازگار است</text>
+</svg>
+<figcaption>مفهوم <bdi dir="ltr">Interface</bdi> در <bdi dir="ltr">Go</bdi> — پیاده‌سازی ضمنی (<bdi dir="ltr">Duck</bdi> <bdi dir="ltr">Typing</bdi>)</figcaption>
+</figure>
+<p>در زبان‌های شی‌گرا مانند PHP مفهوم interface برای تعریف قرارداد رفتاری میان کلاس‌ها کاربرد دارد. Go نیز از این مفهوم پشتیبانی می‌کند اما با رویکردی بسیار ساده‌تر، پویا‌تر و بدون وابستگی مستقیم.</p>
+<p><strong>تعریف</strong> <strong dir="ltr">interface</strong></p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">type Notifier interface {
+    Notify() string
+}
+</code></pre>
+</figure>
+<p><strong>پیاده‌سازی</strong> <strong dir="ltr">interface</strong></p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">type User struct {
+    Name string
+}
+func (u User) Notify() string {
+    return "Hi, " + u.Name
+}
+</code></pre>
+</figure>
+<p>نکته مهم در Go این است که نیازی به اعلام explicit وجود interface نیست. به عبارت دیگر اگر struct شما متدهای لازم را داشته باشد بدون هیچ کلمه کلیدی اضافی این interface را پیاده‌سازی می‌کند یعنی برخلاف PHP نیازی به استفاده از کلیدواژه‌ی implements نیست.</p>
+<p><strong>مقایسه با</strong> <strong dir="ltr">PHP</strong> :</p>
+<figure class="code php" dir="ltr">
+<pre><code class="language-php">interface Notifier
+{
+    public function notify(): string;
+}
+
+class User implements Notifier
+{
+    public function notify()
+    {
+        return "Hi, " . $this-&gt;name;
+    }
+}
+</code></pre>
+</figure>
+<p><strong>از مزایای این رویکرد این است که</strong> dependency ها کاهش می‌یابند و coupling بین کدها کمتر می‌شود. پیاده‌سازی interface ها بسیار انعطاف‌پذیر و راحت است و نهایتا نوشتن Unit Test ساده‌تر می‌شود چون به راحتی می‌توان mock و stub ساخت.</p>
+<div class="quote-box">
+    <p class="quote-text">یک اصل ساده کمک می‌کند: ماژول‌ها را از هم جدا کنید. اگر بین دو ماژول وابستگی ندارید، نمی‌توانید یکی را با تغییر دیگری بشکنید.</p>
+    <p class="quote-source">
+        <span class="quote-author">Andy Hunt &amp; Dave Thomas</span>
+        <span class="quote-role">نویسندگان و مهندسان نرم‌افزار</span>
+        <span class="quote-separator">|</span>
+        <span class="quote-book">The Pragmatic Programmer</span>
+    </p>
+</div>
+<div class="tip">
+<strong>نکته‌ی حرفه‌ای:</strong> <bdi dir="ltr">interface</bdi>های ضمنی <bdi dir="ltr">Go</bdi> نهایت مکانیزم جداسازی هستند. در <bdi dir="ltr">PHP</bdi> وقتی کلاسی <code>implements Notifier</code> می‌نویسد، وابستگی صریحی به آن <bdi dir="ltr">interface</bdi> ایجاد می‌شود — اگر نام <bdi dir="ltr">interface</bdi> یا امضای متد تغییر کند، همه‌ی پیاده‌سازی‌ها می‌شکنند. اما در <bdi dir="ltr">Go</bdi> مصرف‌کننده <bdi dir="ltr">interface</bdi> را تعریف می‌کند نه تولیدکننده. یعنی بسته‌ی <code>notification</code> اصلاً نمی‌داند بسته‌ی <code>user</code> وجود دارد. این عدم وابستگیِ یک‌طرفه یعنی می‌توانید پیاده‌سازی <code>user</code> را کاملاً بازنویسی کنید بدون اینکه حتی یک خط از بسته‌ی <code>notification</code> تغییر کند.
+</div>
+<h3 id="type-assertion">Type Assertion و Type Switch</h3>
+
+<div class="quote-box">
+    <p class="quote-text">اگر یک رابط فقط یک متد داشته باشد، احتمالاً نام‌گذاری خوبی شده. هرچه رابط بزرگ‌تر باشد، انتزاع ضعیف‌تر است. رابط‌هایی با متدهای زیاد نشانه طراحی ضعیف هستند — پیاده‌ساز را به جزئیات زیادی متصل می‌کنند و تست و mock کردن را سخت‌تر می‌کنند.</p>
+    <p class="quote-source">
+        <span class="quote-author">Rob Pike</span>
+        <span class="quote-role">طراح‌ارشد زبان Go</span>
+        <span class="quote-separator">|</span>
+        <span class="quote-book">Go Proverbs — GopherCon 2015</span>
+    </p>
+</div>
+<p>یکی از از مهم‌ترین توانایی‌هایی که PHP به‌طور رسمی ندارد، <strong dir="ltr">Type Assertion</strong> است. در Go وقتی یک مقدار از نوع interface دارید، می‌توانید در زمان اجرا نوع واقعی زیرین آن را بررسی و استخراج کنید. این قابلیت در بسیاری از الگوهای پیشرفته Go کاربرد دارد و درک آن برای برنامه‌نویسان PHP که با type-hinting و instanceof آشنا هستند بسیار طبیعی خواهد بود.</p>
+<p><strong dir="ltr">Type Assertion</strong> به شما اجازه می‌دهد نوع واقعی مقدار پشت interface را استخراج کنید:</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">var n Notifier = User{Name: "Ali"}
+
+// Type assertion — extracting actual type
+u, ok := n.(User)
+if ok {
+    fmt.Println("User name:", u.Name)
+}
+</code></pre>
+</figure>
+<p>فرم دوم با <code>ok</code> امن‌تر است چون اگر نوع مطابقت نداشته باشد به‌جای panic مقدار <code>false</code> برمی‌گرداند. فرم اول <code dir="ltr">n.(User)</code> بدون <code>ok</code> در صورت عدم مطابقت باعث panic می‌شود.</p>
+<p><strong dir="ltr">Type Switch</strong> زمانی کاربرد دارد که بخواهید بین چندین نوع ممکن تصمیم‌گیری کنید. این ساختار مشابه <code dir="ltr">switch(true)</code> در PHP با <code>instanceof</code> است اما بسیار تمیزتر:</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">func describe(n Notifier) {
+    switch v := n.(type) {
+        case User:
+        fmt.Println("User:", v.Name)
+        case Email:
+        fmt.Println("Email:", v.Address)
+        default:
+        fmt.Println("Unknown type")
+    }
+}
+</code></pre>
+</figure>
+<div class="comparison"><strong>مقایسه با PHP:</strong> در PHP معادل این کار ترکیب <code>instanceof</code> و <code>switch</code> است. اما Go یک ساختار اختصاصی <code dir="ltr">.(type)</code> دارد که هم نوع را بررسی می‌کند و هم مقدار را در متغیر <code>v</code> با نوع صحیح قرار می‌دهد. این یعنی بدون نیاز به type-casting اضافی مستقیماً به فیلدهای نوع واقعی دسترسی دارید.</div>
+<h3 id="empty-interface">Empty Interface و any</h3>
+<p>Go یک interface خاص به نام <strong dir="ltr">empty interface</strong> دارد که هیچ متدی تعریف نمی‌کند:</p>
+
+<figure class="diagram" dir="ltr">
+<svg height="260" viewBox="0 0 700 260" width="700" xmlns="http://www.w3.org/2000/svg">
+<rect fill="#fafafa" height="260" rx="8" width="700" x="0" y="0"></rect>
+<text fill="#00ADD8" font-size="15" font-weight="bold" text-anchor="middle" x="350" y="25" direction="rtl" unicode-bidi="embed">بررسی <tspan direction="ltr" unicode-bidi="embed">nil</tspan> در <tspan direction="ltr" unicode-bidi="embed">Interface</tspan>: نوع در برابر مقدار</text>
+<!-- Case 1: Truly nil -->
+<rect fill="#e8f5e9" height="120" rx="8" stroke="#27ae60" stroke-width="2" width="200" x="20" y="50"></rect>
+<text fill="#27ae60" font-size="12" font-weight="bold" text-anchor="middle" x="120" y="72" direction="rtl" unicode-bidi="embed">حالت ۱: <tspan direction="ltr" unicode-bidi="embed">nil</tspan> واقعی</text>
+<rect fill="#fff" height="28" rx="4" stroke="#27ae60" stroke-width="1" width="170" x="35" y="82"></rect>
+<text fill="#333" font-size="11" text-anchor="middle" x="120" y="101" direction="ltr" unicode-bidi="embed">type = nil</text>
+<rect fill="#fff" height="28" rx="4" stroke="#27ae60" stroke-width="1" width="170" x="35" y="115"></rect>
+<text fill="#333" font-size="11" text-anchor="middle" x="120" y="134" direction="ltr" unicode-bidi="embed">data = nil</text>
+<rect fill="#27ae60" height="22" opacity="0.2" rx="4" width="170" x="35" y="148"></rect>
+<text fill="#1b5e20" font-size="11" font-weight="bold" text-anchor="middle" x="120" y="164" direction="ltr" unicode-bidi="embed">n == nil → true (بله)</text>
+<!-- Case 2: Typed nil -->
+<rect fill="#fce4ec" height="120" rx="8" stroke="#e74c3c" stroke-width="2" width="240" x="230" y="50"></rect>
+<text fill="#e74c3c" font-size="12" font-weight="bold" text-anchor="middle" x="350" y="72" direction="rtl" unicode-bidi="embed">حالت ۲: <tspan direction="ltr" unicode-bidi="embed">nil</tspan> با نوع مشخص</text>
+<rect fill="#fff" height="28" rx="4" stroke="#e74c3c" stroke-width="1" width="210" x="245" y="82"></rect>
+<text fill="#333" font-size="11" text-anchor="middle" x="350" y="101" direction="ltr" unicode-bidi="embed">type = *User ← غیر-nil!</text>
+<rect fill="#fff" height="28" rx="4" stroke="#e74c3c" stroke-width="1" width="210" x="245" y="115"></rect>
+<text fill="#333" font-size="11" text-anchor="middle" x="350" y="134" direction="ltr" unicode-bidi="embed">data = nil</text>
+<rect fill="#e74c3c" height="22" opacity="0.2" rx="4" width="210" x="245" y="148"></rect>
+<text fill="#c62828" font-size="11" font-weight="bold" text-anchor="middle" x="350" y="164" direction="ltr" unicode-bidi="embed">n == nil → false (خیر)</text>
+<!-- Case 3: Non-nil -->
+<rect fill="#e0f7fa" height="120" rx="8" stroke="#00ADD8" stroke-width="2" width="200" x="480" y="50"></rect>
+<text fill="#00ADD8" font-size="12" font-weight="bold" text-anchor="middle" x="580" y="72" direction="rtl" unicode-bidi="embed">حالت ۳: غیر-nil</text>
+<rect fill="#fff" height="28" rx="4" stroke="#00ADD8" stroke-width="1" width="170" x="495" y="82"></rect>
+<text fill="#333" font-size="11" text-anchor="middle" x="580" y="101" direction="ltr" unicode-bidi="embed">type = *User</text>
+<rect fill="#fff" height="28" rx="4" stroke="#00ADD8" stroke-width="1" width="170" x="495" y="115"></rect>
+<text fill="#333" font-size="11" text-anchor="middle" x="580" y="134" direction="ltr" unicode-bidi="embed">data = &amp;User{...}</text>
+<rect fill="#00ADD8" height="22" opacity="0.15" rx="4" width="170" x="495" y="148"></rect>
+<text fill="#00838f" font-size="11" font-weight="bold" text-anchor="middle" x="580" y="164" direction="ltr" unicode-bidi="embed">n == nil → false</text>
+<!-- Code examples -->
+<rect fill="#fff3e0" height="65" rx="8" stroke="#f39c12" stroke-width="1.5" width="660" x="20" y="185"></rect>
+<text fill="#e65100" font-size="11" text-anchor="middle" x="350" y="207" direction="ltr" unicode-bidi="embed">var n Notifier → n == nil (بله)</text>
+<text fill="#e65100" font-size="11" text-anchor="middle" x="350" y="225" direction="ltr" unicode-bidi="embed">var u *User = nil; n = u → n != nil (خیر) (type=*User, value=nil)</text>
+<text fill="#e65100" font-size="11" text-anchor="middle" x="350" y="243" direction="ltr" unicode-bidi="embed">n = User{Name: "Ali"} → n != nil (type=*User, value=&amp;User{...})</text>
+</svg>
+<figcaption dir="rtl">شکل ۶-۳-ب: بررسی <bdi dir="ltr">nil</bdi> در <bdi dir="ltr">Interface</bdi> — هر دو فیلد نوع و مقدار باید <bdi dir="ltr">nil</bdi> باشند</figcaption>
+</figure>
+
+
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">// Both mean the same — any was added in Go 1.18
+var x interface{} = 42
+var y any = "hello"
+</code></pre>
+</figure>
+<p>چون empty interface هیچ متدی نمی‌خواهد، <strong>هر مقداری</strong> در Go با آن سازگار است. این رفتار شبیه <code>mixed</code> در PHP 8 است. اما استفاده بیش‌ازحد از آن anti-pattern محسوب می‌شود چون مزیت نوع‌داری ایستای Go را از بین می‌برد. بهترین کار این است که interface را با متدهای مشخص تعریف کنید تا نوع رفتار مورد انتظار صریح باشد.</p>
+<div class="warning"><strong>هشدار:</strong> از <code>any</code> یا <code>interface{}</code> فقط زمانی استفاده کنید که واقعاً هر نوعی قابل‌پذیرش باشد (مانند <code dir="ltr">fmt.Println</code> یا <code dir="ltr">json.Unmarshal</code>). در بقیه موارد همیشه interface با متدهای مشخص ترجیح داده می‌شود.</div>
+<h3 id="interface-composition">ترکیب Interface‌ها — Composition</h3>
+<p>Go از وراثت پشتیبانی نمی‌کند اما به‌جای آن <strong>Composition</strong> interface‌ها را پیشنهاد می‌دهد. شما می‌توانید چند interface کوچک را در یک interface بزرگ‌تر ترکیب کنید:</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">type Reader interface {
+    Read(p []byte) (n int, err error)
+}
+
+type Writer interface {
+    Write(p []byte) (n int, err error)
+}
+
+// Combining two interfaces — equivalent to extends in PHP
+type ReadWriter interface {
+    Reader
+    Writer
+}
+</code></pre>
+</figure>
+<p>هر نوعی که هم <code>Read</code> و هم <code>Write</code> را پیاده‌سازی کند، خودکار با <code>ReadWriter</code> سازگار خواهد بود. این الگو در کتابخانه استاندارد Go بسیار رایج است. به‌عنوان مثال <code dir="ltr">io.ReadCloser</code> ترکیبی از <code>Reader</code> و <code>Closer</code> است.</p>
+<div class="tip"><strong>اصل طلایی Go:</strong> interface‌ها را کوچک نگه دارید! یک interface با یک متد بهتر از یک interface با ده متد است. الگوی رایج در Go این است که interface‌های تک‌متدی تعریف شوند و سپس از طریق composition ترکیب شوند. این رویکرد انعطاف‌پذیری بسیار بیشتری نسبت به وراثت PHP فراهم می‌کند.</div>
+<h3 id="nil-interface-trap">تله‌ی nil Interface</h3>
+<p>یکی از رایج‌ترین اشتباهاتی که برنامه‌نویسان PHP در Go مرتکب می‌شوند، عدم تمایز بین <strong dir="ltr">nil interface</strong> و <strong dir="ltr">nil value</strong> است. یک interface در Go از دو بخش تشکیل شده: type و value. هر دو باید nil باشند تا interface خود nil باشد.</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">var n Notifier // type=nil, value=nil → n == nil // Correct var u *User = nil // a nil pointer
+n = u // type=*User, value=nil → n != nil !
+
+// n is no longer nil! Even if its value is nil
+fmt.Println(n == nil) // false — shocking for PHP programmers
+</code></pre>
+</figure>
+<p>دلیل این رفتار این است که وقتی <code>u</code> (یک اشاره‌گر nil از نوع <code>*User</code>) به <code>n</code> (یک interface) اختصاص داده می‌شود، interface نوع <code>*User</code> را ذخیره می‌کند. بنابراین interface یک نوع مشخص دارد و دیگر nil نیست. این تله وقتی رخ می‌دهد که تابعی یک خطا برگرداند و شما بخواهید خطا را در یک interface ذخیره کنید.</p>
+<div class="important"><strong>نکته حیاتی:</strong> هرگز یک مقدار nil از نوع مشخص را مستقیماً به interface اختصاص ندهید اگر انتظار دارید interface برابر nil باشد. در عوض صریحاً <code>nil</code> را برگردانید:</div>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">// Wrong — returning typed nil
+func GetNotifier() Notifier {
+    var u *User = nil
+    return u // type=*User, value=nil → != nil
+}
+
+// Correct — return actual nil
+func GetNotifier() Notifier {
+    return nil // type=nil, value=nil → == nil
+}
+</code></pre>
+</figure>
+<h3 id="accept-interfaces">اصل "Accept Interfaces, Return Structs"</h3>
+<p>از مهم‌ترین اصول Idiomatic Go این است: <strong>توابع باید interface بپذیرند و struct برگردانند.</strong> این یعنی ورودی‌های تابع شما باید از نوع interface باشند تا هر پیاده‌سازی قابل‌قبول باشد، اما خروجی باید نوع struct باشد تا مصرف‌کننده دقیقاً بداند چه چیزی دریافت می‌کند.</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">// Correct — interface input, struct output
+func SendNotification(n Notifier) error {
+    msg := n.Notify()
+    return send(msg)
+}
+
+// Wrong — limiting to a specific type
+func SendNotification(u User) error {
+    msg := u.Notify()
+    return send(msg)
+}
+</code></pre>
+</figure>
+<p>این الگو به‌ویژه برای Dependency Injection و نوشتن تست واحد ارزشمند است. وقتی تابع شما interface بپذیرد، در تست می‌توانید به‌راحتی یک mock بسازید و نیازی به راه‌اندازی زیرساخت واقعی نخواهید داشت. این به‌طور دقیق همان هدفی است که در PHP با تزریق وابستگی در constructor دنبال می‌کنید، اما در Go بسیار ساده‌تر و صریح‌تر پیاده‌سازی می‌شود.</p>
+<h3 id="iface-eface-داخلی">ساختار داخلی Interface: iface و eface</h3>
+<p>برای درک عمیق رفتار interface در Go — به‌خصوص تله‌ی nil — باید ساختار داخلی آن را بشناسید. در سطح runtime، Go دو نوع ساختار interface دارد:</p>
+<p dir="ltr"><strong dir="ltr">eface (empty interface):</strong> برای <code>interface{}</code> و <code>any</code> — interface بدون هیچ متد:</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">// Internal structure of eface (simplified)
+type eface struct {
+    _type *_type // pointer to data type
+    data unsafe.Pointer // pointer to actual value
+}
+</code></pre>
+</figure>
+<p><strong dir="ltr">iface:</strong> برای interface با متد — تمام interface‌هایی که حداقل یک متد دارند:</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">// Internal structure of iface (simplified)
+type iface struct {
+    tab *itab // method table + interface type + data type
+    data unsafe.Pointer // pointer to actual value
+}
+
+// itab is cached so it's built only once per (interface type, data type) pair
+type itab struct {
+    inter *interfacetype // interface type
+    _type *_type // actual data type
+    fun [1]uintptr // array of method pointers (actual size depends on method count)
+}
+</code></pre>
+</figure>
+<div class="note"><strong>نکته فنی:</strong> ساختار <code>itab</code> از مهم‌ترین بخش‌های interface است. وقتی مقداری به interface اختصاص می‌یابد، Go باید بررسی کند که آیا نوع داده متدهای مورد نیاز interface را دارد یا خیر. نتیجه‌ی این بررسی در <code>itab</code> ذخیره و <strong>کش</strong> می‌شود. این یعنی برای هر جفت (نوع interface, نوع داده) فقط یک‌بار این جستجو انجام می‌شود و فراخوانی‌های بعدی مستقیماً از کش خوانده می‌شوند.</div>
+<h3 id="itable-generation">تولید و کش itable</h3>
+<p>وقتی کدی مانند <code>var n Notifier = User{Name: "Ali"}</code> اجرا می‌شود، مراحل زیر رخ می‌دهد:</p>
+<p><strong>۱. جستجوی کش:</strong> Go ابتدا در کش عمومی itab جستجو می‌کند (یک mapa همگام‌سازی‌شده با کلید <code dir="ltr">(نوع interface, نوع داده)</code>).</p>
+<p><strong>۲. ساخت itab جدید:</strong> اگر در کش نبود، Go ساختار itab را می‌سازد: بررسی می‌کند که آیا نوع داده تمام متدهای interface را پیاده‌سازی کرده. اگر بله، اشاره‌گر به هر متد را در آرایه <code>fun</code> قرار می‌دهد.</p>
+<p><strong>۳. ذخیره در کش:</strong> itab ساخته‌شده در کش ذخیره می‌شود تا دفعات بعد مستقیماً استفاده شود.</p>
+<div class="tip"><strong>نکته کارایی:</strong> به‌جز اولین اختصاص هر جفت (interface, type)، تمام اختصاصات بعدی از کش استفاده می‌کنند و هزینه‌ی اضافی ندارند. این یعنی interface در Go عملاً به اندازه‌ی فراخوانی مستقیم متد کاراست — فقط یک جستجوی indirection اضافه وجود دارد.</div>
+<h3 id="type-assertion-codegen">تولید کد Type Assertion</h3>
+<p>وقتی شما <code dir="ltr">n.(User)</code> یا <code dir="ltr">n.(type)</code> می‌نویسید، کامپایلر Go کد متفاوتی تولید می‌کند بسته به اینکه نوع هدف interface است یا concrete:</p>
+<p><strong>Assertion به نوع concrete:</strong> (<code dir="ltr">n.(User)</code>) — بررسی <code dir="ltr">itab._type</code> با نوع هدف، اگر مطابقت داشت <code>data</code> را برگردان.</p>
+<p><strong>Assertion به نوع interface:</strong> (<code dir="ltr">n.(io.Reader)</code>) — بررسی اینکه آیا نوع داده‌ی زیرین متدهای interface هدف را دارد. این کار از itab کش‌شده استفاده می‌کند.</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">// Simple code
+var n Notifier = User{Name: "Ali"}
+u, ok := n.(User)
+
+// Approximate equivalent at runtime level:
+// 1. Check n.tab._type == type(User)
+// 2. If yes: u = *(*User)(n.data), ok = true
+// 3. If not: u = zero value, ok = false
+</code></pre>
+</figure>
+<h3 id="nil-interface-vs-nil-value">nil Interface در برابر Interface با مقدار nil</h3>
+<p>با درک ساختار داخلی interface، حالا می‌توانیم تله‌ی nil را به‌طور کامل توضیح دهیم:</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">// Case 1: truly nil interface
+var n Notifier
+// n.tab = nil, n.data = nil
+// n == nil → true // Correct // Case 2: interface with nil value of specific type
+var u *User = nil
+n = u
+// n.tab = &amp;itab{inter: Notifier, type: *User, ...}, n.data = nil
+// n == nil → false // Wrong (because tab is non-nil!)
+
+// Case 3: interface with non-nil value
+n = User{Name: "Ali"}
+// n.tab = &amp;itab{...}, n.data = &amp;User{Name: "Ali"}
+// n == nil → false
+</code></pre>
+</figure>
+<p>دلیل رفتار عجیب حالت ۲ این است: interface با دو فیلد (<code>tab/itab</code> و <code>data</code>) نمایش داده می‌شود. برای اینکه <code>interface == nil</code> باشد، <strong>هر دو</strong> فیلد باید nil باشند. وقتی یک اشاره‌گر nil از نوع مشخص به interface اختصاص می‌یابد، فیلد <code>tab</code> مقدار غیر-nil می‌گیرد (چون نوع مشخص شده) و فقط فیلد <code>data</code> برابر nil می‌ماند.</p>
+<div class="warning"><strong>هشدار عملی:</strong> این تله معمولاً در توابعی رخ می‌دهد که خطا برمی‌گردانند. نوع <code>error</code> خود یک interface است:
+
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">type error interface {
+    Error() string
+}
+
+// Wrong — common pitfall
+func DoSomething() error {
+    var err *MyError = nil // nil pointer
+    return err // type=*MyError, value=nil → non-nil error!
+}
+
+func main() {
+    err := DoSomething()
+    if err != nil {
+        fmt.Println("Error:", err) // this block runs! even though there's no real error
+    }
+}
+
+// Correct — proper solution
+func DoSomething() error {
+    return nil // return real nil
+}
+</code></pre>
+</figure>
+<p>این از رایج‌ترین باگ‌هایی است که برنامه‌نویسان PHP در Go مرتکب می‌شوند. همیشه از برگرداندن nil صریح به‌جای اشاره‌گر nil مطمئن شوید.</p>
+</div>
+
+<h3 id="mock-testing">تست با Mock و Interface</h3>
+<p>یکی از بزرگترین مزایای interface در Go، سادگی نوشتن mock برای تست است. در PHP معمولاً به کتابخانه‌هایی مثل <bdi dir="ltr">Mockery</bdi> یا <bdi dir="ltr">Prophecy</bdi> نیاز دارید تا mock بسازید. اما در Go با یک struct ساده و پیاده‌سازی interface، mock شما آماده است:</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">// Interface we want to mock
+type UserRepository interface {
+    GetByID(id int) (*User, error)
+    Save(user *User) error
+}
+
+// Mock for testing — no extra library needed!
+type MockUserRepo struct {
+    Users map[int]*User
+    Err error // simulated error
+}
+func (m *MockUserRepo) GetByID(id int) (*User, error) {
+    if m.Err != nil { return nil, m.Err }
+    return m.Users[id], nil
+}
+func (m *MockUserRepo) Save(user *User) error {
+    if m.Err != nil { return m.Err }
+    m.Users[user.ID] = user
+    return nil
+}
+
+// Unit test without needing real database
+func TestGetUser(t *testing.T) {
+    mock := &amp;MockUserRepo{
+        Users: map[int]*User{1: {ID: 1, Name: "Ali"}},
+    }
+    user, err := GetUser(mock, 1)
+    if err != nil { t.Fatal(err) }
+    if user.Name != "Ali" { t.Errorf("expected Ali, got %s", user.Name) }
+}
+</code></pre>
+</figure>
+<div class="tip"><strong>نکته:</strong> برای پروژه‌های بزرگ‌تر کتابخانه‌هایی مثل <code>gomock</code> یا <code>mockery</code> وجود دارند که mock را خودکار تولید می‌کنند. اما درک مکانیزم دستی مهم است چون اصل یکی است: interface + struct ساده = mock بدون جادو.</div>
+
+<h3 id="interface-embedding-conflict">تعارض در Embedding Interfaceها</h3>
+<p>وقتی دو interface را ترکیب می‌کنید که متدهای همنام دارند، باید مراقب تعارض باشید:</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">type Closer interface { Close() error }
+type Stoppable interface { Close() error }
+
+// Correct — no problem — method signature is the same
+type StoppableCloser interface {
+    Closer
+    Stoppable
+}
+
+// Wrong — but if signature differs:
+type A interface { Do() int }
+type B interface { Do() string }
+// Compile error: ambiguous selector
+type AB interface { A; B }
+</code></pre>
+</figure>
+
+<h3 id="compile-time-check">بررسی Interface در زمان کامپایل</h3>
+<p>یکی از الگوهای مهم در Go اطمینان از پیاده‌سازی interface در زمان کامپایل است:</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">// Check: does *User implement the Notifier interface?
+var _ Notifier = (*User)(nil)
+
+// If User doesn't have Notify() method, you get a compile error
+// This pattern is very common in Go standard library:
+var _ http.Handler = (*myHandler)(nil)
+var _ io.Reader = (*myReader)(nil)
+</code></pre>
+</figure>
+<div class="important"><strong>چرا این الگو مهم است؟</strong> بدون این بررسی، اگر متدی از interface حذف یا تغییر نام داده شود، فقط در زمان استفاده‌ی اول خطا کشف می‌شود — نه در زمان کامپایل. این اعلان تضمین می‌کند که هر تغییر در interface بلافاصله در تمام پیاده‌سازی‌ها شناسایی شود.</div>
+
+<h3 id="accept-interfaces-expanded">اصل "Accept Interfaces, Return Structs" با مثال واقعی</h3>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">// Wrong: dependency on specific implementation
+func SendEmail(mailer *smtp.Mailer, to, subject, body string) error {
+    return mailer.Send(to, subject, body)
+}
+
+// Correct: depend on behavior (interface)
+type Mailer interface {
+    Send(to, subject, body string) error
+}
+func SendEmail(mailer Mailer, to, subject, body string) error {
+    return mailer.Send(to, subject, body)
+}
+
+// Wrong — returning interface — consumer is restricted
+func NewMailer(config Config) Mailer {
+    return &amp;smtp.Mailer{...}
+}
+
+// Correct — return struct — consumer has access to all methods
+func NewMailer(config Config) *smtp.Mailer {
+    return &amp;smtp.Mailer{...}
+}
+</code></pre>
+</figure>
+
+<figure class="diagram" dir="ltr">
+<svg height="220" viewBox="0 0 600 220" width="600" xmlns="http://www.w3.org/2000/svg">
+<rect fill="#fafafa" height="220" rx="8" width="600" x="0" y="0"></rect>
+<text fill="#00ADD8" font-size="15" font-weight="bold" text-anchor="middle" x="300" y="25" direction="rtl" unicode-bidi="embed">ساختار داخلی <tspan direction="ltr" unicode-bidi="embed">Interface</tspan>: <tspan direction="ltr" unicode-bidi="embed">eface</tspan> و <tspan direction="ltr" unicode-bidi="embed">iface</tspan></text>
+<rect fill="#e0f7fa" height="85" rx="8" stroke="#00ADD8" stroke-width="2" width="250" x="20" y="50"></rect>
+<text fill="#00ADD8" font-size="14" font-weight="bold" text-anchor="middle" x="145" y="73" direction="ltr" unicode-bidi="embed">eface (empty interface)</text>
+<rect fill="#fff" height="25" rx="4" stroke="#00ADD8" stroke-width="1" width="210" x="40" y="85"></rect>
+<text fill="#333" font-size="11" text-anchor="middle" x="145" y="103" direction="ltr" unicode-bidi="embed">_type * | data unsafe.Pointer</text>
+<text fill="#666" font-size="10" text-anchor="middle" x="145" y="125" direction="ltr" unicode-bidi="embed">any / interface{}</text>
+<rect fill="#e8f5e9" height="85" rx="8" stroke="#27ae60" stroke-width="2" width="300" x="290" y="50"></rect>
+<text fill="#27ae60" font-size="14" font-weight="bold" text-anchor="middle" x="440" y="73" direction="ltr" unicode-bidi="embed">iface (non-empty interface)</text>
+<rect fill="#fff" height="25" rx="4" stroke="#27ae60" stroke-width="1" width="260" x="310" y="85"></rect>
+<text fill="#333" font-size="11" text-anchor="middle" x="440" y="103" direction="ltr" unicode-bidi="embed">tab *itab | data unsafe.Pointer</text>
+<text fill="#666" font-size="10" text-anchor="middle" x="440" y="125" direction="ltr" unicode-bidi="embed">Notifier, io.Reader, etc.</text>
+<rect fill="#fff3e0" height="65" rx="8" stroke="#f39c12" stroke-width="1.5" width="450" x="80" y="150"></rect>
+<text fill="#e65100" font-size="13" font-weight="bold" text-anchor="middle" x="305" y="172" direction="ltr" unicode-bidi="embed">itab (cached per interface+type pair)</text>
+<text fill="#666" font-size="11" text-anchor="middle" x="305" y="192" direction="ltr" unicode-bidi="embed">inter *interfacetype | _type *_type | fun [1]uintptr</text>
+<text fill="#888" font-size="10" text-anchor="middle" x="305" y="208" direction="rtl" unicode-bidi="embed">ذخیره‌شده در کش عمومی — فقط یک‌بار ساخته می‌شود</text>
+</svg>
+<figcaption>شکل ۶-۳: ساختار داخلی <bdi dir="ltr">eface</bdi> و <bdi dir="ltr">iface</bdi> در <bdi dir="ltr">Go</bdi> <bdi dir="ltr">runtime</bdi></figcaption>
+</figure>
+
+<h3 id="interface-itab-deep-dive">نمودار عمیق ساختار داخلی itab و iface</h3>
+<p>نمودار زیر جزئیات ساختار <bdi dir="ltr">iface</bdi> و <bdi dir="ltr">itab</bdi> را به‌صورت بصری نشان می‌دهد — شامل روابط بین جدول متدها، اشاره‌گر داده و سه حالت ممکن برای <bdi dir="ltr">nil</bdi> بودن interface:</p>
+
+<figure class="diagram" dir="ltr">
+<svg height="620" viewBox="0 0 800 620" width="800" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<marker id="arrIFace" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#00ADD8" points="0 0, 10 3.5, 0 7"></polygon></marker>
+<marker id="arrConcrete" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#4CAF50" points="0 0, 10 3.5, 0 7"></polygon></marker>
+<marker id="arrNilTrap" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#e91e63" points="0 0, 10 3.5, 0 7"></polygon></marker>
+</defs>
+<rect fill="#fafafa" height="620" rx="8" width="800" x="0" y="0"></rect>
+
+<!-- Title -->
+<text fill="#333" font-size="16" font-weight="bold" text-anchor="middle" x="400" y="25" direction="rtl" unicode-bidi="embed">ساختار داخلی <tspan direction="ltr" unicode-bidi="embed">Interface</tspan>: <tspan direction="ltr" unicode-bidi="embed">iface</tspan> و <tspan direction="ltr" unicode-bidi="embed">itab</tspan></text>
+
+<!-- ===== iface structure ===== -->
+<rect fill="#e0f7fa" height="70" rx="10" stroke="#00ADD8" stroke-width="2" width="500" x="150" y="40"></rect>
+<text fill="#00ADD8" font-size="14" font-weight="bold" text-anchor="middle" x="400" y="60" direction="ltr" unicode-bidi="embed">iface (non-empty interface value)</text>
+<rect fill="#fff" height="28" rx="4" stroke="#00ADD8" stroke-width="1.5" width="220" x="170" y="68"></rect>
+<text fill="#00ADD8" font-size="12" text-anchor="middle" x="280" y="87" direction="ltr" unicode-bidi="embed">tab *itab</text>
+<rect fill="#fff" height="28" rx="4" stroke="#00ADD8" stroke-width="1.5" width="220" x="410" y="68"></rect>
+<text fill="#00ADD8" font-size="12" text-anchor="middle" x="520" y="87" direction="ltr" unicode-bidi="embed">data unsafe.Pointer</text>
+
+<!-- ===== itab expanded ===== -->
+<line marker-end="url(#arrIFace)" stroke="#00ADD8" stroke-width="2" x1="280" x2="280" y1="110" y2="130"></line>
+<rect fill="#fff3e0" height="160" rx="10" stroke="#f39c12" stroke-width="2" width="500" x="30" y="130"></rect>
+<text fill="#e65100" font-size="14" font-weight="bold" text-anchor="middle" x="280" y="152" direction="ltr" unicode-bidi="embed">itab (cached per interface+type pair)</text>
+
+<!-- itab fields -->
+<rect fill="#fff" height="25" rx="4" stroke="#f39c12" stroke-width="1" width="460" x="50" y="162"></rect>
+<text fill="#333" font-size="11" text-anchor="middle" x="280" y="179" direction="ltr" unicode-bidi="embed">inter *interfacetype → type of interface (io.Writer)</text>
+<rect fill="#fff" height="25" rx="4" stroke="#4CAF50" stroke-width="1.5" width="460" x="50" y="192"></rect>
+<text fill="#4CAF50" font-size="11" font-weight="bold" text-anchor="middle" x="280" y="209" direction="ltr" unicode-bidi="embed">_type *_type → concrete type (*bufio.Writer)</text>
+<rect fill="#fff" height="25" rx="4" stroke="#f39c12" stroke-width="1" width="460" x="50" y="222"></rect>
+<text fill="#333" font-size="11" text-anchor="middle" x="280" y="239" direction="ltr" unicode-bidi="embed">fun [N]uintptr → method function pointers</text>
+<rect fill="#fff" height="25" rx="4" stroke="#f39c12" stroke-width="1" width="460" x="50" y="252"></rect>
+<text fill="#555" font-size="11" text-anchor="middle" x="280" y="269" direction="ltr" unicode-bidi="embed">hash uint32 → for fast type switch lookup</text>
+
+<!-- fun array expanded -->
+<line marker-end="url(#arrConcrete)" stroke="#4CAF50" stroke-width="1.5" x1="510" x2="570" y1="234" y2="234"></line>
+<rect fill="#e8f5e9" height="55" rx="6" stroke="#4CAF50" stroke-width="1.5" width="200" x="570" y="210"></rect>
+<text fill="#2e7d32" font-size="11" font-weight="bold" text-anchor="middle" x="670" y="228" direction="ltr" unicode-bidi="embed">fun[0] = &amp;bufio.Writer.Write</text>
+<text fill="#555" font-size="10" text-anchor="middle" x="670" y="245" direction="ltr" unicode-bidi="embed">fun[1] = &amp;bufio.Writer.Read</text>
+<text fill="#555" font-size="10" text-anchor="middle" x="670" y="258" direction="ltr" unicode-bidi="embed">... (if more methods)</text>
+
+<!-- data pointer -->
+<line marker-end="url(#arrIFace)" stroke="#00ADD8" stroke-width="2" x1="520" x2="620" y1="110" y2="130"></line>
+<rect fill="#e8f5e9" height="40" rx="6" stroke="#4CAF50" stroke-width="2" width="200" x="570" y="130"></rect>
+<text fill="#2e7d32" font-size="12" font-weight="bold" text-anchor="middle" x="670" y="148" direction="ltr" unicode-bidi="embed">data → &amp;bufio.Writer{...}</text>
+<text fill="#555" font-size="10" text-anchor="middle" x="670" y="163" direction="ltr" unicode-bidi="embed">actual value in heap</text>
+
+<!-- ===== eface structure ===== -->
+<rect fill="#f3e5f5" height="70" rx="10" stroke="#777BB4" stroke-width="2" width="350" x="225" y="310"></rect>
+<text fill="#777BB4" font-size="14" font-weight="bold" text-anchor="middle" x="400" y="332" direction="ltr" unicode-bidi="embed">eface (empty interface / any)</text>
+<rect fill="#fff" height="28" rx="4" stroke="#777BB4" stroke-width="1.5" width="140" x="245" y="340"></rect>
+<text fill="#777BB4" font-size="12" text-anchor="middle" x="315" y="359" direction="ltr" unicode-bidi="embed">_type *_type</text>
+<rect fill="#fff" height="28" rx="4" stroke="#777BB4" stroke-width="1.5" width="140" x="415" y="340"></rect>
+<text fill="#777BB4" font-size="12" text-anchor="middle" x="485" y="359" direction="ltr" unicode-bidi="embed">data unsafe.Pointer</text>
+
+<!-- ===== Three nil cases ===== -->
+<text fill="#333" font-size="14" font-weight="bold" text-anchor="middle" x="400" y="405" direction="rtl" unicode-bidi="embed">سه حالت <tspan direction="ltr" unicode-bidi="embed">nil</tspan> در <tspan direction="ltr" unicode-bidi="embed">Interface</tspan></text>
+
+<!-- Case 1: Truly nil -->
+<rect fill="#e8f5e9" height="85" rx="8" stroke="#4CAF50" stroke-width="2" width="230" x="20" y="420"></rect>
+<text fill="#2e7d32" font-size="12" font-weight="bold" text-anchor="middle" x="135" y="440" direction="ltr" unicode-bidi="embed">Case 1: nil interface</text>
+<text fill="#333" font-size="10" text-anchor="middle" x="135" y="458" direction="ltr" unicode-bidi="embed">tab/itab = nil</text>
+<text fill="#333" font-size="10" text-anchor="middle" x="135" y="473" direction="ltr" unicode-bidi="embed">data = nil</text>
+<rect fill="#4CAF50" height="18" opacity="0.2" rx="4" width="190" x="40" y="480"></rect>
+<text fill="#1b5e20" font-size="11" font-weight="bold" text-anchor="middle" x="135" y="494" direction="ltr" unicode-bidi="embed">w == nil → true ✓</text>
+<text fill="#555" font-size="9" text-anchor="middle" x="135" y="508" direction="ltr" unicode-bidi="embed">var w io.Writer</text>
+
+<!-- Case 2: Typed nil — PITFALL -->
+<rect fill="#fce4ec" height="85" rx="8" stroke="#e91e63" stroke-width="2" width="280" x="260" y="420"></rect>
+<text fill="#e91e63" font-size="12" font-weight="bold" text-anchor="middle" x="400" y="440" direction="ltr" unicode-bidi="embed">Case 2: typed nil ← PITFALL!</text>
+<text fill="#333" font-size="10" text-anchor="middle" x="400" y="458" direction="ltr" unicode-bidi="embed">tab/itab = &amp;itab{io.Writer, *User, ...}</text>
+<text fill="#333" font-size="10" text-anchor="middle" x="400" y="473" direction="ltr" unicode-bidi="embed">data = nil</text>
+<rect fill="#e91e63" height="18" opacity="0.2" rx="4" width="240" x="280" y="480"></rect>
+<text fill="#c62828" font-size="11" font-weight="bold" text-anchor="middle" x="400" y="494" direction="ltr" unicode-bidi="embed">w == nil → false ✗ (type is non-nil!)</text>
+<text fill="#555" font-size="9" text-anchor="middle" x="400" y="508" direction="ltr" unicode-bidi="embed">var u *User = nil; w = u</text>
+
+<!-- Case 3: Non-nil -->
+<rect fill="#e0f7fa" height="85" rx="8" stroke="#00ADD8" stroke-width="2" width="230" x="550" y="420"></rect>
+<text fill="#00ADD8" font-size="12" font-weight="bold" text-anchor="middle" x="665" y="440" direction="ltr" unicode-bidi="embed">Case 3: non-nil interface</text>
+<text fill="#333" font-size="10" text-anchor="middle" x="665" y="458" direction="ltr" unicode-bidi="embed">tab/itab = &amp;itab{io.Writer, *User}</text>
+<text fill="#333" font-size="10" text-anchor="middle" x="665" y="473" direction="ltr" unicode-bidi="embed">data = &amp;User{Name: "Ali"}</text>
+<rect fill="#00ADD8" height="18" opacity="0.15" rx="4" width="190" x="570" y="480"></rect>
+<text fill="#00838f" font-size="11" font-weight="bold" text-anchor="middle" x="665" y="494" direction="ltr" unicode-bidi="embed">w == nil → false</text>
+<text fill="#555" font-size="9" text-anchor="middle" x="665" y="508" direction="ltr" unicode-bidi="embed">w = &amp;User{Name: "Ali"}</text>
+
+<!-- Code example bar -->
+<rect fill="#fff3e0" height="95" rx="8" stroke="#f39c12" stroke-width="1.5" width="760" x="20" y="520"></rect>
+<text fill="#e65100" font-size="11" font-weight="bold" text-anchor="middle" x="400" y="540" direction="ltr" unicode-bidi="embed">Example: var w io.Writer = &amp;bufio.Writer{}</text>
+<text fill="#333" font-size="10" text-anchor="middle" x="400" y="558" direction="ltr" unicode-bidi="embed">w.tab → itab{ inter: io.Writer, _type: *bufio.Writer, fun[0]: &amp;bufio.Writer.Write }</text>
+<text fill="#333" font-size="10" text-anchor="middle" x="400" y="575" direction="ltr" unicode-bidi="embed">w.data → heap pointer to bufio.Writer instance</text>
+<text fill="#4CAF50" font-size="10" text-anchor="middle" x="400" y="592" direction="ltr" unicode-bidi="embed">Calling w.Write(p) → itab.fun[0](w.data, p) → fast indirect call via cached itab</text>
+<text fill="#888" font-size="9" text-anchor="middle" x="400" y="608" direction="rtl" unicode-bidi="embed">فراخوانی متد از طریق <tspan direction="ltr" unicode-bidi="embed">itab.fun[]</tspan> — فقط یک <tspan direction="ltr" unicode-bidi="embed">indirection</tspan> اضافی نسبت به فراخوانی مستقیم</text>
+</svg>
+<figcaption dir="rtl">شکل ۶-۳-ج: ساختار داخلی <bdi dir="ltr">iface</bdi> و <bdi dir="ltr">itab</bdi> — سه حالت <bdi dir="ltr">nil</bdi> و مکانیزم فراخوانی متد</figcaption>
+</figure>
+
+<p>در نمودار بالا ساختار کامل یک interface غیرخالی (<bdi dir="ltr">iface</bdi>) را مشاهده می‌کنید. بخش <bdi dir="ltr">itab</bdi> حاوی سه بخش حیاتی است: <code dir="ltr">inter</code> که نوع interface را مشخص می‌کند (مثلاً <code dir="ltr">io.Writer</code>)، <code dir="ltr">_type</code> که نوع واقعی داده را نشان می‌دهد (مثلاً <code dir="ltr">*bufio.Writer</code>) و آرایه‌ی <code dir="ltr">fun</code> که اشاره‌گر به توابع پیاده‌سازی‌شده را نگه می‌دارد. وقتی متدی مانند <code dir="ltr">w.Write(p)</code> فراخوانی می‌شود Go از <code dir="ltr">itab.fun[0]</code> برای یافتن آدرس تابع واقعی استفاده می‌کند و <code dir="ltr">data</code> را به‌عنوان receiver ارسال می‌کند. این مکانیزم فقط یک سطح <bdi dir="ltr">indirection</bdi> اضافی نسبت به فراخوانی مستقیم متد دارد و به‌لطف کش <bdi dir="ltr">itab</bdi> عملاً هیچ هزینه‌ی عملکردی قابل‌توجهی ایجاد نمی‌کند.</p>
+
+<p>سه حالت <bdi dir="ltr">nil</bdi> که در پایین نمودار نمایش داده شده‌اند از مهم‌ترین مفاهیم برای برنامه‌نویسان PHP هستند. حالت اول یک interface واقعاً nil است که هر دو فیلد آن nil هستند. حالت دوم یعنی «nil با نوع مشخص» (<bdi dir="ltr">typed nil</bdi>) یکی از رایج‌ترین باگ‌های Go است: وقتی یک اشاره‌گر nil از نوع مشخص به interface اختصاص می‌یابد فیلد <code dir="ltr">tab/itab</code> مقدار غیر-nil می‌گیرد و بنابراین interface دیگر nil نیست حتی اگر مقدار داده‌ی آن nil باشد. حالت سوم هم یک interface عادی با مقدار غیر-nil است. درک این سه حالت برای جلوگیری از باگ‌های ظریف در کد Go ضروری است.</p>
+
+<h4 id="interface-سناریوهای-عملیاتی">سناریوهای عملیاتی Interface</h4>
+<ul>
+<li><strong>تزریق وابستگی مبتنی بر interface:</strong> در PHP معمولاً از constructor injection با type-hint استفاده می‌کنید: <code dir="ltr">public function __construct(MailerInterface $mailer)</code>. در Go همین الگو با interface پیاده‌سازی می‌شود: <code dir="ltr">func NewService(m Mailer) *Service</code>. تفاوت این است که در Go نیازی به ثبت صریح binding در container نیست — هر structی که متد <code dir="ltr">Send()</code> داشته باشد خودکار سازگار است. این سادگی باعث می‌شود dependency injection در Go بسیار سبک‌تر و مستقیم‌تر از Laravel یا Symfony باشد و نیازی به framework سنگین IoC نداشته باشد.</li>
+<li><strong>تست با پیاده‌سازی‌های mock:</strong> یکی از قدرتمندترین کاربردهای interface در Go سادگی ساختن mock برای تست است. برخلاف PHP که به کتابخانه‌هایی مثل Mockery نیاز دارد در Go فقط کافیست یک struct ساده بسازید که interface مورد نظر را پیاده‌سازی کند. مثلاً <code dir="ltr">type MockMailer struct{ Sent bool }</code> با متد <code dir="ltr">Send()</code> یک mock کامل است. این mock‌ها قابل‌ پیش‌بینی و قابل‌اشکال‌زدایی هستند و هیچ جادوی runtime ندارند.</li>
+<li><strong>معماری پلاگین:</strong> با تعریف interface‌های کوچک و مشخص می‌توانید سیستم‌های پلاگین‌پذیر بسازید. هر پلاگین فقط کافیست interface مشخصی را پیاده‌سازی کند و بدون تغییر در کد اصلی قابل بارگذاری است. مثلاً <code dir="ltr">type Storage interface { Get(key string) ([]byte, error); Set(key string, val []byte) error }</code> اجازه می‌دهد Redis, Memcached یا SQLite بدون تغییر در منطق اصلی جایگزین شوند. این الگو مشابه سیستم Service Provider در Laravel است اما بدون نیاز به registration صریح.</li>
+<li><strong>تفکیک interface — interface‌های کوچک متعدد:</strong> به‌جای یک interface بزرگ با ده متد الگوی Go این است که چند interface کوچک تک‌متدی یا دومتدی تعریف کنید و سپس آنها را ترکیب کنید. مثلاً به‌جای <code dir="ltr">type Repository interface { Get(); Save(); Delete(); Find(); Count() }</code> بهتر است <code dir="ltr">type Getter interface { Get() }</code> و <code dir="ltr">type Saver interface { Save() }</code> و <code dir="ltr">type Deleter interface { Delete() }</code> را جداگانه تعریف کنید. این رویکرد انعطاف‌پذیری بیشتری می‌دهد چون هر تابع فقط interface‌ای که واقعاً نیاز دارد را درخواست می‌کند و به اصل Interface Segregation Principle پایبند می‌ماند.</li>
+<li><strong>برگرداندن interface در برابر struct از توابع:</strong> اصل Idiomatic Go می‌گوید «interface بپذیرید struct برگردانید». یعنی ورودی توابع باید interface باشد اما خروجی باید نوع concrete باشد. برگرداندن interface از تابع مصرف‌کننده را محدود می‌کند چون فقط به متدهای interface دسترسی دارد نه متدهای اضافی struct. اما برگرداندن struct به مصرف‌کننده اجازه می‌دهد هم از متدهای interface استفاده کند و هم از متدهای اختصاصی struct بدون نیاز به type assertion.</li>
+</ul>
+
+<div class="tip"><strong>اصل «accept interfaces, return structs» و تله‌ی typed nil:</strong> دو درس عملی که هر برنامه‌نویس Go باید یاد بگیرد: ۱) همیشه توابع شما باید interface بپذیرند تا انعطاف‌پذیر باشند اما struct برگردانند تا شفاف باشند. این یعنی مصرف‌کننده دقیقاً می‌داند چه چیزی دریافت می‌کند و می‌تواند از همه‌ی متدهای struct استفاده کند. ۲) برای بررسی nil بودن یک interface همیشه هر دو بخش (type و value) را بررسی کنید. اگر تابعی interface برمی‌گرداند و ممکن است nil باشد هرگز اشاره‌گر nil از نوع مشخص را مستقیماً برنگردانید — به‌جای آن <code dir="ltr">return nil</code> را بنویسید. همچنین اگر نیاز دارید مقدار زیرین interface را برای nil بررسی کنید از reflection استفاده کنید: <code dir="ltr">if v := reflect.ValueOf(w); v.Kind() == reflect.Ptr &amp;&amp; v.IsNil()</code>. این دو اصل ساده اما حیاتی از دسته‌ای از باگ‌های ظریف جلوگیری می‌کنند.</div>
+
+</div>
+</main>
+</div>
+
+<!-- Footer -->
+<footer class="site-footer">
+<div class="footer-inner">
+<div class="footer-nav">
+<span class="nav-arrow">‹</span>
+<a href="03.05-object-oriented-programming.html" data-prev>۳.۵ شی‌گرایی</a>
+</div>
+<div class="footer-toc">
+<a href="00.01-contents.html">فهرست</a>
+</div>
+<div class="footer-nav">
+<a href="03.07-constructor-and-factory.html" data-next>۳.۷ Constructor و Factory</a>
+<span class="nav-arrow">›</span>
+</div>
+</div>
+</footer>
+
+<!-- Back to Top -->
+<button class="back-to-top" aria-label="بازگشت به بالا">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
+</button>
+
+<!-- Scripts -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/go.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/php.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/sql.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/yaml.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/json.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/dockerfile.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/xml.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/ini.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/plaintext.min.js"></script>
+<script src="assets/js/main.js"></script>
+</body>
+</html>

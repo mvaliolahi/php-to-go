@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="fa">
+<head>
+<script>!function(){try{var t=localStorage.getItem('php2go-theme');if(t==='dark'||(!t&&window.matchMedia('(prefers-color-scheme:dark)').matches)){document.documentElement.setAttribute('data-theme','dark')}}catch(e){}}();</script>
+<meta charset="utf-8"/>
+<meta content="ie=edge" http-equiv="x-ua-compatible"/>
+<title>۷.۷ مدیریت Session — PHP to Go</title>
+<meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet"/>
+<link href="assets/css/main.css" rel="stylesheet" type="text/css"/>
+<link href="assets/img/favicon.ico" rel="icon" type="image/x-icon"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" media="screen" class="hljs-light-theme" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css" media="not screen" class="hljs-dark-theme" rel="stylesheet"/>
+</head>
+<body>
+<!-- Progress Bar -->
+<div class="progress-bar"><div class="progress-bar__fill"></div></div>
+
+<!-- Header -->
+<header class="site-header">
+<div class="header-inner">
+<div class="header-left">
+<button class="header-btn sidebar-toggle" aria-label="فهرست">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+</button>
+<a href="00.00-front-matter.html" class="header-logo"><span class="logo-php">PHP</span> to <span class="logo-go">Go</span></a>
+<span class="header-crumbs">ساخت وب‌سرور › مدیریت Session</span>
+</div>
+<div class="header-right">
+<nav class="header-nav">
+<span class="nav-arrow">‹</span>
+<a href="07.06-working-with-cookies.html"><span class="nav-label">۷.۶ کار با Cookie ها</span></a>
+<a href="00.01-contents.html">فهرست</a>
+<a href="07.08-html-templates-with-template-and-embed.html"><span class="nav-label">۷.۸ استفاده از قالب‌های HTML با پکیج html/template و embed</span></a>
+<span class="nav-arrow">›</span>
+</nav>
+<button class="header-btn search-toggle" aria-label="جستجو">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+</button>
+<button class="header-btn theme-toggle" aria-label="تغییر تم">
+<svg class="theme-icon-light" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+<svg class="theme-icon-dark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+</button>
+</div>
+</div>
+</header>
+
+<!-- Search Modal -->
+<div class="search-overlay">
+<div class="search-modal">
+<div class="search-input-wrap">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+<input type="text" class="search-input" placeholder="جستجو... (Ctrl+K)" dir="rtl"/>
+</div>
+<div class="search-results"></div>
+</div>
+</div>
+
+<!-- Layout -->
+<div class="site-layout">
+<!-- Sidebar -->
+<aside class="sidebar"></aside>
+<div class="sidebar-overlay"></div>
+
+<!-- Main Content -->
+<main class="content-area">
+<div class="content-wrap text">
+<div class="chapter">فصل ۷.۷</div>
+<h2 id="مدیریت-session">مدیریت Session</h2>
+<table class="comparison-table" dir="rtl">
+<thead>
+<tr><th>ویژگی</th><th>PHP Session</th><th>Go Session</th></tr>
+</thead>
+<tbody>
+<tr><td>مدیریت</td><td>$_SESSION — پیش‌فرض زبان</td><td>بدون پیش‌فرض — نیاز به پیاده‌سازی</td></tr>
+<tr><td>ذخیره‌سازی</td><td>فایل / Redis / DB</td><td>map / Redis / دیتابیس</td></tr>
+<tr><td>شناسه سشن</td><td>PHPSESSID — خودکار</td><td>تولید دستی با crypto/rand</td></tr>
+<tr><td>همزمانی</td><td>Lock داخلی</td><td><span dir="ltr">sync.Mutex</span> یا <span dir="ltr">sync.RWMutex</span></td></tr>
+<tr><td>کتابخانه</td><td>session handler داخلی</td><td>gorilla/sessions یا دستی</td></tr>
+</tbody>
+</table>
+<figure class="diagram" dir="ltr">
+<svg height="340" viewBox="0 0 600 340" width="600" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<marker id="arrow7" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#555" points="0 0, 10 3.5, 0 7"></polygon></marker>
+<filter height="104%" id="sh7" width="104%" x="-2%" y="-2%"><fedropshadow dx="1" dy="1" flood-opacity="0.15" stddeviation="2"></fedropshadow></filter>
+</defs>
+<rect fill="#fff" height="340" rx="8" width="600" x="0" y="0"></rect>
+<text fill="#333" font-size="16" font-weight="bold" text-anchor="middle" x="300" y="28" direction="rtl" unicode-bidi="embed">جریان مدیریت <tspan direction="ltr" unicode-bidi="embed">Session</tspan> در <tspan direction="ltr" unicode-bidi="embed">Go</tspan></text>
+<!-- Login -->
+<rect fill="#4CAF50" filter="url(#sh7)" height="40" rx="6" width="100" x="30" y="70"></rect>
+<text fill="#fff" font-size="11" text-anchor="middle" x="80" y="95" direction="ltr" unicode-bidi="embed">Login</text>
+<line marker-end="url(#arrow7)" stroke="#555" stroke-width="2" x1="130" x2="190" y1="90" y2="90"></line>
+<!-- Generate Session ID -->
+<rect fill="#00ADD8" filter="url(#sh7)" height="60" rx="6" width="160" x="190" y="60"></rect>
+<text fill="#fff" font-size="11" text-anchor="middle" x="270" y="85" direction="ltr" unicode-bidi="embed">Generate Session ID</text>
+<text fill="#e0f7fa" font-size="9" text-anchor="middle" x="270" y="105" direction="ltr" unicode-bidi="embed">crypto/rand + base64</text>
+<line marker-end="url(#arrow7)" stroke="#555" stroke-width="2" x1="350" x2="410" y1="90" y2="90"></line>
+<!-- Store -->
+<rect fill="#9C27B0" filter="url(#sh7)" height="60" rx="6" width="150" x="410" y="60"></rect>
+<text fill="#fff" font-size="11" text-anchor="middle" x="485" y="85" direction="ltr" unicode-bidi="embed">Session Store</text>
+<text fill="#e1bee7" font-size="9" text-anchor="middle" x="485" y="105" direction="ltr" unicode-bidi="embed">map / Redis / DB</text>
+<!-- Set Cookie -->
+<rect fill="#FF9800" filter="url(#sh7)" height="50" rx="6" width="160" x="190" y="160"></rect>
+<text fill="#fff" font-size="11" text-anchor="middle" x="270" y="185" direction="ltr" unicode-bidi="embed">Set Cookie</text>
+<text fill="#fff3e0" font-size="9" text-anchor="middle" x="270" y="200" direction="ltr" unicode-bidi="embed">session_id=abc123</text>
+<line marker-end="url(#arrow7)" stroke="#555" stroke-width="2" x1="270" x2="270" y1="120" y2="160"></line>
+<!-- Verify -->
+<rect fill="#e91e63" filter="url(#sh7)" height="50" rx="6" width="160" x="190" y="250"></rect>
+<text fill="#fff" font-size="11" text-anchor="middle" x="270" y="275" direction="ltr" unicode-bidi="embed">Verify Session</text>
+<text fill="#fce4ec" font-size="9" text-anchor="middle" x="270" y="290" direction="ltr" unicode-bidi="embed">r.Cookie → Store lookup</text>
+<line marker-end="url(#arrow7)" stroke="#555" stroke-width="2" x1="270" x2="270" y1="210" y2="250"></line>
+<!-- Expiry -->
+<rect fill="#FFF3E0" height="50" rx="6" stroke="#FF9800" width="140" x="420" y="250"></rect>
+<text fill="#E65100" font-size="10" text-anchor="middle" x="490" y="272" direction="rtl" unicode-bidi="embed">مدیریت انقضا</text>
+<text fill="#666" font-size="9" text-anchor="middle" x="490" y="288" direction="ltr" unicode-bidi="embed">MaxAge / Cleanup</text>
+<line stroke="#FF9800" stroke-dasharray="4,4" stroke-width="1.5" x1="350" x2="420" y1="275" y2="275"></line>
+</svg>
+<figcaption>شکل ۷-۷: جریان مدیریت <bdi dir="ltr">Session</bdi> — ایجاد، ذخیره و بررسی سشن</figcaption>
+</figure>
+<p>Go به صورت پیش‌فرض session ندارد. برای مدیریت سشن‌ها در محیط production باید از شناسه‌های امن، نگهداری در حافظه‌ای ایمن یا دیتابیس استفاده کنید.</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">package main
+import (
+"crypto/rand"
+"encoding/base64"
+"fmt"
+"log"
+"net/http"
+"sync"
+"time"
+)
+var (
+sessions = map[string]string{}
+mu sync.Mutex{}
+)
+func generateSessionID() (string, error) {
+    b := make([]byte, 32)
+    _, err := rand.Read(b)
+    if err != nil {
+        return "", err
+    }
+    return base64.URLEncoding.EncodeToString(b), nil
+}
+func loginHandler(w http.ResponseWriter, r *http.Request) {
+    sessionID, err := generateSessionID()
+    if err != nil {
+        http.Error(w, "خطا در ایجاد سشن", http.StatusInternalServerError)
+        return
+    }
+    mu.Lock()
+    sessions[sessionID] = "user123"
+    mu.Unlock()
+    cookie := &amp;http.Cookie{
+        Name: "session_id",
+        Value: sessionID,
+        Path: "/",
+        HttpOnly: true,
+        Secure: true,
+        MaxAge: 3600,
+    }
+    http.SetCookie(w, cookie)
+    fmt.Fprintln(w, "وارد شدید")
+}
+func profileHandler(w http.ResponseWriter, r *http.Request) {
+    cookie, err := r.Cookie("session_id")
+    if err != nil {
+        http.Error(w, "لطفا وارد شوید", http.StatusUnauthorized)
+        return
+    }
+    mu.Lock()
+    user, ok := sessions[cookie.Value]
+    mu.Unlock()
+    if !ok {
+        http.Error(w, "سشن نامعتبر است", http.StatusUnauthorized)
+        return
+    }
+    fmt.Fprintf(w, "خوش آمدید، %s", user)
+}
+func main() {
+    mux := http.NewServeMux()
+    mux.HandleFunc("/login", loginHandler)
+    mux.HandleFunc("/profile", profileHandler)
+    server := &amp;http.Server{
+        Addr: ":8080",
+        Handler: mux,
+    }
+    log.Println("سرور اجرا شد")
+    log.Fatal(server.ListenAndServe())
+}
+</code></pre>
+</figure>
+<h3 id="جلوگیری-از-session-fixation">جلوگیری از Session Fixation</h3>
+<p>حمله Session Fixation زمانی رخ می‌دهد که مهاجم یک شناسه سشن معتبر را به قربانی بدهد (مثلاً از طریق لینک حاوی شناسه سشن) و سپس از همان شناسه برای دسترسی به حساب کاربری استفاده کند. برای جلوگیری از این حمله، باید بعد از هر تغییر سطح دسترسی (مثل لاگین یا ارتقای نقش)، شناسه سشن را تغییر دهید:</p>
+
+<figure class="diagram" dir="ltr">
+<svg width="700" height="240" viewBox="0 0 700 240" xmlns="http://www.w3.org/2000/svg">
+<rect fill="#fafafa" height="240" rx="8" width="700" x="0" y="0"></rect>
+<defs>
+<marker id="aSs1" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#00ADD8" points="0 0,10 3.5,0 7"></polygon></marker>
+<marker id="aSs2" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#27ae60" points="0 0,10 3.5,0 7"></polygon></marker>
+<marker id="aSs3" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#f39c12" points="0 0,10 3.5,0 7"></polygon></marker>
+</defs>
+<text fill="#00ADD8" font-size="15" font-weight="bold" text-anchor="middle" x="350" y="22" direction="rtl" unicode-bidi="embed">چرخه‌ی حیات <tspan direction="ltr" unicode-bidi="embed">Session</tspan>: کوکی → شناسه → ذخیره‌گاه → پاسخ</text>
+<!-- Step 1: Client request -->
+<rect fill="#777BB4" height="40" opacity="0.12" rx="8" stroke="#777BB4" stroke-width="2" width="100" x="30" y="55"></rect>
+<text fill="#333" font-size="10" text-anchor="middle" x="80" y="80" direction="rtl" unicode-bidi="embed">کلاینت</text>
+<line marker-end="url(#aSs1)" stroke="#00ADD8" stroke-width="1.5" x1="130" x2="190" y1="70" y2="70"></line>
+<!-- Step 2: Cookie with Session ID -->
+<rect fill="#FF9800" height="40" opacity="0.12" rx="8" stroke="#FF9800" stroke-width="2" width="150" x="190" y="55"></rect>
+<text fill="#333" font-size="9" text-anchor="middle" x="265" y="72" direction="ltr" unicode-bidi="embed">Cookie: session_id</text>
+<text fill="#FF9800" font-size="8" text-anchor="middle" x="265" y="86" direction="ltr" unicode-bidi="embed">abc123xyz</text>
+<line marker-end="url(#aSs1)" stroke="#00ADD8" stroke-width="1.5" x1="340" x2="400" y1="70" y2="70"></line>
+<!-- Step 3: Session Store Lookup -->
+<rect fill="#9C27B0" height="55" opacity="0.12" rx="8" stroke="#9C27B0" stroke-width="2" width="150" x="400" y="48"></rect>
+<text fill="#333" font-size="10" text-anchor="middle" x="475" y="68" direction="ltr" unicode-bidi="embed">Session Store</text>
+<text fill="#9C27B0" font-size="8" text-anchor="middle" x="475" y="82" direction="rtl" unicode-bidi="embed">جستجو با شناسه</text>
+<text fill="#9C27B0" font-size="8" text-anchor="middle" x="475" y="96" direction="ltr" unicode-bidi="embed">map / Redis / DB</text>
+<line marker-end="url(#aSs2)" stroke="#27ae60" stroke-width="1.5" x1="550" x2="600" y1="70" y2="70"></line>
+<!-- Step 4: Handler processes -->
+<rect fill="#00ADD8" height="40" opacity="0.12" rx="8" stroke="#00ADD8" stroke-width="2" width="100" x="600" y="55"></rect>
+<text fill="#333" font-size="10" text-anchor="middle" x="650" y="72" direction="rtl" unicode-bidi="embed">هندلر</text>
+<text fill="#00ADD8" font-size="8" text-anchor="middle" x="650" y="86" direction="ltr" unicode-bidi="embed">userID, role</text>
+<!-- Response flow -->
+<line marker-end="url(#aSs3)" stroke="#f39c12" stroke-width="1.5" x1="650" x2="650" y1="95" y2="130"></line>
+<rect fill="#f39c12" height="35" opacity="0.12" rx="8" stroke="#f39c12" stroke-width="2" width="180" x="560" y="130"></rect>
+<text fill="#333" font-size="9" text-anchor="middle" x="650" y="148" direction="rtl" unicode-bidi="embed">ذخیره تغییرات در <tspan direction="ltr" unicode-bidi="embed">Store</tspan></text>
+<text fill="#f39c12" font-size="8" text-anchor="middle" x="650" y="160" direction="ltr" unicode-bidi="embed">Set-Cookie: session_id</text>
+<!-- Back to client -->
+<line marker-end="url(#aSs3)" stroke="#f39c12" stroke-width="1.5" x1="560" x2="80" y1="148" y2="148"></line>
+<line stroke="#f39c12" stroke-width="1.5" x1="80" x2="80" y1="148" y2="95"></line>
+<!-- Security notes -->
+<rect fill="#f5f5f5" height="55" rx="6" stroke="#ddd" stroke-width="1" width="600" x="50" y="175"></rect>
+<text fill="#555" font-size="9" text-anchor="middle" x="350" y="195" direction="rtl" unicode-bidi="embed">تنظیمات امنیتی کوکی: <tspan direction="ltr" unicode-bidi="embed">HttpOnly=true</tspan> | <tspan direction="ltr" unicode-bidi="embed">Secure=true</tspan> | <tspan direction="ltr" unicode-bidi="embed">SameSite=Lax</tspan></text>
+<text fill="#e74c3c" font-size="9" text-anchor="middle" x="350" y="212" direction="rtl" unicode-bidi="embed">پس از لاگین شناسه سشن را تغییر دهید (<tspan direction="ltr" unicode-bidi="embed">Session Fixation</tspan> prevention)</text>
+<text fill="#27ae60" font-size="9" text-anchor="middle" x="350" y="226" direction="rtl" unicode-bidi="embed">سشن‌های منقضی‌شده را پاک‌سازی کنید — <tspan direction="ltr" unicode-bidi="embed">Redis TTL</tspan> خودکار</text>
+</svg>
+<figcaption dir="rtl">شکل ۷-۷-ب: چرخه‌ی کامل <bdi dir="ltr">Session</bdi> — از کوکی تا ذخیره‌گاه و بازگشت</figcaption>
+</figure>
+
+
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">func loginHandler(w http.ResponseWriter, r *http.Request) {
+    // ... user validation ...
+
+    // Delete previous session (prevent session fixation)
+    oldCookie, _ := r.Cookie("session_id")
+    if oldCookie != nil {
+        mu.Lock()
+        delete(sessions, oldCookie.Value)
+        mu.Unlock()
+    }
+
+    // Generate new session ID
+    sessionID, err := generateSessionID()
+    if err != nil {
+        http.Error(w, "خطا در ایجاد سشن", http.StatusInternalServerError)
+        return
+    }
+
+    mu.Lock()
+    sessions[sessionID] = "user123"
+    mu.Unlock()
+
+    // Set cookie with new ID
+    http.SetCookie(w, &amp;http.Cookie{
+        Name: "session_id",
+        Value: sessionID,
+        Path: "/",
+        HttpOnly: true,
+        Secure: true,
+        SameSite: http.SameSiteLaxMode,
+        MaxAge: 3600,
+    })
+}
+</code></pre>
+</figure>
+<div class="tip"><strong>نکته:</strong> کتابخانه <code>alexedwards/scs</code> به صورت خودکار شناسه سشن را بعد از تغییر سطح دسترسی (مثل لاگین) تغییر می‌دهد. این یکی از مزایای استفاده از کتابخانه‌های آزمایش‌شده است.</div>
+<h3 id="پاکسازی-سشن-های-منقضی">پاکسازی سشن‌های منقضی‌شده</h3>
+<p>در پیاده‌سازی دستی سشن با map، سشن‌های منقضی‌شده تا زمانی که پاک نشوند در حافظه باقی می‌مانند و باعث نشت حافظه می‌شوند. باید یک goroutine پاکسازی دوره‌ای اضافه کنید:</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">// Store expiry time with session data
+type sessionEntry struct {
+    userID string
+    expiresAt time.Time
+}
+
+var sessions = map[string]sessionEntry{}
+
+// Periodic cleanup of expired sessions
+func cleanupExpiredSessions() {
+    for {
+        time.Sleep(10 * time.Minute)
+        mu.Lock()
+        for id, entry := range sessions {
+            if time.Now().After(entry.expiresAt) {
+                delete(sessions, id)
+            }
+        }
+        mu.Unlock()
+    }
+}
+
+// Run at program start
+go cleanupExpiredSessions()
+</code></pre>
+</figure>
+<div class="warning"><strong>هشدار:</strong> در محیط production با چندین نمونه سرور، map در حافظه بین نمونه‌ها مشترک نیست. باید از ذخیره‌سازی توزیع‌شده (Redis، دیتابیس) استفاده کنید. همچنین map بدون محدودیت حجم می‌تواند باعث مصرف بیش از حد حافظه شود.</div>
+<div class="warning">
+<strong>هشدار:</strong> پیاده‌سازی دستی سشن در این بخش صرفاً برای درک مکانیزم و نحوه کارکرد سشن است. در پروژه‌های production حتماً از کتابخانه‌های آزمایش‌شده مانند <code>alexedwards/scs</code> استفاده کنید. پیاده‌سازی دستی ممکن است دارای حفره‌های امنیتی، مشکل در مدیریت همزمانی و عدم پشتیبانی از ذخیره‌سازی توزیع‌شده باشد.
+</div>
+<h3 id="کتابخانه-production-برای-مدیریت-سشن">کتابخانه Production برای مدیریت سشن</h3>
+<p>کتابخانه <code>alexedwards/scs</code> یکی از محبوب‌ترین و قابل‌اتکاترین کتابخانه‌های مدیریت سشن در Go است. این کتابخانه از چندین backend ذخیره‌سازی پشتیبانی می‌کند و با middleware به راحتی قابل ادغام است:</p>
+<figure class="code bash" dir="ltr">
+<pre><code class="language-bash">go get github.com/alexedwards/scs/v2
+</code></pre>
+</figure>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">package main
+
+import (
+"log"
+"net/http"
+"time"
+
+"github.com/alexedwards/scs/v2"
+)
+
+// Session management settings
+var sessionManager *scs.SessionManager
+
+func main() {
+    // Initialize session
+    sessionManager = scs.New()
+    sessionManager.Lifetime = 12 * time.Hour // session validity duration
+    sessionManager.Cookie.Persist = true // persist cookie after browser close
+    sessionManager.Cookie.SameSite = http.SameSiteLaxMode // CSRF protection
+    sessionManager.Cookie.Secure = true // HTTPS only
+    sessionManager.Cookie.HttpOnly = true // prevent JavaScript access
+
+    mux := http.NewServeMux()
+    mux.HandleFunc("/login", loginHandler)
+    mux.HandleFunc("/profile", profileHandler)
+    mux.HandleFunc("/logout", logoutHandler)
+
+    // Attach session middleware to server
+    server := &amp;http.Server{
+        Addr: ":8080",
+        Handler: sessionManager.LoadAndSave(mux), // ← session middleware
+    }
+    log.Fatal(server.ListenAndServe())
+}
+
+func loginHandler(w http.ResponseWriter, r *http.Request) {
+    // User validation (hypothetical)
+    // ...
+
+    // Save info in session
+    sessionManager.Put(r.Context(), "userID", "user123")
+    sessionManager.Put(r.Context(), "role", "admin")
+
+    http.Redirect(w, r, "/profile", http.StatusSeeOther)
+}
+
+func profileHandler(w http.ResponseWriter, r *http.Request) {
+    // Read info from session
+    userID := sessionManager.GetString(r.Context(), "userID")
+    if userID == "" {
+        http.Error(w, "لطفاً وارد شوید", http.StatusUnauthorized)
+        return
+    }
+    role := sessionManager.GetString(r.Context(), "role")
+    fmt.Fprintf(w, "خوش آمدید %s — نقش: %s", userID, role)
+}
+
+func logoutHandler(w http.ResponseWriter, r *http.Request) {
+    // Delete session
+    sessionManager.Remove(r.Context(), "userID")
+    sessionManager.Remove(r.Context(), "role")
+    // Or destroy session entirely:
+    sessionManager.Destroy(r.Context())
+
+    http.Redirect(w, r, "/", http.StatusSeeOther)
+}
+</code></pre>
+</figure>
+<h4 id="middleware-سشن-loadandsave">Middleware سشن: LoadAndSave</h4>
+<p>متد <code>LoadAndSave</code> یک middleware است که به‌صورت خودکار سشن را در ابتدای هر درخواست بارگذاری و در پایان ذخیره می‌کند. این middleware الگوی استاندارد ادغام سشن در زنجیره middleware است:</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">// LoadAndSave automatically:
+// 1. Reads session cookie from request
+// 2. Loads session data from store
+// 3. Places session in request context
+// 4. After handler execution, saves changes to store
+// 5. Sets session cookie in response
+
+// Middleware chain with alice
+standardChain := alice.New(
+recoverPanic,
+requestLogger,
+sessionManager.LoadAndSave, // ← here
+commonHeaders,
+)
+</code></pre>
+</figure>
+<figure class="code php" dir="ltr">
+<pre><code class="language-php">// Laravel — session automatically managed by StartSession middleware
+// In Kernel.php:
+protected $middlewareGroups = [
+'web' =&gt; [
+\Illuminate\Session\Middleware\StartSession::class,
+// ...
+],
+];
+
+// Using session in controller:
+session(['userID' =&gt; 'user123']);
+$userID = session('userID');
+session()-&gt;forget('userID');
+</code></pre>
+</figure>
+<table class="comparison-table" dir="rtl">
+<thead>
+<tr><th>ویژگی</th><th>Laravel Session</th><th>alexedwards/scs</th></tr>
+</thead>
+<tbody>
+<tr><td>بارگذاری خودکار</td><td dir="ltr">StartSession middleware</td><td dir="ltr">LoadAndSave middleware</td></tr>
+<tr><td>ذخیره‌سازی پیش‌فرض</td><td>فایل</td><td>Cookie</td></tr>
+<tr><td>backend‌های دیگر</td><td>Redis، DB، Memcached</td><td>Redis، DB، PostgreSQL، BoltDB</td></tr>
+<tr><td>مدت اعتبار</td><td dir="ltr">config/session.php lifetime</td><td dir="ltr">sessionManager.Lifetime</td></tr>
+<tr><td dir="ltr">Flash message</td><td dir="ltr">session()-&gt;<span dir="ltr">flash('key', 'val')</span></td><td dir="ltr">sessionManager.Put() / <span dir="ltr">PopString()</span></td></tr>
+<tr><td dir="ltr">Lazy loading</td><td>خیر</td><td>بله — فقط وقتی نیاز باشد</td></tr>
+</tbody>
+</table>
+<h3 id="flash-messages-پیامهای-یکباره">Flash Messages: پیام‌های یک‌باره</h3>
+<p>Flash message پیامی است که فقط برای یک درخواست بعدی در دسترس است و سپس به صورت خودکار حذف می‌شود. این الگو برای نمایش پیام‌های موفقیت، خطا یا اطلاع‌رسانی بعد از عملیات‌هایی مانند ثبت‌نام، ویرایش یا حذف بسیار کاربردی است:</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">// Save flash message
+func createHandler(w http.ResponseWriter, r *http.Request) {
+    // ... registration operation ...
+
+    // Save flash message to display in next request
+    sessionManager.Put(r.Context(), "flash", "مقاله با موفقیت ایجاد شد")
+
+    http.Redirect(w, r, "/articles", http.StatusSeeOther)
+}
+
+// Read and remove flash message
+func listHandler(w http.ResponseWriter, r *http.Request) {
+    // PopString reads message and immediately removes it
+    flash := sessionManager.PopString(r.Context(), "flash")
+
+    // Pass to HTML template
+    tmpl.Execute(w, struct {
+        Flash string
+    }{
+        Flash: flash,
+    })
+}
+</code></pre>
+</figure>
+<figure class="code html" dir="ltr">
+<pre><code class="language-html"><!-- نمایش flash message در قالب HTML -->
+{{if .Flash}}
+&lt;div class="alert alert-success"&gt;
+    {{.Flash}}
+&lt;/div&gt;
+{{end}}
+</code></pre>
+</figure>
+<figure class="code php" dir="ltr">
+<pre><code class="language-php">// Laravel — Flash Messages
+return redirect()-&gt;route('articles.index')
+-&gt;with('success', 'مقاله با موفقیت ایجاد شد');
+
+// Or with session helper:
+session()-&gt;flash('success', 'مقاله با موفقیت ایجاد شد');
+
+// In Blade template:
+@if(session('success'))
+&lt;div class="alert alert-success"&gt;
+{{ session('success') }}
+&lt;/div&gt;
+@endif
+</code></pre>
+</figure>
+<div class="tip">
+<strong>نکته:</strong> تفاوت <code>Put</code> و <code>PopString</code> مهم است: <code>Put</code> مقدار را در سشن ذخیره می‌کند و باقی می‌ماند، اما <code>PopString</code> مقدار را می‌خواند و بلافاصله حذف می‌کند. برای flash message حتماً از <code>PopString</code> استفاده کنید تا پیام فقط یک بار نمایش داده شود.
+</div>
+<h4 id="پشتیبانی-از-backend-های-مختلف-در-scs">پشتیبانی از Backend‌های مختلف در scs</h4>
+<p>کتابخانه scs از چندین backend ذخیره‌سازی پشتیبانی می‌کند. در محیط production با چندین نمونه سرور، باید از backend توزیع‌شده مانند Redis یا دیتابیس استفاده کنید:</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">import (
+"github.com/alexedwards/scs/v2"
+"github.com/alexedwards/scs/redisstore" // backend Redis
+"github.com/alexedwards/scs/postgresstore" // backend PostgreSQL
+"github.com/alexedwards/scs/boltstore" // backend BoltDB
+)
+
+// Example: using Redis
+sessionManager = scs.New()
+sessionManager.Store = redisstore.New(redisClient)
+
+// Example: using PostgreSQL
+sessionManager = scs.New()
+sessionManager.Store = postgresstore.New(db)
+</code></pre>
+</figure>
+<div class="note">
+<strong>یادداشت:</strong> اگر برنامه شما فقط یک instance دارد و حافظه کافی دارد، backend Cookie ساده‌ترین گزینه است. اما به یاد داشته باشید که ذخیره‌سازی در کوکی محدودیت حجم (حدود ۴ کیلوبایت) دارد و داده‌های حساس نباید در آن قرار گیرند. برای داده‌های بزرگ‌تر یا حساس‌تر، از Redis یا PostgreSQL استفاده کنید.
+</div>
+<h3 id="مقایسه-jwt-و-سشن">مقایسه JWT و سشن</h3>
+
+<div class="quote-box">
+    <p class="quote-text">JWT یک مکانیزم نشست نیست. این وسیله‌ای برای انتقال ادعاها بین دو طرف است. استفاده از JWT برای نشست‌ها پیچیدگی‌هایی درباره ابطال توکن، چرخش و ذخیره‌سازی امن ایجاد می‌کند که کوکی‌ها و نشست‌های سمت سرور از قبل حل کرده‌اند.</p>
+    <p class="quote-source">
+        <span class="quote-author">Randall Degges</span>
+        <span class="quote-role">رئیس توسعه‌دهندگان در Okta</span>
+        <span class="quote-separator">|</span>
+        <span class="quote-book">Stop using JWT for sessions</span>
+    </p>
+</div>
+<p>یکی از تصمیمات مهم در طراحی سیستم احراز هویت، انتخاب بین سشن مبتنی بر سرور و <bdi dir="ltr">JWT</bdi> (<bdi dir="ltr">JSON Web Token</bdi>) است. هر رویکرد مزایا و معایب خود را دارد. جدول زیر مقایسه کامل این دو روش را نشان می‌دهد:</p>
+<table class="comparison-table" dir="rtl">
+<thead>
+<tr><th>ویژگی</th><th>سشن (مبتنی بر سرور)</th><th>JWT</th></tr>
+</thead>
+<tbody>
+<tr><td>ذخیره‌سازی وضعیت</td><td>سرور (حافظه/Redis/DB)</td><td>بدون وضعیت — کلاینت توکن را نگه می‌دارد</td></tr>
+<tr><td>مقیاس‌پذیری</td><td>نیاز به ذخیره‌سازی مشترک</td><td>بدون وابستگی بین نمونه‌ها</td></tr>
+<tr><td>ابطال دسترسی</td><td>فوری — حذف از سرور</td><td>دشوار — تا انقضای توکن معتبر است</td></tr>
+<tr><td>حجم</td><td>کوچک — فقط شناسه سشن</td><td>بزرگ — شامل داده‌های کاربر</td></tr>
+<tr><td>امنیت</td><td>داده در سرور — کلاینت فقط شناسه</td><td>داده در توکن — امکان نشت اطلاعات</td></tr>
+<tr><td>کاربرد اصلی</td><td>SSR</td><td>API‌ها و میکروسرویس‌ها</td></tr>
+<tr><td>CSRF</td><td>آسیب‌پذیر — نیاز به حفاظت</td><td>مقاوم — توکن در هدر ارسال می‌شود</td></tr>
+<tr><td>خروج</td><td>ساده — حذف سشن</td><td>پیچیده — نیاز به blacklist</td></tr>
+</tbody>
+</table>
+<div class="important"><strong>توصیه:</strong> برای برنامه‌های وب سنتی که صفحات HTML رندر می‌کنند (مثل برنامه‌های این کتاب)، سشن مبتنی بر کوکی گزینه بهتری است. برای <bdi dir="ltr">SPA</bdi> ها و <bdi dir="ltr">API</bdi> های عمومی، <bdi dir="ltr">JWT</bdi> مناسب‌تر است. هرگز سشن و <bdi dir="ltr">JWT</bdi> را به صورت همزمان برای یک سیستم احراز هویت ترکیب نکنید — این کار پیچیدگی بیهوده ایجاد می‌کند.</div>
+<h3 id="ذخیرهسازی-سشن-در-redis">ذخیره‌سازی سشن در Redis</h3>
+<p>در محیط <bdi dir="ltr">production</bdi> با چندین نمونه سرور، ذخیره‌سازی سشن در حافظه محلی کافی نیست. <bdi dir="ltr">Redis</bdi> بهترین گزینه برای ذخیره‌سازی سشن توزیع‌شده است زیرا عملکرد بالا، زمان انقضای خودکار و پشتیبانی از ساختارهای داده متنوع را فراهم می‌کند:</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">import (
+"github.com/alexedwards/scs/v2"
+"github.com/alexedwards/scs/redisstore"
+"github.com/redis/go-redis/v9"
+)
+
+func initSessionStore(redisURL string) *scs.SessionManager {
+    opt, err := redis.ParseURL(redisURL)
+    if err != nil {
+        log.Fatalf("خطا در پارس Redis URL: %v", err)
+    }
+    client := redis.NewClient(opt)
+
+    sessionManager = scs.New()
+    sessionManager.Store = redisstore.New(client)
+    sessionManager.Lifetime = 12 * time.Hour
+    sessionManager.Cookie.Persist = true
+    sessionManager.Cookie.SameSite = http.SameSiteLaxMode
+    sessionManager.Cookie.Secure = true
+    sessionManager.Cookie.HttpOnly = true
+
+    return sessionManager
+}
+</code></pre>
+</figure>
+<div class="tip"><strong>نکته:</strong> <bdi dir="ltr">Redis</bdi> زمان انقضای خودکار (<bdi dir="ltr">TTL</bdi>) را روی کلیدها پشتیبانی می‌کند. وقتی سشن منقضی شود، <bdi dir="ltr">Redis</bdi> به صورت خودکار آن را حذف می‌کند و نیازی به <bdi dir="ltr">goroutine</bdi> پاکسازی ندارید. این یکی از مزایای اصلی <bdi dir="ltr">Redis</bdi> نسبت به ذخیره‌سازی در حافظه محلی است.</div>
+
+<figure class="diagram" dir="ltr">
+<svg height="740" viewBox="0 0 860 740" width="860" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<marker id="arrowSS1" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#555" points="0 0, 10 3.5, 0 7"></polygon></marker>
+<marker id="arrowSS2" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#00ADD8" points="0 0, 10 3.5, 0 7"></polygon></marker>
+<marker id="arrowSS3" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#4CAF50" points="0 0, 10 3.5, 0 7"></polygon></marker>
+<marker id="arrowSS4" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#9C27B0" points="0 0, 10 3.5, 0 7"></polygon></marker>
+<filter height="104%" id="shSS" width="104%" x="-2%" y="-2%"><fedropshadow dx="1" dy="1" flood-opacity="0.15" stddeviation="2"></fedropshadow></filter>
+<linearGradient id="goldSS" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#FFD700" stop-opacity="0.18"></stop><stop offset="50%" stop-color="#FFD700" stop-opacity="0.08"></stop><stop offset="100%" stop-color="#FFD700" stop-opacity="0.18"></stop></linearGradient>
+</defs>
+<rect fill="#fafafa" height="740" rx="8" width="860" x="0" y="0"></rect>
+
+<!-- Title -->
+<text fill="#333" font-size="16" font-weight="bold" text-anchor="middle" x="430" y="30" direction="rtl" unicode-bidi="embed">معماری <tspan direction="ltr" unicode-bidi="embed">Session Store</tspan> — جریان کامل درخواست و مقایسه ذخیره‌گاه‌ها</text>
+
+<!-- ===== Browser (Left) ===== -->
+<rect fill="#FF9800" filter="url(#shSS)" height="100" rx="12" stroke="#E65100" stroke-width="2" width="150" x="30" y="70"></rect>
+<text fill="#fff" font-size="13" font-weight="bold" text-anchor="middle" x="105" y="95" direction="ltr" unicode-bidi="embed">Browser</text>
+<!-- Cookie box inside browser -->
+<rect fill="#FFF3E0" height="40" rx="4" stroke="#FF9800" stroke-width="1.5" width="130" x="40" y="105"></rect>
+<text fill="#E65100" font-size="9" text-anchor="middle" x="105" y="122" direction="ltr" unicode-bidi="embed">Cookie:</text>
+<text fill="#E65100" font-size="8" text-anchor="middle" x="105" y="136" direction="ltr" unicode-bidi="embed">session_id=abc123</text>
+<!-- Browser icon hint -->
+<rect fill="#FFE0B2" height="14" rx="3" width="110" x="50" y="78"></rect>
+<text fill="#BF360C" font-size="8" text-anchor="middle" x="105" y="89" direction="ltr" unicode-bidi="embed">🌐 Chrome / Firefox</text>
+
+<!-- ===== Server (Center) ===== -->
+<rect fill="#00ADD8" filter="url(#shSS)" height="160" rx="12" stroke="#00838F" stroke-width="2" width="260" x="240" y="60"></rect>
+<text fill="#fff" font-size="13" font-weight="bold" text-anchor="middle" x="370" y="85" direction="ltr" unicode-bidi="embed">Go Server</text>
+<!-- Session Store inside server -->
+<rect fill="#4CAF50" fill-opacity="0.15" height="100" rx="8" stroke="#4CAF50" stroke-width="2" width="220" x="260" y="95"></rect>
+<text fill="#4CAF50" font-size="11" font-weight="bold" text-anchor="middle" x="370" y="115" direction="ltr" unicode-bidi="embed">Session Store</text>
+<text fill="#4CAF50" font-size="9" text-anchor="middle" x="370" y="132" direction="ltr" unicode-bidi="embed">map[string]SessionData</text>
+<!-- Session data example -->
+<rect fill="#E8F5E9" height="44" rx="4" stroke="#4CAF50" stroke-width="1" width="190" x="275" y="140"></rect>
+<text fill="#2E7D32" font-size="8" text-anchor="start" x="282" y="155" direction="ltr" unicode-bidi="embed">"abc123" → {userID: "u42",</text>
+<text fill="#2E7D32" font-size="8" text-anchor="start" x="282" y="167" direction="ltr" unicode-bidi="embed">  role: "admin", expires: ...}</text>
+
+<!-- ===== Data Layer (Right) ===== -->
+<rect fill="#9C27B0" fill-opacity="0.12" height="120" rx="12" stroke="#9C27B0" stroke-width="2" width="200" x="560" y="70"></rect>
+<text fill="#9C27B0" font-size="12" font-weight="bold" text-anchor="middle" x="660" y="95" direction="ltr" unicode-bidi="embed">Data Layer</text>
+<!-- Redis -->
+<rect fill="#9C27B0" filter="url(#shSS)" height="36" rx="6" width="160" x="580" y="105"></rect>
+<text fill="#fff" font-size="10" text-anchor="middle" x="660" y="128" direction="ltr" unicode-bidi="embed">Redis Store</text>
+<!-- DB -->
+<rect fill="#7B1FA2" fill-opacity="0.6" height="28" rx="6" width="160" x="580" y="148"></rect>
+<text fill="#fff" font-size="9" text-anchor="middle" x="660" y="167" direction="ltr" unicode-bidi="embed">PostgreSQL / MySQL</text>
+
+<!-- ===== Flow Arrows (numbered) ===== -->
+<!-- Step 1: Browser → Server -->
+<line marker-end="url(#arrowSS2)" stroke="#00ADD8" stroke-width="2.5" x1="180" x2="237" y1="120" y2="120"></line>
+<circle cx="195" cy="112" fill="#00ADD8" r="10"></circle>
+<text fill="#fff" font-size="9" font-weight="bold" text-anchor="middle" x="195" y="116" direction="ltr" unicode-bidi="embed">1</text>
+<text fill="#00ADD8" font-size="7" text-anchor="middle" x="210" y="108" direction="ltr" unicode-bidi="embed">+Cookie</text>
+
+<!-- Step 2: Extract session_id (inside server) -->
+<text fill="#00ADD8" font-size="8" text-anchor="middle" x="370" y="212" direction="ltr" unicode-bidi="embed">2 → Extract session_id from Cookie</text>
+
+<!-- Step 3: Server → Session Store lookup -->
+<line marker-end="url(#arrowSS3)" stroke="#4CAF50" stroke-width="2" x1="370" x2="370" y1="218" y2="250"></line>
+<circle cx="358" cy="234" fill="#4CAF50" r="10"></circle>
+<text fill="#fff" font-size="9" font-weight="bold" text-anchor="middle" x="358" y="238" direction="ltr" unicode-bidi="embed">3</text>
+
+<!-- Step 4: Get SessionData -->
+<rect fill="#E8F5E9" height="30" rx="4" stroke="#4CAF50" stroke-width="1.5" width="200" x="270" y="255"></rect>
+<text fill="#2E7D32" font-size="9" text-anchor="middle" x="370" y="275" direction="ltr" unicode-bidi="embed">4 → Get SessionData {userID, role}</text>
+
+<!-- Step 5: Process Request -->
+<line marker-end="url(#arrowSS1)" stroke="#555" stroke-width="2" x1="370" x2="370" y1="285" y2="310"></line>
+<rect fill="#00ADD8" filter="url(#shSS)" height="30" rx="6" width="160" x="290" y="310"></rect>
+<text fill="#fff" font-size="10" text-anchor="middle" x="370" y="330" direction="ltr" unicode-bidi="embed">5 → Process Request</text>
+
+<!-- Step 6: Update Session -->
+<line marker-end="url(#arrowSS1)" stroke="#555" stroke-width="2" x1="370" x2="370" y1="340" y2="365"></line>
+<rect fill="#4CAF50" filter="url(#shSS)" height="26" rx="6" width="180" x="280" y="365"></rect>
+<text fill="#fff" font-size="9" text-anchor="middle" x="370" y="383" direction="ltr" unicode-bidi="embed">6 → Update Session in Store</text>
+
+<!-- Step 7: Response back to Browser -->
+<line marker-end="url(#arrowSS1)" stroke="#555" stroke-width="2" x1="370" x2="370" y1="391" y2="415"></line>
+<rect fill="#FF9800" filter="url(#shSS)" height="26" rx="6" width="180" x="280" y="415"></rect>
+<text fill="#fff" font-size="9" text-anchor="middle" x="370" y="433" direction="ltr" unicode-bidi="embed">7 → Response + Set-Cookie</text>
+
+<!-- Arrow from step 7 back to browser -->
+<path d="M280,428 L180,428 L180,170 L105,170 L105,172" fill="none" marker-end="url(#arrowSS1)" stroke="#999" stroke-dasharray="4,3" stroke-width="1.5"></path>
+
+<!-- Server → Data Layer arrow (for Redis store variant) -->
+<line marker-end="url(#arrowSS4)" stroke="#9C27B0" stroke-width="2" stroke-dasharray="5,3" x1="500" x2="557" y1="145" y2="145"></line>
+<text fill="#9C27B0" font-size="7" text-anchor="middle" x="528" y="138" direction="ltr" unicode-bidi="embed">sync to Redis</text>
+
+<!-- ===== Variant Comparison ===== -->
+<!-- In-Memory Variant -->
+<rect fill="#4CAF50" fill-opacity="0.08" height="110" rx="8" stroke="#4CAF50" stroke-width="2" width="360" x="30" y="470"></rect>
+<text fill="#4CAF50" font-size="12" font-weight="bold" text-anchor="middle" x="210" y="492" direction="rtl" unicode-bidi="embed">ذخیره‌گاه در حافظه (<tspan direction="ltr" unicode-bidi="embed">In-Memory</tspan>)</text>
+<rect fill="#4CAF50" filter="url(#shSS)" height="55" rx="6" width="320" x="50" y="502"></rect>
+<text fill="#fff" font-size="9" text-anchor="start" x="62" y="522" direction="ltr" unicode-bidi="embed">✓ Very fast — no network I/O</text>
+<text fill="#fff" font-size="9" text-anchor="start" x="62" y="536" direction="ltr" unicode-bidi="embed">✓ Simple setup — just map[string]SessionData</text>
+<text fill="#FFCDD2" font-size="9" text-anchor="start" x="62" y="550" direction="ltr" unicode-bidi="embed">✗ Lost on server restart</text>
+<text fill="#FFCDD2" font-size="9" text-anchor="start" x="195" y="550" direction="ltr" unicode-bidi="embed">✗ Not shared across instances</text>
+
+<!-- Redis Variant -->
+<rect fill="#9C27B0" fill-opacity="0.08" height="110" rx="8" stroke="#9C27B0" stroke-width="2" width="360" x="470" y="470"></rect>
+<text fill="#9C27B0" font-size="12" font-weight="bold" text-anchor="middle" x="650" y="492" direction="rtl" unicode-bidi="embed">ذخیره‌گاه <tspan direction="ltr" unicode-bidi="embed">Redis</tspan></text>
+<rect fill="#9C27B0" filter="url(#shSS)" height="55" rx="6" width="320" x="490" y="502"></rect>
+<text fill="#fff" font-size="9" text-anchor="start" x="502" y="522" direction="ltr" unicode-bidi="embed">✓ Persistent — survives restarts</text>
+<text fill="#fff" font-size="9" text-anchor="start" x="502" y="536" direction="ltr" unicode-bidi="embed">✓ Shared across multiple instances</text>
+<text fill="#fff" font-size="9" text-anchor="start" x="502" y="550" direction="ltr" unicode-bidi="embed">✓ Auto-expiry with TTL</text>
+<text fill="#E1BEE7" font-size="9" text-anchor="start" x="502" y="550" direction="ltr" unicode-bidi="embed"></text>
+
+<!-- Info Box -->
+<rect fill="#E3F2FD" height="50" rx="6" stroke="#1565C0" stroke-width="1.5" width="800" x="30" y="595"></rect>
+<text fill="#1565C0" font-size="10" font-weight="bold" text-anchor="middle" x="430" y="615" direction="rtl" unicode-bidi="embed">چه زمانی از کدام ذخیره‌گاه استفاده کنیم؟</text>
+<text fill="#333" font-size="9" text-anchor="middle" x="430" y="633" direction="rtl" unicode-bidi="embed">تک‌نمونه و توسعه: <tspan direction="ltr" unicode-bidi="embed">In-Memory</tspan> کافیست · چندنمونه و <tspan direction="ltr" unicode-bidi="embed">production</tspan>: حتماً <tspan direction="ltr" unicode-bidi="embed">Redis</tspan> · داده حساس: هرگز در کوکی ذخیره نکنید</text>
+
+<!-- Code snippet for session store -->
+<rect fill="#263238" height="62" rx="6" width="800" x="30" y="658"></rect>
+<text fill="#80CBC4" font-size="9" text-anchor="start" x="45" y="676" direction="ltr" unicode-bidi="embed">// In-Memory Store</text>
+<text fill="#C3E88D" font-size="9" text-anchor="start" x="45" y="692" direction="ltr" unicode-bidi="embed">var sessions = map[string]SessionData{}  // ← lost on restart</text>
+<text fill="#80CBC4" font-size="9" text-anchor="start" x="440" y="676" direction="ltr" unicode-bidi="embed">// Redis Store</text>
+<text fill="#C3E88D" font-size="9" text-anchor="start" x="440" y="692" direction="ltr" unicode-bidi="embed">sessionManager.Store = redisstore.New(client)  // ← persistent</text>
+<text fill="#82AAFF" font-size="9" text-anchor="start" x="440" y="710" direction="ltr" unicode-bidi="embed">// auto TTL, shared, scalable</text>
+<text fill="#82AAFF" font-size="9" text-anchor="start" x="45" y="710" direction="ltr" unicode-bidi="embed">// needs sync.Mutex for concurrency</text>
+
+<!-- Golden Rule Bar -->
+<rect fill="url(#goldSS)" height="28" rx="6" stroke="#FFD700" stroke-width="2" width="800" x="30" y="726"></rect>
+<text fill="#B8860B" font-size="10" font-weight="bold" text-anchor="middle" x="430" y="745" direction="rtl" unicode-bidi="embed">قانون طلایی: همیشه <tspan direction="ltr" unicode-bidi="embed">HttpOnly</tspan> + <tspan direction="ltr" unicode-bidi="embed">Secure</tspan> + <tspan direction="ltr" unicode-bidi="embed">SameSite</tspan> روی کوکی سشن تنظیم کنید و شناسه سشن را بعد از لاگین بازتولید کنید</text>
+</svg>
+<figcaption>شکل ۷-۷-ج: معماری <bdi dir="ltr">Session Store</bdi> — جریان کامل درخواست از مرورگر تا سرور، مقایسه <bdi dir="ltr">In-Memory</bdi> و <bdi dir="ltr">Redis</bdi></figcaption>
+</figure>
+
+<h3 id="سناریوهای-عملیاتی-session">سناریوهای عملیاتی Session</h3>
+<p>مدیریت سشن در برنامه‌های وب فراتر از ذخیره‌سازی ساده شناسه کاربر است. هر سناریوی زیر چالش‌ها و نیازمندی‌های خاص خود را دارد و درک آن‌ها برای طراحی سیستم احراز هویت ایمن و مقیاس‌پذیر ضروری است. بدون مدیریت صحیح سشن، برنامه شما در برابر حملات گوناگون آسیب‌پذیر خواهد بود و تجربه کاربری رضایت‌بخشی ارائه نخواهد داد. در ادامه پنج سناریوی عملیاتی کلیدی را بررسی می‌کنیم.</p>
+<ul>
+<li><strong>سشن‌های احراز هویت کاربر:</strong> رایج‌ترین کاربرد سشن، ذخیره وضعیت ورود کاربر است. بعد از اعتبارسنجی نام کاربری و رمز عبور، شناسه سشن یکتا تولید شده و در کنار اطلاعات کاربر (شناسه، نقش، زمان ورود) در ذخیره‌گاه سشن نگهداری می‌شود. کلاینت فقط شناسه سشن را در کوکی دریافت می‌کند. در هر درخواست بعدی، سرور با استخراج شناسه از کوکی و جستجو در ذخیره‌گاه، هویت کاربر را تأیید می‌کند. نکته حیاتی این است که بعد از ورود موفق، شناسه سشن باید بازتولید شود تا از حمله <bdi dir="ltr">Session Fixation</bdi> جلوگیری شود.</li>
+<li><strong>ماندگاری سبد خرید:</strong> سبد خرید کاربران مهمان باید بین درخواست‌های مختلف حفظ شود. سشن مکان مناسبی برای ذخیره آیتم‌های سبد خرید است زیرا بدون احراز هویت هم کار می‌کند. هر آیتم شامل شناسه محصول، تعداد و قیمت لحظه‌ای است. نکته مهم: اگر کاربر بعداً وارد حساب شود، سبد خرید مهمان باید با سبد خرید حساب کاربری ادغام شود. برای سبد‌های خرید بزرگ، به دلیل محدودیت حجم کوکی، حتماً از ذخیره‌گاه سروری (<bdi dir="ltr">Redis</bdi> یا دیتابیس) استفاده کنید و فقط شناسه سشن را در کوکی نگهداری کنید.</li>
+<li><strong>حفاظت <bdi dir="ltr">CSRF</bdi> با توکن‌های سشن:</strong> حمله <bdi dir="ltr">CSRF</bdi> (<bdi dir="ltr">Cross-Site Request Forgery</bdi>) زمانی رخ می‌دهد که سایت مخرب درخواستی به سایت شما ارسال کند و مرورگر به‌صورت خودکار کوکی‌های سشن را ضمیمه کند. برای مقابله، باید توکن <bdi dir="ltr">CSRF</bdi> یکتا تولید کرده و هم در سشن ذخیره و هم در فرم‌های <bdi dir="ltr">HTML</bdi> قرار دهید. هنگام پردازش فرم، تطبیق توکن ارسال‌شده با توکن سشن را بررسی کنید. تنظیم <code dir="ltr">SameSite=Lax</code> یا <code dir="ltr">SameSite=Strict</code> روی کوکی سشن نیز لایه حفاظتی اضافی ایجاد می‌کند.</li>
+<li><strong>انقضای سشن و پاکسازی:</strong> سشن‌ها نباید برای همیشه معتبر باشند. باید دو مکانیزم انقضا داشته باشید: انقضای مطلق (<bdi dir="ltr">absolute timeout</bdi>) مثلاً ۱۲ ساعت و انقضای عدم فعالیت (<bdi dir="ltr">idle timeout</bdi>) مثلاً ۳۰ دقیقه. در ذخیره‌گاه حافظه محلی، باید <bdi dir="ltr">goroutine</bdi> پاکسازی دوره‌ای اجرا کنید. در <bdi dir="ltr">Redis</bdi>، مکانیزم <bdi dir="ltr">TTL</bdi> به‌صورت خودکار این کار را انجام می‌دهد. سشن‌های منقضی‌شده اگر پاک نشوند، باعث نشت حافظه و در نهایت از کار افتادن سرور خواهند شد.</li>
+<li><strong>اشتراک‌گذاری سشن در میکروسرویس‌ها با <bdi dir="ltr">Redis</bdi>:</strong> در معماری میکروسرویس، چندین نمونه از سرور ممکن است همزمان در حال خدمت‌رسانی باشند. ذخیره‌گاه حافظه محلی بین نمونه‌ها مشترک نیست، بنابراین کاربری که به نمونه <bdi dir="ltr">A</bdi> وارد شده، در نمونه <bdi dir="ltr">B</bdi> ناشناس خواهد بود. <bdi dir="ltr">Redis</bdi> با ارائه ذخیره‌گاه متمرکز، این مشکل را حل می‌کند: همه نمونه‌ها به یک <bdi dir="ltr">Redis</bdi> متصل می‌شوند و هر نمونه می‌تواند سشن را بخواند یا به‌روزرسانی کند. کتابخانه <code dir="ltr">alexedwards/scs</code> با <code dir="ltr">redisstore</code> این ادغام را بسیار ساده می‌کند.</li>
+</ul>
+
+<div class="tip">
+<strong>نکته امنیتی:</strong> همیشه پرچم‌های <code dir="ltr">HttpOnly</code>، <code dir="ltr">Secure</code> و <code dir="ltr">SameSite</code> را روی کوکی سشن تنظیم کنید. <code dir="ltr">HttpOnly</code> از دسترسی <bdi dir="ltr">JavaScript</bdi> به کوکی (و سرقت سشن با <bdi dir="ltr">XSS</bdi>) جلوگیری می‌کند. <code dir="ltr">Secure</code> تضمین می‌کند که کوکی فقط روی <bdi dir="ltr">HTTPS</bdi> ارسال شود. <code dir="ltr">SameSite=Lax</code> یا <code dir="ltr">SameSite=Strict</code> از ارسال کوکی در درخواست‌های بین‌سایتی محافظت کرده و حمله <bdi dir="ltr">CSRF</bdi> را دشوار می‌سازد. همچنین حتماً بعد از ورود موفق کاربر، شناسه سشن را بازتولید (<bdi dir="ltr">regenerate</bdi>) کنید تا از حمله <bdi dir="ltr">Session Fixation</bdi> جلوگیری شود. بدون بازتولید شناسه، مهاجم می‌تواند شناسه سشن معلومی را به قربانی تزریق کند و پس از ورود قربانی، از همان شناسه برای دسترسی غیرمجاز استفاده نماید.
+</div>
+</div>
+</main>
+</div>
+
+<!-- Footer -->
+<footer class="site-footer">
+<div class="footer-inner">
+<div class="footer-nav">
+<span class="nav-arrow">‹</span>
+<a href="07.06-working-with-cookies.html" data-prev>۷.۶ کار با Cookie ها</a>
+</div>
+<div class="footer-toc">
+<a href="00.01-contents.html">فهرست</a>
+</div>
+<div class="footer-nav">
+<a href="07.08-html-templates-with-template-and-embed.html" data-next>۷.۸ استفاده از قالب‌های HTML با پکیج html/template و embed</a>
+<span class="nav-arrow">›</span>
+</div>
+</div>
+</footer>
+
+<!-- Back to Top -->
+<button class="back-to-top" aria-label="بازگشت به بالا">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
+</button>
+
+<!-- Scripts -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/go.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/php.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/sql.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/yaml.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/json.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/dockerfile.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/xml.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/ini.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/plaintext.min.js"></script>
+<script src="assets/js/main.js"></script>
+</body>
+</html>

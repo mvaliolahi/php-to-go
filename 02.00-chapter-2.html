@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="fa">
+<head>
+<script>!function(){try{var t=localStorage.getItem('php2go-theme');if(t==='dark'||(!t&&window.matchMedia('(prefers-color-scheme:dark)').matches)){document.documentElement.setAttribute('data-theme','dark')}}catch(e){}}();</script>
+<meta charset="utf-8"/>
+<meta content="ie=edge" http-equiv="x-ua-compatible"/>
+<title>۲. انواع داده و ساختارهای کنترلی — PHP to Go</title>
+<meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet"/>
+<link href="assets/css/main.css" rel="stylesheet" type="text/css"/>
+<link href="assets/img/favicon.ico" rel="icon" type="image/x-icon"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" media="screen" class="hljs-light-theme" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css" media="not screen" class="hljs-dark-theme" rel="stylesheet"/>
+</head>
+<body>
+<!-- Progress Bar -->
+<div class="progress-bar"><div class="progress-bar__fill"></div></div>
+
+<!-- Header -->
+<header class="site-header">
+<div class="header-inner">
+<div class="header-left">
+<button class="header-btn sidebar-toggle" aria-label="فهرست">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+</button>
+<a href="00.00-front-matter.html" class="header-logo"><span class="logo-php">PHP</span> to <span class="logo-go">Go</span></a>
+<span class="header-crumbs">انواع داده و ساختارهای کنترلی</span>
+</div>
+<div class="header-right">
+<nav class="header-nav">
+<span class="nav-arrow">‹</span>
+<a href="01.06-program-execution-overview.html"><span class="nav-label">۱.۶ نگاهی به اجرای برنامه‌ها</span></a>
+<a href="00.01-contents.html">فهرست</a>
+<a href="02.01-data-types-introduction.html"><span class="nav-label">۲.۱ آشنایی با انواع داده</span></a>
+<span class="nav-arrow">›</span>
+</nav>
+<button class="header-btn search-toggle" aria-label="جستجو">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+</button>
+<button class="header-btn theme-toggle" aria-label="تغییر تم">
+<svg class="theme-icon-light" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+<svg class="theme-icon-dark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+</button>
+</div>
+</div>
+</header>
+
+<!-- Search Modal -->
+<div class="search-overlay">
+<div class="search-modal">
+<div class="search-input-wrap">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+<input type="text" class="search-input" placeholder="جستجو... (Ctrl+K)" dir="rtl"/>
+</div>
+<div class="search-results"></div>
+</div>
+</div>
+
+<!-- Layout -->
+<div class="site-layout">
+<!-- Sidebar -->
+<aside class="sidebar"></aside>
+<div class="sidebar-overlay"></div>
+
+<!-- Main Content -->
+<main class="content-area">
+<div class="content-wrap text">
+<div class="chapter-label">فصل ۲</div>
+<h2 id="فصل-دوم">فصل دوم</h2>
+<p>اگر فصل اول ذهنیت شما را از «توسعه‌ی سریع <bdi dir="ltr">PHP</bdi>» به «توسعه‌ی پایدار <bdi dir="ltr">Go</bdi>» تغییر داد، این فصل ابزارهای عملی آن تغییر ذهنیت را در اختیارتان می‌گذارد. در اینجا با تیپ‌ها، ساختارهای کنترلی، توابع و اشاره‌گرها کار می‌کنید — عناصری که هرکدام بازتابی از همان فلسفه‌ی صراحت و سادگی هستند که در فصل قبل آموختید. در <bdi dir="ltr">PHP</bdi> متغیرها بدون نوع تعریف می‌شوند و سیستم خودش حدس می‌زند؛ در <bdi dir="ltr">Go</bdi> هر مقدار از ابتدا نوع مشخصی دارد و کامپایلر اجازه‌ی حدس زدن را نمی‌دهد.</p>
+<p>این فصل قلب عملی کتاب شماست. در اینجا همه‌ی ابزارهای بنیادین که روزانه در توسعه‌ی نرم‌افزار با <bdi dir="ltr">Go</bdi> به‌کار می‌برید را از پایه و با مقایسه‌ی مداوم با تجربه‌ی <bdi dir="ltr">PHP</bdi> شما می‌آموزید. هر بخش با مثال‌های عملی، هشدارهای مربوط به تله‌های رایج، و نگاهی به درون‌ساخت‌های پیاده‌سازی همراه است تا هم بفهمید «چگونه» و هم «چرا» را درک کنید.</p>
+
+<figure class="diagram" dir="ltr">
+<svg height="480" viewBox="0 0 650 480" width="650" xmlns="http://www.w3.org/2000/svg">
+<rect fill="#fafafa" height="460" rx="12" stroke="#00ADD8" stroke-width="2" width="630" x="10" y="10"></rect>
+<text fill="#00ADD8" font-size="17" font-weight="bold" text-anchor="middle" x="325" y="40" direction="rtl" unicode-bidi="embed">نقشه‌ی فصل دوم: انواع داده و ساختارهای کنترلی</text>
+
+<!-- Section boxes -->
+<rect fill="#e3f2fd" height="55" rx="8" stroke="#2196f3" stroke-width="2" width="270" x="30" y="60"></rect>
+<text fill="#1565c0" font-size="13" font-weight="bold" text-anchor="middle" x="165" y="82" direction="rtl" unicode-bidi="embed">۲.۱ آشنایی با انواع داده</text>
+<text fill="#333" font-size="10" text-anchor="middle" x="165" y="102" direction="rtl" unicode-bidi="embed">Primitive • Composite • Zero Values • iota • String Internals</text>
+
+<rect fill="#e8f5e9" height="55" rx="8" stroke="#4caf50" stroke-width="2" width="270" x="350" y="60"></rect>
+<text fill="#2e7d32" font-size="13" font-weight="bold" text-anchor="middle" x="485" y="82" direction="rtl" unicode-bidi="embed">۲.۲ تبدیل نوع (<tspan direction="ltr" unicode-bidi="embed">Type</tspan> <tspan direction="ltr" unicode-bidi="embed">Conversion</tspan>)</text>
+<text fill="#333" font-size="10" text-anchor="middle" x="485" y="102" direction="rtl" unicode-bidi="embed">strconv • Type Assertion • unsafe.Pointer • Custom Converters</text>
+
+<rect fill="#fff3e0" height="55" rx="8" stroke="#ff9800" stroke-width="2" width="270" x="30" y="135"></rect>
+<text fill="#e65100" font-size="13" font-weight="bold" text-anchor="middle" x="165" y="157" direction="rtl" unicode-bidi="embed">۲.۳ ساختارهای کنترلی</text>
+<text fill="#333" font-size="10" text-anchor="middle" x="165" y="177" direction="rtl" unicode-bidi="embed">if-init • switch/fallthrough • range • Labels • goto</text>
+
+<rect fill="#f3e5f5" height="55" rx="8" stroke="#777BB4" stroke-width="2" width="270" x="350" y="135"></rect>
+<text fill="#777BB4" font-size="13" font-weight="bold" text-anchor="middle" x="485" y="157" direction="rtl" unicode-bidi="embed">۲.۴ توابع و متدها</text>
+<text fill="#333" font-size="10" text-anchor="middle" x="485" y="177" direction="rtl" unicode-bidi="embed">Value/Pointer Receiver • Method Sets • defer • Variadic • init()</text>
+
+<rect fill="#e0f7fa" height="55" rx="8" stroke="#00ADD8" stroke-width="2" width="270" x="30" y="210"></rect>
+<text fill="#00838f" font-size="13" font-weight="bold" text-anchor="middle" x="165" y="232" direction="rtl" unicode-bidi="embed">۲.۵ اشاره‌گرها</text>
+<text fill="#333" font-size="10" text-anchor="middle" x="165" y="252" direction="rtl" unicode-bidi="embed">Escape Analysis • Value vs Reference • Pointer to Pointer • Benchmarks</text>
+
+<rect fill="#fce4ec" height="55" rx="8" stroke="#e74c3c" stroke-width="2" width="270" x="350" y="210"></rect>
+<text fill="#c62828" font-size="13" font-weight="bold" text-anchor="middle" x="485" y="232" direction="rtl" unicode-bidi="embed">۲.۶ جنریک‌ها</text>
+<text fill="#333" font-size="10" text-anchor="middle" x="485" y="252" direction="rtl" unicode-bidi="embed">Type Constraints • comparable • Generic Types • When NOT to use</text>
+
+<!-- Connecting arrows -->
+<line stroke="#2196f3" stroke-width="1.5" x1="165" y1="115" x2="165" y2="135"></line>
+<line stroke="#4caf50" stroke-width="1.5" x1="485" y1="115" x2="485" y2="135"></line>
+<line stroke="#ff9800" stroke-width="1.5" x1="165" y1="190" x2="165" y2="210"></line>
+<line stroke="#777BB4" stroke-width="1.5" x1="485" y1="190" x2="485" y2="210"></line>
+<line stroke="#00ADD8" stroke-width="1.5" x1="165" y1="265" x2="165" y2="285"></line>
+<line stroke="#e74c3c" stroke-width="1.5" x1="485" y1="265" x2="485" y2="285"></line>
+
+<!-- PHP vs Go comparison -->
+<rect fill="#777BB4" height="40" rx="8" stroke="#777BB4" stroke-width="2" width="270" x="30" y="285"></rect>
+<text fill="#fff" font-size="14" font-weight="bold" text-anchor="middle" x="165" y="311" direction="rtl" unicode-bidi="embed">PHP: Dynamic Typing</text>
+
+<rect fill="#00ADD8" height="40" rx="8" stroke="#00ADD8" stroke-width="2" width="270" x="350" y="285"></rect>
+<text fill="#fff" font-size="14" font-weight="bold" text-anchor="middle" x="485" y="311" direction="ltr" unicode-bidi="embed">Go: Static Typing</text>
+
+<!-- Arrow between them -->
+<defs><marker id="arrch2" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#333" points="0 0, 10 3.5, 0 7"></polygon></marker></defs>
+<line marker-end="url(#arrch2)" stroke="#333" stroke-width="2" x1="300" x2="350" y1="305" y2="305"></line>
+<text fill="#333" font-size="11" text-anchor="middle" x="325" y="298" direction="rtl" unicode-bidi="embed">مهاجرت</text>
+
+<!-- Key concepts box -->
+<rect fill="#fff9c4" height="130" rx="8" stroke="#f9a825" stroke-width="1.5" width="590" x="30" y="345"></rect>
+<text fill="#f57f17" font-size="13" font-weight="bold" text-anchor="middle" x="325" y="370" direction="rtl" unicode-bidi="embed">مفاهیم کلیدی فصل دوم</text>
+<text fill="#333" font-size="11" x="50" y="395" direction="rtl" unicode-bidi="embed">• هر متغیر در <tspan direction="ltr" unicode-bidi="embed">Go</tspan> از ابتدا نوع مشخصی دارد — کامپایلر اجازه‌ی حدس زدن نمی‌دهد</text>
+<text fill="#333" font-size="11" x="50" y="415" direction="rtl" unicode-bidi="embed">• مقادیر صفر (<tspan direction="ltr" unicode-bidi="embed">Zero</tspan> <tspan direction="ltr" unicode-bidi="embed">Values</tspan>) تضمین می‌کنند هیچ متغیری مقدار تعریف‌نشده ندارد</text>
+<text fill="#333" font-size="11" x="50" y="435" direction="rtl" unicode-bidi="embed">• تبدیل نوع صریح است: هیچ <tspan direction="ltr" unicode-bidi="embed">Type</tspan> <tspan direction="ltr" unicode-bidi="embed">Juggling</tspan> یا تبدیل ضمنی وجود ندارد</text>
+<text fill="#333" font-size="11" x="50" y="455" direction="rtl" unicode-bidi="embed">• فقط یک حلقه وجود دارد (<tspan direction="ltr" unicode-bidi="embed">for</tspan>) اما به اندازه‌ی کافی قدرتمند است</text>
+<text fill="#333" font-size="11" x="50" y="475" direction="rtl" unicode-bidi="embed">• متدها روی <tspan direction="ltr" unicode-bidi="embed">struct</tspan> تعریف می‌شوند نه درون کلاس — <tspan direction="ltr" unicode-bidi="embed">Receiver</tspan> این نقش را ایفا می‌کند</text>
+</svg>
+<figcaption dir="rtl">شکل ۰-۲: نقشه‌ی فصل دوم</figcaption>
+</figure>
+
+<p><strong>در این فصل خواننده با مفاهیم زیر آشنا خواهد شد:</strong></p>
+
+<p>سیستم <bdi dir="ltr">static type</bdi> در <bdi dir="ltr">Go</bdi> و مقایسه آن با <bdi dir="ltr">dynamic type</bdi> در <bdi dir="ltr">PHP</bdi> — از مقادیر صفر (<bdi dir="ltr">zero values</bdi>) و تأثیر فلسفی آن‌ها بر طراحی ایمن نرم‌افزار، تا نوع‌دهی صریح و تأثیر آن بر ایمنی کد و کاهش خطاهای زمان‌اجرای. درک این تفاوت بنیادین اولین قدم برای مهاجرت موفق از <bdi dir="ltr">PHP</bdi> به <bdi dir="ltr">Go</bdi> است.</p>
+
+<p>انواع داده‌های پایه در <bdi dir="ltr">Go</bdi> مانند <bdi dir="ltr">int</bdi> ، <bdi dir="ltr">float</bdi> ، <bdi dir="ltr">bool</bdi> ، <bdi dir="ltr">string</bdi> ، <bdi dir="ltr">byte</bdi> و <bdi dir="ltr">rune</bdi> و تفاوت‌های آن‌ها با معادل‌های <bdi dir="ltr">PHP</bdi> — شامل ساختار داخلی رشته‌ها (string header و immutable بودن)، رفتار <bdi dir="ltr">overflow</bdi> عددی، و تفاوت نوع‌تعریف (<bdi dir="ltr">type alias</bdi>) با نوع‌جدید (<bdi dir="ltr">type definition</bdi>)</p>
+
+<p>انواع داده‌های مرکب در <bdi dir="ltr">Go</bdi> شامل <bdi dir="ltr">array</bdi> ، <bdi dir="ltr">slice</bdi> ، <bdi dir="ltr">map</bdi> و <bdi dir="ltr">struct</bdi> و مقایسه با آرایه‌ها و اشیاء در <bdi dir="ltr">PHP</bdi> — با تأکید بر تفاوت رفتار مرجع‌دار بودن slice و map در برابر کپی شدن struct و array</p>
+
+<p>تبدیل انواع داده — تفاوت <bdi dir="ltr">type conversion</bdi> صریح با <bdi dir="ltr">type juggling</bdi> ضمنی، بسته‌ی <bdi dir="ltr">strconv</bdi> برای تبدیل‌های رشته‌ای-عددی، <bdi dir="ltr">type assertion</bdi> و <bdi dir="ltr">type switch</bdi> برای کار با interface، و بسته‌ی <bdi dir="ltr">unsafe</bdi> برای تبدیل‌های سطح پایین</p>
+
+<p>ساختارهای کنترلی <bdi dir="ltr">if</bdi> ، <bdi dir="ltr">switch</bdi> ، <bdi dir="ltr">for</bdi> و تفاوت‌های آن‌ها با ساختارهای مشابه در <bdi dir="ltr">PHP</bdi> — از <bdi dir="ltr">if-init</bdi> و حوزه‌ی متغیرها، تا رفتار <bdi dir="ltr">fallthrough</bdi> در switch، <bdi dir="ltr">range</bdi> روی اعداد — Go 1.22+، و برچسب‌ها برای خروج از حلقه‌های تودرتو</p>
+
+<p>تعریف و استفاده از توابع و متدها شامل بازگشت چند مقدار، توابع ناشناس و <bdi dir="ltr">closure</bdi> ، کلیدواژه <bdi dir="ltr">defer</bdi> و ترتیب اجرای <bdi dir="ltr">LIFO</bdi> آن، متدها با <bdi dir="ltr">value receiver</bdi> و <bdi dir="ltr">pointer receiver</bdi> ، قواعد <bdi dir="ltr">method set</bdi> ، توابع <bdi dir="ltr">variadic</bdi> ، و تابع <bdi dir="ltr">init()</bdi></p>
+
+<p>اشاره‌گرها و مدیریت حافظه — از ارسال مرجع و اشاره‌گر به اشاره‌گر تا <bdi dir="ltr">escape analysis</bdi> و تفاوت رفتار انواع مقداری و مرجع‌دار، با بررسی ریزش حافظه و مقایسه‌ی کارایی ارسال مقداری در برابر اشاره‌گری</p>
+
+<p>جنریک‌ها و مقایسه با <bdi dir="ltr">Type Hinting</bdi> در <bdi dir="ltr">PHP</bdi> — از <bdi dir="ltr">type constraint</bdi> و <bdi dir="ltr">comparable</bdi> تا تصمیم‌گیری درباره‌ی زمان استفاده از جنریک در برابر interface، و محدودیت‌های فعلی جنریک‌ها در <bdi dir="ltr">Go</bdi></p>
+
+<div class="tip"><strong>نگاهی به درون‌ساخت Go:</strong> در این فصل علاوه بر مقایسه‌ی سطحی <bdi dir="ltr">PHP</bdi> و <bdi dir="ltr">Go</bdi> ، به بررسی نحوه‌ی پیاده‌سازی داخلی انواع داده در <bdi dir="ltr">Go</bdi> نیز می‌پردازیم. درک ساختار حافظه‌ی انواع داده‌ای، نحوه‌ی رشد اسلایس‌ها، عملکرد داخلی مپ‌ها، مکانیزم <bdi dir="ltr">Escape Analysis</bdi> کامپایلر و نحوه‌ی پیاده‌سازی جنریک‌ها به شما کمک می‌کند کدی کارآمدتر بنویسید و خطاهای ظریف حافظه را پیش‌گیری کنید. این دانش تفاوت آگاهی بین «فقط کار کردن کد» و «فهمیدن چرایی کار کردن کد» را ایجاد می‌کند.</div>
+
+<div class="important"><strong>پیش‌نیاز:</strong> پیش از مطالعه‌ی این فصل، مطمئن شوید فصل اول را خوانده‌اید. مفاهیمی مانند تفاوت <bdi dir="ltr">stack</bdi> و <bdi dir="ltr">heap</bdi> ، حافظه‌ی ایستا و پویا، و فلسفه‌ی کلی <bdi dir="ltr">Go</bdi> که در فصل اول بررسی شد، در این فصل به‌طور مستمر به‌کار می‌روند. همچنین داشتن تجربه‌ی عملی با <bdi dir="ltr">PHP</bdi> به شما کمک می‌کند تفاوت‌ها را بهتر درک کنید.</div>
+</div>
+</main>
+</div>
+
+<!-- Footer -->
+<footer class="site-footer">
+<div class="footer-inner">
+<div class="footer-nav">
+<span class="nav-arrow">‹</span>
+<a href="01.06-program-execution-overview.html" data-prev>۱.۶ نگاهی به اجرای برنامه‌ها</a>
+</div>
+<div class="footer-toc">
+<a href="00.01-contents.html">فهرست</a>
+</div>
+<div class="footer-nav">
+<a href="02.01-data-types-introduction.html" data-next>۲.۱ آشنایی با انواع داده</a>
+<span class="nav-arrow">›</span>
+</div>
+</div>
+</footer>
+
+<!-- Back to Top -->
+<button class="back-to-top" aria-label="بازگشت به بالا">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
+</button>
+
+<!-- Scripts -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/go.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/php.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/sql.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/yaml.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/json.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/dockerfile.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/xml.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/ini.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/plaintext.min.js"></script>
+<script src="assets/js/main.js"></script>
+</body>
+</html>

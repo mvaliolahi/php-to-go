@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="fa">
+<head>
+<script>!function(){try{var t=localStorage.getItem('php2go-theme');if(t==='dark'||(!t&&window.matchMedia('(prefers-color-scheme:dark)').matches)){document.documentElement.setAttribute('data-theme','dark')}}catch(e){}}();</script>
+<meta charset="utf-8"/>
+<meta content="ie=edge" http-equiv="x-ua-compatible"/>
+<title>۷.۴ مدیریت Middleware — PHP to Go</title>
+<meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet"/>
+<link href="assets/css/main.css" rel="stylesheet" type="text/css"/>
+<link href="assets/img/favicon.ico" rel="icon" type="image/x-icon"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" media="screen" class="hljs-light-theme" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css" media="not screen" class="hljs-dark-theme" rel="stylesheet"/>
+</head>
+<body>
+<!-- Progress Bar -->
+<div class="progress-bar"><div class="progress-bar__fill"></div></div>
+
+<!-- Header -->
+<header class="site-header">
+<div class="header-inner">
+<div class="header-left">
+<button class="header-btn sidebar-toggle" aria-label="فهرست">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+</button>
+<a href="00.00-front-matter.html" class="header-logo"><span class="logo-php">PHP</span> to <span class="logo-go">Go</span></a>
+<span class="header-crumbs">ساخت وب‌سرور › مدیریت Middleware</span>
+</div>
+<div class="header-right">
+<nav class="header-nav">
+<span class="nav-arrow">‹</span>
+<a href="07.03-reading-request-input.html"><span class="nav-label">۷.۳ خواندن داده‌های ورودی از request</span></a>
+<a href="00.01-contents.html">فهرست</a>
+<a href="07.05-serving-static-files.html"><span class="nav-label">۷.۵ سرو کردن فایل‌های استاتیک</span></a>
+<span class="nav-arrow">›</span>
+</nav>
+<button class="header-btn search-toggle" aria-label="جستجو">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+</button>
+<button class="header-btn theme-toggle" aria-label="تغییر تم">
+<svg class="theme-icon-light" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+<svg class="theme-icon-dark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+</button>
+</div>
+</div>
+</header>
+
+<!-- Search Modal -->
+<div class="search-overlay">
+<div class="search-modal">
+<div class="search-input-wrap">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+<input type="text" class="search-input" placeholder="جستجو... (Ctrl+K)" dir="rtl"/>
+</div>
+<div class="search-results"></div>
+</div>
+</div>
+
+<!-- Layout -->
+<div class="site-layout">
+<!-- Sidebar -->
+<aside class="sidebar"></aside>
+<div class="sidebar-overlay"></div>
+
+<!-- Main Content -->
+<main class="content-area">
+<div class="content-wrap text">
+<div class="chapter">فصل ۷.۴</div>
+<div class="comparison"><strong>مقایسه با PHP:</strong> در Laravel مفهوم Middleware به‌صورت built-in وجود دارد و با کلاس‌های Middleware مدیریت می‌شود. در Go middleware‌ها در واقع توابعی هستند که <code dir="ltr">http.Handler</code> را دریافت کرده و یک <code dir="ltr">http.Handler</code> جدید برمی‌گردانند. این رویکرد ساده‌تر اما قدرتمندتر است.</div>
+<h2 id="مدیریت-middleware">مدیریت Middleware</h2>
+<table class="comparison-table" dir="rtl">
+<thead>
+<tr><th>ویژگی</th><th>Laravel Middleware</th><th>Go Middleware</th></tr>
+</thead>
+<tbody>
+<tr><td>تعریف</td><td>کلاس PHP با متد <span dir="ltr">handle()</span></td><td>تابع <span dir="ltr">func(http.Handler)http.Handler</span></td></tr>
+<tr><td>ثبت سراسری</td><td dir="ltr">Kernel.php → $middleware</td><td dir="ltr">chainMiddleware(mux, mw1, mw2)</td></tr>
+<tr><td>ثبت در مسیر</td><td dir="ltr">Route::<span dir="ltr">middleware('auth')</span></td><td>پوشش هندلر با <span dir="ltr">middleware(handler)</span></td></tr>
+<tr><td>ترتیب اجرا</td><td>به ترتیب ثبت در آرایه</td><td>معکوس حلقه — آخرین اول اجرا</td></tr>
+<tr><td>گروه‌بندی</td><td>Middleware Groups در Kernel</td><td>ترکیب دستی توابع</td></tr>
+<tr><td>قبل و بعد</td><td>قبل: $<span dir="ltr">next($request)</span> / بعد: تغییر response</td><td>قبل: <span dir="ltr">next.ServeHTTP()</span> / بعد: تغییر response</td></tr>
+</tbody>
+</table>
+<figure class="diagram" dir="ltr">
+<svg height="360" viewBox="0 0 620 360" width="620" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<marker id="arrow4" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#555" points="0 0, 10 3.5, 0 7"></polygon></marker>
+<marker id="arrow4r" markerheight="7" markerwidth="10" orient="auto" refx="0" refy="3.5"><polygon fill="#999" points="10 0, 0 3.5, 10 7"></polygon></marker>
+<filter height="104%" id="sh4" width="104%" x="-2%" y="-2%"><fedropshadow dx="1" dy="1" flood-opacity="0.15" stddeviation="2"></fedropshadow></filter>
+</defs>
+<rect fill="#fff" height="360" rx="8" width="620" x="0" y="0"></rect>
+<text fill="#333" font-size="16" font-weight="bold" text-anchor="middle" x="310" y="28" direction="rtl" unicode-bidi="embed">زنجیره <tspan direction="ltr" unicode-bidi="embed">Middleware</tspan> در <tspan direction="ltr" unicode-bidi="embed">Go</tspan></text>
+<!-- Request -->
+<rect fill="#777BB4" filter="url(#sh4)" height="40" rx="6" width="90" x="20" y="80"></rect>
+<text fill="#fff" font-size="11" text-anchor="middle" x="65" y="105" direction="ltr" unicode-bidi="embed">Request</text>
+<!-- Middleware 1: Logging -->
+<rect fill="#4CAF50" filter="url(#sh4)" height="80" rx="6" width="110" x="140" y="60"></rect>
+<text fill="#fff" font-size="11" text-anchor="middle" x="195" y="90" direction="ltr" unicode-bidi="embed">Logging</text>
+<text fill="#e8f5e9" font-size="9" text-anchor="middle" x="195" y="108" direction="ltr" unicode-bidi="embed">Middleware</text>
+<!-- Middleware 2: Security -->
+<rect fill="#FF9800" filter="url(#sh4)" height="80" rx="6" width="110" x="280" y="60"></rect>
+<text fill="#fff" font-size="11" text-anchor="middle" x="335" y="90" direction="ltr" unicode-bidi="embed">Security</text>
+<text fill="#fff3e0" font-size="9" text-anchor="middle" x="335" y="108" direction="ltr" unicode-bidi="embed">Headers</text>
+<!-- Middleware 3: CORS -->
+<rect fill="#9C27B0" filter="url(#sh4)" height="80" rx="6" width="110" x="420" y="60"></rect>
+<text fill="#fff" font-size="11" text-anchor="middle" x="475" y="90" direction="ltr" unicode-bidi="embed">CORS</text>
+<text fill="#e1bee7" font-size="9" text-anchor="middle" x="475" y="108" direction="ltr" unicode-bidi="embed">Middleware</text>
+<!-- Handler -->
+<rect fill="#00ADD8" filter="url(#sh4)" height="45" rx="6" width="110" x="420" y="200"></rect>
+<text fill="#fff" font-size="12" text-anchor="middle" x="475" y="227" direction="ltr" unicode-bidi="embed">Handler</text>
+<!-- Arrows forward -->
+<line marker-end="url(#arrow4)" stroke="#555" stroke-width="2" x1="110" x2="140" y1="100" y2="100"></line>
+<line marker-end="url(#arrow4)" stroke="#555" stroke-width="2" x1="250" x2="280" y1="100" y2="100"></line>
+<line marker-end="url(#arrow4)" stroke="#555" stroke-width="2" x1="390" x2="420" y1="100" y2="100"></line>
+<line marker-end="url(#arrow4)" stroke="#555" stroke-width="2" x1="475" x2="475" y1="140" y2="200"></line>
+<!-- Response -->
+<rect fill="#777BB4" filter="url(#sh4)" height="40" rx="6" width="90" x="20" y="200"></rect>
+<text fill="#fff" font-size="11" text-anchor="middle" x="65" y="225" direction="ltr" unicode-bidi="embed">Response</text>
+<!-- Arrows backward -->
+<line stroke="#999" stroke-dasharray="4,4" stroke-width="1.5" x1="475" x2="475" y1="245" y2="280"></line>
+<line marker-end="url(#arrow4r)" stroke="#999" stroke-width="1.5" x1="420" x2="390" y1="280" y2="280"></line>
+<line marker-end="url(#arrow4r)" stroke="#999" stroke-width="1.5" x1="280" x2="250" y1="280" y2="280"></line>
+<line marker-end="url(#arrow4r)" stroke="#999" stroke-width="1.5" x1="140" x2="110" y1="280" y2="280"></line>
+<text fill="#999" font-size="11" text-anchor="middle" x="310" y="310" direction="rtl" unicode-bidi="embed">مسیر بازگشت پاسخ (بعد از اجرای هندلر)</text>
+<!-- Labels -->
+<text fill="#4CAF50" font-size="9" text-anchor="middle" x="195" y="310" direction="ltr" unicode-bidi="embed">log end</text>
+<text fill="#FF9800" font-size="9" text-anchor="middle" x="335" y="310" direction="ltr" unicode-bidi="embed">add headers</text>
+<text fill="#9C27B0" font-size="9" text-anchor="middle" x="475" y="310" direction="ltr" unicode-bidi="embed">CORS headers</text>
+</svg>
+<figcaption>شکل ۷-۴: زنجیره <bdi dir="ltr">Middleware</bdi> — درخواست از چپ به راست و پاسخ از راست به چپ</figcaption>
+</figure>
+<p>در ساختار یک وب‌سرور، معمولاً نیازمند اضافه کردن قابلیت‌های جانبی مانند Logging، کنترل دسترسی، مدیریت خطا، افزودن هدرهای امنیتی و بسیاری موارد دیگر هستیم که نباید در تک‌تک Handler برنامه تکرار شوند. اینجا نقش <strong dir="ltr">Middleware</strong> مطرح می‌شود.</p>
+<p>Middleware در Go به قطعات کدی گفته می‌شود که بین دریافت Request و اجرای هندلر اصلی قرار می‌گیرند و قابلیت‌های کمکی را به شکل متمرکز و سازمان‌دهی شده فراهم می‌کنند. استفاده از Middleware ضمن افزایش قابلیت نگهداری کد، امنیت و قابلیت توسعه پروژه را به شکل قابل‌توجهی افزایش می‌دهد.</p>
+<h3 id="تعریف-middleware-در-go">تعریف Middleware در Go</h3>
+
+<div class="quote-box">
+    <p class="quote-text">میدلور HTTP را به‌عنوان توابع ساده بنویسید که یک http.Handler دریافت می‌کنند و یک http.Handler برمی‌گردانند. این الگو بسیار زیباست زیرا به‌طور طبیعی ترکیب‌پذیر است — می‌توانید میدلورها را بدون هیچ جادوی فریمورک زنجیره کنید و سیستم نوعی صحت را تضمین می‌کند.</p>
+    <p class="quote-source">
+        <span class="quote-author">Mat Ryer</span>
+        <span class="quote-role">نویسنده و سخنران برجسته Go</span>
+        <span class="quote-separator">|</span>
+        <span class="quote-book">How I Write HTTP Services in Go</span>
+    </p>
+</div>
+<p>Middleware در Go معمولاً به صورت تابعی نوشته می‌شود که یک http.Handler می‌گیرد و یک http.Handler جدید بازمی‌گرداند. یعنی در واقع می‌تواند قبل و بعد از اجرای هندلر اصلی، پردازش‌هایی انجام دهد.</p>
+<p>ساختار کلی یک Middleware به شکل زیر است:</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">func middlewareName(next http.Handler) http.Handler {
+    return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+        next.ServeHTTP(w, r) // call next handler in chain
+    })
+}
+</code></pre>
+</figure>
+<p>کارهای قبل از اجرای هندلر اصلی و کارهای بعد از اجرای هندلر اصلی (اختیاری):</p>
+<h3 id="مزایای-استفاده-از-middleware">مزایای استفاده از Middleware</h3>
+<p><strong>افزایش خوانایی و نظم کد</strong> ویژگی‌های عمومی و مشترک را به صورت جداگانه مدیریت می‌کند.</p>
+<p><strong>کاهش تکرار کد</strong> کدهای مشابه مثل Logging یا بررسی اعتبارسنجی فقط یک بار نوشته می‌شود.</p>
+<p><strong>امنیت بیشتر</strong> امکان کنترل دسترسی و جلوگیری از حملات از طریق یک لایه میانی فراهم می‌شود.</p>
+<p><strong>قابلیت مدیریت خطا</strong> می‌توان به صورت مرکزی از وقوع Panic یا خطاهای بحرانی جلوگیری کرد.</p>
+<p><strong>سفارشی‌سازی پاسخ‌ها</strong> تنظیم هدرها و اعمال محدودیت‌ها بدون تغییر هندلرهای اصلی.
+</p>
+
+<div class="quote-box">
+    <p class="quote-text">طراحی متعامد یعنی تغییرات یک مؤلفه روی مؤلفه‌های دیگر اثر نمی‌گذارد. هرچه سیستم شما متعامد‌تر باشد، چیزهای کمتری را هنگام تغییر یک قابلیت باید تغییر دهید.</p>
+    <p class="quote-source">
+        <span class="quote-author">Andy Hunt و Dave Thomas</span>
+        <span class="quote-role">نویسندگان و مهندسان نرم‌افزار</span>
+        <span class="quote-separator">|</span>
+        <span class="quote-book">The Pragmatic Programmer</span>
+    </p>
+</div>
+<div class="tip">
+<strong>نکته‌ی حرفه‌ای:</strong> میدلور در <bdi dir="ltr">Go</bdi> یک الگوی متعامد است — هر میدلور یک دغدغه عرضی (لاگ‌گیری، احراز هویت، محدود کردن نرخ) را مستقلاً مدیریت می‌کند. ترتیب میدلورها اهمیت دارد: لاگ‌گیری باید همه‌چیز را بپوشاند، احراز هویت درونی‌تر باشد و بازیابی از <bdi dir="ltr">panic</bdi> بیرونی‌ترین باشد.
+</div>
+
+<h3 id="پیادهسازی-middleware-روی-servemux">پیاده‌سازی Middleware روی ServeMux</h3>
+<p>در برنامه‌های Go معمولاً از http.ServeMux برای مدیریت روت‌ها استفاده می‌شود. چون ServeMux یک http.Handler است می‌توان آن را به عنوان ورودی به Middleware داد و Middleware را روی کل سرور اعمال کرد.</p>
+<p>نمونه ساده با Middleware Logging:</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">func loggingMiddleware(next http.Handler) http.Handler {
+    return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+        log.Printf("شروع درخواست: %s %s", r.Method, r.URL.Path)
+        next.ServeHTTP(w, r)
+        log.Printf("پایان درخواست: %s %s", r.Method, r.URL.Path)
+    })
+}
+func main() {
+    mux := http.NewServeMux()
+    mux.HandleFunc("/", homeHandler)
+    mux.HandleFunc("/about", aboutHandler)
+    mux.HandleFunc("/favicon.ico", http.NotFound)
+    loggedMux := loggingMiddleware(mux)
+    server := &amp;http.Server{
+        Addr: ":8080",
+        Handler: loggedMux,
+    }
+    log.Fatal(server.ListenAndServe())
+}
+</code></pre>
+</figure>
+<h3 id="middleware-chaining">Middleware Chaining</h3>
+<p>در پروژه‌های واقعی معمولاً چندین Middleware داریم. ترتیب اجرای آن‌ها اهمیت بالایی دارد. برای راحتی می‌توان یک تابع کمکی برای زنجیره Middlewareها نوشت:</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">type Middleware func(http.Handler) http.Handler
+func chainMiddleware(h http.Handler, mws ...Middleware) http.Handler {
+    for i := len(mws) - 1; i &gt;= 0; i-- {
+        h = mws[i](h)
+    }
+    return h
+}
+handlerChain := chainMiddleware(mux, recoverMiddleware, securityHeadersMiddleware, loggingMiddleware, corsMiddleware)
+</code></pre>
+</figure>
+<p>و سپس در main به این صورت استفاده می‌کنیم:</p>
+<h3 id="الگوی-closure-و-adapter-در-middleware">الگوی Closure و Adapter در Middleware</h3>
+<p>برای درک عمیق‌تر middleware در Go، باید دو مفهوم کلیدی را بشناسیم: <strong dir="ltr">Closure</strong> (بستار) و <strong dir="ltr">http.HandlerFunc</strong> به عنوان <strong dir="ltr">Adapter</strong> (تطبیق‌دهنده).</p>
+<h4 id="نقش-closure">نقش Closure</h4>
+<p>وقتی تابع middleware را می‌نویسیم، یک <strong dir="ltr">closure</strong> ایجاد می‌کنیم. این closure به متغیر <code>next</code> (هندلر بعدی) دسترسی دارد و آن را در خود «حبس» می‌کند. به این ترتیب، وقتی <code>ServeHTTP</code> فراخوانی می‌شود، middleware همچنان به هندلر بعدی دسترسی دارد:</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">func myMiddleware(next http.Handler) http.Handler {
+    // closure: inner function has access to next variable
+    return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+        // --- Before handler ---
+        log.Println("درخواست دریافت شد:", r.URL.Path)
+
+        // Call next handler
+        next.ServeHTTP(w, r)
+
+        // --- After handler ---
+        log.Println("پاسخ ارسال شد")
+    })
+}
+</code></pre>
+</figure>
+<h4 id="نقش-httphandlerfunc-به-عنوان-adapter">نقش http.HandlerFunc به عنوان Adapter</h4>
+<p>در Go رابط <code dir="ltr">http.Handler</code> دارای متد <code dir="ltr">ServeHTTP(ResponseWriter, *Request)</code> است. اما <code dir="ltr">func(w ResponseWriter, r *Request)</code> صرفاً یک تابع است و رابط <code dir="ltr">http.Handler</code> را برآورده نمی‌کند. اینجاست که <code dir="ltr">http.HandlerFunc</code> نقش adapter را بازی می‌کند:</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">// http.HandlerFunc is a type that any function with matching signature
+// Automatically converts to http.Handler
+type HandlerFunc func(ResponseWriter, *Request)
+
+// ServeHTTP satisfies the Handler interface method
+func (f HandlerFunc) ServeHTTP(w ResponseWriter, r *Request) {
+    f(w, r) // just calls the function
+}
+</code></pre>
+</figure>
+<p>بدون <code dir="ltr">http.HandlerFunc</code> نمی‌توانستیم یک تابع ناشناس را مستقیماً به عنوان <code dir="ltr">http.Handler</code> برگردانیم. این adapter پل بین «توابع معمولی» و «رابط Handler» است.</p>
+<figure class="code php" dir="ltr">
+<pre><code class="language-php">// Laravel Middleware — PSR-15
+class MyMiddleware implements MiddlewareInterface
+{
+    public function process(Request $request, Handler $handler): Response
+    {
+        // Before handler
+        Log::info('Request received');
+
+        // Call next handler
+        $response = $handler-&gt;handle($request);
+
+        // After handler
+        Log::info('Response sent');
+
+        return $response;
+    }
+}
+</code></pre>
+</figure>
+<table class="comparison-table" dir="rtl">
+<thead>
+<tr><th>مفهوم</th><th>Laravel / PSR-15</th><th>Go net/http</th></tr>
+</thead>
+<tbody>
+<tr><td>رابط Middleware</td><td>MiddlewareInterface با متد <span dir="ltr">process()</span></td><td dir="ltr">func(http.Handler) http.Handler</td></tr>
+<tr><td>نوع درخواست</td><td dir="ltr">PSR-7 ServerRequestInterface</td><td>*<span dir="ltr">http.Request</span> (ساختار ثابت)</td></tr>
+<tr><td>نوع پاسخ</td><td dir="ltr">PSR-7 ResponseInterface</td><td><span dir="ltr">http.ResponseWriter</span> (اینترفیس)</td></tr>
+<tr><td>فراخوانی بعدی</td><td dir="ltr">$handler-&gt;<span dir="ltr">handle($request)</span></td><td dir="ltr">next.ServeHTTP(w, r)</td></tr>
+<tr><td>تغییر درخواست</td><td>ایجاد شیء جدید Request</td><td>تغییر مستقیم *<span dir="ltr">http.Request</span> یا <span dir="ltr">r.WithContext()</span></td></tr>
+<tr><td>تغییر پاسخ</td><td>ایجاد شیء جدید Response</td><td>بسته‌بندی ResponseWriter</td></tr>
+</tbody>
+</table>
+<h3 id="پیادهسازی-middlewareهای-عملی">پیاده‌سازی Middleware‌های عملی</h3>
+<h4 id="middleware-هدرهای-امنیتی">Middleware هدرهای امنیتی</h4>
+<p>یکی از middleware‌های کلیدی، افزودن هدرهای امنیتی به تمام پاسخ‌هاست. این هدرها از حملات رایج مانند Clickjacking، XSS و MIME-type sniffing جلوگیری می‌کنند:</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">func commonHeaders(next http.Handler) http.Handler {
+    return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+        w.Header().Set("Content-Security-Policy",
+        "default-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:")
+        w.Header().Set("Referrer-Policy", "origin-when-cross-origin")
+        w.Header().Set("X-Content-Type-Options", "nosniff")
+        w.Header().Set("X-Frame-Options", "deny")
+        w.Header().Set("X-XSS-Protection", "0") // modern browsers don't use this
+        w.Header().Set("Strict-Transport-Security", "max-age=63072000; includeSubDomains")
+
+        next.ServeHTTP(w, r)
+    })
+}
+</code></pre>
+</figure>
+<figure class="code php" dir="ltr">
+<pre><code class="language-php">// Laravel — in app/Http/Middleware/SetSecureHeaders.php
+class SetSecureHeaders
+{
+    public function handle($request, Closure $next)
+    {
+        $response = $next($request);
+        $response-&gt;headers-&gt;set('X-Frame-Options', 'DENY');
+        $response-&gt;headers-&gt;set('X-Content-Type-Options', 'nosniff');
+        $response-&gt;headers-&gt;set('Strict-Transport-Security', 'max-age=63072000; includeSubDomains');
+        return $response;
+    }
+}
+</code></pre>
+</figure>
+<h4 id="middleware-لاگ-درخواست">Middleware لاگ درخواست</h4>
+<p>برای ثبت جزئیات هر درخواست (متد، مسیر، کد وضعیت و مدت زمان)، باید <code dir="ltr">http.ResponseWriter</code> را بسته‌بندی کنیم تا بتوانیم کد وضعیت را ضبط کنیم:</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">type responseRecorder struct {
+    http.ResponseWriter
+    statusCode int
+}
+
+func (rr *responseRecorder) WriteHeader(code int) {
+    rr.statusCode = code
+    rr.ResponseWriter.WriteHeader(code)
+}
+
+func requestLogger(next http.Handler) http.Handler {
+    return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+        start := time.Now()
+        rec := &amp;responseRecorder{ResponseWriter: w, statusCode: http.StatusOK}
+
+        next.ServeHTTP(rec, r)
+
+        log.Printf("%s %s %d %s",
+        r.Method,
+        r.URL.Path,
+        rec.statusCode,
+        time.Since(start).Round(time.Microsecond),
+    )
+    })
+}
+</code></pre>
+</figure>
+<div class="tip">
+<strong>نکته:</strong> بسته‌بندی <code dir="ltr">http.ResponseWriter</code> الگوی رایجی در Go است. با ایجاد ساختاری که <code dir="ltr">http.ResponseWriter</code> را embed می‌کند، می‌توانیم رفتار آن را بدون تغییر رابط اصلی، گسترش دهیم.
+</div>
+<h4 id="middleware-بازیابی-از-panic">Middleware بازیابی از Panic</h4>
+<p>اگر در هندلری panic رخ دهد، کل سرور از کار نمی‌افتد (Go 1.22+)، اما کاربر خطای زشتی می‌بیند. این middleware خطاهای panic را شکار کرده و پاسخ 500 مناسب برمی‌گرداند:</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">func recoverPanic(next http.Handler) http.Handler {
+    return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+        defer func() {
+            if err := recover(); err != nil {
+                log.Printf("panic بازیابی شد: %v", err)
+                w.Header().Set("Connection", "close")
+                http.Error(w, "خطای داخلی سرور", http.StatusInternalServerError)
+            }
+        }()
+        next.ServeHTTP(w, r)
+    })
+}
+</code></pre>
+</figure>
+<p>تنظیم هدر <code>Connection: close</code> بسیار مهم است. وقتی panic رخ می‌دهد، ارتباط HTTP ممکن است در وضعیت ناقص باشد و تنظیم این هدر به مرورگر می‌فهماند که باید ارتباط را ببندد.</p>
+<figure class="code php" dir="ltr">
+<pre><code class="language-php">// Laravel — error handling in Exception Handler
+// app/Exceptions/Handler.php
+public function render($request, Throwable $exception)
+{
+    if ($exception instanceof \Error) {
+        Log::error('Fatal error: ' . $exception-&gt;getMessage());
+        return response()-&gt;view('errors.500', [], 500);
+    }
+    return parent::render($request, $exception);
+}
+</code></pre>
+</figure>
+<h3 id="موقعیت-middleware-و-دامنه-اعمال">موقعیت Middleware و دامنه اعمال</h3>
+<p>یکی از نکات مهم در طراحی middleware، <strong>مکان قرارگیری آن در زنجیره</strong> است. اگر middleware را <strong>قبل از ServeMux</strong> قرار دهید، روی <strong>تمام مسیرها</strong> اعمال می‌شود. اما اگر آن را <strong>بعد از ServeMux و روی یک هندلر خاص</strong> قرار دهید، فقط همان مسیر تحت تأثیر قرار می‌گیرد:</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">mux := http.NewServeMux()
+
+// First register the routes
+mux.HandleFunc("/", homeHandler)
+mux.HandleFunc("/admin", adminHandler)
+mux.HandleFunc("/public", publicHandler)
+
+// Method 1: middleware before mux → on all routes
+// All requests go through middleware
+handler := requestLogger(commonHeaders(mux))
+
+// Method 2: middleware only on specific route
+// Only /admin goes through authMiddleware
+mux.Handle("/admin", authMiddleware(http.HandlerFunc(adminHandler)))
+mux.HandleFunc("/public", publicHandler) // without auth
+
+// Finally start server with global chain
+server := &amp;http.Server{Handler: handler}
+</code></pre>
+</figure>
+<figure class="diagram" dir="ltr">
+<svg height="420" viewBox="0 0 650 420" width="650" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<marker id="arrowM1" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#555" points="0 0, 10 3.5, 0 7"></polygon></marker>
+<filter height="104%" id="shM1" width="104%" x="-2%" y="-2%"><fedropshadow dx="1" dy="1" flood-opacity="0.15" stddeviation="2"></fedropshadow></filter>
+</defs>
+<rect fill="#fff" height="420" rx="8" width="650" x="0" y="0"></rect>
+<text fill="#333" font-size="16" font-weight="bold" text-anchor="middle" x="325" y="28" direction="rtl" unicode-bidi="embed">موقعیت <tspan direction="ltr" unicode-bidi="embed">Middleware</tspan> و دامنه اعمال</text>
+<!-- Global section -->
+<text fill="#4CAF50" font-size="13" font-weight="bold" text-anchor="middle" x="160" y="60" direction="rtl" unicode-bidi="embed">روش ۱: <tspan direction="ltr" unicode-bidi="embed">Middleware</tspan> سراسری (قبل از <tspan direction="ltr" unicode-bidi="embed">mux</tspan>)</text>
+<rect fill="#777BB4" filter="url(#shM1)" height="35" rx="6" width="80" x="30" y="75"></rect>
+<text fill="#fff" font-size="10" text-anchor="middle" x="70" y="97" direction="ltr" unicode-bidi="embed">Request</text>
+<line marker-end="url(#arrowM1)" stroke="#555" stroke-width="2" x1="110" x2="140" y1="92" y2="92"></line>
+<rect fill="#4CAF50" filter="url(#shM1)" height="40" rx="6" width="90" x="140" y="72"></rect>
+<text fill="#fff" font-size="9" text-anchor="middle" x="185" y="97" direction="ltr" unicode-bidi="embed">commonHeaders</text>
+<line marker-end="url(#arrowM1)" stroke="#555" stroke-width="2" x1="230" x2="260" y1="92" y2="92"></line>
+<rect fill="#FF9800" filter="url(#shM1)" height="40" rx="6" width="90" x="260" y="72"></rect>
+<text fill="#fff" font-size="9" text-anchor="middle" x="305" y="97" direction="ltr" unicode-bidi="embed">requestLogger</text>
+<line marker-end="url(#arrowM1)" stroke="#555" stroke-width="2" x1="350" x2="380" y1="92" y2="92"></line>
+<rect fill="#00ADD8" filter="url(#shM1)" height="40" rx="6" width="100" x="380" y="72"></rect>
+<text fill="#fff" font-size="10" text-anchor="middle" x="430" y="97" direction="ltr" unicode-bidi="embed">ServeMux</text>
+<!-- Routes from global mux -->
+<line stroke="#555" stroke-dasharray="4,4" stroke-width="1.5" x1="430" x2="430" y1="112" y2="140"></line>
+<rect fill="#E3F2FD" height="30" rx="4" stroke="#2196F3" width="70" x="310" y="140"></rect>
+<text fill="#1565C0" font-size="9" text-anchor="middle" x="345" y="160" direction="ltr" unicode-bidi="embed">/</text>
+<rect fill="#E3F2FD" height="30" rx="4" stroke="#2196F3" width="70" x="395" y="140"></rect>
+<text fill="#1565C0" font-size="9" text-anchor="middle" x="430" y="160" direction="ltr" unicode-bidi="embed">/admin</text>
+<rect fill="#E3F2FD" height="30" rx="4" stroke="#2196F3" width="70" x="480" y="140"></rect>
+<text fill="#1565C0" font-size="9" text-anchor="middle" x="515" y="160" direction="ltr" unicode-bidi="embed">/public</text>
+<text fill="#999" font-size="10" text-anchor="middle" x="430" y="190" direction="rtl" unicode-bidi="embed">همه مسیرها هدر امنیتی و لاگ دارند</text>
+<!-- Per-route section -->
+<text fill="#9C27B0" font-size="13" font-weight="bold" text-anchor="middle" x="160" y="230" direction="rtl" unicode-bidi="embed">روش ۲: <tspan direction="ltr" unicode-bidi="embed">Middleware</tspan> روی مسیر خاص (بعد از <tspan direction="ltr" unicode-bidi="embed">mux</tspan>)</text>
+<rect fill="#777BB4" filter="url(#shM1)" height="35" rx="6" width="80" x="30" y="245"></rect>
+<text fill="#fff" font-size="10" text-anchor="middle" x="70" y="267" direction="ltr" unicode-bidi="embed">Request</text>
+<line marker-end="url(#arrowM1)" stroke="#555" stroke-width="2" x1="110" x2="140" y1="262" y2="262"></line>
+<rect fill="#00ADD8" filter="url(#shM1)" height="40" rx="6" width="100" x="140" y="242"></rect>
+<text fill="#fff" font-size="10" text-anchor="middle" x="190" y="267" direction="ltr" unicode-bidi="embed">ServeMux</text>
+<!-- /admin route with auth -->
+<line marker-end="url(#arrowM1)" stroke="#555" stroke-width="2" x1="240" x2="290" y1="252" y2="252"></line>
+<rect fill="#e91e63" filter="url(#shM1)" height="34" rx="6" width="90" x="290" y="235"></rect>
+<text fill="#fff" font-size="9" text-anchor="middle" x="335" y="257" direction="ltr" unicode-bidi="embed">authMiddleware</text>
+<line marker-end="url(#arrowM1)" stroke="#555" stroke-width="2" x1="380" x2="410" y1="252" y2="252"></line>
+<rect fill="#E3F2FD" height="30" rx="4" stroke="#2196F3" width="80" x="410" y="237"></rect>
+<text fill="#1565C0" font-size="9" text-anchor="middle" x="450" y="257" direction="ltr" unicode-bidi="embed">/admin</text>
+<!-- /public route without auth -->
+<line marker-end="url(#arrowM1)" stroke="#555" stroke-width="2" x1="240" x2="290" y1="282" y2="282"></line>
+<rect fill="#E3F2FD" height="30" rx="4" stroke="#2196F3" width="80" x="410" y="267"></rect>
+<text fill="#1565C0" font-size="9" text-anchor="middle" x="450" y="287" direction="ltr" unicode-bidi="embed">/public</text>
+<text fill="#e91e63" font-size="10" text-anchor="middle" x="335" y="320" direction="rtl" unicode-bidi="embed">فقط /<tspan direction="ltr" unicode-bidi="embed">admin</tspan> از <tspan direction="ltr" unicode-bidi="embed">auth</tspan> می‌گذرد</text>
+<text fill="#999" font-size="10" text-anchor="middle" x="335" y="338" direction="rtl" unicode-bidi="embed">/<tspan direction="ltr" unicode-bidi="embed">public</tspan> بدون <tspan direction="ltr" unicode-bidi="embed">authMiddleware</tspan></text>
+<!-- Key -->
+<rect fill="#f5f5f5" height="40" rx="6" stroke="#ddd" width="590" x="30" y="370"></rect>
+<text fill="#555" font-size="11" text-anchor="middle" x="325" y="395" direction="rtl" unicode-bidi="embed">قبل از <tspan direction="ltr" unicode-bidi="embed">mux</tspan> = سراسری · بعد از <tspan direction="ltr" unicode-bidi="embed">mux</tspan> روی هندلر = فقط همان مسیر</text>
+</svg>
+<figcaption>شکل ۷-۴-ب: تفاوت قرارگیری <bdi dir="ltr">middleware</bdi> قبل و بعد از <bdi dir="ltr">ServeMux</bdi></figcaption>
+</figure>
+<div class="important">
+<strong>مهم:</strong> ترتیب اعمال middleware اهمیت بالایی دارد. در زنجیره سراسری، اولین اولین middleware اول اجرا می‌شود. مثلاً <code>recoverPanic</code> باید بیرونی‌ترین باشد تا بتواند panic‌های middleware‌های داخلی را هم شکار کند.
+</div>
+<h3 id="کتابخانه-justinasalice-برای-زنجیره-middleware">کتابخانه justinas/alice برای زنجیره Middleware</h3>
+<p>در پروژه‌های واقعی، مدیریت دستی زنجیره middleware می‌تواند خطاپذیر باشد. کتابخانه <code>justinas/alice</code> راهی تمیز و type-safe برای ترکیب middleware‌ها ارائه می‌دهد:</p>
+<figure class="code bash" dir="ltr">
+<pre><code class="language-bash">go get github.com/justinas/alice
+</code></pre>
+</figure>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">import "github.com/justinas/alice"
+
+func main() {
+    mux := http.NewServeMux()
+    mux.HandleFunc("/", homeHandler)
+
+    // Global middleware chain with alice
+    standardChain := alice.New(recoverPanic, requestLogger, commonHeaders)
+
+    // Dynamic chain by adding extra middleware
+    dynamicChain := alice.New(sessionMiddleware, authMiddleware)
+
+    // Public routes
+    mux.Handle("/", standardChain.ThenFunc(homeHandler))
+
+    // Protected routes
+    mux.Handle("/dashboard", standardChain.Append(dynamicChain...).ThenFunc(dashboardHandler))
+
+    server := &amp;http.Server{Handler: standardChain.Then(mux)}
+    log.Fatal(server.ListenAndServe())
+}
+</code></pre>
+</figure>
+<table class="comparison-table" dir="rtl">
+<thead>
+<tr><th>ویژگی</th><th>chainMiddleware دستی</th><th>justinas/alice</th></tr>
+</thead>
+<tbody>
+<tr><td>ترکیب middleware</td><td>حلقه معکوس دستی</td><td dir="ltr">alice.New(mw1, mw2, ...)</td></tr>
+<tr><td>افزودن middleware</td><td>بازنویسی حلقه</td><td dir="ltr">chain.Append(mw3)</td></tr>
+<tr><td>ساخت هندلر نهایی</td><td>فراخوانی دستی</td><td dir="ltr">chain.Then(handler)</td></tr>
+<tr><td>استفاده از تابع</td><td>نیاز به <span dir="ltr">http.HandlerFunc</span></td><td dir="ltr">chain.ThenFunc(fn)</td></tr>
+<tr><td>خوانایی</td><td>متوسط</td><td>بالا</td></tr>
+</tbody>
+</table>
+<div class="tip">
+<strong>توصیه:</strong> برای پروژه‌های کوچک و یادگیری، تابع <code>chainMiddleware</code> دستی کافیست. اما در پروژه‌های production با middleware‌های متعدد و مسیرهای مختلف، استفاده از <code>alice</code> خوانایی و قابلیت نگهداری کد را به شکل قابل‌توجهی افزایش می‌دهد.
+</div>
+<h3 id="انتقال-داده-بین-middleware-ها-با-context">انتقال داده بین Middleware‌ها با Context</h3>
+<p>یکی از چالش‌های رایج در middleware، انتقال داده بین لایه‌های مختلف است. مثلاً middleware احراز هویت باید شناسه کاربر را به هندلر اصلی برساند. در Go این کار با <code dir="ltr">r.WithContext()</code> انجام می‌شود:</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">import "context"
+
+// Context key — must be specific type to prevent collision
+type contextKey string
+const userIDKey contextKey = "userID"
+
+func authMiddleware(next http.Handler) http.Handler {
+    return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+        cookie, err := r.Cookie("session_id")
+        if err != nil {
+            http.Error(w, "لطفاً وارد شوید", http.StatusUnauthorized)
+            return
+        }
+
+        // Check session in database (hypothetical)
+        userID := validateSession(cookie.Value)
+        if userID == "" {
+            http.Error(w, "سشن نامعتبر", http.StatusUnauthorized)
+            return
+        }
+
+        // Add userID to request context
+        ctx := context.WithValue(r.Context(), userIDKey, userID)
+
+        // Send request with new context to next handler
+        next.ServeHTTP(w, r.WithContext(ctx))
+    })
+}
+
+// Read value in final handler
+func dashboardHandler(w http.ResponseWriter, r *http.Request) {
+    userID, ok := r.Context().Value(userIDKey).(string)
+    if !ok {
+        http.Error(w, "خطای داخلی", http.StatusInternalServerError)
+        return
+    }
+    fmt.Fprintf(w, "داشبورد کاربر: %s", userID)
+}
+</code></pre>
+</figure>
+<div class="important"><strong>مهم:</strong> برای کلیدهای <code dir="ltr">context.WithValue</code> همیشه از نوع اختصاصی (مثل <code>contextKey</code> در مثال بالا) استفاده کنید. استفاده از رشته مستقیم مثل <code dir="ltr">context.WithValue(ctx, "userID", id)</code> می‌تواند باعث تداخل با سایر کتابخانه‌ها شود. همچنین به یاد داشته باشید که <code dir="ltr">context.Value</code> فقط برای request-scoped مناسب است، نه برای گذراندن پارامترهای اختیاری به توابع.</div>
+<figure class="code php" dir="ltr">
+<pre><code class="language-php">// Laravel — passing data in middleware with merge method
+public function handle($request, Closure $next)
+{
+    $userID = $this-&gt;validateSession($request-&gt;cookie('session_id'));
+
+    // Laravel uses Request object and Service Container
+    $request-&gt;merge(['userID' =&gt; $userID]);
+
+    // Or set in global service
+    app()-&gt;instance('userID', $userID);
+
+    return $next($request);
+}
+
+// Read in controller
+$userID = $request-&gt;input('userID');
+// Or
+$userID = app('userID');
+</code></pre>
+</figure>
+<table class="comparison-table" dir="rtl">
+<thead>
+<tr><th>ویژگی</th><th>Laravel</th><th>Go Context</th></tr>
+</thead>
+<tbody>
+<tr><td>انتقال داده</td><td dir="ltr">Request::<span dir="ltr">merge()</span> / <span dir="ltr">app()</span>-&gt;<span dir="ltr">instance()</span></td><td dir="ltr">context.WithValue()</td></tr>
+<tr><td>خواندن داده</td><td dir="ltr">$request-&gt;<span dir="ltr">input()</span> / <span dir="ltr">app()</span></td><td dir="ltr">r.Context().<span dir="ltr">Value()</span></td></tr>
+<tr><td>تایپ‌سازی</td><td>dynamic — بدون بررسی نوع</td><td>نیاز به type assertion</td></tr>
+<tr><td>انصراف</td><td dir="ltr">$request-&gt;<span dir="ltr">abort()</span></td><td dir="ltr">context.WithCancel()</td></tr>
+<tr><td>مهلت زمانی</td><td dir="ltr">set_time_limit()</td><td dir="ltr">context.WithTimeout()</td></tr>
+</tbody>
+</table>
+<figure class="diagram" dir="ltr">
+<svg height="780" viewBox="0 0 820 780" width="820" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<marker id="arrowMC1" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#555" points="0 0, 10 3.5, 0 7"></polygon></marker>
+<marker id="arrowMC2" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#e91e63" points="0 0, 10 3.5, 0 7"></polygon></marker>
+<marker id="arrowMC3" markerheight="7" markerwidth="10" orient="auto" refx="0" refy="3.5"><polygon fill="#999" points="10 0, 0 3.5, 10 7"></polygon></marker>
+<filter height="104%" id="shMC" width="104%" x="-2%" y="-2%"><fedropshadow dx="1" dy="1" flood-opacity="0.15" stddeviation="2"></fedropshadow></filter>
+<linearGradient id="goldMC" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#FFD700" stop-opacity="0.18"></stop><stop offset="50%" stop-color="#FFD700" stop-opacity="0.08"></stop><stop offset="100%" stop-color="#FFD700" stop-opacity="0.18"></stop></linearGradient>
+</defs>
+<rect fill="#fafafa" height="780" rx="8" width="820" x="0" y="0"></rect>
+<!-- Title -->
+<text fill="#333" font-size="16" font-weight="bold" text-anchor="middle" x="410" y="30" direction="rtl" unicode-bidi="embed">مدل حلقه‌ای <tspan direction="ltr" unicode-bidi="embed">Middleware</tspan> — ترتیب اجرا و مسیر <tspan direction="ltr" unicode-bidi="embed">Short-Circuit</tspan></text>
+
+<!-- ===== LEFT: Onion/Concentric Model ===== -->
+<text fill="#555" font-size="12" font-weight="bold" text-anchor="middle" x="220" y="58" direction="rtl" unicode-bidi="embed">مدل لایه‌ای حلقه پیاز</text>
+
+<!-- Outermost: Logging -->
+<rect fill="#00ADD8" fill-opacity="0.08" height="420" rx="20" stroke="#00ADD8" stroke-width="2.5" width="380" x="30" y="72"></rect>
+<rect fill="#00ADD8" height="22" rx="4" width="140" x="150" y="72"></rect>
+<text fill="#fff" font-size="11" font-weight="bold" text-anchor="middle" x="220" y="88" direction="ltr" unicode-bidi="embed">Logging Middleware</text>
+
+<!-- Second: Auth -->
+<rect fill="#00ADD8" fill-opacity="0.13" height="320" rx="16" stroke="#00ADD8" stroke-width="2" width="300" x="70" y="112"></rect>
+<rect fill="#00ADD8" height="22" rx="4" width="120" x="160" y="112"></rect>
+<text fill="#fff" font-size="11" font-weight="bold" text-anchor="middle" x="220" y="128" direction="ltr" unicode-bidi="embed">Auth Middleware</text>
+
+<!-- Third: Rate Limit -->
+<rect fill="#00ADD8" fill-opacity="0.18" height="220" rx="14" stroke="#00ADD8" stroke-width="2" width="220" x="110" y="152"></rect>
+<rect fill="#00ADD8" height="22" rx="4" width="155" x="143" y="152"></rect>
+<text fill="#fff" font-size="11" font-weight="bold" text-anchor="middle" x="220" y="168" direction="ltr" unicode-bidi="embed">Rate Limit Middleware</text>
+
+<!-- Center: Handler -->
+<rect fill="#4CAF50" fill-opacity="0.2" height="120" rx="12" stroke="#4CAF50" stroke-width="3" width="150" x="145" y="200"></rect>
+<rect fill="#4CAF50" height="24" rx="4" width="90" x="175" y="215"></rect>
+<text fill="#fff" font-size="12" font-weight="bold" text-anchor="middle" x="220" y="233" direction="ltr" unicode-bidi="embed">Handler</text>
+<text fill="#4CAF50" font-size="9" text-anchor="middle" x="220" y="260" direction="ltr" unicode-bidi="embed">Business Logic</text>
+<text fill="#4CAF50" font-size="8" text-anchor="middle" x="220" y="275" direction="ltr" unicode-bidi="embed">Process Request</text>
+<text fill="#4CAF50" font-size="8" text-anchor="middle" x="220" y="288" direction="ltr" unicode-bidi="embed">Return Response</text>
+
+<!-- Request label top -->
+<rect fill="#777BB4" filter="url(#shMC)" height="26" rx="6" width="80" x="180" y="40"></rect>
+<text fill="#fff" font-size="10" text-anchor="middle" x="220" y="58" direction="ltr" unicode-bidi="embed">Request ↓</text>
+
+<!-- "before next()" left annotations -->
+<line stroke="#00ADD8" stroke-width="1.5" stroke-dasharray="3,3" x1="32" x2="32" y1="95" y2="390"></line>
+<polygon fill="#00ADD8" points="32,95 28,105 36,105"></polygon>
+
+<text fill="#00ADD8" font-size="9" font-weight="bold" text-anchor="end" x="26" y="155" direction="ltr" unicode-bidi="embed">before next()</text>
+<text fill="#00ADD8" font-size="8" text-anchor="end" x="26" y="168" direction="ltr" unicode-bidi="embed">→ log start</text>
+<text fill="#00ADD8" font-size="8" text-anchor="end" x="26" y="180" direction="ltr" unicode-bidi="embed">→ start timer</text>
+
+<text fill="#00ADD8" font-size="9" font-weight="bold" text-anchor="end" x="66" y="230" direction="ltr" unicode-bidi="embed">before next()</text>
+<text fill="#00ADD8" font-size="8" text-anchor="end" x="66" y="243" direction="ltr" unicode-bidi="embed">→ check JWT</text>
+<text fill="#00ADD8" font-size="8" text-anchor="end" x="66" y="255" direction="ltr" unicode-bidi="embed">→ validate session</text>
+
+<text fill="#00ADD8" font-size="9" font-weight="bold" text-anchor="end" x="106" y="310" direction="ltr" unicode-bidi="embed">before next()</text>
+<text fill="#00ADD8" font-size="8" text-anchor="end" x="106" y="323" direction="ltr" unicode-bidi="embed">→ check rate</text>
+<text fill="#00ADD8" font-size="8" text-anchor="end" x="106" y="335" direction="ltr" unicode-bidi="embed">→ increment counter</text>
+
+<!-- "after next()" right annotations -->
+<line stroke="#999" stroke-width="1.5" stroke-dasharray="3,3" x1="408" x2="408" y1="390" y2="95"></line>
+<polygon fill="#999" points="408,95 404,85 412,85"></polygon>
+
+<text fill="#999" font-size="9" font-weight="bold" text-anchor="start" x="414" y="155" direction="ltr" unicode-bidi="embed">after next()</text>
+<text fill="#999" font-size="8" text-anchor="start" x="414" y="168" direction="ltr" unicode-bidi="embed">← log end + duration</text>
+<text fill="#999" font-size="8" text-anchor="start" x="414" y="180" direction="ltr" unicode-bidi="embed">← record status code</text>
+
+<text fill="#999" font-size="9" font-weight="bold" text-anchor="start" x="374" y="230" direction="ltr" unicode-bidi="embed">after next()</text>
+<text fill="#999" font-size="8" text-anchor="start" x="374" y="243" direction="ltr" unicode-bidi="embed">← add user to ctx</text>
+
+<text fill="#999" font-size="9" font-weight="bold" text-anchor="start" x="334" y="310" direction="ltr" unicode-bidi="embed">after next()</text>
+<text fill="#999" font-size="8" text-anchor="start" x="334" y="323" direction="ltr" unicode-bidi="embed">← set X-RateLimit headers</text>
+
+<!-- Response label bottom -->
+<rect fill="#777BB4" filter="url(#shMC)" height="26" rx="6" width="80" x="180" y="498"></rect>
+<text fill="#fff" font-size="10" text-anchor="middle" x="220" y="516" direction="ltr" unicode-bidi="embed">Response ↑</text>
+
+<!-- ===== RIGHT: Vertical Pipeline + Short-Circuit ===== -->
+<text fill="#555" font-size="12" font-weight="bold" text-anchor="middle" x="640" y="58" direction="rtl" unicode-bidi="embed">خط لوله عمودی با <tspan direction="ltr" unicode-bidi="embed">Short-Circuit</tspan></text>
+
+<!-- Request -->
+<rect fill="#777BB4" filter="url(#shMC)" height="28" rx="6" width="80" x="600" y="68"></rect>
+<text fill="#fff" font-size="10" text-anchor="middle" x="640" y="87" direction="ltr" unicode-bidi="embed">Request</text>
+<line marker-end="url(#arrowMC1)" stroke="#555" stroke-width="2" x1="640" x2="640" y1="96" y2="112"></line>
+
+<!-- Logging -->
+<rect fill="#00ADD8" filter="url(#shMC)" height="36" rx="6" width="170" x="555" y="112"></rect>
+<text fill="#fff" font-size="10" text-anchor="middle" x="640" y="135" direction="ltr" unicode-bidi="embed">Logging Middleware</text>
+<line marker-end="url(#arrowMC1)" stroke="#555" stroke-width="2" x1="640" x2="640" y1="148" y2="164"></line>
+<text fill="#00ADD8" font-size="7" text-anchor="start" x="730" y="130" direction="ltr" unicode-bidi="embed">before: log</text>
+
+<!-- Auth -->
+<rect fill="#00ADD8" filter="url(#shMC)" height="36" rx="6" width="170" x="555" y="164"></rect>
+<text fill="#fff" font-size="10" text-anchor="middle" x="640" y="187" direction="ltr" unicode-bidi="embed">Auth Middleware</text>
+
+<!-- Short-circuit from Auth -->
+<line stroke="#e91e63" stroke-width="2.5" x1="555" x2="518" y1="182" y2="182"></line>
+<rect fill="#e91e63" filter="url(#shMC)" height="48" rx="6" width="140" x="378" y="158"></rect>
+<text fill="#fff" font-size="10" font-weight="bold" text-anchor="middle" x="448" y="177" direction="ltr" unicode-bidi="embed">401 Unauthorized</text>
+<text fill="#fce4ec" font-size="8" text-anchor="middle" x="448" y="191" direction="ltr" unicode-bidi="embed">next() NOT called</text>
+<text fill="#fce4ec" font-size="8" text-anchor="middle" x="448" y="202" direction="ltr" unicode-bidi="embed">chain stops here!</text>
+<text fill="#e91e63" font-size="10" font-weight="bold" text-anchor="middle" x="448" y="148" direction="ltr" unicode-bidi="embed">⚡ Short-Circuit!</text>
+<!-- Short-circuit response -->
+<line marker-end="url(#arrowMC2)" stroke="#e91e63" stroke-width="2" stroke-dasharray="5,3" x1="448" x2="448" y1="206" y2="240"></line>
+<rect fill="#e91e63" filter="url(#shMC)" height="26" rx="6" width="100" x="398" y="240"></rect>
+<text fill="#fff" font-size="9" text-anchor="middle" x="448" y="258" direction="ltr" unicode-bidi="embed">Response 401</text>
+
+<!-- Normal path continues -->
+<line marker-end="url(#arrowMC1)" stroke="#555" stroke-width="2" x1="640" x2="640" y1="200" y2="216"></line>
+<text fill="#4CAF50" font-size="7" text-anchor="start" x="730" y="210" direction="ltr" unicode-bidi="embed">if auth ✓</text>
+
+<!-- Rate Limit -->
+<rect fill="#00ADD8" filter="url(#shMC)" height="36" rx="6" width="170" x="555" y="216"></rect>
+<text fill="#fff" font-size="10" text-anchor="middle" x="640" y="239" direction="ltr" unicode-bidi="embed">Rate Limit Middleware</text>
+<line marker-end="url(#arrowMC1)" stroke="#555" stroke-width="2" x1="640" x2="640" y1="252" y2="268"></line>
+
+<!-- Handler -->
+<rect fill="#4CAF50" filter="url(#shMC)" height="38" rx="6" width="170" x="555" y="268"></rect>
+<text fill="#fff" font-size="12" font-weight="bold" text-anchor="middle" x="640" y="292" direction="ltr" unicode-bidi="embed">Handler</text>
+
+<!-- Response back -->
+<line marker-end="url(#arrowMC3)" stroke="#999" stroke-width="1.5" stroke-dasharray="4,3" x1="728" x2="728" y1="306" y2="340"></line>
+<rect fill="#777BB4" filter="url(#shMC)" height="26" rx="6" width="80" x="600" y="340"></rect>
+<text fill="#fff" font-size="10" text-anchor="middle" x="640" y="358" direction="ltr" unicode-bidi="embed">Response</text>
+
+<!-- Info Box: Short-circuit -->
+<rect fill="#fff3e0" height="58" rx="6" stroke="#FF9800" stroke-width="1.5" width="340" x="460" y="378"></rect>
+<text fill="#E65100" font-size="10" font-weight="bold" text-anchor="middle" x="630" y="398" direction="rtl" unicode-bidi="embed">چرا <tspan direction="ltr" unicode-bidi="embed">Short-Circuit</tspan> مهم است؟</text>
+<text fill="#555" font-size="9" text-anchor="middle" x="630" y="414" direction="rtl" unicode-bidi="embed">وقتی <tspan direction="ltr" unicode-bidi="embed">Auth</tspan> بدون <tspan direction="ltr" unicode-bidi="embed">next()</tspan> پاسخ دهد، بقیه زنجیره اجرا نمی‌شود</text>
+<text fill="#555" font-size="9" text-anchor="middle" x="630" y="428" direction="rtl" unicode-bidi="embed">اما <tspan direction="ltr" unicode-bidi="embed">Logging</tspan> (لایه بیرونی) هنوز بخش <tspan direction="ltr" unicode-bidi="embed">after next()</tspan> را اجرا می‌کند</text>
+
+<!-- Code Example Box -->
+<rect fill="#263238" height="95" rx="6" width="340" x="460" y="448"></rect>
+<text fill="#80CBC4" font-size="9" text-anchor="start" x="475" y="466" direction="ltr" unicode-bidi="embed">// Short-circuit in Auth Middleware</text>
+<text fill="#C3E88D" font-size="9" text-anchor="start" x="475" y="482" direction="ltr" unicode-bidi="embed">func authMiddleware(next http.Handler) http.Handler {</text>
+<text fill="#F77669" font-size="9" text-anchor="start" x="490" y="498" direction="ltr" unicode-bidi="embed">if !isAuthenticated(r) {</text>
+<text fill="#F77669" font-size="9" text-anchor="start" x="505" y="512" direction="ltr" unicode-bidi="embed">http.Error(w, "401", 401)</text>
+<text fill="#FF9800" font-size="9" text-anchor="start" x="505" y="526" direction="ltr" unicode-bidi="embed">return // ← chain stops!</text>
+<text fill="#F77669" font-size="9" text-anchor="start" x="490" y="538" direction="ltr" unicode-bidi="embed">}</text>
+<text fill="#82AAFF" font-size="9" text-anchor="start" x="490" y="538" direction="ltr" unicode-bidi="embed"> next.ServeHTTP(w, r)  // continue</text>
+
+<!-- Golden Rule Bar -->
+<rect fill="url(#goldMC)" height="48" rx="8" stroke="#FFD700" stroke-width="2" width="780" x="20" y="720"></rect>
+<text fill="#B8860B" font-size="12" font-weight="bold" text-anchor="middle" x="410" y="740" direction="rtl" unicode-bidi="embed">قانون طلایی: <tspan direction="ltr" unicode-bidi="embed">Recover</tspan> بیرونی‌ترین ← <tspan direction="ltr" unicode-bidi="embed">Logging</tspan> بعد از آن ← <tspan direction="ltr" unicode-bidi="embed">Rate Limit</tspan> قبل از <tspan direction="ltr" unicode-bidi="embed">Auth</tspan></text>
+<text fill="#B8860B" font-size="10" text-anchor="middle" x="410" y="758" direction="rtl" unicode-bidi="embed">تا درخواست‌های ردشده هم لاگ شوند و <tspan direction="ltr" unicode-bidi="embed">Recover</tspan> همه <tspan direction="ltr" unicode-bidi="embed">panic</tspan>‌ها را شکار کند</text>
+</svg>
+<figcaption>شکل ۷-۴-ج: مدل حلقه‌ای <bdi dir="ltr">Middleware</bdi> — لایه‌های تودرتو، ترتیب اجرای <bdi dir="ltr">before/after next()</bdi> و مسیر <bdi dir="ltr">Short-Circuit</bdi></figcaption>
+</figure>
+
+<h3 id="سناریوهای-عملیاتی-middleware">سناریوهای عملیاتی Middleware</h3>
+<p>در پروژه‌های واقعی، <bdi dir="ltr">Middleware</bdi> نقش حیاتی در مدیریت مسائل عرضی (<bdi dir="ltr">cross-cutting concerns</bdi>) ایفا می‌کند. هر سناریوی زیر نیازمند تنظیمات خاص و درک دقیق نحوه تعامل لایه‌ها با یکدیگر است. بدون <bdi dir="ltr">Middleware</bdi>، این منطق‌ها در تک‌تک هندلرها تکرار می‌شدند و نگهداری کد عملاً غیرممکن می‌گردید. در ادامه شش سناریوی عملیاتی رایج را بررسی می‌کنیم که هر توسعه‌دهنده <bdi dir="ltr">Go</bdi> باید با آن‌ها آشنا باشد.</p>
+<ul>
+<li><strong>لاگ‌گذاری درخواست با زمان‌سنجی:</strong> ثبت متد <bdi dir="ltr">HTTP</bdi>، مسیر، کد وضعیت و مدت زمان پردازش هر درخواست. این <bdi dir="ltr">Middleware</bdi> باید بیرونی‌ترین لایه باشد تا تمام درخواست‌ها (حتی آن‌هایی که توسط لایه‌های داخلی رد شده‌اند) را ثبت کند. برای ضبط کد وضعیت، باید <bdi dir="ltr">http.ResponseWriter</bdi> را با <bdi dir="ltr">responseRecorder</bdi> بسته‌بندی کنید. با این روش، لاگ‌های شما شامل اطلاعاتی مانند <code dir="ltr">GET /api/users 200 12.3ms</code> خواهند شد که برای عیب‌یابی و مانیتورینگ عملکرد سرور بسیار ارزشمند هستند.</li>
+<li><strong>احراز هویت <bdi dir="ltr">JWT</bdi>:</strong> بررسی توکن <bdi dir="ltr">JWT</bdi> در هدر <code dir="ltr">Authorization</code>، استخراج <bdi dir="ltr">claims</bdi> و قرار دادن شناسه کاربر در <bdi dir="ltr">context</bdi> درخواست. اگر توکن معتبر نباشد، <bdi dir="ltr">Middleware</bdi> بدون فراخوانی <code dir="ltr">next()</code> پاسخ <code dir="ltr">401</code> برمی‌گرداند (<bdi dir="ltr">short-circuit</bdi>). این الگو تضمین می‌کند که هیچ هندلری بدون احراز هویت اجرا نشود. برای مسیرهای عمومی مانند <code dir="ltr">/login</code> و <code dir="ltr">/register</code>، این <bdi dir="ltr">Middleware</bdi> نباید اعمال شود.</li>
+<li><strong>محدودسازی نرخ درخواست بر اساس <bdi dir="ltr">IP</bdi>:</strong> محدود کردن تعداد درخواست‌ها از هر آدرس <bdi dir="ltr">IP</bdi> در بازه زمانی مشخص با الگوریتم <bdi dir="ltr">token bucket</bdi> یا <bdi dir="ltr">sliding window</bdi>. این <bdi dir="ltr">Middleware</bdi> باید قبل از <bdi dir="ltr">Auth</bdi> قرار گیرد تا حتی درخواست‌های غیرمجاز هم شمارش شوند و از حملات <bdi dir="ltr">brute-force</bdi> جلوگیری شود. در صورت تجاوز از حد مجاز، پاسخ <code dir="ltr">429 Too Many Requests</code> با هدر <code dir="ltr">Retry-After</code> برگردانده می‌شود.</li>
+<li><strong><bdi dir="ltr">CORS Middleware</bdi>:</strong> تنظیم هدرهای <code dir="ltr">Access-Control-Allow-Origin</code>، <code dir="ltr">Access-Control-Allow-Methods</code> و <code dir="ltr">Access-Control-Allow-Headers</code> برای درخواست‌های بین‌دامنه‌ای. این <bdi dir="ltr">Middleware</bdi> باید درخواست‌های <bdi dir="ltr">preflight</bdi> (<code dir="ltr">OPTIONS</code>) را نیز مدیریت کند و مستقیماً پاسخ <code dir="ltr">204</code> برگرداند بدون اینکه به هندلر اصلی برسد. بدون این <bdi dir="ltr">Middleware</bdi>، مرورگرهای مدرن درخواست‌های <bdi dir="ltr">AJAX</bdi> از دامنه‌های دیگر را مسدود می‌کنند.</li>
+<li><strong>تزریق شناسه درخواست (<bdi dir="ltr">Request ID</bdi>):</strong> تولید شناسه یکتا برای هر درخواست با <bdi dir="ltr">uuid</bdi> یا <bdi dir="ltr">crypto/rand</bdi> و افزودن آن به <bdi dir="ltr">context</bdi> و هدر <code dir="ltr">X-Request-ID</code> در پاسخ. این شناسه ردیابی درخواست در لاگ‌ها، سیستم‌های مانیتورینگ و میکروسرویس‌های مختلف را ساده می‌کند. وقتی کاربر گزارش خطایی ارائه می‌دهد، با شناسه درخواست می‌توانید تمام لاگ‌های مربوطه را در سیستم‌های توزیع‌شده پیدا کنید.</li>
+<li><strong>بازیابی از <bdi dir="ltr">Panic</bdi>:</strong> شکار <bdi dir="ltr">panic</bdi>‌ها در هر لایه‌ای از زنجیره (از جمله سایر <bdi dir="ltr">Middleware</bdi>‌ها و هندلرها) با <code dir="ltr">defer/recover</code> و بازگرداندن پاسخ <code dir="ltr">500</code> ساختاریافته به جای از کار افتادن سرور. این <bdi dir="ltr">Middleware</bdi> حتماً باید بیرونی‌ترین لایه باشد تا بتواند <bdi dir="ltr">panic</bdi>‌های لایه‌های داخلی را هم شکار کند. تنظیم هدر <code dir="ltr">Connection: close</code> در صورت وقوع <bdi dir="ltr">panic</bdi> بسیار مهم است.</li>
+</ul>
+
+<div class="tip">
+<strong>نکته:</strong> ترتیب اجرای <bdi dir="ltr">Middleware</bdi> بسیار مهم است و می‌تواند رفتار کل سیستم را تغییر دهد. <bdi dir="ltr">Logging</bdi> باید بیرونی‌ترین لایه باشد تا تمام درخواست‌ها (حتی درخواست‌های ردشده توسط <bdi dir="ltr">Auth</bdi>) لاگ شوند. <bdi dir="ltr">Auth</bdi> باید داخل <bdi dir="ltr">Logging</bdi> قرار گیرد تا لاگ‌ها شامل اطلاعات احراز هویت باشند. <bdi dir="ltr">Rate Limiting</bdi> باید قبل از <bdi dir="ltr">Auth</bdi> باشد تا حتی درخواست‌های غیرمجاز هم شمارش و محدود شوند — در غیر این صورت، مهاجم می‌تواند با ارسال درخواست‌های نامعتبر، منابع سرور را مصرف کند. ترتیب پیشنهادی: <code dir="ltr">recoverPanic → logging → rateLimit → auth → handler</code>
+</div>
+</div>
+</main>
+</div>
+
+<!-- Footer -->
+<footer class="site-footer">
+<div class="footer-inner">
+<div class="footer-nav">
+<span class="nav-arrow">‹</span>
+<a href="07.03-reading-request-input.html" data-prev>۷.۳ خواندن داده‌های ورودی از request</a>
+</div>
+<div class="footer-toc">
+<a href="00.01-contents.html">فهرست</a>
+</div>
+<div class="footer-nav">
+<a href="07.05-serving-static-files.html" data-next>۷.۵ سرو کردن فایل‌های استاتیک</a>
+<span class="nav-arrow">›</span>
+</div>
+</div>
+</footer>
+
+<!-- Back to Top -->
+<button class="back-to-top" aria-label="بازگشت به بالا">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
+</button>
+
+<!-- Scripts -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/go.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/php.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/sql.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/yaml.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/json.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/dockerfile.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/xml.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/ini.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/plaintext.min.js"></script>
+<script src="assets/js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="fa">
+<head>
+<script>!function(){try{var t=localStorage.getItem('php2go-theme');if(t==='dark'||(!t&&window.matchMedia('(prefers-color-scheme:dark)').matches)){document.documentElement.setAttribute('data-theme','dark')}}catch(e){}}();</script>
+<meta charset="utf-8"/>
+<meta content="ie=edge" http-equiv="x-ua-compatible"/>
+<title>۳.۲ ماژول‌ها و مدیریت dependency ها — PHP to Go</title>
+<meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet"/>
+<link href="assets/css/main.css" rel="stylesheet" type="text/css"/>
+<link href="assets/img/favicon.ico" rel="icon" type="image/x-icon"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" media="screen" class="hljs-light-theme" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css" media="not screen" class="hljs-dark-theme" rel="stylesheet"/>
+</head>
+<body>
+<!-- Progress Bar -->
+<div class="progress-bar"><div class="progress-bar__fill"></div></div>
+
+<!-- Header -->
+<header class="site-header">
+<div class="header-inner">
+<div class="header-left">
+<button class="header-btn sidebar-toggle" aria-label="فهرست">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+</button>
+<a href="00.00-front-matter.html" class="header-logo"><span class="logo-php">PHP</span> to <span class="logo-go">Go</span></a>
+<span class="header-crumbs">پکیج‌ها، ماژول‌ها و شی‌گرایی › ماژول‌ها و مدیریت dependency ها</span>
+</div>
+<div class="header-right">
+<nav class="header-nav">
+<span class="nav-arrow">‹</span>
+<a href="03.01-working-with-packages.html"><span class="nav-label">۳.۱ کار با پکیج‌ها</span></a>
+<a href="00.01-contents.html">فهرست</a>
+<a href="03.03-running-programs-and-building-binaries.html"><span class="nav-label">۳.۳ اجرای برنامه و ساخت فایل خروجی</span></a>
+<span class="nav-arrow">›</span>
+</nav>
+<button class="header-btn search-toggle" aria-label="جستجو">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+</button>
+<button class="header-btn theme-toggle" aria-label="تغییر تم">
+<svg class="theme-icon-light" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+<svg class="theme-icon-dark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+</button>
+</div>
+</div>
+</header>
+
+<!-- Search Modal -->
+<div class="search-overlay">
+<div class="search-modal">
+<div class="search-input-wrap">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+<input type="text" class="search-input" placeholder="جستجو... (Ctrl+K)" dir="rtl"/>
+</div>
+<div class="search-results"></div>
+</div>
+</div>
+
+<!-- Layout -->
+<div class="site-layout">
+<!-- Sidebar -->
+<aside class="sidebar"></aside>
+<div class="sidebar-overlay"></div>
+
+<!-- Main Content -->
+<main class="content-area">
+<div class="content-wrap text">
+<div class="chapter">فصل ۳.۲</div>
+<h2 id="ماژولها-و-مدیریت-dependency-ها">ماژول‌ها و مدیریت dependency ها</h2>
+<p>در زبان Go مدیریت dependency ها به‌صورت رسمی و ساختار یافته از طریق ماژول‌ها انجام می‌شود. این سیستم که از نسخه 1.11 به بعد معرفی شده و جایگزین روش‌های قدیمی مبتنی بر GOPATH شده و اکنون ابزار اصلی برای مدیریت کد و dependency ها و نسخه‌بندی پروژه‌هاست.</p>
+<p>برای توسعه‌دهندگانی که از PHP می‌آیند می‌توان این ساختار را مشابه Composer در نظر گرفت با این تفاوت که در Go ساده‌تر، سریع‌تر و tightly integrated در خود زبان است. در واقع در زبان Go ماژول مجموعه‌ای از Package هاست که با هم در یک پروژه قرار دارند و توسط یک فایل به‌نام <strong dir="ltr">go.mod</strong> مدیریت می‌شوند. این فایل اطلاعاتی درباره‌ی نام ماژول نسخه‌های dependency ها و نیازهای پروژه را نگهداری می‌کند.
+</p>
+<h3 id="ایجاد-ماژول-جدید">ایجاد ماژول جدید</h3>
+<p>برای شروع یک پروژه جدید ابتدا یک دایرکتوری بسازید و سپس با دستور زیر آن را به یک ماژول تبدیل کنید:
+</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">go mod init github.com/username/myapp
+</code></pre>
+</figure>
+<p>توجه داشته باشید که نام ماژول معمولاً نام ریپازیتوری شما در GitHub یا GitLab است اما برای پروژه‌های داخلی می‌توانید از هر مسیر دلخواهی استفاده کنید. خروجی این دستور فایلی به‌نام go.mod است که جلوتر به بررسی ساختار آن خواهیم پرداخت.</p>
+<h3 id="نصب-package-خارجی-با-go-get">نصب Package خارجی با go get</h3>
+<p>برای افزودن یک کتابخانه یا Package خارجی (مثلاً github.com/google/uuid) به پروژه خود:
+</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">go get github.com/google/uuid@latest
+</code></pre>
+</figure>
+<p>یا برای نسخه خاص:</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">go get github.com/google/uuid@v1.3.0
+</code></pre>
+</figure>
+<p>استفاده کنید. بعد از این کار Package به صورت خودکار دانلود می‌شود. ورودی مربوطه به فایل go.mod افزوده می‌شود. مشابه فایل composer.lock در PHP نسخه دقیق در فایل go.sum قفل می‌شود نهایتا این dependency در محل خاصی از سیستم شما به‌نام <strong dir="ltr">module cache</strong> مثل /go/pkg/mod/ ~ و نه در خود پروژه ذخیره می‌شود. با دستور go env GOMODCACHE میتوانید این مسیر را پیدا کنید.
+</p>
+<p><strong>مثال</strong> :</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">import "github.com/google/uuid"
+id := uuid.New()
+fmt.Println(id.String())
+</code></pre>
+</figure>
+<h3 id="ساختار-فایل-gomod">ساختار فایل go.mod</h3>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">module github.com/username/myapp
+go 1.24.0
+require (
+github.com/google/uuid v1.3.0
+golang.org/x/text v0.12.0
+)
+</code></pre>
+</figure>
+<p><strong dir="ltr">require</strong> : فهرست dependency ها با نسخه مشخص</p>
+<p><strong dir="ltr">replace</strong> : برای جایگزینی یک ماژول با نسخه یا مسیر دیگر</p>
+<p><strong dir="ltr">exclude</strong> : برای نادیده گرفتن نسخه خاصی از یک ماژول
+</p>
+<h3 id="فایل-gosum">فایل go.sum</h3>
+<p>go.sum فایلی است که هش‌های رمزنگاری‌شده‌ای از dependency ها را ذخیره می‌کند. این فایل تضمین می‌کند که هر بار پروژه را build می‌کنید دقیقاً همان نسخه‌ای از کتابخانه استفاده شود که در گذشته دانلود شده. توجه کنید که هیچ‌گاه نباید go.sum را حذف کنید یا آن را از commit خارج کنید.</p>
+<h3 id="مدیریت-dependency-ها">مدیریت dependency ها</h3>
+<p>مدیریت وابستگی‌ها یکی از بخش های کلیدی‌ است. این فرآیند با استفاده از Go Modules و مجموعه‌ای از دستورات ساده ولی قدرتمند انجام می‌شود که باعث می‌شود برنامه‌ها پایدار، قابل حمل و قابل بازتولید باشند.</p>
+<p dir="ltr">1. <strong dir="ltr">go mod tidy</strong> </p>
+<p>این دستور تمام dependency‌های اضافی را حذف می‌کند و هر بسته‌ای که استفاده شده اما در فایل go.mod ذکر نشده باشد را افزودن می‌کند. به عبارت دیگر go mod tidy تضمین می‌کند که لیست dependency‌ها به‌طور دقیق مطابق با نیاز پروژه باشد و از وجود ماژول‌های بلااستفاده جلوگیری می‌کند. این دستور به ویژه قبل از commit یا انتشار پروژه ضروری است تا پروژه سبک و مرتب باقی بماند.</p>
+<p dir="ltr">2. <strong dir="ltr">go list -m all</strong></p>
+<p>برای مشاهده تمام ماژول‌ها و نسخه‌های دقیق آن‌ها از دستور go list -m all استفاده می‌کنیم. این دستور به توسعه‌دهنده امکان می‌دهد نگاهی شفاف به تمام وابستگی‌ها و نسخه‌های استفاده شده داشته باشد که برای بررسی سازگاری و حل تعارضات نسخه بسیار مفید است.</p>
+<p dir="ltr">3. go mod verify </p>
+<p>با اجرای go mod verify، Go بررسی می‌کند که فایل‌های دانلود شده با مقادیر موجود در go.sum مطابقت دارند یا خیر. این فرآیند امنیت و یکپارچگی پروژه را تضمین می‌کند و از مشکلات ناشی از تغییرات ناخواسته در بسته‌های خارجی جلوگیری می‌کند.</p>
+<p dir="ltr">4. go get </p>
+<p>دستور go get برای افزودن یا به‌روزرسانی یک بسته یا ماژول استفاده می‌شود. این دستور نسخه مناسب بسته را دانلود می‌کند و در فایل go.mod ثبت می‌کند، به طوری که پروژه همیشه بتواند نسخه مشخصی از هر dependency را بازتولید کند.</p>
+<figure class="diagram" dir="ltr">
+<svg height="300" viewBox="0 0 600 300" width="600" xmlns="http://www.w3.org/2000/svg">
+<text fill="#00ADD8" font-size="15" font-weight="bold" text-anchor="middle" x="300" y="25" direction="ltr" unicode-bidi="embed">Go Modules vs Composer</text>
+<!-- Go side -->
+<rect fill="#e0f7fa" height="250" rx="12" stroke="#00ADD8" stroke-width="2" width="280" x="10" y="40"></rect>
+<text fill="#00ADD8" font-size="14" font-weight="bold" text-anchor="middle" x="150" y="65" direction="ltr" unicode-bidi="embed">Go Modules</text>
+<rect fill="#fff" height="35" rx="6" stroke="#00ADD8" stroke-width="1.5" width="240" x="30" y="80"></rect>
+<text fill="#333" font-family="monospace" font-size="12" text-anchor="middle" x="150" y="102" direction="ltr" unicode-bidi="embed">go.mod (module + requires)</text>
+<rect fill="#fff" height="35" rx="6" stroke="#00ADD8" stroke-width="1.5" width="240" x="30" y="125"></rect>
+<text fill="#333" font-family="monospace" font-size="12" text-anchor="middle" x="150" y="147" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">go.sum</tspan> (هش‌های رمزنگاری)</text>
+<text fill="#00ADD8" font-size="11" x="150" y="182" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">go</tspan> <tspan direction="ltr" unicode-bidi="embed">mod</tspan> <tspan direction="ltr" unicode-bidi="embed">init</tspan> → ایجاد ماژول</text>
+<text fill="#00ADD8" font-size="11" x="150" y="200" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">go</tspan> <tspan direction="ltr" unicode-bidi="embed">get</tspan> → نصب پکیج</text>
+<text fill="#00ADD8" font-size="11" x="150" y="218" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">go</tspan> <tspan direction="ltr" unicode-bidi="embed">mod</tspan> <tspan direction="ltr" unicode-bidi="embed">tidy</tspan> → پاکسازی</text>
+<text fill="#00ADD8" font-size="11" x="150" y="236" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">go</tspan> <tspan direction="ltr" unicode-bidi="embed">mod</tspan> <tspan direction="ltr" unicode-bidi="embed">verify</tspan> → بررسی یکپارچگی</text>
+<text fill="#888" font-size="11" x="150" y="258" direction="ltr" unicode-bidi="embed">Module Cache: ~/go/pkg/mod/</text>
+<!-- PHP side -->
+<rect fill="#f3e5f5" height="250" rx="12" stroke="#777BB4" stroke-width="2" width="280" x="310" y="40"></rect>
+<text fill="#777BB4" font-size="14" font-weight="bold" text-anchor="middle" x="450" y="65" direction="ltr" unicode-bidi="embed">Composer</text>
+<rect fill="#fff" height="35" rx="6" stroke="#777BB4" stroke-width="1.5" width="240" x="330" y="80"></rect>
+<text fill="#333" font-family="monospace" font-size="12" text-anchor="middle" x="450" y="102" direction="ltr" unicode-bidi="embed">composer.json (requires)</text>
+<rect fill="#fff" height="35" rx="6" stroke="#777BB4" stroke-width="1.5" width="240" x="330" y="125"></rect>
+<text fill="#333" font-family="monospace" font-size="12" text-anchor="middle" x="450" y="147" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">composer.lock</tspan> (نسخه‌های قفل)</text>
+<text fill="#777BB4" font-size="11" x="450" y="182" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">composer</tspan> <tspan direction="ltr" unicode-bidi="embed">init</tspan> → ایجاد پروژه</text>
+<text fill="#777BB4" font-size="11" x="450" y="200" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">composer</tspan> <tspan direction="ltr" unicode-bidi="embed">require</tspan> → نصب پکیج</text>
+<text fill="#777BB4" font-size="11" x="450" y="218" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">composer</tspan> <tspan direction="ltr" unicode-bidi="embed">install</tspan> → نصب از <tspan direction="ltr" unicode-bidi="embed">lock</tspan></text>
+<text fill="#777BB4" font-size="11" x="450" y="236" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">composer</tspan> <tspan direction="ltr" unicode-bidi="embed">update</tspan> → به‌روزرسانی</text>
+<text fill="#888" font-size="11" x="450" y="258" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">vendor/</tspan> در خود پروژه</text>
+</svg>
+<figcaption>مقایسه‌ی <bdi dir="ltr">Go</bdi> <bdi dir="ltr">Modules</bdi> با <bdi dir="ltr">Composer</bdi> در <bdi dir="ltr">PHP</bdi></figcaption>
+</figure>
+<h3 id="استفاده-از-ماژولهای-لوکال">استفاده از ماژول‌های لوکال</h3>
+<p>در پروژه‌های بزرگ یا هنگامی که چند ماژول Go به صورت هم‌زمان در حال توسعه هستند ممکن است نیاز داشته باشید تغییرات یک ماژول را بدون انتشار نسخه جدید روی پروژه‌های دیگر تست کنید. برای این منظور Go امکان استفاده از ماژول‌های محلی را فراهم می‌کند.</p>
+<p>با استفاده از دستور replace در فایل go.mod می‌توانید به Go بگویید که به جای دریافت ماژول از remote repository از یک مسیر محلی مشخص‌شده استفاده کند:</p>
+<p dir="ltr">replace github.com/username/mylib =&gt; ../mylib</p>
+<p>مسیر سمت راست یا mylib می‌تواند هر مسیر دلخواه روی سیستم شما باشد که حاوی ماژول Go است. این امکان باعث می‌شود بتوانید تغییرات یک ماژول را به صورت فوری و بدون انتشار رسمی بررسی کنید.به عبارتی می‌توانید روی چند کتابخانه یا ماژول به صورت موازی کار کنید و تغییرات یک ماژول را در پروژه اصلی سریعاً تست کنید.و یا بدون نیاز به commit یا push نسخه محلی ماژول در پروژه اصلی مورد استفاده قرار می‌گیرد.همچنین کنترل کامل روی مسیر و نسخه ماژول‌ها دارید و می‌توانید به راحتی بین نسخه محلی و آنلاین سوئیچ کنید.</p>
+<p>توجه داشته باشید که پس از پایان توسعه و اطمینان از عملکرد ماژول حتماً خط replace را از go.mod حذف کنید تا پروژه به نسخه رسمی آنلاین وابسته شود و مسیرهای محلی باعث مشکلات بعدی نشوند.</p>
+<h3 id="الگوریتم-mvs">الگوریتم Minimal Version Selection</h3>
+<p>یکی از تفاوت‌های بنیادین بین Go Modules و Composer در نحوه‌ی انتخاب نسخه‌ی وابستگی‌هاست. Composer از الگوریتمی شبیه به <strong>بالاترین نسخه‌ی ممکن</strong> استفاده می‌کند: اگر پروژه‌ی شما به پکیج X نیاز داشته باشد و دو وابستگی مختلف به‌ترتیب نسخه‌های <code>^1.2</code> و <code>^1.5</code> را بخواهند، Composer نسخه‌ی جدیدتر (مثلاً <code>1.8</code>) را انتخاب می‌کند.</p>
+<p>اما Go از الگوریتم <strong dir="ltr">MVS</strong> استفاده می‌کند که کاملاً متفاوت است: <strong>حداقل نسخه‌ای که تمام محدودیت‌ها را برآورده کند</strong> انتخاب می‌شود. اگر وابستگی A بخواهد X نسخه <code>&gt;=1.2.0</code> و وابستگی B بخواهد X نسخه <code>&gt;=1.5.0</code> ، MVS نسخه‌ی <code>1.5.0</code> را انتخاب می‌کند — نه <code>1.8.0</code> یا جدیدترین نسخه.</p>
+<div class="tip"><strong>چرا MVS؟</strong> الگوریتم MVS توسط Russ Cox (یکی از طراحان Go) طراحی شده و سه مزیت کلیدی دارد: ۱) <strong>قطعیت</strong> — خروجی MVS فقط به فایل‌های <code dir="ltr">go.mod</code> بستگی دارد نه به زمان اجرا، ۲) <strong>سادگی</strong> — الگوریتم بدون نیاز به backtracking یا حل تعارضات پیچیده کار می‌کند، ۳) <strong>تکرارپذیری</strong> — build امروز دقیق همان build ماه آینده خواهد بود.</div>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">// Example: version conflict in go.mod
+module myapp
+go 1.24
+
+require (
+github.com/A v1.0.0 // requires X &gt;= 1.2.0
+github.com/B v1.0.0 // requires X &gt;= 1.5.0
+)
+
+// MVS result: X v1.5.0 is selected (not v1.8.0!)
+// Composer result: X v1.8.0 (latest compatible) is selected
+</code></pre>
+</figure>
+<div class="comparison"><strong>مقایسه با Composer:</strong> در PHP با Composer، <code>composer update</code> همیشه جدیدترین نسخه‌های سازگار را نصب می‌کند. این یعنی دو توسعه‌دهنده ممکن است با اجرای <code>composer update</code> در زمان‌های مختلف نسخه‌های متفاوتی دریافت کنند. اما در Go، <code>go get</code> با MVS همیشه حداقل نسخه را انتخاب می‌کند و نتایج قطعی و تکرارپذیر هستند. فایل <code dir="ltr">go.sum</code> نیز یک لایه‌ی اطمینان اضافه فراهم می‌کند.</div>
+<h3 id="ساختار-داخلی-gosum">ساختار داخلی go.sum</h3>
+<p>هر خط در فایل <code dir="ltr">go.sum</code> از سه بخش تشکیل شده:</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">github.com/google/uuid v1.3.0 h1:ey4XPjaR/KGfH2S7Nj2M7Cdyh5m9M6Q6v9...
+github.com/google/uuid v1.3.0/go.mod h1:K1S5d0E5bBPU7...
+</code></pre>
+</figure>
+<p><strong>خط اول</strong> (<code>h1:...</code>): هش SHA-256 از محتوای زیپ‌شده‌ی ماژول. این هش توسط <code>go mod verify</code> بررسی می‌شود تا مطمئن شود محتوای ماژول در cache با آنچه انتظار می‌رود مطابقت دارد.</p>
+<p><strong>خط دوم</strong> (<code>/go.mod h1:...</code>): هش SHA-256 از فایل <code dir="ltr">go.mod</code> خود ماژول. این حتی برای ماژول‌هایی که مستقیماً استفاده نمی‌شوند ولی در گراف وابستگی حضور دارند ذخیره می‌شود.</p>
+<div class="warning"><strong>هشدار امنیتی:</strong> اگر هش‌های موجود در <code dir="ltr">go.sum</code> با محتوای دانلودشده مطابقت نداشته باشد، Go از build جلوگیری می‌کند. این مکانیزم از حمله‌ی <strong dir="ltr">supply chain</strong> جلوگیری می‌کند — سناریویی که یک ماژول مخرب جایگزین ماژول اصلی شود. هرگز <code dir="ltr">go.sum</code> را از <code>.gitignore</code> حذف نکنید و همیشه آن را در repository نگه دارید.</div>
+<h3 id="گروه-goproxy-و-پروتکل-module-proxy">گروه GOPROXY و پروتکل Module Proxy</h3>
+<p>وقتی <code>go get</code> اجرا می‌شود، Go مستقیماً به GitHub متصل نمی‌شود. بلکه از یک زنجیره‌ی proxy استفاده می‌کند که توسط متغیر محیطی <code>GOPROXY</code> کنترل می‌شود:</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">// Default GOPROXY value:
+GOPROXY=https://proxy.golang.org,direct
+
+// Meaning: Check proxy.golang.org first
+// If module not there, download directly from source
+</code></pre>
+</figure>
+<p><strong dir="ltr">proxy.golang.org</strong> یک سرور کش است که توسط تیم Go نگهداری می‌شود. وقتی ماژولی درخواست می‌شود، proxy ابتدا بررسی می‌کند که آیا نسخه‌ی درخواست‌شده قبلاً ذخیره شده یا خیر. اگر بله، مستقیماً از cache سرو می‌دهد. مزایای این پروکسی:</p>
+<p><strong>۱. سرعت:</strong> ماژول‌ها از CDN دانلود می‌شوند نه مستقیماً از GitHub.</p>
+<p><strong>۲. ثبات:</strong> وقتی نسخه‌ای از یک ماژول در proxy ذخیره شد، هرگز حذف یا تغییر نمی‌کند — حتی اگر نویسنده ماژول آن را از GitHub حذف کند ( <strong dir="ltr">immutability guarantee</strong> ).</p>
+<p><strong>۳. امنیت:</strong> proxy فایل <code dir="ltr">go.sum</code> را تولید و ذخیره می‌کند که می‌توان آن را با هش‌های محلی مقایسه کرد.</p>
+<p>می‌توانید GOPROXY را سفارشی کنید:</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">// Use Chinese mirror (for better access in Iran and China)
+GOPROXY=https://goproxy.cn,direct
+
+// Use Athens (private organizational proxy)
+GOPROXY=https://athens.mycompany.com,https://proxy.golang.org,direct
+
+// Disable proxy (not recommended)
+GOPROXY=direct
+</code></pre>
+</figure>
+<p>همچنین متغیر <code>GONOSUMCHECK</code> و <code>GONOSUMDB</code> امکان دور زدن بررسی sum برای ماژول‌های خصوصی را فراهم می‌کنند:</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">// Private organizational modules excluded from sum check
+GONOSUMCHECK=git.mycompany.com/*
+GONOSUMDB=git.mycompany.com/*
+// and allow access to private modules
+GOPRIVATE=git.mycompany.com/*
+</code></pre>
+</figure>
+<div class="note"><strong>نکته برای سازمان‌ها:</strong> متغیر <code>GOPRIVATE</code> معادل تنظیم هر سه متغیر <code>GONOSUMCHECK</code> ، <code>GONOSUMDB</code> و <code>GOVCS</code> است. وقتی ماژولی در <code>GOPRIVATE</code> قرار گیرد، Go مستقیماً از منبع دانلود می‌کند و از proxy و sum DB عبور نمی‌کند. این برای ماژول‌های خصوصی ضروری است چون proxy.golang.org به ماژول‌های خصوصی دسترسی ندارد.</div>
+
+<h3 id="نسخه‌بندی-معنایی">Semantic Versioning</h3>
+<p>Go ماژول‌ها از نسخه‌بندی معنایی (<bdi dir="ltr">SemVer</bdi>) با قالب <code>vMAJOR.MINOR.PATCH</code> پیروی می‌کنند. این قالب سه عدد دارد: عدد <strong>اصلی</strong> (<bdi dir="ltr">MAJOR</bdi>) برای تغییرات ناسازگار API، عدد <strong>فرعی</strong> (<bdi dir="ltr">MINOR</bdi>) برای قابلیت‌های جدید سازگار و عدد <strong>اصلاحی</strong> (<bdi dir="ltr">PATCH</bdi>) برای رفع باگ. در Go دو قانون حیاتی وجود دارد:</p>
+<p><strong>۱. نسخه‌های <bdi dir="ltr">v0.x.x</bdi> و <bdi dir="ltr">v1.x.x</bdi>:</strong> ماژول‌هایی که هنوز به <code>v2</code> نرسیده‌اند، مسیر <bdi dir="ltr">import</bdi> معمولی دارند. اما از <code>v2</code> به بعد، مسیر <bdi dir="ltr">import</bdi> باید شامل عدد نسخه‌ی اصلی باشد:</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">// v1 — normal import path
+import "github.com/google/uuid"
+
+// v2 — version number in import path
+import "github.com/google/uuid/v2"
+
+// v3 — and onwards
+import "github.com/some/lib/v3"
+</code></pre>
+</figure>
+<p>این قانون عجیب به‌نظر می‌رسد اما دلیل مهمی دارد: Go اجازه می‌دهد نسخه‌های مختلف یک ماژول همزمان در یک پروژه استفاده شوند. وقتی مسیر <bdi dir="ltr">import</bdi> متفاوت باشد، کامپایلر آن‌ها را پکیج‌های کاملاً مجزا در نظر می‌گیرد و تداخلی پیش نمی‌آید.</p>
+
+<p><strong>۲. <bdi dir="ltr">+incompatible</bdi>:</strong> اگر ماژولی قبل از سیستم ماژول‌ها (<bdi dir="ltr">pre-module</bdi>) ساخته شده باشد و نسخه‌ی <code>v2+</code> داشته باشد اما مسیر <bdi dir="ltr">import</bdi> آن شامل شماره نسخه نباشد، Go آن را با پسوند <code>+incompatible</code> نشان می‌دهد. مثلاً <code>v2.1.0+incompatible</code>. این یعنی ماژول هنوز به سیستم ماژول‌ها مهاجرت نکرده و باید با احتیاط استفاده شود.</p>
+
+<div class="important"><strong>قانون طلایی نسخه‌بندی:</strong> اگر API ماژول خود را به‌صورت ناسازگار تغییر می‌دهید (مثلاً امضای تابعی را عوض می‌کنید یا فیلدی را حذف می‌کنید)، حتماً عدد <bdi dir="ltr">MAJOR</bdi> را افزایش دهید و مسیر <bdi dir="ltr">import</bdi> را به‌روز کنید. اگر فقط قابلیت جدید اضافه می‌کنید، عدد <bdi dir="ltr">MINOR</bdi> را بالا ببرید. اگر فقط باگ رفع می‌کنید، عدد <bdi dir="ltr">PATCH</bdi> را تغییر دهید.</div>
+
+<h3 id="go-mod-vendor">دایرکتوری Vendor</h3>
+<p>دستور <code>go mod vendor</code> تمام وابستگی‌های پروژه را در دایرکتوری <code>vendor/</code> در ریشه‌ی پروژه کپی می‌کند. این شبیه دایرکتوری <code>vendor/</code> در <bdi dir="ltr">Composer</bdi> است اما با یک تفاوت مهم: در Go دایرکتوری <code>vendor/</code> معمولاً در <code>.gitignore</code> قرار نمی‌گیرد و می‌توان آن را در repository نگه داشت.</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">go mod vendor // creates vendor/ directory
+go build -mod=vendor // build using vendor instead of module cache
+</code></pre>
+</figure>
+<div class="tip"><strong>چه زمانی از <code>vendor</code> استفاده کنیم؟</strong> در محیط‌های تولیدی با الزامات امنیتی سخت‌گیرانه (مثل سازمان‌هایی که دسترسی اینترنتی ندارند)، در CI/CD برای تضمین تکرارپذیری کامل build، یا وقتی می‌خواهید مطمئن شوید وابستگی‌ها حتی اگر منبع اصلی حذف شد در دسترس هستند.</div>
+
+<h3 id="فضای-کاری-چند-ماژوله">Go Workspaces</h3>
+<p>از Go 1.18 ویژگی جدیدی به‌نام <bdi dir="ltr">Go Workspaces</bdi> معرفی شده که کار روی چندین ماژول Go به‌صورت همزمان را ساده می‌کند. فایل <code>go.work</code> در ریشه‌ی فضای‌کاری قرار می‌گیرد و ماژول‌های محلی را فهرست می‌کند:</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">// go.work
+go 1.24
+
+use (
+./services/api // API module
+./services/worker // Worker module
+./pkg/auth // shared library
+)
+</code></pre>
+</figure>
+<p>بدون <code>go.work</code> برای کار همزمان روی چند ماژول باید از <code>replace</code> در <code>go.mod</code> استفاده می‌کردید. اما <code>go.work</code> این کار را متمرکز و موقت می‌کند — فایل <code>go.work</code> نباید در repository کامیت شود و فقط برای توسعه‌ی محلی است.</p>
+
+<figure class="diagram" dir="ltr">
+<svg height="250" viewBox="0 0 650 250" width="650" xmlns="http://www.w3.org/2000/svg">
+<rect fill="#fafafa" height="250" rx="8" width="650" x="0" y="0"></rect>
+<defs><marker id="arrWs" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#00ADD8" points="0 0, 10 3.5, 0 7"></polygon></marker></defs>
+<text fill="#00ADD8" font-size="15" font-weight="bold" text-anchor="middle" x="325" y="28" direction="rtl" unicode-bidi="embed">چرخه‌ی حیات ماژول <tspan direction="ltr" unicode-bidi="embed">Go</tspan></text>
+<rect fill="#e3f2fd" height="45" rx="8" stroke="#2196f3" stroke-width="2" width="120" x="20" y="60"></rect>
+<text fill="#1565c0" font-size="12" font-weight="bold" text-anchor="middle" x="80" y="87" direction="ltr" unicode-bidi="embed">go mod init</text>
+<rect fill="#e0f7fa" height="45" rx="8" stroke="#00ADD8" stroke-width="2" width="120" x="170" y="60"></rect>
+<text fill="#00ADD8" font-size="12" font-weight="bold" text-anchor="middle" x="230" y="87" direction="ltr" unicode-bidi="embed">go get</text>
+<rect fill="#e8f5e9" height="45" rx="8" stroke="#27ae60" stroke-width="2" width="120" x="320" y="60"></rect>
+<text fill="#27ae60" font-size="12" font-weight="bold" text-anchor="middle" x="380" y="87" direction="ltr" unicode-bidi="embed">go mod tidy</text>
+<rect fill="#fff3e0" height="45" rx="8" stroke="#f39c12" stroke-width="2" width="120" x="470" y="60"></rect>
+<text fill="#e65100" font-size="12" font-weight="bold" text-anchor="middle" x="530" y="87" direction="ltr" unicode-bidi="embed">go build</text>
+<line marker-end="url(#arrWs)" stroke="#00ADD8" stroke-width="2" x1="140" x2="170" y1="82" y2="82"></line>
+<line marker-end="url(#arrWs)" stroke="#00ADD8" stroke-width="2" x1="290" x2="320" y1="82" y2="82"></line>
+<line marker-end="url(#arrWs)" stroke="#00ADD8" stroke-width="2" x1="440" x2="470" y1="82" y2="82"></line>
+<rect fill="#fafafa" height="100" rx="8" stroke="#999" stroke-width="1.5" width="600" x="25" y="130"></rect>
+<text fill="#555" font-size="12" font-weight="bold" x="40" y="155" direction="ltr" unicode-bidi="embed">go.mod:</text>
+<text fill="#888" font-size="11" x="110" y="155" direction="ltr" unicode-bidi="embed">module + go version + require/replace/exclude</text>
+<text fill="#555" font-size="12" font-weight="bold" x="40" y="175" direction="ltr" unicode-bidi="embed">go.sum:</text>
+<text fill="#888" font-size="11" x="110" y="175" direction="ltr" unicode-bidi="embed">h1: hash + /go.mod hash (immutability)</text>
+<text fill="#555" font-size="12" font-weight="bold" x="40" y="195" direction="ltr" unicode-bidi="embed">Module Cache:</text>
+<text fill="#888" font-size="11" x="155" y="195" direction="ltr" unicode-bidi="embed">~/go/pkg/mod/ (read-only, shared across projects)</text>
+<text fill="#555" font-size="12" font-weight="bold" x="40" y="215" direction="ltr" unicode-bidi="embed">GOPROXY:</text>
+<text fill="#888" font-size="11" x="130" y="215" direction="ltr" unicode-bidi="embed">proxy.golang.org → CDN → download → cache</text>
+</svg>
+<figcaption>شکل ۲-۳: چرخه‌ی حیات ماژول <bdi dir="ltr">Go</bdi> و ابزارهای مدیریت وابستگی</figcaption>
+</figure>
+
+<h3 id="مهاجرت-از-composer-به-go-modules">مهاجرت از Composer به Go Modules</h3>
+<p>برای توسعه‌دهندگانی که از PHP می‌آیند، درک تفاوت‌های بین <bdi dir="ltr">Composer</bdi> و <bdi dir="ltr">Go Modules</bdi> حیاتی است. هرچند هر دو ابزار مدیریت وابستگی هستند، فلسفه و مکانیزم آن‌ها کاملاً متفاوت است:</p>
+<table class="comparison-table" dir="rtl">
+<thead>
+<tr><th>ویژگی</th><th>Composer (PHP)</th><th>Go Modules</th></tr>
+</thead>
+<tbody>
+<tr><td>فایل پیکربندی</td><td><code>composer.json</code></td><td><code>go.mod</code></td></tr>
+<tr><td>فایل قفل</td><td><code>composer.lock</code></td><td><code>go.sum</code> (هش‌ها نه نسخه‌ها)</td></tr>
+<tr><td>محل ذخیره</td><td><code>vendor/</code> در هر پروژه</td><td><code>~/go/pkg/mod/</code> مشترک بین پروژه‌ها</td></tr>
+<tr><td>الگوریتم نسخه</td><td>بالاترین نسخه‌ی سازگار</td><td><bdi dir="ltr">MVS</bdi>: حداقل نسخه‌ی سازگار</td></tr>
+<tr><td>نسخه‌های ناپایدار</td><td><code>dev-master</code> ، <code>@dev</code></td><td>فقط <bdi dir="ltr">SemVer</bdi> معتبر (پیشوندهای <code>v</code>)</td></tr>
+<tr><td>پروکسی</td><td>ندارد (مستقیم از <bdi dir="ltr">Packagist</bdi>)</td><td><bdi dir="ltr">GOPROXY</bdi> (کش و امنیت)</td></tr>
+<tr><td>وابستگی توسعه</td><td><code>require-dev</code></td><td>ندارد (همه نصب می‌شوند)</td></tr>
+<tr><td>اسکریپت‌های نصب</td><td><code>post-install-cmd</code></td><td>ندارد (نصب فقط دانلود است)</td></tr>
+<tr><td>قابلیت کش</td><td><code>cache-dir</code> قابل تنظیم</td><td><code>GOMODCACHE</code> ، اشتراک بین پروژه‌ها</td></tr>
+</tbody>
+</table>
+<div class="important"><strong>نکته‌ی حیاتی:</strong> در <bdi dir="ltr">Composer</bdi> دستور <code>composer install</code> وابستگی‌ها را از <code>composer.lock</code> نصب می‌کند و تکرارپذیر است. اما <code>composer update</code> جدیدترین نسخه‌ها را نصب می‌کند و ممکن است ناسازگار باشد. در Go تفاوتی بین <code>install</code> و <code>update</code> وجود ندارد — <code>go get</code> همیشه از <bdi dir="ltr">MVS</bdi> استفاده می‌کند و نتایج قطعی هستند.</div>
+
+    <h3 id="tool-directive-go-1.24">دستورالعمل tool در go.mod — Go 1.24</h3>
+    <p>
+        در Go 1.24، ماژول‌های Go اکنون می‌توانند وابستگی‌های اجرایی را با استفاده از دستورالعمل
+        <code>tool</code> در <code>go.mod</code> پیگیری کنند. این قابلیت راه‌حل قبلی (اضافه کردن ابزارها
+        به‌صورت import خالی به فایلی به نام tools.go) را منسوخ می‌کند:
+    </p>
+    <figure class="code go" dir="ltr">
+        <pre><code class="language-go">// go.mod با دستورالعمل tool
+module myproject
+
+go 1.24
+
+tool (
+golang.org/x/tools/cmd/stringer
+github.com/golangci/golangci-lint/cmd/golangci-lint
+github.com/swaggo/swag/cmd/swag
+)</code></pre>
+    </figure>
+    <figure class="code bash" dir="ltr">
+        <pre><code class="language-bash"># اضافه کردن ابزار جدید
+go get -tool github.com/golangci/golangci-lint/cmd/golangci-lint
+
+# اجرای ابزار
+go tool golangci-lint
+
+# ارتقای تمام ابزارها
+go get tool
+
+# نصب تمام ابزارها در GOBIN
+go install tool</code></pre>
+    </figure>
+    <p>
+        پرچم جدید <code>-tool</code> برای <code>go get</code> باعث اضافه شدن دستورالعمل tool
+        به ماژول فعلی می‌شود. همچنین الگوی متا <code>tool</code> به تمام ابزارهای ماژول فعلی
+        ارجاع می‌دهد و می‌توان از آن برای ارتقای همزمان همه ابزارها استفاده کرد.
+    </p>
+
+    <h3 id="goauth-go-1.24">احراز هویت ماژول خصوصی با GOAUTH — Go 1.24</h3>
+    <p>
+        متغیر محیطی جدید <code>GOAUTH</code> راهی انعطاف‌پذیر برای احراز هویت در زمان دریافت ماژول‌های
+        خصوصی فراهم می‌کند. این متغیر می‌تواند شامل دستورات اجرایی، فایل‌های داده، و URL‌هایی باشد
+        که برای احراز هویت درخواست‌های HTTP استفاده می‌شوند:
+    </p>
+    <figure class="code bash" dir="ltr">
+        <pre><code class="language-bash"># استفاده از فایل netrc برای احراز هویت
+export GOAUTH="off://$HOME/.netrc"
+
+# استفاده از دستور اجرایی برای دریافت توکن
+export GOAUTH="exec:/usr/local/bin/git-credential"
+
+# ترکیب چند روش احراز هویت
+export GOAUTH="off://$HOME/.netrc,exec:/usr/local/bin/git-credential"</code></pre>
+    </figure>
+
+    <h3 id="ignore-directive-go-1.25">دستورالعمل ignore در go.mod — Go 1.25</h3>
+    <p>
+        دستورالعمل جدید <code>ignore</code> در <code>go.mod</code> می‌تواند برای مشخص کردن دایرکتوری‌هایی
+        استفاده شود که دستور <code>go</code> باید نادیده بگیرد. فایل‌های این دایرکتوری‌ها و زیردایرکتوری‌هایشان
+        هنگام تطبیق الگوهای بسته (مانند <code>all</code> یا <code>./...</code>) نادیده گرفته می‌شوند،
+        اما همچنان در فایل‌های zip ماژول گنجانده می‌شوند:
+    </p>
+    <figure class="code toml" dir="ltr">
+        <pre><code class="language-toml">module myproject
+
+go 1.25
+
+ignore (
+    ./internal/experiments
+    ./scripts
+    ./legacy
+)</code></pre>
+    </figure>
+
+    <div class="case-study">
+        <div class="case-study-header">
+            <span class="case-study-badge">مطالعه موردی</span>
+            <span class="case-study-title">مهاجرت به tool directive در Uber</span>
+        </div>
+        <p>
+            تیم مهندسی Uber در GopherCon 2024 تجربه مهاجرت بیش از ۲۰۰۰ ماژول Go به دستورالعمل
+            جدید <code>tool</code> را به اشتراک گذاشت. قبل از این تغییر، هر ماژول یک فایل
+            <code>tools.go</code> با import خالی داشت که نیاز به نگهداری داشت. این الگوی قدیمی
+            چندین مشکل داشت: اولاً، فایل <code>tools.go</code> فقط برای اطمینان از نصب ابزارها
+            در <code>go.mod</code> بود و هیچ استفاده منطقی نداشت. دوماً، وقتی یک ابزار آپدیت می‌شد،
+            همه ماژول‌ها باید <code>go mod tidy</code> را اجرا می‌کردند. سوماً، مرور کد برای
+            تشخیص ابزارهای واقعی از وابستگی‌های پروژه دشوار بود.
+        </p>
+        <p>
+            با مهاجرت به <code>tool</code> directive، آن‌ها توانستند بیش از ۶۰۰۰ خط کد بوییده را
+            حذف کنند و فرآیند مدیریت ابزارها را متمرکزتر و قابل‌اتکاتر نمایند. دستورالعمل <code>tool</code>
+            به‌طور صریح مشخص می‌کند که یک وابستگی فقط برای توسعه استفاده می‌شود و وارد باینری نهایی
+            نمی‌شود. این جداکردن واضح بین وابستگی‌های اجرایی و توسعه‌ای، نگهداری پروژه را بسیار ساده‌تر
+            کرد و خطر تصادفی اضافه‌شدن ابزار توسعه به وابستگی‌های production را از بین برد.
+        </p>
+        <p class="case-study-source">
+            <span class="source-event">GopherCon 2024</span>
+            <span class="source-year">— شیکاگو، ۲۰۲۴</span>
+        </p>
+    </div>
+
+<h3 id="go-sum-checksum-verification">جریان تأیید Checksum در go.sum</h3>
+<p>یکی از مهم‌ترین مکانیزم‌های امنیتی در <bdi dir="ltr">Go Modules</bdi> سیستم تأیید <bdi dir="ltr">checksum</bdi> است که یکپارچگی وابستگی‌ها را تضمین می‌کند. وقتی دستور <code>go get</code> اجرا می‌شود، Go نه‌تنها وابستگی را دانلود می‌کند، بلکه هش <bdi dir="ltr">SHA-256</bdi> آن را محاسبه کرده و با مقدار ثبت‌شده در <code>go.sum</code> مقایسه می‌کند. اگر هش‌ها مطابقت نداشته باشند، Go از ادامه‌ی build جلوگیری می‌کند و خطای امنیتی صادر می‌شود. این مکانیزم از حمله‌ی <bdi dir="ltr">supply chain</bdi> جلوگیری می‌کند — سناریویی که در آن یک وابستگی مخرب جایگزین نسخه‌ی اصلی شود. در PHP مشابه این مکانیزم وجود دارد (<code>composer.lock</code>) اما <bdi dir="ltr">checksum database</bdi> متمرکزی برای تأیید یکپارچگی وجود ندارد. نمودار زیر این جریان را به‌صورت گام‌به‌گام نشان می‌دهد.</p>
+
+<figure class="diagram" dir="ltr">
+<svg height="700" viewBox="0 0 900 700" width="900" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<marker id="arrChecksum" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#666" points="0 0, 10 3.5, 0 7"></polygon></marker>
+<marker id="arrGoTool" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#00ADD8" points="0 0, 10 3.5, 0 7"></polygon></marker>
+<marker id="arrVerified" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#4CAF50" points="0 0, 10 3.5, 0 7"></polygon></marker>
+<marker id="arrError" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#e91e63" points="0 0, 10 3.5, 0 7"></polygon></marker>
+</defs>
+<rect fill="#fafafa" height="680" rx="10" width="900" x="0" y="0"></rect>
+
+<!-- Title -->
+<text fill="#333" font-size="16" font-weight="bold" text-anchor="middle" x="450" y="28" direction="rtl" unicode-bidi="embed">جریان تأیید <tspan direction="ltr" unicode-bidi="embed">Checksum</tspan> در <tspan direction="ltr" unicode-bidi="embed">go.sum</tspan> — امنیت زنجیره‌ی تأمین</text>
+
+<!-- Step 1: go get -->
+<rect fill="#e0f7fa" height="55" rx="8" stroke="#00ADD8" stroke-width="2" width="280" x="50" y="50"></rect>
+<text fill="#00ADD8" font-size="10" font-weight="bold" x="65" y="68" direction="ltr" unicode-bidi="embed">① go get github.com/foo/bar@v1.2.3</text>
+<text fill="#555" font-size="9" x="65" y="88" direction="rtl" unicode-bidi="embed">دستور افزودن وابستگی اجرا می‌شود</text>
+
+<!-- Arrow 1→2 -->
+<line marker-end="url(#arrGoTool)" stroke="#00ADD8" stroke-width="2" x1="330" x2="370" y1="77" y2="77"></line>
+
+<!-- Step 2: Download -->
+<rect fill="#e0f7fa" height="55" rx="8" stroke="#00ADD8" stroke-width="2" width="200" x="370" y="50"></rect>
+<text fill="#00ADD8" font-size="10" font-weight="bold" x="385" y="68" direction="ltr" unicode-bidi="embed">② Download Module</text>
+<text fill="#555" font-size="9" x="385" y="88" direction="rtl" unicode-bidi="embed">دانلود از <tspan direction="ltr" unicode-bidi="embed">GOPROXY</tspan></text>
+
+<!-- Arrow 2→3 -->
+<line marker-end="url(#arrGoTool)" stroke="#00ADD8" stroke-width="2" x1="570" x2="610" y1="77" y2="77"></line>
+
+<!-- Step 3: Compute checksum -->
+<rect fill="#e0f7fa" height="55" rx="8" stroke="#00ADD8" stroke-width="2" width="240" x="610" y="50"></rect>
+<text fill="#00ADD8" font-size="10" font-weight="bold" x="625" y="68" direction="ltr" unicode-bidi="embed">③ Compute SHA-256 Hash</text>
+<text fill="#555" font-size="9" x="625" y="88" direction="rtl" unicode-bidi="embed">محاسبه‌ی هش محلی</text>
+
+<!-- Arrow down from Step 3 -->
+<line marker-end="url(#arrGoTool)" stroke="#00ADD8" stroke-width="2" x1="730" x2="730" y1="105" y2="135"></line>
+
+<!-- Step 4: Compare -->
+<rect fill="#fff9c4" height="60" rx="8" stroke="#f9a825" stroke-width="2" width="400" x="250" y="135"></rect>
+<text fill="#f57f17" font-size="11" font-weight="bold" text-anchor="middle" x="450" y="157" direction="ltr" unicode-bidi="embed">④ Compare with go.sum entry</text>
+<text fill="#555" font-size="9" text-anchor="middle" x="450" y="178" direction="rtl" unicode-bidi="embed">مقایسه‌ی هش محلی با هش ثبت‌شده</text>
+
+<!-- Arrow left: match -->
+<line marker-end="url(#arrVerified)" stroke="#4CAF50" stroke-width="2" x1="350" x2="200" y1="195" y2="230"></line>
+<text fill="#4CAF50" font-size="10" font-weight="bold" x="240" y="218" direction="rtl" unicode-bidi="embed">تطابق ✓</text>
+
+<!-- Arrow right: mismatch -->
+<line marker-end="url(#arrError)" stroke="#e91e63" stroke-width="2" x1="550" x2="700" y1="195" y2="230"></line>
+<text fill="#e91e63" font-size="10" font-weight="bold" x="600" y="218" direction="ltr" unicode-bidi="embed">عدم تطابق ✗</text>
+
+<!-- Step 5a: Match → use module -->
+<rect fill="#e8f5e9" height="55" rx="8" stroke="#4CAF50" stroke-width="2" width="200" x="100" y="230"></rect>
+<text fill="#4CAF50" font-size="11" font-weight="bold" text-anchor="middle" x="200" y="252" direction="rtl" unicode-bidi="embed">⑤الف: استفاده از ماژول</text>
+<text fill="#555" font-size="9" text-anchor="middle" x="200" y="272" direction="rtl" unicode-bidi="embed">واکایی تأیید شد — build ادامه می‌یابد</text>
+
+<!-- Step 5b: Mismatch → security error -->
+<rect fill="#fce4ec" height="55" rx="8" stroke="#e91e63" stroke-width="2" width="200" x="600" y="230"></rect>
+<text fill="#e91e63" font-size="11" font-weight="bold" text-anchor="middle" x="700" y="252" direction="ltr" unicode-bidi="embed">⑤ب: SECURITY ERROR</text>
+<text fill="#555" font-size="9" text-anchor="middle" x="700" y="272" direction="rtl" unicode-bidi="embed">build متوقف می‌شود — ماژول مخرب嫌疑</text>
+
+<!-- go.sum format section -->
+<rect fill="#e3f2fd" height="80" rx="8" stroke="#2196f3" stroke-width="1.5" width="860" x="20" y="310"></rect>
+<text fill="#1565c0" font-size="12" font-weight="bold" x="35" y="332" direction="ltr" unicode-bidi="embed">go.sum format:</text>
+<text fill="#333" font-family="monospace" font-size="10" x="35" y="352" direction="ltr" unicode-bidi="embed">github.com/google/uuid v1.3.0 h1:ey4XPjaR/KGfH2S7Nj2M7Cdyh5m9M6Q6v9...</text>
+<text fill="#333" font-family="monospace" font-size="10" x="35" y="370" direction="ltr" unicode-bidi="embed">github.com/google/uuid v1.3.0/go.mod h1:K1S5d0E5bBPU7...</text>
+<text fill="#888" font-size="9" x="530" y="352" direction="rtl" unicode-bidi="embed">← هش محتوای ماژول</text>
+<text fill="#888" font-size="9" x="530" y="370" direction="rtl" unicode-bidi="embed">← هش فایل go.mod ماژول</text>
+
+<!-- go.mod format section -->
+<rect fill="#e0f7fa" height="80" rx="8" stroke="#00ADD8" stroke-width="1.5" width="860" x="20" y="405"></rect>
+<text fill="#00ADD8" font-size="12" font-weight="bold" x="35" y="427" direction="ltr" unicode-bidi="embed">go.mod directives:</text>
+<text fill="#333" font-family="monospace" font-size="10" x="35" y="447" direction="ltr" unicode-bidi="embed">module github.com/username/myapp  // نام ماژول</text>
+<text fill="#333" font-family="monospace" font-size="10" x="35" y="462" direction="ltr" unicode-bidi="embed">go 1.24                          // نسخه Go</text>
+<text fill="#333" font-family="monospace" font-size="10" x="35" y="477" direction="ltr" unicode-bidi="embed">require / replace / exclude       // دستورالعمل‌ها</text>
+
+<!-- MVS Algorithm section -->
+<rect fill="#fff3e0" height="170" rx="8" stroke="#FF9800" stroke-width="2" width="420" x="20" y="500"></rect>
+<text fill="#e65100" font-size="13" font-weight="bold" text-anchor="middle" x="230" y="525" direction="ltr" unicode-bidi="embed">MVS — Minimal Version Selection</text>
+
+<rect fill="#fff" height="35" rx="6" stroke="#FF9800" stroke-width="1" width="380" x="40" y="540"></rect>
+<text fill="#333" font-size="9" x="55" y="558" direction="rtl" unicode-bidi="embed">ماژول A نیاز دارد: <tspan direction="ltr" unicode-bidi="embed">log >= 1.2</tspan></text>
+
+<rect fill="#fff" height="35" rx="6" stroke="#FF9800" stroke-width="1" width="380" x="40" y="585"></rect>
+<text fill="#333" font-size="9" x="55" y="603" direction="rtl" unicode-bidi="embed">ماژول B نیاز دارد: <tspan direction="ltr" unicode-bidi="embed">log >= 1.5</tspan></text>
+
+<rect fill="#e8f5e9" height="35" rx="6" stroke="#4CAF50" stroke-width="1.5" width="380" x="40" y="630"></rect>
+<text fill="#4CAF50" font-size="10" font-weight="bold" x="55" y="648" direction="rtl" unicode-bidi="embed">نتایج <tspan direction="ltr" unicode-bidi="embed">MVS</tspan>: <tspan direction="ltr" unicode-bidi="embed">log v1.5</tspan> انتخاب می‌شود (نه <tspan direction="ltr" unicode-bidi="embed">v1.8</tspan>!)</text>
+
+<!-- PHP Comparison section -->
+<rect fill="#f3e5f5" height="170" rx="8" stroke="#777BB4" stroke-width="2" width="420" x="460" y="500"></rect>
+<text fill="#777BB4" font-size="13" font-weight="bold" text-anchor="middle" x="670" y="525" direction="ltr" unicode-bidi="embed">Composer — Highest Compatible</text>
+
+<rect fill="#fff" height="35" rx="6" stroke="#777BB4" stroke-width="1" width="380" x="480" y="540"></rect>
+<text fill="#333" font-size="9" x="495" y="558" direction="rtl" unicode-bidi="embed">پکیج A نیاز دارد: <tspan direction="ltr" unicode-bidi="embed">log ^1.2</tspan></text>
+
+<rect fill="#fff" height="35" rx="6" stroke="#777BB4" stroke-width="1" width="380" x="480" y="585"></rect>
+<text fill="#333" font-size="9" x="495" y="603" direction="rtl" unicode-bidi="embed">پکیج B نیاز دارد: <tspan direction="ltr" unicode-bidi="embed">log ^1.5</tspan></text>
+
+<rect fill="#fce4ec" height="35" rx="6" stroke="#e91e63" stroke-width="1.5" width="380" x="480" y="630"></rect>
+<text fill="#e91e63" font-size="10" font-weight="bold" x="495" y="648" direction="rtl" unicode-bidi="embed">نتیجه <tspan direction="ltr" unicode-bidi="embed">Composer</tspan>: <tspan direction="ltr" unicode-bidi="embed">log v1.8</tspan> (بالاترین نسخه سازگار)</text>
+
+<!-- Comparison labels -->
+<rect fill="#e8f5e9" height="25" rx="4" stroke="#4CAF50" stroke-width="1" width="150" x="90" y="670"></rect>
+<text fill="#4CAF50" font-size="9" font-weight="bold" text-anchor="middle" x="165" y="687" direction="rtl" unicode-bidi="embed">تکرارپذیر و قطعی ✓</text>
+
+<rect fill="#fce4ec" height="25" rx="4" stroke="#e91e63" stroke-width="1" width="150" x="545" y="670"></rect>
+<text fill="#e91e63" font-size="9" font-weight="bold" text-anchor="middle" x="620" y="687" direction="rtl" unicode-bidi="embed">نیاز به lock file دارد ✗</text>
+</svg>
+<figcaption>شکل ۳-۳: جریان تأیید <bdi dir="ltr">Checksum</bdi> در <bdi dir="ltr">go.sum</bdi> و مقایسه‌ی الگوریتم <bdi dir="ltr">MVS</bdi> با <bdi dir="ltr">Composer</bdi></figcaption>
+</figure>
+
+<h3 id="سناریوهای-عملیاتی-ماژولها">سناریوهای عملیاتی</h3>
+<p>مدیریت وابستگی‌ها یکی از حساس‌ترین بخش‌های هر پروژه‌ی نرم‌افزاری است و اشتباه در آن می‌تواند به مشکلات جدی در محیط تولید منجر شود. در ادامه پنج سناریوی عملیاتی رایج را بررسی می‌کنیم که هر توسعه‌دهنده‌ای که از PHP به Go مهاجرت می‌کند باید با آن‌ها آشنا باشد. این سناریوها شامل افزودن وابستگی جدید، به‌روزرسانی ایمن وابستگی‌ها، استفاده از <bdi dir="ltr">replace</bdi> برای توسعه‌ی محلی، درک تفاوت <bdi dir="ltr">MVS</bdi> با <bdi dir="ltr">Composer</bdi> و تنظیم <bdi dir="ltr">proxy</bdi> خصوصی برای سازمان‌هاست. تسلط بر این سناریوها به شما کمک می‌کند پروژه‌های Go خود را با اطمینان و ایمنی مدیریت کنید.</p>
+
+<ul>
+<li><strong>افزودن وابستگی جدید:</strong> برای افزودن یک کتابخانه جدید به پروژه، کافی است آن را در کد <code>import</code> کنید و سپس <code>go mod tidy</code> اجرا نمایید. این دستور به‌طور خودکار وابستگی را شناسایی، دانلود و به <code>go.mod</code> و <code>go.sum</code> اضافه می‌کند. در PHP معادل این کار <code>composer require vendor/package</code> است. تفاوت مهم این است که در Go هیچ اسکریپت نصبی اجرا نمی‌شود — وابستگی فقط دانلود و کش می‌شود که از دیدگاه امنیتی بسیار ایمن‌تر است.</li>
+
+<li><strong>به‌روزرسانی ایمن وابستگی‌ها:</strong> برای به‌روزرسانی یک وابستگی خاص از <code>go get github.com/foo/bar@v1.3.0</code> استفاده کنید. برای به‌روزرسانی تمام وابستگی‌ها به جدیدترین نسخه‌ی سازگار از <code>go get -u ./...</code> استفاده کنید. اما همیشه قبل از به‌روزرسانی، تست‌ها را اجرا کنید: <code>go test ./...</code>. در PHP دستور <code>composer update</code> مشابه است اما رفتار متفاوتی دارد — Composer بالاترین نسخه‌ی سازگار را انتخاب می‌کند در حالی که Go از <bdi dir="ltr">MVS</bdi> استفاده می‌کند و حداقل نسخه را انتخاب می‌نماید.</li>
+
+<li><strong>استفاده از <code>replace</code> برای توسعه‌ی محلی:</strong> وقتی روی دو ماژول Go به‌صورت همزمان کار می‌کنید، می‌توانید با <code>replace github.com/username/mylib =&gt; ../mylib</code> در فایل <code>go.mod</code> از نسخه‌ی محلی استفاده کنید. این امکان بدون نیاز به انتشار نسخه‌ی جدید، تغییرات را فوراً در پروژه‌ی اصلی تست می‌کند. به‌یاد داشته باشید که قبل از <bdi dir="ltr">commit</bdi> نهایی خط <code>replace</code> را حذف کنید. در PHP مشابه این کار با <code>repositories</code> در <code>composer.json</code> قابل انجام است اما پیچیده‌تر است.</li>
+
+<li><strong>درک تفاوت <bdi dir="ltr">MVS</bdi> با <bdi dir="ltr">Composer</bdi> در حل تعارض:</strong> در PHP اگر دو پکیج به نسخه‌های مختلف یک وابستگی نیاز داشته باشند، Composer ممکن است خطای تعارض بدهد. در Go این مشکل کمتر رخ می‌دهد چون <bdi dir="ltr">MVS</bdi> حداقل نسخه‌ی مشترک را انتخاب می‌کند. اما اگر واقعاً ناسازگاری وجود داشته باشد، Go نیز خطا می‌دهد. در این صورت می‌توانید با <code>replace</code> یک نسخه‌ی خاص را اجبار کنید یا کد یکی از وابستگی‌ها را برای سازگاری تغییر دهید.</li>
+
+<li><strong>تنظیم <bdi dir="ltr">proxy</bdi> خصوصی برای سازمان:</strong> در سازمان‌هایی که ماژول‌های خصوصی دارند، باید <code>GOPRIVATE</code>، <code>GONOSUMCHECK</code> و <code>GONOSUMDB</code> را تنظیم کنید تا ماژول‌های خصوصی به <bdi dir="ltr">proxy</bdi> و <bdi dir="ltr">checksum database</bdi> عمومی ارسال نشوند. همچنین می‌توانید از <bdi dir="ltr">Athens</bdi> به‌عنوان <bdi dir="ltr">proxy</bdi> سازمانی استفاده کنید: <code>GOPROXY=https://athens.company.com,https://proxy.golang.org,direct</code>. این تنظیمات در PHP معادلی ندارند چون Composer مستقیماً از <bdi dir="ltr">Packagist</bdi> دانلود می‌کند.</li>
+</ul>
+
+<div class="tip">
+<strong>نکته‌ی حرفه‌ای:</strong> <code>go mod tidy</code> بهترین دوست شماست — همیشه بعد از افزودن یا حذف <code>import</code> آن را اجرا کنید تا <code>go.mod</code> و <code>go.sum</code> همگام بمانند. این دستور وابستگی‌های استفاده‌نشده را از <code>go.mod</code> حذف و وابستگی‌های استفاده‌شده ولی ثبت‌نشده را اضافه می‌کند. فراموش نکنید که <code>go.sum</code> باید همیشه در <bdi dir="ltr">repository</bdi> کامیت شود — برخلاف <code>composer.lock</code> که برخی پروژه‌ها آن را در <code>.gitignore</code> قرار می‌دهند. حذف <code>go.sum</code> معادل از دست دادن تاریخچه‌ی تأیید یکپارچگی وابستگی‌هاست و ممکن است باعث شود وابستگی‌های مخرب بدون تشخیص وارد پروژه شوند.
+</div>
+
+
+</div>
+</main>
+</div>
+
+<!-- Footer -->
+<footer class="site-footer">
+<div class="footer-inner">
+<div class="footer-nav">
+<span class="nav-arrow">‹</span>
+<a href="03.01-working-with-packages.html" data-prev>۳.۱ کار با پکیج‌ها</a>
+</div>
+<div class="footer-toc">
+<a href="00.01-contents.html">فهرست</a>
+</div>
+<div class="footer-nav">
+<a href="03.03-running-programs-and-building-binaries.html" data-next>۳.۳ اجرای برنامه و ساخت فایل خروجی</a>
+<span class="nav-arrow">›</span>
+</div>
+</div>
+</footer>
+
+<!-- Back to Top -->
+<button class="back-to-top" aria-label="بازگشت به بالا">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
+</button>
+
+<!-- Scripts -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/go.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/php.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/sql.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/yaml.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/json.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/dockerfile.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/xml.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/ini.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/plaintext.min.js"></script>
+<script src="assets/js/main.js"></script>
+</body>
+</html>

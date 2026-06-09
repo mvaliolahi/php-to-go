@@ -1,0 +1,1053 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="fa">
+<head>
+<script>!function(){try{var t=localStorage.getItem('php2go-theme');if(t==='dark'||(!t&&window.matchMedia('(prefers-color-scheme:dark)').matches)){document.documentElement.setAttribute('data-theme','dark')}}catch(e){}}();</script>
+<meta charset="utf-8"/>
+<meta content="ie=edge" http-equiv="x-ua-compatible"/>
+<title>۲.۱ آشنایی با انواع داده — PHP to Go</title>
+<meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet"/>
+<link href="assets/css/main.css" rel="stylesheet" type="text/css"/>
+<link href="assets/img/favicon.ico" rel="icon" type="image/x-icon"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" media="screen" class="hljs-light-theme" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css" media="not screen" class="hljs-dark-theme" rel="stylesheet"/>
+</head>
+<body>
+<!-- Progress Bar -->
+<div class="progress-bar"><div class="progress-bar__fill"></div></div>
+
+<!-- Header -->
+<header class="site-header">
+<div class="header-inner">
+<div class="header-left">
+<button class="header-btn sidebar-toggle" aria-label="فهرست">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+</button>
+<a href="00.00-front-matter.html" class="header-logo"><span class="logo-php">PHP</span> to <span class="logo-go">Go</span></a>
+<span class="header-crumbs">انواع داده و ساختارهای کنترلی › آشنایی با انواع داده</span>
+</div>
+<div class="header-right">
+<nav class="header-nav">
+<span class="nav-arrow">‹</span>
+<a href="02.00-chapter-2.html"><span class="nav-label">۲. انواع داده و ساختارهای کنترلی</span></a>
+<a href="00.01-contents.html">فهرست</a>
+<a href="02.02-type-conversion.html"><span class="nav-label">۲.۲ Type Conversion</span></a>
+<span class="nav-arrow">›</span>
+</nav>
+<button class="header-btn search-toggle" aria-label="جستجو">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+</button>
+<button class="header-btn theme-toggle" aria-label="تغییر تم">
+<svg class="theme-icon-light" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+<svg class="theme-icon-dark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+</button>
+</div>
+</div>
+</header>
+
+<!-- Search Modal -->
+<div class="search-overlay">
+<div class="search-modal">
+<div class="search-input-wrap">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+<input type="text" class="search-input" placeholder="جستجو... (Ctrl+K)" dir="rtl"/>
+</div>
+<div class="search-results"></div>
+</div>
+</div>
+
+<!-- Layout -->
+<div class="site-layout">
+<!-- Sidebar -->
+<aside class="sidebar"></aside>
+<div class="sidebar-overlay"></div>
+
+<!-- Main Content -->
+<main class="content-area">
+<div class="content-wrap text">
+<div class="chapter">فصل ۲.۱</div>
+<h2 id="آشنایی-با-انواع-داده">آشنایی با انواع داده</h2>
+<p><strong>ساختار داده</strong> یکی از بنیادی‌ترین مفاهیم در علوم کامپیوتر است که ابزار اصلی برای نمایش مفاهیم ذخیره‌سازی اطلاعات و کنترل منطق برنامه محسوب می‌شود.
+در زبان‌های پویا مانند <strong dir="ltr">PHP</strong> سیستم نوع‌دهی بر پایه <strong dir="ltr">Dynamic Typing</strong> عمل می‌کند به این معنا که نوع متغیرها در زمان اجرا تعیین می‌شود و برنامه‌نویس نیازی به تعریف صریح نوع آن‌ها ندارد. این ویژگی سادگی و سرعت توسعه را افزایش می‌دهد اما در عین حال می‌تواند منجر به بروز خطاهایی شود که تنها در زمان اجرا آشکار می‌شوند.</p>
+<p>از سویی زبان <strong dir="ltr">Go</strong> با بهره‌گیری از <strong dir="ltr">Static Typing</strong> و طراحی دقیق و سخت‌گیرانه‌اش برنامه‌نویس را ملزم می‌کند که پیش از استفاده از هر متغیر نوع آن را به‌طور صریح مشخص کند. این رویکرد باعث می‌شود بسیاری از خطاها در همان مرحله‌ی کامپایل شناسایی شوند و کیفیت و پایداری کد به‌طور قابل‌توجهی افزایش یابد.</p>
+<p>این تفاوت بنیادین در فلسفه‌ی نوع‌دهی اهمیت درک عمیق و صحیح انواع داده‌ای <strong dir="ltr">Primitive</strong> مانند اعداد، رشته‌ها و مقادیر بولی و <strong dir="ltr">Composite</strong> مانند آرایه‌ها، اسلایس‌ها، ساختارها و مپ را در Go دوچندان می‌کند. بدون درک درست از این مفاهیم نوشتن کدی مؤثر، مقیاس‌پذیر و کم‌خطا دشوار خواهد بود.</p>
+<p>در این فصل با رویکردی مقایسه‌ای سیستم نوع‌دهی Go را بررسی می‌کنیم و تفاوت آن با PHP آشکار می‌سازیم و می‌آموزیم چگونه می‌توان به‌صورت عملی با انواع داده‌ای مختلف در Go کار کرد و از قابلیت‌های آن برای تولید نرم‌افزارهای قدرتمند و پایدار بهره گرفت.</p>
+<div class="quote-box">
+    <p class="quote-text">نسبت زمان صرف‌شده برای خواندن کد به نوشتن آن به‌وضوح بیش از ۱۰ به ۱ است. خوانا کردن کد، نوشتن آن را آسان‌تر می‌کند.</p>
+    <p class="quote-source">
+        <span class="quote-author">Uncle Bob</span>
+        <span class="quote-role">مهندس نرم‌افزار و نویسنده</span>
+        <span class="quote-separator">|</span>
+        <span class="quote-book">Clean Code</span>
+    </p>
+</div>
+<div class="tip">
+<strong>نکته‌ی حرفه‌ای:</strong> سیستم نوع‌دهی صریح <bdi dir="ltr">Go</bdi> در کدبیس‌های بزرگ یک مزیت رقابتی است. در <bdi dir="ltr">PHP</bdi> با رشد پروژه، عدم قطعیت نوع متغیرها باعث می‌شود هر فراخوانی تابع نیازمند بررسی مستندات یا کد منبع باشد. اما در <bdi dir="ltr">Go</bdi> امضای تابع <code>func Process(order Order, repo Repository) error</code> فوراً می‌گوید چه ورودی‌هایی لازم است و چه خروجی‌ای ممکن است. همین صراحت، زمان درک کد را کاهش و اطمینان از صحت تغییرات را افزایش می‌دهد — به‌ویژه وقتی ده‌ها توسعه‌دهنده روی یک پروژه کار می‌کنند.
+</div>
+<figure class="diagram" dir="ltr">
+<svg height="380" viewBox="0 0 600 380" width="600" xmlns="http://www.w3.org/2000/svg">
+<rect fill="#fafafa" height="360" rx="12" stroke="#00ADD8" stroke-width="2" width="580" x="10" y="10"></rect>
+<text fill="#00ADD8" font-size="16" font-weight="bold" text-anchor="middle" x="300" y="38" direction="rtl" unicode-bidi="embed">انواع داده در <tspan direction="ltr" unicode-bidi="embed">Go</tspan></text>
+<!-- Primitive -->
+<rect fill="#e3f2fd" height="180" rx="8" stroke="#2196f3" stroke-width="1.5" width="260" x="30" y="55"></rect>
+<text fill="#1565c0" font-size="14" font-weight="bold" text-anchor="middle" x="160" y="80" direction="ltr" unicode-bidi="embed">Primitive Types</text>
+<text fill="#333" font-size="12" x="50" y="105" direction="ltr" unicode-bidi="embed">int, int8, int16, int32, int64</text>
+<text fill="#333" font-size="12" x="50" y="125" direction="ltr" unicode-bidi="embed">uint, uint8, uint16, uint32, uint64</text>
+<text fill="#333" font-size="12" x="50" y="145" direction="ltr" unicode-bidi="embed">float32, float64</text>
+<text fill="#333" font-size="12" x="50" y="165" direction="ltr" unicode-bidi="embed">bool</text>
+<text fill="#333" font-size="12" x="50" y="185" direction="ltr" unicode-bidi="embed">string</text>
+<text fill="#333" font-size="12" x="50" y="205" direction="ltr" unicode-bidi="embed">byte (uint8), rune (int32)</text>
+<text fill="#333" font-size="12" x="50" y="225" direction="ltr" unicode-bidi="embed">uintptr</text>
+<!-- Composite -->
+<rect fill="#e8f5e9" height="180" rx="8" stroke="#4caf50" stroke-width="1.5" width="260" x="310" y="55"></rect>
+<text fill="#2e7d32" font-size="14" font-weight="bold" text-anchor="middle" x="440" y="80" direction="ltr" unicode-bidi="embed">Composite Types</text>
+<text fill="#333" font-size="12" x="330" y="105" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">array</tspan> — [n]T (طول ثابت)</text>
+<text fill="#333" font-size="12" x="330" y="125" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">slice</tspan> — []T (دینامیک)</text>
+<text fill="#333" font-size="12" x="330" y="145" direction="ltr" unicode-bidi="embed">map — map[K]V</text>
+<text fill="#333" font-size="12" x="330" y="165" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">struct</tspan> — فیلدهای نام‌دار</text>
+<text fill="#333" font-size="12" x="330" y="185" direction="ltr" unicode-bidi="embed">pointer — *T</text>
+<text fill="#333" font-size="12" x="330" y="205" direction="ltr" unicode-bidi="embed">function — func(...)</text>
+<text fill="#333" font-size="12" x="330" y="225" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">interface</tspan> — متدهای انتزاعی</text>
+<!-- Other -->
+<rect fill="#fff3e0" height="100" rx="8" stroke="#ff9800" stroke-width="1.5" width="360" x="120" y="255"></rect>
+<text fill="#e65100" font-size="14" font-weight="bold" text-anchor="middle" x="300" y="280" direction="ltr" unicode-bidi="embed">Concepts</text>
+<text fill="#333" font-size="12" x="140" y="305" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">const</tspan> — ثابت‌ها (<tspan direction="ltr" unicode-bidi="embed">compile-time</tspan>)</text>
+<text fill="#333" font-size="12" x="140" y="325" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">iota</tspan> — شمارنده‌ی خودکار</text>
+<text fill="#333" font-size="12" x="140" y="345" direction="ltr" unicode-bidi="embed">Custom Types — type Score int</text>
+</svg>
+<figcaption>شکل ۱-۲: انواع داده در <bdi dir="ltr">Go</bdi></figcaption>
+</figure>
+<h3 id="primitive-types">Primitive Types</h3>
+<h4 id="integer">Integer</h4>
+<p>در <strong dir="ltr">PHP</strong> تعریف یک عدد صحیح بسیار ساده است و نوع آن به‌صورت <strong>دینامیک در زمان اجرا</strong> تعیین می‌شود:
+</p>
+<figure class="code php" dir="ltr">
+<pre><code class="language-php">$x = 10;
+</code></pre>
+</figure>
+<p>در <strong dir="ltr">Go</strong> نوع متغیرها <strong>ایستا و صریح</strong> است و باید نوع آن مشخص شود. دو روش برای تعریف آن وجود دارد:</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">var x int = 10
+</code></pre>
+</figure>
+<p>یا به صورت کوتاه‌تر:</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">x := 10
+</code></pre>
+</figure>
+<p>Go از چندین نوع عدد صحیح با اندازه‌های مختلف پشتیبانی می‌کند:</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">// for specific and required size
+int8, int16, int32, int64
+// Unsigned versions with specific size
+uint, uint8, uint16, uint32, uint64
+</code></pre>
+</figure>
+<p>int : نوع پیش‌فرض و وابسته به معماری سیستم که معمولاً 32 یا 64 بیت است</p>
+<p>Go برخلاف PHP از تبدیل خودکار نوع بین int و int64 جلوگیری می‌کند. این سخت‌گیری مانع بروز خطاهای پنهان می‌شود.</p>
+<div class="note"><strong>طراحی حافظه‌ی انواع عددی در Go:</strong> هر نوع عددی اندازه‌ی دقیق و مشخصی در حافظه دارد. <code>int8</code> دقیقاً ۱ بایت، <code>int16</code> دو بایت، <code>int32</code> چهار بایت و <code>int64</code> هشت بایت اشغال می‌کند. نوع <code>int</code> و <code>uint</code> بسته به معماری پردازنده (۳۲ یا ۶۴ بیتی) اندازه متفاوتی دارند. در سیستم‌های ۶۴ بیتی <code>int</code> معادل <code>int64</code> است. نوع <code>uintptr</code> نیز برای نگهداری مقدار عددی یک اشاره‌گر استفاده می‌شود و اندازه‌اش با اندازه‌ی اشاره‌گر سیستم برابر است. برخلاف PHP که هر عدد صحیح را در ساختار <code>zval</code> با ۱۶ بایت ذخیره می‌کند، Go فقط به اندازه‌ی لازم حافظه مصرف می‌کند.</div>
+<h4 id="floating-point">Floating-point</h4>
+<p>در <strong dir="ltr">PHP</strong> تعریف یک عدد اعشاری ساده است و نوع آن به‌صورت دینامیک تعیین می‌شود:</p>
+<figure class="code php" dir="ltr">
+<pre><code class="language-php">$pi = 3.14;
+</code></pre>
+</figure>
+<p>در <strong dir="ltr">Go</strong> نوع متغیرها <strong>صریح و ایستا</strong> است و باید نوع عدد اعشاری مشخص شود:</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">var pi float64 = 3.14
+</code></pre>
+</figure>
+<p>انواع اعداد اعشاری در Go:</p>
+<ul>
+<li><code dir="ltr">float32</code> : دقت پایین‌تر و حافظه کمتر (حدود ۷ رقم دقت)</li>
+<li><code dir="ltr">float64</code> : دقت بالاتر و پیش‌فرض برای اعداد اعشاری (حدود ۱۵ رقم دقت)</li>
+</ul>
+<p>Go به دقت محاسبات عددی توجه ویژه دارد و بین <code dir="ltr">float32</code> و <code dir="ltr">float64</code> تفاوت جدی قائل می‌شود. انتخاب نوع مناسب برای محاسبات حساس به دقت مانند محاسبات علمی یا مالی اهمیت زیادی دارد.</p>
+<div class="warning"><strong>هشدار درباره‌ی دقت اعشاری:</strong> نوع <code>float32</code> فقط حدود ۷ رقم دقت اعشاری دارد و <code>float64</code> حدود ۱۵ رقم. برای محاسبات مالی هرگز از float استفاده نکنید — از کتابخانه‌هایی مانند <code>shopspring/decimal</code> یا نوع سفارشی مبتنی بر <code>int64</code> (ذخیره‌ی مبلغ به‌صورت سِنت) استفاده کنید. در PHP نیز مشکل مشابهی وجود دارد اما به‌دلیل dynamic typing کمتر به‌چشم می‌آید.</div>
+<h4 id="boolean">Boolean</h4>
+<p>در <strong dir="ltr">PHP</strong> تعریف یک متغیر بولی ساده است و مقادیر <strong dir="ltr">true</strong> و <strong dir="ltr">false</strong> به‌صورت دینامیک شناخته می‌شوند:</p>
+<figure class="code php" dir="ltr">
+<pre><code class="language-php">$flag = true;
+</code></pre>
+</figure>
+<p>در <strong dir="ltr">Go</strong> نوع داده بولی <strong>صریح و ایستا</strong> است و تنها مقادیر <strong dir="ltr">true</strong> و <strong dir="ltr">false</strong> مجاز هستند:</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">var flag bool = true
+</code></pre>
+</figure>
+<p>بر خلاف PHP <strong>هیچ مقدار عددی یا رشته‌ای به‌طور ضمنی به</strong> <strong dir="ltr">false تبدیل نمی‌شود</strong> . این موضوع باعث می‌شود خطاهای منطقی رایج که در PHP ممکن است رخ دهد، در Go از همان ابتدا توسط کامپایلر شناسایی شوند.</p>
+<p><strong>مثال نامعتبر در</strong> <strong dir="ltr">Go</strong> :</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">if 0 { // compile error
+}
+</code></pre>
+</figure>
+<h4 id="string">String</h4>
+<p>در <strong dir="ltr">PHP</strong> تعریف یک رشته بسیار ساده است:</p>
+<figure class="code php" dir="ltr">
+<pre><code class="language-php">$name = "Meysam";
+</code></pre>
+</figure>
+<p>در Go می‌توان رشته را به صورت کوتاه و با علامت <code dir="ltr">:=</code> تعریف کرد:</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">name := "Meysam"
+</code></pre>
+</figure>
+<p><strong>تفاوت‌ها</strong> :</p>
+<p><strong dir="ltr">Immutable</strong> <strong>بودن رشته‌ها</strong></p>
+<p>رشته‌ها در Go <strong>قابل تغییر نیستند</strong> . هر تغییر در رشته منجر به ایجاد یک رشته جدید می‌شود.</p>
+<p><strong>دسترسی به کاراکترها</strong></p>
+<p>می‌توان به کاراکترهای رشته مانند یک آرایه از بایت‌ها دسترسی داشت:</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">firstChar := name[0] // type byte
+</code></pre>
+</figure>
+<p><strong dir="ltr">UTF-8</strong> <strong>و Unicode</strong></p>
+<p>رشته‌ها در Go همیشه <strong dir="ltr">UTF-8</strong> هستند.</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">var r rune = 'م'
+</code></pre>
+</figure>
+<p>برای کار با کاراکترهای Unicode و پردازش صحیح کاراکترهای چندبایتی باید از نوع rune (معادل int32) استفاده کرد:</p>
+<div class="important"><strong>تله‌ی مهم برای توسعه‌دهندگان فارسی‌زبان:</strong> رشته در Go آرایه‌ای از بایت است نه کاراکتر. حروف فارسی هر کدام چند بایت در رمزگذاری UTF-8 اشغال می‌کنند. بنابراین دسترسی با اندیس <code>str[i]</code> به جای یک حرف کامل، فقط یک بایت از آن حرف را برمی‌گرداند!</div>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">str := "سلام"
+
+// Wrong — byte index, not character
+fmt.Println(str[0]) // 215 — first byte of letter س, not the letter itself!
+
+// Correct — character-by-character traversal with range
+for i, r := range str {
+    fmt.Printf("index=%d, char=%c\n", i, r)
+}
+// Output: index=0, char=س index=2, char=ل ...
+
+// Correct — convert to slice of rune
+runes := []rune(str)
+fmt.Println(string(runes[0])) // س
+fmt.Println(len(runes)) // 4 — actual number of letters
+</code></pre>
+</figure>
+<p>برای محاسبه طول واقعی رشته (تعداد کاراکتر نه بایت) از <code dir="ltr">utf8.RuneCountInString(str)</code> استفاده کنید. <code dir="ltr">len(str)</code> تعداد بایت‌ها را برمی‌گرداند که برای رشته‌های فارسی بیشتر از تعداد حروف است.</p>
+<div class="note"><strong>ساختار داخلی رشته در Go:</strong> رشته در Go در واقع یک ساختار دو فیلدی است که در بسته‌ی <code>runtime</code> تعریف شده:
+<br/><br/>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">type stringHeader struct {
+    Data unsafe.Pointer
+    Len  int
+}</code></pre>
+</figure>
+<br/>
+فیلد <code>Data</code> اشاره‌گری به آرایه‌ای از بایت‌های فقط‌خواندنی است و <code>Len</code> تعداد بایت‌ها را نگه می‌دارد. به همین دلیل است که رشته‌ها immutable هستند — داده‌ی زیربنایی در حافظه‌ی فقط‌خواندنی قرار دارد و هنگام تغییر، یک آرایه‌ی جدید ساخته می‌شود. انتساب رشته فقط کپی ۱۶ بایتِ header است نه خود داده. این مکانیزم شبیه به Copy-on-Write در PHP است اما تفاوت مهمی دارد: در PHP رشته‌ها هنگام تغییر واقعاً کپی می‌شوند (به‌دلیل reference counting) اما در Go چندین رشته می‌توانند به همان بایت‌های زیربنایی اشاره کنند تا زمانی که تغییری نیاز نباشد.</div>
+<figure class="diagram" dir="ltr">
+<svg height="250" viewBox="0 0 600 250" width="600" xmlns="http://www.w3.org/2000/svg">
+<rect fill="#fafafa" height="230" rx="12" stroke="#00ADD8" stroke-width="2" width="580" x="10" y="10"></rect>
+<text fill="#00ADD8" font-size="15" font-weight="bold" text-anchor="middle" x="300" y="38" direction="rtl" unicode-bidi="embed">توابع مهم کار با رشته در <tspan direction="ltr" unicode-bidi="embed">Go</tspan></text>
+<text fill="#333" font-family="monospace" font-size="13" x="50" y="70" direction="ltr" unicode-bidi="embed">len(str)</text><text fill="#666" font-size="12" x="180" y="70" direction="rtl" unicode-bidi="embed">→ تعداد بایت‌ها</text>
+<text fill="#333" font-family="monospace" font-size="13" x="50" y="95" direction="ltr" unicode-bidi="embed">utf8.RuneCountInString()</text><text fill="#666" font-size="12" x="280" y="95" direction="rtl" unicode-bidi="embed">→ تعداد کاراکترها</text>
+<text fill="#333" font-family="monospace" font-size="13" x="50" y="120" direction="ltr" unicode-bidi="embed">strings.Contains()</text><text fill="#666" font-size="12" x="220" y="120" direction="rtl" unicode-bidi="embed">→ بررسی وجود زیررشته</text>
+<text fill="#333" font-family="monospace" font-size="13" x="50" y="145" direction="ltr" unicode-bidi="embed">strings.Split()</text><text fill="#666" font-size="12" x="200" y="145" direction="rtl" unicode-bidi="embed">→ شکافتن رشته</text>
+<text fill="#333" font-family="monospace" font-size="13" x="50" y="170" direction="ltr" unicode-bidi="embed">strings.Join()</text><text fill="#666" font-size="12" x="200" y="170" direction="rtl" unicode-bidi="embed">→ پیوند دادن رشته‌ها</text>
+<text fill="#333" font-family="monospace" font-size="13" x="50" y="195" direction="ltr" unicode-bidi="embed">strconv.Itoa() / Atoi()</text><text fill="#666" font-size="12" x="260" y="195" direction="rtl" unicode-bidi="embed">→ تبدیل <tspan direction="ltr" unicode-bidi="embed">int</tspan> ↔ <tspan direction="ltr" unicode-bidi="embed">string</tspan></text>
+<text fill="#333" font-family="monospace" font-size="13" x="50" y="220" direction="ltr" unicode-bidi="embed">[]rune(str)</text><text fill="#666" font-size="12" x="200" y="220" direction="rtl" unicode-bidi="embed">→ دسترسی به کاراکترهای <tspan direction="ltr" unicode-bidi="embed">Unicode</tspan></text>
+</svg>
+<figcaption>شکل ۲-۲: توابع مهم کار با رشته در <bdi dir="ltr">Go</bdi></figcaption>
+</figure>
+<h4 id="pointer">Pointer</h4>
+<p>در PHP هیچ نوع صریحی از اشاره‌گر وجود ندارد. در Go اشاره‌گرها بخشی طبیعی از زبان هستند. در بخش های بعد مفهوم اشاره‌گر و کاربردهای آن به صورت مفصل تشریح خواهد شد.</p>
+<figure class="diagram" dir="ltr">
+<svg height="180" viewBox="0 0 500 180" width="500" xmlns="http://www.w3.org/2000/svg">
+<rect fill="#e3f2fd" height="80" rx="8" stroke="#2196f3" stroke-width="1.5" width="180" x="20" y="20"></rect>
+<text fill="#1565c0" font-size="14" font-weight="bold" text-anchor="middle" x="110" y="50" direction="rtl" unicode-bidi="embed">متغیر x</text>
+<text fill="#333" font-family="monospace" font-size="16" text-anchor="middle" x="110" y="80" direction="ltr" unicode-bidi="embed">10</text>
+<text fill="#888" font-size="10" text-anchor="middle" x="110" y="95" direction="rtl" unicode-bidi="embed">آدرس: 0<tspan direction="ltr" unicode-bidi="embed">xC0001</tspan></text>
+<rect fill="#e8f5e9" height="80" rx="8" stroke="#4caf50" stroke-width="1.5" width="180" x="280" y="20"></rect>
+<text fill="#2e7d32" font-size="14" font-weight="bold" text-anchor="middle" x="370" y="50" direction="rtl" unicode-bidi="embed">اشاره‌گر p</text>
+<text fill="#333" font-family="monospace" font-size="16" text-anchor="middle" x="370" y="80" direction="ltr" unicode-bidi="embed">0xC0001</text>
+<text fill="#888" font-size="10" text-anchor="middle" x="370" y="95" direction="ltr" unicode-bidi="embed">p = &amp;x</text>
+<defs><marker id="arrp" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#4caf50" points="0 0, 10 3.5, 0 7"></polygon></marker></defs>
+<line marker-end="url(#arrp)" stroke="#4caf50" stroke-width="2" x1="280" x2="200" y1="60" y2="60"></line>
+<text fill="#555" font-size="12" text-anchor="middle" x="100" y="145" direction="rtl" unicode-bidi="embed">*p = مقدار در آدرس (10)</text>
+<text fill="#555" font-size="12" text-anchor="middle" x="370" y="145" direction="rtl" unicode-bidi="embed">&<tspan direction="ltr" unicode-bidi="embed">amp</tspan>;x = آدرس حافظه</text>
+<text fill="#888" font-size="11" text-anchor="middle" x="250" y="170" direction="rtl" unicode-bidi="embed">اشاره‌گر آدرس حافظه را ذخیره می‌کند نه مقدار را</text>
+</svg>
+<figcaption>شکل ۳-۲: مفهوم اشاره‌گر در <bdi dir="ltr">Go</bdi></figcaption>
+</figure>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">x := 10
+p := &amp;x // p is a pointer to x
+</code></pre>
+</figure>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">*p = 20 // value of x is changed through p
+</code></pre>
+</figure>
+<h3 id="composite-types">Composite Types</h3>
+<h4 id="array">Array</h4>
+<p>آرایه‌ها در Go ساختارهایی با اندازه ثابت و نوع مشخص هستند که مجموعه‌ای از مقادیر هم‌نوع را در خود نگه می‌دارند. برخلاف PHP که آرایه‌ها می‌توانند اندازه متغیر و انواع مختلف داده را در خود جای دهند آرایه‌های Go بسیار سخت‌گیرانه‌تر و ایستا هستند.</p>
+<figure class="diagram" dir="ltr">
+<svg height="150" viewBox="0 0 400 150" width="400" xmlns="http://www.w3.org/2000/svg">
+<text fill="#00ADD8" font-size="14" font-weight="bold" text-anchor="middle" x="200" y="25" direction="rtl" unicode-bidi="embed">آرایه با ۳ عنصر: [3]<tspan direction="ltr" unicode-bidi="embed">int</tspan>{1, 2, 3}</text>
+<rect fill="#e0f7fa" height="50" rx="6" stroke="#00ADD8" stroke-width="1.5" width="90" x="50" y="45"></rect>
+<text fill="#333" font-size="16" text-anchor="middle" x="95" y="68" direction="ltr" unicode-bidi="embed">1</text>
+<text fill="#888" font-size="10" text-anchor="middle" x="95" y="88" direction="ltr" unicode-bidi="embed">[0]</text>
+<rect fill="#e0f7fa" height="50" rx="6" stroke="#00ADD8" stroke-width="1.5" width="90" x="155" y="45"></rect>
+<text fill="#333" font-size="16" text-anchor="middle" x="200" y="68" direction="ltr" unicode-bidi="embed">2</text>
+<text fill="#888" font-size="10" text-anchor="middle" x="200" y="88" direction="ltr" unicode-bidi="embed">[1]</text>
+<rect fill="#e0f7fa" height="50" rx="6" stroke="#00ADD8" stroke-width="1.5" width="90" x="260" y="45"></rect>
+<text fill="#333" font-size="16" text-anchor="middle" x="305" y="68" direction="ltr" unicode-bidi="embed">3</text>
+<text fill="#888" font-size="10" text-anchor="middle" x="305" y="88" direction="ltr" unicode-bidi="embed">[2]</text>
+<text fill="#888" font-size="11" text-anchor="middle" x="200" y="130" direction="rtl" unicode-bidi="embed">طول ثابت = بخشی از نوع • تمام عناصر هم‌نوع</text>
+</svg>
+<figcaption dir="rtl">شکل ۳-ب-۲: آرایه با طول ۳ عنصر</figcaption>
+</figure>
+<p>در PHP:</p>
+<figure class="code php" dir="ltr">
+<pre><code class="language-php">$arr = [1, 2, 3];
+</code></pre>
+</figure>
+<p>در Go:</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">var arr = [3]int{1, 2, 3}
+</code></pre>
+</figure>
+<p><strong>تفاوت مهم</strong></p>
+<p>آرایه‌ها در Go اندازه‌ی ثابت دارند و بخشی از نوع آن‌ها است.</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">[3]int ≠ [4]int
+</code></pre>
+</figure>
+<p> آرایه با مقدار اولیه نوع دهی می‌شود:</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">var zeros [5]int // five zeros
+</code></pre>
+</figure>
+<p><strong>تفاوت‌های کلیدی آرایه‌ها در</strong> <strong dir="ltr">Go نسبت به PHP</strong></p>
+<p>اندازه ثابت: در Go طول آرایه بخشی از نوع آن است. به عنوان مثال [3]int و [4]int دو نوع کاملاً متفاوت به حساب می‌آیند و نمی‌توان آن‌ها را با هم جایگزین کرد یا آیتمی از آن را حذف کرد. نوع ایستا: برعکس PHP همه اعضای آرایه باید از یک نوع مشخص باشند مثلاً int یا string.</p>
+<p><strong>مقادیر پیش‌فرض</strong> اگر آرایه‌ای تعریف شود ولی مقداردهی نشود به صورت خودکار با zero value آن نوع داده پر می‌شود مثلاً zero value نوع int عدد صفر است.</p>
+<p><strong>نکات مهم و توابع مرتبط با آرایه‌ها</strong></p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">fmt.Println(len(arr)) // 3
+</code></pre>
+</figure>
+<p>طول آرایه: طول آرایه با تابع <span dir="ltr">len()</span> قابل دسترسی است.</p>
+<p><strong>دسترسی به عناصر</strong> می‌توان به عناصر آرایه با اندیس صفر-مبنا دسترسی داشت:</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">fmt.Println(arr[0]) // 1
+</code></pre>
+</figure>
+<p><strong>کپی آرایه</strong> : آرایه‌ها هنگام انتساب به متغیر جدید یا ارسال به تابع به صورت value کپی می‌شوند نه reference برای استفاده از reference می‌توان از اشاره‌گرها یا ساختارهای دیگر مانند slice استفاده کرد.</p>
+<p>با توجه به نکات ذکر شده اگر نیاز باشد در زمان اجرا مقادیر یک آرایه به روزرسانی شود به روش زیر عمل میکنیم:</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">var arr [3]int
+arr[0] = 10
+arr[1] = 20
+arr[2] = 30
+// Output: [10 20 30]
+fmt.Println(arr)
+</code></pre>
+</figure>
+<h4 id="slice">Slice</h4>
+<p>slice از ویژگی‌های مهم Go است و تقریباً جایگزین آرایه‌های دینامیک در PHP محسوب می‌شود. اما همان‌طور که دیدیم آرایه‌ها طول ثابتی دارند و به‌ندرت به‌صورت روزمره استفاده می‌شوند. به جای آن Go ساختاری به نام Slice ارائه کرده که قدرت و انعطاف‌پذیری آرایه‌های PHP را با امنیت و کارایی بیشتر فراهم می‌کند. در حقیقت در پشت صحنه یک slice به یک آرایه‌ی واقعی اشاره می‌کند و فقط بخش مشخصی از آن را نمایان می‌سازد. تغییر در مقادیر slice می‌تواند آرایه زیربنایی را نیز تغییر دهد.</p>
+<div class="note"><strong>ساختار داخلی Slice در runtime:</strong> هر slice در Go در واقع یک ساختار سه فیلدی به نام SliceHeader است:
+<br/><br/>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">type sliceHeader struct {
+    Data unsafe.Pointer
+    Len  int
+    Cap  int
+}</code></pre>
+</figure>
+<br/>
+<code>Data</code> اشاره‌گری به اولین عنصر آرایه‌ی زیربنایی است. <code>Len</code> تعداد عناصری است که slice در حال حاضر شامل می‌شود و <code>Cap</code> ظرفیت کل آرایه‌ی زیربنایی از نقطه‌ی شروع Data به بعد را نشان می‌دهد. انتساب یک slice به متغیر دیگر فقط این ۲۴ بایت header را کپی می‌کند نه داده‌ها را — به همین دلیل دو slice می‌توانند به همان آرایه‌ی زیربنایی اشتراک داشته باشند. این رفتار با Copy-on-Write در آرایه‌های PHP تفاوت بنیادین دارد: در PHP وقتی <code>$b = $a</code> می‌نویسید ابتدا داده‌ها به‌اشتراک گذاشته می‌شوند اما به‌محض تغییر یکی از آن‌ها کپی ایجاد می‌شود. اما در Go داده‌ها واقعاً مشترک می‌مانند مگر اینکه <code>append</code> باعث ایجاد آرایه‌ی جدید شود.</div>
+<figure class="diagram" dir="ltr">
+<svg height="220" viewBox="0 0 550 220" width="550" xmlns="http://www.w3.org/2000/svg">
+<text fill="#00ADD8" font-size="14" font-weight="bold" text-anchor="middle" x="275" y="25" direction="rtl" unicode-bidi="embed">ساختار داخلی <tspan direction="ltr" unicode-bidi="embed">Slice</tspan> در <tspan direction="ltr" unicode-bidi="embed">Go</tspan></text>
+<rect fill="#fff3e0" height="70" rx="8" stroke="#ff9800" stroke-width="1.5" width="160" x="30" y="45"></rect>
+<text fill="#e65100" font-size="13" font-weight="bold" text-anchor="middle" x="110" y="68" direction="ltr" unicode-bidi="embed">Slice Header</text>
+<text fill="#333" font-size="11" x="50" y="88" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">ptr</tspan> → آدرس آرایه</text>
+<text fill="#333" font-size="11" x="50" y="105" direction="ltr" unicode-bidi="embed">len=3, cap=5</text>
+<rect fill="#e0f7fa" height="70" rx="8" stroke="#00ADD8" stroke-width="1.5" width="280" x="250" y="45"></rect>
+<text fill="#00ADD8" font-size="13" font-weight="bold" text-anchor="middle" x="390" y="68" direction="ltr" unicode-bidi="embed">Underlying Array</text>
+<rect fill="#fff" height="28" rx="4" stroke="#00ADD8" stroke-width="1" width="45" x="265" y="78"></rect>
+<text fill="#333" font-size="12" text-anchor="middle" x="287" y="97" direction="ltr" unicode-bidi="embed">1</text>
+<rect fill="#fff" height="28" rx="4" stroke="#00ADD8" stroke-width="1" width="45" x="316" y="78"></rect>
+<text fill="#333" font-size="12" text-anchor="middle" x="338" y="97" direction="ltr" unicode-bidi="embed">2</text>
+<rect fill="#fff" height="28" rx="4" stroke="#00ADD8" stroke-width="1" width="45" x="367" y="78"></rect>
+<text fill="#333" font-size="12" text-anchor="middle" x="389" y="97" direction="ltr" unicode-bidi="embed">3</text>
+<rect fill="#f5f5f5" height="28" rx="4" stroke="#ccc" stroke-width="1" width="45" x="418" y="78"></rect>
+<text fill="#aaa" font-size="12" text-anchor="middle" x="440" y="97" direction="ltr" unicode-bidi="embed">—</text>
+<rect fill="#f5f5f5" height="28" rx="4" stroke="#ccc" stroke-width="1" width="45" x="469" y="78"></rect>
+<text fill="#aaa" font-size="12" text-anchor="middle" x="491" y="97" direction="ltr" unicode-bidi="embed">—</text>
+<text fill="#888" font-size="9" text-anchor="middle" x="287" y="118" direction="ltr" unicode-bidi="embed">len</text>
+<text fill="#888" font-size="9" text-anchor="middle" x="491" y="118" direction="ltr" unicode-bidi="embed">cap</text>
+<line stroke="#e65100" stroke-dasharray="5,3" stroke-width="1.5" x1="190" x2="265" y1="80" y2="92"></line>
+<text fill="#555" font-size="11" text-anchor="middle" x="275" y="155" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">len</tspan>: تعداد عناصر قابل دسترسی</text>
+<text fill="#555" font-size="11" text-anchor="middle" x="275" y="175" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">cap</tspan>: ظرفیت کل (از اولین عنصر تا انتهای آرایه)</text>
+<text fill="#00ADD8" font-size="11" text-anchor="middle" x="275" y="200" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">append()</tspan>در صورت نیاز آرایه جدیدی با ظرفیت بیشتر می‌سازد</text>
+</svg>
+<figcaption>شکل ۴-۲: ساختار داخلی <bdi dir="ltr">Slice</bdi></figcaption>
+</figure>
+<p>ویژگی‌های Slice:</p>
+<ul>
+<li>نمایی از یک بخش از آرایه یا زیرمجموعه‌ای از آن است</li>
+<li>اندازه و ظرفیت دارد</li>
+<li>قابلیت اضافه و حذف کردن عنصر دارد</li>
+<li>برای اکثر کارهایی که در <bdi dir="ltr">PHP</bdi> با آرایه انجام می‌دهید معادل مناسب و حرفه‌ای است</li>
+</ul>
+<h5 id="تعریف-مستقیم">تعریف مستقیم</h5>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">names := []string{"Meysam", "Amin", "Reza"}
+</code></pre>
+</figure>
+<p>این معادل چیزی شبیه زیر در PHP است:</p>
+<figure class="code php" dir="ltr">
+<pre><code class="language-php">$names = ['Meysam', 'Amin', 'Reza'];
+</code></pre>
+</figure>
+<h5 id="ساخت-با-make">ساخت با make</h5>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">users := make([]string, 0, 100) // initial length 0, capacity 100
+</code></pre>
+</figure>
+<h5 id="طول-و-ظرفیت">طول و ظرفیت</h5>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">nums := []int{1, 2, 3}
+fmt.Println(len(nums)) // 3
+fmt.Println(cap(nums)) // 3
+</code></pre>
+</figure>
+<h5 id="افزودن-عنصر-با-append">افزودن عنصر با append</h5>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">nums := []int{1, 2}
+nums = append(nums, 3, 4)
+</code></pre>
+</figure>
+<p>در Go برخلاف PHP نمی‌توان با nums[] = value مقدار جدید اضافه کرد. برای این کار باید از تابع <span dir="ltr">append()</span> استفاده کنید:</p>
+<div class="note"><strong>الگوریتم رشد Slice در Go:</strong> وقتی <code>append</code> عنصر جدیدی اضافه می‌کند و ظرفیت کافی نیست، Go آرایه‌ی زیربنایی جدیدی با ظرفیت بیشتر می‌سازد و عناصر قدیمی را کپی می‌کند. الگوریتم رشد به این شکل کار می‌کند:
+<br/>• اگر ظرفیت فعلی کمتر از ۲۵۶ باشد: ظرفیت جدید = ۲ × ظرفیت قدیمی (رشد دوبرابری)
+<br/>• اگر ظرفیت بین ۲۵۶ و ۱۰۲۴ باشد: رشد تقریباً ۱.۲۵ برابری (¼ رشد)
+<br/>• برای ظرفیت‌های بزرگ‌تر: رشد به‌صورت تدریجی کاهش می‌یابد
+<br/><br/>
+به همین دلیل پیش‌تخصیص ظرفیت با <code dir="ltr">make([]T, 0, n)</code> وقتی تعداد عناصر تقریبی را می‌دانید، از تخصیص‌های مکرر و کپی‌های اضافی جلوگیری می‌کند و کارایی را به‌شدت افزایش می‌دهد. در PHP آرایه‌ها نیز با الگوریتم مشابه رشد می‌کنند اما مدیریت آن خودکار و نامرئی است.</div>
+<h5 id="حذف-عنصر-از-slice">حذف عنصر از Slice</h5>
+<p><strong>مثال</strong> : حذف یک آیتم از لیست کاربران</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">users := []string{"Ali", "Meysam", "Nima", "Reza"}
+// Remove Meysam (index 1)
+users = append(users[:1], users[2:]...)
+fmt.Println(users) // ["Ali", "Nima", "Reza"]
+
+func removeAt(slice []string, index int) []string {
+    return append(slice[:index], slice[index+1:]...)
+}
+</code></pre>
+</figure>
+<p>در Go تابعی برای حذف عنصر وجود ندارد ولی می‌توان با append و slicing این کار را انجام داد:</p>
+<h5 id="کپی-کردن-slice">کپی کردن Slice</h5>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">copyUsers := make([]string, len(users))
+copy(copyUsers, users)
+</code></pre>
+</figure>
+<p>مشابه تابع array_copy در PHP ولی با مدیریت مستقیم حافظه.</p>
+<h4 id="map">Map‌</h4>
+<p>ساختارهای <strong dir="ltr">Key-Value</strong> ابزاری متداول برای نگهداری داده‌های ساخت‌یافته هستند. در PHP این ساختار با آرایه‌های انجمنی پیاده‌سازی می‌شود:</p>
+<figure class="diagram" dir="ltr">
+<svg height="200" viewBox="0 0 500 200" width="500" xmlns="http://www.w3.org/2000/svg">
+<text fill="#00ADD8" font-size="14" font-weight="bold" text-anchor="middle" x="250" y="25" direction="rtl" unicode-bidi="embed">ساختار <tspan direction="ltr" unicode-bidi="embed">Map</tspan> در <tspan direction="ltr" unicode-bidi="embed">Go</tspan></text>
+<rect fill="#e8f5e9" height="130" rx="8" stroke="#4caf50" stroke-width="1.5" width="200" x="30" y="45"></rect>
+<text fill="#2e7d32" font-size="13" font-weight="bold" text-anchor="middle" x="130" y="70" direction="ltr" unicode-bidi="embed">map[string]int</text>
+<text fill="#333" font-size="12" x="50" y="95" direction="ltr" unicode-bidi="embed">"apple" → 2</text>
+<text fill="#333" font-size="12" x="50" y="115" direction="ltr" unicode-bidi="embed">"banana" → 3</text>
+<text fill="#333" font-size="12" x="50" y="135" direction="ltr" unicode-bidi="embed">"cherry" → 5</text>
+<text fill="#888" font-size="11" x="50" y="160" direction="ltr" unicode-bidi="embed">reference type • unordered</text>
+<rect fill="#fff3e0" height="130" rx="8" stroke="#ff9800" stroke-width="1.5" width="210" x="270" y="45"></rect>
+<text fill="#e65100" font-size="13" font-weight="bold" text-anchor="middle" x="375" y="70" direction="ltr" unicode-bidi="embed">PHP Array</text>
+<text fill="#333" font-size="12" x="290" y="95" direction="ltr" unicode-bidi="embed">'apple' =&gt; 2</text>
+<text fill="#333" font-size="12" x="290" y="115" direction="ltr" unicode-bidi="embed">'banana' =&gt; 3</text>
+<text fill="#333" font-size="12" x="290" y="135" direction="ltr" unicode-bidi="embed">'cherry' =&gt; 5</text>
+<text fill="#888" font-size="11" x="290" y="160" direction="ltr" unicode-bidi="embed">copy-on-write • ordered</text>
+</svg>
+<figcaption>شکل ۵-۲: مقایسه‌ی <bdi dir="ltr">Map</bdi> در <bdi dir="ltr">Go</bdi> و آرایه انجمنی در <bdi dir="ltr">PHP</bdi></figcaption>
+</figure>
+<figure class="code php" dir="ltr">
+<pre><code class="language-php">$user = ['name' =&gt; 'Meysam', 'age' =&gt; 34];
+</code></pre>
+</figure>
+<p>در Go:</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">user := map[string]interface{}{
+    "name": "Meysam",
+    "age": 34,
+}
+</code></pre>
+</figure>
+<p>نوع کلید و مقدار باید مشخص باشد.</p>
+<p><code dir="ltr">interface{}</code> نوع عمومی است (شبیه به <code dir="ltr">mixed</code> در <bdi dir="ltr">PHP</bdi>) ولی بهتر است از آن کمتر استفاده شود.</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">type User struct {
+    Name string
+    Age int
+}
+u := User{Name: "Meysam", Age: 34}
+</code></pre>
+</figure>
+<p>در بخش بعدی با مفهوم struct آشنا خواهید شد، برای چنین مواردی تعریف یک نوع داده‌ی struct راه‌حل بهتر و idiomatic است:</p>
+<h5 id="خواندن-از-map">خواندن از map</h5>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">m := map[string]int{
+    "apple": 2,
+    "banana": 3,
+}
+count := m["apple"]
+</code></pre>
+</figure>
+<h5 id="بررسی-وجود-کلید">بررسی وجود کلید</h5>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">count, ok := m["orange"]
+if ok {
+    fmt.Println("وجود دارد:", count)
+} else {
+    fmt.Println("وجود ندارد")
+}
+</code></pre>
+</figure>
+<p>این مفهوم برای برنامه‌نویسان <bdi dir="ltr">PHP</bdi> جدید است چون در <bdi dir="ltr">PHP</bdi> معمولاً از تابع <code dir="ltr">isset()</code> استفاده می‌شود.</p>
+<h5 id="افزودن-یا-تغییر-مقدار">افزودن یا تغییر مقدار</h5>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">m["cherry"] = 5
+</code></pre>
+</figure>
+<h5 id="حذف-کلید-از-map">حذف کلید از map</h5>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">delete(m, "banana")
+</code></pre>
+</figure>
+<h5 id="پیمایش-map">پیمایش Map</h5>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">for k, v := range m {
+    fmt.Printf("key=%s, value=%d\n", k, v)
+}
+</code></pre>
+</figure>
+<p><strong>نکات قابل توجه</strong></p>
+<p>مقدار بازگشتی دوم هنگام خواندن از (map (ok برای جلوگیری از خطاهای رایج بسیار مهم است.</p>
+<p>map ها <strong dir="ltr">unordered</strong> هستند. یعنی ترتیب پیمایش‌ آنها مشخص نیست. </p>
+<p>Map ها <strong dir="ltr">reference type</strong> هستند. اگر به تابعی پاس داده بشنوند خود map تغییر می‌کند نه یک کپی.</p>
+<div class="note"><strong>ساختار داخلی Map در Go:</strong> Map در Go با استفاده از Hash Table پیاده‌سازی شده است. هر map از چندین bucket تشکیل شده و هر bucket می‌تواند ۸ جفت کلید-مقدار را ذخیره کند. وقتی bucket پر شود، bucket overflow bucket جدیدی به آن زنجیره می‌شود. فرآیند هش کردن از یک hash seed تصادفی استفاده می‌کند که در زمان ایجاد map تولید می‌شود — این مکانیزم از حملات Hash DoS جلوگیری می‌کند (حملتی که در PHP نیز با محدودیت تعداد کلیدهای ورودی کنترل می‌شود). وقتی تعداد عناصر از آستانه‌ی بارگذاری (load factor ≈ 6.5) فراتر رود، Go آرایه‌ی bucketها را دو برابر کرده و عناصر را rehash می‌کند. برخلاف PHP که آرایه‌ها مرتب‌ هستند و ترتیب درج را حفظ می‌کنند، map در Go ترتیب تضمینی ندارد و پیمایش آن در هر بار ممکن است ترتیب متفاوتی داشته باشد.</div>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">// Cannot compare maps directly with ==, only check if nil
+</code></pre>
+</figure>
+<h4 id="struct">Struct</h4>
+<p>در زبان Go مفهومی به نام <em>کلاس</em> وجود ندارد اما به‌جای آن ساختار داده‌ای به نام <strong dir="ltr">struct</strong> برای تعریف داده‌های ترکیبی و سازمان‌دهی اطلاعات استفاده می‌شود. Structها مانند جعبه‌هایی هستند که می‌توانند چندین مقدار با انواع مختلف را در خود جای دهند. یکی از تفاوت‌های مهم Go با PHP این است که در Go ارث‌بری وجود ندارد. به جای آن می‌توان Composition انجام داد یعنی یک struct می‌تواند شامل struct دیگری به صورت embedding باشد که باعث قابلیت استفاده مجدد و سازماندهی بهتر کد می‌شود که این موارد در فصل های بعد در بخش مربوط به شی‌گرایی بیشتر توضیح داده خواهد شد.</p>
+<figure class="diagram" dir="ltr">
+<svg height="200" viewBox="0 0 500 200" width="500" xmlns="http://www.w3.org/2000/svg">
+<text fill="#00ADD8" font-size="14" font-weight="bold" text-anchor="middle" x="250" y="25" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">Struct</tspan> در <tspan direction="ltr" unicode-bidi="embed">Go</tspan> مشابه کلاس در <tspan direction="ltr" unicode-bidi="embed">PHP</tspan></text>
+<rect fill="#e0f7fa" height="130" rx="8" stroke="#00ADD8" stroke-width="1.5" width="200" x="30" y="45"></rect>
+<text fill="#00ADD8" font-size="13" font-weight="bold" text-anchor="middle" x="130" y="70" direction="ltr" unicode-bidi="embed">Go: struct</text>
+<text fill="#333" font-size="12" x="50" y="95" direction="ltr" unicode-bidi="embed">type Product struct {</text>
+<text fill="#333" font-size="12" x="65" y="115" direction="ltr" unicode-bidi="embed">ID int</text>
+<text fill="#333" font-size="12" x="65" y="135" direction="ltr" unicode-bidi="embed">Title string</text>
+<text fill="#333" font-size="12" x="65" y="155" direction="ltr" unicode-bidi="embed">Price float64</text>
+<text fill="#333" font-size="12" x="50" y="170" direction="ltr" unicode-bidi="embed">}</text>
+<rect fill="#f3e5f5" height="130" rx="8" stroke="#777BB4" stroke-width="1.5" width="210" x="270" y="45"></rect>
+<text fill="#777BB4" font-size="13" font-weight="bold" text-anchor="middle" x="375" y="70" direction="ltr" unicode-bidi="embed">PHP: class</text>
+<text fill="#333" font-size="12" x="290" y="95" direction="ltr" unicode-bidi="embed">class Product {</text>
+<text fill="#333" font-size="12" x="305" y="115" direction="ltr" unicode-bidi="embed">public int $id;</text>
+<text fill="#333" font-size="12" x="305" y="135" direction="ltr" unicode-bidi="embed">public string $title;</text>
+<text fill="#333" font-size="12" x="305" y="155" direction="ltr" unicode-bidi="embed">public float $price;</text>
+<text fill="#333" font-size="12" x="290" y="170" direction="ltr" unicode-bidi="embed">}</text>
+</svg>
+<figcaption>شکل ۶-۲: مقایسه‌ی <bdi dir="ltr">struct</bdi> در <bdi dir="ltr">Go</bdi> با کلاس در <bdi dir="ltr">PHP</bdi></figcaption>
+</figure>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">type Product struct {
+    ID int
+    Title string
+    Price float64
+}
+</code></pre>
+</figure>
+<div class="note"><strong>طراحی حافظه‌ی Struct و پدیده‌ی Padding:</strong> کامپایلر Go برای دسترسی کارآمد به حافظه، فیلدهای struct را بر اساسAlignment Requirement مرتب و هم‌تراز می‌کند. هر نوع داده‌ای به آدرسی نیاز دارد که ضریبی از اندازه‌ی آن باشد — مثلاً <code>int64</code> باید در آدرسی مضرب ۸ قرار گیرد. اگر فیلدها به‌درستی مرتب نشوند، compiler padding بین آن‌ها قرار می‌دهد. به مثال زیر توجه کنید:</div>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">// Bad: 24 bytes (6 bytes padding wasted)
+type Bad struct {
+    A bool // 1 byte + 7 bytes padding
+    B int64 // 8 bytes
+    C bool // 1 byte + 7 bytes padding
+}
+
+// Good: 16 bytes (only 2 bytes padding)
+type Good struct {
+    B int64 // 8 bytes
+    A bool // 1 byte + 1 byte padding
+    C bool // 1 byte + 5 bytes padding (trailing)
+}
+</code></pre>
+</figure>
+<p>قاعده‌ی کلی: فیلدها را از بزرگ‌ترین به کوچک‌ترین مرتب کنید تا میزان padding به حداقل برسد. ابزار <code>fieldalignment</code> در <code>golang.org/x/tools</code> می‌تواند این مشکلات را خودکار شناسایی کند. در PHP این مشکل وجود ندارد چون کلاس‌ها و اشیاء از ساختار Hashtable استفاده می‌کنند و فیلدها به‌صورت پویا ذخیره می‌شوند.</p>
+<p>برای نمونه:</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">p := Product{ID: 1, Title: "MacBook Air", Price: 123,000,000}
+fmt.Println(p.Title)
+</code></pre>
+</figure>
+<h4 id="custom-types">Custom Types</h4>
+<p>می‌توان بر پایه‌ی انواع داده‌ای موجود مانند int, string, float64 و حتی struct نوع‌های جدیدی تعریف کرد. این قابلیت علاوه بر خوانایی و سازمان‌دهی بهتر به شما کمک می‌کند تا از type safety بهره‌مند شوید و کدی با قابلیت نگه‌داری و تست‌پذیری بالاتر بنویسید.</p>
+<p>برای تعریف یک نوع داده سفارشی به صورت زیر عمل می‌کنیم:</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">type Score int
+</code></pre>
+</figure>
+<p>در این مثال نوع داده جدیدی به نام Score تعریف کرده‌ایم که در اصل همان نوع داده int است اما به عنوان یک نوع مجزا در نظر گرفته می‌شود یعنی از این لحظه به بعد Score مستقل از int است. برای مثال نمی‌توان بدون تبدیل صریح آن را به int نسبت داد:</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">var s Score = 85
+var i int = s // error: cannot use s (type Score) as type int
+</code></pre>
+</figure>
+<p>در حال حاضر در همین حد لازم است بدانید که امکان تعریف و وصل کردن متد برای struct و نوع داده سفارشی وجود دارد که در فصل مربوط به شی‌گرایی بیشتر توضیح داده خواهد شد، فعلا به مثال زیر فقط نگاهی بیندازید:</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">func (s Score) Passed() bool {
+    return s &gt;= 50
+}
+</code></pre>
+</figure>
+<p>حالا به صورت زیر می‌توانید این متد را صدا کنید:</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">var exam Score = 72
+fmt.Println(exam.Passed()) // true
+</code></pre>
+</figure>
+<p>همانطور که اشاره شد چون نوع‌ داده سفارشی می‌تواند متد داشته باشد در نتیجه می‌تواند به راحتی اینترفیس‌ها را نیز پیاده‌سازی کند. وقتی شما به جای نوع داده int از نوع داده سفارشی Score یا به جای string از نوع داده سفارشی Email استفاده می‌کنید معنای کد برای سایر توسعه‌دهندگان واضح‌تر می‌شود. همچنین احتمال اشتباه در ارسال داده به توابع کاهش می‌یابد.</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">type Email string
+type PhoneNumber string
+func SendVerification(to Email) { ... }
+</code></pre>
+</figure>
+<p>حالا اگر به‌اشتباه PhoneNumber را به SendVerification پاس بدهید کامپایلر هشدار خواهد داد.</p>
+<h4 id="const">const</h4>
+<p>با استفاده از کلیدواژه const می‌توان داده‌هایی را به‌عنوان <strong>ثابت</strong> یا <strong dir="ltr">immutable</strong> تعریف کرد یعنی داده های که مقدار آن‌ها <strong>در زمان کامپایل مشخص</strong> می‌شود و <strong>مقدار آنها هرگز در زمان اجرا تغییر نمی‌کند</strong> .</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">const Pi = 3.14
+const Greeting = "Hello"
+</code></pre>
+</figure>
+<p>برخلاف متغیرها که ممکن است مقدارشان در زمان اجرا مشخص شود مقدار ثابت‌ها باید از قبل قابل محاسبه باشند و نمی‌توان آن‌ها را با نتیجه‌ی توابع یا مقادیر متغیرها مقداردهی کرد.</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">const x = math.Sqrt(4) // error: const initializer math.Sqrt(4) is not a constant
+</code></pre>
+</figure>
+<p>در PHP می‌توان ثابت‌ها را با define یا const تعریف کرد اما تفاوتی مهم در Go این است که ثابت‌ها واقعاً compile-time constant هستند نه فقط مقادیر تغییر ناپذیر نوع const می‌تواند صریح یا مبهم باشد. Go تا زمانی که لازم نباشد نوع دقیقی به const اختصاص نمی‌دهد.</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">const a = 10 // untyped int
+const b float64 = 10 // typed float64
+</code></pre>
+</figure>
+<p>همچنین می‌توان چند ثابت را با هم تعریف کرد.</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">const (
+Red = "red"
+Green = "green"
+Blue = "blue"
+)
+</code></pre>
+</figure>
+<h4 id="enum-با-iota">Enum با iota</h4>
+<p>PHP از نسخه ۸.۱ به بعد از نوع جدید Enum پشتیبانی می‌کند:</p>
+<figure class="code php" dir="ltr">
+<pre><code class="language-php">enum Status {
+    case Active;
+    case Inactive;
+}
+</code></pre>
+</figure>
+<p>در Go این مفهوم به صورت زیر پیاده‌سازی می‌شود:</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">type Score int
+const (
+Active Status = iota
+Inactive
+Pending
+)
+
+var s Status = Active
+</code></pre>
+</figure>
+<p>iota یک شناسه عددی است که به طور خودکار از صفر شروع شده و برای هر مقدار ثابتی که تعریف می‌شود یک واحد افزایش پیدا می‌کند. این ویژگی تعریف مجموعه‌ای از مقادیر ثابت enumerations را بسیار ساده و خوانا می‌کند.</p>
+<p>با کمک <strong dir="ltr">iota</strong> می‌توانید به راحتی Enum های مشابه PHP را تعریف کنید. الگوهای iota و custom type ضمن ساده‌سازی کد موجب افزایش خوانایی و نگهداری آسان‌تر برنامه‌های Go می‌شوند و تفاوت اصلی Go با زبان‌های شیءگرای سنتی را نشان می‌دهند.</p>
+<h3 id="variable-scope">Variable Scope</h3>
+<p>دامنه یا Scope تعیین می‌کند که یک متغیر در کدام بخش از برنامه قابل دسترسی است. در زبان Go نحوه‌ی تعریف متغیر نقش مهمی در تعیین محدوده‌ی آن دارد</p>
+<p><strong>متغیرهای تعریف‌شده با =:</strong></p>
+<p>این نوع تعریف معمولاً در داخل توابع استفاده می‌شود و دامنه‌ی آن تنها به همان Block محدود است. به بیان دیگر چنین متغیری فقط در همان محدوده‌ای که تعریف شده قابل استفاده خواهد بود و بیرون از آن شناخته‌شده نیست.</p>
+<p><strong>متغیرهای تعریف‌شده با</strong> <strong dir="ltr">var</strong></p>
+<p>اگر در سطح پکیج تعریف شوند در سراسر فایل و حتی در کل پکیج در دسترس خواهند بود. این موضوع امکان تعریف متغیرهایی را فراهم می‌کند که در بخش‌های مختلف کد قابل استفاده باشند.</p>
+<p><strong>حروف بزرگ و کوچک در نام‌گذاری متغیرها</strong></p>
+<p>یکی از ویژگی‌های خاص Go این است که دسترسی به متغیرها و به طور کلی شناسه‌ها به حرف اول نام آن‌ها بستگی دارد. اگر نام یک متغیر با حرف بزرگ شروع شود مانند Name آن متغیر Export شده محسوب می‌شود و از پکیج‌های دیگر نیز قابل دسترسی خواهد بود. اما اگر نام با حرف کوچک شروع شود مانند name تنها در همان پکیج فعلی معتبر خواهد بود. جزئیات کامل این مفهوم در فصل شی‌گرایی نیز بررسی خواهد شد.</p>
+<p><strong>این شیوه‌ی مدیریت دامنه‌ی متغیرها باعث می‌شود</strong> :</p>
+<p>1. از تداخل نام‌ها در بخش‌های مختلف برنامه جلوگیری شود.</p>
+<p>2. کدی ساخت‌یافته‌تر، خواناتر و قابل نگهداری‌تر تولید گردد.</p>
+<p>3. توسعه‌دهنده بتواند به‌طور آگاهانه مشخص کند که هر متغیر در چه سطحی از برنامه قابل مشاهده باشد.</p>
+<div class="comparison"><strong>مقایسه‌ی ساختار zval در PHP با انواع داده در Go:</strong>
+<br/><br/>
+در PHP هر متغیر در ساختاری به نام <code>zval</code> ذخیره می‌شود که شامل نوع داده، مقدار و اطلاعات reference counting است. ساختار <code>zval</code> حدود ۱۶ بایت حافظه مصرف می‌کند — مهم نیست مقدار داخلی چه باشد. بنابراین یک <code>bool</code> در PHP همان مقدار حافظه‌ی یک <code>int</code> مصرف می‌کند.
+<br/><br/>
+در Go هر نوع داده به‌طور دقیق به اندازه‌ی واقعی خود حافظه مصرف می‌کند: <code>bool</code> فقط ۱ بایت، <code>int32</code> چهار بایت و <code>int64</code> هشت بایت. هیچ overhead اضافی برای type tag یا reference counting وجود ندارد. اطلاعات نوع فقط در زمان کامپایل استفاده می‌شود و در زمان اجرا حافظه‌ای اشغال نمی‌کند (مگر برای انواعی که از interface استفاده می‌کنند).
+<br/><br/>
+علاوه بر این، PHP برای مدیریت حافظه از reference counting و garbage collector استفاده می‌کند. هر <code>zval</code> شامل شمارنده‌ای است که تعداد ارجاع‌ها را رهگیری می‌کند. Go از روش متفاوتی استفاده می‌کند: garbage collector مبتنی بر تری‌کالر mark-and-sweep که هیچ نیازی به reference counting ندارد و overhead کمتری در زمان اجرا دارد.
+</div>
+<h3 id="zero-values">Zero Values: تفاوت بنیادین با nil در PHP</h3>
+
+<div class="quote-box">
+    <p class="quote-text">مقدار صفر را مفید کنید. مقدار صفر یک نوع باید بدون مقداردهی اولیه صریح آماده استفاده باشد. این اصل طراحی در Go است که دسته‌های کاملی از باگ‌های مرتبط با داده‌های مقداردهی‌نشده را حذف می‌کند.</p>
+    <p class="quote-source">
+        <span class="quote-author">Rob Pike</span>
+        <span class="quote-role">طراح‌ارشد زبان Go</span>
+        <span class="quote-separator">|</span>
+        <span class="quote-book">Go Proverbs</span>
+    </p>
+</div>
+<p>از تفاوت‌های فلسفی مهم بین <bdi dir="ltr">Go</bdi> و <bdi dir="ltr">PHP</bdi> در نحوه‌ی برخورد با متغیرهای مقداردهی‌نشده است. در <bdi dir="ltr">PHP</bdi> متغیری که مقداردهی نشده باشد <code>null</code> است — یعنی «مقداری ندارد». اما در <bdi dir="ltr">Go</bdi> هر نوع داده‌ای یک <strong>مقدار صفر</strong> (<bdi dir="ltr">zero value</bdi>) دارد که هنگام تعریف متغیر بدون مقداردهی صریح، به‌طور خودکار به آن اختصاص می‌یابد. این یعنی در <bdi dir="ltr">Go</bdi> هیچ متغیری هرگز «بدون مقدار» نیست.</p>
+<table class="comparison-table" dir="rtl">
+<thead>
+<tr><th>نوع در Go</th><th>مقدار صفر</th><th>معادل PHP</th></tr>
+</thead>
+<tbody>
+<tr><td><code dir="ltr">int</code></td><td><code dir="ltr">0</code></td><td><code>null</code> یا <code>0</code></td></tr>
+<tr><td><code dir="ltr">float64</code></td><td><code dir="ltr">0.0</code></td><td><code>null</code> یا <code>0.0</code></td></tr>
+<tr><td><code dir="ltr">bool</code></td><td><code dir="ltr">false</code></td><td><code>null</code> یا <code>false</code></td></tr>
+<tr><td><code dir="ltr">string</code></td><td><code dir="ltr">""</code> (رشته‌ی خالی)</td><td><code>null</code> یا <code>""</code></td></tr>
+<tr><td><code dir="ltr">pointer</code></td><td><code dir="ltr">nil</code></td><td><code>null</code></td></tr>
+<tr><td><code dir="ltr">slice</code></td><td><code dir="ltr">nil</code> (len=0)</td><td><code>[]</code> یا <code>null</code></td></tr>
+<tr><td><code dir="ltr">map</code></td><td><code dir="ltr">nil</code></td><td><code>[]</code> یا <code>null</code></td></tr>
+<tr><td><code dir="ltr">struct</code></td><td>هر فیلد مقدار صفر خود</td><td><code>null</code> یا شیء خالی</td></tr>
+</tbody>
+</table>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">var i int // 0
+var f float64 // 0.0
+var b bool // false
+var s string // "" (empty string)
+var p *int // nil
+var sl []int // nil, len(sl) == 0
+
+fmt.Println(i, f, b, s, p, sl)
+// Output: 0 0 false &lt;nil&gt; []
+</code></pre>
+</figure>
+<div class="warning"><strong>تله‌ی مهم: nil در برابر zero value!</strong> مقدار صفر <code>int</code> عدد <code>0</code> است نه <code>nil</code>. مقدار صفر <code>bool</code> مقدار <code>false</code> است نه <code>nil</code>. فقط انواع مرجع‌دار (اشاره‌گر، slice، map، channel، interface، function) مقدار صفر <code>nil</code> دارند. این تفاوت در کار با <bdi dir="ltr">JSON</bdi> بسیار مهم است: اگر <code>int</code> مقدار صفر دارد، در <bdi dir="ltr">JSON</bdi> عدد <code>0</code> ظاهر می‌شود نه <code>null</code>. برای بازنمایی «مقدار موجود نیست» از اشاره‌گر استفاده کنید: <code>*int</code> مقدار صفر <code>nil</code> دارد و در <bdi dir="ltr">JSON</bdi> به <code>null</code> تبدیل می‌شود.</div>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">type User struct {
+    Name string // zero value: ""
+    Age int // zero value: 0 — cannot distinguish between "not set" and "zero"
+    Score *int // zero value: nil — can distinguish "not set"
+}
+
+u := User{Name: "Ali"}
+data, _ := json.Marshal(u)
+fmt.Println(string(data))
+// {"Name":"Ali","Age":0,"Score":null}
+// Age=0 and Score=null are different concepts!
+</code></pre>
+</figure>
+<h3 id="type-alias-vs-definition">نوع‌مستعار در برابر نوع‌جدید: Type Alias vs Type Definition</h3>
+<p><bdi dir="ltr">Go</bdi> دو روش متفاوت برای تعریف انواع سفارشی ارائه می‌دهد که رفتار کاملاً متفاوتی دارند. این تفاوت برای برنامه‌نویسان <bdi dir="ltr">PHP</bdi> که با <bdi dir="ltr">type alias</bdi> آشنا نیستند بسیار مهم است و درک آن از خطاهای عجیب کامپایلر جلوگیری می‌کند.</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">// Type Definition — new and independent type
+type Score int // Score is a new type, not int
+type UserID int // UserID and Score have same base but are incompatible
+
+// Type Alias — just an alias, same underlying type
+type MyInt = int // MyInt is exactly int, just another name
+
+var s Score = 100
+var u UserID = 200
+var m MyInt = 300
+
+// s = u // Wrong — compile error: different types
+// s = Score(u) // Correct — explicit conversion required
+// m = int(42) // Correct — no conversion needed — MyInt is same as int
+_ = s; _ = u; _ = m
+</code></pre>
+</figure>
+<div class="tip"><strong>چه زمانی از کدام استفاده کنیم؟</strong> از <bdi dir="ltr">Type Definition</bdi> (<code>type Score int</code>) وقتی استفاده کنید که می‌خواهید نوعی با هویت مستقل بسازید که نتوان آن را به‌اشتباه با نوع پایه جایگزین کرد — مثلاً <code>Score</code> نباید با <code>UserID</code> جمع شود. از <bdi dir="ltr">Type Alias</bdi> (<code>type MyInt = int</code>) فقط در موارد خاص مثل بازسازی پکیج یا سازگاری با کد قدیمی استفاده کنید. در کد معمولی، <bdi dir="ltr">Type Definition</bdi> رایج‌تر و ایمن‌تر است.</div>
+<h3 id="numeric-overflow">رفتار Overflow در انواع عددی</h3>
+<p>در <bdi dir="ltr">PHP</bdi> اعداد صحیح وقتی از حد مجاز فراتر روند به‌طور خودکار به <code>float</code> تبدیل می‌شوند. اما در <bdi dir="ltr">Go</bdi> انواع عددی <strong>سرریز خاموش</strong> (<bdi dir="ltr">silent overflow</bdi>) دارند: مقدار بدون خطا از سرریز می‌شود و به مقدار اشتباهی تبدیل می‌گردد بدون اینکه خطایی داده شود. این رفتار عمدی است برای کارایی بالا، اما می‌تواند منبع باگ‌های خطرناک باشد.</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">// Overflow in int8 (range: -128 to 127)
+var a int8 = 127
+a++ // Overflow! a is now -128 without error
+
+var b uint8 = 0
+b-- // Overflow! b is now 255 without error
+
+// In PHP:
+// $x = PHP_INT_MAX;
+// $x++; // auto-convert to float — no data loss
+
+// manual overflow check
+func safeAdd(a, b int) (int, bool) {
+    if b &gt; 0 &amp;&amp; a &gt; math.MaxInt-b {
+        return 0, false // overflow occurs
+    }
+    if b &lt; 0 &amp;&amp; a &lt; math.MinInt-b {
+        return 0, false // overflow occurs
+    }
+    return a + b, true
+}
+</code></pre>
+</figure>
+<div class="important"><strong>توصیه‌ی عملی:</strong> اگر با اعداد ورودی کاربر یا مقادیر دیتابیس کار می‌کنید، حتماً بازه‌ی مجاز را بررسی کنید. برای کارهای حساس (مثلاً محاسبات مالی) از بسته‌ی <code>math/big</code> یا کتابخانه‌های تخصصی استفاده کنید. هرگز به سرریز نشدن اعداد اعتماد نکنید.</div>
+<h3 id="const-iota">ثابت‌ها و الگوهای iota</h3>
+<p>ثابت‌ها در <bdi dir="ltr">Go</bdi> برخلاف متغیرها در زمان کامپایل ارزیابی می‌شوند و قابل تغییر نیستند. <bdi dir="ltr">Go</bdi> از <code>iota</code> به‌عنوان شمارنده‌ی خودکار در بلوک‌های <code>const</code> استفاده می‌کند که الگوهای بسیار قدرتمندی ایجاد می‌کند. در <bdi dir="ltr">PHP</bdi> معادل مستقیمی برای <code>iota</code> وجود ندارد و باید مقادیر را دستی بنویسید.</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">// base pattern — auto counter
+type Direction int
+const (
+North Direction = iota // 0
+East // 1 — iota auto-increments
+South // 2
+West // 3
+)
+
+// bitmask pattern
+type Permission int
+const (
+Read Permission = 1 &lt;&lt; iota // 1 (001)
+Write // 2 (010)
+Execute // 4 (100)
+)
+
+// skip pattern
+const (
+_ = iota // skip zero
+KB = 1 &lt;&lt; (10 * iota) // 1 &lt;&lt; 10 = 1024
+MB // 1 &lt;&lt; 20 = 1048576
+GB // 1 &lt;&lt; 30
+TB // 1 &lt;&lt; 40
+)
+</code></pre>
+</figure>
+<div class="note"><strong>نکته‌ی فنی:</strong> ثابت‌ها در <bdi dir="ltr">Go</bdi> می‌توانند بسیار بزرگ‌تر از انواع عددی معمولی باشند چون در زمان کامپایل ارزیابی می‌شوند و محدودیت حافظه‌ی زمان‌اجرا ندارند. مثلاً <code>const huge = 1e1000</code> در <bdi dir="ltr">Go</bdi> معتبر است اما فقط در عبارات ثابت قابل استفاده است و نمی‌توان آن را به متغیر <code>float64</code> اختصاص داد.</div>
+<h3 id="string-byte-conversion">هزینه‌ی تبدیل string به []byte</h3>
+<p>تبدیل بین <code>string</code> و <code>[]byte</code> یکی از رایج‌ترین عملیات در برنامه‌های <bdi dir="ltr">Go</bdi> است اما هزینه‌ی پنهانی دارد: هر تبدیل یک کپی کامل از داده ایجاد می‌کند. برای رشته‌های کوچک این مسئله مهم نیست اما وقتی با داده‌های بزرگ (مثلاً خواندن فایل) کار می‌کنید، کپی‌های مکرر می‌توانند کارایی را به‌شدت کاهش دهند.</p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">// each line creates a full copy:
+s := "Hello, World"
+b := []byte(s) // copy: string → []byte
+s2 := string(b) // copy: []byte → string
+
+// in loop — risk of memory leak and performance drop
+func processLines(data string) {
+    for i := 0; i &lt; len(data); i++ {
+        _ = string(data[i]) // Wrong — copies every time! Disaster for large data
+    }
+}
+
+// Correct — better: use range to iterate runes
+func processRunes(data string) {
+    for _, r := range data {
+        _ = r // no copy
+    }
+}
+</code></pre>
+</figure>
+<div class="tip"><strong>بهینه‌سازی پیشرفته:</strong> در مسیرهای بحرانی کد می‌توانید از <code>unsafe.Pointer</code> برای تبدیل بدون کپی استفاده کنید (که در بخش ۲.۲ توضیح داده شده). اما این روش فقط وقتی امن است که <code>[]byte</code> پس از تبدیل تغییر نکند. اگر داده‌ی بزرگ را فقط می‌خوانید، این بهینه‌سازی می‌تواند تأثیر قابل‌توجهی داشته باشد.</div>
+<figure class="diagram" dir="ltr">
+<svg height="340" viewBox="0 0 600 340" width="600" xmlns="http://www.w3.org/2000/svg">
+<rect fill="#fafafa" height="320" rx="12" stroke="#00ADD8" stroke-width="2" width="580" x="10" y="10"></rect>
+<text fill="#00ADD8" font-size="15" font-weight="bold" text-anchor="middle" x="300" y="38" direction="rtl" unicode-bidi="embed">سلسله‌مراتب سیستم نوع در <tspan direction="ltr" unicode-bidi="embed">Go</tspan></text>
+<!-- Root -->
+<rect fill="#e0f7fa" height="35" rx="6" stroke="#00ADD8" stroke-width="2" width="160" x="220" y="55"></rect>
+<text fill="#00838f" font-size="13" font-weight="bold" text-anchor="middle" x="300" y="78" direction="rtl" unicode-bidi="embed">انواع داده <tspan direction="ltr" unicode-bidi="embed">Go</tspan></text>
+<!-- Level 2 -->
+<rect fill="#e3f2fd" height="30" rx="5" stroke="#2196f3" stroke-width="1.5" width="130" x="30" y="115"></rect>
+<text fill="#1565c0" font-size="12" font-weight="bold" text-anchor="middle" x="95" y="135" direction="rtl" unicode-bidi="embed">پایه (<tspan direction="ltr" unicode-bidi="embed">Primitive</tspan>)</text>
+<rect fill="#e8f5e9" height="30" rx="5" stroke="#4caf50" stroke-width="1.5" width="130" x="175" y="115"></rect>
+<text fill="#2e7d32" font-size="12" font-weight="bold" text-anchor="middle" x="240" y="135" direction="rtl" unicode-bidi="embed">مرکب (<tspan direction="ltr" unicode-bidi="embed">Composite</tspan>)</text>
+<rect fill="#fff3e0" height="30" rx="5" stroke="#ff9800" stroke-width="1.5" width="130" x="320" y="115"></rect>
+<text fill="#e65100" font-size="12" font-weight="bold" text-anchor="middle" x="385" y="135" direction="rtl" unicode-bidi="embed">مرجع‌دار (<tspan direction="ltr" unicode-bidi="embed">Ref</tspan>)</text>
+<rect fill="#f3e5f5" height="30" rx="5" stroke="#777BB4" stroke-width="1.5" width="130" x="465" y="115"></rect>
+<text fill="#777BB4" font-size="12" font-weight="bold" text-anchor="middle" x="530" y="135" direction="rtl" unicode-bidi="embed">مفهومی</text>
+<!-- Lines from root -->
+<line stroke="#2196f3" stroke-width="1.5" x1="260" y1="90" x2="95" y2="115"></line>
+<line stroke="#4caf50" stroke-width="1.5" x1="290" y1="90" x2="240" y2="115"></line>
+<line stroke="#ff9800" stroke-width="1.5" x1="330" y1="90" x2="385" y2="115"></line>
+<line stroke="#777BB4" stroke-width="1.5" x1="350" y1="90" x2="530" y2="115"></line>
+<!-- Level 3 items -->
+<text fill="#333" font-size="10" x="35" y="165" direction="ltr" unicode-bidi="embed">int8..64, uint8..64</text>
+<text fill="#333" font-size="10" x="35" y="180" direction="ltr" unicode-bidi="embed">float32, float64</text>
+<text fill="#333" font-size="10" x="35" y="195" direction="ltr" unicode-bidi="embed">bool, string</text>
+<text fill="#333" font-size="10" x="35" y="210" direction="ltr" unicode-bidi="embed">byte, rune</text>
+
+<text fill="#333" font-size="10" x="180" y="165" direction="ltr" unicode-bidi="embed">array — [n]T</text>
+<text fill="#333" font-size="10" x="180" y="180" direction="ltr" unicode-bidi="embed">struct — فیلدها</text>
+
+<text fill="#333" font-size="10" x="325" y="165" direction="ltr" unicode-bidi="embed">slice, map, chan</text>
+<text fill="#333" font-size="10" x="325" y="180" direction="ltr" unicode-bidi="embed">pointer, func</text>
+<text fill="#333" font-size="10" x="325" y="195" direction="ltr" unicode-bidi="embed">interface</text>
+
+<text fill="#333" font-size="10" x="470" y="165" direction="ltr" unicode-bidi="embed">const, iota</text>
+<text fill="#333" font-size="10" x="470" y="180" direction="ltr" unicode-bidi="embed">type definition</text>
+<text fill="#333" font-size="10" x="470" y="195" direction="ltr" unicode-bidi="embed">type alias</text>
+
+<!-- Zero values box -->
+<rect fill="#fff9c4" height="80" rx="6" stroke="#f9a825" stroke-width="1.5" width="540" x="30" y="230"></rect>
+<text fill="#f57f17" font-size="12" font-weight="bold" text-anchor="middle" x="300" y="250" direction="rtl" unicode-bidi="embed">مقادیر صفر — تضمین عدم وجود متغیر بدون مقدار</text>
+<text fill="#333" font-size="10" x="50" y="270" direction="ltr" unicode-bidi="embed">int → 0 | float64 → 0.0 | bool → false | string → ""</text>
+<text fill="#333" font-size="10" x="50" y="285" direction="ltr" unicode-bidi="embed">pointer → nil | slice → nil | map → nil | chan → nil</text>
+<text fill="#333" font-size="10" x="50" y="300" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">struct</tspan> → هر فیلد مقدار صفر خود را می‌گیرد</text>
+</svg>
+<figcaption>شکل ۶-۲: سلسله‌مراتب سیستم نوع در <bdi dir="ltr">Go</bdi> و مقادیر صفر</figcaption>
+</figure>
+<h3 id="memory-layout-comparison">مقایسه‌ی ساختار حافظه: <bdi dir="ltr">PHP zval</bdi> در برابر <bdi dir="ltr">Go Typed Values</bdi></h3>
+<p>یکی از تفاوت‌های بنیادین <bdi dir="ltr">PHP</bdi> و <bdi dir="ltr">Go</bdi> در نحوه‌ی ذخیره‌سازی مقادیر در حافظه نهفته است. در <bdi dir="ltr">PHP</bdi> هر متغیر فارغ از نوع داده‌ی آن در یک ساختار یکسان به نام <bdi dir="ltr">zval</bdi> نگهداری می‌شود که شامل برچسب نوع، مقدار واقعی، شمارنده‌ی ارجاع و پرچم ارجاع است. این طراحی یکنواخت انعطاف‌پذیری بالایی در زمان اجرا فراهم می‌کند اما هزینه‌ی حافظه‌ی قابل‌توجهی دارد. در مقابل <bdi dir="ltr">Go</bdi> هر مقدار دقیقاً به اندازه‌ی نوع واقعی خود فضا اشغال می‌کند بدون هیچ سربار اضافی برای مدیریت نوع در زمان اجرا.</p>
+<p>این تفاوت ساختاری پیامدهای عملی مهمی دارد: برنامه‌های <bdi dir="ltr">Go</bdi> معمولاً حافظه‌ی بسیار کمتری نسبت به معادل <bdi dir="ltr">PHP</bdi> خود مصرف می‌کنند. به‌عنوان مثال ذخیره‌ی هزار عدد صحیح در <bdi dir="ltr">PHP</bdi> حدود ۱۶ کیلوبایت فقط برای ساختارهای <bdi dir="ltr">zval</bdi> نیاز دارد اما در <bdi dir="ltr">Go</bdi> فقط ۸ کیلوبایت. این بهره‌وری حافظه مستقیماً بر کارایی کش پردازنده و سرعت اجرای برنامه تأثیر می‌گذارد و یکی از دلایل اصلی برتری عملکرد <bdi dir="ltr">Go</bdi> در کارهای محاسباتی است.</p>
+<figure class="diagram" dir="ltr">
+<svg height="560" viewBox="0 0 780 560" width="780" xmlns="http://www.w3.org/2000/svg">
+<rect fill="#fafafa" height="540" rx="12" stroke="#00ADD8" stroke-width="2" width="760" x="10" y="10"></rect>
+<text fill="#333" font-size="16" font-weight="bold" text-anchor="middle" x="390" y="35" direction="rtl" unicode-bidi="embed">مقایسه‌ی ساختار حافظه: <tspan direction="ltr" unicode-bidi="embed">PHP zval</tspan> در برابر <tspan direction="ltr" unicode-bidi="embed">Go Typed Values</tspan></text>
+
+<!-- PHP Side Header -->
+<rect fill="#777BB4" height="30" rx="6" width="340" x="30" y="50"></rect>
+<text fill="#fff" font-size="13" font-weight="bold" text-anchor="middle" x="200" y="70" direction="ltr" unicode-bidi="embed">PHP — zval structure (runtime overhead)</text>
+
+<!-- PHP zval for int -->
+<rect fill="#f3e5f5" height="110" rx="8" stroke="#777BB4" stroke-width="1.5" width="340" x="30" y="90"></rect>
+<text fill="#777BB4" font-size="12" font-weight="bold" x="45" y="110" direction="ltr" unicode-bidi="embed">zval for $x = 10 (integer)</text>
+<rect fill="#fff" height="22" rx="3" stroke="#777BB4" stroke-width="1" width="155" x="45" y="118"></rect>
+<text fill="#333" font-size="10" x="50" y="133" direction="ltr" unicode-bidi="embed">type_tag = IS_LONG (4B)</text>
+<rect fill="#fff" height="22" rx="3" stroke="#777BB4" stroke-width="1" width="155" x="210" y="118"></rect>
+<text fill="#333" font-size="10" x="215" y="133" direction="ltr" unicode-bidi="embed">value.lval = 10 (8B)</text>
+<rect fill="#fff" height="22" rx="3" stroke="#777BB4" stroke-width="1" width="155" x="45" y="148"></rect>
+<text fill="#333" font-size="10" x="50" y="163" direction="ltr" unicode-bidi="embed">refcount = 1 (4B)</text>
+<rect fill="#fff" height="22" rx="3" stroke="#777BB4" stroke-width="1" width="155" x="210" y="148"></rect>
+<text fill="#333" font-size="10" x="215" y="163" direction="ltr" unicode-bidi="embed">is_ref = false (1B)</text>
+<text fill="#777BB4" font-size="11" font-weight="bold" x="45" y="192" direction="ltr" unicode-bidi="embed">Total: 16 bytes overhead per integer!</text>
+
+<!-- PHP zval for string -->
+<rect fill="#f3e5f5" height="100" rx="8" stroke="#777BB4" stroke-width="1.5" width="340" x="30" y="205"></rect>
+<text fill="#777BB4" font-size="12" font-weight="bold" x="45" y="225" direction="ltr" unicode-bidi="embed">zval for $s = "hello" (string)</text>
+<rect fill="#fff" height="22" rx="3" stroke="#777BB4" stroke-width="1" width="155" x="45" y="235"></rect>
+<text fill="#333" font-size="10" x="50" y="250" direction="ltr" unicode-bidi="embed">type_tag = IS_STRING (4B)</text>
+<rect fill="#fff" height="22" rx="3" stroke="#777BB4" stroke-width="1" width="155" x="210" y="235"></rect>
+<text fill="#333" font-size="10" x="215" y="250" direction="ltr" unicode-bidi="embed">ptr → zend_string*</text>
+<text fill="#999" font-size="9" x="45" y="275" direction="ltr" unicode-bidi="embed">zend_string: gc(8B) + hash(8B) + len(8B) + val(5B) + \0</text>
+<text fill="#777BB4" font-size="11" font-weight="bold" x="45" y="298" direction="ltr" unicode-bidi="embed">Total: 16B zval + 30B zend_string = 46 bytes</text>
+
+<!-- PHP zval for array -->
+<rect fill="#f3e5f5" height="75" rx="8" stroke="#777BB4" stroke-width="1.5" width="340" x="30" y="315"></rect>
+<text fill="#777BB4" font-size="12" font-weight="bold" x="45" y="335" direction="ltr" unicode-bidi="embed">zval for $arr = [1,2,3] (array)</text>
+<rect fill="#fff" height="22" rx="3" stroke="#777BB4" stroke-width="1" width="155" x="45" y="345"></rect>
+<text fill="#333" font-size="10" x="50" y="360" direction="ltr" unicode-bidi="embed">type_tag = IS_ARRAY (4B)</text>
+<rect fill="#fff" height="22" rx="3" stroke="#777BB4" stroke-width="1" width="155" x="210" y="345"></rect>
+<text fill="#333" font-size="10" x="215" y="360" direction="ltr" unicode-bidi="embed">ptr → HashTable*</text>
+<text fill="#777BB4" font-size="11" font-weight="bold" x="45" y="382" direction="ltr" unicode-bidi="embed">Total: 16B zval + HashTable + Buckets = ~300+ bytes</text>
+
+<!-- Go Side Header -->
+<rect fill="#00ADD8" height="30" rx="6" width="370" x="390" y="50"></rect>
+<text fill="#fff" font-size="13" font-weight="bold" text-anchor="middle" x="575" y="70" direction="ltr" unicode-bidi="embed">Go — Typed Values (zero overhead)</text>
+
+<!-- Go int -->
+<rect fill="#e0f7fa" height="110" rx="8" stroke="#00ADD8" stroke-width="1.5" width="370" x="390" y="90"></rect>
+<text fill="#00ADD8" font-size="12" font-weight="bold" x="405" y="110" direction="ltr" unicode-bidi="embed">var x int = 10</text>
+<rect fill="#fff" height="35" rx="4" stroke="#00ADD8" stroke-width="1.5" width="340" x="405" y="120"></rect>
+<text fill="#333" font-size="14" font-weight="bold" text-anchor="middle" x="575" y="143" direction="ltr" unicode-bidi="embed">10</text>
+<text fill="#00ADD8" font-size="10" x="405" y="168" direction="ltr" unicode-bidi="embed">8 bytes (64-bit system) — just the raw value</text>
+<text fill="#4CAF50" font-size="11" font-weight="bold" x="405" y="192" direction="ltr" unicode-bidi="embed">✓ 50% less memory than PHP zval</text>
+
+<!-- Go string -->
+<rect fill="#e0f7fa" height="100" rx="8" stroke="#00ADD8" stroke-width="1.5" width="370" x="390" y="205"></rect>
+<text fill="#00ADD8" font-size="12" font-weight="bold" x="405" y="225" direction="ltr" unicode-bidi="embed">var s string = "hello"</text>
+<rect fill="#fff" height="22" rx="3" stroke="#00ADD8" stroke-width="1" width="160" x="405" y="235"></rect>
+<text fill="#333" font-size="10" x="410" y="250" direction="ltr" unicode-bidi="embed">Data ptr → "hello" (5B readonly)</text>
+<rect fill="#fff" height="22" rx="3" stroke="#00ADD8" stroke-width="1" width="160" x="575" y="235"></rect>
+<text fill="#333" font-size="10" x="580" y="250" direction="ltr" unicode-bidi="embed">Len = 5 (8B)</text>
+<text fill="#00ADD8" font-size="10" x="405" y="275" direction="ltr" unicode-bidi="embed">stringHeader = {ptr, len} = 16 bytes header</text>
+<text fill="#4CAF50" font-size="11" font-weight="bold" x="405" y="298" direction="ltr" unicode-bidi="embed">✓ No refcount, no hash, no gc overhead</text>
+
+<!-- Go slice -->
+<rect fill="#e0f7fa" height="75" rx="8" stroke="#00ADD8" stroke-width="1.5" width="370" x="390" y="315"></rect>
+<text fill="#00ADD8" font-size="12" font-weight="bold" x="405" y="335" direction="ltr" unicode-bidi="embed">var arr = []int{1, 2, 3}</text>
+<rect fill="#fff" height="22" rx="3" stroke="#00ADD8" stroke-width="1" width="105" x="405" y="345"></rect>
+<text fill="#333" font-size="10" x="410" y="360" direction="ltr" unicode-bidi="embed">Data ptr</text>
+<rect fill="#fff" height="22" rx="3" stroke="#00ADD8" stroke-width="1" width="105" x="520" y="345"></rect>
+<text fill="#333" font-size="10" x="525" y="360" direction="ltr" unicode-bidi="embed">Len=3 (8B)</text>
+<rect fill="#fff" height="22" rx="3" stroke="#00ADD8" stroke-width="1" width="105" x="635" y="345"></rect>
+<text fill="#333" font-size="10" x="640" y="360" direction="ltr" unicode-bidi="embed">Cap=3 (8B)</text>
+<text fill="#00ADD8" font-size="10" x="405" y="380" direction="ltr" unicode-bidi="embed">sliceHeader = 24B + underlying array = 24 + 24 = 48 bytes</text>
+
+<!-- Zero Value Comparison -->
+<rect fill="#fff9c4" height="55" rx="6" stroke="#f9a825" stroke-width="1.5" width="340" x="30" y="400"></rect>
+<text fill="#f57f17" font-size="12" font-weight="bold" x="45" y="420" direction="rtl" unicode-bidi="embed">مقدار اولیه‌ی <tspan direction="ltr" unicode-bidi="embed">PHP</tspan></text>
+<text fill="#333" font-size="10" x="45" y="440" direction="ltr" unicode-bidi="embed">Uninitialized → null (zval with IS_NULL type)</text>
+<text fill="#333" font-size="10" x="45" y="445" direction="ltr" unicode-bidi="embed">Every variable starts as null until assigned</text>
+
+<rect fill="#e8f5e9" height="55" rx="6" stroke="#4CAF50" stroke-width="1.5" width="370" x="390" y="400"></rect>
+<text fill="#2e7d32" font-size="12" font-weight="bold" x="405" y="420" direction="rtl" unicode-bidi="embed">مقدار صفر <tspan direction="ltr" unicode-bidi="embed">Go</tspan> — همیشه مقدار معتبر</text>
+<text fill="#333" font-size="10" x="405" y="440" direction="ltr" unicode-bidi="embed">int→0 | float64→0.0 | bool→false | string→""</text>
+<text fill="#333" font-size="10" x="405" y="445" direction="ltr" unicode-bidi="embed">No null, no undefined — every type has a safe zero value</text>
+
+<!-- Efficiency Summary -->
+<rect fill="#e8f5e9" height="70" rx="8" stroke="#4CAF50" stroke-width="2" width="730" x="20" y="470"></rect>
+<text fill="#2e7d32" font-size="13" font-weight="bold" text-anchor="middle" x="390" y="492" direction="rtl" unicode-bidi="embed">خلاصه‌ی بهره‌وری حافظه</text>
+<text fill="#333" font-size="11" text-anchor="middle" x="390" y="512" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">Go</tspan> بدون سربار <tspan direction="ltr" unicode-bidi="embed">runtime type</tspan> حافظه تخصیص می‌دهد • <tspan direction="ltr" unicode-bidi="embed">CPU cache</tspan> مؤثرتر به‌دلیل تراکم بالاتر داده</text>
+<text fill="#333" font-size="11" text-anchor="middle" x="390" y="530" direction="rtl" unicode-bidi="embed">بدون <tspan direction="ltr" unicode-bidi="embed">refcounting</tspan> و <tspan direction="ltr" unicode-bidi="embed">GC overhead</tspan> در هر متغیر • <tspan direction="ltr" unicode-bidi="embed">zero value</tspan> = مقدار امن پیش‌فرض به‌جای <tspan direction="ltr" unicode-bidi="embed">null</tspan></text>
+</svg>
+<figcaption>شکل ۷-۲: مقایسه‌ی ساختار حافظه‌ی <bdi dir="ltr">PHP zval</bdi> در برابر <bdi dir="ltr">Go Typed Values</bdi> — بهره‌وری حافظه و عملکرد</figcaption>
+</figure>
+<h3 id="سناریوهای-عملیاتی-انواع-داده">سناریوهای عملیاتی</h3>
+<p>انتخاب نوع داده‌ی مناسب در <bdi dir="ltr">Go</bdi> تأثیر مستقیمی بر کارایی، خوانایی و ایمنی کد دارد. برخلاف <bdi dir="ltr">PHP</bdi> که نوع متغیرها به‌طور خودکار تعیین می‌شود در <bdi dir="ltr">Go</bdi> هر تصمیم‌گیری درباره‌ی نوع داده باید آگاهانه و عمدی باشد. در ادامه سناریوهای عملیاتی رایج را بررسی می‌کنیم که برنامه‌نویسان <bdi dir="ltr">PHP</bdi> هنگام انتقال به <bdi dir="ltr">Go</bdi> با آن‌ها مواجه می‌شوند و راه‌حل‌های <bdi dir="ltr">idiomatic</bdi> برای هر مورد ارائه می‌دهیم.</p>
+<ul>
+<li><strong>انتخاب نوع عددی مناسب:</strong> در <bdi dir="ltr">PHP</bdi> همه‌ی اعداد صحیح یک نوع دارند اما در <bdi dir="ltr">Go</bdi> باید بین <bdi dir="ltr">int</bdi>، <bdi dir="ltr">int64</bdi> و <bdi dir="ltr">float64</bdi> تصمیم بگیرید. از <bdi dir="ltr">int</bdi> برای شمارنده‌ها و ایندکس‌ها استفاده کنید. از <bdi dir="ltr">int64</bdi> زمانی که با مقادیر بزرگ مانند شناسه‌های دیتابیس یا <bdi dir="ltr">timestamp</bdi> کار می‌کنید بهره ببرید. از <bdi dir="ltr">float64</bdi> برای محاسبات علمی و آماری استفاده کنید اما هرگز برای مبالغ مالی به‌کار نبرید. برای محاسبات مالی از نوع سفارشی مبتنی بر <bdi dir="ltr">int64</bdi> یا کتابخانه‌ی <bdi dir="ltr">decimal</bdi> استفاده کنید.</li>
+<li><strong>تفاوت مدیریت رشته:</strong> رشته‌ها در <bdi dir="ltr">Go</bdi> تغییرناپذیر و مجموعه‌ای از بایت‌ها هستند نه کاراکتر. برخلاف <bdi dir="ltr">PHP</bdi> که رشته‌ها قابل تغییرند و با <bdi dir="ltr">encoding</bdi> مختلف کار می‌کنند، در <bdi dir="ltr">Go</bdi> رشته همیشه <bdi dir="ltr">UTF-8</bdi> است و هر تغییری رشته‌ی جدیدی ایجاد می‌کند. برای ساخت رشته‌ی بزرگ از <bdi dir="ltr">strings.Builder</bdi> به‌جای الحاق مکرر استفاده کنید تا از ایجاد اشیاء موقت زیاد جلوگیری شود.</li>
+<li><strong>الگوی مقدار صفر:</strong> در <bdi dir="ltr">Go</bdi> هر نوع بدون مقداردهی صریح مقدار صفر خود را می‌گیرد: <bdi dir="ltr">int</bdi> صفر، <bdi dir="ltr">bool</bdi> نادرست، <bdi dir="ltr">string</bdi> خالی و <bdi dir="ltr">slice</bdi> برابر <bdi dir="ltr">nil</bdi>. این رفتار عمدی است نه یک خطا. انواع خود را طوری طراحی کنید که مقدار صفر آن‌ها معتبر و ایمن باشد. مثلاً <bdi dir="ltr">sync.Mutex</bdi> بدون مقداردهی اولیه قابل استفاده است چون مقدار صفر آن حالت قفل‌نشده دارد.</li>
+<li><strong>زمان استفاده از <bdi dir="ltr">const</bdi> در برابر <bdi dir="ltr">var</bdi>:</strong> از <bdi dir="ltr">const</bdi> برای مقادیری استفاده کنید که در زمان کامپایل معلوم‌اند مانند اندازه‌ی بافر، <bdi dir="ltr">URL</bdi> پایه یا تعداد صفحات. از <bdi dir="ltr">var</bdi> برای مقادیری که در زمان اجرا تعیین می‌شوند مانند تنظیمات محیطی یا نتایج تابع. ثابت‌ها در <bdi dir="ltr">Go</bdi> نمی‌توانند ساختار پیچیده داشته باشند فقط انواع اولیه، رشته و <bdi dir="ltr">iota</bdi>.</li>
+<li><strong>نوع‌دستی برای شفافیت دامنه:</strong> با <code>type Score int</code> یا <code>type UserID int64</code> می‌توانید انواع سفارشی بسازید که خوانایی کد را افزایش می‌دهد و از اشتباه گرفتن مقادیر مختلف جلوگیری می‌کند. کامپایلر <bdi dir="ltr">Go</bdi> بین <bdi dir="ltr">Score</bdi> و <bdi dir="ltr">int</bdi> تفاوت قائل می‌شود و نمی‌توانید ناخواسته یکی را به‌جای دیگری استفاده کنید. این رویکرد در <bdi dir="ltr">PHP</bdi> ممکن نیست چون نوع‌دهی پویا چنین امنیتی فراهم نمی‌کند.</li>
+</ul>
+<div class="tip"><strong>مقدار صفر ویژگی است نه مشکل:</strong> <bdi dir="ltr">Go</bdi> برخلاف <bdi dir="ltr">PHP</bdi> مفهوم <bdi dir="ltr">null</bdi> همه‌گیر ندارد. هر متغیر بدون مقداردهی مقدار صفر نوع خود را می‌گیرد که همیشه معتبر و ایمن است. انواع <bdi dir="ltr">struct</bdi> خود را طوری طراحی کنید که مقدار صفر آن‌ها بلافاصله قابل استفاده باشد. مثلاً به‌جای تابع سازنده‌ای که همه‌ی فیلدها را اجباری می‌کند، فیلدها را با مقادیر پیش‌فرض معتبر طراحی کنید. این الگو در کتابخانه‌ی استاندارد <bdi dir="ltr">Go</bdi> به‌طور گسترده استفاده شده: <bdi dir="ltr">bytes.Buffer</bdi>، <bdi dir="ltr">sync.Mutex</bdi> و <bdi dir="ltr">http.Server</bdi> همگی بدون مقداردهی اولیه قابل استفاده‌اند. اگر نوعی نیاز به مقداردهی اجباری دارد تابع <bdi dir="ltr">NewX()</bdi> بسازید اما مقدار صفر را بی‌معنی نکنید.</div>
+</div>
+</main>
+</div>
+
+<!-- Footer -->
+<footer class="site-footer">
+<div class="footer-inner">
+<div class="footer-nav">
+<span class="nav-arrow">‹</span>
+<a href="02.00-chapter-2.html" data-prev>۲. انواع داده و ساختارهای کنترلی</a>
+</div>
+<div class="footer-toc">
+<a href="00.01-contents.html">فهرست</a>
+</div>
+<div class="footer-nav">
+<a href="02.02-type-conversion.html" data-next>۲.۲ Type Conversion</a>
+<span class="nav-arrow">›</span>
+</div>
+</div>
+</footer>
+
+<!-- Back to Top -->
+<button class="back-to-top" aria-label="بازگشت به بالا">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
+</button>
+
+<!-- Scripts -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/go.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/php.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/sql.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/yaml.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/json.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/dockerfile.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/xml.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/ini.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/plaintext.min.js"></script>
+<script src="assets/js/main.js"></script>
+</body>
+</html>
