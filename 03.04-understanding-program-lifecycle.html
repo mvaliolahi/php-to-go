@@ -80,12 +80,12 @@
 <figure class="diagram" dir="ltr">
 <pre class="mermaid">flowchart LR
     title(["چرخه‌ی حیات برنامه در Go"])
-    S["Startup<br/>راه‌اندازی منابع"]
-    R["Running<br/>پاسخ‌دهی مستمر"]
-    SH["Shutdown<br/>خاموش‌سازی ایمن"]
+    S["Startupراه‌اندازی منابع"]
+    R["Runningپاسخ‌دهی مستمر"]
+    SH["Shutdownخاموش‌سازی ایمن"]
     S --&gt; R --&gt; SH
 
-    note(["PHP: هر درخواست = Startup → Running → Shutdown<br/>Go: یک‌بار Startup → طولانی‌مدت Running → Shutdown کنترل‌شده"])
+    note([PHP: هر درخواست = Startup → Running → ShutdownGo: یک‌بار Startup →...])
     title ~~~ S
     SH ~~~ note
 
@@ -107,9 +107,9 @@
 <figure class="diagram" dir="ltr">
 <pre class="mermaid">flowchart LR
     title(["مراحل چرخه‌ی حیات برنامه"])
-    S["Startup<br/>• بارگذاری تنظیمات<br/>• اتصال به دیتابیس<br/>• راه‌اندازی سرور HTTP<br/>• اجرای init()ها"]
-    R["Running<br/>• پردازش درخواست‌ها<br/>• Goroutineهای فعال<br/>• مدیریت منابع پویا<br/>• Background Jobs"]
-    SH["Shutdown<br/>• دریافت SIGTERM/SIGINT<br/>• توقف درخواست‌های جدید<br/>• تکمیل درخواست‌های فعال<br/>• آزادسازی منابع"]
+    S[Startup• بارگذاری تنظیمات• اتصال به دیتابیس• راه‌اندازی سرور HTTP• اجرای...]
+    R[Running• پردازش درخواست‌ها• Goroutineهای فعال• مدیریت منابع پویا• Background...]
+    SH[Shutdown• دریافت SIGTERM/SIGINT• توقف درخواست‌های جدید• تکمیل درخواست‌های...]
     S --&gt; R --&gt; SH
 
     note(["Graceful Shutdown = خاموش‌سازی ایمن و کنترل‌شده"])
@@ -159,7 +159,7 @@
     S3["تکمیل درخواست‌های فعال"]
     S1 --&gt; S2 --&gt; S3
 
-    code(["quit := make(chan os.Signal, 1)<br/>signal.Notify(quit, SIGINT, SIGTERM)<br/>server.Shutdown(ctx)"])
+    code([quit := make(chan os.Signal, 1)signal.Notify(quit, SIGINT,...])
     title ~~~ S1
     S3 ~~~ code
 
@@ -467,11 +467,11 @@ log.Fatalf("failed to start: %v", err)
 
     subgraph GRAPH["گراف وابستگی"]
         direction TB
-        FMT["fmt<br/>بدون وابستگی"]
-        CONFIG["config<br/>بدون وابستگی"]
-        DATABASE["database<br/>وابسته به config و fmt"]
-        HANDLER["handler<br/>وابسته به database و fmt"]
-        MAINPKG["main<br/>وابسته به همه"]
+        FMT["fmtبدون وابستگی"]
+        CONFIG["configبدون وابستگی"]
+        DATABASE["databaseوابسته به config و fmt"]
+        HANDLER["handlerوابسته به database و fmt"]
+        MAINPKG["mainوابسته به همه"]
         FMT --&gt; DATABASE
         CONFIG --&gt; DATABASE
         DATABASE --&gt; HANDLER
@@ -490,9 +490,9 @@ log.Fatalf("failed to start: %v", err)
 
     subgraph PITFALLS["⚠️ مشکلات رایج init()"]
         direction TB
-        P1["• ترتیب init() بین پکیج‌ها به ترتیب import بستگی دارد — تغییر ترتیب = تغییر رفتار"]
-        P2["• عوارض جانبی (side effects) در init() می‌تواند باعث سورپرایز شود — اتصال دیتابیس، خواندن فایل و غیره"]
-        P3["• بهترین روش: init() فقط برای ثبت (registration) — مقداردهی واقعی را در main() انجام دهید"]
+        P1[• ترتیب init() بین پکیج‌ها به ترتیب import بستگی دارد — تغییر ترتیب = تغییر...]
+        P2[• عوارض جانبی (side effects) در init() می‌تواند باعث سورپرایز شود — اتصال...]
+        P3[• بهترین روش: init() فقط برای ثبت (registration) — مقداردهی واقعی را در...]
     end
 
     title ~~~ GRAPH

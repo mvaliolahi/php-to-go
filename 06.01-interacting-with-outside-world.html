@@ -418,16 +418,16 @@ written, _ := io.CopyN(dst, src, 1024)
 <pre class="mermaid">flowchart TB
     subgraph ROOT["سلسله‌مراتب رابط‌های io.Reader و io.Writer"]
         direction TB
-        R["io.Reader<br/>Read(p []byte) (n int, err error)"]
-        W["io.Writer<br/>Write(p []byte) (n int, err error)"]
-        C["io.Closer<br/>Close() error"]
+        R["io.ReaderRead(p []byte) (n int, err error)"]
+        W["io.WriterWrite(p []byte) (n int, err error)"]
+        C["io.CloserClose() error"]
     end
     subgraph COMP["رابط‌های ترکیبی"]
         direction TB
-        RW["io.ReadWriter<br/>Reader + Writer"]
-        RC2["io.ReadCloser<br/>Reader + Closer"]
-        WC["io.WriteCloser<br/>Writer + Closer"]
-        RWC["io.ReadWriteCloser<br/>Reader + Writer + Closer"]
+        RW["io.ReadWriterReader + Writer"]
+        RC2["io.ReadCloserReader + Closer"]
+        WC["io.WriteCloserWriter + Closer"]
+        RWC["io.ReadWriteCloserReader + Writer + Closer"]
     end
     R --&gt; RW
     W --&gt; RW
@@ -441,14 +441,14 @@ written, _ := io.CopyN(dst, src, 1024)
 
     subgraph CONC["Concrete Types"]
         direction TB
-        CF["*os.File<br/>ReadWriteCloser"]
-        CB["bytes.Buffer<br/>ReadWriter"]
-        CC["net.Conn<br/>ReadWriteCloser"]
-        CH["http.Response.Body<br/>ReadCloser"]
-        CBR["bufio.Reader<br/>Reader"]
-        CBW["bufio.Writer<br/>Writer"]
-        CRW["http.ResponseWriter<br/>Writer + Flusher + Hijacker"]
-        CG["compress/gzip<br/>ReadCloser"]
+        CF["*os.FileReadWriteCloser"]
+        CB["bytes.BufferReadWriter"]
+        CC["net.ConnReadWriteCloser"]
+        CH["http.Response.BodyReadCloser"]
+        CBR["bufio.ReaderReader"]
+        CBW["bufio.WriterWriter"]
+        CRW["http.ResponseWriterWriter + Flusher + Hijacker"]
+        CG["compress/gzipReadCloser"]
     end
 
     subgraph IFACE["Interface Composition"]
@@ -459,7 +459,7 @@ written, _ := io.CopyN(dst, src, 1024)
         IC4["}"]
         IC1 --- IC2 --- IC3 --- IC4
         ICN1(["ترکیب دو رابط ساده → یک رابط قدرتمند"])
-        ICN2(["هر نوعی که هم Read و هم Write را پیاده‌سازی کند، به‌طور خودکار io.ReadWriter را هم ارضا می‌کند."])
+        ICN2([هر نوعی که هم Read و هم Write را پیاده‌سازی کند، به‌طور خودکار io.ReadWriter...])
         ICN3(["قانون طلایی: رابط‌های کوچک بسازید و آن‌ها را ترکیب کنید — نه رابط‌های بزرگ"])
     end
 

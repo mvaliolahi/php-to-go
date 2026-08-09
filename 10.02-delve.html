@@ -427,7 +427,7 @@ $ dlv connect localhost:2345
 <pre class="mermaid">flowchart TB
     subgraph HEADER["معماری Delve: دیباگر ↔ پردازش هدف"]
         direction LR
-        subgraph DLV["Delve Debugger Process<br/>پردازش دیباگر"]
+        subgraph DLV["Delve Debugger Processپردازش دیباگر"]
             direction TB
             CMD1["break"]
             CMD2["continue"]
@@ -437,12 +437,12 @@ $ dlv connect localhost:2345
             CMD6["stack / frame"]
             CMD1 --- CMD2 --- CMD3 --- CMD4 --- CMD5 --- CMD6
         end
-        DWARF["DWARF Reader +<br/>Expression Evaluator"]
+        DWARF["DWARF Reader +Expression Evaluator"]
         DLV --&gt; DWARF
-        DWARF -- "ptrace Linux / macOS<br/>DebugActiveProcess Windows" --&gt; TARGET
+        DWARF -- "ptrace Linux / macOSDebugActiveProcess Windows" --&gt; TARGET
     end
 
-    subgraph TARGET["Target Go Program<br/>برنامه هدف (در حال دیباگ)"]
+    subgraph TARGET["Target Go Programبرنامه هدف (در حال دیباگ)"]
         direction TB
         TB1["Go Binary (compiled with -N -l)"]
         TB2["DWARF Debug Information"]
@@ -476,7 +476,7 @@ $ dlv connect localhost:2345
         G3["• overhead صفر در production"]
     end
 
-    note(["قانون طلایی: Delve فقط زمان دیباگ فعال است — برخلاف Xdebug که همیشه overhead دارد"])
+    note([قانون طلایی: Delve فقط زمان دیباگ فعال است — برخلاف Xdebug که همیشه overhead...])
 
     classDef dlvBox   fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937,font-weight:bold;
     classDef cmdBox   fill:#e6f9fc,stroke:#00ADD8,stroke-width:1px,color:#1f2937;

@@ -68,62 +68,8 @@
 <h2 id="logging">Logging</h2><div class="abstract">
 <strong>چکیده:</strong> این بخش structured logging در Go را پوشش می‌دهد: slog، zap و logrus. الگوی log level و context-aware logging بررسی می‌شود. تفاوت با Monolog در PHP و الگوی Go مشخص می‌گردد.
 </div>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart LR
-    title(["معماری Logging ساخت‌یافته در Go"])
-
-    subgraph SOURCES["منابع لاگ"]
-        direction TB
-        HTTP["HTTP Handlers"]
-        DB["DB Operations"]
-        BG["Background Jobs"]
-    end
-
-    subgraph LOGGER["slog.Handler"]
-        direction TB
-        LH1["JSONHandler"]
-        LH2["TextHandler"]
-        LH3["Custom Handler"]
-    end
-
-    subgraph OUTPUTS["مقاصد خروجی"]
-        direction TB
-        OUT1["stdout / File"]
-        OUT2["ELK / Loki"]
-        OUT3["Datadog / Sentry"]
-    end
-
-    HTTP --&gt; LOGGER
-    DB --&gt; LOGGER
-    BG --&gt; LOGGER
-    LOGGER --&gt; OUT1
-    LOGGER --&gt; OUT2
-    LOGGER --&gt; OUT3
-
-    LEVELS(["سطوح: DEBUG → INFO → WARN → ERROR → FATAL"])
-    CORR(["همبستگی لاگ با Trace: trace_id + span_id در هر رکورد لاگ<br/>slog.With("trace_id", traceID).Info(...)"])
-
-    title ~~~ SOURCES
-    OUTPUTS ~~~ LEVELS
-    LEVELS ~~~ CORR
-
-    classDef titleBox fill:#f8fafc,stroke:#475569,stroke-width:1px,color:#1f2937,font-weight:bold;
-    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef okBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
-    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
-    classDef traceBox fill:#f5f0fb,stroke:#9C27B0,stroke-width:1.5px,color:#1f2937;
-    classDef phpBox fill:#f5f0fb,stroke:#777BB4,stroke-width:1.5px,color:#1f2937;
-    classDef errBox fill:#fef2f2,stroke:#ef4444,stroke-width:1.5px,color:#1f2937;
-    classDef noteBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1px,color:#1f2937,font-style:italic;
-    class title titleBox;
-    class HTTP goBox;
-    class DB okBox;
-    class BG warnBox;
-    class LH1,LH2,LH3 traceBox;
-    class OUT1 phpBox;
-    class OUT2 errBox;
-    class OUT3 okBox;
-    class LEVELS,CORR noteBox;</pre>
+<figure class="diagram d2-diagram" dir="ltr">
+<img alt="نمودار" loading="lazy" src="assets/diagrams/ch09_01_logging_pipeline.svg"/>
 <figcaption>شکل ۹-۱: معماری Logging ساخت‌یافته — منابع، <bdi dir="ltr">Handler</bdi> و مقاصد خروجی</figcaption>
 </figure>
 <p>در طول توسعه‌ی نرم‌افزار ثبت Logs از ابزارهای مهم شما برای ردیابی رفتار برنامه تشخیص خطاها تحلیل عملکرد و پشتیبانی پس از انتشار خواهد بود. <bdi dir="ltr">Go</bdi> از پکیج استاندارد <bdi dir="ltr">log</bdi> برای ثبت Logs پشتیبانی می‌کند اما در پروژه‌های بزرگ‌تر می‌توانید از ابزارهای حرفه‌ای‌تری مانند <bdi dir="ltr">slog</bdi>، <bdi dir="ltr">zap</bdi> یا <bdi dir="ltr">zerolog</bdi> استفاده کنید.</p>

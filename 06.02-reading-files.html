@@ -398,34 +398,34 @@ func readLastNLines(path string, n int) ([]string, error) {
 <pre class="mermaid">flowchart TB
     subgraph HEADER["مقایسه سه روش خواندن فایل در Go"]
         direction LR
-        M1["os.ReadFile()<br/>خواندن کل فایل یکجا در حافظه<br/>ساده‌ترین روش — دو خط کد<br/>✓ مناسب: فایل‌های کوچک (&lt; 1MB)<br/>✗ خطر: فایل‌های بزرگ → پر شدن حافظه<br/>return []byte, error"]
-        M2["bufio.Scanner<br/>خواندن خط‌به‌خط از فایل<br/>بهره‌وری حافظه — فقط یک خط در حافظه<br/>✓ مناسب: پردازش خطی، فایل‌های متنی<br/>⚠ محدودیت: حداکثر ۶۴KB هر خط<br/>scanner.Scan() → scanner.Text()"]
-        M3["io.Reader + bufio.NewReader<br/>انعطاف‌پذیرترین روش — کنترل دستی بافر<br/>قابل ترکیب با هر io.Reader<br/>✓ مناسب: streaming، فایل‌های بزرگ<br/>⚠ پیچیده‌تر: مدیریت دستی Read<br/>reader.Read(buf) → n, err"]
+        M1[os.ReadFile()خواندن کل فایل یکجا در حافظهساده‌ترین روش — دو خط کد✓ مناسب:...]
+        M2[bufio.Scannerخواندن خط‌به‌خط از فایلبهره‌وری حافظه — فقط یک خط در حافظه✓...]
+        M3[io.Reader + bufio.NewReaderانعطاف‌پذیرترین روش — کنترل دستی بافرقابل ترکیب...]
     end
 
     subgraph DEC["فلوچارت تصمیم‌گیری: کدام روش را انتخاب کنم؟"]
         direction TB
-        Q1{"اندازه فایل چقدر است؟<br/>یا چه نوع پردازشی نیاز دارید؟"}
-        Q1 -- "فایل کوچک (&lt; 1MB)<br/>یا نیاز به کل محتوا" --&gt; D1["os.ReadFile()<br/>ساده و سریع ✓"]
+        Q1{"اندازه فایل چقدر است؟یا چه نوع پردازشی نیاز دارید؟"}
+        Q1 -- "فایل کوچک (&lt; 1MB)یا نیاز به کل محتوا" --&gt; D1["os.ReadFile()ساده و سریع ✓"]
         Q1 -- "فایل بزرگ" --&gt; Q2{"نوع پردازش؟"}
-        Q2 -- "خط‌به‌خط" --&gt; D2["bufio.Scanner<br/>بینه بهینه حافظه ✓"]
-        Q2 -- "Streaming / ترکیب‌پذیری" --&gt; D3["io.Reader + bufio<br/>انعطاف‌پذیر ⚠"]
+        Q2 -- "خط‌به‌خط" --&gt; D2["bufio.Scannerبینه بهینه حافظه ✓"]
+        Q2 -- "Streaming / ترکیب‌پذیری" --&gt; D3["io.Reader + bufioانعطاف‌پذیر ⚠"]
     end
 
     subgraph TRAP["⚠ تله‌ها"]
         direction TB
-        T1["⚠ تله: ReadFile برای فایل بزرگ<br/>فایل ۲ گیگابایتی = ۲ گیگابایت حافظه!<br/>ممکن است OOM Killer فرآیند را بکشد"]
-        T2["⚠ تله: حد ۶۴KB Scanner<br/>خط بلندتر از ۶۴KB → ErrTooLong<br/>راه‌حل: scanner.Buffer(buf, max)"]
+        T1[⚠ تله: ReadFile برای فایل بزرگفایل ۲ گیگابایتی = ۲ گیگابایت حافظه!ممکن است...]
+        T2[⚠ تله: حد ۶۴KB Scannerخط بلندتر از ۶۴KB → ErrTooLongراه‌حل:...]
     end
 
     subgraph SAMPLE["نمونه کد هر سه روش"]
         direction TB
-        C1["data, _ := os.ReadFile("config.json")<br/>fmt.Println(string(data))<br/>// 2 lines — simple!"]
-        C2["s := bufio.NewScanner(file)<br/>for s.Scan() { process(s.Text()) }<br/>// memory efficient, line-by-line"]
-        C3["r := bufio.NewReader(file)<br/>for { n, err := r.Read(buf); ... }<br/>// most flexible, streaming"]
+        C1["data, _ := os.ReadFile("config.json")fmt.Println(string(data))// 2 lines — simple!"]
+        C2[s := bufio.NewScanner(file)for s.Scan() { process(s.Text()) }// memory...]
+        C3[r := bufio.NewReader(file)for { n, err := r.Read(buf); ... }// most...]
     end
 
-    note(["قانون طلایی: ساده‌ترین ابزاری که نیاز شما را برآورده می‌کند انتخاب کنید. اگر شکی دارید، bufio.Scanner نقطه شروع خوبی است."])
+    note([قانون طلایی: ساده‌ترین ابزاری که نیاز شما را برآورده می‌کند انتخاب کنید. اگر...])
 
     classDef hdrBox  fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
     classDef decBox  fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;

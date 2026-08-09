@@ -364,10 +364,10 @@ func main() {
 <pre class="mermaid">flowchart LR
     subgraph HEADER["چرخه دیباگ در Go: بازتولید ← جداسازی ← تشخیص ← رفع"]
         direction LR
-        S1["۱. بازتولید<br/>Reproduce<br/>مشکل را تکرار کنید<br/>go test -race, curl"]
-        S2["۲. جداسازی<br/>Isolate<br/>محدوده مشکل را کوچک کنید<br/>GODEBUG, log<br/>git bisect, Delve"]
-        S3["۳. تشخیص<br/>Diagnose<br/>ریشه مشکل را بیابید<br/>Conditional break<br/>pprof, go tool trace<br/>Delve print, stack"]
-        S4["۴. رفع<br/>Fix<br/>تغییر و تأیید<br/>go test -bench<br/>go test -race, CI"]
+        S1["۱. بازتولیدReproduceمشکل را تکرار کنیدgo test -race, curl"]
+        S2["۲. جداسازیIsolateمحدوده مشکل را کوچک کنیدGODEBUG, loggit bisect, Delve"]
+        S3[۳. تشخیصDiagnoseریشه مشکل را بیابیدConditional breakpprof, go tool...]
+        S4["۴. رفعFixتغییر و تأییدgo test -benchgo test -race, CI"]
         S1 --&gt; S2 --&gt; S3 --&gt; S4
     end
     S4 -.-&gt;|اگر مشکل رفع نشد، به مرحله قبل بازگردید| S3
@@ -636,7 +636,7 @@ func monitorMemory(ctx context.Context) {
         Q4 -- "بله" --&gt; A4C["GODEBUGschedtracegctrace"]
     end
 
-    note(["قانون طلایی: ابتدا pprof/trace برای اندازه‌گیری ← سپس Delve برای بررسی عمیق ← در نهایت رفع مشکل"])
+    note([قانون طلایی: ابتدا pprof/trace برای اندازه‌گیری ← سپس Delve برای بررسی عمیق...])
 
     classDef startBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937,font-weight:bold;
     classDef decBox  fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
@@ -688,7 +688,7 @@ func monitorMemory(ctx context.Context) {
         end
     end
 
-    note(["قانون طلایی: ابتدا ساده‌ترین روش را امتحان کنید (fmt.Println) ← اگر کافی نبود Delve ← برای عملکرد pprof"])
+    note([قانون طلایی: ابتدا ساده‌ترین روش را امتحان کنید (fmt.Println) ← اگر کافی...])
 
     classDef stepBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
     classDef phpBox  fill:#f5f0fb,stroke:#777BB4,stroke-width:1.5px,color:#1f2937;

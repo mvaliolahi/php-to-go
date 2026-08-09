@@ -377,42 +377,42 @@ fclose($fp);
 <pre class="mermaid">flowchart TB
     subgraph DEC["فلوچارت تصمیم‌گیری: حالت‌های نوشتن فایل در Go"]
         direction TB
-        Q0{"چه نوع نوشتن نیاز دارید؟<br/>یا فایل از قبل وجود دارد؟"}
-        Q0 -- "فایل جدید" --&gt; D1["os.Create()<br/>O_RDWR|O_CREATE|O_TRUNC<br/>اگر فایل وجود داشته باشد → پاک می‌شود ✓<br/>PHP: file_put_contents("f.txt", $data)"]
-        Q0 -- "اضافه‌کردن" --&gt; D2["os.OpenFile(…, O_APPEND)<br/>O_APPEND|O_CREATE|O_WRONLY<br/>داده به انتهای فایل اضافه می‌شود ✓<br/>PHP: file_put_contents("f", $d, FILE_APPEND)"]
-        Q0 -- "بازنویسی ایمن؟" --&gt; Q1{"اهمیت داده چقدر است؟<br/>آیا خرابی فایل بحران است؟"}
-        Q1 -- "داده حساس — نیاز به دوام" --&gt; D3["File.Sync() — fsync<br/>تضمین نوشته شدن روی دیسک فیزیکی ✓"]
-        Q1 -- "بسیار حساس — خرابی غیرقابل‌قبول" --&gt; D4["Atomic: Temp + Sync + Rename<br/>یا فایل کامل جایگزین می‌شود یا هیچ تغییری ⚠"]
+        Q0{"چه نوع نوشتن نیاز دارید؟یا فایل از قبل وجود دارد؟"}
+        Q0 -- "فایل جدید" --&gt; D1["os.Create()O_RDWR|O_CREATE|O_TRUNCاگر فایل وجود داشته باشد → پاک می‌شود ✓PHP: file_put_contents("f.txt", $data)"]
+        Q0 -- "اضافه‌کردن" --&gt; D2["os.OpenFile(…, O_APPEND)O_APPEND|O_CREATE|O_WRONLYداده به انتهای فایل اضافه می‌شود ✓PHP: file_put_contents("f", $d, FILE_APPEND)"]
+        Q0 -- "بازنویسی ایمن؟" --&gt; Q1{"اهمیت داده چقدر است؟آیا خرابی فایل بحران است؟"}
+        Q1 -- "داده حساس — نیاز به دوام" --&gt; D3["File.Sync() — fsyncتضمین نوشته شدن روی دیسک فیزیکی ✓"]
+        Q1 -- "بسیار حساس — خرابی غیرقابل‌قبول" --&gt; D4["Atomic: Temp + Sync + Renameیا فایل کامل جایگزین می‌شود یا هیچ تغییری ⚠"]
     end
 
     subgraph ATOM["Atomic Write Pattern به‌تفصیل"]
         direction LR
-        AS1["۱. os.CreateTemp()<br/>فایل موقت در همان دایرکتوری"]
-        AS2["۲. نوشتن داده<br/>file.Write(data)"]
-        AS3["۳. file.Sync()<br/>دوام داده روی دیسک"]
-        AS4["۴. os.Rename()<br/>جایگزینی اتمیک ✓"]
+        AS1["۱. os.CreateTemp()فایل موقت در همان دایرکتوری"]
+        AS2["۲. نوشتن دادهfile.Write(data)"]
+        AS3["۳. file.Sync()دوام داده روی دیسک"]
+        AS4["۴. os.Rename()جایگزینی اتمیک ✓"]
         AS1 --&gt; AS2 --&gt; AS3 --&gt; AS4
     end
 
-    subgraph PHPNOTE["مقایسه PHP: file_put_contents() اتمیک نیست — اگر وسط نوشتن crash شود، فایل خراب می‌شود. معادل PHP: tempnam() + fwrite() + rename()"]
+    subgraph PHPNOTE[مقایسه PHP: file_put_contents() اتمیک نیست — اگر وسط نوشتن crash شود، فایل...]
     end
 
     subgraph DANGER["منطقه خطر: اشتباهات رایج"]
         direction TB
-        X1["✗ خطر: os.Create() فایل موجود را پاک می‌کند!<br/>os.Create() همیشه O_TRUNC دارد — محتوای قبلی از دست می‌رود<br/>اگر نمی‌خواهید فایل پاک شود، از os.OpenFile با پرچم مناسب استفاده کنید"]
-        X2["✗ خطر: بدون Sync() داده ممکن است از دست برود<br/>سیستم‌عامل نوشتن را بافر می‌کند — قطع برق = از دست رفتن داده<br/>برای داده حساس: بعد از Write حتماً Sync() فراخوانی کنید"]
-        X3["✗ خطر: فراموش کردن bufio.Writer.Flush()<br/>داده‌های بافرنشسته هرگز روی دیسک نوشته نمی‌شوند<br/>همیشه قبل از Close() اسکریپت Flush() را فراخوانی کنید"]
-        X4["✗ خطر: نوشتن همزمان بدون قفل<br/>چند گوروتین همزمان = داده‌ها روی هم نوشته می‌شوند<br/>حتی با O_APPEND: از sync.Mutex استفاده کنید"]
+        X1[✗ خطر: os.Create() فایل موجود را پاک می‌کند!os.Create() همیشه O_TRUNC دارد —...]
+        X2[✗ خطر: بدون Sync() داده ممکن است از دست برودسیستم‌عامل نوشتن را بافر می‌کند...]
+        X3[✗ خطر: فراموش کردن bufio.Writer.Flush()داده‌های بافرنشسته هرگز روی دیسک...]
+        X4[✗ خطر: نوشتن همزمان بدون قفلچند گوروتین همزمان = داده‌ها روی هم نوشته...]
     end
 
     subgraph CMP["مقایسه سریع: PHP در مقابل Go"]
         direction TB
-        C1["Go: os.OpenFile("f", O_APPEND|O_CREATE|O_WRONLY, 0644)<br/>→ Explicit flags, full control ✓"]
-        C2["PHP: file_put_contents("f", $data, FILE_APPEND)<br/>→ Single flag, simpler but less control"]
-        C3["Go Atomic: CreateTemp → Write → Sync → Rename<br/>→ No PHP equivalent — must implement manually"]
+        C1["Go: os.OpenFile("f", O_APPEND|O_CREATE|O_WRONLY, 0644)→ Explicit flags, full control ✓"]
+        C2["PHP: file_put_contents("f", $data, FILE_APPEND)→ Single flag, simpler but less control"]
+        C3[Go Atomic: CreateTemp → Write → Sync → Rename→ No PHP equivalent — must...]
     end
 
-    note(["قانون طلایی: برای داده حساس همیشه از الگوی اتمیک (فایل موقت + Sync + Rename) استفاده کنید. برای لاگ‌ها O_APPEND کافی است."])
+    note([قانون طلایی: برای داده حساس همیشه از الگوی اتمیک (فایل موقت + Sync + Rename)...])
 
     classDef decBox  fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
     classDef resBox  fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;

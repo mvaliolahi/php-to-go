@@ -409,22 +409,22 @@ addr := net.JoinHostPort(host, strconv.Itoa(port))</code></pre>
         direction TB
         subgraph G1L["Goroutine G1"]
             direction TB
-            G1A["t₁: READ counter → 0<br/>0 + 1 = 1"]
-            G1B["t₃: WRITE counter = 1<br/>done — thinks counter = 1"]
+            G1A["t₁: READ counter → 00 + 1 = 1"]
+            G1B["t₃: WRITE counter = 1done — thinks counter = 1"]
             G1A --&gt; G1B
         end
-        SH["Shared: counter<br/>counter = 0 → 0 → 1 → 1 ✗"]
+        SH["Shared: countercounter = 0 → 0 → 1 → 1 ✗"]
         subgraph G2L["Goroutine G2"]
             direction TB
             G2A["t₂: waiting..."]
-            G2B["t₄: READ counter → 0 ✗<br/>0 + 1 = 1"]
-            G2C["t₅: WRITE counter = 1 ✗<br/>done — thinks counter = 1"]
+            G2B["t₄: READ counter → 0 ✗0 + 1 = 1"]
+            G2C["t₅: WRITE counter = 1 ✗done — thinks counter = 1"]
             G2A --&gt; G2B --&gt; G2C
         end
         G1A -.-&gt; SH
         G2B -.-&gt; SH
-        RL["یک افزایش از بین رفت!<br/>نتیجه: 1 (نه 2!)"]
-        RR["Expected: counter=2<br/>Actual: counter=1 ✗<br/>Lost Update!"]
+        RL["یک افزایش از بین رفت!نتیجه: 1 (نه 2!)"]
+        RR["Expected: counter=2Actual: counter=1 ✗Lost Update!"]
         SH --&gt; RL --&gt; RR
     end
 
@@ -432,13 +432,13 @@ addr := net.JoinHostPort(host, strconv.Itoa(port))</code></pre>
         direction TB
         subgraph S1L["Goroutine G1"]
             direction TB
-            S1A["mu.Lock()<br/>READ 0 → +1 → WRITE 1<br/>✓ Critical Section (G1)<br/>mu.Unlock()"]
-            S1B["🔒 counter protected<br/>counter = 1"]
+            S1A["mu.Lock()READ 0 → +1 → WRITE 1✓ Critical Section (G1)mu.Unlock()"]
+            S1B["🔒 counter protectedcounter = 1"]
             S1A --&gt; S1B
         end
         subgraph S2L["Goroutine G2"]
             direction TB
-            S2A["mu.Lock() → waiting...<br/>READ 1 → +1 → WRITE 2<br/>✓ Critical Section (G2)<br/>mu.Unlock()"]
+            S2A["mu.Lock() → waiting...READ 1 → +1 → WRITE 2✓ Critical Section (G2)mu.Unlock()"]
             S2B["counter = 2 ✓"]
             S2A --&gt; S2B
         end
@@ -449,7 +449,7 @@ addr := net.JoinHostPort(host, strconv.Itoa(port))</code></pre>
 
     N1["بدون mutex: counter++ سه مرحله‌امد و درهم‌آمیخته"]
     N2["با mutex: بخش بحرانی ایمن"]
-    GOLD["قانون طلایی: به حافظه مشترک فقط در بخش بحرانی mutex دسترسی دهید<br/>— یا از channel استفاده کنید"]
+    GOLD[قانون طلایی: به حافظه مشترک فقط در بخش بحرانی mutex دسترسی دهید— یا از...]
 
     classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
     classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;

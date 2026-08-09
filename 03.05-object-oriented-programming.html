@@ -605,23 +605,23 @@ MakeThemSpeak(animals)
 
     subgraph PHP["PHP: class Dog extends Animal"]
         direction TB
-        PAN["class Animal<br/>+ speak(): string<br/>+ move(): string<br/>+ getName(): string"]
-        PDG["class Dog extends Animal<br/>+ fetch(): string<br/>+ speak(): string ← override<br/>+ parent::speak() ← callable"]
-        PCT["class Cat extends Animal<br/>+ purr(): string<br/>+ speak(): string ← inherited"]
+        PAN["class Animal+ speak(): string+ move(): string+ getName(): string"]
+        PDG[class Dog extends Animal+ fetch(): string+ speak(): string ← override+...]
+        PCT["class Cat extends Animal+ purr(): string+ speak(): string ← inherited"]
         PAN --&gt; PDG
         PAN --&gt; PCT
-        PINFO(["رابطه‌ی is-a: Dog یک Animal است<br/>parent::speak() → calls Animal's version<br/>$dog instanceof Animal → true<br/>تغییر والد = شکست فرزند (بالا به پایین)"])
+        PINFO([رابطه‌ی is-a: Dog یک Animal استparent::speak() → calls Animal's version$dog...])
         PCALL(["$dog-&gt;speak() → Dog::speak() (override wins)"])
     end
 
     subgraph GO["Go: type Dog struct { Animal }"]
         direction TB
-        GAN["type Animal struct { Name string }<br/>+ func (a Animal) Speak() string<br/>+ func (a Animal) Move() string<br/>+ func (a Animal) GetName() string"]
-        GDG["type Dog struct { Animal; Breed string }<br/>+ func (d Dog) Fetch() string<br/>+ func (d Dog) Speak() string ← shadows Animal.Speak<br/>✓ d.Move() → promoted from Animal<br/>✓ d.GetName() → promoted from Animal<br/>✓ d.Animal.Speak() → explicit access to Animal"]
-        GCT["type Cat struct { Animal; Indoor bool }<br/>+ func (c Cat) Purr() string<br/>✓ c.Speak() → promoted from Animal (no override)<br/>✓ c.Move() → promoted from Animal"]
+        GAN[type Animal struct { Name string }+ func (a Animal) Speak() string+ func (a...]
+        GDG[type Dog struct { Animal; Breed string }+ func (d Dog) Fetch() string+ func...]
+        GCT[type Cat struct { Animal; Indoor bool }+ func (c Cat) Purr() string✓...]
         GAN --&gt; GDG
         GAN --&gt; GCT
-        GINFO(["رابطه‌ی has-a: Dog یک Animal دارد<br/>d.Animal.Speak() → always Animal's receiver<br/>d.Speak() → Dog.Speak() (shadow, not override)<br/>تغییر Animal بی‌تأثیر روی متدهای Dog"])
+        GINFO([رابطه‌ی has-a: Dog یک Animal داردd.Animal.Speak() → always Animal's...])
         GCALL(["d.Speak() → Dog.Speak() (shadow wins) — receiver is Dog, not Animal"])
     end
 

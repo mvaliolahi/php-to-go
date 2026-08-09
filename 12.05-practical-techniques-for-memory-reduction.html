@@ -70,19 +70,18 @@
 </div>
 <figure class="diagram" dir="ltr">
 <pre class="mermaid">flowchart TB
-    TITLE["چک‌لیست کاهش مصرف حافظه در Go"]
 
     subgraph TECHS["تکنیک‌های کاهش مصرف حافظه"]
         direction TB
-        T1["مرتب‌سازی فیلدهای struct<br/>بزرگ→کوچک: int64 قبل از bool"]
-        T2["استفاده از انواع کوچک‌تر<br/>int64→int32 اگر مقدار &lt; ۲ میلیارد"]
-        T3["String Interning<br/>کاهش رشته‌های تکراری"]
-        T4["Pooling HTTP Response Body<br/>بازخوانی و بستن body"]
-        T5["Memory-Mapped I/O<br/>mmap برای فایل‌های بزرگ"]
-        T6["Byte Slice Pooling<br/>sync.Pool for buffers"]
-        T7["Pointers آگاهانه<br/>کوچک: by value / بزرگ: by pointer"]
-        T8["nil کردن داده بلااستفاده<br/>largeSlice = nil"]
-        T9["Escape Analysis<br/>go build -gcflags '-m'"]
+        T1["مرتب‌سازی فیلدهای structبزرگ→کوچک: int64 قبل از bool"]
+        T2["استفاده از انواع کوچک‌ترint64→int32 اگر مقدار &lt; ۲ میلیارد"]
+        T3["String Interningکاهش رشته‌های تکراری"]
+        T4["Pooling HTTP Response Bodyبازخوانی و بستن body"]
+        T5["Memory-Mapped I/Ommap برای فایل‌های بزرگ"]
+        T6["Byte Slice Poolingsync.Pool for buffers"]
+        T7["Pointers آگاهانهکوچک: by value / بزرگ: by pointer"]
+        T8["nil کردن داده بلااستفادهlargeSlice = nil"]
+        T9["Escape Analysisgo build -gcflags '-m'"]
     end
 
     subgraph CHECK["چک‌لیست نهایی کاهش مصرف حافظه"]
@@ -92,11 +91,10 @@
         C3["۳. آیا رشته‌های تکراری را interning کرده‌اید؟"]
         C4["۴. آیا از sync.Pool برای بافرهای موقتی استفاده می‌کنید؟"]
         C5["۵. آیا داده‌های بزرگ بلااستفاده را nil کرده‌اید؟"]
-        C6["۶. آیا با go build -gcflags '-m' بررسی کرده‌اید کدام متغیرها به heap فرار می‌کنند؟"]
+        C6[۶. آیا با go build -gcflags '-m' بررسی کرده‌اید کدام متغیرها به heap فرار...]
     end
 
-    TITLE --&gt; TECHS
-    TECHS --&gt; CHECK
+        TECHS --&gt; CHECK
 
     classDef titleBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
     classDef techBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
@@ -446,17 +444,16 @@ for method := range v.Methods() {
 <p>همه‌ی تکنیک‌های کاهش مصرف حافظه تأثیر یکسانی ندارند و پیاده‌سازی برخی از آن‌ها ساده‌تر از دیگری است. برای تصمیم‌گیری مؤثر، باید هم میزان صرفه‌جویی حافظه و هم سطح دشواری پیاده‌سازی را در نظر بگیرید.</p><p>بهترین استراتژی این است که ابتدا تکنیک‌هایی با تأثیر بالا و دشواری پایین را پیاده‌سازی کنید تا بیشترین بازدهی را با کمترین تلاش به‌دست آورید.</p><p>نمودار زیر مقایسه‌ی بصری شش تکنیک اصلی را بر اساس این دو معیار نشان می‌دهد.</p>
 <figure class="diagram" dir="ltr">
 <pre class="mermaid">flowchart TB
-    TITLE["مقایسه تکنیک‌های کاهش مصرف حافظه: تأثیر و دشواری"]
     SUB["صرفه‌جویی نسبی حافظه و سطح دشواری پیاده‌سازی هر تکنیک"]
 
     subgraph CHART["نمودار مقایسه — تأثیر (صرفه‌جویی حافظه) × دشواری × تکنیک"]
         direction TB
-        R1["sync.Pool برای اشیاء موقتی<br/>دشواری: متوسط | صرفه‌جویی: 70%"]
-        R2["String Interning برای رشته‌های تکراری<br/>دشواری: متوسط | صرفه‌جویی: 60%"]
-        R3["پیش‌تخصیص Slice<br/>دشواری: آسان | صرفه‌جویی: 55%"]
-        R4["اجتناب از تبدیل []byte↔string<br/>دشواری: آسان | صرفه‌جویی: 45%"]
-        R5["مرتب‌سازی فیلدهای struct (alignment)<br/>دشواری: آسان | صرفه‌جویی: 40%"]
-        R6["پیش‌تخصیص Map<br/>دشواری: آسان | صرفه‌جویی: 25%"]
+        R1["sync.Pool برای اشیاء موقتیدشواری: متوسط | صرفه‌جویی: 70%"]
+        R2["String Interning برای رشته‌های تکراریدشواری: متوسط | صرفه‌جویی: 60%"]
+        R3["پیش‌تخصیص Sliceدشواری: آسان | صرفه‌جویی: 55%"]
+        R4["اجتناب از تبدیل []byte↔stringدشواری: آسان | صرفه‌جویی: 45%"]
+        R5["مرتب‌سازی فیلدهای struct (alignment)دشواری: آسان | صرفه‌جویی: 40%"]
+        R6["پیش‌تخصیص Mapدشواری: آسان | صرفه‌جویی: 25%"]
     end
 
     subgraph LEGEND["راهنمای نمودار"]
@@ -474,12 +471,11 @@ for method := range v.Methods() {
 
     subgraph GOLD["⚡ قانون طلایی"]
         direction TB
-        G1["ابتدا با pprof اندازه‌گیری کنید، فقط hot path‌ها را بهینه کنید، و تکنیک‌های آسان با تأثیر بالا را اولویت دهید."]
+        G1[ابتدا با pprof اندازه‌گیری کنید، فقط hot path‌ها را بهینه کنید، و تکنیک‌های...]
         G2["بهینه‌سازی بدون اندازه‌گیری = حدس زدن. از go tool pprof و benchmem شروع کنید."]
     end
 
-    TITLE --&gt; SUB
-    SUB --&gt; CHART
+        SUB --&gt; CHART
     CHART --&gt; LEGEND
     LEGEND --&gt; REC
     REC --&gt; GOLD

@@ -82,12 +82,11 @@
 <h3 id="چرا-عملکرد-در-go-اهمیت-بیشتری-دارد">12.0.1 چرا عملکرد در Go اهمیت بیشتری از PHP دارد؟</h3>
 <figure class="diagram" dir="ltr">
 <pre class="mermaid">flowchart LR
-    TITLE["چرخه بهینه‌سازی عملکرد: اندازه‌گیری ← پروفایل ← بهینه‌سازی ← تأیید"]
 
-    B["۱. Benchmark<br/>اندازه‌گیری عملکرد فعلی<br/>go test -bench"]
-    P["۲. Profile<br/>شناسایی گلوگاه با pprof<br/>pprof CPU/Heap"]
-    O["۳. Optimize<br/>رفع گلوگاه شناسایی‌شده<br/>تغییر الگوریتم/کد"]
-    V["۴. Verify<br/>تأیید با benchstat<br/>benchstat before/after"]
+    B["۱. Benchmarkاندازه‌گیری عملکرد فعلیgo test -bench"]
+    P["۲. Profileشناسایی گلوگاه با pprofpprof CPU/Heap"]
+    O["۳. Optimizeرفع گلوگاه شناسایی‌شدهتغییر الگوریتم/کد"]
+    V["۴. Verifyتأیید با benchstatbenchstat before/after"]
 
     B --&gt; P --&gt; O --&gt; V
     V -- "تکرار تا رسیدن به هدف" --&gt; B
@@ -133,19 +132,18 @@
 <p>تکنیک‌های کاهش مصرف حافظه شامل استفاده آگاهانه از pointerها، بهره‌گیری از sync.Pool برای اشیاء موقتی، تعیین Capacity در slice، اجتناب از تخصیص‌های غیرضروری در حلقه‌ها و مرتب‌سازی فیلدهای struct برای کاهش padding و تنظیم داده‌های بلااستفاده به nil.</p>
 <figure class="diagram" dir="ltr">
 <pre class="mermaid">flowchart TB
-    TITLE["نقشه فصل ۱۲: بهینه‌سازی عملکرد از درک تا عمل"]
 
     subgraph MAP["مسیر یادگیری"]
         direction LR
-        S1["۱۲.۱ سرعت<br/>دلایل سرعت Go"]
-        S2["۱۲.۲ اصول<br/>pprof, benchmark"]
-        S3["۱۲.۳ نکات<br/>goroutine, defer"]
-        S4["۱۲.۴ GC<br/>Stack, Heap, GC"]
-        S5["۱۲.۵ تکنیک<br/>sync.Pool, nil"]
+        S1["۱۲.۱ سرعتدلایل سرعت Go"]
+        S2["۱۲.۲ اصولpprof, benchmark"]
+        S3["۱۲.۳ نکاتgoroutine, defer"]
+        S4["۱۲.۴ GCStack, Heap, GC"]
+        S5["۱۲.۵ تکنیکsync.Pool, nil"]
         S1 --&gt; S2 --&gt; S3 --&gt; S4 --&gt; S5
     end
 
-    MIND["ذهنیت طلایی:<br/>اندازه‌گیری ← شناسایی گلوگاه ← بهینه‌سازی ← تأیید → تکرار"]
+    MIND["ذهنیت طلایی:اندازه‌گیری ← شناسایی گلوگاه ← بهینه‌سازی ← تأیید → تکرار"]
 
     subgraph TOOLS["ابزارهای کلیدی فصل ۱۲"]
         direction TB
@@ -157,8 +155,7 @@
 
     WARN["⚠ توجه: در PHP حافظه هر درخواست آزاد می‌شود — در Go نشتی حافظه انباشته می‌شود!"]
 
-    TITLE --&gt; MAP
-    MAP --&gt; MIND
+        MAP --&gt; MIND
     MIND --&gt; TOOLS
     TOOLS --&gt; WARN
 

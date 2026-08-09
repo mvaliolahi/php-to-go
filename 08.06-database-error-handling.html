@@ -209,29 +209,29 @@ func isRetryable(err error) bool {
 
     subgraph CONN["Connection Errors"]
         direction TB
-        CT["Timeout<br/>context.DeadlineExceeded"]
-        CM["Max Conns<br/>connection_exception"]
-        CD["DNS Failure<br/>lookup / dial error"]
+        CT["Timeoutcontext.DeadlineExceeded"]
+        CM["Max Connsconnection_exception"]
+        CD["DNS Failurelookup / dial error"]
     end
 
     subgraph QUERY["Query Errors"]
         direction TB
-        QS["Syntax Err<br/>syntax_error 42601"]
-        QT["Table Missing<br/>undefined_table 42P01"]
-        QP["Permission<br/>insufficient_privilege 42501"]
+        QS["Syntax Errsyntax_error 42601"]
+        QT["Table Missingundefined_table 42P01"]
+        QP["Permissioninsufficient_privilege 42501"]
     end
 
     subgraph CONS["Constraint Errors"]
         direction TB
-        CU["Unique<br/>unique_violation 23505"]
-        CF["Foreign Key<br/>fk_violation 23503"]
-        CN["Not Null<br/>not_null_violation 23502"]
+        CU["Uniqueunique_violation 23505"]
+        CF["Foreign Keyfk_violation 23503"]
+        CN["Not Nullnot_null_violation 23502"]
     end
 
     subgraph TX["Transaction Errors"]
         direction TB
-        TD["Deadlock<br/>deadlock_detected 40P01"]
-        TS["Serializ. Fail<br/>serialization_failure 40001"]
+        TD["Deadlockdeadlock_detected 40P01"]
+        TS["Serializ. Failserialization_failure 40001"]
     end
 
     Root --&gt; CONN
@@ -264,7 +264,7 @@ func isRetryable(err error) bool {
         TR3["خطاهای دائمی با retry برطرف نمی‌شوند و فقط منابع را هدر می‌دهند"]
     end
 
-    Golden["قانون طلایی: فقط خطاهای موقتی را Retry کنید — خطاهای Constraint هرگز با تلاش مجدد برطرف نمی‌شوند"]
+    Golden[قانون طلایی: فقط خطاهای موقتی را Retry کنید — خطاهای Constraint هرگز با تلاش...]
 
     Title --&gt; Root
     Root --&gt; STRATEGY

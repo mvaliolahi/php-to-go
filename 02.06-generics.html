@@ -70,7 +70,6 @@
 </div>
 <figure class="diagram" dir="ltr">
 <pre class="mermaid"><code>flowchart TB
-    TITLE["جنریک‌ها در Go — تابعی برای همه انواع"]
 
     subgraph DEF["تعریف تابع جنریک"]
         direction TB
@@ -86,12 +85,10 @@
         I3["Map[float64](...)T = float64"]
     end
 
-    CONSTR["Constraints: any | comparable | constraints.Ordered | واسط سفارشیمحدود کردن T به انواع خاص → ایمنی کامپایل"]
+    CONSTR[Constraints: any | comparable | constraints.Ordered | واسط سفارشیمحدود کردن...]
 
-    TITLE --&gt; DEF
-    DEF --&gt; INST
-    TITLE --&gt; CONSTR
-
+        DEF --&gt; INST
+    
     classDef titleBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:2px,color:#1f2937;
     classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
     classDef bothBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
@@ -312,7 +309,6 @@ result := Map([]int{1, 2, 3}, func(x int) int { return x * 2 })
 <h3 id="generic-constraint-hierarchy">2.6.7 سلسله‌مراتب محدودیت‌های نوع</h3>
 <figure class="diagram" dir="ltr">
 <pre class="mermaid">flowchart TB
-    TITLE["سلسله‌مراتب محدودیت‌های جنریک در Go"]
 
     ANY["any (interface{})"]
     COMP["comparable"]
@@ -321,8 +317,8 @@ result := Map([]int{1, 2, 3}, func(x int) int { return x * 2 })
 
     subgraph TYPES["انواع قابل پذیرش"]
         direction TB
-        T1["int, int8...<br/>float32, float64<br/>string"]
-        T2["type Number interface {<br/>    int | float32 | float64<br/>}"]
+        T1["int, int8...float32, float64string"]
+        T2["type Number interface {    int | float32 | float64}"]
     end
 
     ANY --&gt; COMP
@@ -463,7 +459,6 @@ result := Map[int, string]([]int{1, 2, 3}, func(n int) string {
 <div class="note"><strong>قوانین استنتاج نوع:</strong> کامپایلر <bdi dir="ltr">Go</bdi> از دو مکانیزم برای استنتاج استفاده کند: (۱) <bdi dir="ltr">Type Unification</bdi> — بررسی سازگاری نوع آرگومان با پارامتر، و (۲) <bdi dir="ltr">Constraint Inference</bdi> — استفاده از محدودیت‌ها برای حدس زدن نوع ناشناخته. وقتی هر دو مکانیزم کافی نباشند، باید نوع را صراحتاً تعیین کنید. این برخلاف <bdi dir="ltr">PHP</bdi> است که هیچ نوع‌دهی جنریک واقعی ندارد و همه‌چیز در زمان اجرا تعیین می‌شود.</div>
 <figure class="diagram" dir="ltr">
 <pre class="mermaid">flowchart TB
-    TITLE["سلسله‌مراتب محدودیت‌های جنریک در Go"]
 
     ANY["any (interface{})"]
     COMP["comparable"]
@@ -476,10 +471,10 @@ result := Map[int, string]([]int{1, 2, 3}, func(n int) string {
 
     subgraph TYPES["انواع قابل پذیرش"]
         direction TB
-        T1["~int, ~int8...int64<br/>~float32, ~float64<br/>~string"]
-        T2["comparable<br/>== !="]
-        T3["constraints.Ordered<br/>== != &lt; &gt; &lt;= &gt;="]
-        T4["Custom Constraints<br/>Methods + Union"]
+        T1["~int, ~int8...int64~float32, ~float64~string"]
+        T2["comparable== !="]
+        T3["constraints.Ordered== != &lt; &gt; &lt;= &gt;="]
+        T4["Custom ConstraintsMethods + Union"]
     end
 
     COMP --&gt; T2
@@ -487,11 +482,9 @@ result := Map[int, string]([]int{1, 2, 3}, func(n int) string {
     CUST --&gt; T4
     ANY --&gt; T1
 
-    DEC["تصمیم: آیا جنریک لازم است؟<br/>الگوریتم تکراری → جنریک<br/>رفتار مشترک → interface<br/>فقط ۲ نوع → توابع جداگانه"]
+    DEC[تصمیم: آیا جنریک لازم است؟الگوریتم تکراری → جنریکرفتار مشترک → interfaceفقط...]
 
-    TITLE --&gt; ANY
-    TITLE --&gt; DEC
-
+        
     classDef titleBox fill:#ecfdf5,stroke:#10b981,stroke-width:2px,color:#1f2937;
     classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
     classDef neutralBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
@@ -569,13 +562,12 @@ type NumberLike[T NumberLike[T]] interface {
  </p>
 <figure class="diagram" dir="ltr">
 <pre class="mermaid">flowchart TB
-    TITLE["مجموعه‌ی محدودیت‌های نوع و نمونه‌سازی جنریک‌ها در Go"]
 
     subgraph REL["رابطه: Ordered ⊂ comparable ⊂ any"]
         direction TB
-        ANY["any (interface{})<br/>همه‌ی انواع — بدون محدودیت"]
-        COMP["comparable<br/>انواع قابل == و !="]
-        ORD["Ordered<br/>انواع قابل &lt; &gt;"]
+        ANY["any (interface{})همه‌ی انواع — بدون محدودیت"]
+        COMP["comparableانواع قابل == و !="]
+        ORD["Orderedانواع قابل &lt; &gt;"]
         ANY --&gt; COMP --&gt; ORD
     end
 
@@ -588,16 +580,16 @@ type NumberLike[T NumberLike[T]] interface {
 
     subgraph TSET["انواع نمونه‌سازی"]
         direction TB
-        N1["~int...<br/>~float...<br/>~bool<br/>struct{}<br/>[4]int<br/>[]int<br/>map[K]V<br/>func()"]
-        N2["Custom<br/>int | float64<br/>+ String()"]
+        N1["~int...~float...~boolstruct{}[4]int[]intmap[K]Vfunc()"]
+        N2["Customint | float64+ String()"]
     end
 
     subgraph DEF["تعریف تابع جنریک"]
         direction TB
         D1["func Max[T constraints.Ordered](a, b T) T"]
-        D2["Max[int]<br/>func Max(a, b int) int {<br/>    if a &gt; b { return a }<br/>}"]
-        D3["Max[float64]<br/>func Max(a, b float64) float64 {<br/>    if a &gt; b { return a }<br/>}"]
-        D4["✗ خطای کامپایل — نوع نامعتبر<br/>Max([]int{}, []int{}) // ✗ []int does not satisfy Ordered"]
+        D2["Max[int]func Max(a, b int) int {    if a &gt; b { return a }}"]
+        D3["Max[float64]func Max(a, b float64) float64 {    if a &gt; b { return a }}"]
+        D4[✗ خطای کامپایل — نوع نامعتبرMax([]int{}, []int{}) // ✗ []int does not...]
         D1 --&gt; D2
         D1 --&gt; D3
         D1 --&gt; D4
@@ -605,19 +597,19 @@ type NumberLike[T NumberLike[T]] interface {
 
     subgraph CUST["محدودیت سفارشی با union و متد"]
         direction TB
-        C1["type Stringer interface {<br/>    ~int | ~float64 | ~string<br/>    String() string<br/>}"]
+        C1["type Stringer interface {    ~int | ~float64 | ~string    String() string}"]
     end
 
     subgraph CMP["مقایسه با PHP — بدون جنریک واقعی"]
         direction TB
-        PH["PHP: function max($a, $b) { ... } // mixed types<br/>بدون بررسی نوع — خطا در زمان اجرا"]
-        GO["Go: func Max[T Ordered](a, b T) T { ... }<br/>ایمن در زمان کامپایل — بدون هزینه‌ی اجرا"]
+        PH[PHP: function max($a, $b) { ... } // mixed typesبدون بررسی نوع — خطا در زمان...]
+        GO[Go: func Max[T Ordered](a, b T) T { ... }ایمن در زمان کامپایل — بدون هزینه‌ی...]
     end
 
     subgraph EX["مثال عملی: محدودیت سفارشی و نمونه‌سازی"]
         direction TB
-        E1["type Number interface { int | int64 | float64 }<br/>func Sum[T Number](nums []T) T { var total T; for _, n := range nums { total += n }; return total }"]
-        E2["Sum([]int{1,2,3})       // T=int → 6<br/>Sum([]float64{1.1,2.2}) // T=float64 → 3.3"]
+        E1[type Number interface { int | int64 | float64 }func Sum[T Number](nums []T)...]
+        E2["Sum([]int{1,2,3})       // T=int → 6Sum([]float64{1.1,2.2}) // T=float64 → 3.3"]
     end
 
     subgraph DEC["راهنمای تصمیم‌گیری: کدام محدودیت را انتخاب کنیم؟"]
@@ -628,20 +620,10 @@ type NumberLike[T NumberLike[T]] interface {
         D8["نیاز خاص → سفارشی"]
     end
 
-    GOLD["قانون طلایی: محدودترین constraint را انتخاب کنید که نیازتان را برآورده می‌کند<br/>any نقطه‌ی شروع نیست بلکه آخرین راه‌حل است"]
-    CMPGOLD["PHP: mixed / DocBlock — بررسی فقط در زمان اجرا<br/>Go: Type Parameter + Constraint — ایمنی کامپایل"]
+    GOLD[قانون طلایی: محدودترین constraint را انتخاب کنید که نیازتان را برآورده...]
+    CMPGOLD[PHP: mixed / DocBlock — بررسی فقط در زمان اجراGo: Type Parameter +...]
 
-    TITLE --&gt; REL
-    TITLE --&gt; OPS
-    TITLE --&gt; TSET
-    TITLE --&gt; DEF
-    TITLE --&gt; CUST
-    TITLE --&gt; CMP
-    TITLE --&gt; EX
-    TITLE --&gt; DEC
-    TITLE --&gt; GOLD
-    TITLE --&gt; CMPGOLD
-
+                                        
     classDef titleBox fill:#ecfdf5,stroke:#10b981,stroke-width:2px,color:#1f2937;
     classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
     classDef phpBox fill:#f5f0fb,stroke:#777BB4,stroke-width:1.5px,color:#1f2937;

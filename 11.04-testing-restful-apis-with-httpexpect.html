@@ -336,9 +336,9 @@ assert.Greater(t, value.(int), 10)
 <pre class="mermaid">flowchart LR
     subgraph HEADER["جریان تست API با httpexpect"]
         direction LR
-        REQ["درخواست<br/>GET/POST/PUT"] --&gt; HANDLER["هندلر<br/>httptest.Server"]
-        HANDLER --&gt; RES["پاسخ<br/>Expect()"]
-        RES --&gt; VALID["اعتبارسنجی<br/>JSON().Object()"]
+        REQ["درخواستGET/POST/PUT"] --&gt; HANDLER["هندلرhttptest.Server"]
+        HANDLER --&gt; RES["پاسخExpect()"]
+        RES --&gt; VALID["اعتبارسنجیJSON().Object()"]
     end
 
     subgraph CHECKS["اعتبارسنجی‌های قابل بررسی"]
@@ -349,7 +349,7 @@ assert.Greater(t, value.(int), 10)
         C4["Nested Values"]
     end
 
-    note(["احراز هویت: JWT Bearer Token | Session Cookie | API Key Header<br/>WithHeader() | WithCookie() | e.Builder for reusable auth"])
+    note([احراز هویت: JWT Bearer Token | Session Cookie | API Key HeaderWithHeader() |...])
 
     classDef reqBox   fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
     classDef hndBox   fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;

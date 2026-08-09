@@ -81,32 +81,9 @@
 <tr><td>استقرار</td><td>نیاز به PHP-FPM + Web Server</td><td>یک فایل باینری مستقل</td></tr>
 </tbody>
 </table>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-    subgraph TOP["معماری وب‌سرور Go"]
-        direction TB
-        C["Client"] --&gt;|"HTTP"| S
-    end
-    S["net/http Server<br/>ServeMux + Timeouts"] --&gt; MW
-    subgraph MW["Middleware Chain"]
-        direction LR
-        M1["Middleware"] --&gt; M2["Middleware"]
-    end
-    MW --&gt; H1["homeHandler"]
-    MW --&gt; H2["aboutHandler"]
-    MW --&gt; H3["apiHandler"]
-    H1 --&gt; GS["Graceful Shutdown<br/>os.Signal + Context"]
-    H2 --&gt; GS
-    H3 --&gt; GS
-    GS --&gt; R["Response"]
-
-    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef neuBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
-    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
-    class S,MW,M1,M2,H1,H2,H3 goBox;
-    class C,R neuBox;
-    class GS warnBox;</pre>
-<figcaption>شکل ۷-۱: معماری وب‌سرور <bdi dir="ltr">Go</bdi> با <bdi dir="ltr">ServeMux</bdi>، <bdi dir="ltr">Middleware</bdi> و <bdi dir="ltr">Graceful</bdi> <bdi dir="ltr">Shutdown</bdi></figcaption>
+<figure class="diagram d2-diagram" dir="ltr">
+<img alt="نمودار" loading="lazy" src="assets/diagrams/ch07_01_server_lifecycle.svg"/>
+<figcaption>شکل ۷-۱: معماری وب‌سرورGoباServeMux،MiddlewareوGracefulShutdown</figcaption>
 </figure>
 <p>پکیج استاندارد net/http مبنای ساخت وب‌سرور در Go است. در محیط production باید علاوه بر پاسخ‌دهی به درخواست‌ها، خطاها را مدیریت، لاگ‌گیری انجام دهید و سرور را به صورت امن راه‌اندازی کنید.</p>
 <div class="quote-box">
@@ -575,89 +552,9 @@ handler := maxBodySizeMiddleware(1 &lt;&lt; 20)(mux)
 <!-- ═══════════════════════════════════════════════════════════════ -->
  ENRICHMENT: SVG — http.Server Internal Connection Handling 
 <!-- ═══════════════════════════════════════════════════════════════ -->
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-    subgraph IN["کلاینت‌ها"]
-        direction LR
-        C1["Client 1"]
-        C2["Client 2"]
-        CN["Client N"]
-        CDOTS["⋯"]
-    end
-    C1 --&gt; L["net.Listener<br/>Accept() → new conn"]
-    C2 --&gt; L
-    CN --&gt; L
-    CDOTS --&gt; L
-    L --&gt; G1["go c.serve(ctx) ← goroutine/conn"]
-    L --&gt; G2["go c.serve(ctx) ← goroutine/conn"]
-    L --&gt; G3["go c.serve(ctx) ← goroutine/conn"]
-
-    subgraph TO["زمان‌بندی‌های محافظ"]
-        direction TB
-        TO1["ReadHeaderTimeout ~2s — ضد Slowloris"]
-        TO2["ReadTimeout ~5s — خواندن کامل درخواست"]
-        TO3["WriteTimeout"]
-    end
-    G1 --&gt; RR["c.readRequest()<br/>http.Request"]
-    G2 --&gt; RR
-    G3 --&gt; RR
-    RR --&gt; SM["ServeMux<br/>Longest prefix match"]
-    SM --&gt;|"match"| HD["Handler<br/>ServeHTTP(w, r)<br/>http.ResponseWriter"]
-
-    subgraph KA["اتصال Keep-Alive"]
-        direction TB
-        KA1["پس از ارسال پاسخ، اتصال بسته نمی‌شود"]
-        KA2["منتظر درخواست بعدی روی همان TCP"]
-        KA3["اگر بدون درخواست بماند → IdleTimeout"]
-        KA4["IdleTimeout ~120s → conn.close()"]
-        KA1 --&gt; KA2 --&gt; KA3 --&gt; KA4
-    end
-    HD --&gt;|"next request"| KA
-    KA -.-&gt;|"next request"| RR
-
-    subgraph AT["⚠ Slowloris Attack"]
-        direction TB
-        AT1["بدون ReadHeaderTimeout"]
-        AT2["مهاجم هدرها را کُند ارسال می‌کند"]
-        AT3["اتصال نیمه‌باز → تخلیه‌ی منابع سرور!"]
-        AT1 --&gt; AT2 --&gt; AT3
-    end
-
-    subgraph CFG["تنظیمات حیاتی http.Server"]
-        direction TB
-        CF1["server := &amp;http.Server{"]
-        CF2["Addr: ":8080","]
-        CF3["ReadTimeout: 5 * time.Second,"]
-        CF4["ReadHeaderTimeout: 2 * time.Second,"]
-        CF5["WriteTimeout: 10 * time.Second,"]
-        CF6["IdleTimeout: 120 * time.Second,"]
-        CF7["MaxHeaderBytes: 1 &lt;&lt; 20, // 1MB"]
-        CF8["}"]
-    end
-
-    subgraph NOTES["نکات کلیدی چرخه‌ی حیات اتصال"]
-        direction TB
-        NT1["① هر اتصال جدید = یک goroutine مستقل (نه thread سنگین)"]
-        NT2["② ServeMux با بلندترین تطبیق پیشوند، هندلر مناسب را انتخاب می‌کند"]
-        NT3["③ ReadHeaderTimeout مهم‌ترین سپر ضد حمله‌ی Slowloris است"]
-        NT4["④ Keep-Alive اتصال را باز نگه می‌دارد تا IdleTimeout تمام شود"]
-        NT5["⑤ بدون timeout، یک کلاینت کند می‌تواند goroutine را indefinitely اشغال کند"]
-        NT6["⑥ WriteTimeout باید بزرگ‌تر از زمان پردازش هندلر باشد"]
-        NT7["قانون طلایی: هر سرور production باید ReadTimeout و WriteTimeout صریح داشته باشد — بدون استثنا!"]
-    end
-
-    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef neuBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
-    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
-    classDef errBox fill:#fef2f2,stroke:#ef4444,stroke-width:1.5px,color:#1f2937;
-    class C1,C2,CN,CDOTS,L neuBox;
-    class G1,G2,G3,RR,SM,HD goBox;
-    class TO1,TO2,TO3 warnBox;
-    class KA1,KA2,KA3,KA4 neuBox;
-    class AT1,AT2,AT3 errBox;
-    class CF1,CF2,CF3,CF4,CF5,CF6,CF7,CF8 neuBox;
-    class NT1,NT2,NT3,NT4,NT5,NT6,NT7 warnBox;</pre>
-<figcaption>شکل ۷-۱-ج: چرخه‌ی حیات اتصال در <bdi dir="ltr">http.Server</bdi> — از پذیرش اتصال تا مدیریت درخواست، زمان‌بندی‌ها و رفتار <bdi dir="ltr">Keep-Alive</bdi></figcaption>
+<figure class="diagram d2-diagram" dir="ltr">
+<img alt="نمودار" loading="lazy" src="assets/diagrams/ch07_01_server_lifecycle.svg"/>
+<figcaption>شکل ۷-۱-ج: چرخه‌ی حیات اتصال درhttp.Server— از پذیرش اتصال تا مدیریت درخواست، زمان‌بندی‌ها و رفتارKeep-Alive</figcaption>
 </figure>
 <h3 id="سناریوهای-عملیاتی-وبسرور">7.1.11 سناریوهای عملیاتی</h3>
 <p>در محیط‌های واقعی <bdi dir="ltr">production</bdi>، تنظیم وب‌سرور <bdi dir="ltr">Go</bdi> فراتر از نوشتن یک <code dir="ltr">ListenAndServe</code> ساده است. هر سناریوی استقرار نیازمند تنظیمات متفاوتی است و بدون توجه به این تفاوت‌ها، سرور شما ممکن است در برابر حملات آسیب‌پذیر شود یا عملکرد مناسبی نداشته باشد. در ادامه مهم‌ترین سناریوهای عملیاتی و راه‌حل‌های مربوط به هر کدام را بررسی می‌کنیم:</p>

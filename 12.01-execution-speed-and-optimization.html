@@ -245,12 +245,11 @@ $ go tool pprof http://localhost:6060/debug/pprof/heap
 <div class="important"><strong>نکته مهم pprof:</strong> هرگز بدون pprof بهینه‌سازی نکنید. حدس زدن گلوگاه عملکرد معمولاً اشتباه است. در یک پروژه‌ی واقعی، ما تصور می‌کردیم تابع JSON serialization گلوگاه است، اما pprof نشان داد ۷۰٪ وقت CPU در یک تابع کوچک timestamp formatting صرف می‌شود. بدون pprof هفته‌ها وقت تلف می‌کردیم.</div>
 <figure class="diagram" dir="ltr">
 <pre class="mermaid">flowchart LR
-    TITLE["فرآیند بهینه‌سازی مبتنی بر اندازه‌گیری در Go"]
 
-    B["۱. بنچمارک<br/>go test -bench"]
-    P["۲. پروفایل<br/>pprof CPU/Heap"]
-    O["۳. بهینه‌سازی<br/>تغییر الگوریتم/کد"]
-    V["۴. تأیید<br/>benchstat"]
+    B["۱. بنچمارکgo test -bench"]
+    P["۲. پروفایلpprof CPU/Heap"]
+    O["۳. بهینه‌سازیتغییر الگوریتم/کد"]
+    V["۴. تأییدbenchstat"]
 
     B --&gt; P --&gt; O --&gt; V
     V -- "تکرار تا رسیدن به هدف" --&gt; B
@@ -263,10 +262,9 @@ $ go tool pprof http://localhost:6060/debug/pprof/heap
         T4["go build -gcflags '-m'"]
     end
 
-    WARN["⚠ توجه: هرگز بدون pprof بهینه‌سازی نکنید — حدس زدن گلوگاه عملکرد معمولاً اشتباه است!"]
+    WARN[⚠ توجه: هرگز بدون pprof بهینه‌سازی نکنید — حدس زدن گلوگاه عملکرد معمولاً...]
 
-    TITLE --&gt; B
-    V --&gt; TOOLS
+        V --&gt; TOOLS
     TOOLS --&gt; WARN
 
     classDef titleBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
@@ -281,29 +279,26 @@ $ go tool pprof http://localhost:6060/debug/pprof/heap
 </figure>
 <figure class="diagram" dir="ltr">
 <pre class="mermaid">flowchart LR
-    TITLE["مقایسه عملکرد PHP و Go (نسبی) — واحد: ms (کمتر = بهتر)"]
 
     subgraph PHP_SIDE["PHP"]
         direction TB
-        PHTTP["HTTP<br/>~75"]
-        PJSON["JSON<br/>~60"]
-        PDB["DB Query<br/>~70"]
-        PCPU["CPU-bound<br/>~95"]
-        PCONC["Concurrent<br/>~85"]
+        PHTTP["HTTP~75"]
+        PJSON["JSON~60"]
+        PDB["DB Query~70"]
+        PCPU["CPU-bound~95"]
+        PCONC["Concurrent~85"]
     end
 
     subgraph GO_SIDE["Go"]
         direction TB
-        GHTTP["HTTP<br/>~15"]
-        GJSON["JSON<br/>~10"]
-        GDB["DB Query<br/>~25"]
-        GCPU["CPU-bound<br/>~5"]
-        GCONC["Concurrent<br/>~10"]
+        GHTTP["HTTP~15"]
+        GJSON["JSON~10"]
+        GDB["DB Query~25"]
+        GCPU["CPU-bound~5"]
+        GCONC["Concurrent~10"]
     end
 
-    TITLE --&gt; PHP_SIDE
-    TITLE --&gt; GO_SIDE
-
+        
     classDef titleBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
     classDef phpBox fill:#f5f0fb,stroke:#777BB4,stroke-width:1.5px,color:#1f2937;
     classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
@@ -369,65 +364,58 @@ if err != nil {
 <p>یکی از بهترین روش‌ها برای درک تفاوت عملکرد Go و PHP، اجرای بنچمارک‌های مستقیم روی عملیات رایج برنامه‌نویسی است. نمودار زیر نتایج بنچمارک‌های واقعی را نشان می‌دهد که با استفاده از <bdi dir="ltr">testing.B</bdi> در Go و <bdi dir="ltr">PHPBench</bdi> در PHP روی سخت‌افزار یکسان اجرا شده‌اند. </p><p>این نتایج به‌وضوح نشان می‌دهند که Go در عملیات CPU-bound (مثل پردازش ریاضی و regex) برتری چشمگیری دارد، در حالی که در عملیات I/O-bound (مثل خواندن فایل) تفاوت کمتر است. دلیل این موضوع آن است که در عملیات I/O، گلوگاه عملکرد دیسک یا شبکه است نه زبان برنامه‌نویسی، بنابراین سرعت زبان تأثیر کمتری دارد. اما در عملیات محاسباتی، کامپایل بومی Go و بهینه‌سازی‌های کامپایلر تأثیر تعیین‌کننده‌ای دارند.</p>
 <figure class="diagram" dir="ltr">
 <pre class="mermaid">flowchart LR
-    TITLE["مقایسه بنچمارک Go و PHP — عملیات در ثانیه (بالاتر = بهتر)"]
 
     subgraph JSON_OPS["JSON Parsing"]
         direction TB
-        JP["PHP 8.3 (JIT)<br/>85K ops/sec"]
-        JG["Go (compiled)<br/>650K ops/sec"]
+        JP["PHP 8.3 (JIT)85K ops/sec"]
+        JG["Go (compiled)650K ops/sec"]
         JL["۷.۶x برتری Go"]
     end
 
     subgraph HTTP_OPS["HTTP Handling"]
         direction TB
-        HP["PHP<br/>12K ops/sec"]
-        HG["Go<br/>180K ops/sec"]
+        HP["PHP12K ops/sec"]
+        HG["Go180K ops/sec"]
         HL["۱۵x برتری Go"]
     end
 
     subgraph STR_OPS["String Process"]
         direction TB
-        SP["PHP<br/>55K ops/sec"]
-        SG["Go<br/>420K ops/sec"]
+        SP["PHP55K ops/sec"]
+        SG["Go420K ops/sec"]
         SL["۷.۶x برتری Go"]
     end
 
     subgraph RGX_OPS["Regex Match"]
         direction TB
-        RP["PHP<br/>40K ops/sec"]
-        RG["Go<br/>350K ops/sec"]
+        RP["PHP40K ops/sec"]
+        RG["Go350K ops/sec"]
         RL["۸.۸x برتری Go"]
     end
 
     subgraph FILE_OPS["File I/O"]
         direction TB
-        FP["PHP<br/>45K ops/sec"]
-        FG["Go<br/>58K ops/sec"]
+        FP["PHP45K ops/sec"]
+        FG["Go58K ops/sec"]
         FL["۱.۳x — قابل مقایسه"]
     end
 
     subgraph MATH_OPS["Math Compute"]
         direction TB
-        MP["PHP<br/>25K ops/sec"]
-        MG["Go<br/>780K ops/sec"]
+        MP["PHP25K ops/sec"]
+        MG["Go780K ops/sec"]
         ML["۳۱.۲x برتری Go"]
     end
 
     subgraph NOTES["روش‌شناسی بنچمارک — ابزارها و نکات کلیدی"]
         direction TB
-        N1["در Go: از testing.B با حلقه b.N استفاده می‌شود. Go خودش تعداد تکرار را تنظیم می‌کند تا نتایج معتبر باشند."]
-        N2["فلگ -benchmem تعداد تخصیص حافظه و حجم تخصیص شده را هم نشان می‌دهد. بدون آن فقط زمان اندازه‌گیری می‌شود."]
+        N1[در Go: از testing.B با حلقه b.N استفاده می‌شود. Go خودش تعداد تکرار را تنظیم...]
+        N2[فلگ -benchmem تعداد تخصیص حافظه و حجم تخصیص شده را هم نشان می‌دهد. بدون آن...]
         N3["در PHP: از PHPBench یا php -r با microtime(true). دقت کمتر به‌دلیل سربار تفسیر."]
-        N4["قانون طلایی: در عملیات CPU-bound برتری Go چشمگیر است. در عملیات I/O-bound تفاوت کمتر — گلوگاه دیسک/شبکه است نه زبان."]
+        N4[قانون طلایی: در عملیات CPU-bound برتری Go چشمگیر است. در عملیات I/O-bound...]
     end
 
-    TITLE --&gt; JSON_OPS
-    TITLE --&gt; HTTP_OPS
-    TITLE --&gt; STR_OPS
-    TITLE --&gt; RGX_OPS
-    TITLE --&gt; FILE_OPS
-    TITLE --&gt; MATH_OPS
-    MATH_OPS --&gt; NOTES
+                            MATH_OPS --&gt; NOTES
 
     classDef titleBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
     classDef phpBox fill:#f5f0fb,stroke:#777BB4,stroke-width:1.5px,color:#1f2937;

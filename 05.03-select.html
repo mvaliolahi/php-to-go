@@ -320,9 +320,9 @@ func processWithTimeout(ctx context.Context) {
         direction TB
         R1["چند case آماده؟ → یکی تصادفی انتخاب"]
         R2["default غیربلاک‌کننده — هیچ case آماده نبود"]
-        R3["select بلاک تا آماده شدن یک case<br/>بدون default → goroutine منتظر می‌ماند"]
-        R4["چند case آماده → انتخاب تصادفی<br/>تضمین عدم starvation"]
-        R5["default → غیربلاک‌کننده<br/>هیچ case آماده نبود → default اجرا"]
+        R3["select بلاک تا آماده شدن یک caseبدون default → goroutine منتظر می‌ماند"]
+        R4["چند case آماده → انتخاب تصادفیتضمین عدم starvation"]
+        R5["default → غیربلاک‌کنندههیچ case آماده نبود → default اجرا"]
         R1 --&gt; R2 --&gt; R3 --&gt; R4 --&gt; R5
     end
 
@@ -335,7 +335,7 @@ func processWithTimeout(ctx context.Context) {
         I1 --&gt; I2 --&gt; I3 --&gt; I4
     end
 
-    GOLD["قانون طلایی: select هرگز اولویت نمی‌دهد — تصادفی بودن تضمین‌کننده‌ی عدالت بین caseهاست"]
+    GOLD[قانون طلایی: select هرگز اولویت نمی‌دهد — تصادفی بودن تضمین‌کننده‌ی عدالت...]
 
     classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
     classDef bothBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;

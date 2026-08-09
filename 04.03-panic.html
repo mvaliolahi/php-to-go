@@ -123,16 +123,15 @@ func main() {
 <p>وقتی <code dir="ltr">panic()</code> فراخوانی می‌شود، تابع داخلی <code dir="ltr">runtime.gopanic</code> اجرا می‌شود. این تابع یک ساختار داده‌ی داخلی به نام <code>_panic</code> می‌سازد و آن را به سر goroutine فعلی اضافه می‌کند:</p>
 <figure class="diagram" dir="ltr">
 <pre class="mermaid">flowchart TB
-    TITLE["تصمیم‌گیری: error یا panic؟"]
 
     START(["خطایی رخ داده است"])
     Q1{"آیا خطا قابل پیش‌بینی است؟"}
-    RERR1["بله → return error<br/>فایل، شبکه، ورودی نامعتبر"]
+    RERR1["بله → return errorفایل، شبکه، ورودی نامعتبر"]
     Q2{"آیا در کتابخانه هستید؟"}
-    RERR2["بله → return error<br/>کتابخانه‌ها هرگز panic نمی‌کنند"]
+    RERR2["بله → return errorکتابخانه‌ها هرگز panic نمی‌کنند"]
     Q3{"آیا invariant نقض شده؟"}
-    PANIC["بله → panic()<br/>nil pointer, array bounds, logic"]
-    RERR3["خیر → return error<br/>ترجیح همیشه error است"]
+    PANIC["بله → panic()nil pointer, array bounds, logic"]
+    RERR3["خیر → return errorترجیح همیشه error است"]
 
     START --&gt; Q1
     Q1 -- "بله" --&gt; Q2
@@ -322,7 +321,6 @@ http.ListenAndServe(":8080", handler)
 <div class="important"><strong>قانون حیاتی:</strong> هر goroutine که ممکن است panic کند باید <code>defer/recover</code> مخصوص خودش را داشته باشد. <code>recover</code> فقط می‌تواند panic را در همان goroutine بگیرد — هرگز نمی‌تواند panic یک goroutine دیگر را بگیرد. این از مهم‌ترین دلایل برای اضافه‌کردن recovery middleware به HTTP handlerها و background workerهاست.</div>
 <figure class="diagram" dir="ltr">
 <pre class="mermaid">flowchart TB
-    TITLE["مکانیزم panic/recover در Call Stack"]
 
     subgraph STACK["پشته‌ی فراخوانی"]
         direction TB
@@ -334,7 +332,7 @@ http.ListenAndServe(":8080", handler)
     end
 
     UNWIND["Unwind: اجرای deferها"]
-    DEFER["defer func() { recover() }<br/>← اینجا متوقف می‌شود"]
+    DEFER["defer func() { recover() }← اینجا متوقف می‌شود"]
 
     D --&gt; UNWIND --&gt; DEFER
 
@@ -415,14 +413,13 @@ func main() {
 <p>درک این توالی برای نوشتن کد مقاوم در برابر panic حیاتی است. هر تابع <code dir="ltr">defer</code> در مسیر <bdi dir="ltr">unwind</bdi> فرصتی برای پاکسازی منابع (بستن فایل‌ها، قطع اتصال دیتابیس، آزادسازی قفل‌ها) است. بدون <code dir="ltr">recover</code>، تمام این فرصت‌ها صرف پاکسازی می‌شود و برنامه در نهایت متوقف می‌گردد. </p><p>اما با <code dir="ltr">recover</code> می‌توان این فرآیند را در نقطه‌ی مناسبی متوقف کرد و از کرش کل برنامه جلوگیری نمود. نمودار زیر این توالی را به‌صورت بصری نمایش می‌دهد.</p>
 <figure class="diagram" dir="ltr">
 <pre class="mermaid">flowchart TB
-    TITLE["توالی Unwind پشته در Panic/Recover"]
 
     subgraph STACK["پشته‌ی فراخوانی"]
         direction TB
-        M["main()<br/>نقطه‌ی شروع برنامه"]
-        H["handler()<br/>دارای defer + recover ✓"]
-        P["process()<br/>دارای defer پاکسازی D"]
-        D["divide()<br/>panic("divide by zero") !"]
+        M["main()نقطه‌ی شروع برنامه"]
+        H["handler()دارای defer + recover ✓"]
+        P["process()دارای defer پاکسازی D"]
+        D["divide()panic("divide by zero") !"]
         M -- "call ↓" --&gt; H
         H -- "call ↓" --&gt; P
         P -- "call ↓" --&gt; D
@@ -430,22 +427,22 @@ func main() {
 
     subgraph STEPS["مراحل Unwind"]
         direction TB
-        S1["① panic رخ می‌دهد — اجرای divide() متوقف می‌شود<br/>runtime.gopanic() builds _panic struct"]
-        S2["② توابع defer در divide() اجرا می‌شوند<br/>پاکسازی منابع محلی (بستن فایل و غیره)"]
-        S3["③ Unwind به process() — deferهایش اجرا می‌شوند<br/>مثلاً: mutex.Unlock()، بستن DB transaction"]
-        S4["④ Unwind به handler() — recover() اجرا می‌شود!<br/>r := recover()  // r = "divide by zero"<br/>Unwind متوقف می‌شود — کنترل برمی‌گردد"]
-        S5["⑤ برنامه از بعد از handler() ادامه می‌یابد<br/>main() continues normally after handler() returns"]
+        S1[① panic رخ می‌دهد — اجرای divide() متوقف می‌شودruntime.gopanic() builds...]
+        S2["② توابع defer در divide() اجرا می‌شوندپاکسازی منابع محلی (بستن فایل و غیره)"]
+        S3[③ Unwind به process() — deferهایش اجرا می‌شوندمثلاً: mutex.Unlock()، بستن DB...]
+        S4["④ Unwind به handler() — recover() اجرا می‌شود!r := recover()  // r = "divide by zero"Unwind متوقف می‌شود — کنترل برمی‌گردد"]
+        S5[⑤ برنامه از بعد از handler() ادامه می‌یابدmain() continues normally after...]
         S1 -- "panic unwind ↑" --&gt; S2
         S2 -- "panic unwind ↑" --&gt; S3
         S3 -- "panic unwind ↑" --&gt; S4
         S4 --&gt; S5
     end
 
-    RULES["panic اجرا را متوقف می‌کند<br/>توابع defer اجرا می‌شوند<br/>recover unwind را متوقف می‌کند"]
+    RULES["panic اجرا را متوقف می‌کندتوابع defer اجرا می‌شوندrecover unwind را متوقف می‌کند"]
 
     subgraph CODE["// handler() — the recovery point"]
         direction TB
-        C1["func handler() {<br/>    defer func() {<br/>        if r := recover(); r != nil {<br/>            log.Printf("recovered: %v", r)<br/>        }  // ← unwind stops here<br/>    }()<br/>    result := process()<br/>}"]
+        C1["func handler() {    defer func() {        if r := recover(); r != nil {            log.Printf("recovered: %v", r)        }  // ← unwind stops here    }()    result := process()}"]
     end
 
     subgraph ORDER["ترتیب اجرای defer در حین Unwind (ترتیب LIFO)"]
@@ -457,15 +454,10 @@ func main() {
         O1 --&gt; O2 --&gt; O3 --&gt; O4
     end
 
-    GOLD["قانون طلایی: panic فقط برای خطاهای غیرقابل بازیافت برنامه‌نویس<br/>و همیشه در HTTP middleware از recover استفاده کنید!"]
+    GOLD[قانون طلایی: panic فقط برای خطاهای غیرقابل بازیافت برنامه‌نویسو همیشه در...]
 
-    TITLE --&gt; STACK
-    TITLE --&gt; STEPS
-    STEPS --&gt; RULES
-    TITLE --&gt; CODE
-    TITLE --&gt; ORDER
-    TITLE --&gt; GOLD
-
+            STEPS --&gt; RULES
+            
     classDef titleBox fill:#ecfdf5,stroke:#10b981,stroke-width:2px,color:#1f2937;
     classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
     classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;

@@ -255,32 +255,9 @@ func TestAdd(t *testing.T) {
 }
 </code></pre>
 </figure>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart LR
-    subgraph HEADER["گردش کار تست در Go: از Unit Test تا Fuzzing"]
-        direction LR
-        U["Unit Test<br/>testing.T<br/>Table-driven<br/>t.Run + t.Parallel"]
-        M["Mock<br/>gomock"]
-        F["Fuzzing<br/>testing.F"]
-        U --&gt; M --&gt; F
-    end
-
-    subgraph TOOLS["ابزارهای کمکی تست در Go"]
-        direction TB
-        T1["t.Helper() + t.Cleanup()"]
-        T2["httptest + cookiejar"]
-        T3["testify + go-check"]
-    end
-
-    note(["معادل PHP: PHPUnit Data Provider = Table-driven | PHPUnit Mock = gomock | بدون معادل = Fuzzing"])
-
-    classDef hdrBox  fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937,font-weight:bold;
-    classDef toolBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
-    classDef noteBox fill:#ecfdf5,stroke:#10b981,stroke-width:1px,color:#1f2937,font-style:italic;
-    class U,M,F hdrBox;
-    class T1,T2,T3 toolBox;
-    class note noteBox;</pre>
-<figcaption>شکل ۱۱-۲: گردش کار تست در <bdi dir="ltr">Go</bdi> از <bdi dir="ltr">Unit</bdi> <bdi dir="ltr">Test</bdi> تا <bdi dir="ltr">Fuzzing</bdi></figcaption>
+<figure class="diagram d2-diagram" dir="ltr">
+<img alt="نمودار" loading="lazy" src="assets/diagrams/ch11_01_testing_workflow.svg"/>
+<figcaption>شکل ۱۱-۲: گردش کار تست درGoازUnitTestتاFuzzing</figcaption>
 </figure>
 <h3 id="table-driven-tests">11.1.7 Table-driven Tests</h3>
 <div class="quote-box">
@@ -865,69 +842,9 @@ func BenchmarkNew(b *testing.B) {
 <h3 id="چرخه-حیات-اجرای-تست-در-go">11.1.19 چرخه حیات اجرای تست در Go</h3>
 <p>درک چرخه حیات اجرای تست در Go برای نوشتن تست‌های اصولی و قابل نگهداری بسیار مهم است. </p><p>وقتی دستور <bdi dir="ltr">go test</bdi> را اجرا می‌کنید، فرآیندی چند مرحله‌ای طی می‌شود: ابتدا ابزار تست Go فایل‌های <bdi dir="ltr">_test.go</bdi> را کشف می‌کند، سپس آن‌ها را به همراه کد اصلی کامپایل کرده و در نهایت توابع تست را به‌ترتیب اجرا و گزارش‌دهی می‌کند. </p><p>این چرخه حیات شامل مراحل <bdi dir="ltr">setup</bdi>، اجرای تست‌ها (ترتیبی یا موازی) و <bdi dir="ltr">teardown</bdi> است که هر کدام نقش مهمی در تضمین صحت تست‌ها دارند.</p>
 <p>در Go قراردادهای ساده‌ای وجود دارد: فایل‌های تست باید با پسوند <bdi dir="ltr">_test.go</bdi> ختم شوند، توابع تست باید با پیشوند <bdi dir="ltr">Test</bdi> شروع شوند و آرگومان <bdi dir="ltr">*testing.T</bdi> بپذیرند. تابع <bdi dir="ltr">TestMain</bdi> امکان اجرای کد قبل و بعد از همه تست‌ها را فراهم می‌کند و <bdi dir="ltr">t.Cleanup</bdi> منابع را حتی در صورت شکست تست آزاد می‌کند. </p><p>این رویکرد مینیمال با <bdi dir="ltr">PHPUnit</bdi> متفاوت است که در آن <bdi dir="ltr">setUp()</bdi> و <bdi dir="ltr">tearDown()</bdi> قبل و بعد از هر متد تست اجرا می‌شوند.</p>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-    subgraph HEADER["چرخه حیات اجرای تست در Go — مقایسه با PHPUnit"]
-        direction TB
-        CMD["go test → discover _test.go → compile → run → report<br/>ابزار go test به‌صورت خودکار فایل‌ها را کشف و کامپایل می‌کند"]
-        TM["TestMain<br/>راه‌اندازی سراسری"]
-        TX["TestXxx(t *testing.T)<br/>اجرای توابع تست"]
-        TC["t.Cleanup()<br/>پاک‌سازی منابع"]
-        REP["Report<br/>گزارش"]
-        CMD --&gt; TM --&gt; TX --&gt; TC --&gt; REP
-    end
-
-    subgraph DETAILS["جزئیات داخل TestXxx"]
-        direction TB
-        D1["t.Run("name", fn)<br/>زیرتست مستقل"]
-        D2["t.Parallel()<br/>اجرای موازی"]
-        D3["t.Skip("reason")<br/>رد شدن از تست"]
-        D4["t.Fatal("msg")<br/>توقف فوری تست"]
-    end
-
-    subgraph RESULTS["نتایج"]
-        direction LR
-        R1["PASS ✓"]
-        R2["FAIL ✗"]
-        R3["SKIP ◌"]
-    end
-
-    subgraph CMP["مقایسه با چرخه حیات PHPUnit"]
-        direction LR
-        subgraph GO["Go: go test"]
-            direction TB
-            G1["TestMain → m.Run()"]
-            G2["t.Cleanup() / helper func"]
-            G3["t.Run("name", fn)"]
-        end
-        subgraph PHP["PHP: phpunit"]
-            direction TB
-            P1["setUpBeforeClass()"]
-            P2["setUp() / tearDown()"]
-            P3["testXxx() + @dataProvider"]
-        end
-    end
-
-    note1(["قانون طلایی: فایل‌های _test.go + نام‌گذاری TestXxx + پارامتر *testing.T = قرارداد غیرقابل تغییر Go"])
-    note2(["چرا t.Cleanup بهتر از defer؟<br/>حتی با t.Fatal و t.Skip هم منابع آزاد می‌شوند"])
-    note3(["نکته: t.Parallel() را اول خط فراخوانی کنید<br/>اگر بعد از t.Parallel متغیر closure ثبت شود race condition ایجاد می‌شود"])
-    note4(["func TestXxx(t *testing.T) { t.Parallel(); t.Run("sub", func(t *testing.T) { ... }); t.Cleanup(func() { ... }) }"])
-
-    classDef cmdBox   fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937,font-weight:bold;
-    classDef stageBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
-    classDef detBox   fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
-    classDef resBox   fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
-    classDef goBox    fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef phpBox   fill:#f5f0fb,stroke:#777BB4,stroke-width:1.5px,color:#1f2937;
-    classDef noteBox  fill:#ecfdf5,stroke:#10b981,stroke-width:1px,color:#1f2937,font-style:italic;
-    class CMD cmdBox;
-    class TM,TX,TC,REP stageBox;
-    class D1,D2,D3,D4 detBox;
-    class R1,R2,R3 resBox;
-    class G1,G2,G3 goBox;
-    class P1,P2,P3 phpBox;
-    class note1,note2,note3,note4 noteBox;</pre>
-<figcaption>شکل ۱۱-۴: چرخه حیات اجرای تست در <bdi dir="ltr">Go</bdi> — از <bdi dir="ltr">TestMain</bdi> تا <bdi dir="ltr">t.Cleanup</bdi> با مقایسه <bdi dir="ltr">PHPUnit</bdi></figcaption>
+<figure class="diagram d2-diagram" dir="ltr">
+<img alt="نمودار" loading="lazy" src="assets/diagrams/ch11_01_testing_workflow.svg"/>
+<figcaption>شکل ۱۱-۴: چرخه حیات اجرای تست درGo— ازTestMainتاt.Cleanupبا مقایسهPHPUnit</figcaption>
 </figure>
 <h3 id="سناریوهای-عملیاتی-تستنویسی">11.1.20 سناریوهای عملیاتی تست‌نویسی</h3>
 <p>در پروژه‌های واقعی، تسلط بر الگوهای عملیاتی تست‌نویسی به اندازه دانستن مفاهیم پایه مهم است. هر سناریو زیر چالش خاصی را حل می‌کند که توسعه‌دهندگان مهاجر از <bdi dir="ltr">PHP</bdi> ممکن است در ابتدا با آن مواجه شوند. </p><p>این الگوها در کدبیس‌های بزرگ و تیمی حیاتی هستند و رعایت آن‌ها باعث می‌شود تست‌ها قابل نگهداری، سریع و معنادار باقی بمانند.</p>

@@ -474,7 +474,7 @@ func homeHandler(w http.ResponseWriter, r *http.Request) {
 <pre class="mermaid">flowchart TB
     subgraph SRC["کد منبع و فایل‌ها"]
         direction TB
-        M["main.go<br/>//go:embed static/*<br/>var files embed.FS"]
+        M["main.go//go:embed static/*var files embed.FS"]
         F1["style.css"]
         F2["app.js"]
         F3["logo.png"]
@@ -483,15 +483,15 @@ func homeHandler(w http.ResponseWriter, r *http.Request) {
 
     subgraph COMP["Go Compiler (gc)"]
         direction TB
-        C1["۱. تحلیل دستور //go:embed<br/>شناسایی فایل‌های مورد نظر"]
-        C2["۲. خواندن محتوای فایل‌ها<br/>از دیسک در زمان کامپایل"]
-        C3["۳. جاسازی در بخش data باینری<br/>فایل‌ها تبدیل به بایت‌های خام می‌شوند"]
-        C4["۴. مقداردهی قبل از main()<br/>متغیرها با داده جاسازی پر می‌شوند"]
+        C1["۱. تحلیل دستور //go:embedشناسایی فایل‌های مورد نظر"]
+        C2["۲. خواندن محتوای فایل‌هااز دیسک در زمان کامپایل"]
+        C3["۳. جاسازی در بخش data باینریفایل‌ها تبدیل به بایت‌های خام می‌شوند"]
+        C4["۴. مقداردهی قبل از main()متغیرها با داده جاسازی پر می‌شوند"]
         C1 --&gt; C2 --&gt; C3 --&gt; C4
     end
 
-    BIN["باینری کامپایل‌شده<br/>myapp (binary)<br/>بدون وابستگی خارجی<br/>قابل توزیع تنها"]
-    EFS["embed.FS<br/>سیستم‌فایل مجازی در حافظه"]
+    BIN["باینری کامپایل‌شدهmyapp (binary)بدون وابستگی خارجیقابل توزیع تنها"]
+    EFS["embed.FSسیستم‌فایل مجازی در حافظه"]
 
     SRC --&gt; COMP
     COMP --&gt; BIN
@@ -499,14 +499,14 @@ func homeHandler(w http.ResponseWriter, r *http.Request) {
 
     subgraph CMP["مقایسه"]
         direction TB
-        PH["روش PHP (دسترسی در زمان اجرا)<br/>file_get_contents('/path/to/file')<br/>فایل باید در دیسک موجود باشد — وابسته به مسیر"]
-        GO2["روش Go (جاسازی در زمان کامپایل)<br/>embed.FS.ReadFile("static/style.css")<br/>فایل داخل باینری است — بدون وابستگی به دیسک"]
+        PH[روش PHP (دسترسی در زمان اجرا)file_get_contents('/path/to/file')فایل باید در...]
+        GO2["روش Go (جاسازی در زمان کامپایل)embed.FS.ReadFile("static/style.css")فایل داخل باینری است — بدون وابستگی به دیسک"]
     end
 
     subgraph HTTP["جریان تبدیل embed.FS به http.Handler"]
         direction LR
-        H1["embed.FS"] --&gt; H2["http.FS()<br/>http.FileSystem"]
-        H2 --&gt; H3["FileServer()<br/>http.Handler"]
+        H1["embed.FS"] --&gt; H2["http.FS()http.FileSystem"]
+        H2 --&gt; H3["FileServer()http.Handler"]
         H3 --&gt; H4["Client"]
     end
 

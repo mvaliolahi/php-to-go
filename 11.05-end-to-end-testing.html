@@ -983,9 +983,9 @@ func TestParallelE2E(t *testing.T) {
 <pre class="mermaid">flowchart TB
     subgraph HEADER["معماری تست E2E — کد تست، سرور واقعی، دیتابیس واقعی"]
         direction TB
-        TC["Test Code<br/>httptest.Server<br/>http.Client + CookieJar<br/>//go:build e2e"]
-        TC --&gt; RS["Real Server<br/>httptest.NewServer(handler)<br/>Random Port :0<br/>Router + Middleware"]
-        RS --&gt; RD["Real Database<br/>Testcontainers<br/>PostgreSQL / MySQL<br/>Docker Container"]
+        TC["Test Codehttptest.Serverhttp.Client + CookieJar//go:build e2e"]
+        TC --&gt; RS["Real Serverhttptest.NewServer(handler)Random Port :0Router + Middleware"]
+        RS --&gt; RD["Real DatabaseTestcontainersPostgreSQL / MySQLDocker Container"]
     end
 
     subgraph FLOW["جریان تست E2E"]
@@ -1017,7 +1017,7 @@ func TestParallelE2E(t *testing.T) {
         end
     end
 
-    note1(["قانون طلایی: E2E فقط برای جریان‌های حیاتی | //go:build e2e = جداسازی از تست‌های واحد"])
+    note1([قانون طلایی: E2E فقط برای جریان‌های حیاتی | //go:build e2e = جداسازی از...])
 
     classDef testBox  fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
     classDef srvBox   fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;

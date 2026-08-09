@@ -374,7 +374,6 @@ func init() {
 <p><bdi dir="ltr">defer</bdi> توابع را به‌صورت <bdi dir="ltr">LIFO</bdi> (آخرین ورود، اولین خروج) اجرا می‌کند. نمودار زیر ترتیب اجرا را نشان می‌دهد:</p>
 <figure class="diagram" dir="ltr">
 <pre class="mermaid">flowchart TB
-    TITLE["ترتیب اجرای defer (LIFO)"]
 
     subgraph REG["ثبت"]
         direction TB
@@ -401,14 +400,10 @@ func init() {
         L1 --&gt; L2 --&gt; L3 --&gt; L4
     end
 
-    NOTE["ترتیب اجرا برعکس ثبت است — آخرین defer اول اجرا می‌شود<br/>این رفتار تضمین می‌کند منابع به ترتیب صحیح آزاد شوند<br/>پیمایش از سر list = LIFO execution"]
+    NOTE[ترتیب اجرا برعکس ثبت است — آخرین defer اول اجرا می‌شوداین رفتار تضمین می‌کند...]
 
-    TITLE --&gt; REG
-    TITLE --&gt; RUN
-    REG -.-&gt;|LIFO| RUN
-    TITLE --&gt; INTERNAL
-    TITLE --&gt; NOTE
-
+            REG -.-&gt;|LIFO| RUN
+        
     classDef titleBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:2px,color:#1f2937;
     classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
     classDef bothBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
@@ -420,7 +415,6 @@ func init() {
 </figure>
 <figure class="diagram" dir="ltr">
 <pre class="mermaid">flowchart TB
-    TITLE["قواعد Method Set: T در برابر *T"]
 
     subgraph TYPEDEF["type User struct{...}"]
         direction TB
@@ -442,7 +436,7 @@ func init() {
         P1 --- P2 --- PNOTE
     end
 
-    PTR_TO["&amp;u<br/>type *User"]
+    PTR_TO["&amp;utype *User"]
 
     subgraph TRAP["توجه: تله‌ی مهم با Interface"]
         direction TB
@@ -453,14 +447,11 @@ func init() {
 
     GOLD["قانون طلایی: اگر یک متد pointer receiver دارد، همه pointer receiver باشند"]
 
-    TITLE --&gt; TYPEDEF
-    TYPEDEF --&gt; VALUE
+        TYPEDEF --&gt; VALUE
     TYPEDEF --&gt; PTR
     VALUE --&gt; PTR_TO
     PTR --&gt; PTR_TO
-    TITLE --&gt; TRAP
-    TITLE --&gt; GOLD
-
+        
     classDef titleBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:2px,color:#1f2937;
     classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
     classDef bothBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
@@ -478,42 +469,37 @@ func init() {
 <p>انتخاب بین <bdi dir="ltr">value receiver</bdi> و <bdi dir="ltr">pointer receiver</bdi> یکی از مهم‌ترین تصمیمات طراحی در <bdi dir="ltr">Go</bdi> است. در <bdi dir="ltr">PHP</bdi> همه‌ی متدها درون کلاس تعریف می‌شوند و <code>$this</code> همیشه به شیء فعلی اشاره می‌کند اما در <bdi dir="ltr">Go</bdi> این انتخاب صریح است و پیامدهای مستقیمی بر رفتار متد، کارایی و رضایت <bdi dir="ltr">interface</bdi> دارد. شکل زیر دو رویکرد را به‌صورت بصری مقایسه می‌کند و قواعد <bdi dir="ltr">method set</bdi> و تله‌های رایج را نشان می‌دهد.</p>
 <figure class="diagram" dir="ltr">
 <pre class="mermaid">flowchart TB
-    TITLE["مقایسه‌ی Value Receiver در برابر Pointer Receiver"]
 
     subgraph VR["Value Receiver: func (s T) Method()"]
         direction TB
-        V1["func (u User) Greet() string {<br/>    return "Hello, " + u.Name<br/>}<br/>u is a COPY of the original User"]
-        V2["Characteristics:<br/>✓ Operates on a copy — original unchanged<br/>✓ Safe for concurrent access (no shared state)<br/>✓ Works with both T and *T callers<br/>✗ Cannot modify receiver's state"]
-        V3["Memory: copies entire struct on each call<br/>Small structs (≤ few fields) → OK<br/>Large structs → expensive copy!"]
+        V1["func (u User) Greet() string {    return "Hello, " + u.Name}u is a COPY of the original User"]
+        V2[Characteristics:✓ Operates on a copy — original unchanged✓ Safe for...]
+        V3[Memory: copies entire struct on each callSmall structs (≤ few fields) →...]
         V1 --- V2 --- V3
     end
 
     subgraph PR["Pointer Receiver: func (s *T) Method()"]
         direction TB
-        P1["func (u *User) UpdateEmail(email string) {<br/>    u.Email = email // modifies original!<br/>}<br/>u is a POINTER to the original User"]
-        P2["Characteristics:<br/>✓ Operates on original — can modify state<br/>✓ Efficient for large structs (8-byte pointer)<br/>✓ Enables method chaining: obj.Set().Save()<br/>✗ Not safe for concurrent access without sync"]
-        P3["Memory: only 8-byte pointer copied<br/>Any size struct → same cost (8 bytes)<br/>Preferred for most real-world structs"]
+        P1[func (u *User) UpdateEmail(email string) {    u.Email = email // modifies...]
+        P2[Characteristics:✓ Operates on original — can modify state✓ Efficient for...]
+        P3[Memory: only 8-byte pointer copiedAny size struct → same cost (8...]
         P1 --- P2 --- P3
     end
 
     subgraph MS["قواعد Method Set و رضایت Interface"]
         direction TB
-        M1["Type T: method set = only value receiver methods<br/>var u User → can call Greet() only"]
-        M2["Type *T: method set = ALL methods (value + pointer)<br/>var p *User → can call both Greet() and UpdateEmail()"]
+        M1[Type T: method set = only value receiver methodsvar u User → can call...]
+        M2[Type *T: method set = ALL methods (value + pointer)var p *User → can call...]
         M3["Interface satisfaction: *T implements interface I ↔ T has only value receivers"]
     end
 
     subgraph TRAP["تله‌ی مهم با Interface"]
         direction TB
-        T1["// If Greet() is value receiver AND UpdateEmail() is pointer receiver:<br/>var g Greeter = User{}       // ✓ Greet() is in T's method set<br/>var g Greeter = &amp;User{}     // ✓ *T has both methods"]
-        T2["// But if interface requires UpdateEmail() (pointer receiver):<br/>// var g Greeter = User{}  // ✗ COMPILE ERROR! T lacks pointer receiver methods"]
+        T1[// If Greet() is value receiver AND UpdateEmail() is pointer receiver:var g...]
+        T2[// But if interface requires UpdateEmail() (pointer receiver):// var g...]
     end
 
-    TITLE --&gt; VR
-    TITLE --&gt; PR
-    TITLE --&gt; MS
-    TITLE --&gt; TRAP
-
+                
     classDef titleBox fill:#ecfdf5,stroke:#10b981,stroke-width:2px,color:#1f2937;
     classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
     classDef bothBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;

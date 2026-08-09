@@ -337,18 +337,18 @@ func Greet() string { return "Hello" }
 <figure class="diagram" dir="ltr">
 <pre class="mermaid">flowchart TB
     title(["گراف وابستگی پکیج‌ها و قوانین دیدپذیری در Go"])
-    MAIN["package main<br/>نقطه‌ی ورود برنامه"]
+    MAIN["package mainنقطه‌ی ورود برنامه"]
     subgraph STD["کتابخانه استاندارد"]
         direction TB
-        FMT["fmt<br/>کتابخانه استاندارد"]
-        HTTP["net/http<br/>کتابخانه استاندارد"]
+        FMT["fmtکتابخانه استاندارد"]
+        HTTP["net/httpکتابخانه استاندارد"]
     end
     subgraph INT["پکیج‌های internal — فقط درون myapp"]
         direction TB
-        HANDLER["myapp/internal/handler<br/>فقط درون myapp قابل دسترسی"]
-        SERVICE["myapp/internal/service<br/>فقط درون myapp قابل دسترسی"]
+        HANDLER["myapp/internal/handlerفقط درون myapp قابل دسترسی"]
+        SERVICE["myapp/internal/serviceفقط درون myapp قابل دسترسی"]
     end
-    VALIDATOR["myapp/pkg/validator<br/>قابل استفاده توسط همه (public API)"]
+    VALIDATOR["myapp/pkg/validatorقابل استفاده توسط همه (public API)"]
 
     MAIN --&gt; FMT
     MAIN --&gt; HTTP
@@ -360,8 +360,8 @@ func Greet() string { return "Hello" }
 
     subgraph VIS["قوانین دیدپذیری (Visibility Rules)"]
         direction LR
-        EXP["Exported ✓<br/>حرف اول بزرگ: Add()، User، MaxSize<br/>معادل: public در PHP"]
-        UEXP["Unexported ✗<br/>حرف اول کوچک: subtract()، validate()<br/>معادل: private در PHP"]
+        EXP["Exported ✓حرف اول بزرگ: Add()، User، MaxSizeمعادل: public در PHP"]
+        UEXP["Unexported ✗حرف اول کوچک: subtract()، validate()معادل: private در PHP"]
     end
 
     subgraph CMP["مقایسه: PHP vs Go"]
@@ -384,7 +384,7 @@ func Greet() string { return "Hello" }
         end
     end
 
-    WARN(["⚠️ internal/ فقط توسط کدی قابل import است که در زیرشاخه‌ی والد آن قرار دارد — کامپایلر این محدودیت را اعمال می‌کند"])
+    WARN([⚠️ internal/ فقط توسط کدی قابل import است که در زیرشاخه‌ی والد آن قرار دارد...])
 
     title ~~~ MAIN
     MAIN ~~~ STD

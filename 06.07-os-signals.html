@@ -750,12 +750,12 @@ func main() {
 <pre class="mermaid">flowchart TB
     subgraph HEADER["دنباله‌ی خاموشی ایمن: از سیگنال تا خروج"]
         direction TB
-        NORMAL["عملیات عادی — سرور فعال، درخواست‌ها پردازش می‌شوند<br/>Time →"]
-        NORMAL --&gt; SIG["SIGTERM دریافت شد<br/>signal.Notify() → chan os.Signal → ctx.Done()"]
-        SIG --&gt; S1["۱. توقف پذیرش اتصالات جدید<br/>srv.Shutdown(ctx) → Listener closes → New connections rejected"]
-        S1 --&gt; S2["۲. انتظار برای اتمام درخواست‌های در حال پردازش (با تایم‌اوت)<br/>context.WithTimeout(30s) → Active requests complete → ctx.Done()"]
-        S2 --&gt; S3["۳. بستن اتصالات دیتابیس و صف پیام<br/>db.Close() → mq.Disconnect() → tx.Rollback() for pending"]
-        S3 --&gt; S4["۴. فلش بافرها و ذخیره وضعیت<br/>writer.Flush() → log.Sync() → saveState() → defer cleanup"]
+        NORMAL["عملیات عادی — سرور فعال، درخواست‌ها پردازش می‌شوندTime →"]
+        NORMAL --&gt; SIG["SIGTERM دریافت شدsignal.Notify() → chan os.Signal → ctx.Done()"]
+        SIG --&gt; S1[۱. توقف پذیرش اتصالات جدیدsrv.Shutdown(ctx) → Listener closes → New...]
+        S1 --&gt; S2[۲. انتظار برای اتمام درخواست‌های در حال پردازش (با...]
+        S2 --&gt; S3[۳. بستن اتصالات دیتابیس و صف پیامdb.Close() → mq.Disconnect() →...]
+        S3 --&gt; S4[۴. فلش بافرها و ذخیره وضعیتwriter.Flush() → log.Sync() → saveState() → defer...]
         S4 --&gt; S5["۵. خروج ایمن — os.Exit(0)"]
     end
 

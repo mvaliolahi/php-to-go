@@ -164,48 +164,42 @@
 <p>Go فقط یک ساختار for دارد اما به‌قدری قدرتمند است که جایگزین for, while, و foreach در زبان‌های دیگر می‌شود.</p>
 <figure class="diagram" dir="ltr">
 <pre class="mermaid">flowchart TB
-    TITLE["انواع for در Go — فقط یک کلمه‌ی کلیدی"]
 
     subgraph CLASSIC["کلاسیک"]
         direction TB
-        C1["for i:=0; i&lt;n; i++ { }<br/>PHP: for ($i=0; ...)"]
+        C1["for i:=0; i&lt;n; i++ { }PHP: for ($i=0; ...)"]
         C2["شمارنده + شرط + گام"]
-        C3["init → condition → body → post<br/>↻ repeat"]
+        C3["init → condition → body → post↻ repeat"]
         C1 --- C2 --- C3
     end
 
     subgraph WHILE["سبک while"]
         direction TB
-        W1["for cond { }<br/>PHP: while ($cond) { }"]
+        W1["for cond { }PHP: while ($cond) { }"]
         W2["فقط شرط — بدون شمارنده"]
-        W3["condition → body<br/>↻ repeat while true"]
+        W3["condition → body↻ repeat while true"]
         W1 --- W2 --- W3
     end
 
     subgraph RANGE["پیمایش range"]
         direction TB
-        R1["for i, v := range coll { }<br/>PHP: foreach ($arr as $v)"]
+        R1["for i, v := range coll { }PHP: foreach ($arr as $v)"]
         R2["slice, map, string, chan"]
-        R3["next element → body<br/>↻ until exhausted"]
+        R3["next element → body↻ until exhausted"]
         R1 --- R2 --- R3
     end
 
     subgraph INFINITE["بی‌نهایت"]
         direction TB
-        I1["for { }<br/>PHP: while (true) { }"]
+        I1["for { }PHP: while (true) { }"]
         I2["خروج فقط با break"]
-        I3["body → body → ...<br/>↻ forever (until break)"]
+        I3["body → body → ...↻ forever (until break)"]
         I1 --- I2 --- I3
     end
 
     NOTE["Go فقط یک حلقه دارد: for — ساده‌تر، خواناتر، کمتر سردرگم‌کننده"]
 
-    TITLE --&gt; CLASSIC
-    TITLE --&gt; WHILE
-    TITLE --&gt; RANGE
-    TITLE --&gt; INFINITE
-    TITLE --&gt; NOTE
-
+                    
     classDef titleBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:2px,color:#1f2937;
     classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
     classDef neutralBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
@@ -456,7 +450,6 @@ for i := range 3 {
 </figure>
 <figure class="diagram" dir="ltr">
 <pre class="mermaid">flowchart TB
-    TITLE["مقایسه‌ی ساختارهای کنترلی: PHP در برابر Go"]
 
     subgraph IFGO["if در Go"]
         direction TB
@@ -504,14 +497,7 @@ for i := range 3 {
         U4["• goto با محدودیت‌های ایمنی (نمی‌تواند از تعریف متغیر پرش کند)"]
     end
 
-    TITLE --&gt; IFGO
-    TITLE --&gt; IFPHP
-    TITLE --&gt; SWGO
-    TITLE --&gt; SWPHP
-    TITLE --&gt; FORGO
-    TITLE --&gt; FORPHP
-    TITLE --&gt; UNIQUE
-
+                            
     classDef titleBox fill:#ecfdf5,stroke:#10b981,stroke-width:2px,color:#1f2937;
     classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
     classDef phpBox fill:#f5f0fb,stroke:#777BB4,stroke-width:1.5px,color:#1f2937;
@@ -527,34 +513,33 @@ for i := range 3 {
 <p>پیمایش مجموعه‌ها یکی از پرکاربردترین عملیات در برنامه‌نویسی است. در <bdi dir="ltr">PHP</bdi> دستور <bdi dir="ltr">foreach</bdi> ابزار اصلی برای پیمایش آرایه‌ها و اشیاء است و مقادیر را به‌صورت ارجاع یا کپی در اختیار بدنه‌ی حلقه قرار می‌دهد. </p><p>در <bdi dir="ltr">Go</bdi> دستور <bdi dir="ltr">range</bdi> با برگرداندن کپی مقادیر رویکرد متفاوتی دارد و قابلیت‌های منحصربه‌فردی مانند پیمایش <bdi dir="ltr">rune</bdi> رشته و دریافت از <bdi dir="ltr">channel</bdi> فراهم می‌کند. شکل زیر تفاوت‌های کلیدی این دو رویکرد را در کنار هم نمایش می‌دهد.</p>
 <figure class="diagram" dir="ltr">
 <pre class="mermaid">flowchart TB
-    TITLE["مقایسه‌ی PHP foreach در برابر Go range"]
 
     subgraph PHP["PHP foreach"]
         direction TB
-        P1["foreach ($array as $key =&gt; $value)<br/>کلید و مقدار • مقدار کپی است مگر با &amp;<br/>Works on: array | object | Traversable"]
-        P2["foreach ($array as $value)<br/>Value only — key is discarded"]
-        P3["foreach ($array as &amp;$value)<br/>Reference — can modify original array elements"]
-        PB["PHP behaviors:<br/>• Array order is preserved (ordered hash table)<br/>• break N; exits N levels of nesting<br/>• continue skips to next iteration<br/>• Modification during iteration is undefined behavior"]
+        P1[foreach ($array as $key =&gt; $value)کلید و مقدار • مقدار کپی است مگر با &amp;Works...]
+        P2["foreach ($array as $value)Value only — key is discarded"]
+        P3["foreach ($array as &amp;$value)Reference — can modify original array elements"]
+        PB[PHP behaviors:• Array order is preserved (ordered hash table)• break N;...]
         P1 --- P2 --- P3 --- PB
     end
 
     subgraph GO["Go range"]
         direction TB
-        G1["for i, v := range slice<br/>ایندکس و مقدار • مقدار همیشه کپی است<br/>Works on: slice | array | map | string | chan"]
-        G2["for _, v := range slice<br/>Value only — discard index with _"]
-        G3["for i := range slice<br/>Index only — no value copy (efficient for large structs)"]
-        GB["Go behaviors:<br/>• Map order is random (by design)<br/>• break + label exits specific outer loop<br/>• continue + label continues specific outer loop<br/>• Range expression is evaluated once before loop"]
+        G1[for i, v := range sliceایندکس و مقدار • مقدار همیشه کپی استWorks on: slice |...]
+        G2["for _, v := range sliceValue only — discard index with _"]
+        G3["for i := range sliceIndex only — no value copy (efficient for large structs)"]
+        GB[Go behaviors:• Map order is random (by design)• break + label exits specific...]
         G1 --- G2 --- G3 --- GB
     end
 
     subgraph UNIQUE["ویژگی‌های منحصربه‌فرد Go range"]
         direction TB
-        U1["range over string → yields runes (not bytes!)<br/>for i, r := range "سلام" → i=0,r=س | i=2,r=ل | i=4,r=ا | i=6,r=م"]
-        U2["range over channel → receives until closed<br/>for msg := range ch { } // blocks until ch is closed"]
-        U3["range over int (Go 1.22+) → 0, 1, 2, ..., n-1<br/>for i := range 5 { } // 0, 1, 2, 3, 4"]
+        U1["range over string → yields runes (not bytes!)for i, r := range "سلام" → i=0,r=س | i=2,r=ل | i=4,r=ا | i=6,r=م"]
+        U2[range over channel → receives until closedfor msg := range ch { } // blocks...]
+        U3[range over int (Go 1.22+) → 0, 1, 2, ..., n-1for i := range 5 { } // 0, 1,...]
     end
 
-    WARN["⚠ هشدار: range کپی برمی‌گرداند نه ارجاع — تغییر مقدار v روی داده‌ی اصلی بی‌تأثیر است"]
+    WARN[⚠ هشدار: range کپی برمی‌گرداند نه ارجاع — تغییر مقدار v روی داده‌ی اصلی...]
 
     subgraph LABEL["خروج از حلقه‌های تودرتو با برچسب"]
         direction TB
@@ -563,12 +548,7 @@ for i := range 3 {
         L3["در PHP break N عددی مستعد خطاست و توصیه نمی‌شود"]
     end
 
-    TITLE --&gt; PHP
-    TITLE --&gt; GO
-    TITLE --&gt; UNIQUE
-    TITLE --&gt; WARN
-    TITLE --&gt; LABEL
-
+                    
     classDef titleBox fill:#ecfdf5,stroke:#10b981,stroke-width:2px,color:#1f2937;
     classDef phpBox fill:#f5f0fb,stroke:#777BB4,stroke-width:1.5px,color:#1f2937;
     classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;

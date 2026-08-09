@@ -115,23 +115,23 @@
 <pre class="mermaid">flowchart TB
     subgraph HEADER["نقشه فصل ۱۱: تست‌نویسی در Go"]
         direction LR
-        S1["۱۱.۱ مقدمات<br/>go test, Table-driven"]
-        S2["۱۱.۲ Assertion<br/>testify, assert, require"]
-        S3["۱۱.۳ gomock<br/>Mock, EXPECT, Do"]
-        S4["۱۱.۴ httpexpect<br/>E2E API Testing"]
-        S5["۱۱.۵ E2E Test<br/>httptest, Testcontainers"]
+        S1["۱۱.۱ مقدماتgo test, Table-driven"]
+        S2["۱۱.۲ Assertiontestify, assert, require"]
+        S3["۱۱.۳ gomockMock, EXPECT, Do"]
+        S4["۱۱.۴ httpexpectE2E API Testing"]
+        S5["۱۱.۵ E2E Testhttptest, Testcontainers"]
         S1 --&gt; S2 --&gt; S3 --&gt; S4 --&gt; S5
     end
 
     subgraph PYRAMID["هرم تست در Go"]
         direction TB
-        E2E["E2E<br/>httpexpect, httptest"]
-        INT["یکپارچگی<br/>gomock, testcontainers"]
-        UNIT["واحد Unit<br/>go test, testing, t.Run"]
+        E2E["E2Ehttpexpect, httptest"]
+        INT["یکپارچگیgomock, testcontainers"]
+        UNIT["واحد Unitgo test, testing, t.Run"]
         E2E --&gt; INT --&gt; UNIT
     end
 
-    note1(["معادل‌های PHP: PHPUnit = go test | Data Provider = Table-driven | Mockery = gomock | Laravel HTTP Tests = httpexpect"])
+    note1([معادل‌های PHP: PHPUnit = go test | Data Provider = Table-driven | Mockery =...])
     note2(["قابلیت‌های بدون معادل در PHP: Fuzzing، Benchmark داخلی، Race Detector"])
     note3(["مسیر یادگیری: از Unit Test ساده ← Assertion ← Mock ← API Test ← E2E"])
 

@@ -240,9 +240,9 @@ err = tmpl.ExecuteTemplate(w, "base.layout.html", data)
 <pre class="mermaid">flowchart TB
     subgraph GO["وراثت قالب و ترکیب Layout در Go"]
         direction TB
-        G_BASE["base.html<br/>{{ template "header" . }}<br/>{{ block "content" . }}{{ end }}<br/>{{ template "footer" . }}"]
-        G_HOME["home.html<br/>{{ define "content" . }}<br/>صفحه اصلی..."]
-        G_ABOUT["about.html<br/>{{ define "content" . }}<br/>درباره ما..."]
+        G_BASE["base.html{{ template "header" . }}{{ block "content" . }}{{ end }}{{ template "footer" . }}"]
+        G_HOME["home.html{{ define "content" . }}صفحه اصلی..."]
+        G_ABOUT["about.html{{ define "content" . }}درباره ما..."]
         G_BASE --&gt; G_HOME
         G_BASE --&gt; G_ABOUT
     end
@@ -262,7 +262,7 @@ err = tmpl.ExecuteTemplate(w, "base.layout.html", data)
         C2["Go: {{ define "content" }} ... {{ end }} + ExecuteTemplate("base")"]
     end
 
-    GOLD(["قاعده‌ی طلایی: همیشه ExecuteTemplate را با نام قالب پایه فراخوانی کنید، نه با نام قالب محتوا"])
+    GOLD([قاعده‌ی طلایی: همیشه ExecuteTemplate را با نام قالب پایه فراخوانی کنید، نه...])
 
     classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
     classDef phpBox fill:#f5f0fb,stroke:#777BB4,stroke-width:1.5px,color:#1f2937;

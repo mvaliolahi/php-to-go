@@ -484,7 +484,7 @@ func main() {
 
     subgraph NEWX["NewX() — Constructor Pattern"]
         direction TB
-        NX_CODE["func NewServer(addr string) (*Server, error) {<br/>  if addr == "" {<br/>    return nil, errors.New("addr required")<br/>  }<br/>  return &amp;Server{addr: addr}, nil<br/>}"]
+        NX_CODE["func NewServer(addr string) (*Server, error) {  if addr == "" {    return nil, errors.New("addr required")  }  return &amp;Server{addr: addr}, nil}"]
         NX_F1["✓ می‌تواند error برگرداند — مدیریت خطای صریح"]
         NX_F2["✓ مقادیر پیش‌فرض و اعتبارسنجی انجام می‌دهد"]
         NX_F3["✓ فراخوانی صریح — کنترل کامل روی زمان ساخت"]
@@ -493,7 +493,7 @@ func main() {
 
     subgraph ZERO["X{} + Initialize() — Zero-value Pattern"]
         direction TB
-        Z_CODE["var buf bytes.Buffer<br/>buf.Write([]byte("hello"))<br/><br/>var mu sync.Mutex<br/>mu.Lock()<br/>defer mu.Unlock()"]
+        Z_CODE["var buf bytes.Bufferbuf.Write([]byte("hello"))var mu sync.Mutexmu.Lock()defer mu.Unlock()"]
         Z_F1["✓ بدون نیاز به سازنده — مقدار صفر معتبر است"]
         Z_F2["✓ ساده و سبک — بدون تخصیص اضافی"]
         Z_F3["⚠ فقط وقتی zero value مفید باشد"]
@@ -502,14 +502,14 @@ func main() {
 
     subgraph FACTORY["Factory Pattern — NewStorage(type) Storage"]
         direction TB
-        F_CODE1["type Storage interface {<br/>  Save(key string, value []byte) error<br/>  Load(key string) ([]byte, error)<br/>}"]
-        F_CODE2["func NewStorage(t string) Storage {<br/>  switch t {<br/>  case "redis": return &amp;redisStorage{...}<br/>  default:     return &amp;memStorage{}<br/>  }<br/>}"]
+        F_CODE1[type Storage interface {  Save(key string, value []byte) error  Load(key...]
+        F_CODE2["func NewStorage(t string) Storage {  switch t {  case "redis": return &amp;redisStorage{...}  default:     return &amp;memStorage{}  }}"]
     end
 
     subgraph CMP["مقایسه"]
         direction LR
-        PHP["PHP: __construct()<br/>یک سازنده اجباری و خودکار"]
-        GO["Go: NewX() / Factory / Options<br/>چندین سازنده اختیاری و صریح"]
+        PHP["PHP: __construct()یک سازنده اجباری و خودکار"]
+        GO["Go: NewX() / Factory / Optionsچندین سازنده اختیاری و صریح"]
     end
 
     title ~~~ NEWX

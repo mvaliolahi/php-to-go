@@ -70,7 +70,6 @@
 </div>
 <figure class="diagram" dir="ltr">
 <pre class="mermaid">flowchart TB
-    TITLE["درخت تصمیم بهینه‌سازی — مسیر صحیح از اندازه‌گیری تا تأیید"]
 
     Q1{"آیا عملکرد فعلی مشکل دارد؟"}
     Q1 -- "خیر" --&gt; N1["تغییری لازم نیست"]
@@ -83,8 +82,7 @@
     IM --&gt; V
     V -- "تکرار تا رسیدن به هدف عملکرد" --&gt; M
 
-    TITLE --&gt; Q1
-
+    
     classDef titleBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
     classDef decBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
     classDef stopBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
@@ -100,15 +98,14 @@
 <p>این اصل همیشه صادق است: <strong>هرگز بدون داده بهینه‌سازی نکنید.</strong> برنامه‌نویسان اغلب تصور می‌دانند گلوگاه کجاست، اما در عمل حدس‌هایشان غلط است. به این پدیده wrong guessing می‌گویند. </p><p>ذهن انسان تمایل دارد بخش‌هایی از کد که پیچیده‌تر یا آشناتر هستند را به‌عنوان گلوگاه فرض کند، در حالی که گلوگاه واقعی ممکن است در کد کاملاً متفاوتی باشد.</p>
 <figure class="diagram" dir="ltr">
 <pre class="mermaid">flowchart LR
-    TITLE["گردش کار بهینه‌سازی: اندازه‌گیری ← پروفایل ← بهینه‌سازی ← تأیید"]
 
-    M["Measure<br/>اندازه‌گیری عملکرد فعلی<br/>go test -bench -benchmem"]
-    P["Profile<br/>شناسایی گلوگاه<br/>pprof top, web, list"]
-    O["Optimize<br/>رفع گلوگاه شناسایی‌شده<br/>algorithm, allocation"]
-    V["Verify<br/>تأیید بهبود عملکرد<br/>benchstat before.prof after"]
+    M["Measureاندازه‌گیری عملکرد فعلیgo test -bench -benchmem"]
+    P["Profileشناسایی گلوگاهpprof top, web, list"]
+    O["Optimizeرفع گلوگاه شناسایی‌شدهalgorithm, allocation"]
+    V["Verifyتأیید بهبود عملکردbenchstat before.prof after"]
     DEC{"بهبود حاصل شد؟"}
     OK["بهبود تأیید شد (بله)"]
-    NO["بازگشت تغییر (خیر)<br/>اگر بهبود معنادار نیست"]
+    NO["بازگشت تغییر (خیر)اگر بهبود معنادار نیست"]
     LOOP["اگر هنوز مشکل دارید → تکرار چرخه"]
 
     M --&gt; P --&gt; O --&gt; V --&gt; DEC
@@ -117,8 +114,7 @@
     NO --&gt; LOOP
     LOOP -- "تکرار" --&gt; M
 
-    TITLE --&gt; M
-
+    
     classDef titleBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
     classDef stageBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
     classDef decBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
@@ -254,32 +250,30 @@ $ go tool trace trace.out
 <p>فرآیند بهینه‌سازی یک مسیر تصمیم‌گیری مشخص دارد که از اندازه‌گیری شروع شده و با تأیید بهبود خاتمه می‌یابد. اولین و مهم‌ترین سؤال این است: آیا اصلاً مشکل عملکردی وجود دارد؟ اگر پاسخ منفی است، بهینه‌سازی نکنید — این همان تله بهینه‌سازی زودرس است.</p><p>اگر مشکل وجود دارد، باید با بنچمارک اندازه‌گیری کنید، سپس با pprof پروفایل بگیرید و گلوگاه را شناسایی کنید.</p><p>گلوگاه یا CPU-bound است (نیاز به بهبود الگوریتم) یا Memory-bound (نیاز به کاهش allocation).</p><p>پس از بهینه‌سازی، دوباره بنچمارک بگیرید و اگر بهبود معنادار نبود، رویکرد خود را بازبینی کنید.</p><p>قانون ۸۰/۲۰ را همیشه به خاطر بسپارید: ۸۰٪ زمان اجرا در ۲۰٪ کد صرف می‌شود — فقط همان ۲۰٪ را بهینه کنید.</p>
 <figure class="diagram" dir="ltr">
 <pre class="mermaid">flowchart TB
-    TITLE["درخت تصمیم بهینه‌سازی: اندازه‌گیری ← پروفایل ← بهینه‌سازی ← تأیید"]
 
     Q1{"آیا مشکل عملکردی وجود دارد؟"}
-    Q1 -- "خیر" --&gt; NO["بهینه‌سازی نکن!<br/>کد خوانا بنویس"]
-    Q1 -- "بله" --&gt; M["اندازه‌گیری با Benchmark<br/>go test -bench . -benchmem"]
-    M --&gt; P["پروفایل با pprof<br/>go tool pprof cpu.prof / mem.prof"]
-    P --&gt; I["شناسایی گلوگاه<br/>pprof top / web / list funcName"]
+    Q1 -- "خیر" --&gt; NO["بهینه‌سازی نکن!کد خوانا بنویس"]
+    Q1 -- "بله" --&gt; M["اندازه‌گیری با Benchmarkgo test -bench . -benchmem"]
+    M --&gt; P["پروفایل با pprofgo tool pprof cpu.prof / mem.prof"]
+    P --&gt; I["شناسایی گلوگاهpprof top / web / list funcName"]
     I --&gt; Q2{"گلوگاه CPU یا حافظه؟"}
-    Q2 -- "CPU" --&gt; C["بهینه‌سازی الگوریتم<br/>O(n²) → O(n log n)<br/>reduce computation"]
-    Q2 -- "Memory" --&gt; ME["کاهش allocation<br/>sync.Pool, preallocate<br/>reduce GC pressure"]
-    C --&gt; R["بنچمارک مجدد: قبل / بعد<br/>benchstat before.txt after.txt"]
+    Q2 -- "CPU" --&gt; C["بهینه‌سازی الگوریتمO(n²) → O(n log n)reduce computation"]
+    Q2 -- "Memory" --&gt; ME["کاهش allocationsync.Pool, preallocatereduce GC pressure"]
+    C --&gt; R["بنچمارک مجدد: قبل / بعدbenchstat before.txt after.txt"]
     ME --&gt; R
     R --&gt; Q3{"بهبود حاصل شد؟"}
-    Q3 -- "بله" --&gt; OK["انجام شد! ✓<br/>تست و بنچمارک سبز"]
-    Q3 -- "خیر" --&gt; REV["بازبینی رویکرد<br/>گلوگاه دیگری وجود دارد<br/>بازگشت به اندازه‌گیری"]
+    Q3 -- "بله" --&gt; OK["انجام شد! ✓تست و بنچمارک سبز"]
+    Q3 -- "خیر" --&gt; REV["بازبینی رویکردگلوگاه دیگری وجود داردبازگشت به اندازه‌گیری"]
     REV -- "تکرار" --&gt; M
 
     subgraph NOTES["قانون ۸۰/۲۰ (پارتو) + تله بهینه‌سازی زودرس"]
         direction TB
-        P80["قانون ۸۰/۲۰ — ۸۰٪ زمان اجرا در ۲۰٪ کد صرف می‌شود. فقط همان ۲۰٪ را بهینه کنید، بقیه را رها کنید."]
+        P80[قانون ۸۰/۲۰ — ۸۰٪ زمان اجرا در ۲۰٪ کد صرف می‌شود. فقط همان ۲۰٪ را بهینه...]
         PREM["تله بهینه‌سازی زودرس — "Premature optimization is the root of all evil" — Donald Knuth"]
-        GOLD["قانون طلایی: اندازه بگیر، حدس نزن. اول پروفایل کن، فقط گلوگاه را بهینه کن، با بنچمارک تأیید کن."]
+        GOLD[قانون طلایی: اندازه بگیر، حدس نزن. اول پروفایل کن، فقط گلوگاه را بهینه کن،...]
     end
 
-    TITLE --&gt; Q1
-    OK --&gt; NOTES
+        OK --&gt; NOTES
 
     classDef titleBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
     classDef decBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;

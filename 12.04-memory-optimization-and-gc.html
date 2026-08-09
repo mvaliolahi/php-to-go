@@ -86,36 +86,8 @@
 <div class="tip">
 <strong>نکته‌ی حرفه‌ای:</strong> جمع‌آور زباله <bdi dir="ltr">Go</bdi> برای تأخیر کم طراحی شده، نه حداکثر توان عملیاتی. اگر به حداکثر توان عملیاتی نیاز دارید، تخصیص‌ها را با استفاده از <bdi dir="ltr">sync.Pool</bdi> برای اشیاء تخصیص‌داده‌شده مکرر کاهش دهید، sliceها را با <bdi dir="ltr">make([]T, 0, n)</bdi> پیش‌تخصیص کنید، و وقتی داده کوچک است ترجیحاً از نوع مقداری به جای نوع اشاره‌گری استفاده کنید.
 </div>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-    TITLE["چرخه Garbage Collector در Go (Mark-and-Sweep)"]
-
-    A["فاز تخصیص حافظه<br/>برنامه اشیاء جدید روی Heap ایجاد می‌کند<br/>مصرف حافظه افزایش می‌یابد تا به آستانه GC برسد"]
-    M["فاز Mark<br/>شناسایی اشیاء قابل دسترس<br/>از root‌ها (stack, global) شروع می‌شود و تمام اشیاء قابل دسترس را علامت‌گذاری می‌کند"]
-    S["فاز Sweep<br/>آزادسازی حافظه بلااستفاده<br/>اشیاء علامت‌نخورده آزاد می‌شوند و حافظه برگردانده می‌شود"]
-    R["حافظه آزاد شده | برنامه ادامه می‌یابد<br/>چرخه تکرار می‌شود"]
-
-    A -- "آستانه GC" --&gt; M
-    M --&gt; S
-    S --&gt; R
-    R -- "تکرار چرخه" --&gt; A
-
-    subgraph PROPS["ویژگی‌های GC در Go"]
-        direction TB
-        P1["Concurrent: همزمان با برنامه"]
-        P2["Low-latency: توقف‌های کوتاه"]
-        P3["Non-generational: بدون نسل"]
-    end
-
-    TITLE --&gt; A
-    R --&gt; PROPS
-
-    classDef titleBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
-    classDef stageBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef propBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
-    class TITLE titleBox;
-    class A,M,S,R stageBox;
-    class P1,P2,P3 propBox;</pre>
+<figure class="diagram d2-diagram" dir="ltr">
+<img alt="نمودار" loading="lazy" src="assets/diagrams/ch12_04_gc_cycle.svg"/>
 <figcaption>شکل ۱۲-۴-۱: چرخه <bdi dir="ltr">Garbage</bdi> <bdi dir="ltr">Collector</bdi> در <bdi dir="ltr">Go</bdi> (<bdi dir="ltr">Mark-and-Sweep</bdi>)</figcaption>
 </figure>
 <h3 id="stack-و-heap">12.4.1 Stack و Heap</h3>
@@ -190,11 +162,10 @@ func heapAllocated() *User {
 <p>اولین قدم در بهینه‌سازی حافظه، اندازه‌گیری و شناسایی مشکلات است. Go ابزار قدرتمندی به نام <bdi dir="ltr">pprof</bdi> برای پروفایلینگ CPU و حافظه ارائه می‌دهد. بدون پروفایلینگ، هر تلاشی برای بهینه‌سازی حافظه صرفاً حدس و گمان است.</p>
 <figure class="diagram" dir="ltr">
 <pre class="mermaid">flowchart LR
-    TITLE["جریان کار تحلیل حافظه با pprof"]
 
-    A["go test -memprofile<br/>تولید فایل پروفایل"]
-    B["go tool pprof<br/>تحلیل تعاملی"]
-    C["top / web / list<br/>شناسایی نقطه تخصیص"]
+    A["go test -memprofileتولید فایل پروفایل"]
+    B["go tool pprofتحلیل تعاملی"]
+    C["top / web / listشناسایی نقطه تخصیص"]
 
     A --&gt; B --&gt; C
 
@@ -202,12 +173,11 @@ func heapAllocated() *User {
         direction TB
         E1["net/http/pprof — پروفایلینگ زنده در production"]
         E2["runtime.ReadMemStats — خواندن آمار حافظه در کد"]
-        E3["فرمان‌های کلیدی pprof:<br/>top20 (بیشترین تخصیص) | web (نمودار گراف) | list funcName (کد خط به خط)"]
+        E3[فرمان‌های کلیدی pprof:top20 (بیشترین تخصیص) | web (نمودار گراف) | list...]
         E4["pprof با فلگ -inuse_objects (تعداد اشیاء) یا -alloc_objects (تخصیص تجمیعی)"]
     end
 
-    TITLE --&gt; A
-    C --&gt; EXTRA
+        C --&gt; EXTRA
 
     classDef titleBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
     classDef stageBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
@@ -272,48 +242,9 @@ mem.Alloc, mem.TotalAlloc, mem.Sys, mem.NumGC)
 <p><bdi dir="ltr">sync.Pool</bdi> ابزار کلیدی Go برای کاهش فشار GC در برنامه‌های با بار بالا است. thread-safe مورد استفاده قرار گیرد. وقتی شیئی دیگر لازم نیست، به pool بازگردانده می‌شود و دفعه‌ی بعد بدون تخصیص حافظه‌ی جدید قابل استفاده است.</p>
 <p><strong>چرا sync.Pool مهم است؟</strong> هر تخصیص جدید روی heap یک شیء اضافه برای GC ایجاد می‌کند. اگر برنامه شما در هر ثانیه هزاران شیء موقت ایجاد کند (مثلاً بافرهای خواندن، شیءهای response)، GC باید همه آن‌ها را ردیابی و آزاد کند. با sync.Pool اشیاء بازیافت می‌شوند و تخصیص جدید نیاز نیست.</p>
 <p><strong>معماری داخلی:</strong> هر <code dir="ltr">sync.Pool</code> دو سطح ذخیره‌سازی دارد: <strong dir="ltr">local</strong> (محلی به هر P/پردازنده) و <strong dir="ltr">victim</strong> (اشیاء از چرخه GC قبلی). وقتی <code dir="ltr">Get()</code> فراخوانی می‌شود، ابتدا در local pool پردازنده جاری جستجو می‌شود، سپس در victim pool. </p><p>وقتی <code dir="ltr">Put()</code> فراخوانی می‌شود، شیء در local pool ذخیره می‌شود. در هر چرخه GC، اشیاء local به victim منتقل می‌شوند و victim قبلی حذف می‌شوند.</p>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart LR
-    TITLE["چرخه حیات sync.Pool — دریافت، استفاده، بازگرداندن"]
-
-    POOL["sync.Pool<br/>مجموعه اشیاء بازسازی‌شده<br/>پیوست‌شده به P هر goroutine"]
-
-    GET["pool.Get()<br/>دریافت شیء"]
-    USE["استفاده از شیء در کد"]
-    PUT["pool.Put()<br/>بازگرداندن شیء"]
-    NEW["اگر Pool خالی باشد<br/>New() فراخوانی می‌شود"]
-
-    POOL -- "دریافت" --&gt; GET
-    GET --&gt; USE
-    USE -- "بازگرداندن" --&gt; PUT
-    PUT --&gt; POOL
-    POOL -- "خالی" --&gt; NEW
-    NEW --&gt; GET
-
-    WARN["⚠ توجه: اشیاء pool در هر چرخه GC ممکن است حذف شوند!<br/>Pool برای کش موقت است، نه ذخیره‌سازی دائمی"]
-
-    subgraph USES["موارد استفاده‌ی رایج sync.Pool"]
-        direction TB
-        U1["bytes.Buffer | JSON Encoder | Response Writer"]
-        U2["Compression Buffers | Temp Objects"]
-        U3["قانون: شیء باید کوتاه‌عمر باشد و وضعیتش قبل از Put بازیابی شود"]
-    end
-
-    TITLE --&gt; POOL
-    POOL --&gt; WARN
-    WARN --&gt; USES
-
-    classDef titleBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
-    classDef poolBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef stageBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
-    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
-    classDef useBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
-    class TITLE titleBox;
-    class POOL poolBox;
-    class GET,USE,PUT,NEW stageBox;
-    class WARN warnBox;
-    class U1,U2,U3 useBox;</pre>
-<figcaption>شکل ۱۲-۴-۳: چرخه حیات <bdi dir="ltr">sync.Pool</bdi> — دریافت، استفاده، بازگرداندن</figcaption>
+<figure class="diagram d2-diagram" dir="ltr">
+<img alt="نمودار" loading="lazy" src="assets/diagrams/ch12_04_sync_pool.svg"/>
+<figcaption>شکل ۱۲-۴-۳: چرخه حیاتsync.Pool— دریافت، استفاده، بازگرداندن</figcaption>
 </figure>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">package bufferpool
@@ -414,33 +345,9 @@ $ GOGC=200 GOMEMLIMIT=2GiB ./myapp
 </code></pre>
 </figure>
 <div class="tip"><strong>نکته عملی:</strong> در محیط‌های container (Docker/Kubernetes)، <code>GOMEMLIMIT</code> باید حدود ۸۰-۹۰٪ حافظه‌ی container تنظیم شود تا فضایی برای Stack و buffers باقی بماند. مثلاً اگر container 512MB حافظه دارد: <code>GOMEMLIMIT=460MiB</code>.</div>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-    TITLE["پارامترهای تنظیم GC در Production"]
-
-    subgraph PARAMS["پارامترهای تنظیم GC"]
-        direction TB
-        G1["GOGC=100<br/>پیش‌فرض — تعادل عملکرد/حافظه"]
-        G2["GOGC=200-400<br/>عملکرد بیشتر — حافظه بیشتر"]
-        G3["GOMEMLIMIT<br/>سقف حافظه — حیاتی برای container"]
-    end
-
-    subgraph REC["تنظیمات پیشنهادی برای Production"]
-        direction TB
-        R1["GOGC=200 GOMEMLIMIT=80% of container memory"]
-        R2["مثلاً در container با 1GB رم:<br/>GOMEMLIMIT=900MiB GOGC=200"]
-    end
-
-    TITLE --&gt; PARAMS
-    PARAMS --&gt; REC
-
-    classDef titleBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
-    classDef paramBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef recBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
-    class TITLE titleBox;
-    class G1,G2,G3 paramBox;
-    class R1,R2 recBox;</pre>
-<figcaption>شکل ۱۲-۴-۴: پارامترهای تنظیم <bdi dir="ltr">GC</bdi> در محیط <bdi dir="ltr">Production</bdi></figcaption>
+<figure class="diagram d2-diagram" dir="ltr">
+<img alt="نمودار" loading="lazy" src="assets/diagrams/ch12_04_gc_tuning.svg"/>
+<figcaption>شکل ۱۲-۴-۴: پارامترهای تنظیمGCدر محیطProduction</figcaption>
 </figure>
 <h3 id="تنظیمات-پیشرفته-gc-برای-production">12.4.8 تنظیمات پیشرفته GC برای Production</h3>
 <p>در محیط‌های production با بار بالا، تنظیم GC می‌تواند تأثیر قابل‌توجهی بر عملکرد داشته باشد. در اینجا چند الگوی رایج را بررسی می‌کنیم:</p>
@@ -577,117 +484,9 @@ GOEXPERIMENT=nogreenteagc go build -o myapp .
 </div>
 <h3 id="الگوریتم-سه-رنگی-gc-در-go">12.4.13 الگوریتم سه‌رنگی GC در Go — مرحله به مرحله</h3>
 <p>قلب تپنده‌ی Garbage Collector در Go الگوریتم Tri-Color Marking است که به‌صورت concurrent با اجرای برنامه کار می‌کند. درک این الگوریتم برای هر توسعه‌دهنده‌ی Go ضروری است، زیرا رفتار حافظه‌ی برنامه‌تان مستقیماً تحت تأثیر نحوه کار این الگوریتم قرار دارد.</p><p>الگوریتم سه‌رنگی اشیاء روی heap را به سه دسته تقسیم می‌کند: سیاه (قابل دسترس و کاملاً بررسی‌شده)، خاکستری (قابل دسترس اما هنوز بررسی نشده) و سفید (احتمالاً غیرقابل دسترس). فرآیند marking از root‌ها شروع می‌شود و به‌تدریج تمام اشیاء قابل دسترس را از خاکستری به سیاه تبدیل می‌کند.</p><p>در پایان، اشیاء سفید باقی‌مانده زباله محسوب شده و حافظه‌ی آنها آزاد می‌شود.</p>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid"><code>flowchart TB
-    TITLE["الگوریتم سه‌رنگی GC در Go — مرحله به مرحله"]
-
-    subgraph S1["مرحله ۱: همه اشیاء سفید هستند"]
-        direction LR
-        S1A["A (سفید)"]
-        S1B["B (سفید)"]
-        S1C["C (سفید)"]
-        S1D["D (سفید)"]
-        S1E["E (سفید)"]
-        S1F["F (سفید)"]
-        S1DOT["..."]
-    end
-
-    subgraph S2["مرحله ۲: اشیاء root خاکستری می‌شوند (stack و globals نقطه شروع هستند)"]
-        direction LR
-        S2R["Root"]
-        S2A["A"]
-        S2B["B"]
-        S2C["C"]
-        S2D["D"]
-        S2E["E"]
-        S2R --&gt; S2A
-        S2R --&gt; S2B
-        S2R --&gt; S2C
-        S2R --&gt; S2D
-        S2R --&gt; S2E
-    end
-
-    subgraph S3["مرحله ۳: یک شیء خاکستری انتخاب → سیاه می‌شود → ارجاعاتش خاکستری"]
-        direction LR
-        S3NOTE["A انتخاب شد: A سیاه شد. ارجاعات A (B و D) خاکستری شدند."]
-        S3A["A (سیاه)"]
-        S3B["B (خاکستری)"]
-        S3E["E (سفید)"]
-        S3D["D (خاکستری)"]
-        S3F["F (سفید)"]
-        S3C["C (خاکستری از root دیگر)"]
-        S3A --&gt; S3B
-        S3A --&gt; S3D
-    end
-
-    subgraph S3L["معنی سه رنگ"]
-        direction TB
-        LBL["سیاه = بررسی‌شده"]
-        LGR["خاکستری = بررسی‌نشده"]
-        LWH["سفید = احتمالاً غیرقابل دسترس"]
-    end
-
-    subgraph S4["مرحله ۴: تکرار تا تمام شدن خاکستری‌ها — هر خاکستری → سیاه، ارجاعاتش → خاکستری"]
-        direction LR
-        S4A["A (سیاه)"]
-        S4B["B (سیاه)"]
-        S4C["C (سیاه)"]
-        S4D["D (سیاه)"]
-        S4E["E (سیاه)"]
-        S4F["F (سیاه)"]
-        S4G["G (سیاه)"]
-        S4DONE["دیگر شیء خاکستری وجود ندارد — marking تمام شد!"]
-    end
-
-    subgraph S5["مرحله ۵: Sweep — اشیاء سفید = زباله (حافظه آزاد می‌شود)"]
-        direction LR
-        S5A["A (سیاه)"]
-        S5B["B (سیاه)"]
-        S5C["C (سیاه)"]
-        S5F["F (سیاه)"]
-        S5G["G (سیاه)"]
-        S5TRASH["زباله! (آزاد شد)"]
-    end
-
-    subgraph WB["سد نوشتن (Write Barrier) — حیاتی برای صحت هم‌روندی"]
-        direction TB
-        WB1["وقتی mutator (برنامه) در حین marking یک اشاره‌گر از شیء سیاه به شیء سفید اضافه می‌کند:"]
-        WB2["سیاه → new ptr → سفید"]
-        WB3["Write Barrier شیء سفید را خاکستری می‌کند — از گم‌شدن جلوگیری شد!"]
-        WB4["بدون write barrier، شیء سفید ناپدید می‌شد چون هیچ خاکستری‌ای به آن اشاره نمی‌کرد. این tri-color invariant را حفظ می‌کند."]
-    end
-
-    subgraph GOLD["قانون طلایی و نکات هم‌روندی"]
-        direction TB
-        G1["قانون طلایی: Write Barrier تضمین می‌کند هیچ شیء قابل دسترسی‌ای به‌اشتباه جمع‌آوری نشود — حتی وقتی mutator و GC همزمان کار می‌کنند."]
-        G2["نکته: مراحل Mark (۲-۴) به‌صورت concurrent اجرا می‌شوند — فقط مراحل کوتاه STW (شناسایی root‌ها و پایان mark) نیاز به توقف کامل دارند."]
-        G3["به همین دلیل توقف‌های GC در Go معمولاً زیر ۵۰۰ میکروثانیه هستند — حتی در برنامه‌های با heap بزرگ."]
-    end
-
-    TITLE --&gt; S1
-    S1 --&gt; S2
-    S2 --&gt; S3
-    S3 --&gt; S3L
-    S3 --&gt; S4
-    S4 --&gt; S5
-    S5 --&gt; WB
-    WB --&gt; GOLD
-
-    classDef titleBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
-    classDef stageBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
-    classDef blackBox fill:#1f2937,stroke:#1f2937,stroke-width:1.5px,color:#ffffff;
-    classDef grayBox fill:#9ca3af,stroke:#4b5563,stroke-width:1.5px,color:#1f2937;
-    classDef whiteBox fill:#ffffff,stroke:#9ca3af,stroke-width:1.5px,color:#1f2937;
-    classDef noteBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
-    class TITLE titleBox;
-    class S1A,S1B,S1C,S1D,S1E,S1F,S1DOT whiteBox;
-    class S2R grayBox;
-    class S2A,S2B,S2C,S2D,S2E grayBox;
-    class S3A,S4A,S4B,S4C,S4D,S4E,S4F,S4G,S5A,S5B,S5C,S5F,S5G blackBox;
-    class S3B,S3D,S3C grayBox;
-    class S3E,S3F whiteBox;
-    class S3NOTE,LBL,LGR,LWH,S4DONE,S5TRASH,WB1,WB2,WB3,WB4,G1,G2,G3 noteBox;</code></pre>
-<figcaption>شکل ۱۲-۴-۵: الگوریتم سه‌رنگی <bdi dir="ltr">GC</bdi> در <bdi dir="ltr">Go</bdi> — از marking تا sweep با <bdi dir="ltr">write barrier</bdi></figcaption>
+<figure class="diagram d2-diagram" dir="ltr">
+<img alt="نمودار" loading="lazy" src="assets/diagrams/ch12_04_tri_color_gc.svg"/>
+<figcaption>شکل ۱۲-۴-۵: الگوریتم سه‌رنگیGCدرGo— از marking تا sweep باwrite barrier</figcaption>
 </figure>
 <p>نمودار فوق فرآیند الگوریتم سه‌رنگی را پنج مرحله‌ی اصلی نشان می‌دهد. در مرحله‌ی اول، همه‌ی اشیاء روی heap سفید هستند و GC هنوز شروع نکرده. در مرحله‌ی دوم، root‌ها (اشیاء مستقیماً قابل دسترس از stack و متغیرهای سراسری) خاکستری标记 می‌شوند.</p><p>مرحله‌ی سوم قلب الگوریتم است: GC یک شیء خاکستری را انتخاب می‌کند، آن را سیاه می‌کند (یعنی بررسی‌شده) و تمام اشیایی که به آن ارجاع دارند خاکستری می‌شوند.</p><p>این فرآیند در مرحله‌ی چهارم تکرار می‌شود تا هیچ شیء خاکستری باقی نماند. در مرحله‌ی پنجم، اشیاء سفید باقی‌مانده زباله هستند و حافظه‌ی آنها آزاد می‌شود. اما نکته‌ی حیاتی write barrier است: چون mutator همزمان با GC در حال اجراست، ممکن است یک اشاره‌گر از شیء سیاه به شیء سفید اضافه کند.</p><p>بدون write barrier، این شیء سفید ناپدید می‌شد چون هیچ خاکستری‌ای دیگر به آن اشاره نمی‌کرد.</p><p>write barrier با خاکستری کردن شیء سفید هدف، این مشکل را حل می‌کند.</p>
 <h3 id="سناریوهای-عملیاتی-بهینهسازی-حافظه-و-gc">12.4.14 سناریوهای عملیاتی: بهینه‌سازی حافظه و GC</h3>
