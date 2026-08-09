@@ -71,7 +71,7 @@
 <h2 id="نکات-کاربردی-برای-بهینهسازی">نکات کاربردی برای بهینه‌سازی</h2>
 
 <figure class="diagram" dir="ltr">
-<svg height="380" viewBox="0 0 650 380" width="650" xmlns="http://www.w3.org/2000/svg">
+<svg height="380" viewBox="0 0 650 380" width="650" xmlns="http://www.w3.org/2000/svg"><defs><filter id="sh196" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter></defs>
 <text class="title" text-anchor="middle" x="325" y="25" direction="rtl" unicode-bidi="embed">تکنیک‌های کاهش تخصیص حافظه در <tspan direction="ltr" unicode-bidi="embed">Go</tspan></text>
 <!-- Row 1 -->
 <rect class="tip-box" height="80" width="200" x="20" y="50"></rect>
@@ -218,6 +218,7 @@ func processBest(data []byte) {
 </code></pre>
 </figure>
 <p>نکته مهم: از Go 1.20 تبدیل <code>string([]byte)</code> و <code>[]byte(string)</code> در برخی حالات خاص (مثل استفاده در map lookup) به‌صورت بهینه انجام می‌شود، اما در حالت کلی همچنان کپی ایجاد می‌شود. همیشه با بنچمارک بررسی کنید.</p>
+<div class="note"><strong>نکته:</strong> برای جلوگیری از تبدیل مکرر <bdi dir="ltr">string ↔ []byte</bdi> در مسیرهای داغ، یک رویکرد مؤثر طراحی API تابع‌ها به‌گونه‌ای است که همیشه با یک نوع کار کنند. مثلاً اگر داده از شبکه می‌آید (<bdi dir="ltr">[]byte</bdi>)، توابع پردازشی را هم به‌جای <bdi dir="ltr">string</bdi> با <bdi dir="ltr">[]byte</bdi> بنویسید تا تبدیل حذف شود. در کتابخانه استاندارد Go توابعی مثل <bdi dir="ltr">bytes.Contains</bdi> و <bdi dir="ltr">strings.Contains</bdi> معادل یکدیگرند تا نیازی به تبدیل نباشد.</div>
 
 <h3 id="مدیریت-صحیح-goroutineها">مدیریت صحیح goroutineها</h3>
 <p>goroutine‌ها سبک و سریع هستند، اما ایجاد هزاران goroutine بدون مدیریت منجر به نشت حافظه یا خستگی CPU می‌شود. هر goroutine فعال حداقل ۲KB stack مصرف می‌کند و اگر منتظر channel یا lock بماند، حافظه‌ی بیشتری اشغال می‌کند. از <bdi dir="ltr">context</bdi> و <bdi dir="ltr">sync.WaitGroup</bdi> برای کنترل عمر goroutine‌ها استفاده کنید و با <bdi dir="ltr">pprof goroutine</bdi> بررسی کنید آیا goroutineهایی بی‌دلیل باز مانده‌اند:</p>
@@ -330,7 +331,7 @@ $ go build -gcflags="-m" ./...
 
 <figure class="diagram" dir="ltr">
 <svg height="530" viewBox="0 0 780 530" width="780" xmlns="http://www.w3.org/2000/svg">
-<defs>
+<defs><filter id="sh197" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
 <marker id="arrowSpeedup" markerHeight="7" markerWidth="10" orient="auto" refx="10" refy="3.5">
 <polygon fill="#2E7D32" points="0 0, 10 3.5, 0 7"></polygon>
 </marker>
@@ -442,7 +443,7 @@ $ go build -gcflags="-m" ./...
 <text x="595" y="353" direction="rtl" unicode-bidi="embed" font-size="7.5" fill="#81C784">✓ ۱ <tspan direction="ltr" unicode-bidi="embed">allocation</tspan>، بدون کپی اضافی</text>
 
 <!-- Golden rule bar -->
-<rect x="10" y="450" width="760" height="42" fill="#FFF8E1" rx="6" stroke="#FFC107" stroke-width="1.5"/>
+<rect x="10" y="450" width="760" height="42" fill="#FFF8E1" rx="6" stroke="#FFC107" stroke-width="1.5" filter="url(#sh197)"/>
 <text x="25" y="468" direction="rtl" unicode-bidi="embed" font-size="11" font-weight="bold" fill="#F57F17">⚡ قانون طلایی:</text>
 <text x="118" y="468" direction="rtl" unicode-bidi="embed" font-size="9.5" fill="#555">در حلقه‌های الحاق رشته، همیشه از <tspan direction="ltr" unicode-bidi="embed">strings.Builder</tspan> با <tspan direction="ltr" unicode-bidi="embed">Grow()</tspan> استفاده کنید. برای قالب‌بندی یکباره، <tspan direction="ltr" unicode-bidi="embed">fmt.Sprintf</tspan> مناسب‌تر است.</text>
 <text x="118" y="483" direction="rtl" unicode-bidi="embed" font-size="8.5" fill="#888">هرگز از عملگر <tspan direction="ltr" unicode-bidi="embed">+=</tspan> برای الحاق مکرر رشته‌ها در حلقه استفاده نکنید — پیچیدگی <tspan direction="ltr" unicode-bidi="embed">O(n²)</tspan> دارد.</text>
@@ -467,6 +468,7 @@ $ go build -gcflags="-m" ./...
 </ul>
 
 <div class="tip"><strong>نکته کاربردی:</strong> قانون ساده‌ای به یاد داشته باشید: اگر فقط یک بار رشته‌ای را قالب‌بندی می‌کنید، از <code dir="ltr">fmt.Sprintf</code> استفاده کنید — خوانایی و سادگی مهم‌تر از میکروبهینه‌سازی است. اما اگر در حلقه‌ای رشته‌ها را الحاق می‌کنید (حتی اگر فقط ۱۰ بار)، حتماً از <code dir="ltr">strings.Builder</code> استفاده کنید. تفاوت عملکرد با افزایش تعداد الحاق‌ها به‌صورت نمایی (<code dir="ltr">O(n²)</code> در مقابل <code dir="ltr">O(n)</code>) رشد می‌کند. همیشه قبل از بهینه‌سازی، با <code dir="ltr">go test -bench</code> اندازه‌گیری کنید و فقط <code dir="ltr">hot path</code>‌ها را بهینه کنید. قانون کلی: اگر بیش از ۵ الحاق دارید، <code dir="ltr">strings.Builder</code> را انتخاب کنید.</div>
+<div class="note"><strong>ارجاع به بخش‌های مرتبط:</strong> این بخش نکات میکروبهینه‌سازی را پوشش داد. برای موضوعات تخصصی‌تر به این بخش‌ها مراجعه کنید: <a href="12.04-memory-optimization-and-gc.html">بخش ۱۲.۴</a> برای <bdi dir="ltr">sync.Pool</bdi>، تنظیم <bdi dir="ltr">GOGC/GOMEMLIMIT</bdi> و الگوریتم سه‌رنگی GC؛ و <a href="12.05-practical-techniques-for-memory-reduction.html">بخش ۱۲.۵</a> برای مرتب‌سازی فیلدهای struct (alignment)، string interning و memory-mapped I/O.</div>
 </div>
 </main>
 </div>

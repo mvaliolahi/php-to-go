@@ -71,7 +71,7 @@
 <h2 id="type-conversion">Type Conversion</h2>
 <p>در زبان <bdi dir="ltr">Go</bdi> برخلاف <bdi dir="ltr">PHP</bdi>، تبدیل نوع به صورت صریح انجام می‌شود و کامپایلر به‌هیچ‌وجه به‌طور خودکار مقادیر را بین انواع مختلف تبدیل نمی‌کند. قاعده‌ی کلی این است که هر زمان بخواهیم مقدار یک متغیر را به نوع دیگری تغییر دهیم، باید نام نوع مقصد را مانند یک تابع فراخوانی کنیم و مقدار مورد نظر را به‌عنوان آرگومان قرار دهیم. این الزام به صراحت باعث می‌شود کد شفاف‌تر، قابل پیش‌بینی‌تر و عاری از تبدیل‌های پنهان یا ناخواسته باشد.</p>
 <figure class="diagram" dir="ltr">
-<svg height="300" viewBox="0 0 600 300" width="600" xmlns="http://www.w3.org/2000/svg">
+<svg height="300" viewBox="0 0 600 300" width="600" xmlns="http://www.w3.org/2000/svg"><defs><filter id="sh32" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter></defs>
 <rect fill="#fafafa" height="280" rx="12" stroke="#00ADD8" stroke-width="2" width="580" x="10" y="10"></rect>
 <text fill="#00ADD8" font-size="15" font-weight="bold" text-anchor="middle" x="300" y="38" direction="rtl" unicode-bidi="embed">تبدیل نوع در <tspan direction="ltr" unicode-bidi="embed">Go</tspan> — صریح و بدون خودکار</text>
 <text fill="#333" font-size="13" font-weight="bold" x="50" y="70" direction="rtl" unicode-bidi="embed">تبدیل اعداد:</text>
@@ -208,6 +208,7 @@ bin, _ := strconv.ParseInt("1010", 2, 64) // 10
 </code></pre>
 </figure>
 <div class="tip"><strong>الگوی رایج:</strong> در <bdi dir="ltr">Go</bdi> الگوی <code>value, err := strconv.Atoi(input)</code> به همراه <code>if err != nil</code> بسیار رایج است. هرگز خطای <code>strconv</code> را نادیده نگیرید — ورودی کاربر همیشه می‌تواند نامعتبر باشد. در <bdi dir="ltr">PHP</bdi> تابع <code>intval("abc")</code> بدون خطا عدد <code>0</code> برمی‌گرداند، اما در <bdi dir="ltr">Go</bdi> تابع <code>Atoi("abc")</code> خطا برمی‌گرداند.</div>
+<div class="note"><strong>تله‌ی مقایسه‌ی interface در Go:</strong> در <bdi dir="ltr">PHP</bdi> مقایسه‌ی <code>$a == $b</code> فقط مقادیر را مقایسه می‌کند، اما در <bdi dir="ltr">Go</bdi> دو مقدار <code>interface{}</code> تنها زمانی برابرند که هم <strong>نوع دینامیک</strong> و هم <strong>مقدار</strong> یکسانی داشته باشند. به‌علاوه، اگر مقدار زیرین <code>interface</code> از نوع non-comparable (مثل <code>slice</code> یا <code>map</code>) باشد، مقایسه‌ی <code>==</code> در زمان اجرا <code>panic</code> می‌کند. برای مقایسه‌ی ایمن مقدار زیرین، ابتدا با <code>type switch</code> یا <code>comma-ok</code> نوع را استخراج کنید.</div>
 <h3 id="custom-converters">تبدیل‌کننده‌های سفارشی</h3>
 <p>گاهی نیاز دارید تبدیل‌هایی فراتر از تبدیل‌های استاندارد انجام دهید — مثلاً تبدیل تاریخ از/به رشته، یا تبدیل نوع سفارشی. در <bdi dir="ltr">Go</bdi> دو روش اصلی برای این کار وجود دارد: تعریف متد <code>String()</code> روی نوع سفارشی، و استفاده از <bdi dir="ltr">interface</bdi> هایی مثل <code>Stringer</code> و <code>TextUnmarshaler</code>.</p>
 <figure class="code go" dir="ltr">
@@ -268,7 +269,7 @@ s = fmt.Sprintf("%d", 42) // Wrong — slower — generic
 </code></pre>
 </figure>
 <figure class="diagram" dir="ltr">
-<svg height="380" viewBox="0 0 600 380" width="600" xmlns="http://www.w3.org/2000/svg">
+<svg height="380" viewBox="0 0 600 380" width="600" xmlns="http://www.w3.org/2000/svg"><defs><filter id="sh33" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter></defs>
 <rect fill="#fafafa" height="360" rx="12" stroke="#00ADD8" stroke-width="2" width="580" x="10" y="10"></rect>
 <text fill="#00ADD8" font-size="15" font-weight="bold" text-anchor="middle" x="300" y="35" direction="rtl" unicode-bidi="embed">راهبردهای تبدیل نوع در <tspan direction="ltr" unicode-bidi="embed">Go</tspan></text>
 <!-- Type Conversion -->
@@ -307,11 +308,11 @@ s = fmt.Sprintf("%d", 42) // Wrong — slower — generic
 </figure>
 
 <h3 id="php-type-juggling-vs-go-explicit">PHP Type Juggling در برابر تبدیل صریح Go</h3>
-<p>یکی از مهم‌ترین تفاوت‌های بنیادین بین PHP و Go در نحوه‌ی برخورد با انواع داده‌ای نهفته است. PHP از مفهومی به‌نام <bdi dir="ltr">Type Juggling</bdi> استفاده می‌کند که در آن کامپایلر به‌طور خودکار انواع را تبدیل می‌کند. مثلاً عبارت <code>"1" + 2</code> بدون خطا نتیجه‌ی <code>3</code> می‌دهد چون PHP رشته‌ی <code>"1"</code> را به عدد تبدیل می‌کند. اما این رفتار ظاهراً مناسب می‌تواند منبع باگ‌های خطرناک شود: عبارت <code>"hello" + 1</code> نتیجه‌ی <code>1</code> می‌دهد چون PHP رشته‌ی غیرعددی را به <code>0</code> تبدیل می‌کند. در Go چنین تبدیل خودکاری وجود ندارد و کامپایلر هر عدم تطابق نوعی را به‌عنوان خطا گزارش می‌دهد. این سخت‌گیری ممکن است در ابتدا آزاردهنده باشد، اما از دسته‌ای کامل از باگ‌های ظریف جلوگیری می‌کند که در PHP به‌سختی قابل ردیابی هستند.</p>
+<p>همان‌طور که در ابتدای این بخش دیدید، <bdi dir="ltr">PHP Type Juggling</bdi> منبع بسیاری از باگ‌های ظریف است (مانند <code>"hello" + 1 = 1</code> یا <code>"foo" == 0 → true</code>). نمودار زیر این تفاوت فلسفی را به‌صورت بصری کنار هم قرار می‌دهد و تبدیل‌های ایمن و ناایمن در <bdi dir="ltr">Go</bdi> را فهرست می‌کند.</p>
 
 <figure class="diagram" dir="ltr">
 <svg height="580" viewBox="0 0 920 580" width="920" xmlns="http://www.w3.org/2000/svg">
-<defs>
+<defs><filter id="sh34" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
 <marker id="arrPhpGo" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#666" points="0 0, 10 3.5, 0 7"></polygon></marker>
 <marker id="arrSafe" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#4CAF50" points="0 0, 10 3.5, 0 7"></polygon></marker>
 <marker id="arrUnsafe" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#e91e63" points="0 0, 10 3.5, 0 7"></polygon></marker>

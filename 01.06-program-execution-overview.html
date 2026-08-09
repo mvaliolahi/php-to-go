@@ -70,7 +70,7 @@
 <div class="chapter">فصل ۱.۶</div>
 <h2 id="نگاهی-به-اجرای-برنامهها">نگاهی به اجرای برنامه‌ها</h2>
 <p>در PHP معمولاً تعامل مستقیمی با مفاهیم سطح پایین سیستم‌عامل نداریم. برنامه‌نویس کدی می‌نویسد که در بستر وب‌سرور اجرا می‌شود. فایل‌هایی را می‌خواند با پایگاه داده ارتباط برقرار می‌کند و پس از تولید خروجی فرآیند اجرا خاتمه می‌یابد. این مدل اجرایی ساده برای توسعه‌ی سریع اپلیکیشن‌های تحت وب بسیار مناسب است اما جزئیات سطح سیستم‌عامل را از دید برنامه‌نویس پنهان می‌کند و به‌همین دلیل بسیاری از برنامه‌نویسان PHP هرگز نیازی به درک مفاهیمی مانند <bdi dir="ltr">process</bdi> ، <bdi dir="ltr">thread</bdi> و <bdi dir="ltr">scheduling</bdi> نداشته‌اند.</p>
-<p>در مقابل Go زبانی است که با هدف توسعه‌ی نرم‌افزارهای سیستمی، سرورهای مقیاس‌پذیر، ابزارهای خط فرمان و میکروسرویس‌ها طراحی شده است. به همین دلیل هنگام کار با <bdi dir="ltr">Go</bdi> مفاهیمی مانند <bdi dir="ltr">process</bdi>، <bdi dir="ltr">thread</bdi>، <bdi dir="ltr">scheduling</bdi>، <bdi dir="ltr">CPU cores</bdi> و تعامل با سیستم‌عامل نه به‌عنوان جزئیات حاشیه‌ای بلکه به‌عنوان بخشی از جریان اصلی توسعه از دایره‌ی درک برنامه‌نویس تبدیل می‌شوند. درک این مفاهیم هم برای نوشتن کد بهینه ضروری است و هم برای عیب‌یابی (<bdi dir="ltr">debugging</bdi>) مسائل پیچیده‌ای مانند <bdi dir="ltr">race condition</bdi> ، <bdi dir="ltr">deadlock</bdi> و نشت حافظه نیز لازم است.</p>
+<p>در مقابل Go زبانی است که با هدف توسعه‌ی نرم‌افزارهای سیستمی، سرورهای مقیاس‌پذیر، ابزارهای خط فرمان و میکروسرویس‌ها طراحی شده است. به همین دلیل هنگام کار با <bdi dir="ltr">Go</bdi> مفاهیمی مانند <bdi dir="ltr">process</bdi>، <bdi dir="ltr">thread</bdi>، <bdi dir="ltr">scheduling</bdi>، <bdi dir="ltr">CPU cores</bdi> و تعامل با سیستم‌عامل نه به‌عنوان جزئیات حاشیه‌ای بلکه به‌عنوان بخشی از جریان اصلی توسعه از دایره‌ی درک برنامه‌نویس تبدیل می‌شوند. درک این مفاهیم هم برای نوشتن کد بهینه ضروری است و هم برای <bdi dir="ltr">debugging</bdi> مسائل پیچیده‌ای مانند <bdi dir="ltr">race condition</bdi> ، <bdi dir="ltr">deadlock</bdi> و نشت حافظه نیز لازم است.</p>
 <p>در این بخش تلاش خواهیم کرد حداقل اطلاعات لازم برای درک نحوه‌ی اجرای برنامه‌ها در سطح سیستم‌عامل را بررسی کنیم. هدف ما این است که بفهمیم وقتی یک برنامه‌ی Go را اجرا می‌کنیم دقیقاً چه فرایندهایی از بارگذاری اولیه تا زمان‌بندی اجرا، مصرف منابع و مدیریت حافظه در بطن سیستم رخ می‌دهد.</p>
 <p>در فصل ۳ نحوه‌ی اجرای برنامه تشریح خواهد شد ولی همانطور که گفته شد عموما فرایند اجرای یک برنامه به صورت زیر می‌باشد.</p>
 <p>۱. سیستم‌عامل برنامه‌ی <bdi dir="ltr">binary</bdi> تولید‌شده توسط <bdi dir="ltr">Go</bdi> را به‌صورت یک <bdi dir="ltr">process</bdi> بارگذاری می‌کند.
@@ -80,7 +80,7 @@
 ۵. در طول اجرا <bdi dir="ltr">process</bdi> ممکن است از چند هسته‌ی <bdi dir="ltr">CPU</bdi> استفاده کند و با سیستم‌عامل تعامل داشته باشد مثلاً فایل بخواند، شبکه برقرار کند یا سیگنال بگیرد.</p>
 <figure class="diagram" dir="ltr">
 <svg height="250" viewBox="0 0 700 250" width="700" xmlns="http://www.w3.org/2000/svg">
-<defs>
+<defs><filter id="sh16" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
 <marker id="arr06" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#666" points="0 0, 10 3.5, 0 7"></polygon></marker>
 </defs>
 <rect fill="#f3e5f5" height="230" rx="12" stroke="#777BB4" stroke-width="2" width="320" x="10" y="10"></rect>
@@ -118,7 +118,7 @@
 <p>دسترسی اختصاصی به منابع سیستم مانند فایل‌ها، شبکه و دستگاه‌ها.</p>
 <p>یک یا چند Thread اجرایی که عملیات برنامه را انجام می‌دهند.</p>
 <figure class="diagram" dir="ltr">
-<svg height="220" viewBox="0 0 500 220" width="500" xmlns="http://www.w3.org/2000/svg">
+<svg height="220" viewBox="0 0 500 220" width="500" xmlns="http://www.w3.org/2000/svg"><defs><filter id="sh17" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter></defs>
 <rect fill="#fafafa" height="200" rx="12" stroke="#999" stroke-width="2" width="460" x="20" y="10"></rect>
 <text fill="#555" font-size="14" font-weight="bold" text-anchor="middle" x="250" y="38" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">Process</tspan> (فرآیند)</text>
 <rect fill="#e3f2fd" height="35" rx="6" stroke="#2196f3" stroke-width="1.5" width="180" x="50" y="55"></rect>
@@ -140,7 +140,7 @@
 </p>
 <figure class="diagram" dir="ltr">
 <svg height="200" viewBox="0 0 550 200" width="550" xmlns="http://www.w3.org/2000/svg">
-<defs>
+<defs><filter id="sh18" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
 <marker id="arr5" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#777BB4" points="0 0, 10 3.5, 0 7"></polygon></marker>
 </defs>
 <rect fill="#f3e5f5" height="40" rx="6" stroke="#777BB4" stroke-width="1.5" width="200" x="10" y="10"></rect>
@@ -167,7 +167,7 @@
 <p>در Go اما ماجرا متفاوت است. وقتی برنامه‌ای با Go می‌نویسید و آن را کامپایل می‌کنید خروجی شما یک فایل اجرایی مستقل است. وقتی این فایل اجرا می‌شود بدون نیاز به واسطه‌ای مانند وب‌سرور یا مفسر مستقیماً به یک process کامل در سیستم‌عامل تبدیل می‌شود.</p>
 <p>در این مدل شما عملاً مالک فرآیند هستید شما تصمیم می‌گیرید چه منابعی باز یا بسته شوند یا چه زمانی برنامه اجرا یا خاتمه یابد و چگونه با سیستم‌عامل تعامل داشته باشد.</p>
 <figure class="diagram" dir="ltr">
-<svg height="200" viewBox="0 0 500 200" width="500" xmlns="http://www.w3.org/2000/svg">
+<svg height="200" viewBox="0 0 500 200" width="500" xmlns="http://www.w3.org/2000/svg"><defs><filter id="sh19" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter></defs>
 <rect fill="#e0f7fa" height="180" rx="12" stroke="#00ADD8" stroke-width="2" width="460" x="20" y="10"></rect>
 <text fill="#00ADD8" font-size="14" font-weight="bold" text-anchor="middle" x="250" y="38" direction="ltr" unicode-bidi="embed">Go Binary Process</text>
 <rect fill="#fff" height="35" rx="6" stroke="#00ADD8" stroke-width="1.5" width="180" x="50" y="55"></rect>
@@ -191,7 +191,7 @@
 <p>اجرای هم‌زمان واقعی روی سیستم چندهسته‌ای ممکن است.</p>
 <p>هر Thread به‌طور جداگانه توسط سیستم‌عامل زمان‌بندی می‌شود.</p>
 <figure class="diagram" dir="ltr">
-<svg height="200" viewBox="0 0 500 200" width="500" xmlns="http://www.w3.org/2000/svg">
+<svg height="200" viewBox="0 0 500 200" width="500" xmlns="http://www.w3.org/2000/svg"><defs><filter id="sh20" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter></defs>
 <rect fill="#fafafa" height="180" rx="12" stroke="#999" stroke-width="2" width="460" x="20" y="10"></rect>
 <text fill="#555" font-size="13" font-weight="bold" text-anchor="middle" x="250" y="35" direction="rtl" unicode-bidi="embed">ساختار <tspan direction="ltr" unicode-bidi="embed">Thread</tspan> درون <tspan direction="ltr" unicode-bidi="embed">Process</tspan></text>
 <rect fill="#f5f5f5" height="120" rx="8" stroke="#bbb" stroke-dasharray="5,5" stroke-width="1" width="420" x="40" y="50"></rect>
@@ -272,7 +272,7 @@ fmt.Println(runtime.ThreadCreateProfile(nil))
 <strong>نکته‌ی حرفه‌ای:</strong> در Go 1.14 به بعد، زمان‌بند از <strong dir="ltr">asynchronous preemption</strong> پشتیبانی می‌کند. یعنی حتی اگر یک goroutine در حلقه‌ی بی‌نهایت بدون هیچ نقطه‌ی yielding باشد، زمان‌بند می‌تواند آن را preempt کند و goroutine‌های دیگر نیز فرصت اجرا پیدا کنند. در نسخه‌های قبلی، یک goroutine بدون yielding می‌توانست کل thread را مسدود کند.
 </div>
 <h3 id="garbage-collector-گو">Garbage Collector Go</h3>
-<p>Go از garbage collector <strong>همزمان</strong> (concurrent) و <strong>سه‌رنگی</strong> (tri-color) استفاده می‌کند که در نسخه‌های مختلف به‌شدت بهینه شده است. از Go 1.5 به بعد، GC به‌صورت همزمان با برنامه‌ی شما اجرا می‌شود — یعنی نیازی به stop-the-world برای مدت طولانی نیست.</p>
+<p>Go از garbage collector <strong dir="ltr">concurrent</strong> و <strong dir="ltr">tri-color</strong> استفاده می‌کند که در نسخه‌های مختلف به‌شدت بهینه شده است. از Go 1.5 به بعد، GC به‌صورت همزمان با برنامه‌ی شما اجرا می‌شود — یعنی نیازی به stop-the-world برای مدت طولانی نیست.</p>
 <p>نکته‌ی مهم: هدف GC در Go <strong>کمترین latency</strong> است نه کمترین مصرف حافظه. به‌همین دلیل Go ممکن است حافظه‌ی بیشتری نسبت به برنامه‌ای با مدیریت دستی حافظه مصرف کند اما در عوض pause time‌های بسیار کوتاه (معمولاً زیر ۱ میلی‌ثانیه) دارد.</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">// View GC statistics
@@ -294,7 +294,7 @@ debug.SetGCPercent(200) // GC runs less, more memory used
 <p><strong dir="ltr">Go GC:</strong> برنامه‌ی Go دائمی است و حافظه به‌صورت خودکار آزاد نمی‌شود. Go GC به‌صورت همزمان اجرا می‌شود و هدف آن حفظ latency زیر ۵۰۰ میکروثانیه است. می‌توان با <code>runtime/debug.SetGCPercent</code> فرکانس GC را تنظیم کرد.</p>
 </div>
 <h3 id="stack-دینامیک-در-go">Stack دینامیک در Go</h3>
-<p>یکی از نوآوری‌های مهم Go <strong>stack دینامیک</strong> (dynamic stack) است. هر goroutine با stack بسیار کوچکی (۲ کیلوبایت) شروع می‌شود. اگر stack پر شود، runtime Go به‌صورت شفاف یک stack بزرگ‌تر تخصیص می‌دهد و داده‌ها را کپی می‌کند:</p>
+<p>یکی از نوآوری‌های مهم Go <strong dir="ltr">dynamic stack</strong> است. هر goroutine با stack بسیار کوچکی (۲ کیلوبایت) شروع می‌شود. اگر stack پر شود، runtime Go به‌صورت شفاف یک stack بزرگ‌تر تخصیص می‌دهد و داده‌ها را کپی می‌کند:</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">func deepRecursion(n int) int {
     if n == 0 {
@@ -433,7 +433,7 @@ func run() error {
 <h3 id="نمودار-شروع-برنامه">نمودار توالی شروع برنامه Go</h3>
 <figure class="diagram" dir="ltr">
 <svg height="480" viewBox="0 0 600 480" width="600" xmlns="http://www.w3.org/2000/svg">
-<defs>
+<defs><filter id="sh21" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
 <marker id="arrStartup" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#666" points="0 0, 10 3.5, 0 7"></polygon></marker>
 </defs>
 <rect fill="#fafafa" height="460" rx="8" width="600" x="0" y="0"></rect>
@@ -481,7 +481,7 @@ func run() error {
 <p>مدل <bdi dir="ltr">GMP</bdi> قلب تپنده‌ی هم‌زمانی <bdi dir="ltr">Go</bdi> است و درک بصری آن به شما کمک می‌کند تا رفتار برنامه‌های <bdi dir="ltr">Go</bdi> را در شرایط مختلف پیش‌بینی کنید. در نمودار زیر سه مؤلفه‌ی اصلی مدل را مشاهده می‌کنید: <bdi dir="ltr">G</bdi> (رنگ فیروزه‌ای #00ADD8) نشان‌دهنده‌ی <bdi dir="ltr">goroutine</bdi> ‌هاست که واحدهای سبک‌وزن اجرا هستند و تعدادشان می‌تواند به میلیون‌ها برسد. <bdi dir="ltr">M</bdi> (رنگ سبز #4CAF50) نماینده‌ی <bdi dir="ltr">thread</bdi> ‌های واقعی سیستم‌عامل است که تعدادشان توسط <bdi dir="ltr">OS</bdi> محدود می‌شود. <bdi dir="ltr">P</bdi> (رنگ نارنجی #FF9800) نشان‌دهنده‌ی پردازنده‌های منطقی است که تعدادشان برابر با <code dir="ltr">GOMAXPROCS</code> تنظیم می‌شود. هر <bdi dir="ltr">P</bdi> یک صف محلی از <bdi dir="ltr">goroutine</bdi> ‌ها دارد و <bdi dir="ltr">M</bdi> با گرفتن یک <bdi dir="ltr">P</bdi> می‌تواند <bdi dir="ltr">goroutine</bdi> ‌ها را اجرا کند. مکانیزم <bdi dir="ltr">work-stealing</bdi> تضمین می‌کند که هیچ <bdi dir="ltr">P</bdi> بیکاری وجود نداشته باشد و وقتی <bdi dir="ltr">goroutine</bdi> ‌ای در <bdi dir="ltr">syscall</bdi> مسدود شود، <bdi dir="ltr">P</bdi> از <bdi dir="ltr">M</bdi> جدا شده و به <bdi dir="ltr">M</bdi> دیگری اختصاص می‌یابد تا سایر <bdi dir="ltr">goroutine</bdi> ‌ها بتوانند ادامه دهند.</p>
 <figure class="diagram" dir="ltr">
 <svg height="680" viewBox="0 0 820 680" width="820" xmlns="http://www.w3.org/2000/svg">
-<defs>
+<defs><filter id="sh22" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
 <marker id="arrGMP" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#666" points="0 0, 10 3.5, 0 7"></polygon></marker>
 <marker id="arrSteal" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#FF9800" points="0 0, 10 3.5, 0 7"></polygon></marker>
 </defs>
@@ -634,7 +634,7 @@ func run() error {
 <li><strong>تنظیم <bdi dir="ltr">GOMAXPROCS</bdi> در محیط‌های کانتینری:</strong> پیش‌فرض <code dir="ltr">GOMAXPROCS</code> برابر با تعداد هسته‌های <bdi dir="ltr">CPU</bdi> سیستم میزبان است. در محیط‌های کانتینری (<bdi dir="ltr">Docker</bdi> و <bdi dir="ltr">Kubernetes</bdi>) این عدد ممکن است بسیار بیشتر از سهم <bdi dir="ltr">CPU</bdi> واقعی کانتینر باشد. مثلاً اگر کانتینر شما فقط ۲ هسته <bdi dir="ltr">CPU</bdi> اجازه دارد اما روی سروری با ۳۲ هسته اجرا می‌شود، <bdi dir="ltr">Go</bdi> به‌طور پیش‌فرض ۳۲ <bdi dir="ltr">P</bdi> ایجاد می‌کند که منجر به <bdi dir="ltr">context switch</bdi> بیش از حد و کاهش عملکرد می‌شود. باید <code dir="ltr">GOMAXPROCS</code> را متناسب با محدودیت <bdi dir="ltr">CPU</bdi> کانتینر تنظیم کنید.</li>
 <li><strong>درک اینکه چرا <bdi dir="ltr">goroutine</bdi> ‌ها ارزان هستند — فقط <bdi dir="ltr">2KB</bdi> <bdi dir="ltr">stack</bdi>:</strong> یک <bdi dir="ltr">thread</bdi> سیستم‌عامل معمولاً بین ۵۱۲ کیلوبایت تا چند مگابایت حافظه مصرف می‌کند اما یک <bdi dir="ltr">goroutine</bdi> با تنها ۲ کیلوبایت شروع می‌شود. این یعنی می‌توانید صدها هزار <bdi dir="ltr">goroutine</bdi> هم‌زمان داشته باشید در حالی که تنها هزار <bdi dir="ltr">thread</bdi> سیستم‌عامل می‌تواند حافظه‌ی قابل‌توجهی مصرف کند. اما فراموش نکنید که هر <bdi dir="ltr">goroutine</bdi> مقداری <bdi dir="ltr">overhead</bdi> دارد — میلیون‌ها <bdi dir="ltr">goroutine</bdi> بی‌مصرف همچنان مشکل‌ساز خواهد بود.</li>
 <li><strong>مسدودسازی <bdi dir="ltr">syscall</bdi> و محدودیت <bdi dir="ltr">thread</bdi>:</strong> وقتی <bdi dir="ltr">goroutine</bdi> ‌ای یک <bdi dir="ltr">syscall</bdi> مسدودکننده انجام می‌دهد (مثل خواندن فایل یا اتصال شبکه‌ی <bdi dir="ltr">CGO</bdi>)، زمان‌بند <bdi dir="ltr">Go</bdi> یک <bdi dir="ltr">thread</bdi> جدید سیستم‌عامل ایجاد می‌کند تا سایر <bdi dir="ltr">goroutine</bdi> ‌ها مسدود نشوند. اگر تعداد زیادی <bdi dir="ltr">goroutine</bdi> همزمان در <bdi dir="ltr">syscall</bdi> مسدود شوند، تعداد <bdi dir="ltr">thread</bdi> ‌ها به سرعت افزایش می‌یابد و ممکن است به محدودیت سیستم‌عامل برسید. محدودیت پیش‌فرض <code dir="ltr">runtime/debug.SetMaxThreads</code> برابر ۱۰۰۰۰ است — اگر به این حد برسید برنامه فوراً <code dir="ltr">crash</code> می‌کند.</li>
-<li><strong>سرقت کار (<bdi dir="ltr">Work-Stealing</bdi>) و جلوگیری از گرسنگی:</strong> مکانیزم <bdi dir="ltr">work-stealing</bdi> تضمین می‌کند که <bdi dir="ltr">P</bdi> ‌های بیکار از صف محلی <bdi dir="ltr">P</bdi> ‌های مشغول <bdi dir="ltr">goroutine</bdi> بدزدند. این کار بدون هیچ هماهنگی مرکزی انجام می‌شود و تعادل بار را به‌صورت خودکار حفظ می‌کند. اگر <bdi dir="ltr">P</bdi> ‌ای بیکار بماند، ابتدا از صف سراسری می‌گیرد و اگر آن هم خالی بود از صف محلی <bdi dir="ltr">P</bdi> ‌های دیگر نصف <bdi dir="ltr">goroutine</bdi> ‌ها را سرقت می‌کند. این مکانیزم از <bdi dir="ltr">starvation</bdi> جلوگیری می‌کند و کارایی کلی سیستم را بهینه می‌سازد.</li>
+<li><strong><bdi dir="ltr">Work-Stealing</bdi> و جلوگیری از گرسنگی:</strong> مکانیزم <bdi dir="ltr">work-stealing</bdi> تضمین می‌کند که <bdi dir="ltr">P</bdi> ‌های بیکار از صف محلی <bdi dir="ltr">P</bdi> ‌های مشغول <bdi dir="ltr">goroutine</bdi> بدزدند. این کار بدون هیچ هماهنگی مرکزی انجام می‌شود و تعادل بار را به‌صورت خودکار حفظ می‌کند. اگر <bdi dir="ltr">P</bdi> ‌ای بیکار بماند، ابتدا از صف سراسری می‌گیرد و اگر آن هم خالی بود از صف محلی <bdi dir="ltr">P</bdi> ‌های دیگر نصف <bdi dir="ltr">goroutine</bdi> ‌ها را سرقت می‌کند. این مکانیزم از <bdi dir="ltr">starvation</bdi> جلوگیری می‌کند و کارایی کلی سیستم را بهینه می‌سازد.</li>
 </ul>
 <div class="tip">
 <strong>نکته‌ی حیاتی درباره‌ی <bdi dir="ltr">GOMAXPROCS</bdi> در کانتینرها:</strong> اگر برنامه‌ی <bdi dir="ltr">Go</bdi> خود را در <bdi dir="ltr">Docker</bdi> یا <bdi dir="ltr">Kubernetes</bdi> اجرا می‌کنید، حتماً <code dir="ltr">GOMAXPROCS</code> را بر اساس محدودیت <bdi dir="ltr">CPU</bdi> کانتینر تنظیم کنید، نه تعداد هسته‌های سرور میزبان. بهترین راه استفاده از کتابخانه‌ی <code dir="ltr">go.uber.org/automaxprocs</code> است که به‌طور خودکار <code dir="ltr">GOMAXPROCS</code> را بر اساس <bdi dir="ltr">cgroup</bdi> محدودیت <bdi dir="ltr">CPU</bdi> تنظیم می‌کند. کافیست در تابع <code dir="ltr">main</code> خود بنویسید: <code dir="ltr">_ = automaxprocs.Set()</code>. بدون این تنظیم، برنامه‌ی شما ممکن است تا ۳۰-۴۰ درصد عملکرد کمتری نسبت به حالت بهینه داشته باشد — به‌خصوص در محیط‌های <bdi dir="ltr">Kubernetes</bdi> با محدودیت‌های <bdi dir="ltr">CPU</bdi> پایین.

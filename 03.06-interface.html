@@ -90,7 +90,7 @@
 <text fill="#2e7d32" font-size="13" font-weight="bold" text-anchor="middle" x="490" y="163" direction="ltr" unicode-bidi="embed">SMS</text>
 <text fill="#666" font-size="11" text-anchor="middle" x="490" y="183" direction="ltr" unicode-bidi="embed">Notify() string</text>
 <!-- Arrows -->
-<defs><marker id="arrI" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#4caf50" points="0 0, 10 3.5, 0 7"></polygon></marker></defs>
+<defs><filter id="sh69" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter><marker id="arrI" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#4caf50" points="0 0, 10 3.5, 0 7"></polygon></marker></defs>
 <line marker-end="url(#arrI)" stroke="#4caf50" stroke-width="1.5" x1="110" x2="250" y1="140" y2="95"></line>
 <line marker-end="url(#arrI)" stroke="#4caf50" stroke-width="1.5" x1="300" x2="300" y1="140" y2="95"></line>
 <line marker-end="url(#arrI)" stroke="#4caf50" stroke-width="1.5" x1="490" x2="350" y1="140" y2="95"></line>
@@ -146,6 +146,8 @@ class User implements Notifier
 <div class="tip">
 <strong>نکته‌ی حرفه‌ای:</strong> <bdi dir="ltr">interface</bdi>های ضمنی <bdi dir="ltr">Go</bdi> نهایت مکانیزم جداسازی هستند. در <bdi dir="ltr">PHP</bdi> وقتی کلاسی <code>implements Notifier</code> می‌نویسد، وابستگی صریحی به آن <bdi dir="ltr">interface</bdi> ایجاد می‌شود — اگر نام <bdi dir="ltr">interface</bdi> یا امضای متد تغییر کند، همه‌ی پیاده‌سازی‌ها می‌شکنند. اما در <bdi dir="ltr">Go</bdi> مصرف‌کننده <bdi dir="ltr">interface</bdi> را تعریف می‌کند نه تولیدکننده. یعنی بسته‌ی <code>notification</code> اصلاً نمی‌داند بسته‌ی <code>user</code> وجود دارد. این عدم وابستگیِ یک‌طرفه یعنی می‌توانید پیاده‌سازی <code>user</code> را کاملاً بازنویسی کنید بدون اینکه حتی یک خط از بسته‌ی <code>notification</code> تغییر کند.
 </div>
+
+<div class="note"><strong>نکته‌ی حرفه‌ای — اصل «Consume, Don't Produce»:</strong> یک الگوی رایج اما اشتباه در برنامه‌نویسان تازه‌کار Go این است که در همان پکیجی که <bdi dir="ltr">struct</bdi> را تعریف می‌کنند، <bdi dir="ltr">interface</bdi> آن را هم می‌سازند. این کار فلسفه‌ی ضمنی‌بودن <bdi dir="ltr">interface</bdi> در Go را نقض می‌کند. قانون تجربی این است: «<bdi dir="ltr">interface</bdi> را همان‌طور تولید نکن که مصرف می‌کنی، بلکه همان‌طور تولید کن که نیاز داری». یعنی در پکیج <code>notification</code> اینترفیس <code>Notifier</code> را تعریف کنید (چون مصرف‌کننده است)، اما در پکیج <code>user</code> هیچ اینترفیسی تعریف نکنید. این الگو به <bdi dir="ltr">Interface Segregation Principle</bdi> در SOLID نزدیک‌تر است و وابستگی‌ها را حداقل می‌کند. خروجی‌های توابع همیشه <bdi dir="ltr">struct</bdi> باشد تا مصرف‌کننده به جزئیات کامل دسترسی داشته باشد، نه اینکه به یک <bdi dir="ltr">interface</bdi> محدود شود.</div>
 <h3 id="type-assertion">Type Assertion و Type Switch</h3>
 
 <div class="quote-box">
@@ -189,7 +191,7 @@ if ok {
 <p>Go یک interface خاص به نام <strong dir="ltr">empty interface</strong> دارد که هیچ متدی تعریف نمی‌کند:</p>
 
 <figure class="diagram" dir="ltr">
-<svg height="260" viewBox="0 0 700 260" width="700" xmlns="http://www.w3.org/2000/svg">
+<svg height="260" viewBox="0 0 700 260" width="700" xmlns="http://www.w3.org/2000/svg"><defs><filter id="sh70" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter></defs>
 <rect fill="#fafafa" height="260" rx="8" width="700" x="0" y="0"></rect>
 <text fill="#00ADD8" font-size="15" font-weight="bold" text-anchor="middle" x="350" y="25" direction="rtl" unicode-bidi="embed">بررسی <tspan direction="ltr" unicode-bidi="embed">nil</tspan> در <tspan direction="ltr" unicode-bidi="embed">Interface</tspan>: نوع در برابر مقدار</text>
 <!-- Case 1: Truly nil -->
@@ -495,7 +497,7 @@ func NewMailer(config Config) *smtp.Mailer {
 </figure>
 
 <figure class="diagram" dir="ltr">
-<svg height="220" viewBox="0 0 600 220" width="600" xmlns="http://www.w3.org/2000/svg">
+<svg height="220" viewBox="0 0 600 220" width="600" xmlns="http://www.w3.org/2000/svg"><defs><filter id="sh71" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter></defs>
 <rect fill="#fafafa" height="220" rx="8" width="600" x="0" y="0"></rect>
 <text fill="#00ADD8" font-size="15" font-weight="bold" text-anchor="middle" x="300" y="25" direction="rtl" unicode-bidi="embed">ساختار داخلی <tspan direction="ltr" unicode-bidi="embed">Interface</tspan>: <tspan direction="ltr" unicode-bidi="embed">eface</tspan> و <tspan direction="ltr" unicode-bidi="embed">iface</tspan></text>
 <rect fill="#e0f7fa" height="85" rx="8" stroke="#00ADD8" stroke-width="2" width="250" x="20" y="50"></rect>
@@ -521,7 +523,7 @@ func NewMailer(config Config) *smtp.Mailer {
 
 <figure class="diagram" dir="ltr">
 <svg height="620" viewBox="0 0 800 620" width="800" xmlns="http://www.w3.org/2000/svg">
-<defs>
+<defs><filter id="sh72" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
 <marker id="arrIFace" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#00ADD8" points="0 0, 10 3.5, 0 7"></polygon></marker>
 <marker id="arrConcrete" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#4CAF50" points="0 0, 10 3.5, 0 7"></polygon></marker>
 <marker id="arrNilTrap" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#e91e63" points="0 0, 10 3.5, 0 7"></polygon></marker>

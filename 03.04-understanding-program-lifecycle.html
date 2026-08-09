@@ -80,7 +80,7 @@
 <p>در PHP شما نیازی به graceful shutdown کردن ندارید چون به‌صورت خودکار shutdown پس از هر درخواست اتفاق می‌افتد. اما در Go برنامه شما <strong>زنده است</strong> و ممکن است هزاران اتصال باز HTTP, DB, GRPC... وجود داشته باشد یا حتی صدها goroutine در حال انجام کار باشند و هر خطای ناگهانی یا shutdown بدون مدیریت می‌تواند باعث از بین رفتن اطلاعات، نیمه‌کاره ماندن درخواست‌ها یا خراب شدن داده شود.</p>
 <figure class="diagram" dir="ltr">
 <svg height="180" viewBox="0 0 600 180" width="600" xmlns="http://www.w3.org/2000/svg">
-<defs><marker id="arr34" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#00ADD8" points="0 0, 10 3.5, 0 7"></polygon></marker></defs>
+<defs><filter id="sh60" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter><marker id="arr34" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#00ADD8" points="0 0, 10 3.5, 0 7"></polygon></marker></defs>
 <text fill="#00ADD8" font-size="14" font-weight="bold" text-anchor="middle" x="300" y="25" direction="rtl" unicode-bidi="embed">چرخه‌ی حیات برنامه در <tspan direction="ltr" unicode-bidi="embed">Go</tspan></text>
 <rect fill="#e3f2fd" height="60" rx="8" stroke="#2196f3" stroke-width="2" width="150" x="30" y="50"></rect>
 <text fill="#1565c0" font-size="14" font-weight="bold" text-anchor="middle" x="105" y="75" direction="ltr" unicode-bidi="embed">Startup</text>
@@ -102,7 +102,7 @@
 <p>مانند هر سیستم نرم‌افزاری مدرن هر برنامه‌ی Go نیز یک چرخه‌ی حیات مشخص دارد که شامل سه مرحله‌ی اصلی Startup، Running و Shutdown است درک این مراحل به توسعه‌دهندگان کمک می‌کند تا برنامه‌های پایدار، بهینه و قابل نگهداری بسازند.</p>
 <figure class="diagram" dir="ltr">
 <svg height="250" viewBox="0 0 600 250" width="600" xmlns="http://www.w3.org/2000/svg">
-<defs><marker id="arr34b" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#666" points="0 0, 10 3.5, 0 7"></polygon></marker></defs>
+<defs><filter id="sh61" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter><marker id="arr34b" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#666" points="0 0, 10 3.5, 0 7"></polygon></marker></defs>
 <text fill="#555" font-size="14" font-weight="bold" text-anchor="middle" x="300" y="25" direction="rtl" unicode-bidi="embed">مراحل چرخه‌ی حیات برنامه</text>
 <!-- Startup -->
 <rect fill="#e3f2fd" height="120" rx="8" stroke="#2196f3" stroke-width="1.5" width="170" x="20" y="45"></rect>
@@ -159,7 +159,7 @@
 <p>همچنین اگر در production بخواهید نسخه‌ی جدیدی از برنامه را deploy کنید مثلاً binary جدید باید نسخه‌ی قبلی را متوقف کنید و نسخه‌ی جدید را جایگزین کنید. بدون Graceful Shutdown ممکن است درخواست‌های کاربران نصفه‌نیمه بمانند و فایل‌ها یا connectionها باز بمانند و در نهایت ممکن است کاربر نهایی پیام خطای 502 یا connection reset ببیند. به همین علت " <strong>چرخه‌ی حیات</strong> " برنامه معنا پیدا می‌کند، اینکه بدانید چه زمانی باید پاسخ‌دهید چه زمانی باید متوقف شوید و چطور این انتقال را بدون شوک انجام دهید.</p>
 <figure class="diagram" dir="ltr">
 <svg height="200" viewBox="0 0 600 200" width="600" xmlns="http://www.w3.org/2000/svg">
-<defs><marker id="arr34c" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#e91e63" points="0 0, 10 3.5, 0 7"></polygon></marker></defs>
+<defs><filter id="sh62" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter><marker id="arr34c" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#e91e63" points="0 0, 10 3.5, 0 7"></polygon></marker></defs>
 <text fill="#880e4f" font-size="14" font-weight="bold" text-anchor="middle" x="300" y="25" direction="ltr" unicode-bidi="embed">Graceful Shutdown</text>
 <rect fill="#fce4ec" height="45" rx="8" stroke="#e91e63" stroke-width="1.5" width="140" x="20" y="45"></rect>
 <text fill="#880e4f" font-size="12" text-anchor="middle" x="90" y="72" direction="ltr" unicode-bidi="embed">SIGTERM / SIGINT</text>
@@ -201,8 +201,10 @@ server.Shutdown(ctx)
 <p><strong>۱. تنظیم Stack:</strong> هر goroutine (شامل goroutine اصلی) یک stack اولیه دریافت می‌کند. در Go این stack به‌صورت دینامیک رشد می‌کند — برخلاف C که stack سایز ثابت دارد. سایز اولیه stack فقط حدود ۸ کیلوبایت است و در صورت نیاز تا چندین مگابایت رشد می‌کند.</p>
 <p><strong>۲. مقداردهی Garbage Collector:</strong> GC تنظیمات اولیه‌ی خود را انجام می‌دهد شامل تعیین سایز heap اولیه و نرخ رشد goal ratio. مقدار <code>GOGC</code> (پیش‌فرض ۱۰۰) تعیین می‌کند که GC چه زمانی اجرا شود.</p>
 <p><strong>۳. مقداردهی Scheduler:</strong> scheduler سیستم M:N (M goroutine روی N thread فیزیکی) خود را آماده می‌کند. تعداد thread‌های اولیه بر اساس تعداد CPU هسته‌های منطقی تعیین می‌شود.</p>
-<p><strong>۴. اجرای <span dir="ltr">init()</span> ها:</strong> تمام توابع <code dir="ltr">init()</code> بر اساس گراف وابستگی پکیج‌ها اجرا می‌شوند (مطابق آنچه در بخش ۳.۱ توضیح داده شد).</p>
+<p><strong>۴. اجرای <span dir="ltr">init()</span> ها:</strong> تمام توابع <code dir="ltr">init()</code> بر اساس گراف وابستگی پکیج‌ها اجرا می‌شوند. جزئیات کامل ترتیب اجرای <code dir="ltr">init()</code> و قوانین گراف وابستگی در بخش ۳.۱ توضیح داده شده است؛ در اینجا فقط به‌یاد داشته باشید که runtime ابتدا پکیج‌های برگ را مقداردهی می‌کند و سپس به‌تدریج به سمت پکیج <code dir="ltr">main</code> حرکت می‌کند.</p>
 <div class="tip"><strong>نکته فنی:</strong> می‌توانید با متغیر محیطی <code>GODEBUG</code> رفتار runtime را مشاهده کنید: <code>GODEBUG=schedtrace=1000</code> هر ثانیه وضعیت scheduler را چاپ می‌کند. <code>GODEBUG=gctrace=1</code> نیز اطلاعات هر دور GC را نمایش می‌دهد.</div>
+
+<div class="note"><strong>نکته‌ی حرفه‌ای — <code dir="ltr">preStop</code> در Kubernetes:</strong> در محیط‌های Kubernetes وقتی Pod در حال خاموش‌شدن است، <code dir="ltr">kubelet</code> هم‌زمان <code dir="ltr">SIGTERM</code> می‌فرستد و سرویس را از لیست <code dir="ltr">endpoints</code> حذف می‌کند. اما چون حذف از <code dir="ltr">endpoints</code> از طریق propagation event انجام می‌شود، ممکن است چند ثانیه طول بکشد و در این مدت هنوز درخواست جدید به Pod برسد. برای جلوگیری از «dropped connection»، یک قلاب <code dir="ltr">preStop</code> با <code dir="ltr">sleep 5</code> پیکربندی کنید تا برنامه‌ی شما ابتدا از دریافت درخواست جدید قطع شود و سپس <code dir="ltr">Shutdown</code> را فراخوانی کند. این الگو در کنار <code dir="ltr">terminationGracePeriodSeconds</code> مناسب، تجربه‌ی <code dir="ltr">zero-downtime deploy</code> واقعی می‌سازد.</div>
 <h3 id="osargs-و-آرگومانهای-خط-فرمان">os.Args و آرگومان‌های خط فرمان</h3>
 <p>در PHP آرگومان‌های خط فرمان از طریق <code>$argv</code> و <code>$argc</code> در دسترس هستند. در Go معادل آن‌ها <code dir="ltr">os.Args</code> است:</p>
 <figure class="code go" dir="ltr">
@@ -330,7 +332,7 @@ log.Fatalf("failed to start: %v", err)
 <figure class="diagram" dir="ltr">
 <svg height="220" viewBox="0 0 600 220" width="600" xmlns="http://www.w3.org/2000/svg">
 <rect fill="#fafafa" height="220" rx="8" width="600" x="0" y="0"></rect>
-<defs><marker id="arrLC" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#00ADD8" points="0 0, 10 3.5, 0 7"></polygon></marker></defs>
+<defs><filter id="sh63" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter><marker id="arrLC" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#00ADD8" points="0 0, 10 3.5, 0 7"></polygon></marker></defs>
 <text fill="#00ADD8" font-size="14" font-weight="bold" text-anchor="middle" x="300" y="25" direction="rtl" unicode-bidi="embed">مقداردهی اولیه‌ی <tspan direction="ltr" unicode-bidi="embed">Runtime</tspan> و برنامه</text>
 <!-- Phase boxes -->
 <rect fill="#e3f2fd" height="45" rx="8" stroke="#2196f3" stroke-width="2" width="120" x="10" y="50"></rect>
@@ -465,12 +467,12 @@ log.Fatalf("failed to start: %v", err)
 <div class="important"><strong>نکته‌ی حیاتی برای برنامه‌های وب:</strong> در <bdi dir="ltr">net/http</bdi> تابع <code>Shutdown</code> ابتدا شنونده‌ی جدید (<bdi dir="ltr">listener</bdi>) را می‌بندد (جلوگیری از درخواست جدید) سپس منتظر اتمام درخواست‌های فعال می‌ماند. اما اگر از <code>Close()</code> استفاده کنید، تمام اتصال‌ها فوراً قطع می‌شوند. <strong>همیشه از <code>Shutdown</code> استفاده کنید نه <code>Close</code>.</strong></div>
 
 <h3 id="ترتیب-اجرای-init-در-گراف-پکیجها">ترتیب اجرای <bdi dir="ltr">init()</bdi> در گراف پکیج‌ها</h3>
-<p>یکی از موضوعات ظریف اما حیاتی در چرخه‌ی حیات برنامه‌های Go ترتیب اجرای توابع <bdi dir="ltr">init()</bdi> بین پکیج‌های مختلف است. این ترتیب توسط <bdi dir="ltr">runtime</bdi> Go و بر اساس گراف وابستگی پکیج‌ها تعیین می‌شود. درک این مکانیزم برای عیب‌یابی مشکلات مقداردهی اولیه و جلوگیری از رفتار غیرمنتظره ضروری است. در PHP هیچ معادل مستقیمی برای این مکانیزم وجود ندارد و ترتیب اجرای کد کاملاً به ترتیب <bdi dir="ltr">require</bdi>/<bdi dir="ltr">include</bdi> بستگی دارد، اما در Go کامپایلر گراف وابستگی‌ها را تحلیل کرده و ترتیب مقداردهی را خودکار تعیین می‌کند.</p>
+<p>همان‌طور که در بخش ۳.۱ توضیح داده شد، ترتیب اجرای توابع <bdi dir="ltr">init()</bdi> بین پکیج‌های مختلف توسط <bdi dir="ltr">runtime</bdi> Go و بر اساس گراف وابستگی پکیج‌ها تعیین می‌شود. در این بخش نمودار کاملی از این ترتیب را در بستر چرخه‌ی حیات برنامه می‌بینیم. در PHP هیچ معادل مستقیمی برای این مکانیزم وجود ندارد و ترتیب اجرای کد کاملاً به ترتیب <bdi dir="ltr">require</bdi>/<bdi dir="ltr">include</bdi> بستگی دارد، اما در Go کامپایلر گراف وابستگی‌ها را تحلیل کرده و ترتیب مقداردهی را خودکار تعیین می‌کند.</p>
 
 <figure class="diagram" dir="ltr">
 <svg height="580" viewBox="0 0 800 580" width="800" xmlns="http://www.w3.org/2000/svg">
 <rect fill="#fafafa" height="580" rx="12" stroke="#00ADD8" stroke-width="2" width="800" x="0" y="0"></rect>
-<defs>
+<defs><filter id="sh64" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
 <marker id="arrInit1" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#FF9800" points="0 0, 10 3.5, 0 7"></polygon></marker>
 <marker id="arrInit2" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#00ADD8" points="0 0, 10 3.5, 0 7"></polygon></marker>
 <marker id="arrInitGreen" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#4CAF50" points="0 0, 10 3.5, 0 7"></polygon></marker>

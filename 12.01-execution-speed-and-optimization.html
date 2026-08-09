@@ -177,6 +177,7 @@ func BenchmarkStringBuilder(b *testing.B) {
 }
 </code></pre>
 </figure>
+<div class="note"><strong>نکته:</strong> سه روشن‌ترین قراردادهای <bdi dir="ltr">testing.B</bdi>: ۱) هرگز <bdi dir="ltr">b.N</bdi> را دستکاری نکنید — Go خودش تعداد تکرار را بر اساس زمان‌بندی تنظیم می‌کند. ۲) هر setup سنگین را قبل از حلقه با <bdi dir="ltr">b.ResetTimer()</bdi> از اندازه‌گیری جدا کنید. ۳) نتیجه‌ی محاسبات را در یک متغیر سراسری (معمولاً <bdi dir="ltr">var sink</bdi>) بریزید تا کامپایلر به‌اشتباه آن را dead-code حذف نکند. رعایت این سه مورد تفاوت بین بنچمارک معتبر و گمراه‌کننده را رقم می‌زند.</div>
 
 <h3 id="فلگهای-go-test-برای-بهینهسازی">فلگ‌های go test برای بهینه‌سازی</h3>
 <p>ابزار <bdi dir="ltr">go test</bdi> فلگ‌های متعددی برای بنچمارک و پروفایلینگ دارد. شناخت این فلگ‌ها برای هر توسعه‌دهنده‌ی Go ضروری است:</p>
@@ -216,7 +217,7 @@ $ benchstat old.txt new.txt
 </code></pre>
 </figure>
 <p>خروجی بنچمارک شامل اطلاعات ارزشمندی است. مثلاً <code>BenchmarkAdd-8 1000000000 0.256 ns/op 0 B/op 0 allocs/op</code> نشان می‌دهد که هر عملیات ۰.۲۵۶ نانوثانیه طول کشیده، ۰ بایت حافظه تخصیص داده و ۰ allocation انجام شده. عدد ۸ تعداد CPU هسته‌های استفاده‌شده است.</p>
-<div class="tip"><strong>نکته عملی:</strong> همیشه از <code>-benchmem</code> استفاده کنید تا علاوه بر زمان، تعداد تخصیص حافظه و حجم تخصیص شده را هم ببینید. گاهی یک تابع سریع‌تر است اما حافظه بیشتری تخصیص می‌دهد که در بلندمدت فشار GC را افزایش می‌دهد. همچنین از <code>benchstat</code> برای مقایسه آماری نتایج استفاده کنید چون بنچمارک‌ها به دلیل عوامل مختلفی مثل load سیستم می‌توانند نوسان داشته باشند. بدون benchstat نمی‌توانید مطمئن شوید که بهبود واقعی است یا نویز.</div>
+<div class="tip"><strong>نکته عملی:</strong> همیشه از <code>-benchmem</code> استفاده کنید تا علاوه بر زمان، تعداد تخصیص حافظه و حجم تخصیص شده را هم ببینید. گاهی یک تابع سریع‌تر است اما حافظه بیشتری تخصیص می‌دهد که در بلندمدت فشار GC را افزایش می‌دهد. برای مقایسه آماری نتایج و اطمینان از معنادار بودن بهبود، حتماً از <code>benchstat</code> با <code>-count=5</code> استفاده کنید (به سناریوی عملیاتی در پایان این بخش مراجعه کنید).</div>
 
 <h3 id="پروفایلینگ-pprof-پیشرفته">پروفایلینگ pprof</h3>
 <p>ابزار <bdi dir="ltr">pprof</bdi> ابزار اصلی بهینه‌سازی عملکرد در Go است. بدون pprof، بهینه‌سازی مثل این است که در تاریکی به دنبال کلید بگردید. pprof به شما نشان می‌دهد برنامه‌ی شما کجا وقت CPU را صرف می‌کند، کجا حافظه تخصیص می‌دهد و کجا goroutine‌ها بلاک می‌شوند. pprof چهار نوع پروفایل اصلی دارد: CPU، Heap، Goroutine (تعداد و وضعیت goroutine‌ها) و Block:</p>
@@ -251,7 +252,7 @@ $ go tool pprof http://localhost:6060/debug/pprof/heap
 
 <figure class="diagram" dir="ltr">
 <svg height="300" viewBox="0 0 650 300" width="650" xmlns="http://www.w3.org/2000/svg">
-<defs>
+<defs><filter id="sh192" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
 <marker id="arrowopt" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5">
 <polygon fill="#00ADD8" points="0 0, 10 3.5, 0 7"></polygon>
 </marker>
@@ -299,7 +300,7 @@ $ go tool pprof http://localhost:6060/debug/pprof/heap
 </figure>
 
 <figure class="diagram" dir="ltr">
-<svg height="350" viewBox="0 0 650 350" width="650" xmlns="http://www.w3.org/2000/svg">
+<svg height="350" viewBox="0 0 650 350" width="650" xmlns="http://www.w3.org/2000/svg"><defs><filter id="sh193" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter></defs>
 <text class="title" text-anchor="middle" x="325" y="25" direction="rtl" unicode-bidi="embed">مقایسه عملکرد <tspan direction="ltr" unicode-bidi="embed">PHP</tspan> و <tspan direction="ltr" unicode-bidi="embed">Go</tspan> (نسبی)</text>
 <!-- Y axis -->
 <line class="axis" x1="80" x2="80" y1="50" y2="300"></line>
@@ -354,6 +355,7 @@ $ go tool pprof http://localhost:6060/debug/pprof/heap
 <p><strong>مرحله ۴: بهینه‌سازی.</strong> فقط نقطه‌ای که pprof شناسایی کرده را بهینه کنید. معمولاً یک تابع یا یک حلقه خاص مقصر اصلی است.</p>
 <p><strong>مرحله ۵: بنچمارک مجدد و مقایسه.</strong> دوباره بنچمارک بگیرید و با <bdi dir="ltr">benchstat</bdi> مقایسه کنید. اگر بهبود معنادار نبود (<bdi dir="ltr">p-value &gt; 0.05</bdi>)، تغییر را برگردانید.</p>
 <div class="comparison"><strong>مقایسه با PHP:</strong> در PHP ابزارهای پروفایلینگ مثل Blackfire و XHProf اطلاعاتی درباره زمان اجرای توابع و مصرف حافظه ارائه می‌دهند. اما هیچ‌کدام اطلاعاتی درباره همزمانی، goroutine‌ها و رفتار GC ندارند چون PHP ذاتاً تک‌نخی و request-scoped است. در Go، pprof و trace اطلاعاتی ارائه می‌دهند که در PHP قابل دستیابی نیست.</div>
+<div class="note"><strong>ارجاع:</strong> برای درخت تصمیم کامل بهینه‌سازی (از تشخیص وجود مشکل تا تأیید بهبود) و بررسی تله‌های بهینه‌سازی زودرس و قانون Amdahl، به <a href="12.02-optimization-principles.html">بخش ۱۲.۲</a> مراجعه کنید. در این بخش صرفاً گردش کار عملی پروفایلینگ پوشش داده می‌شود.</div>
 
     <h3 id="io-readall-improvement">بهبود عملکرد io.ReadAll — Go 1.26</h3>
     <p>

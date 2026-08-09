@@ -189,7 +189,7 @@ if err != nil {
 <p>خوانایی و درک کد برای توسعه‌دهندگان دیگر سریع‌تر و بی‌ابهام باشد.
 
 </p>
-<p><strong>خودداری از</strong> <strong dir="ltr">over - engineering</strong></p>
+<p><strong>خودداری از</strong> <strong dir="ltr">over-engineering</strong></p>
 <p>اگر قرار باشد کدی در Go به‌نوعی "<bdi dir="ltr">code smell</bdi>" داشته باشد این اشکال معمولاً نه از تکرار زیاد ناشی می‌شود و نه از فقدان abstraction بلکه بیشتر نتیجه‌ی overengineering است. یعنی زمانی که مسئله‌ای ساده با تعریف interface‌های غیرضروری یا الگوهای طراحی پیچیده یا فایل‌های متعدد پیاده‌سازی شده باشد در حالی‌که می‌شد همان منطق را در چند خط ساده نوشت.</p>
 <div class="quote-box">
     <p class="quote-text">تصادفی برنامه‌نویسی نکنید. فقط به چیزهای قابل اتکا تکیه کنید. از کاری که انجام می‌دهید آگاه باشید و اجازه ندهید شانس یا فرضیات کد شما را هدایت کند. اگر نمی‌توانید توضیح دهید چرا کدتان کار می‌کند، احتمالاً کار نمی‌کند — فقط به‌طور تصادفی کار می‌کند.</p>
@@ -251,7 +251,7 @@ if err != nil {
 <p>یکی از مفاهیم مهمی که در idiomatic Go تأثیر مستقیم بر عملکرد دارد <bdi dir="ltr">escape analysis</bdi> است. کامپایلر Go تحلیل می‌کند که آیا یک مقدار می‌تواند روی <bdi dir="ltr">stack</bdi> تخصیص یابد یا باید به <bdi dir="ltr">heap</bdi> فرار کند. نمودار زیر فرآیند تصمیم‌گیری کامپایلر را نشان می‌دهد:</p>
 <figure class="diagram" dir="ltr">
 <svg height="380" viewBox="0 0 600 380" width="600" xmlns="http://www.w3.org/2000/svg">
-<defs>
+<defs><filter id="sh6" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
 <marker id="arrEA" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#666" points="0 0, 10 3.5, 0 7"></polygon></marker>
 </defs>
 <rect fill="#fafafa" height="360" rx="8" width="600" x="0" y="0"></rect>
@@ -304,7 +304,7 @@ if err != nil {
 
 <figure class="diagram" dir="ltr">
 <svg height="280" viewBox="0 0 700 280" width="700" xmlns="http://www.w3.org/2000/svg">
-<defs><marker id="arrIdiom" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#666" points="0 0, 10 3.5, 0 7"></polygon></marker></defs>
+<defs><filter id="sh7" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter><marker id="arrIdiom" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#666" points="0 0, 10 3.5, 0 7"></polygon></marker></defs>
 <rect fill="#fafafa" height="280" rx="8" width="700" x="0" y="0"></rect>
 <text fill="#00ADD8" font-size="15" font-weight="bold" text-anchor="middle" x="350" y="25" direction="rtl" unicode-bidi="embed">کد <tspan direction="ltr" unicode-bidi="embed">Non-Idiomatic</tspan> در برابر <tspan direction="ltr" unicode-bidi="embed">Idiomatic</tspan></text>
 <!-- Non-Idiomatic side -->
@@ -383,7 +383,7 @@ func (r *UserRepo) FindByID(ctx context.Context, id int64) (*User, error) {
 </code></pre>
 </figure>
 <p>تفاوت‌های کلیدی: (۱) استفاده از <bdi dir="ltr">struct</bdi> تایپ‌دار به‌جای <code>map[string]interface{}</code> ، (۲) بازگرداندن <bdi dir="ltr">error</bdi> صریح به‌جای نادیده گرفتن آن، (۳) استفاده از <code>Context</code> برای لغو درخواست، (۴) <bdi dir="ltr">error wrapping</bdi> با <code>fmt.Errorf</code> و <code>%w</code> ، (۵) نام‌گذاری واضح‌تر. این تفاوت‌ها هرکدام بازتابی از اصل صراحت هستند — در <bdi dir="ltr">PHP</bdi> راحت‌تر است چشم‌تان را روی خطا ببندید یا از نوع‌های عمومی استفاده کنید، اما در <bdi dir="ltr">Go</bdi> زبان شما را مجبور می‌کند صریح باشید.</p>
-<p>یک مثال دیگر از این تقابل — نحوه‌ی مدیریت پیکربندی (<bdi dir="ltr">configuration</bdi>):</p>
+<p>یک مثال دیگر از این تقابل — نحوه‌ی مدیریت <bdi dir="ltr">configuration</bdi>:</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">// Wrong — Go like PHP — using generic map
 config := map[string]interface{}{
@@ -410,7 +410,7 @@ port := cfg.DBPort // type error → compile error
 </figure>
 <p>تفاوتی عمیق‌تر از آنچه به‌نظر می‌رسد وجود دارد: در نسخه‌ی <bdi dir="ltr">PHP</bdi>-ستایل، خطای تایپی در کلید <code>map</code> فقط در زمان اجرا کشف می‌شود و ممکن است ساعت‌ها در پروداکشن بدون تشخیص بماند. در نسخه‌ی <bdi dir="ltr">idiomatic</bdi> ، همان خطا قبل از اجرا توسط کامپایلر کشف می‌شود. این تفاوت به‌خوبی فلسفه‌ی <bdi dir="ltr">Go</bdi> را نشان می‌دهد: کد صریح هم خواناتر است و هم امن‌تر و قابل‌اعتمادتر نیز هست.</p>
 <h3 id="نام‌گذاری-در-go">نام‌گذاری در Go: قراردادهای خاص</h3>
-<p>نام‌گذاری در <bdi dir="ltr">Go</bdi> قواعد خاصی دارد که از قراردادهای <bdi dir="ltr">PHP</bdi> متفاوت است. از مهم‌ترین قواعد، نحوه‌ی نوشتن مخفف‌ها (<bdi dir="ltr">acronyms</bdi>) است: مخفف‌ها باید تماماً با حروف بزرگ یا تماماً با حروف کوچک نوشته شوند:</p>
+<p>نام‌گذاری در <bdi dir="ltr">Go</bdi> قواعد خاصی دارد که از قراردادهای <bdi dir="ltr">PHP</bdi> متفاوت است. از مهم‌ترین قواعد، نحوه‌ی نوشتن <bdi dir="ltr">acronyms</bdi> است: <bdi dir="ltr">acronyms</bdi> باید تماماً با حروف بزرگ یا تماماً با حروف کوچک نوشته شوند:</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">// Wrong — abbreviations must be consistent
 type HttpsRequest struct{} // incomplete abbreviation
@@ -508,13 +508,7 @@ func newUser() *User {
         <li>استفاده از <code>maps</code> و <code>slices</code> بسته‌های جدید به‌جای حلقه‌های دستی</li>
         <li>تبدیل <code>sort.Slice</code> به <code>slices.SortFunc</code></li>
     </ul>
-    <figure class="code bash">
-        <pre><code class="language-bash"># مدرن‌سازی کل پروژه
-go fix ./...
-
-# مشاهده تغییرات قبل از اعمال
-go fix -diff ./...</code></pre>
-    </figure>
+    <p>جزئیات کامل دستور، گزینه‌های خط فرمان (مانند <code>go fix -diff</code> و <code>go fix -fix &lt;name&gt;</code>) و توضیح <bdi dir="ltr">Source-level Inliner</bdi> را در بخش ۱.۴ (ابزارها) می‌بینید؛ آنجا این ابزار به‌طور مفصل‌تر پوشش داده شده است.</p>
 
     <div class="quote-box">
         <p class="quote-text">
@@ -533,7 +527,7 @@ go fix -diff ./...</code></pre>
 <p>وقتی برنامه‌نویس <bdi dir="ltr">PHP</bdi> شروع به نوشتن کد <bdi dir="ltr">Go</bdi> می‌کند، غالباً الگوهای فکری <bdi dir="ltr">PHP</bdi> را با خود می‌آورد. این الگوها در <bdi dir="ltr">Go</bdi> نه‌تنها غیرضروری‌اند بلکه باعث کد شکننده و ناخوانا می‌شوند. در ادامه یک نمودار گام‌به‌گام از تبدیل کد <bdi dir="ltr">PHP</bdi>-ستایل به <bdi dir="ltr">Idiomatic Go</bdi> را بررسی می‌کنیم. هر مرحله نشان‌دهنده‌ی یک تغییر بنیادین در نحوه‌ی تفکر است نه فقط یک تغییر نحوی. این مراحل باید به‌ترتیب اجرا شوند چون هرکدام بر پایه‌ی قبلی ساخته می‌شود و بدون انجام مرحله‌ی قبل ممکن است مفهوم پیدا نکند.</p>
 <figure class="diagram" dir="ltr">
 <svg height="680" viewBox="0 0 820 680" width="820" xmlns="http://www.w3.org/2000/svg">
-<defs>
+<defs><filter id="sh8" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
 <marker id="arrRef1" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#FF9800" points="0 0, 10 3.5, 0 7"></polygon></marker>
 <marker id="arrRef2" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#FF9800" points="0 0, 10 3.5, 0 7"></polygon></marker>
 </defs>
@@ -639,7 +633,7 @@ go fix -diff ./...</code></pre>
 
 <h3 id="سناریوهای-عملیاتی-idiomatic-go">سناریوهای عملیاتی: مسیر عملی به‌سوی کد <bdi dir="ltr">Idiomatic Go</bdi></h3>
 <ul>
-<li><strong>چک‌لیست بازبینی کد (<bdi dir="ltr">Code Review</bdi>) برای <bdi dir="ltr">Idiomatic Go</bdi>:</strong> آیا خطاها صریحاً بررسی شده‌اند؟ آیا <bdi dir="ltr">getter/setter</bdi> غیرضروری وجود دارد؟ آیا از ارث‌بری به‌جای ترکیب استفاده شده است؟ آیا <bdi dir="ltr">interface</bdi> در سمت تولیدکننده تعریف شده به‌جای سمت مصرف‌کننده؟ آیا نام‌گذاری‌ها از قراردادهای <bdi dir="ltr">Go</bdi> پیروی می‌کنند (مثلاً <code>getUserID</code> نه <code>getUserId</code>)؟ آیا از <code>context.Context</code> به‌عنوان اولین آرگومان استفاده شده است؟ این چک‌لیست به‌تدریج به بخشی طبیعی از فرآیند بازبینی تبدیل می‌شود.</li>
+<li><strong>چک‌لیست <bdi dir="ltr">Code Review</bdi> برای <bdi dir="ltr">Idiomatic Go</bdi>:</strong> آیا خطاها صریحاً بررسی شده‌اند؟ آیا <bdi dir="ltr">getter/setter</bdi> غیرضروری وجود دارد؟ آیا از ارث‌بری به‌جای ترکیب استفاده شده است؟ آیا <bdi dir="ltr">interface</bdi> در سمت تولیدکننده تعریف شده به‌جای سمت مصرف‌کننده؟ آیا نام‌گذاری‌ها از قراردادهای <bdi dir="ltr">Go</bdi> پیروی می‌کنند (مثلاً <code>getUserID</code> نه <code>getUserId</code>)؟ آیا از <code>context.Context</code> به‌عنوان اولین آرگومان استفاده شده است؟ این چک‌لیست به‌تدریج به بخشی طبیعی از فرآیند بازبینی تبدیل می‌شود.</li>
 <li><strong>ریفکتورینگ کد <bdi dir="ltr">PHP</bdi>-ستایل موجود:</strong> اگر پروژه‌ای دارید که با سبک <bdi dir="ltr">PHP</bdi> نوشته شده ابتدا مدیریت خطا را اصلاح کنید — تمام <bdi dir="ltr">panic</bdi>‌ها را به <bdi dir="ltr">error return</bdi> تبدیل کنید. سپس <bdi dir="ltr">getter/setter</bdi>‌های بدون منطق را حذف و دسترسی مستقیم جایگزین کنید. بعد ارث‌بری‌های زنجیره‌ای را به ترکیب تبدیل کنید. در نهایت <bdi dir="ltr">interface</bdi>‌ها را به سمت مصرف‌کننده منتقل کنید. هر مرحله را جداگانه و با تست تأیید کنید.</li>
 <li><strong>یادگیری قراردادهای نام‌گذاری <bdi dir="ltr">Go</bdi>:</strong> مهم‌ترین تفاوت نام‌گذاری در <bdi dir="ltr">Go</bdi> عدم استفاده از <bdi dir="ltr">getter/setter</bdi> است. اگر فیلدی به‌نام <code>Name</code> دارید متد <code>Name()</code> نه <code>GetName()</code> ایدئوم است. برای تنظیم مقدار از <code>SetName()</code> استفاده می‌شود اما فقط وقتی واقعاً نیاز به اعتبارسنجی یا منطق اضافه باشد. همچنین مخفف‌ها باید یکدست باشند: <code>userID</code> نه <code>userId</code> و <code>HTTPClient</code> نه <code>HttpClient</code>.</li>
 <li><strong>چه زمانی از <bdi dir="ltr">interface</bdi> استفاده کنیم:</strong> قانون طلایی <bdi dir="ltr">Go</bdi> این است: <bdi dir="ltr">interface</bdi> را مصرف کنید نه تولید کنید. یعنی تولیدکننده نباید <bdi dir="ltr">interface</bdi> تعریف کند — مصرف‌کننده بر اساس نیاز خود <bdi dir="ltr">interface</bdi> را تعریف می‌کند. اگر فقط یک پیاده‌سازی وجود دارد نیازی به <bdi dir="ltr">interface</bdi> نیست مگر اینکه برای تست‌نویسی لازم باشد. وقتی دومین پیاده‌سازی اضافه شد آن‌وقت <bdi dir="ltr">interface</bdi> را استخراج کنید.</li>

@@ -102,7 +102,7 @@
 <p>این روش نه‌تنها باعث ساده‌تر شدن Deployment می‌شود بلکه به امنیت و پایداری بیشتر پروژه در محیط production کمک می‌کند.</p>
 <p><strong>ساختار پیشنهادی پروژه</strong></p>
 <figure class="diagram" dir="ltr">
-<svg height="280" viewBox="0 0 400 280" width="400" xmlns="http://www.w3.org/2000/svg">
+<svg height="280" viewBox="0 0 400 280" width="400" xmlns="http://www.w3.org/2000/svg"><defs><filter id="sh150" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter></defs>
 <rect fill="#fafafa" height="280" rx="8" stroke="#e0e0e0" stroke-width="1.5" width="400" x="0" y="0"></rect>
 <!-- Tree connector lines -->
 <g fill="none" stroke="#ccc" stroke-linecap="round" stroke-width="1.5">
@@ -154,6 +154,7 @@
 <p>دو تابع کلیدی در این فرآیند وجود دارند:</p>
 <p><code dir="ltr">fs.Sub(staticFS, "static")</code>: یک سیستم فایل فرعی ایجاد می‌کند که ریشه آن زیرپوشه <code>static</code> است. بدون این، <code>FileServer</code> به دنبال فایل <code>static/css/style.css</code> در مسیر <code>static/static/css/style.css</code> می‌گردد.</p>
 <p><code dir="ltr">http.FS(contentFS)</code>: یک <code dir="ltr">fs.FS</code> (سیستم فایل عمومی) را به <code dir="ltr">http.FileSystem</code> تبدیل می‌کند که <code dir="ltr">http.FileServer</code> قادر به درک آن است. این پل بین رابط عمومی <code>io/fs</code> و رابط خاص HTTP است.</p>
+<div class="note"><strong>یادداشت:</strong> اگر درخواست به <code dir="ltr">/static/css/style.css</code> با خطای <bdi dir="ltr">404</bdi> مواجه شد و مطمئن هستید فایل در <code dir="ltr">embed.FS</code> وجود دارد، اولین چیزی که باید بررسی کنید <code dir="ltr">fs.Sub</code> و <code dir="ltr">StripPrefix</code> هستند. <code dir="ltr">embed.FS</code> مسیرها را با پیشوند پوشه‌ی اصلی ذخیره می‌کند (یعنی <code dir="ltr">static/css/style.css</code>)، <code dir="ltr">fs.Sub(staticFS, "static")</code> این پیشوند را حذف می‌کند، و <code dir="ltr">http.StripPrefix("/static/", ...)</code> پیشوند <code dir="ltr">/static/</code> را از URL درخواست برمی‌دارد. اگر فقط یکی از این دو را فراموش کنید، <code dir="ltr">FileServer</code> در مسیر اشتباه (مثل <code dir="ltr">static/static/...</code>) جستجو می‌کند و <bdi dir="ltr">404</bdi> برمی‌گرداند.</div>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">import (
 "embed"
@@ -233,7 +234,7 @@ func embeddedCacheMiddleware(next http.Handler) http.Handler {
 <figure class="diagram" dir="ltr">
 <svg height="400" viewBox="0 0 480 400" width="480" xmlns="http://www.w3.org/2000/svg">
 <rect fill="#fafafa" height="400" rx="8" width="480" x="0" y="0"></rect>
-<defs><marker id="arrEmbed" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#00ADD8" points="0 0, 10 3.5, 0 7"></polygon></marker></defs>
+<defs><filter id="sh151" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter><marker id="arrEmbed" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#00ADD8" points="0 0, 10 3.5, 0 7"></polygon></marker></defs>
 <text fill="#00ADD8" font-size="14" font-weight="bold" text-anchor="middle" x="240" y="25" direction="rtl" unicode-bidi="embed">زنجیره‌ی <tspan direction="ltr" unicode-bidi="embed">embed.FS → http.FS → FileServer</tspan></text>
 
 <!-- //go:embed directive -->

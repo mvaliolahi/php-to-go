@@ -137,6 +137,7 @@ func main() {
 }
 </code></pre>
 </figure>
+<div class="note"><strong>یادداشت:</strong> <code dir="ltr">http.FileServer</code> به صورت خودکار از <bdi dir="ltr">Range requests</bdi> (پشتیبانی از استریم ویدئو و دانلود قابل‌resume)، درخواست‌های شرطی <code dir="ltr">ETag/If-None-Match</code> و <code dir="ltr">Last-Modified/If-Modified-Since</code> (پاسخ <bdi dir="ltr">304 Not Modified</bdi> برای کش)، و هدر <code dir="ltr">X-Content-Type-Options: nosniff</code> پشتیبانی می‌کند. در <bdi dir="ltr">PHP</bdi> این رفتارها معمولاً توسط <bdi dir="ltr">Nginx/Apache</bdi> ارائه می‌شد؛ در <bdi dir="ltr">Go</bdi> نیازی به پیاده‌سازی دستی این هدرها نیست — فقط <code dir="ltr">http.FileServer</code> را نصب کنید و این امکانات به‌صورت توکار فعال هستند.</div>
 <h3 id="جلوگیری-از-directory-listing">جلوگیری از Directory Listing</h3>
 <p>به صورت پیش‌فرض، <code dir="ltr">http.FileServer</code> لیست فایل‌های یک دایرکتوری را نمایش می‌دهد اگر <code dir="ltr">index.html</code> وجود نداشته باشد. برای غیرفعال کردن این رفتار، می‌توانید یک <code dir="ltr">http.FileSystem</code> سفارشی بسازید:</p>
 <figure class="code go" dir="ltr">

@@ -71,7 +71,7 @@
 <h2 id="gomock">gomock</h2>
 <figure class="diagram" dir="ltr">
 <svg height="320" viewBox="0 0 650 320" width="650" xmlns="http://www.w3.org/2000/svg">
-<defs>
+<defs><filter id="sh180" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
 <marker id="arrowm" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5">
 <polygon fill="#00ADD8" points="0 0, 10 3.5, 0 7"></polygon>
 </marker>
@@ -217,6 +217,7 @@ func TestGetName(t *testing.T) {
 <p>یکپارچگی بالا با تست‌های مبتنی بر interface</p>
 <p>ابزار رسمی پایدار و قابل اطمینان برای پروژه‌های حرفه‌ای</p>
 <div class="comparison"><strong>مقایسه با PHP:</strong> در PHP معمولاً از PHPUnit Mock یا Mockery برای شبیه‌سازی وابستگی‌ها استفاده می‌شود. در PHPUnit با <code dir="ltr">$this-&gt;createMock(Repository::class)</code> یک Mock می‌سازید و با <code dir="ltr">$mock-&gt;method('find')-&gt;willReturn($user)</code> رفتار آن را تعریف می‌کنید. در Go اما mock به‌صورت خودکار از interface تولید می‌شود و type-safety کامل دارد. یعنی اگر interface تغییر کند، mock هم باید دوباره تولید شود و کامپایلر خطا را نشان می‌دهد.</div>
+<div class="tip"><strong>نکته درباره بهترین روش‌های gomock:</strong> <strong>۱)</strong> از نسخه <code dir="ltr">go.uber.org/mock</code> استفاده کنید (فورک رسمی گوگل که اکنون در Uber نگهداری می‌شود)؛ پکیج قدیمی <code dir="ltr">github.com/golang/mock</code> دیگر فعال نیست. <strong>۲)</strong> برای پایداری بازتولید mock، از <code dir="ltr">//go:generate mockgen ...</code> در همان فایلی که interface تعریف شده استفاده کنید و دستور <code dir="ltr">go generate ./...</code> را در <code dir="ltr">Makefile</code> قرار دهید. <strong>۳)</strong> فایل‌های تولیدشده mock را در git commit کنید تا CI نیازی به <code dir="ltr">mockgen</code> نداشته باشد. <strong>۴)</strong> از Go 1.20+ دیگر نیازی به <code dir="ltr">defer ctrl.Finish()</code> نیست چون <code dir="ltr">t.Cleanup</code> خودکار است. <strong>۵)</strong> هرگز interfaceهایی که مالک آن‌ها نیستید (مثل <code dir="ltr">http.ResponseWriter</code>) را مستقیماً mock نکنید — آنها را در interface بومی خودتان بپیچید.</div>
 <h3 id="مثال-کاربردی-gomock-با-الگوی-repository">مثال کاربردی: gomock با الگوی Repository</h3>
 <p>در فصل ۸ با الگوی Repository آشنا شدید. این الگو یک لایه انتزاعی بین منطق کسب‌وکار و دسترسی به داده‌ها ایجاد می‌کند. حالا می‌خواهیم ببینیم چگونه با gomock می‌توانیم این الگو را تست کنیم.</p>
 <p>به عنوان مثال یک Repository برای مدیریت مقالات داریم:</p>
@@ -499,7 +500,7 @@ $ mockgen -destination=mocks/io_mock.go \
 
 <figure class="diagram" dir="ltr">
 <svg height="340" viewBox="0 0 650 340" width="650" xmlns="http://www.w3.org/2000/svg">
-<defs>
+<defs><filter id="sh181" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
 <marker id="arrowmock" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5">
 <polygon fill="#555" points="0 0, 10 3.5, 0 7"></polygon>
 </marker>
@@ -686,7 +687,7 @@ func TestCreateArticle(t *testing.T) {
 
 <figure class="diagram" dir="ltr">
 <svg height="560" viewBox="0 0 720 560" width="720" xmlns="http://www.w3.org/2000/svg">
-<defs>
+<defs><filter id="sh182" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
 <marker id="arrowmp" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5">
 <polygon fill="#555" points="0 0, 10 3.5, 0 7"></polygon>
 </marker>

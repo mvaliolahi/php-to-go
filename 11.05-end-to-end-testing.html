@@ -72,7 +72,7 @@
 <h2 id="تست-end-to-end">تست End-to-End</h2>
 <figure class="diagram" dir="ltr">
 <svg height="320" viewBox="0 0 650 320" width="650" xmlns="http://www.w3.org/2000/svg">
-<defs>
+<defs><filter id="sh186" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
 <marker id="arrowe" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5">
 <polygon fill="#00ADD8" points="0 0, 10 3.5, 0 7"></polygon>
 </marker>
@@ -116,6 +116,7 @@
 </figure>
 <p>تست‌های End-to-End (E2E) بالاترین سطح هرم تست را تشکیل می‌دهند. برخلاف unit test که فقط یک تابع را بررسی می‌کند، E2E test <strong>کل جریان</strong> برنامه را از دریافت درخواست HTTP تا بازگرداندن پاسخ تست می‌کند. این شامل middleware ها، routing، اعتبارسنجی، منطق کسب‌وکار و پاسخ نهایی است.</p>
 <p>اگر سابقه کار با Laravel را دارید، احتمالاً با تست‌های Feature آشنا هستید. در Laravel متدهایی مثل <code dir="ltr">$this-&gt;get()</code> ، <code dir="ltr">$this-&gt;post()</code> و <code dir="ltr">$this-&gt;actingAs()</code> به شما اجازه می‌دهند درخواست‌های HTTP واقعی به برنامه ارسال کنید. در Go با <code dir="ltr">httptest.Server</code> همان کار را انجام می‌دهیم.</p>
+<div class="tip"><strong>نکته درباره نسبت تست‌ها در هرم:</strong> قانون تجربی پایدار این است: <strong>~۷۰٪ Unit Test، ~۲۰٪ Integration، ~۱۰٪ E2E</strong>. در <span dir="ltr">PHP/Laravel</span> تمایل به نوشتن زیاد Feature Test وجود دارد چون ابزار آن (<code dir="ltr">$this-&gt;get()</code> + <code dir="ltr">RefreshDatabase</code>) ارزان است، اما در <span dir="ltr">Go</span> به‌دلیل سرعت بالای Unit Test و قابلیت فراخوانی مستقیم هندلر، این نسبت بهتر رعایت می‌شود. اگر بیش از ۳۰٪ تست‌های شما E2E هستند، نشانه‌ای است که منطق کسب‌وکار به‌درستی از لایه HTTP جدا نشده — باید آن را به سرویس‌های مستقل منتقل کنید و با Unit Test بپوشانید.</div>
 <h3 id="راه-اندازی-سرور-تست-با-httptest">راه‌اندازی سرور تست با httptest</h3>
 
 <div class="case-study">
@@ -124,7 +125,7 @@
         <span class="case-study-title">استراتژی تست در HashiCorp</span>
     </div>
     <p>HashiCorp (خالق Terraform، Consul، Vault) رویکرد سه‌لایه‌ای به تست دارد: unit test‌های سریع برای منطق داخلی، integration test‌ها برای تعامل بین کامپوننت‌ها، و end-to-end test‌ها برای سناریوهای واقعی کاربر. نکته کلیدی: E2E test‌ها فقط در CI/CD اجرا می‌شوند و به‌صورت خودکار منابع مورد نیاز (container‌ها، شبکه) را ایجاد و پاک‌سازی می‌کنند. این رویکرد مهم است چون E2E test‌ها کند هستند — ممکن است ده‌ها دقیقه طول بکشند — و منابع زیادی مصرف می‌کنند. اجرای آن‌ها در هر commit توسعه‌دهنده عملی نیست، ولی اجرای خودکار آن‌ها در CI/CD قبل از هر merge تضمین می‌کند که هیچ تغییر تخریبی‌ای وارد main branch نشود.</p>
-    <p>یکی از تکنیک‌های مهم HashiCorp استفاده از «تست‌های قراردادی» (Contract Tests) است. هر پروژه رابط‌های خود را به‌صورت قرارداد تعریف می‌کند و تست‌های قراردادی بررسی می‌کنند که هر پیاده‌سازی هنوز با قرارداد سازگار است. این روش مانع از آن می‌شود که تغییر در Terraform باعث شکست Vault شود بدون اینکه تیم‌ها مستقیماً با هم هماهنگ باشند.</p>
+    <p>یکی از تکنیک‌های مهم HashiCorp استفاده از Contract Tests است. هر پروژه رابط‌های خود را به‌صورت قرارداد تعریف می‌کند و Contract Tests بررسی می‌کنند که هر پیاده‌سازی هنوز با قرارداد سازگار است. این روش مانع از آن می‌شود که تغییر در Terraform باعث شکست Vault شود بدون اینکه تیم‌ها مستقیماً با هم هماهنگ باشند.</p>
     <p>نتیجه: HashiCorp توانست با وجود ده‌ها پروژه متن‌باز، release‌های هفتگی با اطمینان بالا ارائه دهد. درصد failure در production به‌دلیل تست‌های ناقص کمتر از ۰.۱٪ گزارش شده است. این آمار در صنعت نرم‌افزار بسیار چشمگیر است و نشان‌دهنده‌ی این است که سرمایه‌گذاری روی زیرساخت تست، در بلندمدت هزینه‌های ناشی از قطعی و باگ‌های production را به‌شدت کاهش می‌دهد.</p>
     <p class="case-study-source">
         <span class="source-event">GopherCon 2019</span>
@@ -437,7 +438,7 @@ if loc != "/new" {
 </tbody>
 </table>
 <figure class="diagram" dir="ltr">
-<svg height="250" viewBox="0 0 600 250" width="600" xmlns="http://www.w3.org/2000/svg">
+<svg height="250" viewBox="0 0 600 250" width="600" xmlns="http://www.w3.org/2000/svg"><defs><filter id="sh187" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter></defs>
 <text class="title" text-anchor="middle" x="300" y="25" direction="rtl" unicode-bidi="embed">مقایسه سطوح تست</text>
 <!-- Unit -->
 <rect class="unit" height="80" width="160" x="30" y="50"></rect>
@@ -709,7 +710,7 @@ func TestE2E_UserFlow(t *testing.T) {
 
 <figure class="diagram" dir="ltr">
 <svg height="320" viewBox="0 0 620 320" width="620" xmlns="http://www.w3.org/2000/svg">
-<defs>
+<defs><filter id="sh188" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
 <marker id="arrowe2e" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5">
 <polygon fill="#00ADD8" points="0 0, 10 3.5, 0 7"></polygon>
 </marker>
@@ -1028,7 +1029,7 @@ func TestParallelE2E(t *testing.T) {
 
 <figure class="diagram" dir="ltr">
 <svg height="580" viewBox="0 0 720 580" width="720" xmlns="http://www.w3.org/2000/svg">
-<defs>
+<defs><filter id="sh189" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
 <marker id="arrowea" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5">
 <polygon fill="#555" points="0 0, 10 3.5, 0 7"></polygon>
 </marker>

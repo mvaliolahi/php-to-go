@@ -125,7 +125,7 @@ func NewUser(name string) *User {
 
 <figure class="diagram" dir="ltr">
 <svg height="240" viewBox="0 0 700 240" width="700" xmlns="http://www.w3.org/2000/svg">
-<defs><marker id="arrFO" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#00ADD8" points="0 0, 10 3.5, 0 7"></polygon></marker></defs>
+<defs><filter id="sh73" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter><marker id="arrFO" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#00ADD8" points="0 0, 10 3.5, 0 7"></polygon></marker></defs>
 <rect fill="#fafafa" height="240" rx="8" width="700" x="0" y="0"></rect>
 <text fill="#00ADD8" font-size="15" font-weight="bold" text-anchor="middle" x="350" y="25" direction="rtl" unicode-bidi="embed">جریان الگوی <tspan direction="ltr" unicode-bidi="embed">Functional Options</tspan></text>
 <!-- NewServer -->
@@ -449,10 +449,12 @@ func main() {
 </figure>
 <div class="tip"><strong>نکته:</strong> اگر تزریق وابستگی صریح بیش از حد طولانی شد، از الگوی <bdi dir="ltr">Functional Options</bdi> یا <bdi dir="ltr">Builder</bdi> استفاده کنید. اما هرگز یک Container/DI framework خودکار اضافه نکنید — این ضد الگوی Go است. شفافیت وابستگی‌ها یک مزیت است نه مشکل.</div>
 
+<div class="note"><strong>نکته‌ی حرفه‌ای — قرارداد نام‌گذاری <code dir="ltr">NewX()</code> و قانون zero-value:</strong> در Go برخلاف PHP که <code>__construct()</code> یک قرارداد زبانی است، نام <code dir="ltr">NewX()</code> فقط یک قرارداد نوشتاری است که در کتابخانه استاندارد ریشه دارد (مثل <code>errors.New</code>، <code>http.NewServeMux</code>، <code>time.NewTimer</code>). همیشه از پیشوند <code>New</code> استفاده کنید، نه <code>Create</code>، <code>Make</code> یا <code>Build</code>. دو استثنای مهم وجود دارد: ۱) وقتی zero value معتبر است، سازنده ننویسید (مثل <code>sync.Mutex{}</code> یا <code>bytes.Buffer{}</code> که کاملاً کاربردی هستند)؛ ۲) وقتی چند سازنده با رفتار متفاوت لازم دارید، از پیشوندهای توصیفی استفاده کنید (مثل <code>NewAdminUser</code>، <code>NewGuestUser</code>). رعایت این قراردادها باعث می‌شود کد شما برای دیگر Go کارها آشنا و قابل پیش‌بینی باشد.</div>
+
 <figure class="diagram" dir="ltr">
 <svg height="250" viewBox="0 0 650 250" width="650" xmlns="http://www.w3.org/2000/svg">
 <rect fill="#fafafa" height="250" rx="8" width="650" x="0" y="0"></rect>
-<defs><marker id="arrCtor" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#00ADD8" points="0 0, 10 3.5, 0 7"></polygon></marker></defs>
+<defs><filter id="sh74" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter><marker id="arrCtor" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#00ADD8" points="0 0, 10 3.5, 0 7"></polygon></marker></defs>
 <text fill="#00ADD8" font-size="15" font-weight="bold" text-anchor="middle" x="325" y="25" direction="rtl" unicode-bidi="embed">الگوهای <tspan direction="ltr" unicode-bidi="embed">Constructor</tspan> در <tspan direction="ltr" unicode-bidi="embed">Go</tspan></text>
 <!-- Simple -->
 <rect fill="#e0f7fa" height="65" rx="8" stroke="#00ADD8" stroke-width="2" width="140" x="20" y="55"></rect>
@@ -492,7 +494,7 @@ func main() {
 <figure class="diagram" dir="ltr">
 <svg height="560" viewBox="0 0 820 560" width="820" xmlns="http://www.w3.org/2000/svg">
 <rect fill="#fafafa" height="560" rx="12" stroke="#00ADD8" stroke-width="2" width="820" x="0" y="0"></rect>
-<defs>
+<defs><filter id="sh75" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
 <marker id="arrNewX" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#4CAF50" points="0 0, 10 3.5, 0 7"></polygon></marker>
 <marker id="arrZero" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#FF9800" points="0 0, 10 3.5, 0 7"></polygon></marker>
 <marker id="arrFact" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#00ADD8" points="0 0, 10 3.5, 0 7"></polygon></marker>
@@ -584,7 +586,7 @@ func main() {
 <li><strong>الگوی <bdi dir="ltr">Builder</bdi> برای ساخت چندمرحله‌ای:</strong> وقتی ساخت شیء شامل مراحل وابسته به هم یا اعتبارسنجی پیچیده است از الگوی <bdi dir="ltr">Builder</bdi> استفاده کنید. مثلاً ساخت <bdi dir="ltr">HTTP client</bdi> با <bdi dir="ltr">base URL</bdi>، <bdi dir="ltr">timeout</bdi>، <bdi dir="ltr">retry</bdi> و <bdi dir="ltr">header</bdi>های سفارشی. الگوی <bdi dir="ltr">Builder</bdi> اجازه می‌دهد هر مرحله به‌صورت تدریجی اضافه شود و در نهایت تابع <bdi dir="ltr">Build()</bdi> تمام اعتبارسنجی‌ها را انجام دهد.</li>
 </ul>
 
-<div class="tip"><strong>قانون طلایی سازنده‌های پیچیده:</strong> وقتی تعداد پارامترهای اختیاری زیاد است از الگوی <bdi dir="ltr">Functional Options</bdi> استفاده کنید: <bdi dir="ltr">NewServer(WithPort(8080), WithTimeout(30*time.Second))</bdi>. این الگو سه مزیت کلیدی دارد: اول اینکه هر <bdi dir="ltr">option</bdi> مستندات خود را دارد و <bdi dir="ltr">IDE</b> آن‌ها را نشان می‌دهد. دوم اینکه اضافه‌کردن <bdi dir="ltr">option</bdi> جدید بدون تغییر رابط سازنده امکان‌پذیر است و سازگاری عقب‌ (<bdi dir="ltr">backward compatibility</bdi>) حفظ می‌شود. سوم اینکه مقادیر پیش‌فرض در خود تابع سازنده تعریف می‌شوند و مصرف‌کننده فقط مواردی را که می‌خواهد تغییر دهد مشخص می‌کند. این الگو در کتابخانه استاندارد Go و پروژه‌های بزرگ مانند <bdi dir="ltr">gRPC</b> و <bdi dir="ltr">Kubernetes</b> به‌وفور استفاده شده است.</div>
+<div class="tip"><strong>قانون طلایی سازنده‌های پیچیده:</strong> وقتی تعداد پارامترهای اختیاری زیاد است از الگوی <bdi dir="ltr">Functional Options</bdi> استفاده کنید: <bdi dir="ltr">NewServer(WithPort(8080), WithTimeout(30*time.Second))</bdi>. این الگو سه مزیت کلیدی دارد: اول اینکه هر <bdi dir="ltr">option</bdi> مستندات خود را دارد و <bdi dir="ltr">IDE</bdi> آن‌ها را نشان می‌دهد. دوم اینکه اضافه‌کردن <bdi dir="ltr">option</bdi> جدید بدون تغییر رابط سازنده امکان‌پذیر است و سازگاری عقب‌ (<bdi dir="ltr">backward compatibility</bdi>) حفظ می‌شود. سوم اینکه مقادیر پیش‌فرض در خود تابع سازنده تعریف می‌شوند و مصرف‌کننده فقط مواردی را که می‌خواهد تغییر دهد مشخص می‌کند. این الگو در کتابخانه استاندارد Go و پروژه‌های بزرگ مانند <bdi dir="ltr">gRPC</bdi> و <bdi dir="ltr">Kubernetes</bdi> به‌وفور استفاده شده است.</div>
 </div>
 </main>
 </div>

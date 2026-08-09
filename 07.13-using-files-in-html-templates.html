@@ -117,22 +117,13 @@ type PageData struct {
 </code></pre>
 </figure>
 <h3 id="تولید-هدر-کش-برای-فایلهای-جاسازیشده">تولید هدر کش برای فایل‌های جاسازی‌شده</h3>
-<p>چون فایل‌های جاسازی‌شده با <code dir="ltr">embed</code> هرگز تغییر نمی‌کنند (مگر با کامپایل مجدد)، می‌توانید هدرهای کش بسیار بلندمدت تنظیم کنید:</p>
-<figure class="code go" dir="ltr">
-<pre><code class="language-go">func embeddedCacheMiddleware(next http.Handler) http.Handler {
-    return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-        // Embedded files are immutable — 1 year cache
-        w.Header().Set("Cache-Control", "public, max-age=31536000, immutable")
-        next.ServeHTTP(w, r)
-    })
-}
-</code></pre>
-</figure>
-<div class="tip"><strong>نکته:</strong> هدر <code>immutable</code> به مرورگر می‌گویند که فایل هرگز تغییر نمی‌کند و نیازی به revalidation ندارد. این هدر فقط زمانی مناسب است که مطمئن باشید فایل واقعاً تغییر نمی‌کند — مثل فایل‌های جاسازی‌شده در باینری.</div>
+<p>چون فایل‌های جاسازی‌شده با <code dir="ltr">embed</code> هرگز تغییر نمی‌کنند (مگر با کامپایل مجدد)، می‌توانید هدرهای کش بسیار بلندمدت تنظیم کنید. پیاده‌سازی کامل <code dir="ltr">embeddedCacheMiddleware</code> با هدر <code dir="ltr">Cache-Control: public, max-age=31536000, immutable</code> و ترفند <code dir="ltr">ldflags</code> برای تزریق نسخه برنامه را در بخش ۷.۱۲ دیدید؛ همان الگو اینجا نیز کاربرد دارد.</p>
+<div class="tip"><strong>نکته:</strong> هدر <code>immutable</code> به مرورگر می‌گوید که فایل هرگز تغییر نمی‌کند و نیازی به revalidation ندارد. این هدر فقط زمانی مناسب است که مطمئن باشید فایل واقعاً تغییر نمی‌کند — مثل فایل‌های جاسازی‌شده در باینری. ترکیب آن با <code>cache busting</code> (هش در نام فایل یا پارامتر کوئری نسخه) تضمین می‌کند که پس از بیلد جدید، مرورگرها فایل جدید را بارگذاری کنند.</div>
 <h3 id="نکات-امنیتی">نکات امنیتی</h3>
 <p>استفاده از embed برای سرو کردن فایل‌های استاتیک در Go، روش مدرن، ایمن و قابل‌اتکایی است که مخصوصاً برای single binary deployment بسیار مفید است. ترکیب این روش با caching سمت مرورگر باعث افزایش قابل‌توجه سرعت لود صفحات، کاهش مصرف پهنای باند و بهبود تجربه کاربری می‌شود.</p>
 <h3 id="جاسازی-css-و-js-درون-قالبها">جاسازی CSS و JS درون قالب‌ها</h3>
 <p>گاهی اوقات برای کاهش تعداد درخواست‌های HTTP یا برای تولید صفحات مستقل، نیاز دارید CSS و JS را مستقیماً درون قالب <bdi dir="ltr">HTML</bdi> قرار دهید. با ترکیب <code dir="ltr">embed.FS</code> و توابع سفارشی قالب، می‌توانید فایل‌های <bdi dir="ltr">CSS</bdi> و <bdi dir="ltr">JS</bdi> را بخوانید و درون تگ‌های <code dir="ltr">&lt;style&gt;</code> و <code dir="ltr">&lt;script&gt;</code> قرار دهید:</p>
+<div class="note"><strong>یادداشت:</strong> این الگو را فقط برای <bdi dir="ltr">critical CSS</bdi> (سبک‌های بالای صفحه که برای رندر اولیه لازم هستند) یا اسکریپت‌های کوچکِ راه‌انداز استفاده کنید — نه برای همه‌ی فایل‌ها. درlining همه‌ی <bdi dir="ltr">CSS/JS</bdi> باعث می‌شود حجم <bdi dir="ltr">HTML</bdi> به‌شدت افزایش یابد و مرورگر نتواند هیچ فایلی را کش کند. الگوی بهینه: <bdi dir="ltr">critical CSS</bdi> را inline کنید و بقیه‌ی فایل‌ها را به‌صورت لینک خارجی با هدر <code dir="ltr">Cache-Control: immutable</code> سرو کنید (روش بخش ۷.۱۲).</div>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">//go:embed static/css/*.css static/js/*.js
 var assetFS embed.FS
@@ -194,7 +185,7 @@ var funcs = template.FuncMap{
 <figure class="diagram" dir="ltr">
 <svg height="430" viewBox="0 0 480 430" width="480" xmlns="http://www.w3.org/2000/svg">
 <rect fill="#fafafa" height="430" rx="8" width="480" x="0" y="0"></rect>
-<defs><marker id="arrInc" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#00ADD8" points="0 0, 10 3.5, 0 7"></polygon></marker></defs>
+<defs><filter id="sh152" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter><marker id="arrInc" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#00ADD8" points="0 0, 10 3.5, 0 7"></polygon></marker></defs>
 <text fill="#00ADD8" font-size="14" font-weight="bold" text-anchor="middle" x="240" y="25" direction="rtl" unicode-bidi="embed">درخت شمول فایل‌های قالب در <tspan direction="ltr" unicode-bidi="embed">Go</tspan></text>
 
 <!-- base.html (root) -->
@@ -267,10 +258,10 @@ var funcs = template.FuncMap{
 <li><strong>شمول شرطی قالب‌ها:</strong> با <code dir="ltr">{{ if .ShowSidebar }}{{ template "sidebar" . }}{{ end }}</code> می‌توانید شمول قالب‌ها را شرطی کنید. این الگو مشابه <code dir="ltr">@if</code> در <bdi dir="ltr">Blade</bdi> است و امکان کنترل پویای ساختار صفحه را فراهم می‌کند.</li>
 <li><strong>توابع کمکی و ابزارهای قالب:</strong> با <code dir="ltr">template.FuncMap</code> توابع سفارشی مثل فرمت تاریخ، تبدیل واحد پول و برش متن تعریف کنید. این توابع در تمام قالب‌ها قابل استفاده هستند و مشابه <bdi dir="ltr">Blade directives</bdi> در <bdi dir="ltr">PHP</bdi> عمل می‌کنند.</li>
 <li><strong>مدیریت مجموعه‌های بزرگ قالب:</strong> در پروژه‌هایی با صدها قالب، از <code dir="ltr">template.New("").Funcs(funcs).ParseFS(fs, patterns...)</code> استفاده کنید تا تمام قالب‌ها با توابع سفارشی یکجا بارگذاری شوند. از بارگذاری تکی فایل‌ها در هر درخواست خودداری کنید چون عملکرد را شدیداً کاهش می‌دهد.</li>
-<li><strong>پیش‌کامپایل قالب‌ها در زمان راه‌اندازی:</strong> تمام قالب‌ها را در تابع <code dir="ltr">init()</code> یا در ابتدای <code dir="ltr">main()</code> بارگذاری و کامپایل کنید. اگر خطایی در قالب‌ها باشد، برنامه در همان ابتدا متوقف می‌شود نه در حین اجرا. این الگو مشابه کش قالب‌ها در <bdi dir="ltr">PHP</bdi> است اما بدون نیاز به پاکسازی کش.</li>
+<li><strong>پیش‌کامپایل قالب‌ها در زمان راه‌اندازی:</strong> تمام قالب‌ها را در تابع <code dir="ltr">init()</code> یا در ابتدای <code dir="ltr">main()</code> بارگذاری و کامپایل کنید تا در صورت خطای قالب، برنامه در همان ابتدا متوقف شود. این الگو (parse once, execute many) را در بخش ۷.۱۱ با جزئیات کامل دیدید.</li>
 </ul>
 
-<div class="important"><strong>مهم:</strong> همیشه تمام قالب‌ها را یکجا با <code dir="ltr">ParseGlob</code> یا <code dir="ltr">ParseFS</code> بارگذاری کنید و با <code dir="ltr">ExecuteTemplate</code> و نام قالب پایه رندر کنید. هرگز قالب‌های تکی را در هر درخواست <code dir="ltr">Parse</code> نکنید — این کار علاوه بر عملکرد ضعیف، باعث خطاهای عدم تعریف قالب نیز می‌شود چون وابستگی‌های قالب بارگذاری نمی‌شوند.</div>
+<div class="important"><strong>مهم:</strong> همیشه تمام قالب‌ها را یکجا با <code dir="ltr">ParseGlob</code> یا <code dir="ltr">ParseFS</code> بارگذاری کنید و با <code dir="ltr">ExecuteTemplate</code> و نام قالب پایه رندر کنید (نه نام قالب محتوا). هرگز قالب‌های تکی را در هر درخواست <code dir="ltr">Parse</code> نکنید. الگوی کامل پیش‌کامپایل و رندر با <code dir="ltr">ExecuteTemplate</code> در بخش‌های ۷.۹ و ۷.۱۱ توضیح داده شده است.</div>
 </div>
 </main>
 </div>

@@ -107,7 +107,7 @@
 <figure class="diagram" dir="ltr">
 <svg width="700" height="220" viewBox="0 0 700 220" xmlns="http://www.w3.org/2000/svg">
 <rect fill="#fafafa" height="220" rx="8" width="700" x="0" y="0"></rect>
-<defs>
+<defs><filter id="sh149" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
 <marker id="aTp1" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#00ADD8" points="0 0,10 3.5,0 7"></polygon></marker>
 </defs>
 <text fill="#00ADD8" font-size="15" font-weight="bold" text-anchor="middle" x="350" y="22" direction="rtl" unicode-bidi="embed">خط لوله‌ی رندر قالب: داده + قالب → <tspan direction="ltr" unicode-bidi="embed">HTML</tspan></text>
@@ -166,6 +166,7 @@
 </code></pre>
 </figure>
 <div class="tip"><strong>نکته:</strong> دستور <code>{{ with }}</code> دو کار انجام می‌دهد: مقدار را بررسی می‌کند (اگر خالی باشد بلوک اجرا نمی‌شود) و همزمان نقطه را به آن مقدار تغییر می‌دهد. این معادل ترکیب <code>@if</code> و <code dir="ltr">@php($variable = ...)</code> در Blade است.</div>
+<div class="note"><strong>یادداشت:</strong> تفاوت <code dir="ltr">tmpl.Execute(w, data)</code> و <code dir="ltr">tmpl.ExecuteTemplate(w, "name", data)</code> یک منشأ رایج سردرگمی است: <code dir="ltr">Execute</code> فقط قالب اصلی (بدون نام) را رندر می‌کند و اگر قالب‌ها با <code dir="ltr">{{ define }}</code> نام‌گذاری شده باشند، به‌تنهایی کار نمی‌کند. <code dir="ltr">ExecuteTemplate</code> به شما اجازه می‌دهد قالب مشخصی را با نام فراخوانی کنید — که در الگوی layout + content ضروری است (همیشه نام قالب پایه مثل <code dir="ltr">"layout.html"</code> را پاس بدهید، نه نام قالب محتوا). اگر قالب رندر نشد و خطای <code dir="ltr">"not defined"</code> گرفتید، اول با <code dir="ltr">tmpl.DefinedTemplates()</code> لیست قالب‌های موجود را چاپ کنید.</div>
 <p>مثال:</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">type PageData struct {

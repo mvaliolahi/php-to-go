@@ -70,7 +70,7 @@
 <div class="chapter">فصل ۲.۶</div>
 <h2 id="جنریکها">جنریک‌ها</h2>
 <figure class="diagram" dir="ltr">
-<svg height="280" viewBox="0 0 600 280" width="600" xmlns="http://www.w3.org/2000/svg">
+<svg height="280" viewBox="0 0 600 280" width="600" xmlns="http://www.w3.org/2000/svg"><defs><filter id="sh45" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter></defs>
 <rect fill="#fafafa" height="260" rx="12" stroke="#00ADD8" stroke-width="2" width="580" x="10" y="10"></rect>
 <text fill="#00ADD8" font-size="15" font-weight="bold" text-anchor="middle" x="300" y="38" direction="rtl" unicode-bidi="embed">جنریک‌ها در <tspan direction="ltr" unicode-bidi="embed">Go</tspan> — تابعی برای همه انواع</text>
 <rect fill="#e0f7fa" height="55" rx="8" stroke="#00ADD8" stroke-width="1.5" width="520" x="40" y="55"></rect>
@@ -254,6 +254,7 @@ func Max[T constraints.Ordered](a, b T) T {
 </figure>
 <h3 id="generic-methods">متدهای جنریک: محدودیت مهم</h3>
 <p>در <bdi dir="ltr">Go</bdi> نمی‌توان متدهایی با type parameter اضافه تعریف کرد — فقط خود نوع می‌تواند پارامتر جنریک داشته باشد:</p>
+<div class="warning"><strong>محدودیت طراحی:</strong> برخلاف <bdi dir="ltr">C#</bdi> یا <bdi dir="ltr">Java</bdi>، متد روی نوع جنریک در <bdi dir="ltr">Go</bdi> نمی‌تواند type parameter جدید معرفی کند (مثلاً متد <code>Map[R any]</code> روی <code>Stack[T]</code> مجاز نیست). این محدودیت عمدی است برای ساده نگه‌داشتن قواعد رضایت interface و جلوگیری از پیچیدگی overload resolution. راه‌حل idiomatic: تابع سطح پکیج بنویسید مانند <code>MapStack[T any, R any](s *Stack[T], fn func(T) R) []R</code>.</div>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">// Correct — type parameter on defined struct
 type Stack[T any] struct {
@@ -304,7 +305,7 @@ result := Map([]int{1, 2, 3}, func(x int) int { return x * 2 })
 </figure>
 <h3 id="generic-constraint-hierarchy">سلسله‌مراتب محدودیت‌های نوع</h3>
 <figure class="diagram" dir="ltr">
-<svg height="320" viewBox="0 0 600 320" width="600" xmlns="http://www.w3.org/2000/svg">
+<svg height="320" viewBox="0 0 600 320" width="600" xmlns="http://www.w3.org/2000/svg"><defs><filter id="sh46" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter></defs>
 <rect fill="#fafafa" height="300" rx="8" width="600" x="0" y="0"></rect>
 <text fill="#00ADD8" font-size="15" font-weight="bold" text-anchor="middle" x="300" y="25" direction="rtl" unicode-bidi="embed">سلسله‌مراتب محدودیت‌های جنریک در <tspan direction="ltr" unicode-bidi="embed">Go</tspan></text>
 <!-- any -->
@@ -459,7 +460,7 @@ result := Map[int, string]([]int{1, 2, 3}, func(n int) string {
 </figure>
 <div class="note"><strong>قوانین استنتاج نوع:</strong> کامپایلر <bdi dir="ltr">Go</bdi> از دو مکانیزم برای استنتاج استفاده کند: (۱) <bdi dir="ltr">Type Unification</bdi> — بررسی سازگاری نوع آرگومان با پارامتر، و (۲) <bdi dir="ltr">Constraint Inference</bdi> — استفاده از محدودیت‌ها برای حدس زدن نوع ناشناخته. وقتی هر دو مکانیزم کافی نباشند، باید نوع را صراحتاً تعیین کنید. این برخلاف <bdi dir="ltr">PHP</bdi> است که هیچ نوع‌دهی جنریک واقعی ندارد و همه‌چیز در زمان اجرا تعیین می‌شود.</div>
 <figure class="diagram" dir="ltr">
-<svg height="350" viewBox="0 0 600 350" width="600" xmlns="http://www.w3.org/2000/svg">
+<svg height="350" viewBox="0 0 600 350" width="600" xmlns="http://www.w3.org/2000/svg"><defs><filter id="sh47" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter></defs>
 <rect fill="#fafafa" height="330" rx="12" stroke="#00ADD8" stroke-width="2" width="580" x="10" y="10"></rect>
 <text fill="#00ADD8" font-size="15" font-weight="bold" text-anchor="middle" x="300" y="35" direction="rtl" unicode-bidi="embed">سلسله‌مراتب محدودیت‌های جنریک در <tspan direction="ltr" unicode-bidi="embed">Go</tspan></text>
 <!-- any -->
@@ -567,12 +568,12 @@ type NumberLike[T NumberLike[T]] interface {
         یکی از مفاهیم کلیدی در جنریک‌های <bdi dir="ltr">Go</bdi> درک رابطه‌ی بین محدودیت‌های مختلف نوع است. هر محدودیت یک مجموعه از انواع را تعریف می‌کند و این مجموعه‌ها دارای رابطه‌ی زیرمجموعه‌ای هستند. محدودیت <code>any</code> بزرگ‌ترین مجموعه است و شامل همه‌ی انواع می‌شود. محدودیت <code>comparable</code> زیرمجموعه‌ای از <code>any</code> است که فقط انواع قابل مقایسه با <code>==</code> را شامل می‌شود. محدودیت <code>constraints.Ordered</code> زیرمجموعه‌ی کوچک‌تری است که فقط انواع قابل مرتب‌سازی (<code>&lt;</code>، <code>&gt;</code>) را در بر می‌گیرد. محدودیت‌های سفارشی نیز می‌توانند هر زیرمجموعه‌ای را با ترکیب عملگر <code>|</code> و تعریف متدها ایجاد کنند.
     </p>
     <p>
-        در نمودار زیر این رابطه‌ی زیرمجموعه‌ای به‌صورت نمودار ون (<bdi dir="ltr">Venn diagram</bdi>) نمایش داده شده است. هر دایره نشان‌دهنده‌ی یک محدودیت است و دایره‌های درونی زیرمجموعه‌ی دایره‌های بیرونی هستند. همچنین نمونه‌سازی (<bdi dir="ltr">instantiation</bdi>) جنریک‌ها نشان داده شده: وقتی <code>Max[int]</code> را صدا می‌زنید، کامپایلر یک نسخه‌ی اختصاصی از تابع با <code>T=int</code> ایجاد می‌کند. این برخلاف <bdi dir="ltr">PHP</bdi> است که هیچ مکانیزم مشابهی ندارد و همه‌چیز در زمان اجرا با نوع <code>mixed</code> مدیریت می‌شود.
+        در نمودار زیر این رابطه‌ی زیرمجموعه‌ای به‌صورت <bdi dir="ltr">Venn diagram</bdi> نمایش داده شده است. هر دایره نشان‌دهنده‌ی یک محدودیت است و دایره‌های درونی زیرمجموعه‌ی دایره‌های بیرونی هستند. همچنین <bdi dir="ltr">instantiation</bdi> جنریک‌ها نشان داده شده: وقتی <code>Max[int]</code> را صدا می‌زنید، کامپایلر یک نسخه‌ی اختصاصی از تابع با <code>T=int</code> ایجاد می‌کند. این برخلاف <bdi dir="ltr">PHP</bdi> است که هیچ مکانیزم مشابهی ندارد و همه‌چیز در زمان اجرا با نوع <code>mixed</code> مدیریت می‌شود.
     </p>
 
     <figure class="diagram" dir="ltr">
     <svg height="700" viewBox="0 0 850 700" width="850" xmlns="http://www.w3.org/2000/svg">
-    <defs>
+    <defs><filter id="sh48" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
     <marker id="arrGenP" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#9C27B0" points="0 0, 10 3.5, 0 7"></polygon></marker>
     <marker id="arrConstrP" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#4CAF50" points="0 0, 10 3.5, 0 7"></polygon></marker>
     <marker id="arrInstP" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#00ADD8" points="0 0, 10 3.5, 0 7"></polygon></marker>

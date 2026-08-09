@@ -80,54 +80,12 @@
     </p>
 </div>
 <div class="tip">
-<strong>نکته‌ی حرفه‌ای:</strong> در <bdi dir="ltr">Go</bdi> تست‌های جدولی (<bdi dir="ltr">Table-driven tests</bdi>) روش ایدئوماتیک تست چندین سناریو هستند. به‌جای نوشتن توابع تست جداگانه برای هر مورد، یک <bdi dir="ltr">slice</bdi> از موارد تست تعریف کنید و روی آن‌ها حلقه بزنید. این کار افزودن موارد تست جدید را ساده می‌کند.
+<strong>نکته‌ی حرفه‌ای:</strong> در <bdi dir="ltr">Go</bdi> Table-driven tests روش ایدئوماتیک تست چندین سناریو هستند. به‌جای نوشتن توابع تست جداگانه برای هر مورد، یک <bdi dir="ltr">slice</bdi> از موارد تست تعریف کنید و روی آن‌ها حلقه بزنید. این کار افزودن موارد تست جدید را ساده می‌کند.
 </div>
-<figure class="diagram" dir="ltr">
-<svg height="300" viewBox="0 0 650 300" width="650" xmlns="http://www.w3.org/2000/svg">
-<text class="title" text-anchor="middle" x="200" y="25" direction="rtl" unicode-bidi="embed">هرم تست در <tspan direction="ltr" unicode-bidi="embed">Go</tspan></text>
-<!-- Pyramid -->
-<polygon class="pyramid-base" opacity="0.3" points="200,50 80,250 320,250"></polygon>
-<polygon class="pyramid-mid" opacity="0.4" points="200,50 120,180 280,180"></polygon>
-<polygon class="pyramid-top" opacity="0.5" points="200,50 160,120 240,120"></polygon>
-<!-- Labels on pyramid -->
-<text font-weight="bold" text-anchor="middle" x="200" y="85" direction="ltr" unicode-bidi="embed">E2E Tests</text>
-<text font-weight="bold" text-anchor="middle" x="200" y="150" direction="ltr" unicode-bidi="embed">Integration Tests</text>
-<text font-weight="bold" text-anchor="middle" x="200" y="220" direction="ltr" unicode-bidi="embed">Unit Tests</text>
-<!-- Right side: Go tools -->
-<rect fill="#e0f7fa" height="35" rx="6" stroke="#00ADD8" stroke-width="1.5" width="240" x="380" y="55"></rect>
-<text text-anchor="middle" x="500" y="77" direction="ltr" unicode-bidi="embed">httpexpect, httptest</text>
-<rect fill="#e0f7fa" height="35" rx="6" stroke="#00ADD8" stroke-width="1.5" width="240" x="380" y="130"></rect>
-<text text-anchor="middle" x="500" y="152" direction="ltr" unicode-bidi="embed">gomock, testify, testcontainers</text>
-<rect fill="#e0f7fa" height="35" rx="6" stroke="#00ADD8" stroke-width="1.5" width="240" x="380" y="205"></rect>
-<text text-anchor="middle" x="500" y="227" direction="ltr" unicode-bidi="embed">go test, testing, t.Run</text>
-<!-- Connecting lines -->
-<line stroke="#999" stroke-dasharray="4,3" stroke-width="1" x1="320" x2="380" y1="75" y2="72"></line>
-<line stroke="#999" stroke-dasharray="4,3" stroke-width="1" x1="280" x2="380" y1="145" y2="147"></line>
-<line stroke="#999" stroke-dasharray="4,3" stroke-width="1" x1="320" x2="380" y1="215" y2="222"></line>
-<!-- Bottom note -->
-<text class="small" text-anchor="middle" x="325" y="280" direction="rtl" unicode-bidi="embed">تست‌های <tspan direction="ltr" unicode-bidi="embed">Unit</tspan> بیشترین حجم و کمترین هزینه | تست‌های <tspan direction="ltr" unicode-bidi="embed">E2E</tspan> کمترین حجم و بیشترین هزینه</text>
-</svg>
-<figcaption>شکل ۱۱-۱: هرم تست در <bdi dir="ltr">Go</bdi> و ابزارهای مرتبط</figcaption>
-</figure>
+<div class="note"><strong>ارجاع به مقدمه فصل:</strong> نمودار هرم تست و مقایسه کلی <bdi dir="ltr">PHPUnit</bdi> با <bdi dir="ltr">go test</bdi> در مقدمه فصل (بخش ۱۱.۰) ارائه شده است. در این بخش به جزئیات فنی پکیج <bdi dir="ltr">testing</bdi> می‌پردازیم.</div>
 <p>یکی از ویژگی‌های قدرتمند زبان Go ابزار تست‌نویسی داخلی آن است. برخلاف بسیاری از زبان‌ها که نیاز به فریمورک‌های جانبی برای تست دارند Go به صورت پیش‌فرض با پکیج testing امکان نوشتن و اجرای تست‌های سریع، ساده و مؤثر را فراهم می‌کند. این ویژگی تست‌نویسی را بخشی طبیعی از چرخه توسعه در Go قرار می‌دهد.</p>
 <p>در PHP مخصوصاً با فریمورک‌هایی مثل Laravel نوشتن Unit Test و Feature test به کمک PHPUnit امری رایج است. اگرچه در Go مفاهیم مشابه وجود دارند اما فلسفه‌ای ساده‌تر و مینیمال‌تر دنبال می‌شود. تست‌ها در Go فقط فایل‌های جداگانه‌ای هستند که توابعشان با Test شروع می‌شود، در فایل‌هایی با پسوند test.go_ قرار می‌گیرند و با استفاده از ابزار go test اجرا می‌شوند.</p>
-<table class="comparison-table" dir="rtl">
-<thead>
-<tr><th>ویژگی</th><th>PHPUnit (PHP)</th><th>go test (Go)</th></tr>
-</thead>
-<tbody>
-<tr><td>ابزار اجرای تست</td><td>phpunit</td><td>go test</td></tr>
-<tr><td>نام‌گذاری فایل تست</td><td dir="ltr">*Test.php</td><td dir="ltr">*_test.go</td></tr>
-<tr><td>نام‌گذاری تابع تست</td><td>test*() یا #[Test]</td><td dir="ltr">Test*(t *testing.T)</td></tr>
-<tr><td>ارائه دهنده داده</td><td dir="ltr">@dataProvider</td><td dir="ltr">Table-driven tests</td></tr>
-<tr><td dir="ltr">Assertion</td><td dir="ltr">assertEquals, assertTrue, ...</td><td>if + t.Errorf یا testify</td></tr>
-<tr><td>Mock کردن</td><td dir="ltr">PHPUnit Mock, Mockery</td><td dir="ltr">gomock, testify/mock</td></tr>
-<tr><td>تست HTTP</td><td dir="ltr">$this-&gt;<span dir="ltr">get()</span>, $this-&gt;<span dir="ltr">post()</span></td><td dir="ltr">net/http/httptest, httpexpect</td></tr>
-<tr><td dir="ltr">Coverage</td><td dir="ltr">xdebug + phpunit --coverage</td><td dir="ltr">go test -cover</td></tr>
-<tr><td>تست موازی</td><td>paratest</td><td><span dir="ltr">t.Parallel()</span> (داخلی)</td></tr>
-<tr><td dir="ltr">Benchmark</td><td>ابزارهای جانبی مثل PHPBench</td><td>testing.B</td></tr>
-</tbody>
-</table>
+<p>جدول کامل مقایسه <bdi dir="ltr">PHPUnit</bdi> و <bdi dir="ltr">go test</bdi> در مقدمه فصل (بخش ۱۱.۰) آمده است. در اینجا مستقیماً وارد جزئیات فنی پکیج <bdi dir="ltr">testing</bdi> می‌شویم.</p>
 <h3 id="ساختار-پایه-یک-تست">ساختار پایه یک تست</h3>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">package mypackage
@@ -304,7 +262,7 @@ func TestAdd(t *testing.T) {
 
 <figure class="diagram" dir="ltr">
 <svg height="280" viewBox="0 0 620 280" width="620" xmlns="http://www.w3.org/2000/svg">
-<defs>
+<defs><filter id="sh173" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
 <marker id="arrowfuzz" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5">
 <polygon fill="#00ADD8" points="0 0, 10 3.5, 0 7"></polygon>
 </marker>
@@ -479,6 +437,7 @@ public function sumProvider()
 </figure>
 <p>می‌توان تست‌هایی نوشت که بررسی کنند هندلر در برابر ورودی‌های مختلف چه واکنشی نشان می‌دهد. مثلاً در هندلری که ورودی JSON می‌پذیرد، می‌توان ورودی‌های معیوب و معتبر را تست کرد.</p>
 <p>لازم به ذکر است الگوی Table-driven در این نوع تست‌ها بسیار کاربردی است چون می‌توان برای ورودی‌های مختلف (مسیر، متد، بادی، هدرها) خروجی‌های متفاوتی را تعریف و تست کرد.</p>
+<div class="tip"><strong>نکته درباره پکیج <span dir="ltr">httptest</span>:</strong> <code dir="ltr">net/http/httptest</code> دو ابزار اصلی دارد: <code dir="ltr">NewRequest</code> و <code dir="ltr">NewRecorder</code> برای تست هندلر به‌صورت <strong>مستقیم</strong> و بدون اجرای سرور (سریع، مناسب Unit Test) و <code dir="ltr">NewServer</code> برای ساخت سرور واقعی روی پورت تصادفی (کندتر اما برای middleware، cookie و redirect لازم، مناسب Integration/E2E). در <span dir="ltr">PHP/Laravel</span> این تفکیک وجود ندارد و <code dir="ltr">$this-&gt;get()</code> همیشه یک سرور راه می‌اندازد. در Go انتخاب از آن شماست که کدام سطح را تست کنید — همین که هندلر مستقیماً قابل فراخوانی است، بزرگ‌ترین مزیت <span dir="ltr">Go</span> در تست <span dir="ltr">HTTP</span> محسوب می‌شود.</div>
 <p>تست‌نویسی در Go تنها به تست‌های ساده محدود نمی‌شود. این زبان امکانات قدرتمند و درعین‌حال مینیمالی برای تست‌های موازی تست‌های benchmark و حتی تست‌های مبتنی بر Mock فراهم کرده است. در این بخش با چند مفهوم کلیدی و ابزار مهم آشنا می‌شویم.</p>
 <h3 id="تستهای-موازی-tparallel">تست‌های موازی <span dir="ltr">t.Parallel()</span></h3>
 <p>در بسیاری از پروژه‌های بزرگ تست‌های مستقل زیادی داریم که اجرای دنباله‌دار آن‌ها در زمان طولانی تمام می‌شود. Go با استفاده از قابلیت موازی‌سازی تست‌ها اجازه می‌دهد از چند هسته پردازنده به طور مؤثر استفاده کنیم و سرعت اجرای تست‌ها را به‌طور قابل‌توجهی افزایش دهیم.</p>
@@ -515,6 +474,7 @@ public function sumProvider()
 </figure>
 <p><span dir="ltr">t.Parallel()</span> // هر تست به صورت جداگانه اجرا می‌شود // شبیه سازی فچ کردن کاربر</p>
 <p>اگر تست‌های شما به منابع مشترک مثلاً فایل سیستم، دیتابیس، یا متغیرهای global وابسته باشند، استفاده از <span dir="ltr">t.Parallel()</span> بدون مراقبت لازم می‌تواند منجر به بروز race condition و تست‌های ناپایدار شود. در چنین مواردی بهتر است تست‌ها را serial یا با ابزارهایی مثل Mutex کنترل کنید.</p>
+<div class="tip"><strong>نکته درباره <span dir="ltr">t.Parallel()</span>:</strong> این فراخوانی را <strong>در ابتدای تابع تست</strong> و قبل از هر خط منطقی قرار دهید. اگر بعد از خواندن متغیرهای مشترک از <span dir="ltr">closure</span> فراخوانی شود، <span dir="ltr">race condition</span> خاموش ایجاد می‌شود که با <code dir="ltr">-race</code> قابل شناسایی است. بهترین روش برای زیرتست‌های <span dir="ltr">table-driven</span> این است که در هر <code dir="ltr">t.Run</code> ابتدا <code dir="ltr">tt := tt</code> (کپی متغیر حلقه) و سپس <code dir="ltr">t.Parallel()</code> را فراخوانی کنید. در <span dir="ltr">PHP</span> به‌دلیل تک‌نخی بودن، چالش موازی‌سازی تست وجود ندارد و ابزارهایی مثل <span dir="ltr">paratest</span> فقط فرآیندهای جداگانه می‌سازند.</div>
 <h3 id="تستهای-benchmark-با-testingb">تست‌های Benchmark با testing.B</h3>
 <p>اگر می‌خواهید عملکرد یا سرعت بخشی از کد را اندازه‌گیری کنید، پکیج testing ابزار بسیار مناسبی به نام benchmark فراهم کرده است. این تست‌ها هنگام اجرای go test با فلگ bench- فعال می‌شوند:</p>
 <figure class="code go" dir="ltr">
@@ -560,8 +520,10 @@ func BenchmarkAdd(b *testing.B) {
 }
 </code></pre>
 </figure>
+<div class="tip"><strong>نکته درباره <span dir="ltr">Benchmark</span> در <span dir="ltr">Go</span>:</strong> در <span dir="ltr">PHP</span> برای بنچمارک باید به ابزارهای خارجی مثل <span dir="ltr">PHPBench</span> پناه ببرید، اما در <span dir="ltr">Go</span> بنچمارک داخلی است و با <code dir="ltr">testing.B</code> تعریف می‌شود. برای نتایج معتبر: <strong>۱)</strong> حتماً از <code dir="ltr">b.ResetTimer()</code> پس از راه‌اندازی گران استفاده کنید تا زمان setup از اندازه‌گیری حذف شود. <strong>۲)</strong> با <code dir="ltr">b.ReportAllocs()</code> تعداد تخصیص حافظه را ببینید. <strong>۳)</strong> برای مقایسه دو پیاده‌سازی از <code dir="ltr">benchstat</code> استفاده کنید تا تفاوت آماری معنی‌دار باشد. <strong>۴)</strong> در <span dir="ltr">Go 1.24+</span> به‌جای <code dir="ltr">for i := 0; i &lt; b.N; i++</code> از <code dir="ltr">for b.Loop()</code> استفاده کنید تا راه‌اندازی فقط یک‌بار اجرا شود و جلوگیری از بهینه‌سازی کامپایلر خودکار باشد.</div>
 <h3 id="mock-کردن-interfaceها">Mock کردن Interfaceها</h3>
 <p>Go به دلیل ماهیت انعطاف‌پذیر interfaceها، برای تست‌نویسی بر پایه Mock بسیار مناسب است. شما می‌توانید به‌راحتی نسخه‌ی شبیه‌سازی‌شده‌ای از هر interface بسازید و رفتار آن را کنترل کنید تا وابستگی به سرویس‌های خارجی (مثلاً پایگاه‌داده، API) از بین برود.</p>
+<div class="note"><strong>ارجاع:</strong> این بخش مقدمه‌ای بر مفهوم <span dir="ltr">mock</span> است. در بخش ۱۱.۳ (gomock) به‌طور کامل به ابزار <span dir="ltr">gomock</span>، تولید خودکار <span dir="ltr">mock</span> با <span dir="ltr">mockgen</span>، الگوهای <span dir="ltr">EXPECT</span> و مقایسه <span dir="ltr">mock</span> دستی با <span dir="ltr">gomock</span> پرداخته می‌شود.</div>
 <p><strong>تعریف یک</strong> <strong dir="ltr">interface و نسخه mock</strong></p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">type DB interface {
@@ -593,67 +555,8 @@ func (m MockDB) GetUser(id int) (User, error) {
 <p>برای قسمت‌های حساس مثل Concurrency و Error Handling حتماً تست بنویسید.
 </p>
 <h3 id="assertion-های-سفارشی-با-generics">Assertion های سفارشی با Generics</h3>
-<p>در PHPUnit با متدهایی مثل <code dir="ltr">assertEquals()</code> ، <code dir="ltr">assertTrue()</code> و <code dir="ltr">assertNull()</code> کار می‌کنید که هر کدام نوع خاصی از مقایسه را انجام می‌دهند. در Go اما پکیج استاندارد <code>testing</code> هیچ assertion داخلی ندارد و شما باید خودتان با <code>if</code> و <code dir="ltr">t.Errorf</code> مقایسه‌ها را بنویسید. این رویکرد ساده اما پرتکرار است.</p>
-<p>خوشبختانه با استفاده از <strong dir="ltr">Generics</strong> (که در فصل ۲ آشنا شدید) می‌توانید assertion های سفارشی و type-safe بنویسید که هم خوانایی کد را بالا می‌برند و هم خطاهای خط گزارش‌دهی دقیقی ارائه می‌دهند.</p>
-<figure class="code go" dir="ltr">
-<pre><code class="language-go">package testutil
-
-import "testing"
-
-// Equal is a custom assertion with Generics
-func Equal[T comparable](t *testing.T, actual, expected T) {
-    t.Helper()
-    if actual != expected {
-        t.Errorf("got: %v; want: %v", actual, expected)
-    }
-}
-
-// NotEqual checks that two values are not equal
-func NotEqual[T comparable](t *testing.T, actual, expected T) {
-    t.Helper()
-    if actual == expected {
-        t.Errorf("did not expect: %v", actual)
-    }
-}
-
-// Nil checks that value is nil
-func Nil(t *testing.T, v interface{}) {
-    t.Helper()
-    if v != nil {
-        t.Errorf("expected nil, got: %v", v)
-    }
-}
-</code></pre>
-</figure>
-<div class="tip"><strong>نکته مهم درباره <span dir="ltr">t.Helper()</span>:</strong> فراخوانی <code dir="ltr">t.Helper()</code> در ابتدای تابع assertion به Go می‌گوید که اگر تست شکست بخورد، شماره خط و فایل <strong>فراخوانی‌کننده</strong> را گزارش کند نه خط داخل تابع assertion. بدون این فراخوانی، پیام خطا به خط درون <code>Equal</code> اشاره می‌کند که برای دیباگ کمکی نمی‌کند.</div>
-<p><strong>استفاده در تست‌ها</strong> :</p>
-<figure class="code go" dir="ltr">
-<pre><code class="language-go">func TestWithCustomAssertions(t *testing.T) {
-    result := Add(2, 3)
-    testutil.Equal(t, result, 5)
-
-    name := FetchName(1)
-    testutil.NotEqual(t, name, "")
-
-    var err error
-    testutil.Nil(t, err)
-}
-</code></pre>
-</figure>
-<table class="comparison-table" dir="rtl">
-<thead>
-<tr><th>ویژگی</th><th>PHPUnit (PHP)</th><th>Go با Generics</th></tr>
-</thead>
-<tbody>
-<tr><td>مقایسه برابری</td><td dir="ltr"><code dir="ltr">assertEquals($expected, $actual)</code></td><td dir="ltr"><code dir="ltr">Equal(t, actual, expected)</code></td></tr>
-<tr><td>مقایسه عدم برابری</td><td dir="ltr"><code dir="ltr">assertNotEquals()</code></td><td dir="ltr"><code dir="ltr">NotEqual(t, actual, expected)</code></td></tr>
-<tr><td>بررسی nil/null</td><td dir="ltr"><code dir="ltr">assertNull()</code></td><td dir="ltr"><code dir="ltr">Nil(t, v)</code></td></tr>
-<tr><td dir="ltr">Type Safety</td><td>Runtime</td><td>Compile-time</td></tr>
-<tr><td>گزارش خط خطا</td><td>خودکار</td><td>با <code><span dir="ltr">t.Helper()</span></code></td></tr>
-<tr><td>نیاز به پکیج خارجی</td><td>PHPUnit داخلی</td><td>خودتان می‌نویسید یا از testify استفاده می‌کنید</td></tr>
-</tbody>
-</table>
-<p>اگر نمی‌خواهید assertion های سفارشی بنویسید، پکیج <strong dir="ltr">testify/assert</strong> (که در بخش بعدی معرفی می‌شود) مجموعه‌ای کامل از assertion های آماده را ارائه می‌دهد. اما نوشتن assertion های سفارشی با Generics مزیت type-safety در زمان کامپایل و عدم وابستگی به کتابخانه خارجی را دارد.</p>
+<p>در PHPUnit با متدهایی مثل <code dir="ltr">assertEquals()</code> و <code dir="ltr">assertTrue()</code> کار می‌کنید، اما پکیج استاندارد <code>testing</code> در Go هیچ assertion داخلی ندارد و شما باید با <code>if</code> و <code dir="ltr">t.Errorf</code> مقایسه‌ها را بنویسید. برای کاهش تکرار می‌توانید با استفاده از <strong dir="ltr">Generics</strong> assertion های سفارشی و type-safe بنویسید (مثل <code>Equal[T comparable]</code>).</p>
+<div class="note"><strong>ارجاع:</strong> پیاده‌سازی کامل assertionهای سفارشی با Generics (شامل <code>Equal</code> ، <code>NotEqual</code> ، <code>DeepEqual</code> ، <code>Nil</code> ، <code>Contains</code> و <code>ErrorIs</code>) و جدول مقایسه با PHPUnit در بخش ۱۱.۲ (Assertion) ارائه شده است. در این بخش مهم است بدانید که <code dir="ltr">t.Helper()</code> را در ابتدای هر تابع assertion فراخوانی کنید تا شماره خط شکست به جای تابع کمکی، به خط فراخوانی‌کننده اشاره کند.</div>
 <h3 id="تست-end-to-end-با-httptestserver">تست End-to-End با httptest.Server</h3>
 <p>تا اینجا هندلرهای HTTP را به‌صورت مستقیم و بدون اجرای سرور واقعی تست کردیم. اما در بسیاری از موارد نیاز داریم <strong>کل جریان HTTP</strong> را از ارسال درخواست تا دریافت پاسخ تست کنیم، مثلاً وقتی middleware ها، session ها و cookie ها درگیر هستند. در این حالت <code dir="ltr">httptest.Server</code> به کمک ما می‌آید.</p>
 <p>برای جلوگیری از تکرار کدهای راه‌اندازی سرور تست، می‌توانیم یک <strong>struct کمکی</strong> بسازیم:</p>
@@ -749,7 +652,7 @@ func (ts *testServer) postForm(path string, data url.Values) *http.Response {
 </figure>
 <div class="note"><strong>نکته:</strong> تفاوت مهم با <code dir="ltr">httptest.NewRecorder</code> در این است که <code dir="ltr">httptest.Server</code> یک سرور واقعی HTTP روی پورت تصادفی ایجاد می‌کند و درخواست‌ها از طریق loopback ارسال می‌شوند. این یعنی middleware ها، cookie ها و redirect ها دقیقاً مانند محیط واقعی کار می‌کنند. اما <code>NewRecorder</code> فقط خروجی مستقیم هندلر را ضبط می‌کند.</div>
 <h3 id="پروفایل-پوشش-تست-test-coverage">Test Coverage</h3>
-<p>یکی از ابزارهای مهم برای ارزیابی کیفیت تست‌ها، اندازه‌گیری <strong>پوشش کد</strong> (Code Coverage) است. Coverage به شما نشان می‌دهد چه درصدی از کدهای برنامه توسط تست‌ها اجرا شده‌اند. این معیار هرچند کامل نیست اما نقطه شروع خوبی برای شناسایی بخش‌های بدون تست است.</p>
+<p>یکی از ابزارهای مهم برای ارزیابی کیفیت تست‌ها، اندازه‌گیری <strong><strong dir="ltr">Code Coverage</strong> است. Coverage به شما نشان می‌دهد چه درصدی از کدهای برنامه توسط تست‌ها اجرا شده‌اند. این معیار هرچند کامل نیست اما نقطه شروع خوبی برای شناسایی بخش‌های بدون تست است.</p>
 <p><strong>اجرای</strong> <strong dir="ltr">Coverage ساده</strong> :</p>
 <figure class="code bash" dir="ltr">
 <pre><code class="language-bash">$ go test -cover ./...
@@ -777,7 +680,7 @@ $ go tool cover -html=coverage.out -o coverage.html
 <p>فرمان <code>go tool cover -html</code> یک فایل HTML تولید می‌کند که کدهای شما را با رنگ‌بندی نمایش می‌دهد: خطوط سبز توسط تست پوشش داده شده‌اند، خطوط قرمز پوشش داده نشده‌اند و خطوط خاکستری قابل نادیده‌گیری هستند.</p>
 <figure class="diagram" dir="ltr">
 <svg height="220" viewBox="0 0 620 220" width="620" xmlns="http://www.w3.org/2000/svg">
-<defs>
+<defs><filter id="sh174" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
 <marker id="arrowc" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5">
 <polygon fill="#00ADD8" points="0 0, 10 3.5, 0 7"></polygon>
 </marker>
@@ -886,7 +789,7 @@ $ go test -update ./...
 
 <figure class="diagram" dir="ltr">
 <svg height="260" viewBox="0 0 620 260" width="620" xmlns="http://www.w3.org/2000/svg">
-<defs>
+<defs><filter id="sh175" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
 <marker id="arrowgf" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5">
 <polygon fill="#00ADD8" points="0 0, 10 3.5, 0 7"></polygon>
 </marker>
@@ -1025,7 +928,7 @@ func BenchmarkNew(b *testing.B) {
 
 <figure class="diagram" dir="ltr">
 <svg height="580" viewBox="0 0 720 580" width="720" xmlns="http://www.w3.org/2000/svg">
-<defs>
+<defs><filter id="sh176" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
 <marker id="arrowlc" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5">
 <polygon fill="#555" points="0 0, 10 3.5, 0 7"></polygon>
 </marker>

@@ -1129,6 +1129,135 @@ figure.diagram svg .small {
 }
 
 /* ============================================
+   SVG MODERN ENHANCEMENTS (v2)
+   Global polish applied to all diagram SVGs:
+   - Better depth with layered shadows
+   - Smoother rounded corners
+   - Refined typography
+   - Subtle hover interactions
+   - Modern color gradients on headers
+   ============================================ */
+
+/* --- Diagram container: modern card look --- */
+figure.diagram {
+  background: linear-gradient(180deg, var(--color-bg-secondary) 0%, var(--color-bg) 100%);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow:
+    0 1px 2px var(--color-shadow),
+    0 4px 12px var(--color-shadow);
+  overflow: hidden;
+  transition: box-shadow var(--transition-normal), transform var(--transition-normal);
+}
+figure.diagram:hover {
+  box-shadow:
+    0 2px 4px var(--color-shadow),
+    0 8px 24px var(--color-shadow-md);
+}
+[data-theme="dark"] figure.diagram {
+  background: linear-gradient(180deg, var(--color-bg-secondary) 0%, var(--color-bg-tertiary) 100%);
+  box-shadow:
+    0 1px 2px rgba(0,0,0,0.3),
+    0 4px 12px rgba(0,0,0,0.2);
+}
+
+/* --- SVG root: better rendering --- */
+figure.diagram svg {
+  font-family: 'Vazirmatn', 'Inter', sans-serif;
+  text-rendering: geometricPrecision;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* --- Modern box styling: subtle shadows + smoother corners --- */
+figure.diagram svg .box,
+figure.diagram svg .box-php,
+figure.diagram svg .box-go,
+figure.diagram svg .box-action,
+figure.diagram svg .box-result,
+figure.diagram svg .box-join,
+figure.diagram svg .tip-box,
+figure.diagram svg .warn-box {
+  filter: drop-shadow(0 1px 2px rgba(0,0,0,0.06));
+  transition: filter var(--transition-fast), fill var(--transition-normal), stroke var(--transition-normal);
+}
+figure.diagram:hover svg .box:hover,
+figure.diagram:hover svg .box-php:hover,
+figure.diagram:hover svg .box-go:hover,
+figure.diagram:hover svg .box-action:hover,
+figure.diagram:hover svg .box-result:hover,
+figure.diagram:hover svg .box-join:hover {
+  filter: drop-shadow(0 2px 6px rgba(0,0,0,0.12));
+}
+
+/* --- Refined typography for SVG text --- */
+figure.diagram svg .title {
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+figure.diagram svg text {
+  font-family: 'Vazirmatn', 'Inter', sans-serif;
+}
+
+/* --- Modern arrow markers: smoother + colored --- */
+figure.diagram svg marker polygon,
+figure.diagram svg marker path {
+  transition: fill var(--transition-normal);
+}
+
+/* --- Section header bars in SVGs: gradient enhancement --- */
+figure.diagram svg rect[fill="#777BB4"],
+figure.diagram svg rect[fill="#00ADD8"],
+figure.diagram svg rect[fill="#2196f3"],
+figure.diagram svg rect[fill="#4caf50"],
+figure.diagram svg rect[fill="#ff9800"] {
+  filter: drop-shadow(0 1px 3px rgba(0,0,0,0.1));
+}
+
+/* --- Dark mode shadow refinement --- */
+[data-theme="dark"] figure.diagram svg .box,
+[data-theme="dark"] figure.diagram svg .box-php,
+[data-theme="dark"] figure.diagram svg .box-go,
+[data-theme="dark"] figure.diagram svg .box-action,
+[data-theme="dark"] figure.diagram svg .box-result,
+[data-theme="dark"] figure.diagram svg .box-join,
+[data-theme="dark"] figure.diagram svg .tip-box,
+[data-theme="dark"] figure.diagram svg .warn-box {
+  filter: drop-shadow(0 1px 2px rgba(0,0,0,0.3));
+}
+
+/* --- Diagram caption: modern styling --- */
+figure.diagram figcaption {
+  margin-top: var(--spacing-md);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+  font-style: italic;
+  letter-spacing: -0.005em;
+  padding-top: var(--spacing-sm);
+  border-top: 1px solid var(--color-border);
+}
+
+/* --- Subtle entrance animation for diagrams --- */
+@keyframes diagramFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+figure.diagram svg {
+  animation: diagramFadeIn 0.4s ease-out;
+}
+@media (prefers-reduced-motion: reduce) {
+  figure.diagram svg {
+    animation: none;
+  }
+}
+
+/* ============================================
    SVG DIAGRAM ZOOM
    Zoom button + Lightbox for diagram viewing
    ============================================ */

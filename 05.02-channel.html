@@ -79,7 +79,7 @@
 <figure class="diagram" dir="ltr">
 <svg height="180" viewBox="0 0 600 180" width="600" xmlns="http://www.w3.org/2000/svg">
 <rect fill="#fafafa" height="180" rx="8" width="600" x="0" y="0"></rect>
-<defs>
+<defs><filter id="sh93" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
 <marker id="aCh1" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#00ADD8" points="0 0,10 3.5,0 7"></polygon></marker>
 <marker id="aCh2" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#27ae60" points="0 0,10 3.5,0 7"></polygon></marker>
 </defs>
@@ -108,7 +108,7 @@
 
 <div class="tip"><strong>جزئیات داخلی — ساختار hchan:</strong> فیلدهای اصلی این ساختار عبارتند از:
 <ul>
-<li><code>buf</code>: اشاره‌گر به بافر دایره‌ای (<bdi dir="ltr">Ring Buffer</bdi>) برای کانال‌های بافر‌دار. داده‌ها در این آرایه ذخیره می‌شوند.</li>
+<li><code>buf</code>: اشاره‌گر به <bdi dir="ltr">Ring Buffer</bdi> برای کانال‌های بافر‌دار. داده‌ها در این آرایه ذخیره می‌شوند.</li>
 <li><code>qcount</code>: تعداد عناصر موجود در بافر.</li>
 <li><code>dataqsiz</code>: ظرفیت بافر (صفر برای کانال‌های بدون بافر).</li>
 <li><code>elemtype</code>: اشاره‌گر به اطلاعات نوع داده (<bdi dir="ltr">Reflection</bdi>).</li>
@@ -116,13 +116,13 @@
 <li><code>sendq</code> و <code>recvq</code>: صف‌های انتظار فرستنده‌ها و گیرنده‌ها — هر کدام لیستی از <code>sudog</code> هستند.</li>
 <li><code>mutex</code>: قفل داخلی برای محافظت از تمام فیلدهای hchan.</li>
 </ul>
-نکته مهم: هر عملیات ارسال یا دریافت روی channel ابتدا قفل <code dir="ltr">hchan.mutex</code> را می‌گیرد. این یعنی دسترسی همزمان به یک channel از چند goroutine به صورت خودکار ایمن است. اما به همین دلیل استفاده‌ی شدید از یک channel مشترک می‌تواند گلوگاه قفل (<bdi dir="ltr">Lock Contention</bdi>) ایجاد کند.
+نکته مهم: هر عملیات ارسال یا دریافت روی channel ابتدا قفل <code dir="ltr">hchan.mutex</code> را می‌گیرد. این یعنی دسترسی همزمان به یک channel از چند goroutine به صورت خودکار ایمن است. اما به همین دلیل استفاده‌ی شدید از یک channel مشترک می‌تواند <bdi dir="ltr">Lock Contention</bdi> ایجاد کند.
 </div>
 
 <figure class="diagram" dir="ltr">
 <svg height="280" viewBox="0 0 650 280" width="650" xmlns="http://www.w3.org/2000/svg">
 <rect fill="#fafafa" height="280" rx="8" width="650" x="0" y="0"></rect>
-<defs>
+<defs><filter id="sh94" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
 <marker id="aHC1" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#00ADD8" points="0 0,10 3.5,0 7"></polygon></marker>
 </defs>
 <text fill="#f39c12" font-size="14" font-weight="bold" text-anchor="middle" x="325" y="25" direction="ltr" unicode-bidi="embed">hchan struct (ساختار داخلی Channel)</text>
@@ -175,7 +175,7 @@
 
 <figure class="diagram" dir="ltr">
 <svg height="280" viewBox="0 0 660 280" width="660" xmlns="http://www.w3.org/2000/svg">
-<defs>
+<defs><filter id="sh95" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
 <marker id="arrBuf1" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#e91e63" points="0 0,10 3.5,0 7"></polygon></marker>
 <marker id="arrBuf2" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#4caf50" points="0 0,10 3.5,0 7"></polygon></marker>
 </defs>
@@ -338,10 +338,10 @@ func consumer(id int, jobs &lt;-chan Job) { // receive only
     </p>
 </div>
 
-<div class="tip"><strong>نکته‌ی حرفه‌ای:</strong> کانال‌ها ابزار جداکردن (<bdi dir="ltr">decoupling</bdi>) <bdi dir="ltr">Goroutine</bdi>‌ها هستند — فرستنده نیازی ندارد بداند گیرنده کیست و گیرنده هم نیازی ندارد بداند فرستنده کیست. این جداکردن دقیقاً همان اصل وابستگی معکوس در معماری تمیز است: داده از طریق کانال جریان دارد، اما وابستگی کد در جهت مخالف قرار می‌گیرد.</div>
+<div class="tip"><strong>نکته‌ی حرفه‌ای:</strong> کانال‌ها ابزار <bdi dir="ltr">decoupling</bdi> <bdi dir="ltr">Goroutine</bdi>‌ها هستند — فرستنده نیازی ندارد بداند گیرنده کیست و گیرنده هم نیازی ندارد بداند فرستنده کیست. این جداکردن دقیقاً همان اصل وابستگی معکوس در معماری تمیز است: داده از طریق کانال جریان دارد، اما وابستگی کد در جهت مخالف قرار می‌گیرد.</div>
 
 <h3 id="nil-channel">رفتار کانال <bdi dir="ltr">nil</bdi></h3>
-<p>کانال مقداردهی‌نشده (<bdi dir="ltr">nil</bdi>) رفتار ویژه‌ای دارد: هر ارسال یا دریافت روی آن <strong>برای همیشه بلاک</strong> می‌شود. این رفتار در ابتدا ممکن است عجیب به نظر برسد، اما در عمل بسیار مفید است — می‌توان با تنظیم یک کانال روی <bdi dir="ltr">nil</bdi> آن را از <code>select</code> غیرفعال کرد.</p>
+<p>کانال <bdi dir="ltr">nil</bdi> رفتار ویژه‌ای دارد: هر ارسال یا دریافت روی آن <strong>برای همیشه بلاک</strong> می‌شود. این رفتار در ابتدا ممکن است عجیب به نظر برسد، اما در عمل بسیار مفید است — می‌توان با تنظیم یک کانال روی <bdi dir="ltr">nil</bdi> آن را از <code>select</code> غیرفعال کرد.</p>
 
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">var ch chan int // nil channel
@@ -470,12 +470,12 @@ func main() {
 
 <h3 id="channel-internals-diagram">نمودار داخلی کانال با بافر و بدون بافر</h3>
 
-<p>درک تفاوت داخلی کانال‌های بافر‌دار و بدون بافر برای نوشتن کد همزمان صحیح بسیار مهم است. هر دو نوع کانال از ساختار <code>hchan</code> مشابهی استفاده می‌کنند، اما رفتار مسدودسازی (<bdi dir="ltr">Blocking Behavior</bdi>) آن‌ها کاملاً متفاوت است. در نمودار زیر نیمی از تصویر یک کانال بدون بافر را نشان می‌دهد که در آن فرستنده مستقیماً منتظر گیرنده است (دست دادن همگام)، و نیمی دیگر یک کانال بافر‌دار را نمایش می‌دهد که در آن یک <bdi dir="ltr">Ring Buffer</bdi> داخلی به‌عنوان صف میانی عمل می‌کند. این تفاوت ساختاری، رفتار کاملاً متفاوتی در مسدودسازی ایجاد می‌کند که直接影响 عملکرد و طراحی سیستم دارد.</p>
+<p>درک تفاوت داخلی کانال‌های بافر‌دار و بدون بافر برای نوشتن کد همزمان صحیح بسیار مهم است. هر دو نوع کانال از ساختار <code>hchan</code> مشابهی استفاده می‌کنند، اما <bdi dir="ltr">Blocking Behavior</bdi> آن‌ها کاملاً متفاوت است. در نمودار زیر نیمی از تصویر یک کانال بدون بافر را نشان می‌دهد که در آن فرستنده مستقیماً منتظر گیرنده است (دست دادن همگام)، و نیمی دیگر یک کانال بافر‌دار را نمایش می‌دهد که در آن یک <bdi dir="ltr">Ring Buffer</bdi> داخلی به‌عنوان صف میانی عمل می‌کند. این تفاوت ساختاری، رفتار کاملاً متفاوتی در مسدودسازی ایجاد می‌کند که直接影响 عملکرد و طراحی سیستم دارد.</p>
 
 <figure class="diagram" dir="ltr">
 <svg height="520" viewBox="0 0 800 520" width="800" xmlns="http://www.w3.org/2000/svg">
 <rect fill="#fafafa" height="520" rx="8" width="800" x="0" y="0"></rect>
-<defs>
+<defs><filter id="sh96" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
 <marker id="aCI1" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#00ADD8" points="0 0,10 3.5,0 7"></polygon></marker>
 <marker id="aCI2" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#4CAF50" points="0 0,10 3.5,0 7"></polygon></marker>
 <marker id="aCI3" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#e74c3c" points="0 0,10 3.5,0 7"></polygon></marker>
@@ -610,14 +610,16 @@ func main() {
 <p>کانال‌ها در Go فقط وسیله‌ی انتقال داده نیستند — آن‌ها ابزار قدرتمندی برای طراحی سیستم‌های همزمان هستند. هر الگوی استفاده از کانال مسئله‌ی خاصی را حل می‌کند و انتخاب الگوی مناسب تأثیر مستقیم بر سادگی و قابلیت اطمینان کد دارد. در این بخش با پنج سناریو عملیاتی رایج آشنا می‌شویم که هر توسعه‌دهنده Go باید بشناسد. این الگوها در پروژه‌های واقعی بارها و بارها تکرار می‌شوند و درک عمیق آن‌ها برای نوشتن کد همزمان اصولی ضروری است.</p>
 
 <ul>
-<li><strong>سیگنال‌دهی با <bdi dir="ltr">Empty Struct Channel</bdi> (<code>chan struct{}</code>):</strong> وقتی فقط نیاز به سیگنال دادن دارید و هیچ داده‌ای برای انتقال نیست، از <code>chan struct{}</code> استفاده کنید. <code>struct{}</code> صفر بایت حافظه مصرف می‌کند و ارسال/دریافت روی آن فقط یک رویداد سیگنالی ایجاد می‌کند. این الگو برای اعلام پایان کار، سیگنال توقف (<bdi dir="ltr">Shutdown Signal</bdi>)، یا اطلاع‌رسانی ساده (<bdi dir="ltr">Notification</bdi>) ایده‌آل است. مثال رایج: <code>done := make(chan struct{})</code> و سپس <code>close(done)</code> برای سیگنال توقف به تمام گیرنده‌ها.</li>
+<li><strong>سیگنال‌دهی با <bdi dir="ltr">Empty Struct Channel</bdi> (<code>chan struct{}</code>):</strong> وقتی فقط نیاز به سیگنال دادن دارید و هیچ داده‌ای برای انتقال نیست، از <code>chan struct{}</code> استفاده کنید. <code>struct{}</code> صفر بایت حافظه مصرف می‌کند و ارسال/دریافت روی آن فقط یک رویداد سیگنالی ایجاد می‌کند. این الگو برای اعلام پایان کار، <bdi dir="ltr">Shutdown Signal</bdi>، یا <bdi dir="ltr">Notification</bdi> ایده‌آل است. مثال رایج: <code>done := make(chan struct{})</code> و سپس <code>close(done)</code> برای سیگنال توقف به تمام گیرنده‌ها.</li>
 <li><strong>محدود کردن نرخ با <bdi dir="ltr">Ticker Channel</bdi>:</strong> وقتی باید تعداد عملیات در واحد زمان را محدود کنید (<bdi dir="ltr">Rate Limiting</bdi>)، از <code>time.Tick</code> یا <code>time.NewTicker</code> استفاده کنید. تیکر کانالی تولید می‌کند که در فواصل زمانی منظم مقادیر زمانی ارسال می‌کند. هر گیرنده باید قبل از انجام عملیات منتظر تیک بعدی بماند. این الگو برای محدود کردن فراخوانی <bdi dir="ltr">API</bdi> خارجی یا پردازش نرخ‌محور بسیار مفید است و مشابه <bdi dir="ltr">Rate Limiter</bdi> در Laravel کار می‌کند.</li>
-<li><strong>انتشار لغو با <bdi dir="ltr">Context Channel</bdi>:</strong> بسته‌ی <code>context</code> در Go از کانال‌ها برای انتشار سیگنال لغو (<bdi dir="ltr">Cancellation Propagation</bdi>) استفاده می‌کند. وقتی <code>context.WithCancel</code> یا <code>context.WithTimeout</code> صدا زده می‌شود، یک کانال <code>ctx.Done()</code> ایجاد می‌شود که با بسته شدن آن تمام <bdi dir="ltr">Goroutine</bdi>‌های فرزند متوجه لغو می‌شوند. این الگو برای توقف گروهی از <bdi dir="ltr">Goroutine</bdi>‌ها بدون نیاز به سیگنال‌دهی جداگانه به هر کدام ایده‌آل است.</li>
+<li><strong>انتشار لغو با <bdi dir="ltr">Context Channel</bdi>:</strong> بسته‌ی <code>context</code> در Go از کانال‌ها برای <bdi dir="ltr">Cancellation Propagation</bdi> استفاده می‌کند. وقتی <code>context.WithCancel</code> یا <code>context.WithTimeout</code> صدا زده می‌شود، یک کانال <code>ctx.Done()</code> ایجاد می‌شود که با بسته شدن آن تمام <bdi dir="ltr">Goroutine</bdi>‌های فرزند متوجه لغو می‌شوند. این الگو برای توقف گروهی از <bdi dir="ltr">Goroutine</bdi>‌ها بدون نیاز به سیگنال‌دهی جداگانه به هر کدام ایده‌آل است.</li>
 <li><strong>تجمیع نتایج از چندین <bdi dir="ltr">Worker</bdi>:</strong> وقتی چند <bdi dir="ltr">Goroutine</bdi> به‌صورت موازی کار می‌کنند و نتایج خود را باید جمع‌آوری کنید، یک کانال مشترک نتایج (<bdi dir="ltr">Result Aggregation</bdi>) استفاده می‌شود. هر <bdi dir="ltr">Worker</bdi> نتیجه خود را روی کانال ارسال می‌کند و یک <bdi dir="ltr">Goroutine</bdi> جمع‌آوری‌کننده از آن می‌خواند. با بستن کانال پس از اتمام همه <bdi dir="ltr">Worker</bdi>‌ها، گیرنده می‌داند که کار تمام شده. این الگو مشابه <code>Promise.all()</code> در جاوااسکریپت یا <code>array_merge()</code> پس از <code>parallel</code> در PHP است.</li>
-<li><strong>مراحل <bdi dir="ltr">Pipeline</bdi> متصل با کانال:</strong> در الگوی خط لوله، هر مرحله پردازشی یک <bdi dir="ltr">Goroutine</bdi> مستقل است که از یک کانال ورودی می‌خواند و روی یک کانال خروجی می‌نویسد. مثلاً مرحله خواندن فایل → کانال → مرحله پردازش → کانال → مرحله نوشتن. هر مرحله می‌تواند چند نمونه (<bdi dir="ltr">Instance</bdi>) داشته باشد و سرعت مستقل خود را داشته باشد. این الگو ترکیب‌پذیری بالایی دارد و اضافه کردن مراحل جدید بدون تغییر مراحل قبلی امکان‌پذیر است.</li>
+<li><strong>مراحل <bdi dir="ltr">Pipeline</bdi> متصل با کانال:</strong> در الگوی خط لوله، هر مرحله پردازشی یک <bdi dir="ltr">Goroutine</bdi> مستقل است که از یک کانال ورودی می‌خواند و روی یک کانال خروجی می‌نویسد. مثلاً مرحله خواندن فایل → کانال → مرحله پردازش → کانال → مرحله نوشتن. هر مرحله می‌تواند چند <bdi dir="ltr">Instance</bdi> داشته باشد و سرعت مستقل خود را داشته باشد. این الگو ترکیب‌پذیری بالایی دارد و اضافه کردن مراحل جدید بدون تغییر مراحل قبلی امکان‌پذیر است.</li>
 </ul>
 
 <div class="important"><strong>نکته مهم — مالکیت کانال و مسئولیت بستن:</strong> مهم‌ترین قاعده درباره بستن کانال این است: <bdi dir="ltr">Goroutine</bdi>‌ای که کانال را ایجاد می‌کند باید مسئول بستن آن باشد و فرستنده‌ها هرگز نباید کانال را ببندند. دلیل ساده است: بستن کانال یعنی «دیگر داده‌ای ارسال نخواهد شد» و فقط کسی که کانال را ساخته می‌داند چه زمانی همه فرستنده‌ها کارشان تمام شده. اگر یک فرستنده کانال را ببندد در حالی که فرستنده دیگری هنوز می‌خواهد ارسال کند، برنامه <code>panic</code> می‌کند. الگوی صحیح این است: سازنده کانال، تمام فرستنده‌ها را با <code>sync.WaitGroup</code> منتظر می‌ماند و سپس <code>close(ch)</code> را فراخوانی می‌کند. گیرنده‌ها هرگز نباید کانال را ببندند چون ممکن است گیرنده‌های دیگری هم وجود داشته باشند.</div>
+
+<div class="note"><strong>یادداشت:</strong> انتخاب بین کانال بدون بافر و بافر‌دار، معادل انتخاب بین «همگام‌سازی دقیق» و «صف ناهمگام» است. کانال بدون بافر را برای سیگنال‌دهی و هماهنگی استفاده کنید (مثل <code>chan struct{}</code>)، چون فرستنده تا آماده‌شدن گیرنده بلاک می‌شود و این رفتار خود یک مکانیزم همگام‌سازی است. کانال بافر‌دار را برای بافر کردن داده‌ها بین مراحل <bdi dir="ltr">Pipeline</bdi> یا صف کارها به‌کار ببرید. ظرفیت بافر را بر اساس تفاوت سرعت تولید و مصرف تنظیم کنید؛ ظرفیت خیلی بزرگ حافظه را هدر می‌دهد و ظرفیت خیلی کوچک باعث <bdi dir="ltr">Backpressure</bdi> زودرس می‌شود.</div>
 
 
 </div>

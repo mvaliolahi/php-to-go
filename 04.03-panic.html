@@ -73,7 +73,7 @@
 <figure class="diagram" dir="ltr">
 <svg height="360" viewBox="0 0 650 360" width="650" xmlns="http://www.w3.org/2000/svg">
 <rect fill="#fafafa" height="360" rx="8" width="650" x="0" y="0"></rect>
-<defs>
+<defs><filter id="sh83" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
 <marker id="arrP2" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#777BB4" points="0 0,10 3.5,0 7"></polygon></marker>
 <marker id="arrB2" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#00ADD8" points="0 0,10 3.5,0 7"></polygon></marker>
 <marker id="arrR" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#e74c3c" points="0 0,10 3.5,0 7"></polygon></marker>
@@ -129,6 +129,7 @@ func main() {
 </code></pre>
 </figure>
 <p>panic چیزی شبیه throw exception بدون try/catch است. اگر جلوی آن را نگیرید برنامه متوقف می‌شود و stack trace چاپ می‌گردد. برخلاف PHP که هر استثنایی باید توسط catch گرفته شود در Go panic کل پشته فراخوانی را از پایین به بالا unwind می‌کند تا به تابعی با recover برسد یا برنامه متوقف شود.</p>
+<div class="note"><strong>چرا panic جایگزین throw نیست:</strong> وسوسه‌انگیز است که برنامه‌نویسان PHP برای هر خطایی از <code dir="ltr">panic</code> استفاده کنند، اما این ضدالگوی قطعی در Go است. قانون ساده: اگر شرایط را می‌توان با <code>error</code> بازگرداند و در لایه‌ی بالاتر مدیریت کرد، هرگز <code dir="ltr">panic</code> نکنید. <code dir="ltr">panic</code> فقط برای «این هرگز نباید رخ دهد» است — یعنی نقض invariant داخلی، مقدار <code>nil</code> غیرمنتظره، یا خطای برنامه‌نویس. در کتابخانه‌ها حتی همین موارد را هم ترجیحاً به‌صورت <code>error</code> برگردانید تا مصرف‌کننده مجبور به <code dir="ltr">recover</code> نشود.</div>
 <h3 id="panic-در-سطح-اجرا">panic در سطح اجرا: مکانیزم داخلی</h3>
 
 <div class="quote-box">
@@ -143,7 +144,7 @@ func main() {
 
 <figure class="diagram" dir="ltr">
 <svg height="300" viewBox="0 0 600 300" width="600" xmlns="http://www.w3.org/2000/svg">
-<defs>
+<defs><filter id="sh84" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
 <marker id="arrDecY" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#27ae60" points="0 0, 10 3.5, 0 7"></polygon></marker>
 <marker id="arrDecN" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#e74c3c" points="0 0, 10 3.5, 0 7"></polygon></marker>
 <marker id="arrDecG" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#666" points="0 0, 10 3.5, 0 7"></polygon></marker>
@@ -372,7 +373,7 @@ http.ListenAndServe(":8080", handler)
 <figure class="diagram" dir="ltr">
 <svg height="250" viewBox="0 0 600 250" width="600" xmlns="http://www.w3.org/2000/svg">
 <rect fill="#fafafa" height="250" rx="8" width="600" x="0" y="0"></rect>
-<defs>
+<defs><filter id="sh85" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
 <marker id="arrPan" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#e74c3c" points="0 0, 10 3.5, 0 7"></polygon></marker>
 <marker id="arrRec" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#27ae60" points="0 0, 10 3.5, 0 7"></polygon></marker>
 </defs>
@@ -465,7 +466,7 @@ func main() {
 <figure class="diagram" dir="ltr">
 <svg height="830" viewBox="0 0 800 830" width="800" xmlns="http://www.w3.org/2000/svg">
 <rect fill="#fafafa" height="830" rx="8" width="800" x="0" y="0"></rect>
-<defs>
+<defs><filter id="sh86" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
 <marker id="arrCallFlow" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#00ADD8" points="0 0, 10 3.5, 0 7"></polygon></marker>
 <marker id="arrPanicUp" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#e91e63" points="0 0, 10 3.5, 0 7"></polygon></marker>
 <marker id="arrDeferEx" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#FF9800" points="0 0, 10 3.5, 0 7"></polygon></marker>

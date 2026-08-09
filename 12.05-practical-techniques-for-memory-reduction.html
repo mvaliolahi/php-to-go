@@ -72,7 +72,7 @@
 
 <figure class="diagram" dir="ltr">
 <svg height="460" viewBox="0 0 650 460" width="650" xmlns="http://www.w3.org/2000/svg">
-<defs>
+<defs><filter id="sh199" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
 <marker id="arrowmem" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5">
 <polygon fill="#00ADD8" points="0 0, 10 3.5, 0 7"></polygon>
 </marker>
@@ -237,6 +237,7 @@ func parseRecord(cityName string, value int) RecordOptimized {
 </code></pre>
 </figure>
 <p>اگر شما ۱ میلیون رکورد با ۵۰ نام شهر مختلف داشته باشید، بدون interning ۱ میلیون کپی مستقل از نام شهرها در حافظه وجود دارد. با interning فقط ۵۰ کپی ذخیره می‌شود. اگر هر نام شهر ۲۰ کاراکتر باشد، صرفه‌جویی حدود ۱۹ مگابایت خواهد بود.</p>
+<div class="warning"><strong>هشدار:</strong> string interning فقط وقتی مفید است که واقعاً رشته‌های تکراری زیادی دارید. اگر رشته‌ها یکتا هستند، pool خودش تبدیل به یک leak حافظه می‌شود چون هیچ‌گاه پاک نمی‌شود. قبل از پیاده‌سازی، با <bdi dir="ltr">pprof heap</bdi> بررسی کنید آیا رشته‌ها سهم قابل‌توجهی از حافظه را اشغال می‌کنند. همچنین در برنامه‌های long-running، pool باید دارای سیاست <bdi dir="ltr">eviction</bdi> (مثل LRU یا محدودیت تعداد) باشد تا رشد نامحدود نداشته باشد.</div>
 
 <h3 id="pooling-http-response-body">Pooling HTTP Response Body</h3>
 <p>یکی از منابع رایج نشتی حافظه در برنامه‌های Go، خواندن ناقص response body درخواست‌های HTTP است. اگر <code dir="ltr">resp.Body</code> را کامل نخوانید و نبندید، اتصال HTTP نمی‌تواند بازیافت شود و حافظه نشت می‌کند:</p>
@@ -318,7 +319,7 @@ func readLargeFile(path string) ([]byte, error) {
 <div class="note"><strong>نکته:</strong> mmap برای سناریوهایی مثل خواندن فایل‌های ایندکس، پایگاه‌داده‌های فقط‌خواندنی و پردازش لاگ‌های بزرگ مناسب است. اما mmap سربار خاص خود را دارد و برای فایل‌های کوچک (< ۱MB) معمولاً سریع‌تر است که فایل را مستقیم خواند.</div>
 
 <h3 id="byte-slice-pooling-برای-بافرها">Byte Slice Pooling برای بافرها</h3>
-<p>بسیاری از عملیات در Go به byte slice موقتی نیاز دارند — خواندن از شبکه، رمزنگاری، فشرده‌سازی و غیره. بدون pooling، هر عملیات یک slice جدید تخصیص می‌دهد که بلافاصله بعد از استفاده به GC سپرده می‌شود. با <bdi dir="ltr">sync.Pool</bdi> می‌توان این بافرها را بازیافت کرد:</p>
+<p>بسیاری از عملیات در Go به byte slice موقتی نیاز دارند — خواندن از شبکه، رمزنگاری، فشرده‌سازی و غیره. بدون pooling، هر عملیات یک slice جدید تخصیص می‌دهد که بلافاصله بعد از استفاده به GC سپرده می‌شود. با <bdi dir="ltr">sync.Pool</bdi> می‌توان این بافرها را بازیافت کرد. معماری داخلی sync.Pool (شامل <bdi dir="ltr">local</bdi>/<bdi dir="ltr">victim</bdi> pool و رفتار در چرخه‌ی GC) و قوانین حیاتی استفاده از آن در <a href="12.04-memory-optimization-and-gc.html">بخش ۱۲.۴</a> توضیح داده شده‌اند؛ در اینجا صرفاً یک الگوی کاربردی برای byte slice نشان می‌دهیم:</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">// Pool of byte buffers with different sizes
 var bufPool = sync.Pool{
@@ -351,7 +352,7 @@ func processData(input []byte) ([]byte, error) {
 <p>نکته مهم: همیشه نتیجه‌ی نهایی را کپی کنید قبل از اینکه بافر را به pool برگردانید. اگر مستقیماً <code>buf</code> را برگردانید و سپس <code>Put</code> کنید، goroutine دیگری ممکن است همان بافر را بگیرد و داده‌های شما را بازنویسی کند.</p>
 
 <h3 id="استفاده-آگاهانه-از-pointers">استفاده آگاهانه از pointers</h3>
-<p>اشاره‌گرها زمانی مفید هستند که بخواهید از کپی داده‌های بزرگ جلوگیری کنید یا داده‌ها بین goroutineها به اشتراک گذاشته شوند. اما استفاده بیش از حد از pointer باعث <bdi dir="ltr">heap allocation</bdi> بیشتر و فشار به GC می‌شود. قانون ساده: داده‌های کوچک (کمتر از ۶۴ بایت) را <strong>با مقدار</strong> (by value) منتقل کنید و فقط داده‌های بزرگ را با pointer:</p>
+<p>اشاره‌گرها زمانی مفید هستند که بخواهید از کپی داده‌های بزرگ جلوگیری کنید یا داده‌ها بین goroutineها به اشتراک گذاشته شوند. اما استفاده بیش از حد از pointer باعث <bdi dir="ltr">heap allocation</bdi> بیشتر و فشار به GC می‌شود. قانون ساده: داده‌های کوچک (کمتر از ۶۴ بایت) را <strong dir="ltr">by value</strong> منتقل کنید و فقط داده‌های بزرگ را با pointer:</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">// Small — by value is better (32 bytes)
 type Point struct{ X, Y, Z, W float64 }
@@ -387,6 +388,7 @@ func (d *BigData) Process() { ... } // good: pointer receiver
 }
 </code></pre>
 </figure>
+<div class="note"><strong>نکته:</strong> nil کردن فقط برای متغیرهای محلیِ طولانی‌مدت یا فیلدهای struct با طول عمر بلند ضروری است. برای متغیرهای کوتاه‌عمر داخل یک تابع، معمولاً نیازی به nil کردن نیست چون compiler از طریق escape analysis تشخیص می‌دهد که متغیر دیگر استفاده نمی‌شود و آن را روی stack نگه می‌دارد. اما اگر متغیر در یک closure یا goroutine captured شده باشد، باید دستی nil کنید تا ارجاع قطع شود.</div>
 
 <h3 id="چک-لیست-نهایی">چک‌لیست نهایی</h3>
 <p>این چک‌لیست را قبل از هر deployment در production مرور کنید:</p>
@@ -482,7 +484,7 @@ for method := range v.Methods() {
 
 <figure class="diagram" dir="ltr">
 <svg height="520" viewBox="0 0 780 520" width="780" xmlns="http://www.w3.org/2000/svg">
-<defs>
+<defs><filter id="sh200" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
 <linearGradient id="impactHigh" x1="0" y1="0" x2="1" y2="0">
 <stop offset="0%" stop-color="#66BB6A"/>
 <stop offset="100%" stop-color="#2E7D32"/>
@@ -510,7 +512,7 @@ for method := range v.Methods() {
 <text x="660" y="62" direction="rtl" unicode-bidi="embed" font-size="9" font-weight="bold" fill="#666" text-anchor="middle">تکنیک</text>
 
 <!-- Row 1: sync.Pool - 70% - medium -->
-<rect x="15" y="72" width="750" height="46" fill="#f5f5f5" rx="4"/>
+<rect x="15" y="72" width="750" height="46" fill="#f5f5f5" rx="4" filter="url(#sh200)"/>
 <rect x="22" y="80" width="56" height="22" fill="#FF9800" rx="11"/>
 <text x="50" y="95" direction="rtl" unicode-bidi="embed" font-size="9" fill="#fff" text-anchor="middle" font-weight="bold">متوسط</text>
 <rect x="95" y="84" width="280" height="18" fill="url(#impactHigh)" rx="4"/>
@@ -518,7 +520,7 @@ for method := range v.Methods() {
 <text x="760" y="96" direction="rtl" unicode-bidi="embed" font-size="11" font-weight="bold" fill="#333" text-anchor="end"><tspan direction="ltr" unicode-bidi="embed">sync.Pool</tspan> برای اشیاء موقتی</text>
 
 <!-- Row 2: string interning - 60% - medium -->
-<rect x="15" y="124" width="750" height="46" fill="#fafafa" rx="4"/>
+<rect x="15" y="124" width="750" height="46" fill="#fafafa" rx="4" filter="url(#sh200)"/>
 <rect x="22" y="132" width="56" height="22" fill="#FF9800" rx="11"/>
 <text x="50" y="147" direction="rtl" unicode-bidi="embed" font-size="9" fill="#fff" text-anchor="middle" font-weight="bold">متوسط</text>
 <rect x="95" y="136" width="240" height="18" fill="url(#impactHigh)" rx="4" opacity="0.85"/>
@@ -526,7 +528,7 @@ for method := range v.Methods() {
 <text x="760" y="148" direction="rtl" unicode-bidi="embed" font-size="11" font-weight="bold" fill="#333" text-anchor="end"><tspan direction="ltr" unicode-bidi="embed">String Interning</tspan> برای رشته‌های تکراری</text>
 
 <!-- Row 3: slice preallocation - 55% - easy -->
-<rect x="15" y="176" width="750" height="46" fill="#f5f5f5" rx="4"/>
+<rect x="15" y="176" width="750" height="46" fill="#f5f5f5" rx="4" filter="url(#sh200)"/>
 <rect x="22" y="184" width="56" height="22" fill="#4CAF50" rx="11"/>
 <text x="50" y="199" direction="rtl" unicode-bidi="embed" font-size="9" fill="#fff" text-anchor="middle" font-weight="bold">آسان</text>
 <rect x="95" y="188" width="220" height="18" fill="url(#impactHigh)" rx="4" opacity="0.75"/>
@@ -534,7 +536,7 @@ for method := range v.Methods() {
 <text x="760" y="200" direction="rtl" unicode-bidi="embed" font-size="11" font-weight="bold" fill="#333" text-anchor="end">پیش‌تخصیص <tspan direction="ltr" unicode-bidi="embed">Slice</tspan></text>
 
 <!-- Row 4: avoiding []byte↔string - 45% - easy -->
-<rect x="15" y="228" width="750" height="46" fill="#fafafa" rx="4"/>
+<rect x="15" y="228" width="750" height="46" fill="#fafafa" rx="4" filter="url(#sh200)"/>
 <rect x="22" y="236" width="56" height="22" fill="#4CAF50" rx="11"/>
 <text x="50" y="251" direction="rtl" unicode-bidi="embed" font-size="9" fill="#fff" text-anchor="middle" font-weight="bold">آسان</text>
 <rect x="95" y="240" width="180" height="18" fill="url(#impactMed)" rx="4"/>
@@ -542,7 +544,7 @@ for method := range v.Methods() {
 <text x="760" y="252" direction="rtl" unicode-bidi="embed" font-size="11" font-weight="bold" fill="#333" text-anchor="end">اجتناب از تبدیل <tspan direction="ltr" unicode-bidi="embed">[]byte↔string</tspan></text>
 
 <!-- Row 5: struct alignment - 40% - easy -->
-<rect x="15" y="280" width="750" height="46" fill="#f5f5f5" rx="4"/>
+<rect x="15" y="280" width="750" height="46" fill="#f5f5f5" rx="4" filter="url(#sh200)"/>
 <rect x="22" y="288" width="56" height="22" fill="#4CAF50" rx="11"/>
 <text x="50" y="303" direction="rtl" unicode-bidi="embed" font-size="9" fill="#fff" text-anchor="middle" font-weight="bold">آسان</text>
 <rect x="95" y="292" width="160" height="18" fill="url(#impactMed)" rx="4" opacity="0.85"/>
@@ -550,7 +552,7 @@ for method := range v.Methods() {
 <text x="760" y="304" direction="rtl" unicode-bidi="embed" font-size="11" font-weight="bold" fill="#333" text-anchor="end">مرتب‌سازی فیلدهای <tspan direction="ltr" unicode-bidi="embed">struct</tspan> (<tspan direction="ltr" unicode-bidi="embed">alignment</tspan>)</text>
 
 <!-- Row 6: map preallocation - 25% - easy -->
-<rect x="15" y="332" width="750" height="46" fill="#fafafa" rx="4"/>
+<rect x="15" y="332" width="750" height="46" fill="#fafafa" rx="4" filter="url(#sh200)"/>
 <rect x="22" y="340" width="56" height="22" fill="#4CAF50" rx="11"/>
 <text x="50" y="355" direction="rtl" unicode-bidi="embed" font-size="9" fill="#fff" text-anchor="middle" font-weight="bold">آسان</text>
 <rect x="95" y="344" width="100" height="18" fill="url(#impactLow)" rx="4"/>
@@ -558,19 +560,19 @@ for method := range v.Methods() {
 <text x="760" y="356" direction="rtl" unicode-bidi="embed" font-size="11" font-weight="bold" fill="#333" text-anchor="end">پیش‌تخصیص <tspan direction="ltr" unicode-bidi="embed">Map</tspan></text>
 
 <!-- Info box -->
-<rect x="15" y="390" width="365" height="70" fill="#E3F2FD" rx="6" stroke="#90CAF9" stroke-width="1"/>
+<rect x="15" y="390" width="365" height="70" fill="#E3F2FD" rx="6" stroke="#90CAF9" stroke-width="1" filter="url(#sh200)"/>
 <text x="25" y="410" direction="rtl" unicode-bidi="embed" font-size="10" font-weight="bold" fill="#1565C0">📊 راهنمای نمودار:</text>
 <text x="25" y="426" direction="rtl" unicode-bidi="embed" font-size="8.5" fill="#333">نوار سبز = تأثیر بالا | نوار نارنجی = تأثیر متوسط | نوار قرمز = تأثیر کم‌تر</text>
 <text x="25" y="442" direction="rtl" unicode-bidi="embed" font-size="8.5" fill="#333">شانس بالای <tspan direction="ltr" unicode-bidi="embed">ROI</tspan>: تکنیک‌های آسان با تأثیر بالا را ابتدا پیاده‌سازی کنید</text>
 
 <!-- Recommendation box -->
-<rect x="400" y="390" width="365" height="70" fill="#E8F5E9" rx="6" stroke="#A5D6A7" stroke-width="1"/>
+<rect x="400" y="390" width="365" height="70" fill="#E8F5E9" rx="6" stroke="#A5D6A7" stroke-width="1" filter="url(#sh200)"/>
 <text x="410" y="410" direction="rtl" unicode-bidi="embed" font-size="10" font-weight="bold" fill="#2E7D32">✅ توصیه عملی — اولویت‌بندی:</text>
 <text x="410" y="426" direction="rtl" unicode-bidi="embed" font-size="8.5" fill="#333">۱. <tspan direction="ltr" unicode-bidi="embed">slice</tspan>/<tspan direction="ltr" unicode-bidi="embed">map</tspan> پیش‌تخصیص (آسان + فوری)</text>
 <text x="410" y="442" direction="rtl" unicode-bidi="embed" font-size="8.5" fill="#333">۲. <tspan direction="ltr" unicode-bidi="embed">struct</tspan> مرتب‌سازی (آسان + مؤثر) ۳. <tspan direction="ltr" unicode-bidi="embed">sync.Pool</tspan> (بیشترین تأثیر)</text>
 
 <!-- Golden rule bar -->
-<rect x="10" y="470" width="760" height="42" fill="#FFF8E1" rx="6" stroke="#FFC107" stroke-width="1.5"/>
+<rect x="10" y="470" width="760" height="42" fill="#FFF8E1" rx="6" stroke="#FFC107" stroke-width="1.5" filter="url(#sh200)"/>
 <text x="25" y="488" direction="rtl" unicode-bidi="embed" font-size="11" font-weight="bold" fill="#F57F17">⚡ قانون طلایی:</text>
 <text x="118" y="488" direction="rtl" unicode-bidi="embed" font-size="9.5" fill="#555">ابتدا با <tspan direction="ltr" unicode-bidi="embed">pprof</tspan> اندازه‌گیری کنید، فقط <tspan direction="ltr" unicode-bidi="embed">hot path</tspan>‌ها را بهینه کنید، و تکنیک‌های آسان با تأثیر بالا را اولویت دهید.</text>
 <text x="118" y="503" direction="rtl" unicode-bidi="embed" font-size="8.5" fill="#888">بهینه‌سازی بدون اندازه‌گیری = حدس زدن. از <tspan direction="ltr" unicode-bidi="embed">go tool pprof</tspan> و <tspan direction="ltr" unicode-bidi="embed">benchmem</tspan> شروع کنید.</text>

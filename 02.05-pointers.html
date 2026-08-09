@@ -80,7 +80,7 @@ fmt.Println(*p) // Output: 10
 </figure>
 <figure class="diagram" dir="ltr">
 <svg height="220" viewBox="0 0 550 220" width="550" xmlns="http://www.w3.org/2000/svg">
-<defs><marker id="arr8" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#4caf50" points="0 0, 10 3.5, 0 7"></polygon></marker></defs>
+<defs><filter id="sh41" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter><marker id="arr8" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#4caf50" points="0 0, 10 3.5, 0 7"></polygon></marker></defs>
 <text fill="#00ADD8" font-size="14" font-weight="bold" text-anchor="middle" x="275" y="25" direction="rtl" unicode-bidi="embed">نمودار وضعیت: <tspan direction="ltr" unicode-bidi="embed">var</tspan> a <tspan direction="ltr" unicode-bidi="embed">int</tspan> = 10, <tspan direction="ltr" unicode-bidi="embed">var</tspan> p *<tspan direction="ltr" unicode-bidi="embed">int</tspan> = &<tspan direction="ltr" unicode-bidi="embed">amp</tspan>;a</text>
 <!-- Variable a -->
 <rect fill="#e3f2fd" height="90" rx="8" stroke="#2196f3" stroke-width="2" width="160" x="50" y="50"></rect>
@@ -134,7 +134,7 @@ if p != nil {
 </div>
 <figure class="diagram" dir="ltr">
 <svg height="310" viewBox="0 0 620 310" width="620" xmlns="http://www.w3.org/2000/svg">
-<defs>
+<defs><filter id="sh42" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
 <marker id="arrVal1" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#777BB4" points="0 0, 10 3.5, 0 7"></polygon></marker>
 <marker id="arrRef1" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#4caf50" points="0 0, 10 3.5, 0 7"></polygon></marker>
 </defs>
@@ -340,7 +340,7 @@ var w io.Writer = os.Stdout // Sufficient
 </figure>
 <div class="warning"><strong>توضیح:</strong> interface در Go از قبل شامل یک اشاره‌گر به داده‌ی واقعی است. بنابراین <code>*Interface</code> عملاً یک اشاره‌گر به اشاره‌گر است و هم لازم نیست و هم کد را پیچیده‌تر می‌کند. به یاد داشته باشید: interface را مستقیم استفاده کنید، اشاره‌گر به آن نگیرید.</div>
 <h3 id="no-pointer-arithmetic">چرا Go حساب اشاره‌گر ندارد؟</h3>
-<p>یکی از تفاوت‌های اساسی <bdi dir="ltr">Go</bdi> با <bdi dir="ltr">C/C++</bdi> عدم پشتیبانی از حساب اشاره‌گر (<bdi dir="ltr">pointer arithmetic</bdi>) است. در <bdi dir="ltr">C</bdi> می‌نوشتید <code>p++</code> تا اشاره‌گر را به عنصر بعدی آرایه منتقل کنید. <bdi dir="ltr">Go</bdi> این قابلیت را عمداً حذف کرده است چون دلیل اصلی بسیاری از آسیب‌پذیری‌های امنیتی (سرریز بافر، دسترسی غیرمجاز به حافظه) و باگ‌های ردیابی‌نشده است. به‌جای حساب اشاره‌گر، <bdi dir="ltr">Go</bdi> از <code>slice</code> با اندیس‌گذاری ایمن استفاده می‌کند.</p>
+<p>یکی از تفاوت‌های اساسی <bdi dir="ltr">Go</bdi> با <bdi dir="ltr">C/C++</bdi> عدم پشتیبانی از <bdi dir="ltr">pointer arithmetic</bdi> است. در <bdi dir="ltr">C</bdi> می‌نوشتید <code>p++</code> تا اشاره‌گر را به عنصر بعدی آرایه منتقل کنید. <bdi dir="ltr">Go</bdi> این قابلیت را عمداً حذف کرده است چون دلیل اصلی بسیاری از آسیب‌پذیری‌های امنیتی (سرریز بافر، دسترسی غیرمجاز به حافظه) و باگ‌های ردیابی‌نشده است. به‌جای <bdi dir="ltr">pointer arithmetic</bdi>، <bdi dir="ltr">Go</bdi> از <code>slice</code> با اندیس‌گذاری ایمن استفاده می‌کند.</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">// Wrong — not allowed in Go:
 // p := &amp;arr[0]
@@ -402,7 +402,7 @@ func (b *BigData) Process() { // only 8 bytes copy
 </code></pre>
 </figure>
 <figure class="diagram" dir="ltr">
-<svg height="300" viewBox="0 0 600 300" width="600" xmlns="http://www.w3.org/2000/svg">
+<svg height="300" viewBox="0 0 600 300" width="600" xmlns="http://www.w3.org/2000/svg"><defs><filter id="sh43" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter></defs>
 <rect fill="#fafafa" height="280" rx="12" stroke="#00ADD8" stroke-width="2" width="580" x="10" y="10"></rect>
 <text fill="#00ADD8" font-size="15" font-weight="bold" text-anchor="middle" x="300" y="35" direction="rtl" unicode-bidi="embed">طرح حافظه: اشاره‌گر در برابر مقدار</text>
 <!-- Stack frame -->
@@ -470,6 +470,7 @@ for _, v := range values {
 </code></pre>
 </figure>
 <div class="important"><strong>خلاصه‌ی قوانین اشاره‌گر برای مهاجران PHP:</strong> در <bdi dir="ltr">PHP</bdi> از <code>&amp;$var</code> برای ارسال مرجع استفاده می‌کردید. در <bdi dir="ltr">Go</bdi> این کار با اشاره‌گر انجام می‌شود اما فرق مهمی دارد: <bdi dir="ltr">Go</bdi> هرگز تبدیل خودکار بین مقدار و اشاره‌گر انجام نمی‌دهد. اگر می‌خواهید تابعی مقدار اصلی را تغییر دهد، باید صراحتاً از <code>*Type</code> استفاده کنید. این شفافیت نقطه‌ی قوت <bdi dir="ltr">Go</bdi> است نه ضعف آن.</div>
+<div class="tip"><strong>نکته‌ی حرفه‌ای — nil predicate همیشه صریح:</strong> در <bdi dir="ltr">PHP</bdi> مقادیر falsy با <code>if (!$x)</code> بررسی می‌شوند، اما در <bdi dir="ltr">Go</bdi> اشاره‌گر <code>nil</code> به‌طور خودکار به <code>false</code> تبدیل نمی‌شود — باید صراحتاً <code>if p == nil</code> یا <code>if p != nil</code> بنویسید. فراموش کردن این بررسی قبل از <code>*p</code> شایع‌ترین علت <code>panic: runtime error: invalid memory address</code> در کد مهاجران <bdi dir="ltr\">PHP</bdi> است. در توابعی که اشاره‌گر برمی‌گردانید (مثل <code>FindUser</code>) همیشه مقدار <code>nil</code> را به‌عنوان «یافت نشد» مستند کنید.</div>
 
     <h3 id="new-with-expression-go-1.26">تابع new با عبارت مقداردهی — Go 1.26</h3>
     <p>
@@ -528,15 +529,12 @@ person := Person{
 
     <h3 id="stack-heap-anatomy">آشنایی عمیق با Stack، Heap و آناتومی اشاره‌گر</h3>
     <p>
-        برای درک کامل اشاره‌گرها در <bdi dir="ltr">Go</bdi>، شناخت ساختار حافظه‌ی برنامه ضروری است. حافظه‌ی هر برنامه‌ی <bdi dir="ltr">Go</bdi> به دو ناحیه‌ی اصلی تقسیم می‌شود: <bdi dir="ltr">Stack</bdi> (پشته) و <bdi dir="ltr">Heap</bdi> (تپه). ناحیه‌ی <bdi dir="ltr">Stack</bdi> بسیار سریع است و برای متغیرهای محلی توابع استفاده می‌شود — وقتی تابع بازمی‌گردد، تمام متغیرهای محلی آن فوراً و بدون هیچ هزینه‌ای آزاد می‌شوند. اما ناحیه‌ی <bdi dir="ltr">Heap</bdi> برای تخصیص‌های دینامیک به‌کار می‌رود و مدیریت آن بر عهده‌ی <bdi dir="ltr">Garbage Collector</bdi> است که هزینه‌ی پردازشی دارد. کامپایلر <bdi dir="ltr">Go</bdi> با تحلیل فرار (<bdi dir="ltr">Escape Analysis</bdi>) هوشمندانه تصمیم می‌گیرد هر متغیر در کدام ناحیه قرار گیرد و این یکی از بزرگ‌ترین مزیت‌های <bdi dir="ltr">Go</bdi> نسبت به <bdi dir="ltr">C/C++</bdi> است که برنامه‌نویس باید خودش <code>malloc</code> و <code>free</code> را مدیریت کند.
-    </p>
-    <p>
-        در نمودار زیر می‌بینید که چگونه متغیرهای محلی روی <bdi dir="ltr">Stack</bdi> قرار می‌گیرند و چگونه اشاره‌گرها می‌توانند به هر دو ناحیه اشاره کنند. وقتی آدرس یک متغیر محلی از تابع خارج شود (مثلاً با <code>return &amp;x</code>)، کامپایلر آن متغیر را به <bdi dir="ltr">Heap</bdi> «فرار» می‌دهد تا پس از خروج از تابع همچنان معتبر بماند. این مکانیزم خودکار برخلاف <bdi dir="ltr">PHP</bdi> است که همه‌ی مقادیر ذاتاً روی <bdi dir="ltr">Heap</bdi> تخصیص می‌یابند و با <bdi dir="ltr">reference counting</bdi> مدیریت می‌شوند.
+        برای درک کامل اشاره‌گرها در <bdi dir="ltr">Go</bdi>، شناخت ساختار حافظه‌ی برنامه ضروری است. همان‌طور که در بخش <a href="#escape-analysis">Escape Analysis</a> دیدید، کامپایلر <bdi dir="ltr">Go</bdi> هوشمندانه تصمیم می‌گیرد هر متغیر در <bdi dir="ltr">Stack</bdi> یا <bdi dir="ltr">Heap</bdi> قرار گیرد. نمودار زیر این تصمیم‌گیری و آناتومی اشاره‌گرها را به‌صورت یکپارچه نمایش می‌دهد — ناحیه‌ی <bdi dir="ltr">Stack</bdi> برای متغیرهای محلی (سریع و خودکار) و ناحیه‌ی <bdi dir="ltr">Heap</bdi> برای تخصیص‌های دینامیک با مدیریت <bdi dir="ltr">Garbage Collector</bdi>.
     </p>
 
     <figure class="diagram" dir="ltr">
     <svg height="700" viewBox="0 0 850 700" width="850" xmlns="http://www.w3.org/2000/svg">
-    <defs>
+    <defs><filter id="sh44" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
     <marker id="arrStackP" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#00ADD8" points="0 0, 10 3.5, 0 7"></polygon></marker>
     <marker id="arrHeapP" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#FF9800" points="0 0, 10 3.5, 0 7"></polygon></marker>
     <marker id="arrPtrP" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#4CAF50" points="0 0, 10 3.5, 0 7"></polygon></marker>
@@ -711,17 +709,17 @@ person := Person{
     </figure>
 
     <p>
-        همان‌طور که در نمودار می‌بینید، متغیر <code>x</code> در تابع <code>main</code> روی <bdi dir="ltr">Stack</bdi> قرار می‌گیرد و اشاره‌گر <code>p</code> مستقیماً به همان آدرس روی <bdi dir="ltr">Stack</bdi> اشاره می‌کند. اما وقتی تابع <code>createPtr</code> آدرس متغیر محلی <code>c</code> را برمی‌گرداند، کامپایلر تشخیص می‌دهد که این متغیر باید روی <bdi dir="ltr">Heap</bdi> تخصیص یابد تا پس از پایان تابع همچنان معتبر بماند. این تصمیم‌گیری خودکار توسط <bdi dir="ltr">Escape Analysis</bdi> انجام می‌شود و برنامه‌نویس نیازی به نگرانی درباره‌ی آن ندارد. در مقابل، <bdi dir="ltr">PHP</bdi> همه‌ی مقادیر را روی <bdi dir="ltr">Heap</bdi> نگه می‌دارد و از <bdi dir="ltr">reference counting</bdi> برای مدیریت حافظه استفاده می‌کند که <bdi dir="ltr">overhead</bdi> بیشتری دارد.
+        همان‌طور که در نمودار می‌بینید، متغیر <code>x</code> در تابع <code>main</code> روی <bdi dir="ltr">Stack</bdi> قرار می‌گیرد و اشاره‌گر <code>p</code> مستقیماً به همان آدرس اشاره می‌کند. اما وقتی تابع <code>createPtr</code> آدرس متغیر محلی <code>c</code> را برمی‌گرداند، <bdi dir="ltr">Escape Analysis</bdi> آن متغیر را به <bdi dir="ltr">Heap</bdi> منتقل می‌کند تا پس از پایان تابع معتبر بماند.
     </p>
     <p>
-        نکته‌ی مهم دیگر این است که <bdi dir="ltr">slice</bdi>‌ها در <bdi dir="ltr">Go</bdi> یک ساختار دو بخشی دارند: سرآیند (<bdi dir="ltr">header</bdi>) شامل اشاره‌گر، طول و ظرفیت روی <bdi dir="ltr">Stack</bdi> قرار می‌گیرد، اما آرایه‌ی زیرین (<bdi dir="ltr">backing array</bdi>) همیشه روی <bdi dir="ltr">Heap</bdi> تخصیص می‌یابد. این طراحی هوشمندانه باعث می‌شود انتقال <bdi dir="ltr">slice</bdi> به توابع بسیار سبک باشد (فقط ۲۴ بایت کپی می‌شود) اما داده‌های واقعی مشترک بمانند.
+        نکته‌ی مهم دیگر این است که <bdi dir="ltr">slice</bdi>‌ها در <bdi dir="ltr">Go</bdi> یک ساختار دو بخشی دارند: <bdi dir="ltr">header</bdi> شامل اشاره‌گر، طول و ظرفیت روی <bdi dir="ltr">Stack</bdi> قرار می‌گیرد، اما <bdi dir="ltr">backing array</bdi> همیشه روی <bdi dir="ltr">Heap</bdi> تخصیص می‌یابد. این طراحی هوشمندانه باعث می‌شود انتقال <bdi dir="ltr">slice</bdi> به توابع بسیار سبک باشد (فقط ۲۴ بایت کپی می‌شود) اما داده‌های واقعی مشترک بمانند.
     </p>
 
     <h3 id="pointer-practical-scenarios">سناریوهای عملیاتی اشاره‌گرها</h3>
     <ul>
     <li><strong>ارسال <bdi dir="ltr">struct</bdi> بزرگ با اشاره‌گر در برابر مقدار:</strong> وقتی <bdi dir="ltr">struct</bdi> شما بزرگ است (مثلاً بیش از ۶۴ بایت یا شامل آرایه‌های طولانی)، ارسال با اشاره‌گر فقط ۸ بایت کپی می‌کند اما ارسال مقداری کل ساختار را کپی می‌کند. برای <bdi dir="ltr">struct</bdi>‌های کوچک مثل <code>Point{X, Y float64}</code> ارسال مقداری سریع‌تر یا هم‌سرعت است چون داده‌ی کمتری از <bdi dir="ltr">cache</bdi> نشت می‌کند. همیشه با <bdi dir="ltr">benchmark</bdi> تصمیم نهایی را بگیرید.</li>
     <li><strong>اشاره‌گری <bdi dir="ltr">receiver</bdi> برای متدهایی که وضعیت را تغییر می‌دهند:</strong> اگر متدی نیاز دارد فیلدهای <bdi dir="ltr">struct</bdi> را ویرایش کند (مثل <code>Increment()</code> روی <code>Counter</code>)، حتماً از <bdi dir="ltr">pointer receiver</bdi> استفاده کنید. حتی اگر متدی تغییری ایجاد نکند، برای سازگاری همه‌ی متدهای یک نوع باید یا همگی مقداری یا همگی اشاره‌گری باشند — ترجیحاً همگی اشاره‌گری.</li>
-    <li><strong>جلوگیری از اشاره‌گرهای آویزان (<bdi dir="ltr">dangling pointers</bdi>):</strong> برخلاف <bdi dir="ltr">C</bdi>، <bdi dir="ltr">Go</bdi> از اشاره‌گرهای آویزان جلوگیری می‌کند. اگر اشاره‌گری به متغیر محلی برگردانده شود، <bdi dir="ltr">Escape Analysis</bdi> آن را روی <bdi dir="ltr">Heap</bdi> قرار می‌دهد. اما مراقب باشید که اشاره‌گر به <bdi dir="ltr">nil</bdi> را <bdi dir="ltr">dereference</bdi> نکنید — همیشه قبل از <code>*p</code> بررسی <code>p != nil</code> انجام دهید.</li>
+    <li><strong>جلوگیری از <bdi dir="ltr">dangling pointers</bdi>:</strong> برخلاف <bdi dir="ltr">C</bdi>، <bdi dir="ltr">Go</bdi> از <bdi dir="ltr">dangling pointers</bdi> جلوگیری می‌کند. اگر اشاره‌گری به متغیر محلی برگردانده شود، <bdi dir="ltr">Escape Analysis</bdi> آن را روی <bdi dir="ltr">Heap</bdi> قرار می‌دهد. اما مراقب باشید که اشاره‌گر به <bdi dir="ltr">nil</bdi> را <bdi dir="ltr">dereference</bdi> نکنید — همیشه قبل از <code>*p</code> بررسی <code>p != nil</code> انجام دهید.</li>
     <li><strong>بررسی <bdi dir="ltr">Escape Analysis</bdi> با <code>go build -gcflags="-m"</code>:</strong> این پرچم پرکاربردترین ابزار بهینه‌سازی حافظه در <bdi dir="ltr">Go</bdi> است. خروجی آن نشان می‌دهد کدام متغیرها فرار می‌کنند و چرا. مثلاً <code>"leak(&amp;x): argument does not escape"</code> یعنی بهینه است و <code>"&amp;x escapes to heap"</code> یعنی نیاز به بازبینی دارد. از <code>-gcflags="-m -m"</code> برای جزئیات بیشتر استفاده کنید.</li>
     <li><strong>استفاده از <code>new()</code> برای تخصیص صریح <bdi dir="ltr">Heap</bdi>:</strong> تابع <code>new(T)</code> یک مقدار صفر از نوع <code>T</code> روی <bdi dir="ltr">Heap</bdi> تخصیص می‌دهد و اشاره‌گر آن را برمی‌گرداند. اما در عمل، کامپایلر ممکن است حتی با <code>new</code> متغیر را روی <bdi dir="ltr">Stack</bdi> نگه دارد اگر فرار نکند. تابع <code>make</code> نیز برای <bdi dir="ltr">slice</bdi>، <bdi dir="ltr">map</bdi> و <bdi dir="ltr">channel</bdi> استفاده می‌شود و همیشه روی <bdi dir="ltr">Heap</bdi> تخصیص می‌دهد.</li>
     </ul>

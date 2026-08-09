@@ -171,7 +171,7 @@
 }</code></pre>
 </figure>
 
-<div class="warning"><strong>Connection Leak:</strong> اگر تراکنشی شروع کنید اما نه Commit و نه Rollback انجام دهید اتصال برای همیشه از pool خارج می‌ماند. همیشه از <code>defer tx.Rollback()</code> استفاده کنید. <bdi dir="ltr">Rollback</bdi> بعد از <bdi dir="ltr">Commit</bdi> بدون اثر است.</div>
+<div class="warning"><strong>Connection Leak:</strong> اگر تراکنشی شروع کنید اما نه <bdi dir="ltr">Commit</bdi> و نه <bdi dir="ltr">Rollback</bdi> انجام دهید، اتصال برای همیشه از <bdi dir="ltr">Pool</bdi> خارج می‌ماند. الگوی امن را در پایان همین فصل (<a href="#سناریوهای-عملیاتی-تراکنش">سناریوهای عملیاتی</a>) به‌صورت <code>defer tx.Rollback()</code> بعد از <code>Begin()</code> بررسی می‌کنیم — <bdi dir="ltr">Rollback</bdi> بعد از <bdi dir="ltr">Commit</bdi> یک عمل بدون اثر (<bdi dir="ltr">no-op</bdi>) است و خطایی تولید نمی‌کند.</div>
 
 <h3 id="isolation-levels">سطوح ایزولاسیون تراکنش</h3>
 <p>از <bdi dir="ltr">Go 1.8</bdi> با <bdi dir="ltr">db.BeginTx()</bdi> می‌توان سطح ایزولاسیون را تنظیم کرد:</p>
@@ -184,6 +184,8 @@ tx, err := db.BeginTx(ctx, &amp;sql.TxOptions{
 })</code></pre></figure>
 
 <p>سطوح موجود: <bdi dir="ltr">LevelDefault</bdi> ، <bdi dir="ltr">LevelReadUncommitted</bdi> ، <bdi dir="ltr">LevelReadCommitted</bdi> (پیش‌فرض PostgreSQL)، <bdi dir="ltr">LevelRepeatableRead</bdi> ، <bdi dir="ltr">LevelSerializable</bdi>.</p>
+
+<div class="note"><strong>سطح ایزولاسیون برای مهاجران <bdi dir="ltr">Laravel</bdi>:</strong> در <bdi dir="ltr">Laravel</bdi> سطح ایزولاسیون به‌صورت ضمنی روی پیش‌فرض دیتابیس (معمولاً <bdi dir="ltr">Read Committed</bdi>) تنظیم می‌شود و تنها با <code>DB::transaction(fn, attempts)</code> یا <bdi dir="ltr">raw SQL</bdi> قابل تغییر است. در <bdi dir="ltr">Go</bdi> این کنترل صریح است: قبل از انتخاب <bdi dir="ltr">Serializable</bdi> به‌خاطر داشته باشید که این سطح در <bdi dir="ltr">PostgreSQL</bdi> از <bdi dir="ltr">SSI</bdi> استفاده می‌کند و می‌تواند با خطای <code>could not serialize access</code> شکست بخورد — چنین تراکنشی باید با <bdi dir="ltr">retry</bdi> همراه باشد. برای اکثر سناریوهای وب همان <bdi dir="ltr">Read Committed</bdi> پیش‌فرض کافی است؛ فقط برای گزارش‌های مالی حساس یا موجودی‌سازی به <bdi dir="ltr">Repeatable Read</bdi> یا <bdi dir="ltr">Serializable</bdi> ارتقا دهید.</div>
 
 <h3 id="locking">قفل‌گذاری خوش‌بینانه و بدبینانه</h3>
 <p><strong>Pessimistic Locking:</strong> قبل از تغییر داده‌ها قفل روی ردیف می‌گیریم:</p>
@@ -204,7 +206,7 @@ if affected == 0 {
 <h3 id="saga-pattern">الگوی Saga برای تراکنش‌های توزیع‌شده</h3>
 <figure class="diagram" dir="ltr">
 <svg height="340" viewBox="0 0 620 340" width="620" xmlns="http://www.w3.org/2000/svg">
-<defs>
+<defs><filter id="sh156" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
 <marker id="arrSaga1" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#4caf50" points="0 0, 10 3.5, 0 7"></polygon></marker>
 <marker id="arrSaga2" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#e91e63" points="0 0, 10 3.5, 0 7"></polygon></marker>
 <marker id="arrSaga3" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#ff9800" points="0 0, 10 3.5, 0 7"></polygon></marker>

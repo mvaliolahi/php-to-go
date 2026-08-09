@@ -77,7 +77,7 @@
 <p>این تفاوت‌ها فقط به فلسفه طراحی محدود نمی‌شود بلکه <strong>مدل اجرایی</strong> این دو زبان هم بازتابی از جهان‌بینی متفاوتشان است. در <strong dir="ltr">PHP</strong> هر بار که یک درخواست به سرور می‌رسد مفسر PHP از ابتدا وارد عمل می‌شود. کد را اجرا می‌کند داده‌ها را پردازش می‌کند و در نهایت خروجی را به‌صورت HTML از طریق وب‌سرور برای کاربر می‌فرستد. این چرخه کوتاه و مستقل برای اپلیکیشن‌های <strong dir="ltr">Stateless</strong> بسیار ایده‌آل است اما در پردازش‌های طولانی یا سنگین به سرعت به محدودیت‌هایی می‌رسد. به همین علت تقریباً در هر پروژه PHP با ابزارهای جانبی مانند <strong dir="ltr">Queue</strong> ‌ها، <strong dir="ltr">Cache Server</strong> ‌ها روبه‌رو هستیم تا فشار را از لایه PHP برداریم.</p>
 <figure class="diagram" dir="ltr">
 <svg height="320" viewBox="0 0 700 320" width="700" xmlns="http://www.w3.org/2000/svg">
-<defs>
+<defs><filter id="sh1" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
 <marker id="arrow1" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#666" points="0 0, 10 3.5, 0 7"></polygon></marker>
 </defs>
 <!-- PHP Side -->
@@ -126,7 +126,7 @@
 <p>در زمینه‌ی Deployment باز هم نگاه این دو زبان متفاوت است. PHP به یک وب سرور نیاز دارد تنظیمات PHP-FPM و نسخه‌های مختلف ممکن است مشکل‌ساز شود و انتقال از محیط توسعه به پروداکشن ممکن است نیازمند تطبیق نسخه و تنظیمات خاصی باشد. اما در Go شما تنها یک فایل باینری می‌سازید و آن را روی سرور مقصد کپی می‌کنید. هیچ dependency‌ای لازم نیست. هیچ وب‌سروری نیاز نیست! در محيط هایی مانند Docker یا Kubernetes این مزیت به‌شدت خودش را نشان می‌دهد و روند DevOps را ساده‌تر و پایدارتر می‌سازد.</p>
 <figure class="diagram" dir="ltr">
 <svg height="280" viewBox="0 0 700 280" width="700" xmlns="http://www.w3.org/2000/svg">
-<defs>
+<defs><filter id="sh2" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
 <marker id="arrow2" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#666" points="0 0, 10 3.5, 0 7"></polygon></marker>
 </defs>
 <!-- PHP Deployment -->
@@ -256,53 +256,70 @@ func GetFromCache(key string) (string, bool) {
 <h3 id="مقایسه‌ی-زمان-حیات-درخواست">مقایسه‌ی زمان حیات درخواست: PHP-FPM در برابر Go</h3>
 <p>تفاوت عملکرد ریشه در مدل اجرایی دارد. نمودار زیر چرخه‌ی حیات کامل یک درخواست <bdi dir="ltr">HTTP</bdi> را در هر دو زبان نشان می‌دهد:</p>
 <figure class="diagram" dir="ltr">
-<svg height="420" viewBox="0 0 700 420" width="700" xmlns="http://www.w3.org/2000/svg">
+<svg height="440" viewBox="0 0 700 440" width="700" xmlns="http://www.w3.org/2000/svg">
 <defs>
-<marker id="arrLife" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#666" points="0 0, 10 3.5, 0 7"></polygon></marker>
+<linearGradient id="phpBgLife" x1="0" y1="0" x2="1" y2="1">
+<stop offset="0%" stop-color="#f3e5f5"/>
+<stop offset="100%" stop-color="#e1bee7"/>
+</linearGradient>
+<linearGradient id="goBgLife" x1="0" y1="0" x2="1" y2="1">
+<stop offset="0%" stop-color="#e0f7fa"/>
+<stop offset="100%" stop-color="#b2ebf2"/>
+</linearGradient>
+<filter id="shadowLife" x="-10%" y="-10%" width="120%" height="120%">
+<feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.08"/>
+</filter>
+<marker id="arrLife" markerheight="8" markerwidth="10" orient="auto" refx="9" refy="4"><polygon fill="currentColor" points="0 0, 10 4, 0 8"></polygon></marker>
 </defs>
 <!-- PHP Lifecycle -->
-<rect fill="#f3e5f5" height="190" rx="12" stroke="#777BB4" stroke-width="2" width="660" x="20" y="10"></rect>
-<text fill="#777BB4" font-size="14" font-weight="bold" text-anchor="middle" x="350" y="35" direction="rtl" unicode-bidi="embed">چرخه‌ی حیات درخواست <tspan direction="ltr" unicode-bidi="embed">PHP-FPM</tspan></text>
-<rect fill="#fff" height="30" rx="5" stroke="#777BB4" stroke-width="1.5" width="90" x="35" y="55"></rect>
-<text fill="#333" font-size="11" text-anchor="middle" x="80" y="75" direction="ltr" unicode-bidi="embed">Browser</text>
-<rect fill="#fff" height="30" rx="5" stroke="#777BB4" stroke-width="1.5" width="90" x="145" y="55"></rect>
-<text fill="#333" font-size="11" text-anchor="middle" x="190" y="75" direction="ltr" unicode-bidi="embed">Nginx</text>
-<rect fill="#fff" height="30" rx="5" stroke="#777BB4" stroke-width="1.5" width="90" x="255" y="55"></rect>
-<text fill="#333" font-size="11" text-anchor="middle" x="300" y="75" direction="ltr" unicode-bidi="embed">PHP-FPM</text>
-<rect fill="#fff" height="30" rx="5" stroke="#777BB4" stroke-width="1.5" width="90" x="365" y="55"></rect>
-<text fill="#333" font-size="11" text-anchor="middle" x="410" y="75" direction="ltr" unicode-bidi="embed">OPcache</text>
-<rect fill="#fff" height="30" rx="5" stroke="#777BB4" stroke-width="1.5" width="90" x="475" y="55"></rect>
-<text fill="#333" font-size="11" text-anchor="middle" x="520" y="75" direction="ltr" unicode-bidi="embed">Zend VM</text>
-<rect fill="#fff" height="30" rx="5" stroke="#777BB4" stroke-width="1.5" width="90" x="585" y="55"></rect>
-<text fill="#333" font-size="11" text-anchor="middle" x="630" y="75" direction="ltr" unicode-bidi="embed">Response</text>
-<line marker-end="url(#arrLife)" stroke="#777BB4" stroke-width="1.2" x1="125" x2="145" y1="70" y2="70"></line>
-<line marker-end="url(#arrLife)" stroke="#777BB4" stroke-width="1.2" x1="235" x2="255" y1="70" y2="70"></line>
-<line marker-end="url(#arrLife)" stroke="#777BB4" stroke-width="1.2" x1="345" x2="365" y1="70" y2="70"></line>
-<line marker-end="url(#arrLife)" stroke="#777BB4" stroke-width="1.2" x1="455" x2="475" y1="70" y2="70"></line>
-<line marker-end="url(#arrLife)" stroke="#777BB4" stroke-width="1.2" x1="565" x2="585" y1="70" y2="70"></line>
-<text fill="#777BB4" font-size="10" text-anchor="middle" x="350" y="115" direction="rtl" unicode-bidi="embed">هر درخواست: مقداردهی <tspan direction="ltr" unicode-bidi="embed">state</tspan> جدید، اتصال دیتابیس جدید، اجرای <tspan direction="ltr" unicode-bidi="embed">opcode</tspan>، آزادسازی همه منابع</text>
-<rect fill="#ffe0e0" height="30" rx="5" stroke="#e74c3c" stroke-width="1.5" width="620" x="40" y="135"></rect>
-<text fill="#c62828" font-size="11" text-anchor="middle" x="350" y="155" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">overhead</tspan>: ۴ لایه‌ی واسط + ایجاد/آزادسازی فرآیند + بدون حفظ <tspan direction="ltr" unicode-bidi="embed">state</tspan> بین درخواست‌ها</text>
+<rect fill="url(#phpBgLife)" filter="url(#shadowLife)" height="195" rx="14" stroke="#777BB4" stroke-width="1.5" width="660" x="20" y="10"/>
+<text fill="#5e3585" font-size="15" font-weight="700" text-anchor="middle" x="350" y="36" direction="rtl" unicode-bidi="embed">چرخه‌ی حیات درخواست <tspan direction="ltr" unicode-bidi="embed">PHP-FPM</tspan></text>
+<line stroke="#777BB4" stroke-opacity="0.25" stroke-width="1" x1="40" x2="660" y1="48" y2="48"/>
+<rect fill="#fff" filter="url(#shadowLife)" height="32" rx="7" stroke="#777BB4" stroke-width="1" width="90" x="35" y="58"/>
+<text fill="#333" font-size="11.5" font-weight="500" text-anchor="middle" x="80" y="79" direction="ltr" unicode-bidi="embed">Browser</text>
+<rect fill="#fff" filter="url(#shadowLife)" height="32" rx="7" stroke="#777BB4" stroke-width="1" width="90" x="145" y="58"/>
+<text fill="#333" font-size="11.5" font-weight="500" text-anchor="middle" x="190" y="79" direction="ltr" unicode-bidi="embed">Nginx</text>
+<rect fill="#fff" filter="url(#shadowLife)" height="32" rx="7" stroke="#777BB4" stroke-width="1" width="90" x="255" y="58"/>
+<text fill="#333" font-size="11.5" font-weight="500" text-anchor="middle" x="300" y="79" direction="ltr" unicode-bidi="embed">PHP-FPM</text>
+<rect fill="#fff" filter="url(#shadowLife)" height="32" rx="7" stroke="#777BB4" stroke-width="1" width="90" x="365" y="58"/>
+<text fill="#333" font-size="11.5" font-weight="500" text-anchor="middle" x="410" y="79" direction="ltr" unicode-bidi="embed">OPcache</text>
+<rect fill="#fff" filter="url(#shadowLife)" height="32" rx="7" stroke="#777BB4" stroke-width="1" width="90" x="475" y="58"/>
+<text fill="#333" font-size="11.5" font-weight="500" text-anchor="middle" x="520" y="79" direction="ltr" unicode-bidi="embed">Zend VM</text>
+<rect fill="#fff" filter="url(#shadowLife)" height="32" rx="7" stroke="#777BB4" stroke-width="1" width="90" x="585" y="58"/>
+<text fill="#333" font-size="11.5" font-weight="500" text-anchor="middle" x="630" y="79" direction="ltr" unicode-bidi="embed">Response</text>
+<g color="#777BB4">
+<line marker-end="url(#arrLife)" stroke="currentColor" stroke-width="1.5" x1="125" x2="145" y1="74" y2="74"/>
+<line marker-end="url(#arrLife)" stroke="currentColor" stroke-width="1.5" x1="235" x2="255" y1="74" y2="74"/>
+<line marker-end="url(#arrLife)" stroke="currentColor" stroke-width="1.5" x1="345" x2="365" y1="74" y2="74"/>
+<line marker-end="url(#arrLife)" stroke="currentColor" stroke-width="1.5" x1="455" x2="475" y1="74" y2="74"/>
+<line marker-end="url(#arrLife)" stroke="currentColor" stroke-width="1.5" x1="565" x2="585" y1="74" y2="74"/>
+</g>
+<text fill="#5e3585" font-size="10.5" text-anchor="middle" x="350" y="118" direction="rtl" unicode-bidi="embed">هر درخواست: مقداردهی <tspan direction="ltr" unicode-bidi="embed">state</tspan> جدید، اتصال دیتابیس جدید، اجرای <tspan direction="ltr" unicode-bidi="embed">opcode</tspan>، آزادسازی همه منابع</text>
+<rect fill="#ffe0e0" filter="url(#shadowLife)" height="34" rx="7" stroke="#e74c3c" stroke-width="1.5" width="620" x="40" y="140"/>
+<text fill="#c62828" font-size="11.5" font-weight="500" text-anchor="middle" x="350" y="161" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">overhead</tspan>: ۴ لایه‌ی واسط + ایجاد/آزادسازی فرآیند + بدون حفظ <tspan direction="ltr" unicode-bidi="embed">state</tspan> بین درخواست‌ها</text>
 <!-- Go Lifecycle -->
-<rect fill="#e0f7fa" height="190" rx="12" stroke="#00ADD8" stroke-width="2" width="660" x="20" y="220"></rect>
-<text fill="#00ADD8" font-size="14" font-weight="bold" text-anchor="middle" x="350" y="245" direction="rtl" unicode-bidi="embed">چرخه‌ی حیات درخواست <tspan direction="ltr" unicode-bidi="embed">Go</tspan></text>
-<rect fill="#fff" height="30" rx="5" stroke="#00ADD8" stroke-width="1.5" width="90" x="35" y="265"></rect>
-<text fill="#333" font-size="11" text-anchor="middle" x="80" y="285" direction="ltr" unicode-bidi="embed">Browser</text>
-<rect fill="#fff" height="30" rx="5" stroke="#00ADD8" stroke-width="1.5" width="200" x="145" y="265"></rect>
-<text fill="#333" font-size="11" text-anchor="middle" x="245" y="285" direction="ltr" unicode-bidi="embed">Go HTTP Server (binary)</text>
-<rect fill="#fff" height="30" rx="5" stroke="#00ADD8" stroke-width="1.5" width="90" x="365" y="265"></rect>
-<text fill="#333" font-size="11" text-anchor="middle" x="410" y="285" direction="ltr" unicode-bidi="embed">Goroutine</text>
-<rect fill="#fff" height="30" rx="5" stroke="#00ADD8" stroke-width="1.5" width="90" x="475" y="265"></rect>
-<text fill="#333" font-size="11" text-anchor="middle" x="520" y="285" direction="ltr" unicode-bidi="embed">Handler</text>
-<rect fill="#fff" height="30" rx="5" stroke="#00ADD8" stroke-width="1.5" width="90" x="585" y="265"></rect>
-<text fill="#333" font-size="11" text-anchor="middle" x="630" y="285" direction="ltr" unicode-bidi="embed">Response</text>
-<line marker-end="url(#arrLife)" stroke="#00ADD8" stroke-width="1.2" x1="125" x2="145" y1="280" y2="280"></line>
-<line marker-end="url(#arrLife)" stroke="#00ADD8" stroke-width="1.2" x1="345" x2="365" y1="280" y2="280"></line>
-<line marker-end="url(#arrLife)" stroke="#00ADD8" stroke-width="1.2" x1="455" x2="475" y1="280" y2="280"></line>
-<line marker-end="url(#arrLife)" stroke="#00ADD8" stroke-width="1.2" x1="565" x2="585" y1="280" y2="280"></line>
-<text fill="#00ADD8" font-size="10" text-anchor="middle" x="350" y="325" direction="rtl" unicode-bidi="embed">فرآیند دائمی: <tspan direction="ltr" unicode-bidi="embed">connection</tspan> <tspan direction="ltr" unicode-bidi="embed">pool</tspan> فعال، کش درون‌حافظه‌ای، <tspan direction="ltr" unicode-bidi="embed">goroutine</tspan> سبک (۲<tspan direction="ltr" unicode-bidi="embed">KB</tspan>)، <tspan direction="ltr" unicode-bidi="embed">state</tspan> حفظ می‌شود</text>
-<rect fill="#e8f5e9" height="30" rx="5" stroke="#27ae60" stroke-width="1.5" width="620" x="40" y="345"></rect>
-<text fill="#1b5e20" font-size="11" text-anchor="middle" x="350" y="365" direction="rtl" unicode-bidi="embed">مزیت: بدون واسطه + حفظ <tspan direction="ltr" unicode-bidi="embed">state</tspan> + <tspan direction="ltr" unicode-bidi="embed">pooling</tspan> بومی + <tspan direction="ltr" unicode-bidi="embed">overhead</tspan> کم <tspan direction="ltr" unicode-bidi="embed">Goroutine</tspan></text>
+<rect fill="url(#goBgLife)" filter="url(#shadowLife)" height="195" rx="14" stroke="#00ADD8" stroke-width="1.5" width="660" x="20" y="225"/>
+<text fill="#00838f" font-size="15" font-weight="700" text-anchor="middle" x="350" y="251" direction="rtl" unicode-bidi="embed">چرخه‌ی حیات درخواست <tspan direction="ltr" unicode-bidi="embed">Go</tspan></text>
+<line stroke="#00ADD8" stroke-opacity="0.25" stroke-width="1" x1="40" x2="660" y1="263" y2="263"/>
+<rect fill="#fff" filter="url(#shadowLife)" height="32" rx="7" stroke="#00ADD8" stroke-width="1" width="90" x="35" y="273"/>
+<text fill="#333" font-size="11.5" font-weight="500" text-anchor="middle" x="80" y="294" direction="ltr" unicode-bidi="embed">Browser</text>
+<rect fill="#fff" filter="url(#shadowLife)" height="32" rx="7" stroke="#00ADD8" stroke-width="1" width="200" x="145" y="273"/>
+<text fill="#333" font-size="11.5" font-weight="500" text-anchor="middle" x="245" y="294" direction="ltr" unicode-bidi="embed">Go HTTP Server (binary)</text>
+<rect fill="#fff" filter="url(#shadowLife)" height="32" rx="7" stroke="#00ADD8" stroke-width="1" width="90" x="365" y="273"/>
+<text fill="#333" font-size="11.5" font-weight="500" text-anchor="middle" x="410" y="294" direction="ltr" unicode-bidi="embed">Goroutine</text>
+<rect fill="#fff" filter="url(#shadowLife)" height="32" rx="7" stroke="#00ADD8" stroke-width="1" width="90" x="475" y="273"/>
+<text fill="#333" font-size="11.5" font-weight="500" text-anchor="middle" x="520" y="294" direction="ltr" unicode-bidi="embed">Handler</text>
+<rect fill="#fff" filter="url(#shadowLife)" height="32" rx="7" stroke="#00ADD8" stroke-width="1" width="90" x="585" y="273"/>
+<text fill="#333" font-size="11.5" font-weight="500" text-anchor="middle" x="630" y="294" direction="ltr" unicode-bidi="embed">Response</text>
+<g color="#00ADD8">
+<line marker-end="url(#arrLife)" stroke="currentColor" stroke-width="1.5" x1="125" x2="145" y1="289" y2="289"/>
+<line marker-end="url(#arrLife)" stroke="currentColor" stroke-width="1.5" x1="345" x2="365" y1="289" y2="289"/>
+<line marker-end="url(#arrLife)" stroke="currentColor" stroke-width="1.5" x1="455" x2="475" y1="289" y2="289"/>
+<line marker-end="url(#arrLife)" stroke="currentColor" stroke-width="1.5" x1="565" x2="585" y1="289" y2="289"/>
+</g>
+<text fill="#00838f" font-size="10.5" text-anchor="middle" x="350" y="333" direction="rtl" unicode-bidi="embed">فرآیند دائمی: <tspan direction="ltr" unicode-bidi="embed">connection</tspan> <tspan direction="ltr" unicode-bidi="embed">pool</tspan> فعال، کش درون‌حافظه‌ای، <tspan direction="ltr" unicode-bidi="embed">goroutine</tspan> سبک (۲<tspan direction="ltr" unicode-bidi="embed">KB</tspan>)، <tspan direction="ltr" unicode-bidi="embed">state</tspan> حفظ می‌شود</text>
+<rect fill="#e8f5e9" filter="url(#shadowLife)" height="34" rx="7" stroke="#27ae60" stroke-width="1.5" width="620" x="40" y="355"/>
+<text fill="#1b5e20" font-size="11.5" font-weight="500" text-anchor="middle" x="350" y="376" direction="rtl" unicode-bidi="embed">مزیت: بدون واسطه + حفظ <tspan direction="ltr" unicode-bidi="embed">state</tspan> + <tspan direction="ltr" unicode-bidi="embed">pooling</tspan> بومی + <tspan direction="ltr" unicode-bidi="embed">overhead</tspan> کم <tspan direction="ltr" unicode-bidi="embed">Goroutine</tspan></text>
 </svg>
 <figcaption>شکل ۱-۱-الف: چرخه‌ی حیات کامل درخواست در <bdi dir="ltr">PHP-FPM</bdi> و <bdi dir="ltr">Go</bdi></figcaption>
 </figure>
@@ -359,18 +376,18 @@ ENTRYPOINT ["/server"]
 <p>با وجود تمام مزایای <bdi dir="ltr">Go</bdi> ، همیشه باید به‌خاطر داشته باشیم که هیچ زبانی معجزه نیست. <bdi dir="ltr">Go</bdi> در سناریوهای زیر ممکن است بهترین انتخاب نباشد:</p>
 <p><strong>اپلیکیشن‌های <bdi dir="ltr">Full-Stack</bdi> وب سنتی:</strong> اگر نیاز به رندر <bdi dir="ltr">HTML</bdi> سمت سرور، فرم‌های پیچیده و <bdi dir="ltr">CMS</bdi> دارید، <bdi dir="ltr">Laravel</bdi> با <bdi dir="ltr">Blade</bdi> و <bdi dir="ltr">Eloquent</bdi> هنوز بسیار سریع‌تر توسعه می‌دهد. <bdi dir="ltr">Go</bdi> کتابخانه‌ی معادلی برای <bdi dir="ltr">Blade</bdi> ، <bdi dir="ltr">Livewire</bdi> یا <bdi dir="ltr">Inertia</bdi> ندارد. تمپلیت‌انجین‌های <bdi dir="ltr">Go</bdi> مانند <bdi dir="ltr">html/template</bdi> ابتدایی هستند و سیستم احراز هویت، مدیریت نشست و فرم‌اعتبارسنجی از جعبه‌ابزار استانداردی برخوردار نیستند.</p>
 <p><strong>اسکریپت‌های کوتاه و یک‌بار مصرف:</strong> اگر فقط نیاز به یک اسکریپت <bdi dir="ltr">CLI</bdi> ساده دارید، <bdi dir="ltr">PHP</bdi> یا <bdi dir="ltr">Python</bdi> به‌دلیل عدم نیاز به کامپایل سریع‌تر هستند. مرحله‌ی <code>go build</code> برای اسکریپت‌های یک‌باره <bdi dir="ltr">overhead</bdi> اضافه محسوب می‌شود. هرچند <code>go run</code> این مشکل را تا حدی حل می‌کند اما همچنان زمان شروع اولیه بیشتر از <code>php script.php</code> است.</p>
-<p><strong>رابط‌های کاربری گرافیکی (<bdi dir="ltr">GUI</bdi>):</strong> <bdi dir="ltr">Go</bdi> اکوسیستم قوی برای <bdi dir="ltr">GUI</bdi> ندارد. اگر برنامه‌ی دسکتاپ می‌سازید، زبان‌هایی مثل <bdi dir="ltr">C#</bdi> ، <bdi dir="ltr">Swift</bdi> یا <bdi dir="ltr">Electron</bdi> مناسب‌ترند. پروژه‌هایی مانند <bdi dir="ltr">Fyne</bdi> و <bdi dir="ltr">Wails</bdi> در حال رشد هستند اما هنوز بلوغ اکوسیستم <bdi dir="ltr">Electron</bdi> یا <bdi dir="ltr">Qt</bdi> را ندارند.</p>
+<p><strong dir="ltr">GUI:</strong> <bdi dir="ltr">Go</bdi> اکوسیستم قوی برای <bdi dir="ltr">GUI</bdi> ندارد. اگر برنامه‌ی دسکتاپ می‌سازید، زبان‌هایی مثل <bdi dir="ltr">C#</bdi> ، <bdi dir="ltr">Swift</bdi> یا <bdi dir="ltr">Electron</bdi> مناسب‌ترند. پروژه‌هایی مانند <bdi dir="ltr">Fyne</bdi> و <bdi dir="ltr">Wails</bdi> در حال رشد هستند اما هنوز بلوغ اکوسیستم <bdi dir="ltr">Electron</bdi> یا <bdi dir="ltr">Qt</bdi> را ندارند.</p>
 <p><strong>محاسبات علمی و یادگیری ماشین:</strong> <bdi dir="ltr">Python</bdi> با کتابخانه‌هایی مثل <bdi dir="ltr">NumPy</bdi> ، <bdi dir="ltr">TensorFlow</bdi> و <bdi dir="ltr">PyTorch</bdi> در این حوزه بی‌رقیب است. هرچند <bdi dir="ltr">Go</bdi> کتابخانه‌هایی مانند <bdi dir="ltr">Gorgonia</bdi> دارد اما اکوسیستم آن هنوز نابالغ است و جامعه‌ی توسعه‌دهندگان آن بسیار کوچک‌تر از <bdi dir="ltr">Python</bdi> است.</p>
-<p><strong>سیستم‌های قدیمی (<bdi dir="ltr">Legacy</bdi>) بزرگ:</strong> اگر پروژه‌ی <bdi dir="ltr">PHP</bdi> شما سال‌ها توسعه یافته و هزاران خط کد دارد، بازنویسی کامل به <bdi dir="ltr">Go</bdi> هزینه‌ی بالایی دارد. در بسیاری از موارد بهتر است بخش‌های بحرانی (مثل <bdi dir="ltr">microservice</bdi> های جدید) را با <bdi dir="ltr">Go</bdi> بنویسید و بقیه را حفظ کنید. این رویکرد تدریجی ریسک مهاجرت را کاهش می‌دهد و اجازه می‌دهد تیم با <bdi dir="ltr">Go</bdi> تجربه کسب کند قبل از اینکه کل سیستم بازنویسی شود.</p>
+<p><strong><bdi dir="ltr">Legacy</bdi> بزرگ:</strong> اگر پروژه‌ی <bdi dir="ltr">PHP</bdi> شما سال‌ها توسعه یافته و هزاران خط کد دارد، بازنویسی کامل به <bdi dir="ltr">Go</bdi> هزینه‌ی بالایی دارد. در بسیاری از موارد بهتر است بخش‌های بحرانی (مثل <bdi dir="ltr">microservice</bdi> های جدید) را با <bdi dir="ltr">Go</bdi> بنویسید و بقیه را حفظ کنید. این رویکرد تدریجی ریسک مهاجرت را کاهش می‌دهد و اجازه می‌دهد تیم با <bdi dir="ltr">Go</bdi> تجربه کسب کند قبل از اینکه کل سیستم بازنویسی شود.</p>
 <p><strong>پروژه‌های تک‌توسعه‌دهنده‌ی کوچک:</strong> اگر یک توسعه‌دهنده‌ی تنها هستید و پروژه‌ی کوچکی می‌سازید که احتمالاً هرگز به مقیاس بالا نمی‌رسد، <bdi dir="ltr">PHP</bdi> با <bdi dir="ltr">Laravel</bdi> یا حتی <bdi dir="ltr">WordPress</bdi> ممکن است انتخاب بهتری باشد. سادگی دیپلوی روی هاست اشتراکی، تعداد زیاد برنامه‌نویس <bdi dir="ltr">PHP</bdi> در بازار کار، و اکوسیستم بالغ ابزارها در این حالت مزیت رقابتی محسوب می‌شود.</p>
 <div class="important">
-<strong>قانون طلایی:</strong> <bdi dir="ltr">Go</bdi> بهترین انتخاب است وقتی: (۱) نیاز به <bdi dir="ltr">API server</bdi> یا <bdi dir="ltr">microservice</bdi> دارید، (۲) هم‌زمانی (<bdi dir="ltr">concurrency</bdi>) نیاز اصلی شماست، (۳) عملکرد و مقیاس‌پذیری اهمیت دارد، (۴) تیم شما به فلسفه‌ی سادگی و صراحت اهمیت می‌دهد. در غیر این صورت، <bdi dir="ltr">PHP</bdi> با فریم‌ورک‌های بالغ خود همچنان انتخاب معقولی است.
+<strong>قانون طلایی:</strong> <bdi dir="ltr">Go</bdi> بهترین انتخاب است وقتی: (۱) نیاز به <bdi dir="ltr">API server</bdi> یا <bdi dir="ltr">microservice</bdi> دارید، (۲) <bdi dir="ltr">concurrency</bdi> نیاز اصلی شماست، (۳) عملکرد و مقیاس‌پذیری اهمیت دارد، (۴) تیم شما به فلسفه‌ی سادگی و صراحت اهمیت می‌دهد. در غیر این صورت، <bdi dir="ltr">PHP</bdi> با فریم‌ورک‌های بالغ خود همچنان انتخاب معقولی است.
 </div>
 <h3 id="مدل-ذهنی-php-در-برابر-go">مدل ذهنی PHP در برابر Go: نمودار ون</h3>
 <p>یکی از مؤثرترین راه‌ها برای درک تفاوت فلسفی دو زبان، ترسیم مدل ذهنی هرکدام و یافتن نقاط اشتراک و افتراق آن‌هاست. نمودار ون زیر دو دایره‌ی ذهنی <bdi dir="ltr">PHP</bdi> و <bdi dir="ltr">Go</bdi> را نشان می‌دهد: دایره‌ی بنفش (<bdi dir="ltr">PHP</bdi>) شامل مفاهیمی است که ریشه در دنیای پویا و مبتنی بر فریم‌ورک دارند و دایره‌ی فیروزه‌ای (<bdi dir="ltr">Go</bdi>) مفاهیمی را در بر می‌گیرد که بر صراحت، هم‌زمانی و کامپایل ایستا استوارند. بخش اشتراک — یعنی نقاطی که هر دو زبان در آن‌ها هم‌سو هستند — شامل حوزه‌هایی مانند ساخت سرور وب، مدیریت <bdi dir="ltr">HTTP</bdi>، دسترسی به پایگاه داده، کار با <bdi dir="ltr">JSON</bdi> و تست‌نویسی است. اما خارج از این اشتراک، تفاوت‌های بنیادین خود را نشان می‌دهند: <bdi dir="ltr">PHP</bdi> با <bdi dir="ltr">magic methods</bdi> ، <bdi dir="ltr">traits</bdi> و <bdi dir="ltr">dynamic dispatch</bdi> کار می‌کند در حالی که <bdi dir="ltr">Go</bdi> با <bdi dir="ltr">channels</bdi> ، <bdi dir="ltr">interfaces</bdi> ، <bdi dir="ltr">defer</bdi> و بازگرداندن چند مقداری عمل می‌کند. درک این تقاطع‌ها و تفاوت‌ها به شما کمک می‌کند تا بدانید کدام مهارت‌های <bdi dir="ltr">PHP</bdi> قابل انتقال هستند و کدام باید از نو آموخته شوند.</p>
 <figure class="diagram" dir="ltr">
 <svg height="580" viewBox="0 0 800 580" width="800" xmlns="http://www.w3.org/2000/svg">
-<defs>
+<defs><filter id="sh3" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
 <marker id="arrVenn" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#666" points="0 0, 10 3.5, 0 7"></polygon></marker>
 </defs>
 <!-- Background -->
@@ -462,9 +479,9 @@ ENTRYPOINT ["/server"]
 <p>انتقال از <bdi dir="ltr">PHP</bdi> به <bdi dir="ltr">Go</bdi> فقط یادگیری یک زبان جدید نیست، بلکه دگرگونی بنیادین در نحوه‌ی تفکر درباره‌ی معماری نرم‌افزار، مدیریت خطا و طراحی سیستم است. در ادامه مهم‌ترین سناریوهایی را بررسی می‌کنیم که هر برنامه‌نویس <bdi dir="ltr">PHP</bdi> در مسیر مهاجرت به <bdi dir="ltr">Go</bdi> با آن‌ها مواجه خواهد شد. هرکدام از این سناریوها نقطه‌ی عطفی در فرآیند بازآموزی ذهنی هستند و درک عمیق آن‌ها تضمین‌کننده‌ی موفقیت در دنیای <bdi dir="ltr">Go</bdi> خواهد بود.</p>
 <ul>
 <li><strong>گذر از ذهنیت فریم‌ورک به کتابخانه استاندارد:</strong> در <bdi dir="ltr">PHP</bdi> تقریباً همه‌چیز از طریق فریم‌ورک انجام می‌شود — <bdi dir="ltr">Laravel</bdi> مسیریابی، احراز هویت، <bdi dir="ltr">ORM</bdi> و حتی ساخت <bdi dir="ltr">API</bdi> را برایتان مدیریت می‌کند. اما در <bdi dir="ltr">Go</bdi> کتابخانه‌ی استاندارد قدرتمند است و نیازی به فریم‌ورک‌های سنگین ندارید. پکیج <code dir="ltr">net/http</code> یک سرور <bdi dir="ltr">HTTP</bdi> کامل است، <code dir="ltr">database/sql</code> مدیریت پایگاه داده را بر عهده دارد و <code dir="ltr">encoding/json</code> کار با <bdi dir="ltr">JSON</bdi> را ساده می‌کند. باید یاد بگیرید که به‌جای نصب یک پکیج فریم‌ورک، از ابزارهای بومی زبان استفاده کنید و فقط در صورت نیاز واقعی پکیج‌های ثانویه اضافه کنید.</li>
-<li><strong>بازآموزی مدیریت خطا — از <bdi dir="ltr">Exception</bdi> تا <bdi dir="ltr">Error Value</bdi>:</strong> یکی از بزرگ‌ترین تغییرات ذهنی، کنار گذاشتن مدل <bdi dir="ltr">try/catch</bdi> و پذیرش مدل بازگرداندن خطا به‌عنوان مقدار است. در <bdi dir="ltr">PHP</bdir> خطاها از طریق <bdi dir="ltr">exception</bdi> بالا می‌روند و می‌توانید آن‌ها را در لایه‌ی بالاتر بگیرید. اما در <bdi dir="ltr">Go</bdi> خطا یک مقدار عادی است که باید صریحاً بررسی شود. این رویکرد خسته‌کننده به نظر می‌رسد اما مزیت بزرگ دارد: هر مسیر خطا در همان نقطه‌ای که رخ می‌دهد قابل ردیابی است و هیچ خطای پنهانی وجود نخواهد داشت که ساعت‌ها بعد از وقوع در لایه‌ی نامرتبطی ظاهر شود.</li>
-<li><strong>درک اینکه در Go هیچ جادویی وجود ندارد — همه‌چیز صریح است:</strong> <bdi dir="ltr">PHP</bdi> پر از <bdi dir="ltr">magic</bdi> است: متدهای جادویی (<code dir="ltr">__get</code> ، <code dir="ltr">__call</code>)، بارگذاری خودکار (<bdi dir="ltr">autoloading</bdi>)، حاشیه‌نویسی (<bdi dir="ltr">annotations</bdi>) و فریم‌ورک‌هایی که کارهای زیادی در پس‌زمینه انجام می‌دهند. در <bdi dir="ltr">Go</bdi> هیچ‌کدام از این‌ها وجود ندارد — شما دقیقاً همان چیزی را می‌نویسید که اجرا می‌شود. هیچ متد جادویی وجود ندارد، هیچ <bdi dir="ltr">autoloading</bdi> پنهانی نیست و هیچ <bdi dir="ltr">annotation</bdi> که رفتار کد را تغییر دهد وجود ندارد. این صراحت ابتدا طولانی‌تر به نظر می‌رسد اما در بلندمدت خوانایی و قابلیت نگهداری کد را به‌شدت افزایش می‌دهد.</li>
-<li><strong>از ارث‌بری کلاسی تا ترکیب (<bdi dir="ltr">Composition</bdi>):</strong> در <bdi dir="ltr">PHP</bdi> سلسله‌مراتب ارث‌بری (<code dir="ltr">extends</code>) ابزار اصلی استفاده‌ی مجدد کد است. اما در <bdi dir="ltr">Go</bdi> ارث‌بری وجود ندارد و به‌جای آن از <bdi dir="ltr">composition</bdi> (توصیف ساختارها درون ساختار دیگر) و <bdi dir="ltr">interface</bdi> ‌های ضمنی استفاده می‌شود. این تغییر ذهنی بزرگ است: به‌جای فکر کردن «<bdi dir="ltr">User IS-A Person</bdi>» باید فکر کنید «<bdi dir="ltr">User HAS-A Name</bdi> و <bdi dir="ltr">HAS-A Email</bdi>». ترکیب انعطاف‌پذیرتر از ارث‌بری است و از ایجاد سلسله‌مراتب عمیق و شکننده جلوگیری می‌کند.</li>
+<li><strong>بازآموزی مدیریت خطا — از <bdi dir="ltr">Exception</bdi> تا <bdi dir="ltr">Error Value</bdi>:</strong> یکی از بزرگ‌ترین تغییرات ذهنی، کنار گذاشتن مدل <bdi dir="ltr">try/catch</bdi> و پذیرش مدل بازگرداندن خطا به‌عنوان مقدار است. در <bdi dir="ltr">PHP</bdi> خطاها از طریق <bdi dir="ltr">exception</bdi> بالا می‌روند و می‌توانید آن‌ها را در لایه‌ی بالاتر بگیرید. اما در <bdi dir="ltr">Go</bdi> خطا یک مقدار عادی است که باید صریحاً بررسی شود. این رویکرد خسته‌کننده به نظر می‌رسد اما مزیت بزرگ دارد: هر مسیر خطا در همان نقطه‌ای که رخ می‌دهد قابل ردیابی است و هیچ خطای پنهانی وجود نخواهد داشت که ساعت‌ها بعد از وقوع در لایه‌ی نامرتبطی ظاهر شود.</li>
+<li><strong>درک اینکه در Go هیچ جادویی وجود ندارد — همه‌چیز صریح است:</strong> <bdi dir="ltr">PHP</bdi> پر از <bdi dir="ltr">magic</bdi> است: متدهای جادویی (<code dir="ltr">__get</code> ، <code dir="ltr">__call</code>)، <bdi dir="ltr">autoloading</bdi>، <bdi dir="ltr">annotations</bdi> و فریم‌ورک‌هایی که کارهای زیادی در پس‌زمینه انجام می‌دهند. در <bdi dir="ltr">Go</bdi> هیچ‌کدام از این‌ها وجود ندارد — شما دقیقاً همان چیزی را می‌نویسید که اجرا می‌شود. هیچ متد جادویی وجود ندارد، هیچ <bdi dir="ltr">autoloading</bdi> پنهانی نیست و هیچ <bdi dir="ltr">annotation</bdi> که رفتار کد را تغییر دهد وجود ندارد. این صراحت ابتدا طولانی‌تر به نظر می‌رسد اما در بلندمدت خوانایی و قابلیت نگهداری کد را به‌شدت افزایش می‌دهد.</li>
+<li><strong>از ارث‌بری کلاسی تا <bdi dir="ltr">Composition</bdi>:</strong> در <bdi dir="ltr">PHP</bdi> سلسله‌مراتب ارث‌بری (<code dir="ltr">extends</code>) ابزار اصلی استفاده‌ی مجدد کد است. اما در <bdi dir="ltr">Go</bdi> ارث‌بری وجود ندارد و به‌جای آن از <bdi dir="ltr">composition</bdi> (توصیف ساختارها درون ساختار دیگر) و <bdi dir="ltr">interface</bdi> ‌های ضمنی استفاده می‌شود. این تغییر ذهنی بزرگ است: به‌جای فکر کردن «<bdi dir="ltr">User IS-A Person</bdi>» باید فکر کنید «<bdi dir="ltr">User HAS-A Name</bdi> و <bdi dir="ltr">HAS-A Email</bdi>». ترکیب انعطاف‌پذیرتر از ارث‌بری است و از ایجاد سلسله‌مراتب عمیق و شکننده جلوگیری می‌کند.</li>
 </ul>
 <div class="tip">
 <strong>بزرگ‌ترین تغییر ذهنی:</strong> در دنیای <bdi dir="ltr">PHP/Laravel</bdi> ذهنیت غالب این است که «فریم‌ورک بقیه‌اش را انجام می‌دهد» — مسیریابی، احراز هویت، مدیریت نشست و حتی مدیریت خطا همه توسط لایه‌های زیرین فریم‌ورک کنترل می‌شوند. اما در <bdi dir="ltr">Go</bdi> ذهنیت کاملاً متفاوت است: «درباره‌ی همه‌چیز صریح باش». در <bdi dir="ltr">Go</bdi> جادویی وجود ندارد — نه <bdi dir="ltr">autoloading</bdi> پنهانی، نه <bdi dir="ltr">annotation</bdi> ‌های جادویی، نه متدهای نامرئی. شما دقیقاً می‌نویسید که چه می‌خواهید و کد شما دقیقاً همان‌کاری را می‌کند که نوشته‌اید. این صراحت، هرچند ابتدا بیش‌نویسی به نظر برسد، در پروژه‌های بزرگ و تیمی ارزشمندترین ویژگی <bdi dir="ltr">Go</bdi> محسوب می‌شود چون هر خط کد بدون نیاز به دانش پنهان قابل فهم است.

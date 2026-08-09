@@ -233,9 +233,9 @@ golangci-lint run --enable=staticcheck,errcheck,gosec,gocritic ./...
 </figure>
 <p>لینترهای مهم در <bdi dir="ltr">golangci-lint</bdi>: <code>staticcheck</code> (تحلیل عمیق)، <code>errcheck</code> (بررسی خطاهای نادیده‌گرفته‌شده)، <code>gosec</code> (مشکلات امنیتی)، <code>gocritic</code> (بهبود کد)، <code>govet</code> (تحلیل داخلی)، و <code>revive</code> (جایگزین golint).</p>
 <h3 id="go-module-proxy">Go Module Proxy و Checksum Database</h3>
-<p><bdi dir="ltr">Go</bdi> برای امنیت زنجیره‌ی تأمین (<bdi dir="ltr">supply chain security</bdi>) دو مکانیزم مهم دارد:</p>
+<p><bdi dir="ltr">Go</bdi> برای <bdi dir="ltr">supply chain security</bdi> دو مکانیزم مهم دارد:</p>
 <p><strong dir="ltr">GOPROXY:</strong> به‌طور پیش‌فرض، <code>go mod download</code> مستقیماً از <bdi dir="ltr">GitHub</bdi> دانلود نمی‌کند بلکه از یک <bdi dir="ltr">proxy</bdi> رسمی (<code>proxy.golang.org</code>) استفاده می‌کند. این <bdi dir="ltr">proxy</bdi> مزایای مهمی دارد: (۱) کش کردن وابستگی‌ها — حتی اگر مخزن اصلی حذف شود، وابستگی همچنان در دسترس است، (۲) سرعت بالاتر دانلود، (۳) امکان تنظیم <bdi dir="ltr">proxy</bdi> خصوصی برای سازمان‌ها.</p>
-<p><strong dir="ltr">GONOSUMCHECK / GONOSUMDB:</strong> برای وابستگی‌های خصوصی (<bdi dir="ltr">private modules</bdi>) که نباید به <bdi dir="ltr">checksum database</bdi> عمومی ارسال شوند:</p>
+<p><strong dir="ltr">GONOSUMCHECK / GONOSUMDB:</strong> برای <bdi dir="ltr">private modules</bdi> که نباید به <bdi dir="ltr">checksum database</bdi> عمومی ارسال شوند:</p>
 <figure class="code bash" dir="ltr">
 <pre><code class="language-bash"># Set corporate proxy
 go env -w GOPROXY=https://proxy.company.com,https://proxy.golang.org,direct
@@ -286,7 +286,7 @@ jobs:
 </figure>
 <figure class="diagram" dir="ltr">
 <svg height="320" viewBox="0 0 700 320" width="700" xmlns="http://www.w3.org/2000/svg">
-<defs>
+<defs><filter id="sh9" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
 <marker id="arrTool" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#666" points="0 0, 10 3.5, 0 7"></polygon></marker>
 </defs>
 <rect fill="#fafafa" height="300" rx="8" width="700" x="0" y="0"></rect>
@@ -382,7 +382,7 @@ go fix -fix buildtag ./...</code></pre>
 
 <figure class="diagram" dir="ltr">
 <svg height="620" viewBox="0 0 920 620" width="920" xmlns="http://www.w3.org/2000/svg">
-<defs>
+<defs><filter id="sh10" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
 <marker id="arrToolchain" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#666" points="0 0, 10 3.5, 0 7"></polygon></marker>
 <marker id="arrGoBlue" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#00ADD8" points="0 0, 10 3.5, 0 7"></polygon></marker>
 </defs>

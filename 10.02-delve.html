@@ -74,7 +74,7 @@
 
 <figure class="diagram" dir="ltr">
 <svg height="380" viewBox="0 0 650 380" width="650" xmlns="http://www.w3.org/2000/svg">
-<defs>
+<defs><filter id="sh167" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
 <marker id="arrowd" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5">
 <polygon fill="#00ADD8" points="0 0, 10 3.5, 0 7"></polygon>
 </marker>
@@ -429,9 +429,11 @@ $ dlv connect localhost:2345
 
 <div class="note"><strong>نکته فنی:</strong> برخلاف GDB که یک دیباگر عمومی است و زبان‌های مختلف را پشتیبانی می‌کند، Delve مخصوص Go طراحی شده و از ساختارهای داخلی Go مانند goroutine‌ها، channel‌ها، interface‌ها و slice‌ها به‌درستی پشتیبانی می‌کند. GDB نمی‌تواند goroutine‌ها را نمایش دهد یا مقادیر interface را به‌درستی تفسیر کند.</div>
 
+<div class="note"><strong>نکته:</strong> اگر باینری را با <bdi dir="ltr">go build</bdi> دستی می‌سازید و سپس با <bdi dir="ltr">dlv exec</bdi> یا <bdi dir="ltr">dlv attach</bdi> دیباگ می‌کنید، حتماً فلگ <bdi dir="ltr">-gcflags="all=-N -l"</bdi> را اضافه کنید. <bdi dir="ltr">dlv debug</bdi> این فلگ‌ها را خودکار اضافه می‌کند، اما <bdi dir="ltr">dlv exec</bdi> برنامۀ از پیش ساخته‌شده را اجرا می‌کند و کنترلی روی فلگ‌های کامپایل ندارد. بدون این فلگ‌ها، متغیرها ممکن است در register نگه داشته شوند و در <bdi dir="ltr">print</bdi> ظاهر نشوند، یا توابع کوتاه inline شوند و breakpoint روی آن‌ها هرگز فعال نشود. این خطا معمولاً به‌صورت breakpoint‌های خاکستری در VS Code یا پیام <bdi dir="ltr">"could not find function"</bdi> در Delve ظاهر می‌شود.</div>
+
 <figure class="diagram" dir="ltr">
 <svg height="420" viewBox="0 0 700 420" width="700" xmlns="http://www.w3.org/2000/svg">
-<defs>
+<defs><filter id="sh168" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
 <marker id="arrowdarch" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5">
 <polygon fill="#555" points="0 0, 10 3.5, 0 7"></polygon>
 </marker>
@@ -498,28 +500,14 @@ $ dlv connect localhost:2345
 
 <p><strong dir="ltr">GODEBUG:</strong> متغیر محیطی <bdi dir="ltr">GODEBUG</bdi> به شما امکان می‌دهد رفتار runtime را بدون تغییر کد کنترل کنید. دستورات و فلگ‌های مختلف GODEBUG (مثل <code dir="ltr">schedtrace</code>، <code dir="ltr">gctrace</code> و <code dir="ltr">allocfreetrace</code>) در بخش ۱۰.۱ به‌تفصیل شرح داده شده‌اند.</p>
 
-<p><strong>pprof برای دیباگ زنده:</strong> وقتی <bdi dir="ltr">net/http/pprof</bdi> فعال باشد، می‌توانید در زمان اجرا وضعیت برنامه را بررسی کنید:</p>
-<figure class="code bash" dir="ltr">
-<pre><code class="language-bash"># View goroutines (useful for identifying goroutine leaks)
-$ go tool pprof http://localhost:6060/debug/pprof/goroutine
-
-# View memory status
-$ go tool pprof http://localhost:6060/debug/pprof/heap
-
-# View blocks (Deadlock)
-$ go tool pprof http://localhost:6060/debug/pprof/block
-
-# View mutex contention
-$ go tool pprof http://localhost:6060/debug/pprof/mutex
-</code></pre>
-</figure>
+<p><strong>pprof برای دیباگ زنده:</strong> وقتی <bdi dir="ltr">net/http/pprof</bdi> فعال باشد، می‌توانید در زمان اجرا وضعیت goroutine‌ها، حافظه، block‌ها و mutex‌ها را بدون توقف برنامه بررسی کنید. endpoint‌های <bdi dir="ltr">/debug/pprof/goroutine</bdi>، <bdi dir="ltr">heap</bdi>، <bdi dir="ltr">block</bdi> و <bdi dir="ltr">mutex</bdi> به‌تفصیل در بخش ۱۰.۱ شرح داده شده‌اند. در اینجا صرفاً به یادآوری می‌پردازیم که ترکیب این endpoint‌ها با دستور <bdi dir="ltr">goroutines</bdi> در Delve (که در ادامه می‌آید) مؤثرترین روش ریشه‌یابی مشکلات همزمانی است.</p>
 
 <h3 id="معماری-delve-دیباگر-و-پردازش-هدف">معماری Delve: دیباگر و پردازش هدف</h3>
 <p>همان‌طور که در بخش قبل بررسی کردیم، Delve برخلاف Xdebug یک process جداگانه است که از طریق رابط‌های سیستم‌عامل به باینری Go متصل می‌شود. نمودار زیر جزئیات این معماری و ارتباط بین دیباگر و پردازش هدف را نشان می‌دهد:</p>
 
 <figure class="diagram" dir="ltr">
 <svg height="580" viewBox="0 0 780 580" width="780" xmlns="http://www.w3.org/2000/svg">
-<defs>
+<defs><filter id="sh169" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
 <marker id="arrowarch2" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5">
 <polygon fill="#555" points="0 0, 10 3.5, 0 7"></polygon>
 </marker>
