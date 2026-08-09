@@ -124,42 +124,39 @@ func NewUser(name string) *User {
 <p>وقتی struct شما تعداد زیادی فیلد اختیاری دارد، تعریف چندین تابع سازنده (مثل <code>NewServer</code> ، <code>NewServerWithTimeout</code> ، <code>NewServerWithTLS</code>) به سرعت غیرقابل مدیریت می‌شود. الگوی <strong dir="ltr">Functional Options</strong> راه‌حل Idiomatic Go برای این مشکل است:</p>
 
 <figure class="diagram" dir="ltr">
-<svg height="240" viewBox="0 0 700 240" width="700" xmlns="http://www.w3.org/2000/svg">
-<defs><filter id="sh73" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter><marker id="arrFO" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#00ADD8" points="0 0, 10 3.5, 0 7"></polygon></marker></defs>
-<rect fill="#fafafa" height="240" rx="8" width="700" x="0" y="0"></rect>
-<text fill="#00ADD8" font-size="15" font-weight="bold" text-anchor="middle" x="350" y="25" direction="rtl" unicode-bidi="embed">جریان الگوی <tspan direction="ltr" unicode-bidi="embed">Functional Options</tspan></text>
-<!-- NewServer -->
-<rect fill="#e0f7fa" height="45" rx="8" stroke="#00ADD8" stroke-width="2" width="140" x="20" y="55"></rect>
-<text fill="#00ADD8" font-size="12" font-weight="bold" text-anchor="middle" x="90" y="75" direction="ltr" unicode-bidi="embed">NewServer()</text>
-<text fill="#666" font-size="9" text-anchor="middle" x="90" y="92" direction="rtl" unicode-bidi="embed">مقادیر پیش‌فرض</text>
-<!-- Options -->
-<rect fill="#e8f5e9" height="35" rx="6" stroke="#27ae60" stroke-width="1.5" width="120" x="20" y="120"></rect>
-<text fill="#27ae60" font-size="10" text-anchor="middle" x="80" y="142" direction="ltr" unicode-bidi="embed">WithHost("0.0.0.0")</text>
-<rect fill="#e8f5e9" height="35" rx="6" stroke="#27ae60" stroke-width="1.5" width="100" x="150" y="120"></rect>
-<text fill="#27ae60" font-size="10" text-anchor="middle" x="200" y="142" direction="ltr" unicode-bidi="embed">WithPort(443)</text>
-<rect fill="#e8f5e9" height="35" rx="6" stroke="#27ae60" stroke-width="1.5" width="80" x="260" y="120"></rect>
-<text fill="#27ae60" font-size="10" text-anchor="middle" x="300" y="142" direction="ltr" unicode-bidi="embed">WithTLS()</text>
-<rect fill="#e8f5e9" height="35" rx="6" stroke="#27ae60" stroke-width="1.5" width="130" x="350" y="120"></rect>
-<text fill="#27ae60" font-size="10" text-anchor="middle" x="415" y="142" direction="ltr" unicode-bidi="embed">WithTimeout(10s)</text>
-<!-- Arrows from options to for loop -->
-<line stroke="#27ae60" stroke-width="1" x1="80" x2="280" y1="155" y2="175"></line>
-<line stroke="#27ae60" stroke-width="1" x1="200" x2="320" y1="155" y2="175"></line>
-<line stroke="#27ae60" stroke-width="1" x1="300" x2="360" y1="155" y2="175"></line>
-<line stroke="#27ae60" stroke-width="1" x1="415" x2="400" y1="155" y2="175"></line>
-<!-- Apply loop -->
-<rect fill="#fff3e0" height="35" rx="6" stroke="#f39c12" stroke-width="1.5" width="250" x="215" y="175"></rect>
-<text fill="#e65100" font-size="11" text-anchor="middle" x="340" y="197" direction="ltr" unicode-bidi="embed">for _, opt := range opts { opt(s) }</text>
-<line marker-end="url(#arrFO)" stroke="#00ADD8" stroke-width="1.5" x1="160" x2="215" y1="77" y2="185"></line>
-<!-- Result -->
-<rect fill="#e0f7fa" height="35" rx="6" stroke="#00ADD8" stroke-width="2" width="140" x="550" y="175"></rect>
-<text fill="#00ADD8" font-size="11" font-weight="bold" text-anchor="middle" x="620" y="197" direction="ltr" unicode-bidi="embed">*Server { ... }</text>
-<line marker-end="url(#arrFO)" stroke="#f39c12" stroke-width="1.5" x1="465" x2="550" y1="192" y2="192"></line>
-<!-- Type definition -->
-<rect fill="#f3e5f5" height="30" rx="4" stroke="#777BB4" stroke-width="1" width="280" x="400" y="55"></rect>
-<text fill="#777BB4" font-size="10" text-anchor="middle" x="540" y="75" direction="ltr" unicode-bidi="embed">type Option func(*Server)</text>
-<rect fill="#f3e5f5" height="30" rx="4" stroke="#777BB4" stroke-width="1" width="280" x="400" y="95"></rect>
-<text fill="#777BB4" font-size="10" text-anchor="middle" x="540" y="115" direction="ltr" unicode-bidi="embed">func WithX(x T) Option { return func(s *Server) { s.x = x } }</text>
-</svg>
+<pre class="mermaid">flowchart TB
+    title(["جریان الگوی Functional Options"])
+    NEW["NewServer()<br/>مقادیر پیش‌فرض"]
+    WH["WithHost(&quot;0.0.0.0&quot;)"]
+    WP["WithPort(443)"]
+    WT["WithTLS()"]
+    WTO["WithTimeout(10s)"]
+    LOOP["for _, opt := range opts { opt(s) }"]
+    RESULT["*Server { ... }"]
+    NEW --> LOOP
+    WH --> LOOP
+    WP --> LOOP
+    WT --> LOOP
+    WTO --> LOOP
+    LOOP --> RESULT
+
+    TYPE1["type Option func(*Server)"]
+    TYPE2["func WithX(x T) Option { return func(s *Server) { s.x = x } }"]
+    title ~~~ NEW
+    NEW ~~~ TYPE1
+    TYPE1 ~~~ TYPE2
+    TYPE2 ~~~ WH
+
+    classDef titleBox fill:#f8fafc,stroke:#475569,stroke-width:1px,color:#1f2937,font-weight:bold;
+    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
+    classDef okBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
+    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
+    classDef phpBox fill:#f5f0fb,stroke:#777BB4,stroke-width:1px,color:#1f2937;
+    class title titleBox;
+    class NEW,RESULT goBox;
+    class WH,WP,WT,WTO okBox;
+    class LOOP warnBox;
+    class TYPE1,TYPE2 phpBox;</pre>
 <figcaption dir="rtl">شکل ۷-۳-ب: جریان الگوی <bdi dir="ltr">Functional Options</bdi> — هر تابع <bdi dir="ltr">WithX</bdi> یک <bdi dir="ltr">Option</bdi> برمی‌گرداند</figcaption>
 </figure>
 
@@ -452,39 +449,39 @@ func main() {
 <div class="note"><strong>نکته‌ی حرفه‌ای — قرارداد نام‌گذاری <code dir="ltr">NewX()</code> و قانون zero-value:</strong> در Go برخلاف PHP که <code>__construct()</code> یک قرارداد زبانی است، نام <code dir="ltr">NewX()</code> فقط یک قرارداد نوشتاری است که در کتابخانه استاندارد ریشه دارد (مثل <code>errors.New</code>، <code>http.NewServeMux</code>، <code>time.NewTimer</code>). همیشه از پیشوند <code>New</code> استفاده کنید، نه <code>Create</code>، <code>Make</code> یا <code>Build</code>. دو استثنای مهم وجود دارد: ۱) وقتی zero value معتبر است، سازنده ننویسید (مثل <code>sync.Mutex{}</code> یا <code>bytes.Buffer{}</code> که کاملاً کاربردی هستند)؛ ۲) وقتی چند سازنده با رفتار متفاوت لازم دارید، از پیشوندهای توصیفی استفاده کنید (مثل <code>NewAdminUser</code>، <code>NewGuestUser</code>). رعایت این قراردادها باعث می‌شود کد شما برای دیگر Go کارها آشنا و قابل پیش‌بینی باشد.</div>
 
 <figure class="diagram" dir="ltr">
-<svg height="250" viewBox="0 0 650 250" width="650" xmlns="http://www.w3.org/2000/svg">
-<rect fill="#fafafa" height="250" rx="8" width="650" x="0" y="0"></rect>
-<defs><filter id="sh74" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter><marker id="arrCtor" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#00ADD8" points="0 0, 10 3.5, 0 7"></polygon></marker></defs>
-<text fill="#00ADD8" font-size="15" font-weight="bold" text-anchor="middle" x="325" y="25" direction="rtl" unicode-bidi="embed">الگوهای <tspan direction="ltr" unicode-bidi="embed">Constructor</tspan> در <tspan direction="ltr" unicode-bidi="embed">Go</tspan></text>
-<!-- Simple -->
-<rect fill="#e0f7fa" height="65" rx="8" stroke="#00ADD8" stroke-width="2" width="140" x="20" y="55"></rect>
-<text fill="#00ADD8" font-size="13" font-weight="bold" text-anchor="middle" x="90" y="78" direction="ltr" unicode-bidi="embed">NewX()</text>
-<text fill="#666" font-size="10" text-anchor="middle" x="90" y="95" direction="rtl" unicode-bidi="embed">سازنده ساده</text>
-<text fill="#666" font-size="10" text-anchor="middle" x="90" y="110" direction="rtl" unicode-bidi="embed">کمتر از ۳ فیلد اختیاری</text>
-<!-- Functional Options -->
-<rect fill="#e8f5e9" height="65" rx="8" stroke="#27ae60" stroke-width="2" width="140" x="180" y="55"></rect>
-<text fill="#27ae60" font-size="13" font-weight="bold" text-anchor="middle" x="250" y="78" direction="ltr" unicode-bidi="embed">Functional Options</text>
-<text fill="#666" font-size="10" text-anchor="middle" x="250" y="95" direction="rtl" unicode-bidi="embed">فیلدهای اختیاری زیاد</text>
-<text fill="#666" font-size="10" text-anchor="middle" x="250" y="110" direction="rtl" unicode-bidi="embed">مستقل و بدون ترتیب</text>
-<!-- Builder -->
-<rect fill="#fff3e0" height="65" rx="8" stroke="#f39c12" stroke-width="2" width="140" x="340" y="55"></rect>
-<text fill="#e65100" font-size="13" font-weight="bold" text-anchor="middle" x="410" y="78" direction="ltr" unicode-bidi="embed">Builder</text>
-<text fill="#666" font-size="10" text-anchor="middle" x="410" y="95" direction="rtl" unicode-bidi="embed">مراحل وابسته به هم</text>
-<text fill="#666" font-size="10" text-anchor="middle" x="410" y="110" direction="rtl" unicode-bidi="embed">اعتبارسنجی پیچیده</text>
-<!-- Must -->
-<rect fill="#fce4ec" height="65" rx="8" stroke="#e91e63" stroke-width="2" width="140" x="500" y="55"></rect>
-<text fill="#880e4f" font-size="13" font-weight="bold" text-anchor="middle" x="570" y="78" direction="ltr" unicode-bidi="embed">MustXxx()</text>
-<text fill="#666" font-size="10" text-anchor="middle" x="570" y="95" direction="rtl" unicode-bidi="embed">خطا غیرقابل‌قبول</text>
-<text fill="#666" font-size="10" text-anchor="middle" x="570" y="110" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">panic</tspan> در صورت شکست</text>
-<!-- PHP -->
-<rect fill="#f3e5f5" height="60" rx="8" stroke="#777BB4" stroke-width="1.5" width="250" x="20" y="160"></rect>
-<text fill="#777BB4" font-size="12" font-weight="bold" text-anchor="middle" x="145" y="183" direction="ltr" unicode-bidi="embed">PHP: __construct()</text>
-<text fill="#666" font-size="10" text-anchor="middle" x="145" y="200" direction="rtl" unicode-bidi="embed">یک سازنده اجباری — <tspan direction="ltr" unicode-bidi="embed">DI</tspan> خودکار</text>
-<!-- Go -->
-<rect fill="#e0f7fa" height="60" rx="8" stroke="#00ADD8" stroke-width="1.5" width="350" x="290" y="160"></rect>
-<text fill="#00ADD8" font-size="12" font-weight="bold" text-anchor="middle" x="465" y="183" direction="ltr" unicode-bidi="embed">Go: NewX() / Options / Builder</text>
-<text fill="#666" font-size="10" text-anchor="middle" x="465" y="200" direction="rtl" unicode-bidi="embed">چندین سازنده اختیاری — <tspan direction="ltr" unicode-bidi="embed">DI</tspan> صریح</text>
-</svg>
+<pre class="mermaid">flowchart TB
+    title(["الگوهای Constructor در Go"])
+
+    subgraph PATTERNS["الگوهای Go"]
+        direction LR
+        NEW["NewX()<br/>سازنده ساده<br/>کمتر از ۳ فیلد اختیاری"]
+        OPT["Functional Options<br/>فیلدهای اختیاری زیاد<br/>مستقل و بدون ترتیب"]
+        BLD["Builder<br/>مراحل وابسته به هم<br/>اعتبارسنجی پیچیده"]
+        MUST["MustXxx()<br/>خطا غیرقابل‌قبول<br/>panic در صورت شکست"]
+    end
+
+    subgraph CMP["مقایسه با PHP"]
+        direction LR
+        PHP["PHP: __construct()<br/>یک سازنده اجباری — DI خودکار"]
+        GO["Go: NewX() / Options / Builder<br/>چندین سازنده اختیاری — DI صریح"]
+    end
+
+    title ~~~ PATTERNS
+    PATTERNS ~~~ CMP
+
+    classDef titleBox fill:#f8fafc,stroke:#475569,stroke-width:1px,color:#1f2937,font-weight:bold;
+    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
+    classDef okBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
+    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
+    classDef errBox fill:#fef2f2,stroke:#ef4444,stroke-width:1.5px,color:#1f2937;
+    classDef phpBox fill:#f5f0fb,stroke:#777BB4,stroke-width:1.5px,color:#1f2937;
+    class title titleBox;
+    class NEW goBox;
+    class OPT okBox;
+    class BLD warnBox;
+    class MUST errBox;
+    class PHP phpBox;
+    class GO goBox;</pre>
 <figcaption>شکل ۷-۳: مقایسه‌ی الگوهای <bdi dir="ltr">Constructor</bdi> در <bdi dir="ltr">PHP</bdi> و <bdi dir="ltr">Go</bdi></figcaption>
 </figure>
 
@@ -492,86 +489,57 @@ func main() {
 <p>یکی از مهم‌ترین تصمیماتی که در طراحی <bdi dir="ltr">API</bdi> یک پکیج Go باید بگیرید این است که آیا کاربر باید شیء را با <bdi dir="ltr">NewX()</bdi> بسازد یا مستقیماً با <bdi dir="ltr">X{}</bdi> مقداردهی اولیه کند. این تصمیم به ماهیت <bdi dir="ltr">struct</bdi> و نوع استفاده‌ی مورد انتظار بستگی دارد. برخی <bdi dir="ltr">struct</bdi>ها مانند <bdi dir="ltr">sync.Mutex</bdi> و <bdi dir="ltr">bytes.Buffer</bdi> بدون هیچ مقداردهی اولیه‌ای کاملاً کاربردی هستند و مقدار صفر (<bdi dir="ltr">zero value</bdi>) آن‌ها معتبر و مفید است. اما اکثر <bdi dir="ltr">struct</bdi>ها به مقداردهی اولیه نیاز دارند و استفاده از <bdi dir="ltr">NewX()</bdi> بهترین روش برای اطمینان از صحت وضعیت اولیه شیء است.</p>
 
 <figure class="diagram" dir="ltr">
-<svg height="560" viewBox="0 0 820 560" width="820" xmlns="http://www.w3.org/2000/svg">
-<rect fill="#fafafa" height="560" rx="12" stroke="#00ADD8" stroke-width="2" width="820" x="0" y="0"></rect>
-<defs><filter id="sh75" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
-<marker id="arrNewX" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#4CAF50" points="0 0, 10 3.5, 0 7"></polygon></marker>
-<marker id="arrZero" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#FF9800" points="0 0, 10 3.5, 0 7"></polygon></marker>
-<marker id="arrFact" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#00ADD8" points="0 0, 10 3.5, 0 7"></polygon></marker>
-</defs>
+<pre class="mermaid">flowchart TB
+    title(["مقایسه‌ی الگوهای مقداردهی اولیه در Go"])
 
-<!-- Title -->
-<text fill="#333" font-size="16" font-weight="bold" text-anchor="middle" x="410" y="28" direction="rtl" unicode-bidi="embed">مقایسه‌ی الگوهای مقداردهی اولیه در <tspan direction="ltr" unicode-bidi="embed">Go</tspan></text>
+    subgraph NEWX["NewX() — Constructor Pattern"]
+        direction TB
+        NX_CODE["func NewServer(addr string) (*Server, error) {<br/>  if addr == &quot;&quot; {<br/>    return nil, errors.New(&quot;addr required&quot;)<br/>  }<br/>  return &amp;Server{addr: addr}, nil<br/>}"]
+        NX_F1["✓ می‌تواند error برگرداند — مدیریت خطای صریح"]
+        NX_F2["✓ مقادیر پیش‌فرض و اعتبارسنجی انجام می‌دهد"]
+        NX_F3["✓ فراخوانی صریح — کنترل کامل روی زمان ساخت"]
+        NX_F4["✓ تست‌پذیر — می‌توان خطا و موفقیت را بررسی کرد"]
+    end
 
-<!-- =================== LEFT: NewX() Pattern =================== -->
-<rect fill="#e8f5e9" height="25" rx="6" stroke="#4CAF50" stroke-width="2" width="360" x="20" y="45"></rect>
-<text fill="#2e7d32" font-size="14" font-weight="bold" text-anchor="middle" x="200" y="63" direction="ltr" unicode-bidi="embed">NewX() — Constructor Pattern</text>
+    subgraph ZERO["X{} + Initialize() — Zero-value Pattern"]
+        direction TB
+        Z_CODE["var buf bytes.Buffer<br/>buf.Write([]byte(&quot;hello&quot;))<br/><br/>var mu sync.Mutex<br/>mu.Lock()<br/>defer mu.Unlock()"]
+        Z_F1["✓ بدون نیاز به سازنده — مقدار صفر معتبر است"]
+        Z_F2["✓ ساده و سبک — بدون تخصیص اضافی"]
+        Z_F3["⚠ فقط وقتی zero value مفید باشد"]
+        Z_F4["⚠ نمونه‌ها: sync.Mutex، bytes.Buffer"]
+    end
 
-<!-- NewX code box -->
-<rect fill="#fff" height="130" rx="8" stroke="#4CAF50" stroke-width="1.5" width="360" x="20" y="80"></rect>
-<text fill="#4CAF50" font-size="11" font-family="monospace" x="30" y="100" direction="ltr" unicode-bidi="embed">func NewServer(addr string) (*Server, error) {</text>
-<text fill="#555" font-size="11" font-family="monospace" x="30" y="118" direction="ltr" unicode-bidi="embed">  if addr == "" {</text>
-<text fill="#e91e63" font-size="11" font-family="monospace" x="30" y="136" direction="ltr" unicode-bidi="embed">    return nil, errors.New("addr required")</text>
-<text fill="#555" font-size="11" font-family="monospace" x="30" y="154" direction="ltr" unicode-bidi="embed">  }</text>
-<text fill="#555" font-size="11" font-family="monospace" x="30" y="172" direction="ltr" unicode-bidi="embed">  return &amp;Server{addr: addr}, nil</text>
-<text fill="#555" font-size="11" font-family="monospace" x="30" y="190" direction="ltr" unicode-bidi="embed">}</text>
+    subgraph FACTORY["Factory Pattern — NewStorage(type) Storage"]
+        direction TB
+        F_CODE1["type Storage interface {<br/>  Save(key string, value []byte) error<br/>  Load(key string) ([]byte, error)<br/>}"]
+        F_CODE2["func NewStorage(t string) Storage {<br/>  switch t {<br/>  case &quot;redis&quot;: return &amp;redisStorage{...}<br/>  default:     return &amp;memStorage{}<br/>  }<br/>}"]
+    end
 
-<!-- NewX features -->
-<rect fill="#e8f5e9" height="115" rx="8" stroke="#4CAF50" stroke-width="1" width="360" x="20" y="220"></rect>
-<text fill="#2e7d32" font-size="12" font-weight="bold" text-anchor="middle" x="200" y="240" direction="rtl" unicode-bidi="embed">ویژگی‌ها:</text>
-<text fill="#333" font-size="11" x="30" y="260" direction="rtl" unicode-bidi="embed">✓ می‌تواند <tspan direction="ltr" unicode-bidi="embed">error</tspan> برگرداند — مدیریت خطای صریح</text>
-<text fill="#333" font-size="11" x="30" y="280" direction="rtl" unicode-bidi="embed">✓ مقادیر پیش‌فرض و اعتبارسنجی انجام می‌دهد</text>
-<text fill="#333" font-size="11" x="30" y="300" direction="rtl" unicode-bidi="embed">✓ فراخوانی صریح — کنترل کامل روی زمان ساخت</text>
-<text fill="#333" font-size="11" x="30" y="320" direction="rtl" unicode-bidi="embed">✓ تست‌پذیر — می‌توان خطا و موفقیت را بررسی کرد</text>
+    subgraph CMP["مقایسه"]
+        direction LR
+        PHP["PHP: __construct()<br/>یک سازنده اجباری و خودکار"]
+        GO["Go: NewX() / Factory / Options<br/>چندین سازنده اختیاری و صریح"]
+    end
 
-<!-- =================== RIGHT: Zero-value + Initialize Pattern =================== -->
-<rect fill="#fff3e0" height="25" rx="6" stroke="#FF9800" stroke-width="2" width="360" x="440" y="45"></rect>
-<text fill="#e65100" font-size="14" font-weight="bold" text-anchor="middle" x="620" y="63" direction="ltr" unicode-bidi="embed">X{} + Initialize() — Zero-value Pattern</text>
+    title ~~~ NEWX
+    NEWX ~~~ ZERO
+    ZERO ~~~ FACTORY
+    FACTORY ~~~ CMP
 
-<!-- Zero-value code box -->
-<rect fill="#fff" height="130" rx="8" stroke="#FF9800" stroke-width="1.5" width="360" x="440" y="80"></rect>
-<text fill="#FF9800" font-size="11" font-family="monospace" x="450" y="100" direction="ltr" unicode-bidi="embed">var buf bytes.Buffer</text>
-<text fill="#FF9800" font-size="11" font-family="monospace" x="450" y="118" direction="ltr" unicode-bidi="embed">buf.Write([]byte("hello"))</text>
-<text fill="#888" font-size="10" x="450" y="140" direction="ltr" unicode-bidi="embed"></text>
-<text fill="#FF9800" font-size="11" font-family="monospace" x="450" y="156" direction="ltr" unicode-bidi="embed">var mu sync.Mutex</text>
-<text fill="#FF9800" font-size="11" font-family="monospace" x="450" y="174" direction="ltr" unicode-bidi="embed">mu.Lock()</text>
-<text fill="#FF9800" font-size="11" font-family="monospace" x="450" y="192" direction="ltr" unicode-bidi="embed">defer mu.Unlock()</text>
-
-<!-- Zero-value features -->
-<rect fill="#fff3e0" height="115" rx="8" stroke="#FF9800" stroke-width="1" width="360" x="440" y="220"></rect>
-<text fill="#e65100" font-size="12" font-weight="bold" text-anchor="middle" x="620" y="240" direction="rtl" unicode-bidi="embed">ویژگی‌ها:</text>
-<text fill="#333" font-size="11" x="450" y="260" direction="rtl" unicode-bidi="embed">✓ بدون نیاز به سازنده — مقدار صفر معتبر است</text>
-<text fill="#333" font-size="11" x="450" y="280" direction="rtl" unicode-bidi="embed">✓ ساده و سبک — بدون تخصیص اضافی</text>
-<text fill="#333" font-size="11" x="450" y="300" direction="rtl" unicode-bidi="embed">⚠ فقط وقتی <tspan direction="ltr" unicode-bidi="embed">zero value</tspan> مفید باشد</text>
-<text fill="#333" font-size="11" x="450" y="320" direction="rtl" unicode-bidi="embed">⚠ نمونه‌ها: <tspan direction="ltr" unicode-bidi="embed">sync.Mutex</tspan>، <tspan direction="ltr" unicode-bidi="embed">bytes.Buffer</tspan></text>
-
-<!-- =================== BOTTOM: Factory Pattern =================== -->
-<rect fill="#e0f7fa" height="25" rx="6" stroke="#00ADD8" stroke-width="2" width="760" x="30" y="350"></rect>
-<text fill="#00ADD8" font-size="14" font-weight="bold" text-anchor="middle" x="410" y="368" direction="ltr" unicode-bidi="embed">Factory Pattern — NewStorage(type) Storage</text>
-
-<!-- Factory code box -->
-<rect fill="#fff" height="110" rx="8" stroke="#00ADD8" stroke-width="1.5" width="760" x="30" y="385"></rect>
-<text fill="#00ADD8" font-size="11" font-family="monospace" x="40" y="405" direction="ltr" unicode-bidi="embed">type Storage interface {</text>
-<text fill="#555" font-size="11" font-family="monospace" x="40" y="423" direction="ltr" unicode-bidi="embed">  Save(key string, value []byte) error</text>
-<text fill="#555" font-size="11" font-family="monospace" x="40" y="441" direction="ltr" unicode-bidi="embed">  Load(key string) ([]byte, error)</text>
-<text fill="#00ADD8" font-size="11" font-family="monospace" x="40" y="459" direction="ltr" unicode-bidi="embed">}</text>
-<text fill="#00ADD8" font-size="11" font-family="monospace" x="370" y="405" direction="ltr" unicode-bidi="embed">func NewStorage(t string) Storage {</text>
-<text fill="#555" font-size="11" font-family="monospace" x="370" y="423" direction="ltr" unicode-bidi="embed">  switch t {</text>
-<text fill="#555" font-size="11" font-family="monospace" x="370" y="441" direction="ltr" unicode-bidi="embed">  case "redis": return &amp;redisStorage{...}</text>
-<text fill="#555" font-size="11" font-family="monospace" x="370" y="459" direction="ltr" unicode-bidi="embed">  default:     return &amp;memStorage{}</text>
-<text fill="#00ADD8" font-size="11" font-family="monospace" x="370" y="477" direction="ltr" unicode-bidi="embed">  }</text>
-<text fill="#00ADD8" font-size="11" font-family="monospace" x="370" y="495" direction="ltr" unicode-bidi="embed">}</text>
-
-<!-- PHP comparison -->
-<rect fill="#f3e5f5" height="50" rx="8" stroke="#777BB4" stroke-width="1.5" width="360" x="30" y="500"></rect>
-<text fill="#777BB4" font-size="12" font-weight="bold" text-anchor="middle" x="210" y="520" direction="ltr" unicode-bidi="embed">PHP: __construct()</text>
-<text fill="#666" font-size="10" text-anchor="middle" x="210" y="540" direction="rtl" unicode-bidi="embed">یک سازنده اجباری و خودکار</text>
-
-<!-- Go comparison -->
-<rect fill="#e0f7fa" height="50" rx="8" stroke="#00ADD8" stroke-width="1.5" width="360" x="430" y="500"></rect>
-<text fill="#00ADD8" font-size="12" font-weight="bold" text-anchor="middle" x="610" y="520" direction="ltr" unicode-bidi="embed">Go: NewX() / Factory / Options</text>
-<text fill="#666" font-size="10" text-anchor="middle" x="610" y="540" direction="rtl" unicode-bidi="embed">چندین سازنده اختیاری و صریح</text>
-</svg>
+    classDef titleBox fill:#f8fafc,stroke:#475569,stroke-width:1px,color:#1f2937,font-weight:bold;
+    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
+    classDef okBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
+    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
+    classDef phpBox fill:#f5f0fb,stroke:#777BB4,stroke-width:1.5px,color:#1f2937;
+    classDef neutralBox fill:#f8fafc,stroke:#475569,stroke-width:1px,color:#1f2937,font-family:monospace;
+    class title titleBox;
+    class NX_CODE,Z_CODE,F_CODE1,F_CODE2 neutralBox;
+    class NX_F1,NX_F2,NX_F3,NX_F4 okBox;
+    class Z_F1,Z_F2 okBox;
+    class Z_F3,Z_F4 warnBox;
+    class PHP phpBox;
+    class GO goBox;</pre>
 <figcaption>مقایسه‌ی الگوی <bdi dir="ltr">NewX()</bdi>، مقدار صفر و <bdi dir="ltr">Factory</bdi> — هر الگو برای شرایط خاصی مناسب است</figcaption>
 </figure>
 

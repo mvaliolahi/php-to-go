@@ -71,54 +71,61 @@
 <h2 id="logging">Logging</h2>
 
 <figure class="diagram" dir="ltr">
-<svg height="380" viewBox="0 0 620 380" width="620" xmlns="http://www.w3.org/2000/svg">
-<defs>
-<marker id="arrow2201" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#555" points="0 0, 10 3.5, 0 7"></polygon></marker>
-<filter height="104%" id="sh2201" width="104%" x="-2%" y="-2%"><fedropshadow dx="1" dy="1" flood-opacity="0.15" stddeviation="2"></fedropshadow></filter>
-</defs>
-<rect fill="#fafafa" height="380" rx="8" width="620" x="0" y="0"></rect>
-<text fill="#333" font-size="16" font-weight="bold" text-anchor="middle" x="310" y="28" direction="rtl" unicode-bidi="embed">معماری Logging ساخت‌یافته در <tspan direction="ltr" unicode-bidi="embed">Go</tspan></text>
+<pre class="mermaid">flowchart LR
+    title(["معماری Logging ساخت‌یافته در Go"])
 
-<!-- Log Sources -->
-<rect fill="#00ADD8" filter="url(#sh2201)" height="40" rx="6" width="110" x="30" y="60"></rect>
-<text fill="#fff" font-size="10" text-anchor="middle" x="85" y="85" direction="ltr" unicode-bidi="embed">HTTP Handlers</text>
-<rect fill="#4CAF50" filter="url(#sh2201)" height="40" rx="6" width="110" x="30" y="115"></rect>
-<text fill="#fff" font-size="10" text-anchor="middle" x="85" y="140" direction="ltr" unicode-bidi="embed">DB Operations</text>
-<rect fill="#FF9800" filter="url(#sh2201)" height="40" rx="6" width="110" x="30" y="170"></rect>
-<text fill="#fff" font-size="10" text-anchor="middle" x="85" y="195" direction="ltr" unicode-bidi="embed">Background Jobs</text>
+    subgraph SOURCES["منابع لاگ"]
+        direction TB
+        HTTP["HTTP Handlers"]
+        DB["DB Operations"]
+        BG["Background Jobs"]
+    end
 
-<!-- Logger -->
-<rect fill="#9C27B0" filter="url(#sh2201)" height="100" rx="6" width="150" x="200" y="90"></rect>
-<text fill="#fff" font-size="12" text-anchor="middle" x="275" y="118" direction="ltr" unicode-bidi="embed">slog.Handler</text>
-<text fill="#e1bee7" font-size="9" text-anchor="middle" x="275" y="138" direction="ltr" unicode-bidi="embed">JSONHandler</text>
-<text fill="#e1bee7" font-size="9" text-anchor="middle" x="275" y="155" direction="ltr" unicode-bidi="embed">TextHandler</text>
-<text fill="#e1bee7" font-size="9" text-anchor="middle" x="275" y="172" direction="ltr" unicode-bidi="embed">Custom Handler</text>
+    subgraph LOGGER["slog.Handler"]
+        direction TB
+        LH1["JSONHandler"]
+        LH2["TextHandler"]
+        LH3["Custom Handler"]
+    end
 
-<line marker-end="url(#arrow2201)" stroke="#555" stroke-width="2" x1="140" x2="200" y1="80" y2="110"></line>
-<line marker-end="url(#arrow2201)" stroke="#555" stroke-width="2" x1="140" x2="200" y1="135" y2="135"></line>
-<line marker-end="url(#arrow2201)" stroke="#555" stroke-width="2" x1="140" x2="200" y1="190" y2="160"></line>
+    subgraph OUTPUTS["مقاصد خروجی"]
+        direction TB
+        OUT1["stdout / File"]
+        OUT2["ELK / Loki"]
+        OUT3["Datadog / Sentry"]
+    end
 
-<!-- Outputs -->
-<rect fill="#777BB4" filter="url(#sh2201)" height="40" rx="6" width="150" x="420" y="60"></rect>
-<text fill="#fff" font-size="10" text-anchor="middle" x="495" y="85" direction="ltr" unicode-bidi="embed">stdout / File</text>
-<rect fill="#e91e63" filter="url(#sh2201)" height="40" rx="6" width="150" x="420" y="115"></rect>
-<text fill="#fff" font-size="10" text-anchor="middle" x="495" y="140" direction="ltr" unicode-bidi="embed">ELK / Loki</text>
-<rect fill="#4CAF50" filter="url(#sh2201)" height="40" rx="6" width="150" x="420" y="170"></rect>
-<text fill="#fff" font-size="10" text-anchor="middle" x="495" y="195" direction="ltr" unicode-bidi="embed">Datadog / Sentry</text>
+    HTTP --> LOGGER
+    DB --> LOGGER
+    BG --> LOGGER
+    LOGGER --> OUT1
+    LOGGER --> OUT2
+    LOGGER --> OUT3
 
-<line marker-end="url(#arrow2201)" stroke="#555" stroke-width="2" x1="350" x2="420" y1="115" y2="80"></line>
-<line marker-end="url(#arrow2201)" stroke="#555" stroke-width="2" x1="350" x2="420" y1="140" y2="135"></line>
-<line marker-end="url(#arrow2201)" stroke="#555" stroke-width="2" x1="350" x2="420" y1="165" y2="190"></line>
+    LEVELS(["سطوح: DEBUG → INFO → WARN → ERROR → FATAL"])
+    CORR(["همبستگی لاگ با Trace: trace_id + span_id در هر رکورد لاگ<br/>slog.With(&quot;trace_id&quot;, traceID).Info(...)"])
 
-<!-- Levels -->
-<rect fill="#FFF3E0" height="45" rx="6" stroke="#FF9800" width="400" x="110" y="240"></rect>
-<text fill="#E65100" font-size="11" text-anchor="middle" x="310" y="268" direction="rtl" unicode-bidi="embed">سطوح: <tspan direction="ltr" unicode-bidi="embed">DEBUG</tspan> → <tspan direction="ltr" unicode-bidi="embed">INFO</tspan> → <tspan direction="ltr" unicode-bidi="embed">WARN</tspan> → <tspan direction="ltr" unicode-bidi="embed">ERROR</tspan> → <tspan direction="ltr" unicode-bidi="embed">FATAL</tspan></text>
+    title ~~~ SOURCES
+    OUTPUTS ~~~ LEVELS
+    LEVELS ~~~ CORR
 
-<!-- Log Correlation -->
-<rect fill="#E3F2FD" height="50" rx="6" stroke="#2196F3" width="500" x="60" y="310"></rect>
-<text fill="#1565C0" font-size="10" text-anchor="middle" x="310" y="335" direction="rtl" unicode-bidi="embed">همبستگی لاگ با <tspan direction="ltr" unicode-bidi="embed">Trace</tspan>: <tspan direction="ltr" unicode-bidi="embed">trace_id</tspan> + <tspan direction="ltr" unicode-bidi="embed">span_id</tspan> در هر رکورد لاگ</text>
-<text fill="#1565C0" font-size="9" text-anchor="middle" x="310" y="350" direction="ltr" unicode-bidi="embed">slog.With("trace_id", traceID).Info(...)</text>
-</svg>
+    classDef titleBox fill:#f8fafc,stroke:#475569,stroke-width:1px,color:#1f2937,font-weight:bold;
+    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
+    classDef okBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
+    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
+    classDef traceBox fill:#f5f0fb,stroke:#9C27B0,stroke-width:1.5px,color:#1f2937;
+    classDef phpBox fill:#f5f0fb,stroke:#777BB4,stroke-width:1.5px,color:#1f2937;
+    classDef errBox fill:#fef2f2,stroke:#ef4444,stroke-width:1.5px,color:#1f2937;
+    classDef noteBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1px,color:#1f2937,font-style:italic;
+    class title titleBox;
+    class HTTP goBox;
+    class DB okBox;
+    class BG warnBox;
+    class LH1,LH2,LH3 traceBox;
+    class OUT1 phpBox;
+    class OUT2 errBox;
+    class OUT3 okBox;
+    class LEVELS,CORR noteBox;</pre>
 <figcaption>شکل ۹-۱: معماری Logging ساخت‌یافته — منابع، <bdi dir="ltr">Handler</bdi> و مقاصد خروجی</figcaption>
 </figure>
 
@@ -289,78 +296,59 @@ logger := slog.New(slog.NewJSONHandler(os.Stdout, &amp;slog.HandlerOptions{
 
 <h3 id="تجمیع-لاگها">الگوی تجمیع لاگ‌ها</h3>
 <figure class="diagram" dir="ltr">
-<svg height="300" viewBox="0 0 650 300" width="650" xmlns="http://www.w3.org/2000/svg">
-<defs><filter id="sh159" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
-<marker id="arrLog1" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#00ADD8" points="0 0,10 3.5,0 7"></polygon></marker>
-<marker id="arrLog2" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#4caf50" points="0 0,10 3.5,0 7"></polygon></marker>
-<marker id="arrLog3" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#ff9800" points="0 0,10 3.5,0 7"></polygon></marker>
-</defs>
-<rect fill="#fafafa" height="300" rx="12" stroke="#ddd" stroke-width="1" width="650" x="0" y="0"></rect>
-<text fill="#333" font-size="15" font-weight="bold" text-anchor="middle" x="325" y="28" direction="rtl" unicode-bidi="embed">مدل‌های تجمیع لاگ — <tspan direction="ltr" unicode-bidi="embed">Sidecar</tspan>، <tspan direction="ltr" unicode-bidi="embed">Direct</tspan> و <tspan direction="ltr" unicode-bidi="embed">OTel Collector</tspan></text>
+<pre class="mermaid">flowchart LR
+    title(["مدل‌های تجمیع لاگ — Sidecar، Direct و OTel Collector"])
 
-<!-- Go Application -->
-<rect fill="#00ADD8" height="70" rx="8" stroke="#00ADD8" stroke-width="2" width="120" x="20" y="100"></rect>
-<text fill="#fff" font-size="13" font-weight="bold" text-anchor="middle" x="80" y="128" direction="ltr" unicode-bidi="embed">Go App</text>
-<text fill="#e0f7fa" font-size="9" text-anchor="middle" x="80" y="148" direction="ltr" unicode-bidi="embed">slog.Logger</text>
+    APP["Go App<br/>slog.Logger"]
 
-<!-- Model 1: Sidecar -->
-<rect fill="#e8f5e9" height="130" rx="8" stroke="#4caf50" stroke-width="1.5" width="130" x="175" y="50"></rect>
-<text fill="#4caf50" font-size="10" font-weight="bold" text-anchor="middle" x="240" y="70" direction="ltr" unicode-bidi="embed">Sidecar</text>
+    subgraph MODELS["مدل‌ها"]
+        direction TB
+        subgraph SIDECAR["Sidecar"]
+            direction TB
+            S1["Fluentd / Promtail<br/>خواندن از stdout یا فایل لاگ"]
+            S2(["تغییر برنامه لازم نیست"])
+        end
 
-<rect fill="#4caf50" height="30" rx="4" stroke="#4caf50" stroke-width="1.5" width="110" x="185" y="80"></rect>
-<text fill="#fff" font-size="9" text-anchor="middle" x="240" y="100" direction="ltr" unicode-bidi="embed">Fluentd / Promtail</text>
-<text fill="#333" font-size="7" text-anchor="middle" x="240" y="125" direction="rtl" unicode-bidi="embed">خواندن از <tspan direction="ltr" unicode-bidi="embed">stdout</tspan></text>
-<text fill="#333" font-size="7" text-anchor="middle" x="240" y="140" direction="rtl" unicode-bidi="embed">یا فایل لاگ</text>
+        subgraph DIRECT["Direct"]
+            direction TB
+            D1["slog Custom Handler<br/>HTTP → Loki / ES"]
+            D2(["وابستگی به سرویس خارجی"])
+        end
 
-<rect fill="#fff9c4" height="30" rx="4" stroke="#f9a825" stroke-width="1" width="110" x="185" y="148"></rect>
-<text fill="#f57f17" font-size="8" text-anchor="middle" x="240" y="167" direction="rtl" unicode-bidi="embed">تغییر برنامه لازم نیست</text>
+        subgraph OTEL["OTel Collector — پیشنهادی برای production"]
+            direction TB
+            O1["OpenTelemetry SDK<br/>Receivers → Processors → Exporters"]
+            O2["✓ Logs + Metrics + Traces"]
+            O3["→ Loki / Elasticsearch"]
+            O4["→ Datadog / Sentry"]
+            O5["→ CloudWatch / GCP"]
+        end
+    end
 
-<!-- Model 2: Direct -->
-<rect fill="#fff3e0" height="130" rx="8" stroke="#ff9800" stroke-width="1.5" width="130" x="175" y="195"></rect>
-<text fill="#ff9800" font-size="10" font-weight="bold" text-anchor="middle" x="240" y="215" direction="ltr" unicode-bidi="embed">Direct</text>
+    COMP(["مقایسه:<br/>Sidecar: ساده<br/>Direct: سریع<br/>OTel: کامل"])
 
-<rect fill="#ff9800" height="30" rx="4" stroke="#ff9800" stroke-width="1.5" width="110" x="185" y="225"></rect>
-<text fill="#fff" font-size="9" text-anchor="middle" x="240" y="245" direction="ltr" unicode-bidi="embed">slog Custom Handler</text>
-<text fill="#333" font-size="7" text-anchor="middle" x="240" y="265" direction="ltr" unicode-bidi="embed">HTTP → Loki / ES</text>
+    APP --> SIDECAR
+    APP --> DIRECT
+    APP --> OTEL
 
-<rect fill="#fce4ec" height="30" rx="4" stroke="#e91e63" stroke-width="1" width="110" x="185" y="295"></rect>
-<text fill="#e91e63" font-size="8" text-anchor="middle" x="240" y="314" direction="rtl" unicode-bidi="embed">وابستگی به سرویس خارجی</text>
+    title ~~~ APP
+    APP ~~~ MODELS
+    MODELS ~~~ COMP
 
-<!-- Model 3: OTel Collector -->
-<rect fill="#e3f2fd" height="230" rx="8" stroke="#00ADD8" stroke-width="1.5" width="160" x="330" y="50"></rect>
-<text fill="#00ADD8" font-size="10" font-weight="bold" text-anchor="middle" x="410" y="70" direction="ltr" unicode-bidi="embed">OTel Collector</text>
-
-<rect fill="#00ADD8" height="30" rx="4" stroke="#00ADD8" stroke-width="1.5" width="140" x="340" y="80"></rect>
-<text fill="#fff" font-size="9" text-anchor="middle" x="410" y="100" direction="ltr" unicode-bidi="embed">OpenTelemetry SDK</text>
-<text fill="#333" font-size="7" text-anchor="middle" x="410" y="120" direction="ltr" unicode-bidi="embed">Receivers → Processors → Exporters</text>
-
-<rect fill="#00ADD8" height="22" rx="3" stroke="#00ADD8" stroke-width="1" width="140" x="340" y="135"></rect>
-<text fill="#fff" font-size="8" text-anchor="middle" x="410" y="150" direction="ltr" unicode-bidi="embed">✓ Logs + Metrics + Traces</text>
-
-<rect fill="#4caf50" height="22" rx="3" stroke="#4caf50" stroke-width="1" width="140" x="340" y="165"></rect>
-<text fill="#fff" font-size="8" text-anchor="middle" x="410" y="180" direction="ltr" unicode-bidi="embed">→ Loki / Elasticsearch</text>
-
-<rect fill="#ff9800" height="22" rx="3" stroke="#ff9800" stroke-width="1" width="140" x="340" y="195"></rect>
-<text fill="#fff" font-size="8" text-anchor="middle" x="410" y="210" direction="ltr" unicode-bidi="embed">→ Datadog / Sentry</text>
-
-<rect fill="#777BB4" height="22" rx="3" stroke="#777BB4" stroke-width="1" width="140" x="340" y="225"></rect>
-<text fill="#fff" font-size="8" text-anchor="middle" x="410" y="240" direction="ltr" unicode-bidi="embed">→ CloudWatch / GCP</text>
-
-<rect fill="#e8f5e9" height="25" rx="4" stroke="#4caf50" stroke-width="1" width="140" x="340" y="258"></rect>
-<text fill="#2e7d32" font-size="8" font-weight="bold" text-anchor="middle" x="410" y="275" direction="rtl" unicode-bidi="embed">پیشنهادی برای <tspan direction="ltr" unicode-bidi="embed">production</tspan></text>
-
-<!-- Arrows from App -->
-<line marker-end="url(#arrLog1)" stroke="#4caf50" stroke-width="2" x1="140" x2="175" y1="125" y2="95"></line>
-<line marker-end="url(#arrLog2)" stroke="#ff9800" stroke-width="2" x1="140" x2="175" y1="145" y2="240"></line>
-<line marker-end="url(#arrLog3)" stroke="#00ADD8" stroke-width="2.5" x1="140" x2="330" y1="135" y2="120"></line>
-
-<!-- Comparison box -->
-<rect fill="#f5f5f5" height="80" rx="6" stroke="#ddd" stroke-width="1" width="130" x="510" y="100"></rect>
-<text fill="#555" font-size="10" font-weight="bold" text-anchor="middle" x="575" y="120" direction="rtl" unicode-bidi="embed">مقایسه</text>
-<text fill="#4caf50" font-size="8" text-anchor="middle" x="575" y="138" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">Sidecar</tspan>: ساده</text>
-<text fill="#ff9800" font-size="8" text-anchor="middle" x="575" y="153" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">Direct</tspan>: سریع</text>
-<text fill="#00ADD8" font-size="8" text-anchor="middle" x="575" y="168" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">OTel</tspan>: کامل</text>
-</svg>
+    classDef titleBox fill:#f8fafc,stroke:#475569,stroke-width:1px,color:#1f2937,font-weight:bold;
+    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
+    classDef okBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
+    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
+    classDef errBox fill:#fef2f2,stroke:#ef4444,stroke-width:1px,color:#1f2937,font-style:italic;
+    classDef noteBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1px,color:#1f2937,font-style:italic;
+    class title titleBox;
+    class APP goBox;
+    class S1 okBox;
+    class S2 noteBox;
+    class D1 warnBox;
+    class D2 errBox;
+    class O1,O2,O3,O4,O5 goBox;
+    class COMP noteBox;</pre>
 <figcaption dir="rtl">شکل ۹-۲: سه مدل تجمیع لاگ — <bdi dir="ltr">Sidecar</bdi>، <bdi dir="ltr">Direct</bdi> و <bdi dir="ltr">OTel Collector</bdi></figcaption>
 </figure>
 <p>در محیط <bdi dir="ltr">production</bdi> لاگ‌ها نباید فقط در فایل ذخیره شوند. الگوی استاندارد ارسال لاگ‌ها به یک سیستم مرکزی است:</p>
@@ -736,100 +724,69 @@ func setupLogging() *slog.Logger {
 <p>درک بصری سطوح لاگ و جریان داده در <bdi dir="ltr">structured logging pipeline</bdi> برای طراحی سیستم لاگ‌گیری مؤثر ضروری است. هر سطح لاگ هدف مشخصی دارد و باید با دقت انتخاب شود. سطح <bdi dir="ltr">DEBUG</bdi> بیشترین حجم خروجی را تولید می‌کند و فقط در محیط توسعه باید فعال باشد. سطح <bdi dir="ltr">FATAL</bdi> کمترین فراوانی را دارد اما بیشترین اهمیت را در <bdi dir="ltr">production</bdi>. درخواست‌های <bdi dir="ltr">HTTP</bdi> معمولاً در سطح <bdi dir="ltr">INFO</bdi> لاگ می‌شوند اما جزئیات هدرها و بدنه درخواست در سطح <bdi dir="ltr">DEBUG</bdi>. این خط لوله تضمین می‌کند که هر رکورد لاگ از منبع تا مقصد با <bdi dir="ltr">key-value pairs</bdi> ثابت حفظ شود و قابلیت جستجو و فیلترینگ در سیستم‌هایی مثل <bdi dir="ltr">ELK</bdi> یا <bdi dir="ltr">Loki</bdi> را داشته باشد.</p>
 
 <figure class="diagram" dir="ltr">
-<svg height="520" viewBox="0 0 720 520" width="720" xmlns="http://www.w3.org/2000/svg">
-<defs>
-<marker id="arrowLvl" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#555" points="0 0,10 3.5,0 7"></polygon></marker>
-<filter height="104%" id="shLvl" width="104%" x="-2%" y="-2%"><fedropshadow dx="1" dy="1" flood-opacity="0.12" stddeviation="2"></fedropshadow></filter>
-</defs>
-<rect fill="#fafafa" height="520" rx="8" width="720" x="0" y="0"></rect>
-<text fill="#333" font-size="16" font-weight="bold" text-anchor="middle" x="360" y="28" direction="rtl" unicode-bidi="embed">هرم سطوح لاگ و خط لوله <tspan direction="ltr" unicode-bidi="embed">Structured Logging</tspan></text>
+<pre class="mermaid">flowchart TB
+    title(["هرم سطوح لاگ و خط لوله Structured Logging"])
 
-<!-- LOG LEVEL PYRAMID - Left side -->
-<text fill="#555" font-size="12" font-weight="bold" text-anchor="middle" x="150" y="55" direction="rtl" unicode-bidi="embed">هرم سطوح لاگ</text>
+    subgraph PYRAMID["هرم سطوح لاگ (حجم کم ← حجم زیاد)"]
+        direction TB
+        FATAL["FATAL — توقف برنامه ← اتصال DB ناموفق"]
+        ERROR["ERROR — خطای غیرقابل بازیافت ← nil pointer"]
+        WARN["WARN — مشکل مشکوک ← retry زیاد، cache miss"]
+        INFO["INFO — رویداد عادی ← شروع سرور، درخواست HTTP"]
+        DEBUG["DEBUG — جزئیات دیباگ ← محتوای متغیرها، query params"]
+        FATAL --> ERROR --> WARN --> INFO --> DEBUG
+    end
 
-<!-- FATAL - top, narrowest -->
-<polygon fill="#9C27B0" points="90,75 210,75 190,115 110,115" filter="url(#shLvl)"></polygon>
-<text fill="#fff" font-size="11" font-weight="bold" text-anchor="middle" x="150" y="100" direction="ltr" unicode-bidi="embed">FATAL</text>
+    subgraph PIPELINE["خط لوله Structured Logging"]
+        direction TB
+        ENTRY["Log Entry (Key-Value)<br/>msg=&quot;...&quot; port=8080 env=&quot;prod&quot;"]
+        HANDLER["slog.Handler<br/>TextHandler | JSONHandler | Custom Handler"]
+        MULTI["slog.NewMultiHandler"]
+        OUT1["stdout / File<br/>TextHandler"]
+        OUT2["ELK / Loki<br/>JSONHandler"]
+        OUT3["Datadog / Sentry<br/>Custom Handler"]
+        ENTRY --> HANDLER --> MULTI
+        MULTI --> OUT1
+        MULTI --> OUT2
+        MULTI --> OUT3
+    end
 
-<!-- ERROR -->
-<polygon fill="#e91e63" points="80,120 220,120 195,165 105,165" filter="url(#shLvl)"></polygon>
-<text fill="#fff" font-size="11" font-weight="bold" text-anchor="middle" x="150" y="148" direction="ltr" unicode-bidi="embed">ERROR</text>
+    subgraph CMP["مقایسه PHP Monolog vs Go slog"]
+        direction TB
+        C1["Monolog: pushHandler() ← هر درخواست نمونه جدید"]
+        C2["slog: SetDefault() ← یک‌بار، goroutine-safe"]
+        C3["Monolog: نیازمند Composer"]
+        C4["slog: پکیج استاندارد — بدون وابستگی"]
+        C5["✓ slog برای اکثر پروژه‌ها کافی است"]
+    end
 
-<!-- WARN -->
-<polygon fill="#FF9800" points="70,170 230,170 200,220 100,220" filter="url(#shLvl)"></polygon>
-<text fill="#fff" font-size="11" font-weight="bold" text-anchor="middle" x="150" y="200" direction="ltr" unicode-bidi="embed">WARN</text>
+    title ~~~ PYRAMID
+    PYRAMID ~~~ PIPELINE
+    PIPELINE ~~~ CMP
 
-<!-- INFO -->
-<polygon fill="#00ADD8" points="60,225 240,225 205,280 95,280" filter="url(#shLvl)"></polygon>
-<text fill="#fff" font-size="11" font-weight="bold" text-anchor="middle" x="150" y="258" direction="ltr" unicode-bidi="embed">INFO</text>
-
-<!-- DEBUG - bottom, widest -->
-<polygon fill="#4CAF50" points="50,285 250,285 210,345 90,345" filter="url(#shLvl)"></polygon>
-<text fill="#fff" font-size="11" font-weight="bold" text-anchor="middle" x="150" y="320" direction="ltr" unicode-bidi="embed">DEBUG</text>
-
-<!-- Arrows and examples on left pyramid -->
-<text fill="#9C27B0" font-size="8" x="215" y="100" direction="rtl" unicode-bidi="embed">توقف برنامه ← اتصال <tspan direction="ltr" unicode-bidi="embed">DB</tspan> ناموفق</text>
-<text fill="#e91e63" font-size="8" x="225" y="148" direction="rtl" unicode-bidi="embed">خطای غیرقابل بازیافت ← <tspan direction="ltr" unicode-bidi="embed">nil pointer</tspan></text>
-<text fill="#E65100" font-size="8" x="235" y="200" direction="rtl" unicode-bidi="embed">مشکل مشکوک ← <tspan direction="ltr" unicode-bidi="embed">retry</tspan> زیاد، <tspan direction="ltr" unicode-bidi="embed">cache miss</tspan></text>
-<text fill="#0077A0" font-size="8" x="245" y="258" direction="rtl" unicode-bidi="embed">رویداد عادی ← شروع سرور، درخواست <tspan direction="ltr" unicode-bidi="embed">HTTP</tspan></text>
-<text fill="#2E7D32" font-size="8" x="255" y="320" direction="rtl" unicode-bidi="embed">جزئیات دیباگ ← محتوای متغیرها، <tspan direction="ltr" unicode-bidi="embed">query params</tspan></text>
-
-<!-- Volume arrow on left -->
-<line stroke="#888" stroke-width="1.5" x1="30" y1="340" x2="30" y2="75" marker-end="url(#arrowLvl)"></line>
-<text fill="#888" font-size="8" text-anchor="middle" x="30" y="360" direction="rtl" unicode-bidi="embed">حجم کم</text>
-<text fill="#888" font-size="8" text-anchor="middle" x="30" y="68" direction="rtl" unicode-bidi="embed">حجم زیاد</text>
-
-<!-- STRUCTURED LOGGING PIPELINE - Right side -->
-<text fill="#555" font-size="12" font-weight="bold" text-anchor="middle" x="510" y="55" direction="rtl" unicode-bidi="embed">خط لوله <tspan direction="ltr" unicode-bidi="embed">Structured Logging</tspan></text>
-
-<!-- Log Entry Source -->
-<rect fill="#4CAF50" filter="url(#shLvl)" height="50" rx="6" width="180" x="420" y="70"></rect>
-<text fill="#fff" font-size="10" font-weight="bold" text-anchor="middle" x="510" y="90" direction="ltr" unicode-bidi="embed">Log Entry (Key-Value)</text>
-<text fill="#e8f5e9" font-size="8" text-anchor="middle" x="510" y="108" direction="ltr" unicode-bidi="embed">msg="..." port=8080 env="prod"</text>
-
-<line marker-end="url(#arrowLvl)" stroke="#555" stroke-width="2" x1="510" x2="510" y1="120" y2="145"></line>
-
-<!-- slog.Handler -->
-<rect fill="#9C27B0" filter="url(#shLvl)" height="70" rx="6" width="180" x="420" y="148"></rect>
-<text fill="#fff" font-size="11" font-weight="bold" text-anchor="middle" x="510" y="172" direction="ltr" unicode-bidi="embed">slog.Handler</text>
-<text fill="#e1bee7" font-size="8" text-anchor="middle" x="510" y="188" direction="ltr" unicode-bidi="embed">TextHandler | JSONHandler</text>
-<text fill="#e1bee7" font-size="8" text-anchor="middle" x="510" y="205" direction="ltr" unicode-bidi="embed">Custom Handler</text>
-
-<line marker-end="url(#arrowLvl)" stroke="#555" stroke-width="2" x1="510" x2="510" y1="218" y2="243"></line>
-
-<!-- MultiHandler fan-out -->
-<rect fill="#00ADD8" filter="url(#shLvl)" height="40" rx="6" width="180" x="420" y="246"></rect>
-<text fill="#fff" font-size="10" font-weight="bold" text-anchor="middle" x="510" y="272" direction="ltr" unicode-bidi="embed">slog.NewMultiHandler</text>
-
-<!-- Fan-out lines -->
-<line marker-end="url(#arrowLvl)" stroke="#777BB4" stroke-width="1.5" x1="450" x2="380" y1="286" y2="320"></line>
-<line marker-end="url(#arrowLvl)" stroke="#e91e63" stroke-width="1.5" x1="510" x2="510" y1="286" y2="320"></line>
-<line marker-end="url(#arrowLvl)" stroke="#4CAF50" stroke-width="1.5" x1="570" x2="640" y1="286" y2="320"></line>
-
-<!-- Output: stdout/File -->
-<rect fill="#777BB4" filter="url(#shLvl)" height="50" rx="6" width="120" x="310" y="323"></rect>
-<text fill="#fff" font-size="10" font-weight="bold" text-anchor="middle" x="370" y="345" direction="ltr" unicode-bidi="embed">stdout / File</text>
-<text fill="#e8e0f0" font-size="8" text-anchor="middle" x="370" y="362" direction="ltr" unicode-bidi="embed">TextHandler</text>
-
-<!-- Output: ELK/Loki -->
-<rect fill="#e91e63" filter="url(#shLvl)" height="50" rx="6" width="120" x="450" y="323"></rect>
-<text fill="#fff" font-size="10" font-weight="bold" text-anchor="middle" x="510" y="345" direction="ltr" unicode-bidi="embed">ELK / Loki</text>
-<text fill="#fce4ec" font-size="8" text-anchor="middle" x="510" y="362" direction="ltr" unicode-bidi="embed">JSONHandler</text>
-
-<!-- Output: Datadog/Sentry -->
-<rect fill="#4CAF50" filter="url(#shLvl)" height="50" rx="6" width="120" x="590" y="323"></rect>
-<text fill="#fff" font-size="10" font-weight="bold" text-anchor="middle" x="650" y="345" direction="ltr" unicode-bidi="embed">Datadog / Sentry</text>
-<text fill="#e8f5e9" font-size="8" text-anchor="middle" x="650" y="362" direction="ltr" unicode-bidi="embed">Custom Handler</text>
-
-<!-- PHP Monolog vs Go slog comparison -->
-<rect fill="#FFF8E1" height="115" rx="6" stroke="#F9A825" width="340" x="300" y="395"></rect>
-<text fill="#E65100" font-size="11" font-weight="bold" text-anchor="middle" x="470" y="415" direction="rtl" unicode-bidi="embed">مقایسه <tspan direction="ltr" unicode-bidi="embed">PHP Monolog</tspan> vs <tspan direction="ltr" unicode-bidi="embed">Go slog</tspan></text>
-<text fill="#333" font-size="8" text-anchor="start" x="310" y="435" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">Monolog</tspan>: <tspan direction="ltr" unicode-bidi="embed">pushHandler()</tspan> ← هر درخواست نمونه جدید</text>
-<text fill="#333" font-size="8" text-anchor="start" x="310" y="452" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">slog</tspan>: <tspan direction="ltr" unicode-bidi="embed">SetDefault()</tspan> ← یک‌بار، <tspan direction="ltr" unicode-bidi="embed">goroutine-safe</tspan></text>
-<text fill="#333" font-size="8" text-anchor="start" x="310" y="469" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">Monolog</tspan>: نیازمند <tspan direction="ltr" unicode-bidi="embed">Composer</tspan></text>
-<text fill="#333" font-size="8" text-anchor="start" x="310" y="486" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">slog</tspan>: پکیج استاندارد — بدون وابستگی</text>
-<text fill="#4CAF50" font-size="8" font-weight="bold" text-anchor="start" x="310" y="503" direction="rtl" unicode-bidi="embed">✓ <tspan direction="ltr" unicode-bidi="embed">slog</tspan> برای اکثر پروژه‌ها کافی است</text>
-</svg>
+    classDef titleBox fill:#f8fafc,stroke:#475569,stroke-width:1px,color:#1f2937,font-weight:bold;
+    classDef traceBox fill:#f5f0fb,stroke:#9C27B0,stroke-width:1.5px,color:#1f2937;
+    classDef errBox fill:#fef2f2,stroke:#ef4444,stroke-width:1.5px,color:#1f2937;
+    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
+    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
+    classDef okBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
+    classDef phpBox fill:#f5f0fb,stroke:#777BB4,stroke-width:1.5px,color:#1f2937;
+    classDef noteBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1px,color:#1f2937,font-style:italic;
+    class title titleBox;
+    class FATAL traceBox;
+    class ERROR errBox;
+    class WARN warnBox;
+    class INFO goBox;
+    class DEBUG okBox;
+    class ENTRY okBox;
+    class HANDLER traceBox;
+    class MULTI goBox;
+    class OUT1 phpBox;
+    class OUT2 errBox;
+    class OUT3 okBox;
+    class C1,C3 phpBox;
+    class C2,C4 goBox;
+    class C5 okBox;</pre>
 <figcaption>شکل ۹-۳: هرم سطوح لاگ (چپ) و خط لوله <bdi dir="ltr">Structured Logging</bdi> با <bdi dir="ltr">slog.NewMultiHandler</bdi> (راست) — مقایسه <bdi dir="ltr">PHP Monolog</bdi> با <bdi dir="ltr">Go slog</bdi></figcaption>
 </figure>
 

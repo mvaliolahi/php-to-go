@@ -92,82 +92,94 @@
 <p>همانطور که گفته شد در Go خبری از کلاس نیست و به جای آن نوع داده‌ای به نام struct وجود دارد که مجموعه‌ای از فیلدهای داده‌ای را کنار هم قرار می‌دهد. می‌توان struct را مشابه کلاس‌های ساده در PHP دانست. برای درک این مفهوم به شکل ۴-۳ توجه کنید.</p>
 
 <figure class="diagram" dir="ltr">
-<svg height="280" viewBox="0 0 700 280" width="700" xmlns="http://www.w3.org/2000/svg">
-<defs><filter id="sh65" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
-<marker id="arrMRPHP" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#777BB4" points="0 0, 10 3.5, 0 7"></polygon></marker>
-<marker id="arrMRGo" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#00ADD8" points="0 0, 10 3.5, 0 7"></polygon></marker>
-</defs>
-<rect fill="#fafafa" height="280" rx="8" width="700" x="0" y="0"></rect>
-<text fill="#00ADD8" font-size="15" font-weight="bold" text-anchor="middle" x="350" y="25" direction="rtl" unicode-bidi="embed">ترتیب جستجوی متد: <tspan direction="ltr" unicode-bidi="embed">PHP</tspan> در برابر <tspan direction="ltr" unicode-bidi="embed">Go</tspan></text>
-<!-- PHP side -->
-<rect fill="#f3e5f5" height="220" rx="12" stroke="#777BB4" stroke-width="2" width="310" x="10" y="45"></rect>
-<text fill="#777BB4" font-size="13" font-weight="bold" text-anchor="middle" x="165" y="68" direction="ltr" unicode-bidi="embed">PHP: Method Resolution</text>
-<!-- PHP chain -->
-<rect fill="#fff" height="32" rx="6" stroke="#777BB4" stroke-width="1.5" width="200" x="65" y="82"></rect>
-<text fill="#777BB4" font-size="11" text-anchor="middle" x="165" y="103" direction="ltr" unicode-bidi="embed">Admin::method()</text>
-<rect fill="#fff" height="32" rx="6" stroke="#777BB4" stroke-width="1.5" width="200" x="65" y="125"></rect>
-<text fill="#777BB4" font-size="11" text-anchor="middle" x="165" y="146" direction="ltr" unicode-bidi="embed">User::method()</text>
-<rect fill="#fff" height="32" rx="6" stroke="#777BB4" stroke-width="1.5" width="200" x="65" y="168"></rect>
-<text fill="#777BB4" font-size="11" text-anchor="middle" x="165" y="189" direction="ltr" unicode-bidi="embed">BaseModel::method()</text>
-<line marker-end="url(#arrMRPHP)" stroke="#777BB4" stroke-width="1.5" x1="165" x2="165" y1="114" y2="125"></line>
-<line marker-end="url(#arrMRPHP)" stroke="#777BB4" stroke-width="1.5" x1="165" x2="165" y1="157" y2="168"></line>
-<text fill="#e74c3c" font-size="10" text-anchor="middle" x="165" y="220" direction="ltr" unicode-bidi="embed">parent::method() → زنجیره‌ای</text>
-<text fill="#e74c3c" font-size="10" text-anchor="middle" x="165" y="237" direction="rtl" unicode-bidi="embed">تغییر والد = شکست فرزند</text>
-<text fill="#777BB4" font-size="9" text-anchor="middle" x="165" y="258" direction="ltr" unicode-bidi="embed">(is-a relationship)</text>
-<!-- Go side -->
-<rect fill="#e0f7fa" height="220" rx="12" stroke="#00ADD8" stroke-width="2" width="360" x="330" y="45"></rect>
-<text fill="#00ADD8" font-size="13" font-weight="bold" text-anchor="middle" x="510" y="68" direction="ltr" unicode-bidi="embed">Go: Method Resolution</text>
-<!-- Go interface -->
-<rect fill="#fff3e0" height="32" rx="6" stroke="#f39c12" stroke-width="2" width="300" x="360" y="82"></rect>
-<text fill="#e65100" font-size="11" font-weight="bold" text-anchor="middle" x="510" y="103" direction="ltr" unicode-bidi="embed">interface { Method() }</text>
-<!-- Go structs -->
-<rect fill="#fff" height="32" rx="6" stroke="#00ADD8" stroke-width="1.5" width="140" x="360" y="132"></rect>
-<text fill="#00ADD8" font-size="11" text-anchor="middle" x="430" y="153" direction="ltr" unicode-bidi="embed">Admin struct</text>
-<rect fill="#fff" height="32" rx="6" stroke="#00ADD8" stroke-width="1.5" width="140" x="520" y="132"></rect>
-<text fill="#00ADD8" font-size="11" text-anchor="middle" x="590" y="153" direction="ltr" unicode-bidi="embed">User struct</text>
-<line stroke="#00ADD8" stroke-dasharray="4,3" stroke-width="1" x1="430" x2="440" y1="132" y2="114"></line>
-<line stroke="#00ADD8" stroke-dasharray="4,3" stroke-width="1" x1="590" x2="530" y1="132" y2="114"></line>
-<!-- Method implementations -->
-<rect fill="#e8f5e9" height="28" rx="4" stroke="#27ae60" stroke-width="1" width="130" x="365" y="178"></rect>
-<text fill="#27ae60" font-size="10" text-anchor="middle" x="430" y="197" direction="ltr" unicode-bidi="embed">Admin.Method()</text>
-<rect fill="#e8f5e9" height="28" rx="4" stroke="#27ae60" stroke-width="1" width="130" x="525" y="178"></rect>
-<text fill="#27ae60" font-size="10" text-anchor="middle" x="590" y="197" direction="ltr" unicode-bidi="embed">User.Method()</text>
-<text fill="#27ae60" font-size="10" text-anchor="middle" x="510" y="228" direction="ltr" unicode-bidi="embed">مستقل — بدون زنجیره</text>
-<text fill="#27ae60" font-size="10" text-anchor="middle" x="510" y="245" direction="rtl" unicode-bidi="embed">تغیر یکی، بقیه بی‌تأثیر</text>
-<text fill="#00ADD8" font-size="9" text-anchor="middle" x="510" y="258" direction="ltr" unicode-bidi="embed">(interface + struct — has-a)</text>
-</svg>
+<pre class="mermaid">flowchart LR
+    title(["ترتیب جستجوی متد: PHP در برابر Go"])
+
+    subgraph PHP["PHP: Method Resolution"]
+        direction TB
+        PA["Admin::method()"]
+        PU["User::method()"]
+        PB["BaseModel::method()"]
+        PA --> PU --> PB
+        PN1(["parent::method() → زنجیره‌ای<br/>تغییر والد = شکست فرزند<br/>(is-a relationship)"])
+    end
+
+    subgraph GO["Go: Method Resolution"]
+        direction TB
+        IFACE["interface { Method() }"]
+        GA["Admin struct"]
+        GU["User struct"]
+        GAM["Admin.Method()"]
+        GUM["User.Method()"]
+        IFACE -.-> GA
+        IFACE -.-> GU
+        GA --> GAM
+        GU --> GUM
+        GN1(["مستقل — بدون زنجیره<br/>تغییر یکی، بقیه بی‌تأثیر<br/>(interface + struct — has-a)"])
+    end
+
+    title ~~~ PHP
+    title ~~~ GO
+
+    classDef titleBox fill:#f8fafc,stroke:#475569,stroke-width:1px,color:#1f2937,font-weight:bold;
+    classDef phpBox fill:#f5f0fb,stroke:#777BB4,stroke-width:1.5px,color:#1f2937;
+    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
+    classDef okBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
+    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
+    classDef noteBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1px,color:#1f2937,font-style:italic;
+    class title titleBox;
+    class PA,PU,PB phpBox;
+    class GA,GU goBox;
+    class IFACE warnBox;
+    class GAM,GUM okBox;
+    class PN1,GN1 noteBox;</pre>
 <figcaption dir="rtl">شکل ۵-۳-ب: ترتیب جستجوی متد در <bdi dir="ltr">PHP</bdi> (زنجیره‌ی ارث‌بری) در برابر <bdi dir="ltr">Go</bdi> (<bdi dir="ltr">interface</bdi> + <bdi dir="ltr">struct</bdi> مستقل)</figcaption>
 </figure>
 
 
 <figure class="diagram" dir="ltr">
-<svg height="280" viewBox="0 0 600 280" width="600" xmlns="http://www.w3.org/2000/svg"><defs><filter id="sh66" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter></defs>
-<text fill="#555" font-size="15" font-weight="bold" text-anchor="middle" x="300" y="25" direction="rtl" unicode-bidi="embed">شی‌گرایی: <tspan direction="ltr" unicode-bidi="embed">PHP</tspan> <tspan direction="ltr" unicode-bidi="embed">vs</tspan> <tspan direction="ltr" unicode-bidi="embed">Go</tspan></text>
-<!-- PHP -->
-<rect fill="#f3e5f5" height="230" rx="12" stroke="#777BB4" stroke-width="2" width="280" x="10" y="40"></rect>
-<text fill="#777BB4" font-size="14" font-weight="bold" text-anchor="middle" x="150" y="65" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">PHP</tspan> — <tspan direction="ltr" unicode-bidi="embed">OOP</tspan> کلاسیک</text>
-<text fill="#333" font-size="12" x="30" y="90" direction="rtl" unicode-bidi="embed">کلاس و شیء</text>
-<text fill="#333" font-size="12" x="30" y="110" direction="rtl" unicode-bidi="embed">وراثت (<tspan direction="ltr" unicode-bidi="embed">extends</tspan>)</text>
-<text fill="#333" font-size="12" x="30" y="130" direction="ltr" unicode-bidi="embed">Interface (implements)</text>
-<text fill="#333" font-size="12" x="30" y="150" direction="ltr" unicode-bidi="embed">public/private/protected</text>
-<text fill="#333" font-size="12" x="30" y="170" direction="ltr" unicode-bidi="embed">Trait</text>
-<text fill="#333" font-size="12" x="30" y="190" direction="ltr" unicode-bidi="embed">Constructor (__construct())</text>
-<text fill="#333" font-size="12" x="30" y="210" direction="ltr" unicode-bidi="embed">Abstract Class</text>
-<text fill="#333" font-size="12" x="30" y="230" direction="ltr" unicode-bidi="embed">Magic Methods</text>
-<text fill="#777BB4" font-size="11" x="30" y="255" direction="rtl" unicode-bidi="embed">سلسله‌مراتب عمیق، <tspan direction="ltr" unicode-bidi="embed">coupling</tspan> بالا</text>
-<!-- Go -->
-<rect fill="#e0f7fa" height="230" rx="12" stroke="#00ADD8" stroke-width="2" width="280" x="310" y="40"></rect>
-<text fill="#00ADD8" font-size="14" font-weight="bold" text-anchor="middle" x="450" y="65" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">Go</tspan> — <tspan direction="ltr" unicode-bidi="embed">OOP</tspan> مینیمال</text>
-<text fill="#333" font-size="12" x="330" y="90" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">struct</tspan> (به‌جای کلاس)</text>
-<text fill="#333" font-size="12" x="330" y="110" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">Composition</tspan> (به‌جای وراثت)</text>
-<text fill="#333" font-size="12" x="330" y="130" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">Interface</tspan> ضمنی</text>
-<text fill="#333" font-size="12" x="330" y="150" direction="ltr" unicode-bidi="embed">Exported/Unexported</text>
-<text fill="#333" font-size="12" x="330" y="170" direction="ltr" unicode-bidi="embed">Embedding</text>
-<text fill="#333" font-size="12" x="330" y="190" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">NewX()</tspan>(به‌جای constructor)</text>
-<text fill="#333" font-size="12" x="330" y="210" direction="rtl" unicode-bidi="embed">بدون ارث‌بری</text>
-<text fill="#333" font-size="12" x="330" y="230" direction="rtl" unicode-bidi="embed">بدون <tspan direction="ltr" unicode-bidi="embed">Trait</tspan> / <tspan direction="ltr" unicode-bidi="embed">Magic</tspan> <tspan direction="ltr" unicode-bidi="embed">Method</tspan></text>
-<text fill="#00ADD8" font-size="11" x="330" y="255" direction="rtl" unicode-bidi="embed">ترکیب ساده، <tspan direction="ltr" unicode-bidi="embed">coupling</tspan> پایین</text>
-</svg>
+<pre class="mermaid">flowchart LR
+    title(["شی‌گرایی: PHP vs Go"])
+
+    subgraph PHP["PHP — OOP کلاسیک"]
+        direction TB
+        P1["کلاس و شیء"]
+        P2["وراثت (extends)"]
+        P3["Interface (implements)"]
+        P4["public/private/protected"]
+        P5["Trait"]
+        P6["Constructor (__construct())"]
+        P7["Abstract Class"]
+        P8["Magic Methods"]
+        PN["سلسله‌مراتب عمیق، coupling بالا"]
+    end
+
+    subgraph GO["Go — OOP مینیمال"]
+        direction TB
+        G1["struct (به‌جای کلاس)"]
+        G2["Composition (به‌جای وراثت)"]
+        G3["Interface ضمنی"]
+        G4["Exported/Unexported"]
+        G5["Embedding"]
+        G6["NewX() (به‌جای constructor)"]
+        G7["بدون ارث‌بری"]
+        G8["بدون Trait / Magic Method"]
+        GN["ترکیب ساده، coupling پایین"]
+    end
+
+    title ~~~ PHP
+    title ~~~ GO
+
+    classDef titleBox fill:#f8fafc,stroke:#475569,stroke-width:1px,color:#1f2937,font-weight:bold;
+    classDef phpBox fill:#f5f0fb,stroke:#777BB4,stroke-width:1.5px,color:#1f2937;
+    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
+    classDef errBox fill:#fef2f2,stroke:#ef4444,stroke-width:1px,color:#1f2937;
+    classDef okBox fill:#ecfdf5,stroke:#10b981,stroke-width:1px,color:#1f2937;
+    class title titleBox;
+    class P1,P2,P3,P4,P5,P6,P7,P8 phpBox;
+    class PN errBox;
+    class G1,G2,G3,G4,G5,G6,G7,G8 goBox;
+    class GN okBox;</pre>
 <figcaption>شکل ۴-۳: مقایسه‌ی شی‌گرایی در <bdi dir="ltr">PHP</bdi> و <bdi dir="ltr">Go</bdi></figcaption>
 </figure>
 <p>حال به پیاده سازی این struct دقت کنید:</p>
@@ -484,46 +496,48 @@ func (u *User) SetEmail(e string) {
 <p>یکی از بزرگترین تغییرات ذهنی که برنامه‌نویسان PHP باید انجام دهند، گذاشتن از تفکر «وراثت» به تفکر «ترکیب» است. در PHP معمولاً سلسله‌مراتب وراثت عمیقی ساخته می‌شود: <code>Animal → Mammal → Dog</code>. اما در Go این الگو <bdi dir="ltr">anti-pattern</bdi> محسوب می‌شود. به‌جای پرسش «Dog چه نوع Animal ای است؟» باید بپرسید «Dog چه رفتارهایی دارد؟»</p>
 
 <figure class="diagram" dir="ltr">
-<svg height="280" viewBox="0 0 700 280" width="700" xmlns="http://www.w3.org/2000/svg">
-<rect fill="#fafafa" height="280" rx="8" width="700" x="0" y="0"></rect>
-<defs><filter id="sh67" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
-<marker id="arrInh" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#777BB4" points="0 0, 10 3.5, 0 7"></polygon></marker>
-<marker id="arrComp" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#00ADD8" points="0 0, 10 3.5, 0 7"></polygon></marker>
-</defs>
-<!-- PHP Inheritance -->
-<text fill="#777BB4" font-size="14" font-weight="bold" text-anchor="middle" x="175" y="25" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">PHP</tspan>: وراثت (<tspan direction="ltr" unicode-bidi="embed">Inheritance</tspan>)</text>
-<rect fill="#f3e5f5" height="40" rx="8" stroke="#777BB4" stroke-width="2" width="120" x="115" y="45"></rect>
-<text fill="#777BB4" font-size="13" font-weight="bold" text-anchor="middle" x="175" y="70" direction="ltr" unicode-bidi="embed">Animal</text>
-<rect fill="#f3e5f5" height="40" rx="8" stroke="#777BB4" stroke-width="2" width="120" x="45" y="120"></rect>
-<text fill="#777BB4" font-size="13" font-weight="bold" text-anchor="middle" x="105" y="145" direction="ltr" unicode-bidi="embed">Mammal</text>
-<rect fill="#f3e5f5" height="40" rx="8" stroke="#777BB4" stroke-width="2" width="120" x="195" y="120"></rect>
-<text fill="#777BB4" font-size="13" font-weight="bold" text-anchor="middle" x="255" y="145" direction="ltr" unicode-bidi="embed">Bird</text>
-<rect fill="#fce4ec" height="40" rx="8" stroke="#e74c3c" stroke-width="2" width="120" x="45" y="195"></rect>
-<text fill="#e74c3c" font-size="13" font-weight="bold" text-anchor="middle" x="105" y="220" direction="ltr" unicode-bidi="embed">Dog</text>
-<line marker-end="url(#arrInh)" stroke="#777BB4" stroke-width="2" x1="105" x2="155" y1="120" y2="85"></line>
-<line marker-end="url(#arrInh)" stroke="#777BB4" stroke-width="2" x1="255" x2="195" y1="120" y2="85"></line>
-<line marker-end="url(#arrInh)" stroke="#777BB4" stroke-width="2" x1="105" x2="105" y1="195" y2="160"></line>
-<text fill="#e74c3c" font-size="11" text-anchor="middle" x="175" y="265" direction="rtl" unicode-bidi="embed">سلسله‌مراتب عمیق، <tspan direction="ltr" unicode-bidi="embed">coupling</tspan> بالا، تغییر سخت</text>
+<pre class="mermaid">flowchart TB
+    subgraph PHP["PHP: وراثت (Inheritance)"]
+        direction TB
+        ANIMAL_P["Animal"]
+        MAMMAL["Mammal"]
+        BIRD["Bird"]
+        DOG_P["Dog"]
+        ANIMAL_P --> MAMMAL
+        ANIMAL_P --> BIRD
+        MAMMAL --> DOG_P
+        PN(["سلسله‌مراتب عمیق، coupling بالا، تغییر سخت"])
+    end
 
-<!-- Go Composition -->
-<text fill="#00ADD8" font-size="14" font-weight="bold" text-anchor="middle" x="525" y="25" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">Go</tspan>: ترکیب (<tspan direction="ltr" unicode-bidi="embed">Composition</tspan>)</text>
-<rect fill="#e0f7fa" height="40" rx="8" stroke="#00ADD8" stroke-width="2" width="100" x="350" y="45"></rect>
-<text fill="#00ADD8" font-size="12" font-weight="bold" text-anchor="middle" x="400" y="70" direction="ltr" unicode-bidi="embed">Walker</text>
-<rect fill="#e0f7fa" height="40" rx="8" stroke="#00ADD8" stroke-width="2" width="100" x="475" y="45"></rect>
-<text fill="#00ADD8" font-size="12" font-weight="bold" text-anchor="middle" x="525" y="70" direction="ltr" unicode-bidi="embed">Swimmer</text>
-<rect fill="#e0f7fa" height="40" rx="8" stroke="#00ADD8" stroke-width="2" width="100" x="600" y="45"></rect>
-<text fill="#00ADD8" font-size="12" font-weight="bold" text-anchor="middle" x="650" y="70" direction="ltr" unicode-bidi="embed">Barker</text>
-<rect fill="#e8f5e9" height="45" rx="8" stroke="#27ae60" stroke-width="2" width="200" x="420" y="130"></rect>
-<text fill="#2e7d32" font-size="13" font-weight="bold" text-anchor="middle" x="520" y="148" direction="ltr" unicode-bidi="embed">Dog</text>
-<text fill="#666" font-size="10" text-anchor="middle" x="520" y="165" direction="ltr" unicode-bidi="embed">Walker + Swimmer + Barker</text>
-<line marker-end="url(#arrComp)" stroke="#00ADD8" stroke-width="1.5" x1="480" x2="425" y1="130" y2="85"></line>
-<line marker-end="url(#arrComp)" stroke="#00ADD8" stroke-width="1.5" x1="520" x2="525" y1="130" y2="85"></line>
-<line marker-end="url(#arrComp)" stroke="#00ADD8" stroke-width="1.5" x1="560" x2="625" y1="130" y2="85"></line>
-<rect fill="#e8f5e9" height="45" rx="8" stroke="#27ae60" stroke-width="2" width="200" x="420" y="210"></rect>
-<text fill="#2e7d32" font-size="13" font-weight="bold" text-anchor="middle" x="520" y="228" direction="ltr" unicode-bidi="embed">Duck</text>
-<text fill="#666" font-size="10" text-anchor="middle" x="520" y="245" direction="ltr" unicode-bidi="embed">Walker + Swimmer + Flyer</text>
-<text fill="#27ae60" font-size="11" text-anchor="middle" x="525" y="275" direction="rtl" unicode-bidi="embed">ترکیب انعطاف‌پذیر، <tspan direction="ltr" unicode-bidi="embed">coupling</tspan> پایین، تغییر آسان</text>
-</svg>
+    subgraph GO["Go: ترکیب (Composition)"]
+        direction TB
+        WALKER["Walker"]
+        SWIMMER["Swimmer"]
+        BARKER["Barker"]
+        FLYER["Flyer"]
+        DOG_G["Dog<br/>Walker + Swimmer + Barker"]
+        DUCK_G["Duck<br/>Walker + Swimmer + Flyer"]
+        WALKER --> DOG_G
+        SWIMMER --> DOG_G
+        BARKER --> DOG_G
+        WALKER --> DUCK_G
+        SWIMMER --> DUCK_G
+        FLYER --> DUCK_G
+        GN(["ترکیب انعطاف‌پذیر، coupling پایین، تغییر آسان"])
+    end
+
+    PHP ~~~ GO
+
+    classDef phpBox fill:#f5f0fb,stroke:#777BB4,stroke-width:1.5px,color:#1f2937;
+    classDef errBox fill:#fef2f2,stroke:#ef4444,stroke-width:1.5px,color:#1f2937;
+    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
+    classDef okBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
+    classDef noteBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1px,color:#1f2937,font-style:italic;
+    class ANIMAL_P,MAMMAL,BIRD phpBox;
+    class DOG_P errBox;
+    class WALKER,SWIMMER,BARKER,FLYER goBox;
+    class DOG_G,DUCK_G okBox;
+    class PN,GN noteBox;</pre>
 <figcaption>شکل ۵-۳: مقایسه‌ی وراثت در <bdi dir="ltr">PHP</bdi> با ترکیب در <bdi dir="ltr">Go</bdi></figcaption>
 </figure>
 
@@ -598,101 +612,45 @@ MakeThemSpeak(animals)
 <p>یکی از مهم‌ترین مفاهیمی که برنامه‌نویسان PHP باید درباره‌ی <bdi dir="ltr">embedding</bdi> در Go درک کنند، نحوه‌ی عملکرد <bdi dir="ltr">method promotion chain</bdi> است. وقتی یک <bdi dir="ltr">struct</bdi> را در <bdi dir="ltr">struct</bdi> دیگری تعبیه می‌کنید، کامپایلر Go یک مسیر جستجوی مشخص برای متدها ایجاد می‌کند که کاملاً با زنجیره‌ی وراثت PHP متفاوت است. در PHP وقتی متدی روی یک شیء فراخوانی می‌شود، موتور زبان از کلاس فرزند به سمت والد حرکت می‌کند تا متد مناسب را بیابد و با <code dir="ltr">parent::method()</code> می‌توان متد والد را صریحاً فراخوانی کرد. اما در Go مکانیزم method promotion صرفاً یک <bdi dir="ltr">syntactic sugar</bdi> است که فراخوانی متد struct تعبیه‌شده را ساده‌تر می‌کند و هیچ زنجیره‌ی واقعی وجود ندارد.</p>
 
 <figure class="diagram" dir="ltr">
-<svg height="520" viewBox="0 0 800 520" width="800" xmlns="http://www.w3.org/2000/svg">
-<defs><filter id="sh68" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
-<marker id="arrEmbed" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#00ADD8" points="0 0, 10 3.5, 0 7"></polygon></marker>
-<marker id="arrPromote" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#4CAF50" points="0 0, 10 3.5, 0 7"></polygon></marker>
-<marker id="arrOverride" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#FF9800" points="0 0, 10 3.5, 0 7"></polygon></marker>
-<marker id="arrPHPInh" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#777BB4" points="0 0, 10 3.5, 0 7"></polygon></marker>
-</defs>
-<rect fill="#fafafa" height="520" rx="8" width="800" x="0" y="0"></rect>
+<pre class="mermaid">flowchart TB
+    title(["زنجیره‌ی ارتقای متد: PHP extends در برابر Go embedding"])
 
-<!-- Title -->
-<text fill="#333" font-size="16" font-weight="bold" text-anchor="middle" x="400" y="25" direction="rtl" unicode-bidi="embed">زنجیره‌ی ارتقای متد: <tspan direction="ltr" unicode-bidi="embed">PHP extends</tspan> در برابر <tspan direction="ltr" unicode-bidi="embed">Go embedding</tspan></text>
+    subgraph PHP["PHP: class Dog extends Animal"]
+        direction TB
+        PAN["class Animal<br/>+ speak(): string<br/>+ move(): string<br/>+ getName(): string"]
+        PDG["class Dog extends Animal<br/>+ fetch(): string<br/>+ speak(): string ← override<br/>+ parent::speak() ← callable"]
+        PCT["class Cat extends Animal<br/>+ purr(): string<br/>+ speak(): string ← inherited"]
+        PAN --> PDG
+        PAN --> PCT
+        PINFO(["رابطه‌ی is-a: Dog یک Animal است<br/>parent::speak() → calls Animal's version<br/>$dog instanceof Animal → true<br/>تغییر والد = شکست فرزند (بالا به پایین)"])
+        PCALL(["$dog->speak() → Dog::speak() (override wins)"])
+    end
 
-<!-- ===== PHP Side ===== -->
-<rect fill="#f3e5f5" height="470" rx="12" stroke="#777BB4" stroke-width="2" width="350" x="10" y="40"></rect>
-<text fill="#777BB4" font-size="14" font-weight="bold" text-anchor="middle" x="185" y="62" direction="ltr" unicode-bidi="embed">PHP: class Dog extends Animal</text>
+    subgraph GO["Go: type Dog struct { Animal }"]
+        direction TB
+        GAN["type Animal struct { Name string }<br/>+ func (a Animal) Speak() string<br/>+ func (a Animal) Move() string<br/>+ func (a Animal) GetName() string"]
+        GDG["type Dog struct { Animal; Breed string }<br/>+ func (d Dog) Fetch() string<br/>+ func (d Dog) Speak() string ← shadows Animal.Speak<br/>✓ d.Move() → promoted from Animal<br/>✓ d.GetName() → promoted from Animal<br/>✓ d.Animal.Speak() → explicit access to Animal"]
+        GCT["type Cat struct { Animal; Indoor bool }<br/>+ func (c Cat) Purr() string<br/>✓ c.Speak() → promoted from Animal (no override)<br/>✓ c.Move() → promoted from Animal"]
+        GAN --> GDG
+        GAN --> GCT
+        GINFO(["رابطه‌ی has-a: Dog یک Animal دارد<br/>d.Animal.Speak() → always Animal's receiver<br/>d.Speak() → Dog.Speak() (shadow, not override)<br/>تغییر Animal بی‌تأثیر روی متدهای Dog"])
+        GCALL(["d.Speak() → Dog.Speak() (shadow wins) — receiver is Dog, not Animal"])
+    end
 
-<!-- PHP Animal class -->
-<rect fill="#fff" height="90" rx="6" stroke="#777BB4" stroke-width="2" width="300" x="35" y="75"></rect>
-<rect fill="#777BB4" height="22" rx="6" width="300" x="35" y="75"></rect>
-<text fill="#fff" font-size="12" font-weight="bold" text-anchor="middle" x="185" y="91" direction="ltr" unicode-bidi="embed">class Animal</text>
-<text fill="#555" font-size="10" x="45" y="113" direction="ltr" unicode-bidi="embed">+ speak(): string</text>
-<text fill="#555" font-size="10" x="45" y="128" direction="ltr" unicode-bidi="embed">+ move(): string</text>
-<text fill="#555" font-size="10" x="45" y="143" direction="ltr" unicode-bidi="embed">+ getName(): string</text>
+    title ~~~ PHP
+    title ~~~ GO
+    PHP ~~~ GO
 
-<!-- PHP Dog class -->
-<rect fill="#fff" height="90" rx="6" stroke="#777BB4" stroke-width="2" width="300" x="35" y="195"></rect>
-<rect fill="#777BB4" height="22" rx="6" width="300" x="35" y="195"></rect>
-<text fill="#fff" font-size="12" font-weight="bold" text-anchor="middle" x="185" y="211" direction="ltr" unicode-bidi="embed">class Dog extends Animal</text>
-<text fill="#777BB4" font-size="10" x="45" y="233" direction="ltr" unicode-bidi="embed">+ fetch(): string</text>
-<text fill="#FF9800" font-size="10" font-weight="bold" x="45" y="248" direction="ltr" unicode-bidi="embed">+ speak(): string  ← override</text>
-<text fill="#777BB4" font-size="10" x="45" y="263" direction="ltr" unicode-bidi="embed">+ parent::speak()  ← callable</text>
-<line marker-end="url(#arrPHPInh)" stroke="#777BB4" stroke-width="2" x1="185" x2="185" y1="195" y2="165"></line>
-
-<!-- PHP Cat class -->
-<rect fill="#fff" height="75" rx="6" stroke="#777BB4" stroke-width="2" width="300" x="35" y="295"></rect>
-<rect fill="#777BB4" height="22" rx="6" width="300" x="35" y="295"></rect>
-<text fill="#fff" font-size="12" font-weight="bold" text-anchor="middle" x="185" y="311" direction="ltr" unicode-bidi="embed">class Cat extends Animal</text>
-<text fill="#777BB4" font-size="10" x="45" y="333" direction="ltr" unicode-bidi="embed">+ purr(): string</text>
-<text fill="#555" font-size="10" x="45" y="348" direction="ltr" unicode-bidi="embed">+ speak(): string  ← inherited</text>
-<line marker-end="url(#arrPHPInh)" stroke="#777BB4" stroke-width="2" x1="185" x2="185" y1="295" y2="265"></line>
-
-<!-- PHP info box -->
-<rect fill="#fff3e0" height="65" rx="6" stroke="#f39c12" stroke-width="1.5" width="310" x="25" y="400"></rect>
-<text fill="#e65100" font-size="11" font-weight="bold" text-anchor="middle" x="180" y="418" direction="rtl" unicode-bidi="embed">رابطه‌ی <tspan direction="ltr" unicode-bidi="embed">is-a</tspan>: <tspan direction="ltr" unicode-bidi="embed">Dog</tspan> یک <tspan direction="ltr" unicode-bidi="embed">Animal</tspan> است</text>
-<text fill="#555" font-size="10" text-anchor="middle" x="180" y="436" direction="ltr" unicode-bidi="embed">parent::speak() → calls Animal's version</text>
-<text fill="#555" font-size="10" text-anchor="middle" x="180" y="452" direction="ltr" unicode-bidi="embed">$dog instanceof Animal → true</text>
-<text fill="#e74c3c" font-size="10" text-anchor="middle" x="180" y="468" direction="rtl" unicode-bidi="embed">تغییر والد = شکست فرزند (بالا به پایین)</text>
-
-<!-- PHP call example -->
-<rect fill="#ede7f6" height="30" rx="4" stroke="#777BB4" stroke-width="1" width="310" x="25" y="475"></rect>
-<text fill="#777BB4" font-size="10" text-anchor="middle" x="180" y="495" direction="ltr" unicode-bidi="embed">$dog->speak() → Dog::speak() (override wins)</text>
-
-<!-- ===== Go Side ===== -->
-<rect fill="#e0f7fa" height="470" rx="12" stroke="#00ADD8" stroke-width="2" width="420" x="370" y="40"></rect>
-<text fill="#00ADD8" font-size="14" font-weight="bold" text-anchor="middle" x="580" y="62" direction="ltr" unicode-bidi="embed">Go: type Dog struct { Animal }</text>
-
-<!-- Go Animal struct -->
-<rect fill="#fff" height="90" rx="6" stroke="#00ADD8" stroke-width="2" width="370" x="395" y="75"></rect>
-<rect fill="#00ADD8" height="22" rx="6" width="370" x="395" y="75"></rect>
-<text fill="#fff" font-size="12" font-weight="bold" text-anchor="middle" x="580" y="91" direction="ltr" unicode-bidi="embed">type Animal struct { Name string }</text>
-<text fill="#4CAF50" font-size="10" font-weight="bold" x="405" y="113" direction="ltr" unicode-bidi="embed">+ func (a Animal) Speak() string</text>
-<text fill="#4CAF50" font-size="10" font-weight="bold" x="405" y="128" direction="ltr" unicode-bidi="embed">+ func (a Animal) Move() string</text>
-<text fill="#4CAF50" font-size="10" font-weight="bold" x="405" y="143" direction="ltr" unicode-bidi="embed">+ func (a Animal) GetName() string</text>
-
-<!-- Go Dog struct -->
-<rect fill="#fff" height="110" rx="6" stroke="#00ADD8" stroke-width="2" width="370" x="395" y="200"></rect>
-<rect fill="#00ADD8" height="22" rx="6" width="370" x="395" y="200"></rect>
-<text fill="#fff" font-size="12" font-weight="bold" text-anchor="middle" x="580" y="216" direction="ltr" unicode-bidi="embed">type Dog struct { Animal; Breed string }</text>
-<text fill="#00ADD8" font-size="10" x="405" y="238" direction="ltr" unicode-bidi="embed">+ func (d Dog) Fetch() string</text>
-<text fill="#FF9800" font-size="10" font-weight="bold" x="405" y="253" direction="ltr" unicode-bidi="embed">+ func (d Dog) Speak() string  ← shadows Animal.Speak</text>
-<text fill="#4CAF50" font-size="10" x="405" y="268" direction="ltr" unicode-bidi="embed">✓ d.Move()       → promoted from Animal</text>
-<text fill="#4CAF50" font-size="10" x="405" y="283" direction="ltr" unicode-bidi="embed">✓ d.GetName()    → promoted from Animal</text>
-<text fill="#4CAF50" font-size="10" x="405" y="298" direction="ltr" unicode-bidi="embed">✓ d.Animal.Speak() → explicit access to Animal</text>
-<line marker-end="url(#arrEmbed)" stroke="#00ADD8" stroke-width="2" x1="540" x2="540" y1="200" y2="165"></line>
-
-<!-- Go Cat struct -->
-<rect fill="#fff" height="90" rx="6" stroke="#00ADD8" stroke-width="2" width="370" x="395" y="335"></rect>
-<rect fill="#00ADD8" height="22" rx="6" width="370" x="395" y="335"></rect>
-<text fill="#fff" font-size="12" font-weight="bold" text-anchor="middle" x="580" y="351" direction="ltr" unicode-bidi="embed">type Cat struct { Animal; Indoor bool }</text>
-<text fill="#00ADD8" font-size="10" x="405" y="373" direction="ltr" unicode-bidi="embed">+ func (c Cat) Purr() string</text>
-<text fill="#4CAF50" font-size="10" font-weight="bold" x="405" y="388" direction="ltr" unicode-bidi="embed">✓ c.Speak() → promoted from Animal (no override)</text>
-<text fill="#4CAF50" font-size="10" x="405" y="403" direction="ltr" unicode-bidi="embed">✓ c.Move()  → promoted from Animal</text>
-<line marker-end="url(#arrEmbed)" stroke="#00ADD8" stroke-width="2" x1="540" x2="540" y1="335" y2="290"></line>
-
-<!-- Go info box -->
-<rect fill="#fff3e0" height="65" rx="6" stroke="#f39c12" stroke-width="1.5" width="380" x="385" y="400"></rect>
-<text fill="#e65100" font-size="11" font-weight="bold" text-anchor="middle" x="575" y="418" direction="rtl" unicode-bidi="embed">رابطه‌ی <tspan direction="ltr" unicode-bidi="embed">has-a</tspan>: <tspan direction="ltr" unicode-bidi="embed">Dog</tspan> یک <tspan direction="ltr" unicode-bidi="embed">Animal</tspan> دارد</text>
-<text fill="#555" font-size="10" text-anchor="middle" x="575" y="436" direction="ltr" unicode-bidi="embed">d.Animal.Speak() → always Animal's receiver</text>
-<text fill="#555" font-size="10" text-anchor="middle" x="575" y="452" direction="ltr" unicode-bidi="embed">d.Speak() → Dog.Speak() (shadow, not override)</text>
-<text fill="#4CAF50" font-size="10" text-anchor="middle" x="575" y="468" direction="rtl" unicode-bidi="embed">تغییر <tspan direction="ltr" unicode-bidi="embed">Animal</tspan> بی‌تأثیر روی متدهای <tspan direction="ltr" unicode-bidi="embed">Dog</tspan></text>
-
-<!-- Go call example -->
-<rect fill="#e0f2f1" height="30" rx="4" stroke="#00ADD8" stroke-width="1" width="380" x="385" y="475"></rect>
-<text fill="#00ADD8" font-size="10" text-anchor="middle" x="575" y="495" direction="ltr" unicode-bidi="embed">d.Speak() → Dog.Speak() (shadow wins) — receiver is Dog, not Animal</text>
-</svg>
+    classDef titleBox fill:#f8fafc,stroke:#475569,stroke-width:1px,color:#1f2937,font-weight:bold;
+    classDef phpBox fill:#f5f0fb,stroke:#777BB4,stroke-width:1.5px,color:#1f2937;
+    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
+    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1px,color:#1f2937;
+    classDef noteBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1px,color:#1f2937,font-style:italic;
+    class title titleBox;
+    class PAN,PDG,PCT phpBox;
+    class GAN,GDG,GCT goBox;
+    class PINFO,GINFO warnBox;
+    class PCALL,GCALL noteBox;</pre>
 <figcaption dir="rtl">شکل ۵-۳-ج: زنجیره‌ی ارتقای متد در <bdi dir="ltr">Go embedding</bdi> در برابر وراثت <bdi dir="ltr">PHP</bdi> — ارتقا ≠ وراثت</figcaption>
 </figure>
 

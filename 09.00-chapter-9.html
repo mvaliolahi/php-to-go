@@ -81,47 +81,44 @@
 </div>
 
 <figure class="diagram" dir="ltr">
-<svg height="350" viewBox="0 0 600 350" width="600" xmlns="http://www.w3.org/2000/svg">
-<defs>
-<marker id="arrowC9" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#555" points="0 0, 10 3.5, 0 7"></polygon></marker>
-<filter height="104%" id="shC9" width="104%" x="-2%" y="-2%"><fedropshadow dx="1" dy="1" flood-opacity="0.15" stddeviation="2"></fedropshadow></filter>
-</defs>
-<rect fill="#fafafa" height="350" rx="8" width="600" x="0" y="0"></rect>
-<text fill="#333" font-size="16" font-weight="bold" text-anchor="middle" x="300" y="28" direction="rtl" unicode-bidi="embed">سه رکن <tspan direction="ltr" unicode-bidi="embed">Observability</tspan> در <tspan direction="ltr" unicode-bidi="embed">Go</tspan></text>
+<pre class="mermaid">flowchart TB
+    title(["سه رکن Observability در Go"])
 
-<rect fill="#4CAF50" filter="url(#shC9)" height="70" rx="8" width="160" x="20" y="60"></rect>
-<text fill="#fff" font-size="14" font-weight="bold" text-anchor="middle" x="100" y="90" direction="ltr" unicode-bidi="embed">Logging</text>
-<text fill="#e8f5e9" font-size="10" text-anchor="middle" x="100" y="110" direction="rtl" unicode-bidi="embed">ثبت وقایع و خطاها</text>
+    LOG["Logging<br/>ثبت وقایع و خطاها"]
+    METRIC["Metrics<br/>اندازه‌گیری کمی عملکرد"]
+    TRACE["Tracing<br/>ردیابی مسیر درخواست"]
 
-<rect fill="#E65100" filter="url(#shC9)" height="70" rx="8" width="160" x="220" y="60"></rect>
-<text fill="#fff" font-size="14" font-weight="bold" text-anchor="middle" x="300" y="90" direction="ltr" unicode-bidi="embed">Metrics</text>
-<text fill="#fff3e0" font-size="10" text-anchor="middle" x="300" y="110" direction="rtl" unicode-bidi="embed">اندازه‌گیری کمی عملکرد</text>
+    SLOG["slog / zap"]
+    PROM["Prometheus"]
+    OTEL["OpenTelemetry"]
 
-<rect fill="#9C27B0" filter="url(#shC9)" height="70" rx="8" width="160" x="420" y="60"></rect>
-<text fill="#fff" font-size="14" font-weight="bold" text-anchor="middle" x="500" y="90" direction="ltr" unicode-bidi="embed">Tracing</text>
-<text fill="#e1bee7" font-size="10" text-anchor="middle" x="500" y="110" direction="rtl" unicode-bidi="embed">ردیابی مسیر درخواست</text>
+    GRAFANA["Grafana<br/>داشبورد یکپارچه"]
 
-<line marker-end="url(#arrowC9)" stroke="#555" stroke-width="2" x1="100" x2="100" y1="130" y2="180"></line>
-<line marker-end="url(#arrowC9)" stroke="#555" stroke-width="2" x1="300" x2="300" y1="130" y2="180"></line>
-<line marker-end="url(#arrowC9)" stroke="#555" stroke-width="2" x1="500" x2="500" y1="130" y2="180"></line>
+    LOG --> SLOG
+    METRIC --> PROM
+    TRACE --> OTEL
+    SLOG -.-> GRAFANA
+    PROM -.-> GRAFANA
+    OTEL -.-> GRAFANA
 
-<rect fill="#00ADD8" filter="url(#shC9)" height="40" rx="6" width="120" x="40" y="180"></rect>
-<text fill="#fff" font-size="10" text-anchor="middle" x="100" y="205" direction="ltr" unicode-bidi="embed">slog / zap</text>
+    title ~~~ LOG
+    title ~~~ METRIC
+    title ~~~ TRACE
 
-<rect fill="#F46800" filter="url(#shC9)" height="40" rx="6" width="120" x="240" y="180"></rect>
-<text fill="#fff" font-size="10" text-anchor="middle" x="300" y="205" direction="ltr" unicode-bidi="embed">Prometheus</text>
-
-<rect fill="#4CAF50" filter="url(#shC9)" height="40" rx="6" width="120" x="440" y="180"></rect>
-<text fill="#fff" font-size="10" text-anchor="middle" x="500" y="205" direction="ltr" unicode-bidi="embed">OpenTelemetry</text>
-
-<line stroke="#555" stroke-dasharray="4,4" stroke-width="1.5" x1="100" x2="300" y1="220" y2="260"></line>
-<line stroke="#555" stroke-dasharray="4,4" stroke-width="1.5" x1="300" x2="300" y1="220" y2="260"></line>
-<line stroke="#555" stroke-dasharray="4,4" stroke-width="1.5" x1="500" x2="300" y1="220" y2="260"></line>
-
-<rect fill="#F46800" filter="url(#shC9)" height="50" rx="8" width="200" x="200" y="260"></rect>
-<text fill="#fff" font-size="13" font-weight="bold" text-anchor="middle" x="300" y="285" direction="ltr" unicode-bidi="embed">Grafana</text>
-<text fill="#fff" font-size="10" text-anchor="middle" x="300" y="300" direction="rtl" unicode-bidi="embed">داشبورد یکپارچه</text>
-</svg>
+    classDef titleBox fill:#f8fafc,stroke:#475569,stroke-width:1px,color:#1f2937,font-weight:bold;
+    classDef logBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
+    classDef metricBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
+    classDef traceBox fill:#f5f0fb,stroke:#9C27B0,stroke-width:1.5px,color:#1f2937;
+    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
+    classDef vizBox fill:#fffbeb,stroke:#F46800,stroke-width:2px,color:#1f2937,font-weight:bold;
+    class title titleBox;
+    class LOG logBox;
+    class METRIC metricBox;
+    class TRACE traceBox;
+    class SLOG logBox;
+    class PROM metricBox;
+    class OTEL traceBox;
+    class GRAFANA vizBox;</pre>
 <figcaption>شکل ۹-۰: سه رکن <bdi dir="ltr">Observability</bdi> — <bdi dir="ltr">Logging</bdi> ، <bdi dir="ltr">Metrics</bdi> و <bdi dir="ltr">Tracing</bdi></figcaption>
 </figure>
 
@@ -170,50 +167,42 @@
 </ul>
 
 <figure class="diagram" dir="ltr">
-<svg height="320" viewBox="0 0 650 320" width="650" xmlns="http://www.w3.org/2000/svg">
-<defs>
-<marker id="arrowC9s" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#555" points="0 0, 10 3.5, 0 7"></polygon></marker>
-<filter height="104%" id="shC9s" width="104%" x="-2%" y="-2%"><fedropshadow dx="1" dy="1" flood-opacity="0.15" stddeviation="2"></fedropshadow></filter>
-</defs>
-<rect fill="#fafafa" height="320" rx="8" width="650" x="0" y="0"></rect>
-<text fill="#333" font-size="15" font-weight="bold" text-anchor="middle" x="325" y="28" direction="rtl" unicode-bidi="embed">سناریو دیباگ: بدون مشاده‌پذیری <tspan direction="ltr" unicode-bidi="embed">vs</tspan> با مشاده‌پذیری</text>
+<pre class="mermaid">flowchart LR
+    title(["سناریو دیباگ: بدون مشاده‌پذیری vs با مشاده‌پذیری"])
 
-<!-- Without Observability -->
-<rect fill="#fce4ec" height="250" rx="8" stroke="#e91e63" stroke-width="1.5" width="290" x="15" y="50"></rect>
-<text fill="#e91e63" font-size="13" font-weight="bold" text-anchor="middle" x="160" y="75" direction="rtl" unicode-bidi="embed">بدون Observability</text>
+    subgraph WITHOUT["بدون Observability"]
+        direction TB
+        W1["۱. کاربر گزارش مشکل می‌دهد"]
+        W2["۲. Logs را بررسی → هزاران خطه نامرتب"]
+        W3["۳. SSH به سرور → بررسی دستی فرآیندها"]
+        W4["۴. حدس و آزمایش → ساعت‌ها وقت تلف"]
+        W5(["زمان رفع مشکل: ساعت‌ها تا روزها"])
+        W1 --> W2 --> W3 --> W4 --> W5
+    end
 
-<rect fill="#fff" height="35" rx="4" stroke="#e91e63" stroke-width="1" width="250" x="35" y="90"></rect>
-<text fill="#333" font-size="10" text-anchor="middle" x="160" y="112" direction="rtl" unicode-bidi="embed">۱. کاربر گزارش مشکل می‌دهد</text>
+    subgraph WITH["با Observability"]
+        direction TB
+        H1["۱. Alert خودکار در Grafana فعال می‌شود"]
+        H2["۲. Metrics → زمان پاسخ دیتابیس بالا رفته"]
+        H3["۳. Trace → دقیقاً کوئری کند شناسایی می‌شود"]
+        H4["۴. لاگ → علت اتصال قطع شده مشخص است"]
+        H5(["زمان رفع مشکل: دقیقه‌ها"])
+        H1 --> H2 --> H3 --> H4 --> H5
+    end
 
-<rect fill="#fff" height="35" rx="4" stroke="#e91e63" stroke-width="1" width="250" x="35" y="135"></rect>
-<text fill="#333" font-size="10" text-anchor="middle" x="160" y="157" direction="rtl" unicode-bidi="embed">۲. Logs را بررسی → هزاران خطه نامرتب</text>
+    title ~~~ WITHOUT
+    title ~~~ WITH
 
-<rect fill="#fff" height="35" rx="4" stroke="#e91e63" stroke-width="1" width="250" x="35" y="180"></rect>
-<text fill="#333" font-size="10" text-anchor="middle" x="160" y="202" direction="rtl" unicode-bidi="embed">۳. SSH به سرور → بررسی دستی فرآیندها</text>
-
-<rect fill="#fff" height="35" rx="4" stroke="#e91e63" stroke-width="1" width="250" x="35" y="225"></rect>
-<text fill="#333" font-size="10" text-anchor="middle" x="160" y="247" direction="rtl" unicode-bidi="embed">۴. حدس و آزمایش → ساعت‌ها وقت تلف</text>
-
-<text fill="#e91e63" font-size="11" font-weight="bold" text-anchor="middle" x="160" y="285" direction="rtl" unicode-bidi="embed">زمان رفع مشکل: ساعت‌ها تا روزها</text>
-
-<!-- With Observability -->
-<rect fill="#e8f5e9" height="250" rx="8" stroke="#4caf50" stroke-width="1.5" width="290" x="345" y="50"></rect>
-<text fill="#4caf50" font-size="13" font-weight="bold" text-anchor="middle" x="490" y="75" direction="rtl" unicode-bidi="embed">با Observability</text>
-
-<rect fill="#fff" height="35" rx="4" stroke="#4caf50" stroke-width="1" width="250" x="365" y="90"></rect>
-<text fill="#333" font-size="10" text-anchor="middle" x="490" y="112" direction="rtl" unicode-bidi="embed">۱. Alert خودکار در Grafana فعال می‌شود</text>
-
-<rect fill="#fff" height="35" rx="4" stroke="#4caf50" stroke-width="1" width="250" x="365" y="135"></rect>
-<text fill="#333" font-size="10" text-anchor="middle" x="490" y="157" direction="rtl" unicode-bidi="embed">۲. Metrics → زمان پاسخ دیتابیس بالا رفته</text>
-
-<rect fill="#fff" height="35" rx="4" stroke="#4caf50" stroke-width="1" width="250" x="365" y="180"></rect>
-<text fill="#333" font-size="10" text-anchor="middle" x="490" y="202" direction="rtl" unicode-bidi="embed">۳. Trace → دقیقاً کوئری کند شناسایی می‌شود</text>
-
-<rect fill="#fff" height="35" rx="4" stroke="#4caf50" stroke-width="1" width="250" x="365" y="225"></rect>
-<text fill="#333" font-size="10" text-anchor="middle" x="490" y="247" direction="rtl" unicode-bidi="embed">۴. لاگ → علت اتصال قطع شده مشخص است</text>
-
-<text fill="#4caf50" font-size="11" font-weight="bold" text-anchor="middle" x="490" y="285" direction="rtl" unicode-bidi="embed">زمان رفع مشکل: دقیقه‌ها</text>
-</svg>
+    classDef titleBox fill:#f8fafc,stroke:#475569,stroke-width:1px,color:#1f2937,font-weight:bold;
+    classDef errBox fill:#fef2f2,stroke:#ef4444,stroke-width:1.5px,color:#1f2937;
+    classDef okBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
+    classDef errNoteBox fill:#fef2f2,stroke:#ef4444,stroke-width:1px,color:#1f2937,font-style:italic,font-weight:bold;
+    classDef okNoteBox fill:#ecfdf5,stroke:#10b981,stroke-width:1px,color:#1f2937,font-style:italic,font-weight:bold;
+    class title titleBox;
+    class W1,W2,W3,W4 errBox;
+    class W5 errNoteBox;
+    class H1,H2,H3,H4 okBox;
+    class H5 okNoteBox;</pre>
 <figcaption>شکل ۹-۰-الف: مقایسه دیباگ بدون و با <bdi dir="ltr">Observability</bdi> — تفاوت ساعت‌ها و دقیقه‌ها</figcaption>
 </figure>
 
@@ -222,40 +211,27 @@
 <p>برای درک کامل <bdi dir="ltr">Observability</bdi> در <bdi dir="ltr">Go</bdi> بهتر است مفاهیم را به ترتیب زیر مطالعه کنید. هر بخش بر پایه‌ی بخش قبلی بنا شده و در نهایت همه در <bdi dir="ltr">OpenTelemetry</bdi> یکپارچه می‌شوند:</p>
 
 <figure class="diagram" dir="ltr">
-<svg height="200" viewBox="0 0 650 200" width="650" xmlns="http://www.w3.org/2000/svg">
-<defs>
-<marker id="arrowC9p" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#00ADD8" points="0 0,10 3.5,0 7"></polygon></marker>
-<filter height="104%" id="shC9p" width="104%" x="-2%" y="-2%"><fedropshadow dx="1" dy="1" flood-opacity="0.12" stddeviation="2"></fedropshadow></filter>
-</defs>
-<rect fill="#fafafa" height="200" rx="8" width="650" x="0" y="0"></rect>
-<text fill="#333" font-size="15" font-weight="bold" text-anchor="middle" x="325" y="28" direction="rtl" unicode-bidi="embed">مسیر یادگیری فصل ۹</text>
+<pre class="mermaid">flowchart TB
+    title(["مسیر یادگیری فصل ۹"])
+    L["۹.۱ Logging<br/>پایه: ثبت وقایع و خطاها<br/>log → slog → zap"]
+    M["۹.۲ Metrics<br/>کمی‌سازی: اندازه‌گیری عملکرد<br/>Prometheus + Grafana"]
+    T["۹.۳ Tracing<br/>یکپارچه‌سازی: ردیابی کامل<br/>OpenTelemetry"]
+    RESULT(["نتیجه نهایی: سیستم Observability کامل — Logs + Metrics + Traces = درک کامل وضعیت سیستم"])
+    L --> M --> T
+    T --> RESULT
 
-<!-- Step 1: Logging -->
-<rect fill="#4CAF50" filter="url(#shC9p)" height="70" rx="8" width="170" x="15" y="60"></rect>
-<text fill="#fff" font-size="14" font-weight="bold" text-anchor="middle" x="100" y="88" direction="ltr" unicode-bidi="embed">۹.۱ Logging</text>
-<text fill="#e8f5e9" font-size="9" text-anchor="middle" x="100" y="108" direction="rtl" unicode-bidi="embed">پایه: ثبت وقایع و خطاها</text>
-<text fill="#e8f5e9" font-size="9" text-anchor="middle" x="100" y="122" direction="ltr" unicode-bidi="embed">log → slog → zap</text>
+    title ~~~ L
 
-<line marker-end="url(#arrowC9p)" stroke="#00ADD8" stroke-width="2" x1="185" x2="220" y1="95" y2="95"></line>
-
-<!-- Step 2: Metrics -->
-<rect fill="#E65100" filter="url(#shC9p)" height="70" rx="8" width="170" x="220" y="60"></rect>
-<text fill="#fff" font-size="14" font-weight="bold" text-anchor="middle" x="305" y="88" direction="ltr" unicode-bidi="embed">۹.۲ Metrics</text>
-<text fill="#fff3e0" font-size="9" text-anchor="middle" x="305" y="108" direction="rtl" unicode-bidi="embed">کمی‌سازی: اندازه‌گیری عملکرد</text>
-<text fill="#fff3e0" font-size="9" text-anchor="middle" x="305" y="122" direction="ltr" unicode-bidi="embed">Prometheus + Grafana</text>
-
-<line marker-end="url(#arrowC9p)" stroke="#00ADD8" stroke-width="2" x1="390" x2="425" y1="95" y2="95"></line>
-
-<!-- Step 3: Tracing -->
-<rect fill="#9C27B0" filter="url(#shC9p)" height="70" rx="8" width="200" x="425" y="60"></rect>
-<text fill="#fff" font-size="14" font-weight="bold" text-anchor="middle" x="525" y="88" direction="ltr" unicode-bidi="embed">۹.۳ Tracing</text>
-<text fill="#e1bee7" font-size="9" text-anchor="middle" x="525" y="108" direction="rtl" unicode-bidi="embed">یکپارچه‌سازی: ردیابی کامل</text>
-<text fill="#e1bee7" font-size="9" text-anchor="middle" x="525" y="122" direction="ltr" unicode-bidi="embed">OpenTelemetry</text>
-
-<!-- Result -->
-<rect fill="#F46800" filter="url(#shC9p)" height="30" rx="6" width="590" x="30" y="155"></rect>
-<text fill="#fff" font-size="11" font-weight="bold" text-anchor="middle" x="325" y="175" direction="rtl" unicode-bidi="embed">نتیجه نهایی: سیستم <tspan direction="ltr" unicode-bidi="embed">Observability</tspan> کامل — Logs + Metrics + Traces = درک کامل وضعیت سیستم</text>
-</svg>
+    classDef titleBox fill:#f8fafc,stroke:#475569,stroke-width:1px,color:#1f2937,font-weight:bold;
+    classDef logBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
+    classDef metricBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
+    classDef traceBox fill:#f5f0fb,stroke:#9C27B0,stroke-width:1.5px,color:#1f2937;
+    classDef vizBox fill:#fffbeb,stroke:#F46800,stroke-width:2px,color:#1f2937,font-weight:bold;
+    class title titleBox;
+    class L logBox;
+    class M metricBox;
+    class T traceBox;
+    class RESULT vizBox;</pre>
 <figcaption>شکل ۹-۰-ب: مسیر یادگیری فصل ۹ — از Logging پایه تا یکپارچه‌سازی کامل</figcaption>
 </figure>
 

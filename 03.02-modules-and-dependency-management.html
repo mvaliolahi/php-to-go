@@ -128,33 +128,37 @@ golang.org/x/text v0.12.0
 <p dir="ltr">4. go get </p>
 <p>دستور go get برای افزودن یا به‌روزرسانی یک بسته یا ماژول استفاده می‌شود. این دستور نسخه مناسب بسته را دانلود می‌کند و در فایل go.mod ثبت می‌کند، به طوری که پروژه همیشه بتواند نسخه مشخصی از هر dependency را بازتولید کند.</p>
 <figure class="diagram" dir="ltr">
-<svg height="300" viewBox="0 0 600 300" width="600" xmlns="http://www.w3.org/2000/svg"><defs><filter id="sh54" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter></defs>
-<text fill="#00ADD8" font-size="15" font-weight="bold" text-anchor="middle" x="300" y="25" direction="ltr" unicode-bidi="embed">Go Modules vs Composer</text>
-<!-- Go side -->
-<rect fill="#e0f7fa" height="250" rx="12" stroke="#00ADD8" stroke-width="2" width="280" x="10" y="40"></rect>
-<text fill="#00ADD8" font-size="14" font-weight="bold" text-anchor="middle" x="150" y="65" direction="ltr" unicode-bidi="embed">Go Modules</text>
-<rect fill="#fff" height="35" rx="6" stroke="#00ADD8" stroke-width="1.5" width="240" x="30" y="80"></rect>
-<text fill="#333" font-family="monospace" font-size="12" text-anchor="middle" x="150" y="102" direction="ltr" unicode-bidi="embed">go.mod (module + requires)</text>
-<rect fill="#fff" height="35" rx="6" stroke="#00ADD8" stroke-width="1.5" width="240" x="30" y="125"></rect>
-<text fill="#333" font-family="monospace" font-size="12" text-anchor="middle" x="150" y="147" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">go.sum</tspan> (هش‌های رمزنگاری)</text>
-<text fill="#00ADD8" font-size="11" x="150" y="182" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">go</tspan> <tspan direction="ltr" unicode-bidi="embed">mod</tspan> <tspan direction="ltr" unicode-bidi="embed">init</tspan> → ایجاد ماژول</text>
-<text fill="#00ADD8" font-size="11" x="150" y="200" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">go</tspan> <tspan direction="ltr" unicode-bidi="embed">get</tspan> → نصب پکیج</text>
-<text fill="#00ADD8" font-size="11" x="150" y="218" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">go</tspan> <tspan direction="ltr" unicode-bidi="embed">mod</tspan> <tspan direction="ltr" unicode-bidi="embed">tidy</tspan> → پاکسازی</text>
-<text fill="#00ADD8" font-size="11" x="150" y="236" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">go</tspan> <tspan direction="ltr" unicode-bidi="embed">mod</tspan> <tspan direction="ltr" unicode-bidi="embed">verify</tspan> → بررسی یکپارچگی</text>
-<text fill="#888" font-size="11" x="150" y="258" direction="ltr" unicode-bidi="embed">Module Cache: ~/go/pkg/mod/</text>
-<!-- PHP side -->
-<rect fill="#f3e5f5" height="250" rx="12" stroke="#777BB4" stroke-width="2" width="280" x="310" y="40"></rect>
-<text fill="#777BB4" font-size="14" font-weight="bold" text-anchor="middle" x="450" y="65" direction="ltr" unicode-bidi="embed">Composer</text>
-<rect fill="#fff" height="35" rx="6" stroke="#777BB4" stroke-width="1.5" width="240" x="330" y="80"></rect>
-<text fill="#333" font-family="monospace" font-size="12" text-anchor="middle" x="450" y="102" direction="ltr" unicode-bidi="embed">composer.json (requires)</text>
-<rect fill="#fff" height="35" rx="6" stroke="#777BB4" stroke-width="1.5" width="240" x="330" y="125"></rect>
-<text fill="#333" font-family="monospace" font-size="12" text-anchor="middle" x="450" y="147" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">composer.lock</tspan> (نسخه‌های قفل)</text>
-<text fill="#777BB4" font-size="11" x="450" y="182" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">composer</tspan> <tspan direction="ltr" unicode-bidi="embed">init</tspan> → ایجاد پروژه</text>
-<text fill="#777BB4" font-size="11" x="450" y="200" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">composer</tspan> <tspan direction="ltr" unicode-bidi="embed">require</tspan> → نصب پکیج</text>
-<text fill="#777BB4" font-size="11" x="450" y="218" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">composer</tspan> <tspan direction="ltr" unicode-bidi="embed">install</tspan> → نصب از <tspan direction="ltr" unicode-bidi="embed">lock</tspan></text>
-<text fill="#777BB4" font-size="11" x="450" y="236" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">composer</tspan> <tspan direction="ltr" unicode-bidi="embed">update</tspan> → به‌روزرسانی</text>
-<text fill="#888" font-size="11" x="450" y="258" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">vendor/</tspan> در خود پروژه</text>
-</svg>
+<pre class="mermaid">flowchart LR
+    title(["Go Modules vs Composer"])
+    subgraph GO["Go Modules"]
+        direction TB
+        GMOD["go.mod (module + requires)"]
+        GSUM["go.sum (هش‌های رمزنگاری)"]
+        GINIT["go mod init → ایجاد ماژول"]
+        GGET["go get → نصب پکیج"]
+        GTIDY["go mod tidy → پاکسازی"]
+        GVERIFY["go mod verify → بررسی یکپارچگی"]
+        GCACHE["Module Cache: ~/go/pkg/mod/"]
+    end
+    subgraph PHP["Composer"]
+        direction TB
+        CJSON["composer.json (requires)"]
+        CLOCK["composer.lock (نسخه‌های قفل)"]
+        CINIT["composer init → ایجاد پروژه"]
+        CREQ["composer require → نصب پکیج"]
+        CINST["composer install → نصب از lock"]
+        CUPD["composer update → به‌روزرسانی"]
+        CVEND["vendor/ در خود پروژه"]
+    end
+    title ~~~ GO
+    title ~~~ PHP
+
+    classDef titleBox fill:#f8fafc,stroke:#475569,stroke-width:1px,color:#1f2937,font-weight:bold;
+    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
+    classDef phpBox fill:#f5f0fb,stroke:#777BB4,stroke-width:1.5px,color:#1f2937;
+    class title titleBox;
+    class GMOD,GSUM,GINIT,GGET,GTIDY,GVERIFY,GCACHE goBox;
+    class CJSON,CLOCK,CINIT,CREQ,CINST,CUPD,CVEND phpBox;</pre>
 <figcaption>مقایسه‌ی <bdi dir="ltr">Go</bdi> <bdi dir="ltr">Modules</bdi> با <bdi dir="ltr">Composer</bdi> در <bdi dir="ltr">PHP</bdi></figcaption>
 </figure>
 <h3 id="استفاده-از-ماژولهای-لوکال">استفاده از ماژول‌های لوکال</h3>
@@ -276,31 +280,30 @@ use (
 <div class="note"><strong>نکته‌ی حرفه‌ای — راهنمای انتخاب بین <code dir="ltr">replace</code>، <code dir="ltr">vendor</code> و <code dir="ltr">go.work</code>:</strong> این سه ابزار برای سه سناریوی متفاوت طراحی شده‌اند و اشتباه گرفتن آن‌ها عامل رایج دردسر در تیم‌هاست. از <code>replace</code> فقط برای رفع موقت یک باگ در وابستگی خارجی استفاده کنید و حتماً قبل از <code>commit</code> آن را حذف کنید. از <code>vendor</code> برای تضمین تکرارپذیری <code>build</code> در محیط‌های ایزوله‌ی CI/CD بدون دسترسی اینترنت استفاده کنید. از <code>go.work</code> (Go 1.18+) برای توسعه‌ی هم‌زمان روی چند ماژول وابسته در همان ماشین استفاده کنید و هرگز آن را در <code>repository</code> قرار ندهید. این طبقه‌بندی ساده از ترکیب شدن این ابزارها و ایجاد وضعیت غیرقابل تکرار در <code>build</code> جلوگیری می‌کند.</div>
 
 <figure class="diagram" dir="ltr">
-<svg height="250" viewBox="0 0 650 250" width="650" xmlns="http://www.w3.org/2000/svg">
-<rect fill="#fafafa" height="250" rx="8" width="650" x="0" y="0"></rect>
-<defs><filter id="sh55" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter><marker id="arrWs" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#00ADD8" points="0 0, 10 3.5, 0 7"></polygon></marker></defs>
-<text fill="#00ADD8" font-size="15" font-weight="bold" text-anchor="middle" x="325" y="28" direction="rtl" unicode-bidi="embed">چرخه‌ی حیات ماژول <tspan direction="ltr" unicode-bidi="embed">Go</tspan></text>
-<rect fill="#e3f2fd" height="45" rx="8" stroke="#2196f3" stroke-width="2" width="120" x="20" y="60"></rect>
-<text fill="#1565c0" font-size="12" font-weight="bold" text-anchor="middle" x="80" y="87" direction="ltr" unicode-bidi="embed">go mod init</text>
-<rect fill="#e0f7fa" height="45" rx="8" stroke="#00ADD8" stroke-width="2" width="120" x="170" y="60"></rect>
-<text fill="#00ADD8" font-size="12" font-weight="bold" text-anchor="middle" x="230" y="87" direction="ltr" unicode-bidi="embed">go get</text>
-<rect fill="#e8f5e9" height="45" rx="8" stroke="#27ae60" stroke-width="2" width="120" x="320" y="60"></rect>
-<text fill="#27ae60" font-size="12" font-weight="bold" text-anchor="middle" x="380" y="87" direction="ltr" unicode-bidi="embed">go mod tidy</text>
-<rect fill="#fff3e0" height="45" rx="8" stroke="#f39c12" stroke-width="2" width="120" x="470" y="60"></rect>
-<text fill="#e65100" font-size="12" font-weight="bold" text-anchor="middle" x="530" y="87" direction="ltr" unicode-bidi="embed">go build</text>
-<line marker-end="url(#arrWs)" stroke="#00ADD8" stroke-width="2" x1="140" x2="170" y1="82" y2="82"></line>
-<line marker-end="url(#arrWs)" stroke="#00ADD8" stroke-width="2" x1="290" x2="320" y1="82" y2="82"></line>
-<line marker-end="url(#arrWs)" stroke="#00ADD8" stroke-width="2" x1="440" x2="470" y1="82" y2="82"></line>
-<rect fill="#fafafa" height="100" rx="8" stroke="#999" stroke-width="1.5" width="600" x="25" y="130"></rect>
-<text fill="#555" font-size="12" font-weight="bold" x="40" y="155" direction="ltr" unicode-bidi="embed">go.mod:</text>
-<text fill="#888" font-size="11" x="110" y="155" direction="ltr" unicode-bidi="embed">module + go version + require/replace/exclude</text>
-<text fill="#555" font-size="12" font-weight="bold" x="40" y="175" direction="ltr" unicode-bidi="embed">go.sum:</text>
-<text fill="#888" font-size="11" x="110" y="175" direction="ltr" unicode-bidi="embed">h1: hash + /go.mod hash (immutability)</text>
-<text fill="#555" font-size="12" font-weight="bold" x="40" y="195" direction="ltr" unicode-bidi="embed">Module Cache:</text>
-<text fill="#888" font-size="11" x="155" y="195" direction="ltr" unicode-bidi="embed">~/go/pkg/mod/ (read-only, shared across projects)</text>
-<text fill="#555" font-size="12" font-weight="bold" x="40" y="215" direction="ltr" unicode-bidi="embed">GOPROXY:</text>
-<text fill="#888" font-size="11" x="130" y="215" direction="ltr" unicode-bidi="embed">proxy.golang.org → CDN → download → cache</text>
-</svg>
+<pre class="mermaid">flowchart TB
+    title(["چرخه‌ی حیات ماژول Go"])
+    INIT["go mod init"] --> GET["go get"] --> TIDY["go mod tidy"] --> BUILD["go build"]
+    subgraph INFO["فایل‌ها و ابزارها"]
+        direction TB
+        MOD["go.mod: module + go version + require/replace/exclude"]
+        SUM["go.sum: h1: hash + /go.mod hash (immutability)"]
+        CACHE["Module Cache: ~/go/pkg/mod/ (read-only, shared across projects)"]
+        PROXY["GOPROXY: proxy.golang.org → CDN → download → cache"]
+    end
+    title ~~~ INIT
+    BUILD ~~~ INFO
+
+    classDef titleBox fill:#f8fafc,stroke:#475569,stroke-width:1px,color:#1f2937,font-weight:bold;
+    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
+    classDef okBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
+    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
+    classDef neutralBox fill:#f8fafc,stroke:#475569,stroke-width:1px,color:#1f2937;
+    class title titleBox;
+    class INIT neutralBox;
+    class GET goBox;
+    class TIDY okBox;
+    class BUILD warnBox;
+    class MOD,SUM,CACHE,PROXY neutralBox;</pre>
 <figcaption>شکل ۲-۳: چرخه‌ی حیات ماژول <bdi dir="ltr">Go</bdi> و ابزارهای مدیریت وابستگی</figcaption>
 </figure>
 
@@ -428,113 +431,69 @@ ignore (
 <p>یکی از مهم‌ترین مکانیزم‌های امنیتی در <bdi dir="ltr">Go Modules</bdi> سیستم تأیید <bdi dir="ltr">checksum</bdi> است که یکپارچگی وابستگی‌ها را تضمین می‌کند. وقتی دستور <code>go get</code> اجرا می‌شود، Go نه‌تنها وابستگی را دانلود می‌کند، بلکه هش <bdi dir="ltr">SHA-256</bdi> آن را محاسبه کرده و با مقدار ثبت‌شده در <code>go.sum</code> مقایسه می‌کند. اگر هش‌ها مطابقت نداشته باشند، Go از ادامه‌ی build جلوگیری می‌کند و خطای امنیتی صادر می‌شود. این مکانیزم از حمله‌ی <bdi dir="ltr">supply chain</bdi> جلوگیری می‌کند — سناریویی که در آن یک وابستگی مخرب جایگزین نسخه‌ی اصلی شود. در PHP مشابه این مکانیزم وجود دارد (<code>composer.lock</code>) اما <bdi dir="ltr">checksum database</bdi> متمرکزی برای تأیید یکپارچگی وجود ندارد. نمودار زیر این جریان را به‌صورت گام‌به‌گام نشان می‌دهد.</p>
 
 <figure class="diagram" dir="ltr">
-<svg height="700" viewBox="0 0 900 700" width="900" xmlns="http://www.w3.org/2000/svg">
-<defs><filter id="sh56" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
-<marker id="arrChecksum" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#666" points="0 0, 10 3.5, 0 7"></polygon></marker>
-<marker id="arrGoTool" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#00ADD8" points="0 0, 10 3.5, 0 7"></polygon></marker>
-<marker id="arrVerified" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#4CAF50" points="0 0, 10 3.5, 0 7"></polygon></marker>
-<marker id="arrError" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#e91e63" points="0 0, 10 3.5, 0 7"></polygon></marker>
-</defs>
-<rect fill="#fafafa" height="680" rx="10" width="900" x="0" y="0"></rect>
+<pre class="mermaid">flowchart TB
+    title(["جریان تأیید Checksum در go.sum — امنیت زنجیره‌ی تأمین"])
+    S1["① go get github.com/foo/bar@v1.2.3<br/>دستور افزودن وابستگی اجرا می‌شود"]
+    S2["② Download Module<br/>دانلود از GOPROXY"]
+    S3["③ Compute SHA-256 Hash<br/>محاسبه‌ی هش محلی"]
+    S4{"④ Compare with go.sum entry<br/>مقایسه‌ی هش محلی با هش ثبت‌شده"}
+    S5A["⑤الف: استفاده از ماژول<br/>واکایی تأیید شد — build ادامه می‌یابد"]
+    S5B["⑤ب: SECURITY ERROR<br/>build متوقف می‌شود — ماژول مخرب嫌疑"]
 
-<!-- Title -->
-<text fill="#333" font-size="16" font-weight="bold" text-anchor="middle" x="450" y="28" direction="rtl" unicode-bidi="embed">جریان تأیید <tspan direction="ltr" unicode-bidi="embed">Checksum</tspan> در <tspan direction="ltr" unicode-bidi="embed">go.sum</tspan> — امنیت زنجیره‌ی تأمین</text>
+    S1 --> S2 --> S3 --> S4
+    S4 -- "تطابق ✓" --> S5A
+    S4 -- "عدم تطابق ✗" --> S5B
 
-<!-- Step 1: go get -->
-<rect fill="#e0f7fa" height="55" rx="8" stroke="#00ADD8" stroke-width="2" width="280" x="50" y="50"></rect>
-<text fill="#00ADD8" font-size="10" font-weight="bold" x="65" y="68" direction="ltr" unicode-bidi="embed">① go get github.com/foo/bar@v1.2.3</text>
-<text fill="#555" font-size="9" x="65" y="88" direction="rtl" unicode-bidi="embed">دستور افزودن وابستگی اجرا می‌شود</text>
+    subgraph SUMFMT["go.sum format"]
+        direction TB
+        L1["github.com/google/uuid v1.3.0 h1:ey4XPjaR/KGfH2S7Nj2M7Cdyh5m9M6Q6v9...  ← هش محتوای ماژول"]
+        L2["github.com/google/uuid v1.3.0/go.mod h1:K1S5d0E5bBPU7...  ← هش فایل go.mod ماژول"]
+    end
+    subgraph MODFMT["go.mod directives"]
+        direction TB
+        M1["module github.com/username/myapp  // نام ماژول"]
+        M2["go 1.24  // نسخه Go"]
+        M3["require / replace / exclude  // دستورالعمل‌ها"]
+    end
+    subgraph MVS["MVS — Minimal Version Selection"]
+        direction TB
+        MV1["ماژول A نیاز دارد: log &gt;= 1.2"]
+        MV2["ماژول B نیاز دارد: log &gt;= 1.5"]
+        MV3["نتایج MVS: log v1.5 انتخاب می‌شود (نه v1.8!)"]
+        MV4["تکرارپذیر و قطعی ✓"]
+    end
+    subgraph CMP["Composer — Highest Compatible"]
+        direction TB
+        CM1["پکیج A نیاز دارد: log ^1.2"]
+        CM2["پکیج B نیاز دارد: log ^1.5"]
+        CM3["نتیجه Composer: log v1.8 (بالاترین نسخه سازگار)"]
+        CM4["نیاز به lock file دارد ✗"]
+    end
 
-<!-- Arrow 1→2 -->
-<line marker-end="url(#arrGoTool)" stroke="#00ADD8" stroke-width="2" x1="330" x2="370" y1="77" y2="77"></line>
+    title ~~~ S1
+    S5A ~~~ SUMFMT
+    S5B ~~~ SUMFMT
+    SUMFMT ~~~ MODFMT
+    MODFMT ~~~ MVS
+    MODFMT ~~~ CMP
 
-<!-- Step 2: Download -->
-<rect fill="#e0f7fa" height="55" rx="8" stroke="#00ADD8" stroke-width="2" width="200" x="370" y="50"></rect>
-<text fill="#00ADD8" font-size="10" font-weight="bold" x="385" y="68" direction="ltr" unicode-bidi="embed">② Download Module</text>
-<text fill="#555" font-size="9" x="385" y="88" direction="rtl" unicode-bidi="embed">دانلود از <tspan direction="ltr" unicode-bidi="embed">GOPROXY</tspan></text>
-
-<!-- Arrow 2→3 -->
-<line marker-end="url(#arrGoTool)" stroke="#00ADD8" stroke-width="2" x1="570" x2="610" y1="77" y2="77"></line>
-
-<!-- Step 3: Compute checksum -->
-<rect fill="#e0f7fa" height="55" rx="8" stroke="#00ADD8" stroke-width="2" width="240" x="610" y="50"></rect>
-<text fill="#00ADD8" font-size="10" font-weight="bold" x="625" y="68" direction="ltr" unicode-bidi="embed">③ Compute SHA-256 Hash</text>
-<text fill="#555" font-size="9" x="625" y="88" direction="rtl" unicode-bidi="embed">محاسبه‌ی هش محلی</text>
-
-<!-- Arrow down from Step 3 -->
-<line marker-end="url(#arrGoTool)" stroke="#00ADD8" stroke-width="2" x1="730" x2="730" y1="105" y2="135"></line>
-
-<!-- Step 4: Compare -->
-<rect fill="#fff9c4" height="60" rx="8" stroke="#f9a825" stroke-width="2" width="400" x="250" y="135"></rect>
-<text fill="#f57f17" font-size="11" font-weight="bold" text-anchor="middle" x="450" y="157" direction="ltr" unicode-bidi="embed">④ Compare with go.sum entry</text>
-<text fill="#555" font-size="9" text-anchor="middle" x="450" y="178" direction="rtl" unicode-bidi="embed">مقایسه‌ی هش محلی با هش ثبت‌شده</text>
-
-<!-- Arrow left: match -->
-<line marker-end="url(#arrVerified)" stroke="#4CAF50" stroke-width="2" x1="350" x2="200" y1="195" y2="230"></line>
-<text fill="#4CAF50" font-size="10" font-weight="bold" x="240" y="218" direction="rtl" unicode-bidi="embed">تطابق ✓</text>
-
-<!-- Arrow right: mismatch -->
-<line marker-end="url(#arrError)" stroke="#e91e63" stroke-width="2" x1="550" x2="700" y1="195" y2="230"></line>
-<text fill="#e91e63" font-size="10" font-weight="bold" x="600" y="218" direction="ltr" unicode-bidi="embed">عدم تطابق ✗</text>
-
-<!-- Step 5a: Match → use module -->
-<rect fill="#e8f5e9" height="55" rx="8" stroke="#4CAF50" stroke-width="2" width="200" x="100" y="230"></rect>
-<text fill="#4CAF50" font-size="11" font-weight="bold" text-anchor="middle" x="200" y="252" direction="rtl" unicode-bidi="embed">⑤الف: استفاده از ماژول</text>
-<text fill="#555" font-size="9" text-anchor="middle" x="200" y="272" direction="rtl" unicode-bidi="embed">واکایی تأیید شد — build ادامه می‌یابد</text>
-
-<!-- Step 5b: Mismatch → security error -->
-<rect fill="#fce4ec" height="55" rx="8" stroke="#e91e63" stroke-width="2" width="200" x="600" y="230"></rect>
-<text fill="#e91e63" font-size="11" font-weight="bold" text-anchor="middle" x="700" y="252" direction="ltr" unicode-bidi="embed">⑤ب: SECURITY ERROR</text>
-<text fill="#555" font-size="9" text-anchor="middle" x="700" y="272" direction="rtl" unicode-bidi="embed">build متوقف می‌شود — ماژول مخرب嫌疑</text>
-
-<!-- go.sum format section -->
-<rect fill="#e3f2fd" height="80" rx="8" stroke="#2196f3" stroke-width="1.5" width="860" x="20" y="310"></rect>
-<text fill="#1565c0" font-size="12" font-weight="bold" x="35" y="332" direction="ltr" unicode-bidi="embed">go.sum format:</text>
-<text fill="#333" font-family="monospace" font-size="10" x="35" y="352" direction="ltr" unicode-bidi="embed">github.com/google/uuid v1.3.0 h1:ey4XPjaR/KGfH2S7Nj2M7Cdyh5m9M6Q6v9...</text>
-<text fill="#333" font-family="monospace" font-size="10" x="35" y="370" direction="ltr" unicode-bidi="embed">github.com/google/uuid v1.3.0/go.mod h1:K1S5d0E5bBPU7...</text>
-<text fill="#888" font-size="9" x="530" y="352" direction="rtl" unicode-bidi="embed">← هش محتوای ماژول</text>
-<text fill="#888" font-size="9" x="530" y="370" direction="rtl" unicode-bidi="embed">← هش فایل go.mod ماژول</text>
-
-<!-- go.mod format section -->
-<rect fill="#e0f7fa" height="80" rx="8" stroke="#00ADD8" stroke-width="1.5" width="860" x="20" y="405"></rect>
-<text fill="#00ADD8" font-size="12" font-weight="bold" x="35" y="427" direction="ltr" unicode-bidi="embed">go.mod directives:</text>
-<text fill="#333" font-family="monospace" font-size="10" x="35" y="447" direction="ltr" unicode-bidi="embed">module github.com/username/myapp  // نام ماژول</text>
-<text fill="#333" font-family="monospace" font-size="10" x="35" y="462" direction="ltr" unicode-bidi="embed">go 1.24                          // نسخه Go</text>
-<text fill="#333" font-family="monospace" font-size="10" x="35" y="477" direction="ltr" unicode-bidi="embed">require / replace / exclude       // دستورالعمل‌ها</text>
-
-<!-- MVS Algorithm section -->
-<rect fill="#fff3e0" height="170" rx="8" stroke="#FF9800" stroke-width="2" width="420" x="20" y="500"></rect>
-<text fill="#e65100" font-size="13" font-weight="bold" text-anchor="middle" x="230" y="525" direction="ltr" unicode-bidi="embed">MVS — Minimal Version Selection</text>
-
-<rect fill="#fff" height="35" rx="6" stroke="#FF9800" stroke-width="1" width="380" x="40" y="540"></rect>
-<text fill="#333" font-size="9" x="55" y="558" direction="rtl" unicode-bidi="embed">ماژول A نیاز دارد: <tspan direction="ltr" unicode-bidi="embed">log >= 1.2</tspan></text>
-
-<rect fill="#fff" height="35" rx="6" stroke="#FF9800" stroke-width="1" width="380" x="40" y="585"></rect>
-<text fill="#333" font-size="9" x="55" y="603" direction="rtl" unicode-bidi="embed">ماژول B نیاز دارد: <tspan direction="ltr" unicode-bidi="embed">log >= 1.5</tspan></text>
-
-<rect fill="#e8f5e9" height="35" rx="6" stroke="#4CAF50" stroke-width="1.5" width="380" x="40" y="630"></rect>
-<text fill="#4CAF50" font-size="10" font-weight="bold" x="55" y="648" direction="rtl" unicode-bidi="embed">نتایج <tspan direction="ltr" unicode-bidi="embed">MVS</tspan>: <tspan direction="ltr" unicode-bidi="embed">log v1.5</tspan> انتخاب می‌شود (نه <tspan direction="ltr" unicode-bidi="embed">v1.8</tspan>!)</text>
-
-<!-- PHP Comparison section -->
-<rect fill="#f3e5f5" height="170" rx="8" stroke="#777BB4" stroke-width="2" width="420" x="460" y="500"></rect>
-<text fill="#777BB4" font-size="13" font-weight="bold" text-anchor="middle" x="670" y="525" direction="ltr" unicode-bidi="embed">Composer — Highest Compatible</text>
-
-<rect fill="#fff" height="35" rx="6" stroke="#777BB4" stroke-width="1" width="380" x="480" y="540"></rect>
-<text fill="#333" font-size="9" x="495" y="558" direction="rtl" unicode-bidi="embed">پکیج A نیاز دارد: <tspan direction="ltr" unicode-bidi="embed">log ^1.2</tspan></text>
-
-<rect fill="#fff" height="35" rx="6" stroke="#777BB4" stroke-width="1" width="380" x="480" y="585"></rect>
-<text fill="#333" font-size="9" x="495" y="603" direction="rtl" unicode-bidi="embed">پکیج B نیاز دارد: <tspan direction="ltr" unicode-bidi="embed">log ^1.5</tspan></text>
-
-<rect fill="#fce4ec" height="35" rx="6" stroke="#e91e63" stroke-width="1.5" width="380" x="480" y="630"></rect>
-<text fill="#e91e63" font-size="10" font-weight="bold" x="495" y="648" direction="rtl" unicode-bidi="embed">نتیجه <tspan direction="ltr" unicode-bidi="embed">Composer</tspan>: <tspan direction="ltr" unicode-bidi="embed">log v1.8</tspan> (بالاترین نسخه سازگار)</text>
-
-<!-- Comparison labels -->
-<rect fill="#e8f5e9" height="25" rx="4" stroke="#4CAF50" stroke-width="1" width="150" x="90" y="670"></rect>
-<text fill="#4CAF50" font-size="9" font-weight="bold" text-anchor="middle" x="165" y="687" direction="rtl" unicode-bidi="embed">تکرارپذیر و قطعی ✓</text>
-
-<rect fill="#fce4ec" height="25" rx="4" stroke="#e91e63" stroke-width="1" width="150" x="545" y="670"></rect>
-<text fill="#e91e63" font-size="9" font-weight="bold" text-anchor="middle" x="620" y="687" direction="rtl" unicode-bidi="embed">نیاز به lock file دارد ✗</text>
-</svg>
+    classDef titleBox fill:#f8fafc,stroke:#475569,stroke-width:1px,color:#1f2937,font-weight:bold;
+    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
+    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
+    classDef okBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
+    classDef errBox fill:#fef2f2,stroke:#ef4444,stroke-width:1.5px,color:#1f2937;
+    classDef phpBox fill:#f5f0fb,stroke:#777BB4,stroke-width:1.5px,color:#1f2937;
+    classDef neutralBox fill:#f8fafc,stroke:#475569,stroke-width:1px,color:#1f2937;
+    class title titleBox;
+    class S1,S2,S3 goBox;
+    class S4 warnBox;
+    class S5A okBox;
+    class S5B errBox;
+    class L1,L2,M1,M2,M3 neutralBox;
+    class MV1,MV2 warnBox;
+    class MV3,MV4 okBox;
+    class CM1,CM2 phpBox;
+    class CM3,CM4 errBox;</pre>
 <figcaption>شکل ۳-۳: جریان تأیید <bdi dir="ltr">Checksum</bdi> در <bdi dir="ltr">go.sum</bdi> و مقایسه‌ی الگوریتم <bdi dir="ltr">MVS</bdi> با <bdi dir="ltr">Composer</bdi></figcaption>
 </figure>
 

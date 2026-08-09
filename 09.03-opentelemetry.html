@@ -71,71 +71,57 @@
 <h2 id="opentelemetry">OpenTelemetry</h2>
 
 <figure class="diagram" dir="ltr">
-<svg height="420" viewBox="0 0 620 420" width="620" xmlns="http://www.w3.org/2000/svg">
-<defs>
-<marker id="arrow2401" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#555" points="0 0, 10 3.5, 0 7"></polygon></marker>
-<filter height="104%" id="sh2401" width="104%" x="-2%" y="-2%"><fedropshadow dx="1" dy="1" flood-opacity="0.15" stddeviation="2"></fedropshadow></filter>
-</defs>
-<rect fill="#fafafa" height="420" rx="8" width="620" x="0" y="0"></rect>
-<text fill="#333" font-size="16" font-weight="bold" text-anchor="middle" x="310" y="28" direction="rtl" unicode-bidi="embed">جریان <tspan direction="ltr" unicode-bidi="embed">Trace</tspan> توزیع‌شده در سیستم میکروسرویس</text>
+<pre class="mermaid">flowchart TB
+    title(["جریان Trace توزیع‌شده در سیستم میکروسرویس"])
 
-<!-- Service A -->
-<rect fill="#00ADD8" filter="url(#sh2401)" height="55" rx="6" width="120" x="30" y="60"></rect>
-<text fill="#fff" font-size="11" text-anchor="middle" x="90" y="85" direction="ltr" unicode-bidi="embed">API Gateway</text>
-<text fill="#e0f7fa" font-size="9" text-anchor="middle" x="90" y="102" direction="ltr" unicode-bidi="embed">Span: root</text>
+    GW["API Gateway<br/>Span: root"]
+    US["User Service<br/>Span: child"]
+    DB["DB Query<br/>Span: child"]
+    GW -- "HTTP + trace ctx" --> US --> DB
 
-<line marker-end="url(#arrow2401)" stroke="#555" stroke-width="2" x1="150" x2="210" y1="87" y2="87"></line>
-<text fill="#555" font-size="8" text-anchor="middle" x="180" y="80" direction="ltr" unicode-bidi="embed">HTTP + trace ctx</text>
+    CTX(["W3C Trace Context: traceparent=00-abc123-xyz789-01<br/>انتقال context بین سرویس‌ها از طریق HTTP headers"])
 
-<!-- Service B -->
-<rect fill="#4CAF50" filter="url(#sh2401)" height="55" rx="6" width="120" x="210" y="60"></rect>
-<text fill="#fff" font-size="11" text-anchor="middle" x="270" y="85" direction="ltr" unicode-bidi="embed">User Service</text>
-<text fill="#e8f5e9" font-size="9" text-anchor="middle" x="270" y="102" direction="ltr" unicode-bidi="embed">Span: child</text>
+    COL["OTel Collector<br/>Batch + Route"]
+    PROM["Prometheus"]
+    TEMPO["Tempo"]
+    LOKI["Loki"]
+    COL --> PROM
+    COL --> TEMPO
+    COL --> LOKI
+    GW -.-> COL
+    US -.-> COL
+    DB -.-> COL
 
-<!-- Service C -->
-<rect fill="#FF9800" filter="url(#sh2401)" height="55" rx="6" width="120" x="390" y="60"></rect>
-<text fill="#fff" font-size="11" text-anchor="middle" x="450" y="85" direction="ltr" unicode-bidi="embed">DB Query</text>
-<text fill="#fff3e0" font-size="9" text-anchor="middle" x="450" y="102" direction="ltr" unicode-bidi="embed">Span: child</text>
+    GRAF["Grafana<br/>داشبورد یکپارچه"]
+    PROM -.-> GRAF
+    TEMPO -.-> GRAF
+    LOKI -.-> GRAF
 
-<line marker-end="url(#arrow2401)" stroke="#555" stroke-width="2" x1="330" x2="390" y1="87" y2="87"></line>
+    OH(["Overhead: &lt;2% CPU, &lt;50MB RAM با BatchSpanProcessor و sampling"])
 
-<!-- Propagation -->
-<rect fill="#E3F2FD" height="50" rx="6" stroke="#2196F3" width="500" x="60" y="140"></rect>
-<text fill="#1565C0" font-size="10" text-anchor="middle" x="310" y="162" direction="ltr" unicode-bidi="embed">W3C Trace Context: traceparent=00-abc123-xyz789-01</text>
-<text fill="#1565C0" font-size="9" text-anchor="middle" x="310" y="180" direction="rtl" unicode-bidi="embed">انتقال <tspan direction="ltr" unicode-bidi="embed">context</tspan> بین سرویس‌ها از طریق <tspan direction="ltr" unicode-bidi="embed">HTTP</tspan> <tspan direction="ltr" unicode-bidi="embed">headers</tspan></text>
+    title ~~~ GW
+    DB ~~~ CTX
+    CTX ~~~ COL
+    GRAF ~~~ OH
 
-<!-- OTel Collector -->
-<rect fill="#9C27B0" filter="url(#sh2401)" height="55" rx="6" width="140" x="60" y="220"></rect>
-<text fill="#fff" font-size="11" text-anchor="middle" x="130" y="245" direction="ltr" unicode-bidi="embed">OTel Collector</text>
-<text fill="#e1bee7" font-size="9" text-anchor="middle" x="130" y="262" direction="ltr" unicode-bidi="embed">Batch + Route</text>
-
-<line marker-end="url(#arrow2401)" stroke="#555" stroke-width="2" x1="90" x2="130" y1="115" y2="220"></line>
-
-<!-- Outputs -->
-<rect fill="#E65100" filter="url(#sh2401)" height="35" rx="4" width="110" x="260" y="220"></rect>
-<text fill="#fff" font-size="10" text-anchor="middle" x="315" y="242" direction="ltr" unicode-bidi="embed">Prometheus</text>
-<rect fill="#4CAF50" filter="url(#sh2401)" height="35" rx="4" width="110" x="260" y="270"></rect>
-<text fill="#fff" font-size="10" text-anchor="middle" x="315" y="292" direction="ltr" unicode-bidi="embed">Tempo</text>
-<rect fill="#777BB4" filter="url(#sh2401)" height="35" rx="4" width="110" x="260" y="320"></rect>
-<text fill="#fff" font-size="10" text-anchor="middle" x="315" y="342" direction="ltr" unicode-bidi="embed">Loki</text>
-
-<line marker-end="url(#arrow2401)" stroke="#555" stroke-width="1.5" x1="200" x2="260" y1="237" y2="237"></line>
-<line marker-end="url(#arrow2401)" stroke="#555" stroke-width="1.5" x1="200" x2="260" y1="250" y2="287"></line>
-<line marker-end="url(#arrow2401)" stroke="#555" stroke-width="1.5" x1="200" x2="260" y1="260" y2="337"></line>
-
-<!-- Grafana -->
-<rect fill="#F46800" filter="url(#sh2401)" height="50" rx="6" width="150" x="430" y="270"></rect>
-<text fill="#fff" font-size="12" text-anchor="middle" x="505" y="295" direction="ltr" unicode-bidi="embed">Grafana</text>
-<text fill="#fff" font-size="9" text-anchor="middle" x="505" y="312" direction="rtl" unicode-bidi="embed">داشبورد یکپارچه</text>
-
-<line stroke="#555" stroke-dasharray="4,4" stroke-width="1.5" x1="370" x2="430" y1="237" y2="280"></line>
-<line stroke="#555" stroke-dasharray="4,4" stroke-width="1.5" x1="370" x2="430" y1="287" y2="290"></line>
-<line stroke="#555" stroke-dasharray="4,4" stroke-width="1.5" x1="370" x2="430" y1="337" y2="300"></line>
-
-<!-- Overhead -->
-<rect fill="#FFF3E0" height="35" rx="4" stroke="#FF9800" width="300" x="60" y="375"></rect>
-<text fill="#E65100" font-size="9" text-anchor="middle" x="210" y="397" direction="rtl" unicode-bidi="embed">Overhead: <2% CPU, <50MB RAM با BatchSpanProcessor و sampling</text>
-</svg>
+    classDef titleBox fill:#f8fafc,stroke:#475569,stroke-width:1px,color:#1f2937,font-weight:bold;
+    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
+    classDef okBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
+    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
+    classDef traceBox fill:#f5f0fb,stroke:#9C27B0,stroke-width:1.5px,color:#1f2937;
+    classDef phpBox fill:#f5f0fb,stroke:#777BB4,stroke-width:1.5px,color:#1f2937;
+    classDef vizBox fill:#fffbeb,stroke:#F46800,stroke-width:2px,color:#1f2937,font-weight:bold;
+    classDef noteBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1px,color:#1f2937,font-style:italic;
+    class title titleBox;
+    class GW goBox;
+    class US okBox;
+    class DB warnBox;
+    class COL traceBox;
+    class PROM warnBox;
+    class TEMPO okBox;
+    class LOKI phpBox;
+    class GRAF vizBox;
+    class CTX,OH noteBox;</pre>
 <figcaption>شکل ۹-۳: جریان <bdi dir="ltr">Trace</bdi> توزیع‌شده و معماری <bdi dir="ltr">OpenTelemetry</bdi></figcaption>
 </figure>
 
@@ -178,74 +164,65 @@
 <p><strong dir="ltr">SDK</strong> : کتابخانه‌ای که در برنامه برای جمع‌آوری داده‌ها استفاده می‌شود.</p>
 
 <figure class="diagram" dir="ltr">
-<svg height="280" viewBox="0 0 700 280" width="700" xmlns="http://www.w3.org/2000/svg">
-<defs>
-<marker id="arrowOtel" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#555" points="0 0, 10 3.5, 0 7"></polygon></marker>
-<filter height="104%" id="shOtel" width="104%" x="-2%" y="-2%"><fedropshadow dx="1" dy="1" flood-opacity="0.12" stddeviation="2"></fedropshadow></filter>
-</defs>
-<rect fill="#fafafa" height="280" rx="8" width="700" x="0" y="0"></rect>
-<text fill="#333" font-size="15" font-weight="bold" text-anchor="middle" x="350" y="28" direction="rtl" unicode-bidi="embed">معماری <tspan direction="ltr" unicode-bidi="embed">OpenTelemetry</tspan>: سه رکن داده ← <tspan direction="ltr" unicode-bidi="embed">Exporter</tspan> ← مقصد</text>
+<pre class="mermaid">flowchart LR
+    title(["معماری OpenTelemetry: سه رکن داده ← Exporter ← مقصد"])
 
-<!-- Three Signals -->
-<rect fill="#4CAF50" filter="url(#shOtel)" height="50" rx="6" width="140" x="30" y="55"></rect>
-<text fill="#fff" font-size="13" font-weight="bold" text-anchor="middle" x="100" y="78" direction="ltr" unicode-bidi="embed">Traces</text>
-<text fill="#e8f5e9" font-size="9" text-anchor="middle" x="100" y="95" direction="rtl" unicode-bidi="embed">ردیابی مسیر درخواست</text>
+    subgraph SIGNALS["سه رکن داده"]
+        direction TB
+        TR["Traces<br/>ردیابی مسیر درخواست"]
+        ME["Metrics<br/>اندازه‌گیری کمی عملکرد"]
+        LO["Logs<br/>ثبت وقایع و خطاها"]
+    end
 
-<rect fill="#FF9800" filter="url(#shOtel)" height="50" rx="6" width="140" x="30" y="120"></rect>
-<text fill="#fff" font-size="13" font-weight="bold" text-anchor="middle" x="100" y="143" direction="ltr" unicode-bidi="embed">Metrics</text>
-<text fill="#fff3e0" font-size="9" text-anchor="middle" x="100" y="160" direction="rtl" unicode-bidi="embed">اندازه‌گیری کمی عملکرد</text>
+    subgraph SDK["OTel SDK"]
+        direction TB
+        TP["TracerProvider"]
+        MP["MeterProvider"]
+        LP["LoggerProvider"]
+    end
 
-<rect fill="#2196F3" filter="url(#shOtel)" height="50" rx="6" width="140" x="30" y="185"></rect>
-<text fill="#fff" font-size="13" font-weight="bold" text-anchor="middle" x="100" y="208" direction="ltr" unicode-bidi="embed">Logs</text>
-<text fill="#e3f2fd" font-size="9" text-anchor="middle" x="100" y="225" direction="rtl" unicode-bidi="embed">ثبت وقایع و خطاها</text>
+    COL["OTel Collector<br/>Batch + Route<br/>Process + Export"]
 
-<!-- Arrows from signals to SDK -->
-<line marker-end="url(#arrowOtel)" stroke="#555" stroke-width="1.5" x1="170" x2="240" y1="80" y2="130"></line>
-<line marker-end="url(#arrowOtel)" stroke="#555" stroke-width="1.5" x1="170" x2="240" y1="145" y2="140"></line>
-<line marker-end="url(#arrowOtel)" stroke="#555" stroke-width="1.5" x1="170" x2="240" y1="210" y2="150"></line>
+    subgraph BACKENDS["مقاصد ذخیره‌سازی"]
+        direction TB
+        TEMPO["Tempo<br/>ذخیره Trace"]
+        PROM["Prometheus<br/>ذخیره Metric"]
+        LOKI["Loki<br/>ذخیره Log"]
+    end
 
-<!-- OTel SDK -->
-<rect fill="#00ADD8" filter="url(#shOtel)" height="100" rx="8" width="160" x="240" y="95"></rect>
-<text fill="#fff" font-size="13" font-weight="bold" text-anchor="middle" x="320" y="122" direction="ltr" unicode-bidi="embed">OTel SDK</text>
-<text fill="#e0f7fa" font-size="9" text-anchor="middle" x="320" y="140" direction="ltr" unicode-bidi="embed">TracerProvider</text>
-<text fill="#e0f7fa" font-size="9" text-anchor="middle" x="320" y="155" direction="ltr" unicode-bidi="embed">MeterProvider</text>
-<text fill="#e0f7fa" font-size="9" text-anchor="middle" x="320" y="170" direction="ltr" unicode-bidi="embed">LoggerProvider</text>
+    GRAF(["Grafana — Traces + Metrics + Logs"])
 
-<!-- Arrow from SDK to Collector -->
-<line marker-end="url(#arrowOtel)" stroke="#555" stroke-width="2" x1="400" x2="440" y1="145" y2="145"></line>
-<text fill="#555" font-size="8" text-anchor="middle" x="420" y="138" direction="ltr" unicode-bidi="embed">OTLP</text>
+    TR --> SDK
+    ME --> SDK
+    LO --> SDK
+    SDK -- "OTLP" --> COL
+    COL --> TEMPO
+    COL --> PROM
+    COL --> LOKI
+    TEMPO -.-> GRAF
+    PROM -.-> GRAF
+    LOKI -.-> GRAF
 
-<!-- OTel Collector -->
-<rect fill="#9C27B0" filter="url(#shOtel)" height="80" rx="8" width="140" x="440" y="105"></rect>
-<text fill="#fff" font-size="12" font-weight="bold" text-anchor="middle" x="510" y="130" direction="ltr" unicode-bidi="embed">OTel Collector</text>
-<text fill="#e1bee7" font-size="9" text-anchor="middle" x="510" y="148" direction="ltr" unicode-bidi="embed">Batch + Route</text>
-<text fill="#e1bee7" font-size="9" text-anchor="middle" x="510" y="163" direction="ltr" unicode-bidi="embed">Process + Export</text>
+    title ~~~ SIGNALS
 
-<!-- Arrows to backends -->
-<line marker-end="url(#arrowOtel)" stroke="#4CAF50" stroke-width="1.5" x1="580" x2="620" y1="125" y2="65"></line>
-<line marker-end="url(#arrowOtel)" stroke="#FF9800" stroke-width="1.5" x1="580" x2="620" y1="140" y2="130"></line>
-<line marker-end="url(#arrowOtel)" stroke="#2196F3" stroke-width="1.5" x1="580" x2="620" y1="160" y2="195"></line>
-
-<!-- Backends -->
-<rect fill="#4CAF50" filter="url(#shOtel)" height="40" rx="6" width="110" x="620" y="45"></rect>
-<text fill="#fff" font-size="11" font-weight="bold" text-anchor="middle" x="675" y="65" direction="ltr" unicode-bidi="embed">Tempo</text>
-<text fill="#e8f5e9" font-size="8" text-anchor="middle" x="675" y="78" direction="rtl" unicode-bidi="embed">ذخیره <tspan direction="ltr" unicode-bidi="embed">Trace</tspan></text>
-
-<rect fill="#E65100" filter="url(#shOtel)" height="40" rx="6" width="110" x="620" y="110"></rect>
-<text fill="#fff" font-size="11" font-weight="bold" text-anchor="middle" x="675" y="130" direction="ltr" unicode-bidi="embed">Prometheus</text>
-<text fill="#fff3e0" font-size="8" text-anchor="middle" x="675" y="143" direction="rtl" unicode-bidi="embed">ذخیره <tspan direction="ltr" unicode-bidi="embed">Metric</tspan></text>
-
-<rect fill="#2196F3" filter="url(#shOtel)" height="40" rx="6" width="110" x="620" y="175"></rect>
-<text fill="#fff" font-size="11" font-weight="bold" text-anchor="middle" x="675" y="195" direction="ltr" unicode-bidi="embed">Loki</text>
-<text fill="#e3f2fd" font-size="8" text-anchor="middle" x="675" y="208" direction="rtl" unicode-bidi="embed">ذخیره <tspan direction="ltr" unicode-bidi="embed">Log</tspan></text>
-
-<!-- Grafana -->
-<rect fill="#F46800" filter="url(#shOtel)" height="30" rx="4" width="500" x="130" y="240"></rect>
-<text fill="#fff" font-size="10" font-weight="bold" text-anchor="middle" x="380" y="260" direction="ltr" unicode-bidi="embed">Grafana — Traces + Metrics + Logs</text>
-<line stroke="#F46800" stroke-dasharray="4,3" stroke-width="1" x1="675" x2="675" y1="85" y2="240"></line>
-<line stroke="#F46800" stroke-dasharray="4,3" stroke-width="1" x1="675" x2="675" y1="150" y2="240"></line>
-<line stroke="#F46800" stroke-dasharray="4,3" stroke-width="1" x1="675" x2="675" y1="215" y2="240"></line>
-</svg>
+    classDef titleBox fill:#f8fafc,stroke:#475569,stroke-width:1px,color:#1f2937,font-weight:bold;
+    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
+    classDef okBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
+    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
+    classDef traceBox fill:#f5f0fb,stroke:#9C27B0,stroke-width:1.5px,color:#1f2937;
+    classDef phpBox fill:#f5f0fb,stroke:#777BB4,stroke-width:1.5px,color:#1f2937;
+    classDef vizBox fill:#fffbeb,stroke:#F46800,stroke-width:2px,color:#1f2937,font-weight:bold;
+    classDef noteBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1px,color:#1f2937,font-style:italic;
+    class title titleBox;
+    class TR okBox;
+    class ME warnBox;
+    class LO phpBox;
+    class TP,MP,LP,SDK goBox;
+    class COL traceBox;
+    class TEMPO okBox;
+    class PROM warnBox;
+    class LOKI phpBox;
+    class GRAF vizBox;</pre>
 <figcaption>شکل ۹-۴: معماری <bdi dir="ltr">OpenTelemetry</bdi> — جریان سه رکن داده از <bdi dir="ltr">SDK</bdi> به <bdi dir="ltr">Collector</bdi> و مقاصد ذخیره‌سازی</figcaption>
 </figure>
 
@@ -591,43 +568,43 @@ func main() {
 <p>وقتی <bdi dir="ltr">Trace</bdi>‌ها در <bdi dir="ltr">Grafana Tempo</bdi> ذخیره شدند، می‌توانید آن‌ها را در <bdi dir="ltr">Grafana</bdi> مشاهده و تحلیل کنید. درک ساختار یک <bdi dir="ltr">Trace</bdi> برای عیب‌یابی مؤثر ضروری است:</p>
 
 <figure class="diagram" dir="ltr">
-<svg height="340" viewBox="0 0 650 340" width="650" xmlns="http://www.w3.org/2000/svg">
-<defs>
-<filter height="104%" id="shTrace" width="104%" x="-2%" y="-2%"><fedropshadow dx="1" dy="1" flood-opacity="0.12" stddeviation="2"></fedropshadow></filter>
-</defs>
-<rect fill="#fafafa" height="340" rx="8" width="650" x="0" y="0"></rect>
-<text fill="#333" font-size="15" font-weight="bold" text-anchor="middle" x="325" y="28" direction="rtl" unicode-bidi="embed">ساختار یک <tspan direction="ltr" unicode-bidi="embed">Trace</tspan> — خواندن و تحلیل</text>
+<pre class="mermaid">flowchart TB
+    title(["ساختار یک Trace — خواندن و تحلیل"])
 
-<!-- Trace Header -->
-<rect fill="#00ADD8" filter="url(#shTrace)" height="40" rx="6" width="610" x="20" y="45"></rect>
-<text fill="#fff" font-size="11" font-weight="bold" text-anchor="middle" x="325" y="63" direction="ltr" unicode-bidi="embed">Trace ID: abc123def456 | Duration: 420ms | Service: user-api</text>
-<text fill="#e0f7fa" font-size="9" text-anchor="middle" x="325" y="78" direction="ltr" unicode-bidi="embed">Root Span: GET /api/users/42</text>
+    HEADER["Trace ID: abc123def456 | Duration: 420ms | Service: user-api<br/>Root Span: GET /api/users/42"]
 
-<!-- Waterfall bars -->
-<rect fill="#4CAF50" height="28" rx="4" stroke="#388E3C" width="550" x="50" y="100"></rect>
-<text fill="#fff" font-size="9" font-weight="bold" x="55" y="118" direction="ltr" unicode-bidi="embed">GET /api/users/42 (420ms) — http.request</text>
+    subgraph WATERFALL["Waterfall — طول نوار = زمان اجرا"]
+        direction TB
+        S1["GET /api/users/42 (420ms) — http.request"]
+        S2["user.GetUser (350ms) — service.logic"]
+        S3A["SELECT users (80ms) — db.query"]
+        S3B["Redis (30ms)"]
+        S4["EnrichUserData (170ms) — service"]
+        S5["HTTP to orders (120ms)"]
+        S1 --> S2 --> S3A
+        S2 --> S3B
+        S2 --> S4 --> S5
+    end
 
-<rect fill="#2196F3" height="28" rx="4" stroke="#1565C0" width="380" x="80" y="135"></rect>
-<text fill="#fff" font-size="9" font-weight="bold" x="85" y="153" direction="ltr" unicode-bidi="embed">user.GetUser (350ms) — service.logic</text>
+    NOTES(["نکات تحلیل:<br/>۱. هر نوار یک Span است — طول نوار = زمان اجرا<br/>۲. نوارهای تو در تو = فراخوانی‌های تودرتو<br/>۳. نوارهای هم‌سطح = فراخوانی‌های موازی<br/>۴. شکاف بین نوارها = زمان انتظار"])
 
-<rect fill="#FF9800" height="28" rx="4" stroke="#E65100" width="120" x="100" y="170"></rect>
-<text fill="#fff" font-size="9" font-weight="bold" x="105" y="188" direction="ltr" unicode-bidi="embed">SELECT users (80ms) — db.query</text>
+    title ~~~ HEADER
+    HEADER ~~~ WATERFALL
+    WATERFALL ~~~ NOTES
 
-<rect fill="#FF9800" height="28" rx="4" stroke="#E65100" width="60" x="230" y="170"></rect>
-<text fill="#fff" font-size="9" font-weight="bold" x="235" y="188" direction="ltr" unicode-bidi="embed">Redis (30ms)</text>
-
-<rect fill="#9C27B0" height="28" rx="4" stroke="#6A1B9A" width="180" x="280" y="205"></rect>
-<text fill="#fff" font-size="9" font-weight="bold" x="285" y="223" direction="ltr" unicode-bidi="embed">EnrichUserData (170ms) — service</text>
-
-<rect fill="#FF9800" height="28" rx="4" stroke="#E65100" width="140" x="300" y="240"></rect>
-<text fill="#fff" font-size="9" font-weight="bold" x="305" y="258" direction="ltr" unicode-bidi="embed">HTTP to orders (120ms)</text>
-
-<!-- Legend -->
-<rect fill="#E3F2FD" height="55" rx="4" stroke="#2196F3" width="610" x="20" y="278"></rect>
-<text fill="#1565C0" font-size="10" font-weight="bold" text-anchor="middle" x="325" y="296" direction="rtl" unicode-bidi="embed">نکات تحلیل:</text>
-<text fill="#333" font-size="9" text-anchor="middle" x="325" y="312" direction="rtl" unicode-bidi="embed">۱. هر نوار یک <tspan direction="ltr" unicode-bidi="embed">Span</tspan> است — طول نوار = زمان اجرا | ۲. نوارهای تو در تو = فراخوانی‌های تودرتو</text>
-<text fill="#333" font-size="9" text-anchor="middle" x="325" y="326" direction="rtl" unicode-bidi="embed">۳. نوارهای هم‌سطح = فراخوانی‌های موازی | ۴. شکاف بین نوارها = زمان انتظار</text>
-</svg>
+    classDef titleBox fill:#f8fafc,stroke:#475569,stroke-width:1px,color:#1f2937,font-weight:bold;
+    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
+    classDef okBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
+    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
+    classDef traceBox fill:#f5f0fb,stroke:#9C27B0,stroke-width:1.5px,color:#1f2937;
+    classDef noteBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1px,color:#1f2937,font-style:italic;
+    class title titleBox;
+    class HEADER goBox;
+    class S1 okBox;
+    class S2 goBox;
+    class S3A,S3B,S5 warnBox;
+    class S4 traceBox;
+    class NOTES noteBox;</pre>
 <figcaption>شکل ۹-۳-الف: ساختار یک <bdi dir="ltr">Trace</bdi> نمونه — هر نوار یک <bdi dir="ltr">Span</bdi> و طول آن نشان‌دهنده زمان اجرا</figcaption>
 </figure>
 
@@ -719,121 +696,58 @@ func main() {
 <p>درک ساختار درختی <bdi dir="ltr">Span</bdi>‌ها و <bdi dir="ltr">context propagation</bdi> برای عیب‌یابی مؤثر در سیستم‌های توزیع‌شده حیاتی است. هر <bdi dir="ltr">trace</bdi> یک درخت از <bdi dir="ltr">Span</bdi>‌هاست که ریشه آن <bdi dir="ltr">root span</bdi> (معمولاً درخواست ورودی <bdi dir="ltr">HTTP</bdi>) و شاخه‌های آن عملیات فرعی در سرویس‌های مختلف هستند. هر <bdi dir="ltr">Span</bdi> شامل شناسه یکتای خود (<bdi dir="ltr">span ID</bdi>)، شناسه والد (<bdi dir="ltr">parent span ID</bdi>) و شناسه کل <bdi dir="ltr">trace</bdi> (<bdi dir="ltr">trace ID</bdi>) است. انتشار <bdi dir="ltr">Context</bdi> از طریق هدرهای <bdi dir="ltr">HTTP</bdi> (مثل <bdi dir="ltr">traceparent</bdi> و <bdi dir="ltr">tracestate</bdi>) طبق استاندارد <bdi dir="ltr">W3C Trace Context</bdi> انجام می‌شود و تضمین می‌کند که تمام سرویس‌های درگیر در یک درخواست، بخشی از همان <bdi dir="ltr">trace</bdi> باشند. بدون این انتشار خودکار، هر سرویس <bdi dir="ltr">trace</bdi> مستقلی ایجاد می‌کند و ردیابی مسیر کامل درخواست غیرممکن می‌شود.</p>
 
 <figure class="diagram" dir="ltr">
-<svg height="560" viewBox="0 0 720 560" width="720" xmlns="http://www.w3.org/2000/svg">
-<defs>
-<marker id="arrowSpan" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#555" points="0 0,10 3.5,0 7"></polygon></marker>
-<marker id="arrowCtx" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#4CAF50" points="0 0,10 3.5,0 7"></polygon></marker>
-<filter height="104%" id="shSpan" width="104%" x="-2%" y="-2%"><fedropshadow dx="1" dy="1" flood-opacity="0.12" stddeviation="2"></fedropshadow></filter>
-</defs>
-<rect fill="#fafafa" height="560" rx="8" width="720" x="0" y="0"></rect>
-<text fill="#333" font-size="15" font-weight="bold" text-anchor="middle" x="360" y="28" direction="rtl" unicode-bidi="embed">درخت <tspan direction="ltr" unicode-bidi="embed">Span</tspan> و انتشار <tspan direction="ltr" unicode-bidi="embed">Context</tspan> در سیستم توزیع‌شده</text>
+<pre class="mermaid">flowchart TB
+    title(["درخت Span و انتشار Context در سیستم توزیع‌شده"])
 
-<!-- Trace ID Header -->
-<rect fill="#00ADD8" filter="url(#shSpan)" height="35" rx="6" width="680" x="20" y="42"></rect>
-<text fill="#fff" font-size="11" font-weight="bold" text-anchor="middle" x="360" y="65" direction="ltr" unicode-bidi="embed">Trace ID: a1b2c3d4e5f6 | Root Span: HTTP GET /api/order</text>
+    HEADER["Trace ID: a1b2c3d4e5f6 | Root Span: HTTP GET /api/order"]
 
-<!-- Root Span - Gateway -->
-<rect fill="#00ADD8" filter="url(#shSpan)" height="45" rx="6" width="660" x="30" y="88"></rect>
-<text fill="#fff" font-size="10" font-weight="bold" x="40" y="106" direction="ltr" unicode-bidi="embed">Gateway: HTTP GET /api/order</text>
-<text fill="#e0f7fa" font-size="8" x="40" y="122" direction="ltr" unicode-bidi="embed">span_id=abc123 | parent_id=none | duration=320ms</text>
+    subgraph TREE["درخت Span"]
+        direction TB
+        ROOT["Gateway: HTTP GET /api/order<br/>span_id=abc123 | parent_id=none | duration=320ms"]
+        S1["auth.CheckToken<br/>span=d1e2 | parent=abc | 25ms<br/>— Auth Service"]
+        S2["db.QueryOrder<br/>span=f3g4 | parent=abc | 85ms<br/>— Order Service"]
+        S3["cache.Get<br/>span=h5i6 | parent=abc | 12ms<br/>— Cache Service"]
+        S4["api.GetUserInfo<br/>span=j7k8 | parent=abc | 180ms<br/>— User Service"]
+        ROOT --> S1
+        ROOT --> S2
+        ROOT --> S3
+        ROOT --> S4
+    end
 
-<!-- Child Spans connector lines -->
-<line stroke="#00ADD8" stroke-width="1.5" x1="120" x2="120" y1="133" y2="148"></line>
-<line stroke="#00ADD8" stroke-width="1.5" x1="120" x2="620" y1="148" y2="148"></line>
-<line stroke="#00ADD8" stroke-width="1.5" x1="120" y1="148" x2="120" y2="155"></line>
-<line stroke="#00ADD8" stroke-width="1.5" x1="280" y1="148" x2="280" y2="155"></line>
-<line stroke="#00ADD8" stroke-width="1.5" x1="440" y1="148" x2="440" y2="155"></line>
-<line stroke="#00ADD8" stroke-width="1.5" x1="600" y1="148" x2="600" y2="155"></line>
+    subgraph CTX["انتشار Context بین سرویس‌ها — HTTP Headers (W3C Trace Context)"]
+        direction TB
+        CTXH["traceparent: 00-a1b2c3d4e5f67890-abc123def456-01<br/>tracestate: vendor=go-otel,env=production"]
+        CTXFLOW["Gateway -- Inject --> Auth Svc --> Order Svc --> Cache Svc --> User Svc"]
+    end
 
-<!-- Child Span 1: auth.CheckToken -->
-<rect fill="#00ADD8" filter="url(#shSpan)" height="40" rx="5" width="140" x="50" y="155"></rect>
-<text fill="#fff" font-size="9" font-weight="bold" x="60" y="172" direction="ltr" unicode-bidi="embed">auth.CheckToken</text>
-<text fill="#e0f7fa" font-size="7" x="60" y="186" direction="ltr" unicode-bidi="embed">span=d1e2 | parent=abc | 25ms</text>
+    subgraph PILLARS["سه رکن Observability"]
+        direction LR
+        TR["Tracing<br/>مسیر درخواست بین سرویس‌ها"]
+        ME["Metrics<br/>اعداد تجمیعی عملکرد"]
+        LO["Logging<br/>جزئیات رویدادها و خطاها"]
+    end
 
-<!-- Child Span 2: db.QueryOrder -->
-<rect fill="#00ADD8" filter="url(#shSpan)" height="40" rx="5" width="140" x="210" y="155"></rect>
-<text fill="#fff" font-size="9" font-weight="bold" x="220" y="172" direction="ltr" unicode-bidi="embed">db.QueryOrder</text>
-<text fill="#e0f7fa" font-size="7" x="220" y="186" direction="ltr" unicode-bidi="embed">span=f3g4 | parent=abc | 85ms</text>
+    RULE(["قانون طلایی: Tracing = «چرا این درخواست کند است؟» | Metrics = «چند خطا در دقیقه؟» | Logging = «دقیقاً چه اتفاقی افتاد؟»<br/>هر سه با هم همبسته شوند: trace_id در لاگ ← span با metrics ← Grafana داشبورد یکپارچه"])
 
-<!-- Child Span 3: cache.Get -->
-<rect fill="#00ADD8" filter="url(#shSpan)" height="40" rx="5" width="140" x="370" y="155"></rect>
-<text fill="#fff" font-size="9" font-weight="bold" x="380" y="172" direction="ltr" unicode-bidi="embed">cache.Get</text>
-<text fill="#e0f7fa" font-size="7" x="380" y="186" direction="ltr" unicode-bidi="embed">span=h5i6 | parent=abc | 12ms</text>
+    title ~~~ HEADER
+    HEADER ~~~ TREE
+    TREE ~~~ CTX
+    CTX ~~~ PILLARS
+    PILLARS ~~~ RULE
 
-<!-- Child Span 4: api.GetUserInfo -->
-<rect fill="#00ADD8" filter="url(#shSpan)" height="40" rx="5" width="140" x="530" y="155"></rect>
-<text fill="#fff" font-size="9" font-weight="bold" x="540" y="172" direction="ltr" unicode-bidi="embed">api.GetUserInfo</text>
-<text fill="#e0f7fa" font-size="7" x="540" y="186" direction="ltr" unicode-bidi="embed">span=j7k8 | parent=abc | 180ms</text>
-
-<!-- Service boundary indicators -->
-<rect fill="none" height="60" rx="4" stroke="#FF9800" stroke-width="1.5" stroke-dasharray="4,3" width="150" x="45" y="150"></rect>
-<text fill="#FF9800" font-size="7" font-weight="bold" text-anchor="middle" x="120" y="218" direction="ltr" unicode-bidi="embed">Auth Service</text>
-
-<rect fill="none" height="60" rx="4" stroke="#FF9800" stroke-width="1.5" stroke-dasharray="4,3" width="150" x="205" y="150"></rect>
-<text fill="#FF9800" font-size="7" font-weight="bold" text-anchor="middle" x="280" y="218" direction="ltr" unicode-bidi="embed">Order Service</text>
-
-<rect fill="none" height="60" rx="4" stroke="#FF9800" stroke-width="1.5" stroke-dasharray="4,3" width="150" x="365" y="150"></rect>
-<text fill="#FF9800" font-size="7" font-weight="bold" text-anchor="middle" x="440" y="218" direction="ltr" unicode-bidi="embed">Cache Service</text>
-
-<rect fill="none" height="60" rx="4" stroke="#FF9800" stroke-width="1.5" stroke-dasharray="4,3" width="150" x="525" y="150"></rect>
-<text fill="#FF9800" font-size="7" font-weight="bold" text-anchor="middle" x="600" y="218" direction="ltr" unicode-bidi="embed">User Service</text>
-
-<!-- Context Propagation Section -->
-<text fill="#555" font-size="12" font-weight="bold" text-anchor="middle" x="360" y="245" direction="rtl" unicode-bidi="embed">انتشار <tspan direction="ltr" unicode-bidi="embed">Context</tspan> بین سرویس‌ها</text>
-
-<!-- HTTP Headers Propagation -->
-<rect fill="#E8F5E9" height="70" rx="6" stroke="#4CAF50" stroke-width="1.5" width="660" x="30" y="258"></rect>
-<text fill="#2E7D32" font-size="10" font-weight="bold" text-anchor="middle" x="360" y="278" direction="ltr" unicode-bidi="embed">HTTP Headers (W3C Trace Context)</text>
-<text fill="#333" font-size="9" text-anchor="middle" x="360" y="295" direction="ltr" unicode-bidi="embed">traceparent: 00-a1b2c3d4e5f67890-abc123def456-01</text>
-<text fill="#333" font-size="9" text-anchor="middle" x="360" y="312" direction="ltr" unicode-bidi="embed">tracestate: vendor=go-otel,env=production</text>
-
-<!-- Propagation flow arrows -->
-<rect fill="#00ADD8" filter="url(#shSpan)" height="35" rx="5" width="100" x="30" y="340"></rect>
-<text fill="#fff" font-size="9" text-anchor="middle" x="80" y="362" direction="ltr" unicode-bidi="embed">Gateway</text>
-
-<line marker-end="url(#arrowCtx)" stroke="#4CAF50" stroke-width="2" x1="130" x2="185" y1="358" y2="358"></line>
-<text fill="#4CAF50" font-size="7" text-anchor="middle" x="158" y="350" direction="ltr" unicode-bidi="embed">Inject</text>
-
-<rect fill="#00ADD8" filter="url(#shSpan)" height="35" rx="5" width="80" x="185" y="340"></rect>
-<text fill="#fff" font-size="8" text-anchor="middle" x="225" y="362" direction="ltr" unicode-bidi="embed">Auth Svc</text>
-
-<line marker-end="url(#arrowCtx)" stroke="#4CAF50" stroke-width="2" x1="265" x2="320" y1="358" y2="358"></line>
-
-<rect fill="#00ADD8" filter="url(#shSpan)" height="35" rx="5" width="90" x="320" y="340"></rect>
-<text fill="#fff" font-size="8" text-anchor="middle" x="365" y="362" direction="ltr" unicode-bidi="embed">Order Svc</text>
-
-<line marker-end="url(#arrowCtx)" stroke="#4CAF50" stroke-width="2" x1="410" x2="465" y1="358" y2="358"></line>
-
-<rect fill="#00ADD8" filter="url(#shSpan)" height="35" rx="5" width="90" x="465" y="340"></rect>
-<text fill="#fff" font-size="8" text-anchor="middle" x="510" y="362" direction="ltr" unicode-bidi="embed">Cache Svc</text>
-
-<line marker-end="url(#arrowCtx)" stroke="#4CAF50" stroke-width="2" x1="555" x2="610" y1="358" y2="358"></line>
-
-<rect fill="#00ADD8" filter="url(#shSpan)" height="35" rx="5" width="80" x="610" y="340"></rect>
-<text fill="#fff" font-size="8" text-anchor="middle" x="650" y="362" direction="ltr" unicode-bidi="embed">User Svc</text>
-
-<text fill="#4CAF50" font-size="8" text-anchor="middle" x="360" y="390" direction="rtl" unicode-bidi="embed">هر فلش سبز = انتقال <tspan direction="ltr" unicode-bidi="embed">traceparent</tspan> در <tspan direction="ltr" unicode-bidi="embed">HTTP headers</tspan></text>
-
-<!-- Three Pillars Comparison -->
-<text fill="#555" font-size="12" font-weight="bold" text-anchor="middle" x="360" y="420" direction="rtl" unicode-bidi="embed">سه رکن <tspan direction="ltr" unicode-bidi="embed">Observability</tspan></text>
-
-<rect fill="#00ADD8" filter="url(#shSpan)" height="50" rx="6" width="210" x="30" y="435"></rect>
-<text fill="#fff" font-size="11" font-weight="bold" text-anchor="middle" x="135" y="458" direction="ltr" unicode-bidi="embed">Tracing</text>
-<text fill="#e0f7fa" font-size="8" text-anchor="middle" x="135" y="475" direction="rtl" unicode-bidi="embed">مسیر درخواست بین سرویس‌ها</text>
-
-<rect fill="#FF9800" filter="url(#shSpan)" height="50" rx="6" width="210" x="255" y="435"></rect>
-<text fill="#fff" font-size="11" font-weight="bold" text-anchor="middle" x="360" y="458" direction="ltr" unicode-bidi="embed">Metrics</text>
-<text fill="#fff3e0" font-size="8" text-anchor="middle" x="360" y="475" direction="rtl" unicode-bidi="embed">اعداد تجمیعی عملکرد</text>
-
-<rect fill="#9C27B0" filter="url(#shSpan)" height="50" rx="6" width="210" x="480" y="435"></rect>
-<text fill="#fff" font-size="11" font-weight="bold" text-anchor="middle" x="585" y="458" direction="ltr" unicode-bidi="embed">Logging</text>
-<text fill="#e1bee7" font-size="8" text-anchor="middle" x="585" y="475" direction="rtl" unicode-bidi="embed">جزئیات رویدادها و خطاها</text>
-
-<!-- Golden rule bar -->
-<rect fill="#FFF8E1" height="45" rx="6" stroke="#F9A825" width="660" x="30" y="500"></rect>
-<text fill="#E65100" font-size="9" font-weight="bold" text-anchor="middle" x="360" y="518" direction="rtl" unicode-bidi="embed">قانون طلایی: <tspan direction="ltr" unicode-bidi="embed">Tracing</tspan> = «چرا این درخواست کند است؟» | <tspan direction="ltr" unicode-bidi="embed">Metrics</tspan> = «چند خطا در دقیقه؟» | <tspan direction="ltr" unicode-bidi="embed">Logging</tspan> = «دقیقاً چه اتفاقی افتاد؟»</text>
-<text fill="#E65100" font-size="8" text-anchor="middle" x="360" y="535" direction="rtl" unicode-bidi="embed">هر سه با هم همبسته شوند: <tspan direction="ltr" unicode-bidi="embed">trace_id</tspan> در لاگ ← <tspan direction="ltr" unicode-bidi="embed">span</tspan> با <tspan direction="ltr" unicode-bidi="embed">metrics</tspan> ← <tspan direction="ltr" unicode-bidi="embed">Grafana</tspan> داشبورد یکپارچه</text>
-</svg>
+    classDef titleBox fill:#f8fafc,stroke:#475569,stroke-width:1px,color:#1f2937,font-weight:bold;
+    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
+    classDef okBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
+    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
+    classDef traceBox fill:#f5f0fb,stroke:#9C27B0,stroke-width:1.5px,color:#1f2937;
+    classDef noteBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1px,color:#1f2937,font-style:italic;
+    class title titleBox;
+    class HEADER,ROOT,S1,S2,S3,S4 goBox;
+    class CTXH,CTXFLOW okBox;
+    class TR goBox;
+    class ME warnBox;
+    class LO traceBox;
+    class RULE noteBox;</pre>
 <figcaption>شکل ۹-۵: درخت <bdi dir="ltr">Span</bdi> در یک <bdi dir="ltr">trace</bdi> توزیع‌شده، انتشار <bdi dir="ltr">Context</bdi> و سه رکن <bdi dir="ltr">Observability</bdi></figcaption>
 </figure>
 
