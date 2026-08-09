@@ -83,6 +83,37 @@
 <p>مدل اجرایی PHP و Go کاملاً متفاوت است و همین تفاوت باعث می‌شود بهینه‌سازی در Go اهمیت بسیار بیشتری داشته باشد. در PHP هر درخواست HTTP در یک process مجزا پردازش می‌شود و در پایان درخواست، تمام حافظه آزاد می‌شود. این یعنی حتی اگر کد شما نشتی حافظه داشته باشد، آسیب آن محدود به عمر یک درخواست است. </p><p>اما در Go برنامه شما یک <bdi dir="ltr">long-running process</bdi> است که ماه‌ها بدون ری‌استارت اجرا می‌شود. </p><p>یک نشتی حافظه کوچک که در PHP بی‌تأثیر بود، در Go به تدریج منجر به مصرف رم چند گیگابایتی و در نهایت <bdi dir="ltr">OOM Kill</bdi> توسط سیستم‌عامل می‌شود.</p>
 <p>همچنین Go زبانی است که برای ساخت زیرساخت‌های با کارایی بالا طراحی شده — سرورهای HTTP stream processing و سرویس‌های مایکروسرویسی با تأخیر میلی‌ثانیه‌ای. در این سطح از مقیاس، هر میکروثانیه و هر کیلوبایت حافظه اهمیت دارد. برنامه‌نویس Go باید آگاهی عمیق‌تری از رفتار حافظه و CPU نسبت به برنامه‌نویس PHP داشته باشد.</p>
 <p>از سوی دیگر، Go کنترل بسیار بیشتری به شما می‌دهد. در PHP مدیریت حافظه کاملاً خودکار و غیرشفاف است و توسعه‌دهنده ابزار محدودی برای تأثیرگذاری دارد. </p><p>اما در Go شما ابزارهایی مثل <bdi dir="ltr">sync.Pool</bdi> برای بازیافت اشیاء، <bdi dir="ltr">GOGC</bdi> و <bdi dir="ltr">GOMEMLIMIT</bdi> برای تنظیم GC، <bdi dir="ltr">pprof</bdi> برای پروفایلینگ دقیق و <bdi dir="ltr">Escape Analysis</bdi> برای کنترل تخصیص حافظه دارید. این ابزارها قدرتمندند اما فقط در صورتی مؤثرند که بدانید چگونه از آن‌ها استفاده کنید.</p>
+<figure class="diagram" dir="ltr">
+<svg viewBox="0 0 760 300" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<marker id="arrow-phpgo" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+<path d="M0,0 L10,5 L0,10 z" fill="#64748b"/>
+</marker>
+</defs>
+<text x="380" y="28" text-anchor="middle" class="title rtl">تفاوت مدل اجرایی PHP-FPM و Go</text>
+<text x="30" y="62" text-anchor="start" class="title">PHP-FPM</text>
+<text x="730" y="62" text-anchor="end" class="small rtl">هر درخواست = process جداگانه</text>
+<rect x="30" y="74" width="220" height="80" class="box-php"/>
+<text x="140" y="100" text-anchor="middle" class="title">Request 1</text>
+<text x="140" y="122" text-anchor="middle" class="small rtl">بارگذاری فریم‌ورک از نو</text>
+<text x="140" y="140" text-anchor="middle" class="small rtl">آزادسازی کامل حافظه</text>
+<rect x="270" y="74" width="220" height="80" class="box-php"/>
+<text x="380" y="100" text-anchor="middle" class="title">Request 2</text>
+<text x="380" y="122" text-anchor="middle" class="small rtl">بارگذاری فریم‌ورک از نو</text>
+<text x="380" y="140" text-anchor="middle" class="small rtl">آزادسازی کامل حافظه</text>
+<rect x="510" y="74" width="220" height="80" class="box-php"/>
+<text x="620" y="100" text-anchor="middle" class="title">Request 3</text>
+<text x="620" y="122" text-anchor="middle" class="small rtl">بارگذاری فریم‌ورک از نو</text>
+<text x="620" y="140" text-anchor="middle" class="small rtl">آزادسازی کامل حافظه</text>
+<text x="380" y="178" text-anchor="middle" class="small rtl">پایان هر درخواست: آزادسازی کامل حافظه — نشتی حافظه آسیب محدود به همان درخواست</text>
+<text x="30" y="218" text-anchor="start" class="title">Go</text>
+<text x="730" y="218" text-anchor="end" class="small rtl">یک process طولانی‌مدت</text>
+<rect x="30" y="230" width="700" height="60" class="box-go"/>
+<text x="380" y="252" text-anchor="middle" class="title rtl">long-running process — باینری کامپایل‌شده</text>
+<text x="380" y="275" text-anchor="middle" class="small rtl">همه چیز در حافظه بارگذاری شده، goroutine‌های سبک ~۲KB، ماه‌ها بدون ری‌استارت</text>
+</svg>
+<figcaption>شکل ۱۲-۱: در PHP هر درخواست HTTP در یک process مجزا پردازش می‌شود و در پایان درخواست تمام حافظه آزاد می‌شود. در Go برنامه یک <bdi dir="ltr">long-running process</bdi> است که ماه‌ها بدون ری‌استارت اجرا می‌شود — به همین دلیل نشتی حافظه کوچک در Go به‌تدریج منجر به <bdi dir="ltr">OOM Kill</bdi> می‌شود.</figcaption>
+</figure>
 <div class="note"><strong>نکته:</strong> مفهوم <bdi dir="ltr">Escape Analysis</bdi> و تأثیر pointerها بر تخصیص heap در <bdi dir="ltr">بخش ۲.۵</bdi> به‌طور کامل بررسی شده است. در این فصل صرفاً جنبه‌های مرتبط با بهینه‌سازی عملکرد آن را مرور می‌کنیم. اگر با نحوه‌ی کار pointer و value در Go آشنا نیستید، ابتدا آن بخش را مطالعه کنید.</div>
 <h3 id="ذهنیت-بهینهسازی-اندازهگیری-بهینهسازی-تأیید">12.0.2 ذهنیت بهینه‌سازی: اندازه‌گیری ← بهینه‌سازی ← تأیید</h3>
 <p>ذهنیت صحیح بهینه‌سازی یک فرآیند سه‌مرحله‌ای تکرارشونده است که هر مرحله بدون مرحله‌ی قبلی بی‌معنی است:</p>
@@ -91,6 +122,39 @@
 <p><strong>مرحله‌ی ۳ — تأیید:</strong> پس از تغییر، دوباره بنچمارک بگیرید و نتایج را با <bdi dir="ltr">benchstat</bdi> مقایسه کنید. اگر بهبود قابل‌توجهی نبود، تغییر را برگردانید. هرگز فرض نکنید که تغییر شما بهتر شده — این را با داده ثابت کنید.</p>
 <div class="warning"><strong>تله‌ی رایج مهاجرت:</strong> بسیاری از توسعه‌دهندگان PHP که به Go می‌آیند، بلافاصله شروع به بهینه‌سازی می‌کنند بدون اینکه ابتدا بنچمارک بگیرند. این رویکرد در PHP کم‌خطر بود چون عملاً امکان بهینه‌سازی عمیق وجود نداشت. اما در Go که ابزارهای قدرتمندی وجود دارد، بهینه‌سازی بی‌داده می‌تواند کد را پیچیده‌تر کند بدون هیچ بهبود واقعی. همیشه اول اندازه‌گیری کنید.</div>
 <div class="tip"><strong>نکته:</strong> چرخه‌ی طلایی بهینه‌سازی چهار مرحله دارد: <bdi dir="ltr">Benchmark</bdi> (با <bdi dir="ltr">testing.B</bdi>)، <bdi dir="ltr">Profile</bdi> (با <bdi dir="ltr">pprof</bdi>)، <bdi dir="ltr">Optimize</bdi> (فقط گلوگاه شناسایی‌شده) و <bdi dir="ltr">Verify</bdi> (با <bdi dir="ltr">benchstat</bdi>). هرگز مرحله‌ای را رد نکنید — به‌ویژه Verify که اغلب فراموش می‌شود و باعث می‌شود تغییرات بی‌اثر یا حتی مضر در کد باقی بمانند.</div>
+<figure class="diagram" dir="ltr">
+<svg viewBox="0 0 760 320" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<marker id="arrow-cyc" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+<path d="M0,0 L10,5 L0,10 z" fill="#64748b"/>
+</marker>
+</defs>
+<text x="380" y="30" text-anchor="middle" class="title rtl">چرخه‌ی طلایی بهینه‌سازی: اندازه‌گیری ← بهینه‌سازی ← تأیید</text>
+<rect x="40" y="80" width="200" height="130" class="box-action"/>
+<text x="140" y="108" text-anchor="middle" class="title rtl">۱. اندازه‌گیری</text>
+<text x="140" y="132" text-anchor="middle" class="small">go test -bench -benchmem</text>
+<text x="140" y="150" text-anchor="middle" class="small">-count=5 | tee old.txt</text>
+<text x="140" y="170" text-anchor="middle" class="small rtl">pprof CPU و Heap</text>
+<text x="140" y="188" text-anchor="middle" class="small rtl">شناسایی گلوگاه واقعی</text>
+<rect x="280" y="80" width="200" height="130" class="box-go"/>
+<text x="380" y="108" text-anchor="middle" class="title rtl">۲. بهینه‌سازی</text>
+<text x="380" y="132" text-anchor="middle" class="small rtl">فقط گلوگاه شناسایی‌شده</text>
+<text x="380" y="150" text-anchor="middle" class="small rtl">قانون پارتو: ۲۰٪ تلاش</text>
+<text x="380" y="170" text-anchor="middle" class="small rtl">۸۰٪ بهبود</text>
+<text x="380" y="188" text-anchor="middle" class="small rtl">الگوریتم قبل از میکرو</text>
+<rect x="520" y="80" width="200" height="130" class="box-result"/>
+<text x="620" y="108" text-anchor="middle" class="title rtl">۳. تأیید</text>
+<text x="620" y="132" text-anchor="middle" class="small">benchstat old.txt new.txt</text>
+<text x="620" y="150" text-anchor="middle" class="small rtl">فاصله اطمینان ۹۵٪</text>
+<text x="620" y="170" text-anchor="middle" class="small">p-value &lt; 0.05</text>
+<text x="620" y="188" text-anchor="middle" class="small rtl">اگر بهبود نبود → rollback</text>
+<line x1="240" y1="145" x2="280" y2="145" stroke="#64748b" stroke-width="2" marker-end="url(#arrow-cyc)"/>
+<line x1="480" y1="145" x2="520" y2="145" stroke="#64748b" stroke-width="2" marker-end="url(#arrow-cyc)"/>
+<path d="M 620 215 Q 620 270, 380 270 Q 140 270, 140 215" fill="none" stroke="#64748b" stroke-width="2" marker-end="url(#arrow-cyc)" stroke-dasharray="6,4"/>
+<text x="380" y="290" text-anchor="middle" class="small rtl">چرخه‌ی تکرارشونده — هر مرحله بدون مرحله‌ی قبلی بی‌معنی است</text>
+</svg>
+<figcaption>شکل ۱۲-۲: ذهنیت صحیح بهینه‌سازی یک فرآیند سه‌مرحله‌ای تکرارشونده است: اندازه‌گیری (با <bdi dir="ltr">testing.B</bdi> و <bdi dir="ltr">pprof</bdi>)، بهینه‌سازی فقط گلوگاه شناسایی‌شده، و تأیید آماری با <bdi dir="ltr">benchstat</bdi>. اگر بهبود معنادار نبود، تغییر را برگردانید و دوباره اندازه‌گیری کنید.</figcaption>
+</figure>
 <h3 id="ویژگیهای-عملکرد-Go">12.0.3 ویژگی‌های عملکرد Go</h3>
 <p>Go زبانی است با ویژگی‌های منحصربه‌فرد که عملکرد آن را هم قوی و هم قابل پیش‌بینی می‌کند. درک این ویژگی‌ها پایه‌ی هر بهینه‌سازی مؤثری است:</p>
 <table class="comparison-table" dir="rtl">

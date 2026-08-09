@@ -92,6 +92,40 @@
 <p><strong>Logs:</strong> ثبت وقایع و خطاها به صورت متنی. Logs به شما می‌گویند <em>چه اتفاقی افتاده</em>. مثلاً «خطای اتصال به دیتابیس در ساعت ۱۰:۳۰».</p>
 <p><strong>Metrics:</strong> اندازه‌گیری کمی عملکرد سیستم. Metrics به شما می‌گویند <em>چقدر</em> از چیزی اتفاق افتاده. مثلاً «۱۵۰ درخواست در ثانیه» یا «میانگین زمان پاسخ ۵۰ میلی‌ثانیه».</p>
 <p><strong>Traces:</strong> ردیابی مسیر یک درخواست از ورود تا خروج. <bdi dir="ltr">Trace</bdi> ها به شما می‌گویند <em>کجا</em> و <em>چرا</em> یک درخواست کند بوده. مثلاً «درخواست ۴۲۰ میلی‌ثانیه طول کشیده: ۵۰ میلی‌ثانیه کوئری دیتابیس، ۸۰ میلی‌ثانیه رندر قالب، ۱۰ میلی‌ثانیه <bdi dir="ltr">Redis</bdi>».</p>
+<figure class="diagram" dir="ltr">
+<svg viewBox="0 0 720 300" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+<path d="M0,0 L10,5 L0,10 z" fill="#64748b"/>
+</marker>
+</defs>
+<text x="360" y="30" text-anchor="middle" class="title rtl">سه رکن Observability</text>
+<rect x="40" y="60" width="200" height="160" class="box-go"/>
+<text x="140" y="90" text-anchor="middle" class="title">Logs</text>
+<text x="140" y="115" text-anchor="middle" class="small rtl">چه اتفاقی افتاده؟</text>
+<text x="140" y="140" text-anchor="middle" class="small">2024-03-15 10:30</text>
+<text x="140" y="158" text-anchor="middle" class="small">ERROR: db connect</text>
+<text x="140" y="176" text-anchor="middle" class="small">failed: timeout</text>
+<text x="140" y="205" text-anchor="middle" class="small rtl">متن و رویداد</text>
+<rect x="260" y="60" width="200" height="160" class="box-action"/>
+<text x="360" y="90" text-anchor="middle" class="title">Metrics</text>
+<text x="360" y="115" text-anchor="middle" class="small rtl">چقدر؟</text>
+<text x="360" y="140" text-anchor="middle" class="small">http_requests_total</text>
+<text x="360" y="158" text-anchor="middle" class="small">= 1,234,567</text>
+<text x="360" y="176" text-anchor="middle" class="small">rate: 150 req/s</text>
+<text x="360" y="205" text-anchor="middle" class="small rtl">اعداد تجمیعی</text>
+<rect x="480" y="60" width="200" height="160" class="box-result"/>
+<text x="580" y="90" text-anchor="middle" class="title">Traces</text>
+<text x="580" y="115" text-anchor="middle" class="small rtl">کجا و چرا کند؟</text>
+<text x="580" y="140" text-anchor="middle" class="small">gateway → 50ms</text>
+<text x="580" y="158" text-anchor="middle" class="small">db.Query → 200ms</text>
+<text x="580" y="176" text-anchor="middle" class="small">render → 30ms</text>
+<text x="580" y="205" text-anchor="middle" class="small rtl">مسیر درخواست</text>
+<rect x="40" y="245" width="640" height="40" class="warn-box"/>
+<text x="360" y="270" text-anchor="middle" class="title rtl">یکپارچه با trace_id — پرش بین ارکان در Grafana</text>
+</svg>
+<figcaption>شکل ۹-۱: سه رکن Observability — Logs به شما می‌گویند <strong>چه</strong> اتفاقی افتاده، Metrics <strong>چقدر</strong> از چیزی اتفاق افتاده و Traces <strong>کجا و چرا</strong> یک درخواست کند بوده. این سه رکن با افزودن <code>trace_id</code> به لاگ‌ها و <bdi dir="ltr">exemplar</bdi>‌های متریک، در <bdi dir="ltr">Grafana</bdi> به‌صورت یکپارچه قابل پیمایش هستند.</figcaption>
+</figure>
 <div class="tip"><strong>نکته‌ی اولویت‌بندی:</strong> اگر در حال migrations از <bdi dir="ltr">PHP</bdi> به <bdi dir="ltr">Go</bdi> هستید و منابع محدودی دارید، با <bdi dir="ltr">Logging</bdi> شروع کنید (پایه‌ای‌ترین ابزار)، سپس <bdi dir="ltr">Metrics</bdi> اضافه کنید (برای مانیتورینگ بلندمدت) و در نهایت <bdi dir="ltr">Tracing</bdi> را پیاده‌سازی کنید (وقتی چند سرویس دارید). هر سه رکن لازم نیستند همزمان پیاده شوند؛ حتی فقط <bdi dir="ltr">Logging</bdi> ساختاریافته و چند <bdi dir="ltr">Metric</bdi> کلیدی، به‌مراتب بهتر از هیچ <bdi dir="ltr">Observability</bdi>ی است.</div>
 <div class="important"><strong>تفاوت با PHP:</strong> در <bdi dir="ltr">PHP</bdi> معمولاً <bdi dir="ltr">Monolog</bdi> برای Logs و <bdi dir="ltr">New Relic</bdi> یا <bdi dir="ltr">Datadog</bdi> برای مانیتورینگ کافی است. اما در <bdi dir="ltr">Go</bdi> به دلیل مدل <bdi dir="ltr">concurrent</bdi> و معماری میکروسرویس، نیاز به سیستم <bdi dir="ltr">Observability</bdi> جامع‌تری دارید. خوشبختانه اکوسیستم <bdi dir="ltr">Go</bdi> ابزارهای قدرتمندی دارد که همگی متن‌باز هستند.</div>
 <h3 id="سناریو-واقعی-چرا-بدون-مشاهدهپذیری-گم-میشویم">9.0.2 سناریو واقعی: چرا بدون Observability گم می‌شویم</h3>

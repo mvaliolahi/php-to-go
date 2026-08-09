@@ -100,6 +100,43 @@ func buildSliceBest(items []int) []int {
 </code></pre>
 </figure>
 <p>نتایج بنچمارک با ۱۰,۰۰۰ عنصر: روش بد حدود <strong>۲۰ تخصیص</strong> (هر بار دوبرابر شدن)، روش خوب <strong>۱ تخصیص</strong>، و روش بهترین هم <strong>۱ تخصیص</strong> اما با سرعت اندکی بیشتر چون از <bdi dir="ltr">append</bdi> استفاده نمی‌کند.</p>
+<figure class="diagram" dir="ltr">
+<svg viewBox="0 0 760 280" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<marker id="arrow-slice" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+<path d="M0,0 L10,5 L0,10 z" fill="#64748b"/>
+</marker>
+</defs>
+<text x="380" y="28" text-anchor="middle" class="title rtl">پیش‌تخصیص Slice: تخصیص مکرر در برابر تخصیص یک‌باره</text>
+<text x="30" y="62" text-anchor="start" class="title rtl">بدون preallocation (append):</text>
+<text x="730" y="62" text-anchor="end" class="small rtl">~۲۰ تخصیص برای ۱۰۰۰۰ عنصر</text>
+<rect x="40" y="76" width="50" height="50" class="box-php"/>
+<text x="65" y="106" text-anchor="middle" class="title">cap=1</text>
+<line x1="92" y1="101" x2="108" y2="101" stroke="#64748b" stroke-width="2" marker-end="url(#arrow-slice)"/>
+<rect x="112" y="76" width="60" height="50" class="box-php"/>
+<text x="142" y="106" text-anchor="middle" class="title">cap=2</text>
+<line x1="174" y1="101" x2="190" y2="101" stroke="#64748b" stroke-width="2" marker-end="url(#arrow-slice)"/>
+<rect x="194" y="76" width="70" height="50" class="box-php"/>
+<text x="229" y="106" text-anchor="middle" class="title">cap=4</text>
+<line x1="266" y1="101" x2="282" y2="101" stroke="#64748b" stroke-width="2" marker-end="url(#arrow-slice)"/>
+<rect x="286" y="76" width="80" height="50" class="box-php"/>
+<text x="326" y="106" text-anchor="middle" class="title">cap=8</text>
+<line x1="368" y1="101" x2="384" y2="101" stroke="#64748b" stroke-width="2" marker-end="url(#arrow-slice)"/>
+<rect x="388" y="76" width="90" height="50" class="box-php"/>
+<text x="433" y="106" text-anchor="middle" class="title">cap=16</text>
+<text x="495" y="106" text-anchor="start" class="title">...</text>
+<rect x="530" y="76" width="190" height="50" class="box-php"/>
+<text x="625" y="100" text-anchor="middle" class="title">cap=8192</text>
+<text x="625" y="118" text-anchor="middle" class="small rtl">۲۰امین reallocation</text>
+<text x="380" y="150" text-anchor="middle" class="small rtl">هر مرحله: تخصیص آرایه جدید (دو برابر) + کپی داده + رها کردن قدیمی → فشار GC</text>
+<text x="30" y="186" text-anchor="start" class="title rtl">با preallocation (make([]T, 0, n)):</text>
+<text x="730" y="186" text-anchor="end" class="small rtl">۱ تخصیص برای ۱۰۰۰۰ عنصر</text>
+<rect x="40" y="200" width="680" height="50" class="box-go"/>
+<text x="380" y="225" text-anchor="middle" class="title rtl">capacity = n — یک تخصیص کافی</text>
+<text x="380" y="265" text-anchor="middle" class="small rtl">بدون reallocation، بدون کپی، بدون فشار GC — چند برابر سریع‌تر</text>
+</svg>
+<figcaption>شکل ۱۲-۷: مقایسه append بدون preallocation در برابر <bdi dir="ltr">make([]T, 0, n)</bdi> — بدون preallocation، هر بار که capacity پر می‌شود، Go یک آرایه دو برابر بزرگ‌تر تخصیص می‌دهد، داده را کپی می‌کند و آرایه قدیمی را رها می‌کند. با preallocation، یک تخصیص اولیه با capacity کافی انجام می‌شود و دیگر هیچ reallocation ای لازم نیست.</figcaption>
+</figure>
 <h3 id="پیشتخصیص-map-با-make-hint">12.3.2 پیش‌تخصیص Map با make hint</h3>
 <p>از Go 1.11 می‌توانید تعداد تقریبی عناصر map را با <bdi dir="ltr">make(map[K]V, hint)</bdi> مشخص کنید. این hint به Go اجازه می‌دهد bucket‌های کافی از ابتدا تخصیص دهد و از resize مکرر جلوگیری کند. البته برخلاف slice، این hint فقط یک پیشنهاد است و تضمین نمی‌کند که هیچ resize اتفاق نیفتد:</p>
 <figure class="code go" dir="ltr">
@@ -145,6 +182,45 @@ func goodConcat(parts []string) string {
 </figure>
 <p>نتایج بنچمارک (با ۱۰۰۰ رشته‌ی ۱۰ کاراکتری): روش <code>+</code> حدود <strong>۲۰۰۰ تخصیص</strong> و <strong>۵۰۰ μs/op</strong>، <code>strings.Builder</code> بدون <code>Grow</code> حدود <strong>۱۰ تخصیص</strong> و <strong>۳ μs/op</strong>، و <code>strings.Builder</code> با <code>Grow</code> فقط <strong>۱ تخصیص</strong> و <strong>۱.۵ μs/op</strong>. تفاوت ۳۰۰ برابری در عملکرد.</p>
 <div class="tip"><strong>نکته داخلی:</strong> <code dir="ltr">strings.Builder</code> از <code>[]byte</code> داخلی استفاده می‌کند که با <code dir="ltr">Grow()</code> ظرفیت آن از قبل مشخص می‌شود. <code>WriteString</code> فقط داده را به slice اضافه می‌کند بدون allocation جدید. متد <code dir="ltr">String()</code> با یک بار کپی، رشته نهایی را برمی‌گرداند.</div>
+<figure class="diagram" dir="ltr">
+<svg viewBox="0 0 760 320" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<marker id="arrow-str" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+<path d="M0,0 L10,5 L0,10 z" fill="#64748b"/>
+</marker>
+</defs>
+<text x="380" y="28" text-anchor="middle" class="title rtl">الحاق رشته: + در برابر strings.Builder</text>
+<text x="30" y="62" text-anchor="start" class="title rtl">+ در حلقه (۱۰۰۰ رشته):</text>
+<text x="730" y="62" text-anchor="end" class="small rtl">~۲۰۰۰ تخصیص · ۵۰۰ μs/op</text>
+<rect x="40" y="76" width="60" height="40" class="box-php"/>
+<text x="70" y="100" text-anchor="middle" class="small">"a"</text>
+<line x1="102" y1="96" x2="118" y2="96" stroke="#64748b" stroke-width="2" marker-end="url(#arrow-str)"/>
+<rect x="122" y="76" width="80" height="40" class="box-php"/>
+<text x="162" y="100" text-anchor="middle" class="small">"ab"</text>
+<line x1="204" y1="96" x2="220" y2="96" stroke="#64748b" stroke-width="2" marker-end="url(#arrow-str)"/>
+<rect x="224" y="76" width="100" height="40" class="box-php"/>
+<text x="274" y="100" text-anchor="middle" class="small">"abc"</text>
+<line x1="326" y1="96" x2="342" y2="96" stroke="#64748b" stroke-width="2" marker-end="url(#arrow-str)"/>
+<rect x="346" y="76" width="120" height="40" class="box-php"/>
+<text x="406" y="100" text-anchor="middle" class="small">"abcd"</text>
+<text x="478" y="100" text-anchor="start" class="small">...</text>
+<rect x="510" y="76" width="210" height="40" class="box-php"/>
+<text x="615" y="100" text-anchor="middle" class="small">"a...thousand"</text>
+<text x="380" y="140" text-anchor="middle" class="small rtl">هر + = رشته‌ی جدید immutable + رها کردن قبلی → ۲۰۰۰ allocation و فشار شدید به GC</text>
+<text x="30" y="180" text-anchor="start" class="title rtl">strings.Builder + Grow():</text>
+<text x="730" y="180" text-anchor="end" class="small rtl">۱ تخصیص · ۱.۵ μs/op · ~۳۰۰× سریع‌تر</text>
+<rect x="40" y="194" width="180" height="50" class="box-action"/>
+<text x="130" y="218" text-anchor="middle" class="title">b.Grow(16000)</text>
+<text x="130" y="236" text-anchor="middle" class="small rtl">تخصیص بافر اولیه</text>
+<line x1="222" y1="219" x2="248" y2="219" stroke="#64748b" stroke-width="2" marker-end="url(#arrow-str)"/>
+<rect x="252" y="194" width="468" height="50" class="box-go"/>
+<text x="486" y="218" text-anchor="middle" class="title">b.WriteString("a") · b.WriteString("b") · ... · b.String()</text>
+<text x="486" y="236" text-anchor="middle" class="small rtl">append به []byte داخلی بدون allocation جدید</text>
+<rect x="40" y="265" width="680" height="40" class="tip-box"/>
+<text x="380" y="290" text-anchor="middle" class="small rtl">قانون عملی: اگر بیش از ۵ الحاق در حلقه دارید، همیشه strings.Builder با Grow را انتخاب کنید</text>
+</svg>
+<figcaption>شکل ۱۲-۸: الحاق رشته با + در برابر strings.Builder — عملگر + در هر مرحله یک رشته‌ی جدید (immutable) می‌سازد و رشته قبلی به GC سپرده می‌شود. با strings.Builder و Grow، یک بافر داخلی []byte با capacity مشخص تخصیص می‌یابد و WriteString فقط داده را append می‌کند بدون allocation جدید. نتیجه: ۳۰۰ برابر سریع‌تر و ۲۰۰۰ برابر کمتر allocation.</figcaption>
+</figure>
 <h3 id="تبدیل-byte-slice-و-string">12.3.4 تبدیل Byte Slice و String</h3>
 <p>در Go رشته‌ها و byte slice‌ها ساختارهای متفاوتی دارند و هر تبدیل بین آن‌ها یک کپی و allocation جدید ایجاد می‌کند. در hot path‌ها (مسیرهایی که مکرراً اجرا می‌شوند) این تبدیل‌ها پرهزینه هستند:</p>
 <figure class="code go" dir="ltr">

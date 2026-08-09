@@ -138,6 +138,46 @@ func processRecordsOptimized(records []Record) []string {
 <p>قانون امدال فرمولی است که نشان می‌دهد بهینه‌سازی یک بخش از برنامه چقدر روی عملکرد کلی تأثیر دارد. اگر بخشی که بهینه می‌کنید P از کل زمان اجرا را تشکیل می‌دهد و آن را S برابر سریع‌تر می‌کنید، سرعت کلی حداکثر <bdi dir="ltr">1 / ((1-P) + P/S)</bdi> برابر بهبود می‌یابد.</p>
 <p>مثلاً اگر یک تابع ۴۰٪ زمان اجرا را صرف می‌کند (P=0.4) و آن را ۲ برابر سریع‌تر می‌کنید (S=2)، کل برنامه حداکثر <bdi dir="ltr">1 / (0.6 + 0.2) = 1.25</bdi> برابر سریع‌تر می‌شود — فقط ۲۵٪ بهبود. اما اگر تابعی که ۹۰٪ وقت را صرف می‌کند ۲ برابر سریع‌تر شود، کل برنامه <bdi dir="ltr">1 / (0.1 + 0.45) = 1.82</bdi> برابر سریع‌تر می‌شود — ۸۲٪ بهبود.</p>
 <div class="important"><strong>نتیجه‌ی قانون امدال:</strong> روی بخشی تمرکز کنید که بیشترین سهم از زمان اجرا را دارد. بهینه‌سازی کدی که ۲٪ وقت CPU را صرف می‌کند، حتی اگر ۱۰ برابر سریع‌تر شود، تنها ۱.۸٪ بهبود کلی ایجاد می‌کند. همیشه با pprof شناسایی کنید کدام بخش واقعاً وقت CPU را مصرف می‌کند.</div>
+<figure class="diagram" dir="ltr">
+<svg viewBox="0 0 760 340" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<marker id="arrow-amdahl" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+<path d="M0,0 L10,5 L0,10 z" fill="#64748b"/>
+</marker>
+</defs>
+<text x="380" y="28" text-anchor="middle" class="title rtl">قانون امدال: چرا بهینه‌سازی بخش کوچک‌تر کمکی نمی‌کند</text>
+<text x="30" y="62" text-anchor="start" class="title">سناریو ۱: P=۰.۴، S=۲</text>
+<text x="730" y="62" text-anchor="end" class="small rtl">۴۰٪ کد، ۲ برابر سریع‌تر → ۱.۲۵× کلی</text>
+<text x="30" y="94" text-anchor="start" class="small rtl">قبل:</text>
+<rect x="80" y="80" width="200" height="22" class="box-join"/>
+<text x="180" y="96" text-anchor="middle" class="small rtl">۴۰٪ (بهینه‌شونده)</text>
+<rect x="280" y="80" width="300" height="22" class="box"/>
+<text x="430" y="96" text-anchor="middle" class="small rtl">۶۰٪ (بقیه کد)</text>
+<text x="30" y="124" text-anchor="start" class="small rtl">بعد:</text>
+<rect x="80" y="110" width="100" height="22" class="box-result"/>
+<text x="130" y="126" text-anchor="middle" class="small rtl">۲۰٪</text>
+<rect x="180" y="110" width="300" height="22" class="box"/>
+<text x="330" y="126" text-anchor="middle" class="small rtl">۶۰٪ (بدون تغییر)</text>
+<text x="500" y="126" text-anchor="start" class="small">→ ۸۰ واحد (۲۵٪ بهبود)</text>
+<text x="30" y="172" text-anchor="start" class="title">سناریو ۲: P=۰.۹، S=۲</text>
+<text x="730" y="172" text-anchor="end" class="small rtl">۹۰٪ کد، ۲ برابر سریع‌تر → ۱.۸۲× کلی</text>
+<text x="30" y="204" text-anchor="start" class="small rtl">قبل:</text>
+<rect x="80" y="190" width="450" height="22" class="box-join"/>
+<text x="305" y="206" text-anchor="middle" class="small rtl">۹۰٪ (بهینه‌شونده)</text>
+<rect x="530" y="190" width="50" height="22" class="box"/>
+<text x="555" y="206" text-anchor="middle" class="small">۱۰٪</text>
+<text x="30" y="234" text-anchor="start" class="small rtl">بعد:</text>
+<rect x="80" y="220" width="225" height="22" class="box-result"/>
+<text x="192" y="236" text-anchor="middle" class="small rtl">۴۵٪</text>
+<rect x="305" y="220" width="50" height="22" class="box"/>
+<text x="330" y="236" text-anchor="middle" class="small">۱۰٪</text>
+<text x="370" y="236" text-anchor="start" class="small">→ ۵۵ واحد (۸۲٪ بهبود)</text>
+<rect x="40" y="270" width="680" height="55" class="tip-box"/>
+<text x="380" y="290" text-anchor="middle" class="small">Speedup = 1 / ((1-P) + P/S)</text>
+<text x="380" y="310" text-anchor="middle" class="small rtl">نتیجه: روی بخشی تمرکز کنید که بیشترین سهم از زمان اجرا را دارد — ۲٪ کد حتی با ۱۰× سرعت، فقط ۱.۸٪ بهبود کلی</text>
+</svg>
+<figcaption>شکل ۱۲-۵: قانون امدال — در سناریوی ۱ (بهینه‌سازی ۴۰٪ کد، ۲ برابر سریع‌تر)، کل برنامه فقط ۱.۲۵ برابر سریع‌تر می‌شود (۲۵٪ بهبود). اما در سناریوی ۲ (بهینه‌سازی ۹۰٪ کد، ۲ برابر سریع‌تر)، کل برنامه ۱.۸۲ برابر سریع‌تر می‌شود (۸۲٪ بهبود). درس عملی: همیشه با pprof شناسایی کنید کدام بخش واقعاً بیشترین سهم را از زمان اجرا دارد.</figcaption>
+</figure>
 <h3 id="فعالسازی-pprof-و-انواع-پروفایل">12.2.5 فعال‌سازی pprof و انواع پروفایل</h3>
 <p>Go با پکیج استاندارد <bdi dir="ltr">net/http/pprof</bdi> پروفایل CPU، حافظه، بلاکینگ و goroutine را ممکن می‌کند. کافیست این پکیج را import کنید و یک HTTP server اجرا کنید:</p>
 <figure class="code go" dir="ltr">
@@ -191,6 +231,51 @@ $ go tool trace trace.out
 <h3 id="درخت-تصمیم-کامل-بهینهسازی-اندازهگیری-پروفایل-بهینهسازی">12.2.7 درخت تصمیم کامل بهینه‌سازی: اندازه‌گیری ← پروفایل ← بهینه‌سازی</h3>
 <p>فرآیند بهینه‌سازی یک مسیر تصمیم‌گیری مشخص دارد که از اندازه‌گیری شروع شده و با تأیید بهبود خاتمه می‌یابد. اولین و مهم‌ترین سؤال این است: آیا اصلاً مشکل عملکردی وجود دارد؟ اگر پاسخ منفی است، بهینه‌سازی نکنید — این همان تله بهینه‌سازی زودرس است.</p><p>اگر مشکل وجود دارد، باید با بنچمارک اندازه‌گیری کنید، سپس با pprof پروفایل بگیرید و گلوگاه را شناسایی کنید.</p><p>گلوگاه یا CPU-bound است (نیاز به بهبود الگوریتم) یا Memory-bound (نیاز به کاهش allocation).</p><p>پس از بهینه‌سازی، دوباره بنچمارک بگیرید و اگر بهبود معنادار نبود، رویکرد خود را بازبینی کنید.</p><p>قانون ۸۰/۲۰ را همیشه به خاطر بسپارید: ۸۰٪ زمان اجرا در ۲۰٪ کد صرف می‌شود — فقط همان ۲۰٪ را بهینه کنید.</p>
 <p>این درخت تصمیم مسیر صحیح بهینه‌سازی را به‌صورت گام‌به‌گام نشان می‌دهد. مهم‌ترین نکته این است که اگر مشکل عملکردی وجود ندارد، بهینه‌سازی نکنید. بسیاری از برنامه‌نویسان بدون اینکه ابتدا اندازه‌گیری کنند، شروع به بهینه‌سازی بخش‌هایی از کد می‌کنند که اصلاً گلوگاه نیستند. </p><p>این کار نه تنها وقت تلف می‌کند، بلکه کد را پیچیده‌تر و ناخواناتر می‌کند. وقتی مشکل عملکردی تأیید شد، ابتدا با بنچمارک خط پایه (<bdi dir="ltr">baseline</bdi>) تعیین کنید، سپس با pprof گلوگاه واقعی را شناسایی کنید. فقط پس از این مراحل مجاز به بهینه‌سازی هستید و حتی آن‌هم باید با بنچمارک قبل و بعد تأیید شود.</p>
+<figure class="diagram" dir="ltr">
+<svg viewBox="0 0 760 500" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<marker id="arrow-tree" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+<path d="M0,0 L10,5 L0,10 z" fill="#64748b"/>
+</marker>
+</defs>
+<text x="380" y="28" text-anchor="middle" class="title rtl">درخت تصمیم بهینه‌سازی: اندازه‌گیری ← پروفایل ← بهینه‌سازی</text>
+<rect x="280" y="50" width="200" height="60" class="box-action"/>
+<text x="380" y="78" text-anchor="middle" class="title rtl">آیا مشکل عملکردی</text>
+<text x="380" y="96" text-anchor="middle" class="title rtl">داریم؟</text>
+<line x1="280" y1="80" x2="180" y2="80" stroke="#64748b" stroke-width="2" marker-end="url(#arrow-tree)"/>
+<text x="230" y="72" text-anchor="middle" class="small">نه</text>
+<rect x="40" y="50" width="140" height="60" class="warn-box"/>
+<text x="110" y="78" text-anchor="middle" class="title rtl">بهینه‌سازی نکن</text>
+<text x="110" y="96" text-anchor="middle" class="small rtl">تله زودرس</text>
+<line x1="380" y1="110" x2="380" y2="140" stroke="#64748b" stroke-width="2" marker-end="url(#arrow-tree)"/>
+<text x="395" y="128" text-anchor="start" class="small">بله</text>
+<rect x="240" y="140" width="280" height="60" class="box-go"/>
+<text x="380" y="168" text-anchor="middle" class="title rtl">بنچمارک baseline + pprof</text>
+<text x="380" y="186" text-anchor="middle" class="small">go test -bench + pprof top/list</text>
+<line x1="380" y1="200" x2="380" y2="230" stroke="#64748b" stroke-width="2" marker-end="url(#arrow-tree)"/>
+<rect x="240" y="230" width="280" height="60" class="box-action"/>
+<text x="380" y="258" text-anchor="middle" class="title rtl">گلوگاه: CPU یا Memory؟</text>
+<text x="380" y="276" text-anchor="middle" class="small rtl">flat / cum در pprof</text>
+<line x1="380" y1="290" x2="380" y2="310" stroke="#64748b" stroke-width="2"/>
+<line x1="160" y1="310" x2="600" y2="310" stroke="#64748b" stroke-width="2"/>
+<line x1="160" y1="310" x2="160" y2="335" stroke="#64748b" stroke-width="2" marker-end="url(#arrow-tree)"/>
+<line x1="600" y1="310" x2="600" y2="335" stroke="#64748b" stroke-width="2" marker-end="url(#arrow-tree)"/>
+<rect x="40" y="335" width="240" height="60" class="box-go"/>
+<text x="160" y="362" text-anchor="middle" class="title rtl">CPU-bound</text>
+<text x="160" y="380" text-anchor="middle" class="small rtl">بهبود الگوریتم (O(n²) → O(n log n))</text>
+<rect x="480" y="335" width="240" height="60" class="box-go"/>
+<text x="600" y="362" text-anchor="middle" class="title rtl">Memory-bound</text>
+<text x="600" y="380" text-anchor="middle" class="small rtl">کاهش allocation (sync.Pool, preallocation)</text>
+<line x1="160" y1="395" x2="160" y2="420" stroke="#64748b" stroke-width="2"/>
+<line x1="600" y1="395" x2="600" y2="420" stroke="#64748b" stroke-width="2"/>
+<line x1="160" y1="420" x2="600" y2="420" stroke="#64748b" stroke-width="2"/>
+<line x1="380" y1="420" x2="380" y2="445" stroke="#64748b" stroke-width="2" marker-end="url(#arrow-tree)"/>
+<rect x="200" y="445" width="360" height="45" class="box-result"/>
+<text x="380" y="468" text-anchor="middle" class="title rtl">بهینه‌سازی + benchstat تأیید (p-value &lt; 0.05)</text>
+<text x="380" y="484" text-anchor="middle" class="small rtl">اگر بهبود نبود: rollback → پروفایل مجدد</text>
+</svg>
+<figcaption>شکل ۱۲-۶: درخت تصمیم بهینه‌سازی — اگر مشکل عملکردی تأیید نشده، بهینه‌سازی نکنید (تله زودرس). اگر تأیید شد، ابتدا بنچمارک <bdi dir="ltr">baseline</bdi> بگیرید، سپس با pprof گلوگاه واقعی را شناسایی کنید. گلوگاه یا CPU-bound است (نیاز به بهبود الگوریتم) یا Memory-bound (نیاز به کاهش allocation). پس از بهینه‌سازی، با benchstat تأیید کنید و اگر بهبود نبود، تغییر را برگردانید و دوباره پروفایل بگیرید.</figcaption>
+</figure>
 <h3 id="سناریوهای-عملیاتی-بهینهسازی">12.2.8 سناریوهای عملیاتی بهینه‌سازی</h3>
 <p>در پروژه‌های واقعی، بهینه‌سازی فراتر از تئوری است و نیاز به مهارت‌های عملی در استفاده از ابزارهای Go دارد. سناریوهای پایه‌ای مثل نوشتن بنچمارک صحیح، مقایسه قبل/بعد با <bdi dir="ltr">benchstat</bdi> و پروفایلینگ CPU/Heap با <bdi dir="ltr">pprof</bdi> در <a href="12.01-execution-speed-and-optimization.html">بخش ۱۲.۱</a> پوشش داده شده‌اند. در اینجا تنها روی سناریویی تمرکز می‌کنیم که مکمل آن‌هاست و در بخش قبل نیامده:</p>
 <ul>

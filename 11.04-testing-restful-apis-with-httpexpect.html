@@ -476,6 +476,72 @@ assert.Greater(t, value.(int), 10)
 <div class="comparison"><strong>مقایسه با PHP:</strong> در Laravel با <code dir="ltr">$response-&gt;assertJsonStructure(['data' =&gt; ['*' =&gt; ['id', 'name']], 'meta' =&gt; ['page', 'total']])</code> ساختار JSON را بررسی می‌کنید. httpexpect مزیت دارد که assertionها زنجیره‌ای هستند و نیازی به استخراج جداگانه مقادیر نیست. همچنین httpexpect پشتیبانی بومی از نوع‌های عددی (<code>Gt()</code>، <code>Lt()</code>، <code>InDelta()</code>) دارد که در Laravel باید با <code>assertGreaterThan</code> و مشابه آن پیاده شود.</div>
 <h3 id="جریان-کامل-تست-http-از-درخواست-تا-اعتبارسنجی">11.4.15 جریان کامل تست HTTP: از درخواست تا اعتبارسنجی</h3>
 <p>برای درک جامع نحوه تست API‌های RESTful، بیایید کل جریان را از ایجاد سرور تست تا اعتبارسنجی نهایی مرحله‌به‌مرحله بررسی کنیم. هر تست HTTP از هفت مرحله تشکیل شده است: ابتدا سرور تست با <bdi dir="ltr">httptest.NewServer</bdi> ایجاد می‌شود که بدون نیاز به پورت واقعی یا شبکه، هندلرهای شما را اجرا می‌کند. </p><p>سپس درخواست با متد، مسیر، بدنه و هدرهای مناسب ساخته شده و ارسال می‌شود. پس از دریافت پاسخ، سه سطح اعتبارسنجی انجام می‌شود: کد وضعیت، بدنه JSON و هدرها. </p><p>httpexpect این مراحل را در یک API روان (<bdi dir="ltr">fluent</bdi>) ترکیب می‌کند که هر مرحله به مرحله بعد متصل می‌شود و خوانایی تست را به‌شدت افزایش می‌دهد.</p>
+<figure class="diagram" dir="ltr">
+<svg viewBox="0 0 760 420" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<marker id="arrow-ht" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+<path d="M0,0 L10,5 L0,10 z" fill="#64748b"/>
+</marker>
+</defs>
+<text x="380" y="28" text-anchor="middle" class="title rtl">هفت مرحله‌ی تست HTTP با httpexpect (in-process)</text>
+<!-- Stage 1: NewServer -->
+<rect x="30" y="60" width="160" height="80" class="box-go"/>
+<text x="110" y="82" text-anchor="middle" class="title rtl">۱. ساخت سرور تست</text>
+<text x="110" y="103" text-anchor="middle" class="small">httptest.NewServer</text>
+<text x="110" y="120" text-anchor="middle" class="small">handler)</text>
+<text x="110" y="135" text-anchor="middle" class="small rtl">پورت تصادفی، بدون شبکه</text>
+<!-- Stage 2: Build request -->
+<rect x="210" y="60" width="160" height="80" class="box-action"/>
+<text x="290" y="82" text-anchor="middle" class="title rtl">۲. ساخت درخواست</text>
+<text x="290" y="103" text-anchor="middle" class="small">method · path</text>
+<text x="290" y="120" text-anchor="middle" class="small">body (JSON) · headers</text>
+<text x="290" y="135" text-anchor="middle" class="small">e.POST("/users").WithJSON()</text>
+<!-- Stage 3: Send -->
+<rect x="390" y="60" width="160" height="80" class="box-action"/>
+<text x="470" y="82" text-anchor="middle" class="title rtl">۳. ارسال</text>
+<text x="470" y="103" text-anchor="middle" class="small rtl">درون پروسه (loopback)</text>
+<text x="470" y="120" text-anchor="middle" class="small">.Expect()</text>
+<text x="470" y="135" text-anchor="middle" class="small rtl">بدون عبور از پشته‌ی شبکه</text>
+<!-- Stage 4: Receive -->
+<rect x="570" y="60" width="160" height="80" class="box"/>
+<text x="650" y="82" text-anchor="middle" class="title rtl">۴. دریافت پاسخ</text>
+<text x="650" y="103" text-anchor="middle" class="small">status · body · headers</text>
+<text x="650" y="120" text-anchor="middle" class="small rtl">دستگاه بازگشتی</text>
+<text x="650" y="135" text-anchor="middle" class="small rtl">از هندلر</text>
+<!-- Arrows top row -->
+<line x1="190" y1="100" x2="210" y2="100" stroke="#64748b" stroke-width="2" marker-end="url(#arrow-ht)"/>
+<line x1="370" y1="100" x2="390" y2="100" stroke="#64748b" stroke-width="2" marker-end="url(#arrow-ht)"/>
+<line x1="550" y1="100" x2="570" y2="100" stroke="#64748b" stroke-width="2" marker-end="url(#arrow-ht)"/>
+<!-- Down arrow -->
+<line x1="650" y1="140" x2="650" y2="175" stroke="#64748b" stroke-width="2" marker-end="url(#arrow-ht)"/>
+<text x="685" y="160" text-anchor="middle" class="small rtl">برگشت به تست</text>
+<!-- Three validation stages bottom -->
+<rect x="30" y="220" width="220" height="90" class="box-result"/>
+<text x="140" y="245" text-anchor="middle" class="title rtl">۵. اعتبارسنجی Status</text>
+<text x="140" y="265" text-anchor="middle" class="small">.Status(http.StatusCreated)</text>
+<text x="140" y="283" text-anchor="middle" class="small rtl">۲۰۰ · ۲۰۱ · ۴xx · ۵xx</text>
+<text x="140" y="300" text-anchor="middle" class="small rtl">سطح اول</text>
+<rect x="270" y="220" width="220" height="90" class="box-result"/>
+<text x="380" y="245" text-anchor="middle" class="title rtl">۶. اعتبارسنجی بدنه JSON</text>
+<text x="380" y="265" text-anchor="middle" class="small">.JSON().Object()</text>
+<text x="380" y="283" text-anchor="middle" class="small">.Value("id").Equal(42)</text>
+<text x="380" y="300" text-anchor="middle" class="small rtl">سطح دوم</text>
+<rect x="510" y="220" width="220" height="90" class="box-result"/>
+<text x="620" y="245" text-anchor="middle" class="title rtl">۷. اعتبارسنجی هدرها</text>
+<text x="620" y="265" text-anchor="middle" class="small">.Header("X-Request-ID")</text>
+<text x="620" y="283" text-anchor="middle" class="small">.NotEmpty()</text>
+<text x="620" y="300" text-anchor="middle" class="small rtl">سطح سوم</text>
+<!-- Arrows from stage 4 to validations -->
+<line x1="650" y1="175" x2="140" y2="220" stroke="#64748b" stroke-width="1.5" stroke-dasharray="4 3"/>
+<line x1="650" y1="175" x2="380" y2="220" stroke="#64748b" stroke-width="1.5" stroke-dasharray="4 3"/>
+<line x1="650" y1="175" x2="620" y2="220" stroke="#64748b" stroke-width="1.5" stroke-dasharray="4 3"/>
+<!-- Bottom: fluent API example -->
+<rect x="30" y="340" width="700" height="70" class="tip-box"/>
+<text x="380" y="365" text-anchor="middle" class="title rtl">همه‌ی ۷ مرحله در یک عبارت خوانا (fluent API):</text>
+<text x="380" y="390" text-anchor="middle" class="small">e.POST("/users").WithJSON(u).Expect().Status(201).JSON().Object().Value("id").Equal(42)</text>
+</svg>
+<figcaption>شکل ۱۱-۵: هفت مرحله‌ی تست HTTP با <bdi dir="ltr">httpexpect</bdi> — از ساخت سرور تست (<bdi dir="ltr">httptest.NewServer</bdi>) تا سه سطح اعتبارسنجی پاسخ (status، body، headers). همه‌ی این مراحل در یک عبارت زنجیره‌ای (<bdi dir="ltr">fluent</bdi>) ترکیب می‌شوند. چون سرور تست <bdi dir="ltr">in-process</bdi> است، درخواست‌ها بدون عبور از پشته‌ی شبکه پردازش می‌شوند و تست چندین برابر سریع‌تر از HTTP واقعی اجرا می‌شود.</figcaption>
+</figure>
 <p>در نمودار بالا هفت مرحله‌ی تست HTTP به‌صورت کامل نمایش داده شده است. نکته کلیدی این است که در Go با <bdi dir="ltr">httptest.NewServer</bdi> هیچ نیاز به شبکه واقعی نیست — سرور تست کاملاً درون فرآیند (<bdi dir="ltr">in-process</bdi>) اجرا می‌شود و درخواست‌ها بدون عبور از شبکه پردازش می‌شوند. </p><p>این ویژگی باعث می‌شود تست‌ها بسیار سریع‌تر از تست‌های واقعی HTTP باشند و در عین حال دقیقاً همان کدی را اجرا کنند که در تولید استفاده می‌شود. <bdi dir="ltr">httpexpect</bdi> با ارائه <bdi dir="ltr">fluent API</bdi> زنجیره‌ای، مراحل ساخت درخواست، ارسال و اعتبارسنجی را در یک عبارت خوانا ترکیب می‌کند که از نظر نگهداری و خوانایی بسیار برتر از روش دستی است.</p>
 <h3 id="سناریوهای-عملیاتی-تست-api">11.4.16 سناریوهای عملیاتی تست API</h3>
 <p>در پروژه‌های واقعی، تست API بسیار فراتر از یک درخواست ساده <bdi dir="ltr">GET</bdi> است. سناریوهای متعددی وجود دارند که هر کدام نیاز به رویکرد خاصی دارند و توجه به جزئیات متفاوتیrequire می‌کنند. از تست عملیات <bdi dir="ltr">CRUD</bdi> کامل تا بررسی رفتار سرور در شرایط خطا، هر سناریو نکات ظریف خود را دارد که در زیر به تفصیل بررسی می‌شوند.</p>

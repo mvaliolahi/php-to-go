@@ -252,6 +252,52 @@ $ go tool pprof http://localhost:6060/debug/pprof/heap
 <p><strong>مرحله ۵: بنچمارک مجدد و مقایسه.</strong> دوباره بنچمارک بگیرید و با <bdi dir="ltr">benchstat</bdi> مقایسه کنید. اگر بهبود معنادار نبود (<bdi dir="ltr">p-value &gt; 0.05</bdi>)، تغییر را برگردانید.</p>
 <div class="comparison"><strong>مقایسه با PHP:</strong> در PHP ابزارهای پروفایلینگ مثل Blackfire و XHProf اطلاعاتی درباره زمان اجرای توابع و مصرف حافظه ارائه می‌دهند. اما هیچ‌کدام اطلاعاتی درباره هم‌روندی، goroutine‌ها و رفتار GC ندارند چون PHP ذاتاً تک‌نخی و request-scoped است. در Go، pprof و trace اطلاعاتی ارائه می‌دهند که در PHP قابل دستیابی نیست.</div>
 <div class="note"><strong>ارجاع:</strong> برای درخت تصمیم کامل بهینه‌سازی (از تشخیص وجود مشکل تا تأیید بهبود) و بررسی تله‌های بهینه‌سازی زودرس و قانون Amdahl، به <a href="12.02-optimization-principles.html">بخش ۱۲.۲</a> مراجعه کنید. در این بخش صرفاً گردش کار عملی پروفایلینگ پوشش داده می‌شود.</div>
+<figure class="diagram" dir="ltr">
+<svg viewBox="0 0 760 280" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<marker id="arrow-prof" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+<path d="M0,0 L10,5 L0,10 z" fill="#64748b"/>
+</marker>
+</defs>
+<text x="380" y="28" text-anchor="middle" class="title rtl">workflow کامل پروفایلینگ — پنج مرحله</text>
+<rect x="20" y="60" width="130" height="130" class="box-action"/>
+<text x="85" y="86" text-anchor="middle" class="title rtl">۱. بنچمارک</text>
+<text x="85" y="104" text-anchor="middle" class="title rtl">اولیه</text>
+<text x="85" y="128" text-anchor="middle" class="small">go test -bench</text>
+<text x="85" y="146" text-anchor="middle" class="small">-benchmem -count=5</text>
+<text x="85" y="168" text-anchor="middle" class="small rtl">تعیین baseline</text>
+<rect x="170" y="60" width="130" height="130" class="box-go"/>
+<text x="235" y="86" text-anchor="middle" class="title rtl">۲. پروفایل</text>
+<text x="235" y="104" text-anchor="middle" class="title rtl">CPU</text>
+<text x="235" y="128" text-anchor="middle" class="small">-cpuprofile=cpu.prof</text>
+<text x="235" y="146" text-anchor="middle" class="small">top, list, web</text>
+<text x="235" y="168" text-anchor="middle" class="small rtl">flat و cum</text>
+<rect x="320" y="60" width="130" height="130" class="box-go"/>
+<text x="385" y="86" text-anchor="middle" class="title rtl">۳. پروفایل</text>
+<text x="385" y="104" text-anchor="middle" class="title rtl">حافظه</text>
+<text x="385" y="128" text-anchor="middle" class="small">-memprofile=mem.prof</text>
+<text x="385" y="146" text-anchor="middle" class="small">-inuse_objects</text>
+<text x="385" y="168" text-anchor="middle" class="small">-alloc_objects</text>
+<rect x="470" y="60" width="130" height="130" class="box-join"/>
+<text x="535" y="96" text-anchor="middle" class="title rtl">۴. بهینه‌سازی</text>
+<text x="535" y="128" text-anchor="middle" class="small rtl">فقط نقطه‌ای که</text>
+<text x="535" y="146" text-anchor="middle" class="small rtl">pprof شناسایی کرده</text>
+<text x="535" y="168" text-anchor="middle" class="small rtl">یک تابع یا حلقه</text>
+<rect x="620" y="60" width="130" height="130" class="box-result"/>
+<text x="685" y="96" text-anchor="middle" class="title rtl">۵. تأیید</text>
+<text x="685" y="128" text-anchor="middle" class="small">benchstat</text>
+<text x="685" y="146" text-anchor="middle" class="small rtl">p-value &lt; 0.05</text>
+<text x="685" y="168" text-anchor="middle" class="small rtl">اگر بهبود نبود</text>
+<text x="685" y="186" text-anchor="middle" class="small rtl">→ rollback</text>
+<line x1="150" y1="125" x2="170" y2="125" stroke="#64748b" stroke-width="2" marker-end="url(#arrow-prof)"/>
+<line x1="300" y1="125" x2="320" y2="125" stroke="#64748b" stroke-width="2" marker-end="url(#arrow-prof)"/>
+<line x1="450" y1="125" x2="470" y2="125" stroke="#64748b" stroke-width="2" marker-end="url(#arrow-prof)"/>
+<line x1="600" y1="125" x2="620" y2="125" stroke="#64748b" stroke-width="2" marker-end="url(#arrow-prof)"/>
+<path d="M 685 195 Q 685 240, 380 240 Q 85 240, 85 195" fill="none" stroke="#64748b" stroke-width="2" marker-end="url(#arrow-prof)" stroke-dasharray="6,4"/>
+<text x="380" y="258" text-anchor="middle" class="small rtl">اگر بهبود معنادار نبود (p-value &gt; 0.05)، تغییر را برگردانید و دوباره پروفایل بگیرید</text>
+</svg>
+<figcaption>شکل ۱۲-۳: workflow کامل پروفایلینگ — پنج مرحله‌ی متوالی که هر مرحله بدون مرحله‌ی قبلی بی‌معنی است. ابتدا بنچمارک <bdi dir="ltr">baseline</bdi> بگیرید، سپس پروفایل CPU و حافظه، فقط گلوگاه شناسایی‌شده را بهینه کنید، و در نهایت با <bdi dir="ltr">benchstat</bdi> تأیید کنید. اگر بهبود معنادار نبود، رویکرد خود را بازبینی کنید.</figcaption>
+</figure>
 <h3 id="io-readall-improvement">12.1.6 بهبود عملکرد io.ReadAll — Go 1.26</h3>
 <p>
  تابع <code>io.ReadAll</code> در Go 1.26 به‌طور قابل‌توجهی بهبود یافته است. این تابع
@@ -298,6 +344,35 @@ if err != nil {
 </div>
 <h3 id="مقایسه-بنچمارک-go-و-php-در-عملیات-مختلف">12.1.9 مقایسه بنچمارک Go و PHP در عملیات مختلف</h3>
 <p>یکی از بهترین روش‌ها برای درک تفاوت عملکرد Go و PHP، اجرای بنچمارک‌های مستقیم روی عملیات رایج برنامه‌نویسی است. نمودار زیر نتایج بنچمارک‌های واقعی را نشان می‌دهد که با استفاده از <bdi dir="ltr">testing.B</bdi> در Go و <bdi dir="ltr">PHPBench</bdi> در PHP روی سخت‌افزار یکسان اجرا شده‌اند. </p><p>این نتایج به‌وضوح نشان می‌دهند که Go در عملیات CPU-bound (مثل پردازش ریاضی و regex) برتری چشمگیری دارد، در حالی که در عملیات I/O-bound (مثل خواندن فایل) تفاوت کمتر است. دلیل این موضوع آن است که در عملیات I/O، گلوگاه عملکرد دیسک یا شبکه است نه زبان برنامه‌نویسی، بنابراین سرعت زبان تأثیر کمتری دارد. اما در عملیات محاسباتی، کامپایل بومی Go و بهینه‌سازی‌های کامپایلر تأثیر تعیین‌کننده‌ای دارند.</p>
+<figure class="diagram" dir="ltr">
+<svg viewBox="0 0 760 340" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<marker id="arrow-bench" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+<path d="M0,0 L10,5 L0,10 z" fill="#64748b"/>
+</marker>
+</defs>
+<text x="380" y="28" text-anchor="middle" class="title rtl">مقایسه عملکرد Go و PHP در عملیات مختلف</text>
+<text x="380" y="48" text-anchor="middle" class="small rtl">(نسبت سرعت Go به PHP — ارقام نمونه، نتایج واقعی به سخت‌افزار بستگی دارد)</text>
+<text x="220" y="94" text-anchor="end" class="small rtl">پردازش ریاضی (CPU-bound)</text>
+<rect x="230" y="80" width="14" height="22" class="box-php"/>
+<text x="252" y="96" text-anchor="start" class="small">PHP 1×</text>
+<rect x="230" y="106" width="434" height="22" class="box-go"/>
+<text x="672" y="122" text-anchor="start" class="small">Go 31×</text>
+<text x="220" y="169" text-anchor="end" class="small rtl">پردازش Regex</text>
+<rect x="230" y="155" width="14" height="22" class="box-php"/>
+<text x="252" y="171" text-anchor="start" class="small">PHP 1×</text>
+<rect x="230" y="181" width="140" height="22" class="box-go"/>
+<text x="378" y="197" text-anchor="start" class="small">Go ~10×</text>
+<text x="220" y="244" text-anchor="end" class="small rtl">خواندن فایل (I/O-bound)</text>
+<rect x="230" y="230" width="14" height="22" class="box-php"/>
+<text x="252" y="246" text-anchor="start" class="small">PHP 1×</text>
+<rect x="230" y="256" width="18" height="22" class="box-go"/>
+<text x="256" y="272" text-anchor="start" class="small">Go 1.3×</text>
+<rect x="40" y="295" width="680" height="35" class="tip-box"/>
+<text x="380" y="318" text-anchor="middle" class="small rtl">گلوگاه CPU-bound → زبان تأثیر تعیین‌کننده | گلوگاه I/O-bound → دیسک/شبکه محدود می‌کند</text>
+</svg>
+<figcaption>شکل ۱۲-۴: مقایسه بنچمارک Go و PHP در عملیات مختلف — در عملیات <bdi dir="ltr">CPU-bound</bdi> مثل پردازش ریاضی، Go تا ۳۱ برابر سریع‌تر است چون مستقیماً به باینری بومی کامپایل می‌شود. اما در عملیات <bdi dir="ltr">I/O-bound</bdi> مثل خواندن فایل، گلوگاه دیسک یا شبکه است و تفاوت تنها حدود ۱.۳ برابر است. نتیجه‌ی عملی: قبل از مهاجرت به Go به‌دلیل سرعت، ابتدا بررسی کنید آیا گلوگاه CPU-bound است یا I/O-bound.</figcaption>
+</figure>
 <p>همان‌طور که نمودار فوق نشان می‌دهد، تفاوت عملکرد Go و PHP به نوع عملیات بستگی دارد. در عملیات محاسباتی مثل پردازش ریاضی، Go تا ۳۱ برابر سریع‌تر از PHP عمل می‌کند.</p><p>دلیل اصلی این تفاوت آن است که Go مستقیماً به باینری بومی کامپایل می‌شود و دستورات ماشین را بدون واسطه اجرا می‌کند، در حالی که PHP حتی با JIT همچنان سربار تفسیر و مدل dynamic-typing خود را دارد.</p><p>اما در عملیات File I/O که گلوگاه اصلی دیسک یا سیستم‌عامل است، تفاوت تنها حدود ۱.۳ برابر است چون زمان انتظار برای دیسک در هر دو زبان مشابه است.</p><p>این نکته عملی مهمی است: قبل از مهاجرت به Go به‌دلیل سرعت، ابتدا بررسی کنید که آیا گلوگاه برنامه‌ی شما CPU-bound است یا I/O-bound.</p>
 <h3 id="سناریوهای-عملیاتی-بنچمارک-و-پروفایلینگ">12.1.10 سناریوهای عملیاتی: بنچمارک و پروفایلینگ</h3>
 <p>در پروژه‌های واقعی، نوشتن بنچمارک و پروفایلینگ مهارت‌هایی هستند که باید به‌صورت روزمره استفاده شوند. بسیاری از توسعه‌دهندگان تازه‌کار Go بنچمارک می‌نویسند اما نتایج را به‌درستی تفسیر نمی‌کنند یا از ابزارهای آماری استفاده نمی‌کنند.</p><p>در اینجا سناریوهای عملیاتی کلیدی را مرور می‌کنیم که هر برنامه‌نویس Go باید بداند و در جریان کار روزانه خود به‌کار ببرد.</p><p>این سناریوها بر اساس تجربیات واقعی تیم‌های بزرگ مانند Uber، Twitch و Dropbox تنظیم شده‌اند و هر کدام نکته‌ی مهمی درباره‌ی اندازه‌گیری عملکرد دارند.</p>

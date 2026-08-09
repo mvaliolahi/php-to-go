@@ -111,6 +111,53 @@
 <h3 id="هرم-تست-در-go">11.0.3 هرم تست در Go</h3>
 <p>Testing Pyramid مفهومی است که Mike Cohn در کتاب «Succeeding with Agile» معرفی کرد. اصل هرم تست می‌گوید: Unit Tests تشکیل شود که سریع، ارزان و فراوان هستند. Integration Tests است که چند مؤلفه را با هم بررسی می‌کنند. </p><p>نوک هرم شامل تست‌های End-to-End است که کند، گران و کم‌تعداد هستند اما اطمینان بالاتری ارائه می‌دهند.</p>
 <p>در Go، این هرم شکل خاصی به خود می‌گیرد. به دلیل وجود ابزارهای داخلی قدرتمند، لایه‌ی Unit Test بسیار قوی‌تر از PHP است. ابزارهایی مثل fuzzing و benchmark در هیچ زبان دیگری به‌صورت داخلی وجود ندارند. </p><p>در لایه‌ی یکپارچگی، Go با مفهوم interface و پکیج‌هایی مثل testcontainers امکان تست‌های واقعی اما ایزوله را فراهم می‌کند.</p><p>و در لایه‌ی E2E، ترکیب httptest.Server با httpexpect تجربه‌ای شبیه به Laravel Feature Tests اما با کنترل بیشتر ارائه می‌دهد.</p>
+<figure class="diagram" dir="ltr">
+<svg viewBox="0 0 720 420" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<marker id="arrow-py" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+<path d="M0,0 L10,5 L0,10 z" fill="#64748b"/>
+</marker>
+</defs>
+<text x="360" y="30" text-anchor="middle" class="title rtl">هرم تست در Go</text>
+<!-- Pyramid layers (triangle split into 3 horizontal bands) -->
+<!-- E2E (top, narrowest) -->
+<polygon points="330,70 390,70 410,150 310,150" class="box-join"/>
+<text x="360" y="105" text-anchor="middle" class="title">E2E</text>
+<text x="360" y="125" text-anchor="middle" class="small">~۱۰٪</text>
+<text x="360" y="143" text-anchor="middle" class="small rtl">کند · گران</text>
+<!-- Integration (middle) -->
+<polygon points="310,150 410,150 440,240 280,240" class="box-action"/>
+<text x="360" y="185" text-anchor="middle" class="title rtl">یکپارچگی (Integration)</text>
+<text x="360" y="205" text-anchor="middle" class="small">~۲۰٪</text>
+<text x="360" y="225" text-anchor="middle" class="small rtl">متوسط</text>
+<!-- Unit (base, widest) -->
+<polygon points="280,240 440,240 490,340 230,340" class="box-result"/>
+<text x="360" y="275" text-anchor="middle" class="title rtl">واحد (Unit)</text>
+<text x="360" y="295" text-anchor="middle" class="small">~۷۰٪</text>
+<text x="360" y="315" text-anchor="middle" class="small rtl">سریع · ارزان · فراوان</text>
+<!-- Left axis: count -->
+<line x1="100" y1="70" x2="100" y2="340" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow-py)"/>
+<text x="80" y="100" text-anchor="middle" class="small rtl" transform="rotate(-90 80 100)">کم‌تعداد</text>
+<text x="80" y="330" text-anchor="middle" class="small rtl" transform="rotate(-90 80 330)">فراوان</text>
+<text x="50" y="205" text-anchor="middle" class="small rtl" transform="rotate(-90 50 205)">تعداد تست</text>
+<!-- Right axis: speed -->
+<line x1="620" y1="70" x2="620" y2="340" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow-py)"/>
+<text x="640" y="100" text-anchor="middle" class="small rtl" transform="rotate(90 640 100)">کند</text>
+<text x="640" y="330" text-anchor="middle" class="small rtl" transform="rotate(90 640 330)">سریع</text>
+<text x="670" y="205" text-anchor="middle" class="small rtl" transform="rotate(90 670 205)">سرعت اجرا</text>
+<!-- Go-specific tools on the right side -->
+<text x="540" y="100" text-anchor="middle" class="small">httptest.Server</text>
+<text x="540" y="116" text-anchor="middle" class="small">+ httpexpect</text>
+<text x="540" y="195" text-anchor="middle" class="small">testcontainers</text>
+<text x="540" y="211" text-anchor="middle" class="small">+ interface mocks</text>
+<text x="540" y="290" text-anchor="middle" class="small">go test · -race</text>
+<text x="540" y="306" text-anchor="middle" class="small">-cover · fuzzing</text>
+<!-- Bottom note -->
+<text x="360" y="375" text-anchor="middle" class="small rtl">قانون تجربی: اگر بیش از ۳۰٪ تست‌های شما E2E هستند، یعنی منطق کسب‌وکار از لایه‌ی HTTP جدا نشده.</text>
+<text x="360" y="395" text-anchor="middle" class="small rtl">در PHP/Laravel تمایل به نوشتن Feature Test زیاد است، اما در Go به‌دلیل سرعت Unit Test این نسبت بهتر رعایت می‌شود.</text>
+</svg>
+<figcaption>شکل ۱۱-۱: هرم تست در Go — لایه‌ی پایه Unit Test‌ها سریع و فراوان‌اند (~۷۰٪)، لایه‌ی میان Integration Test‌ها (~۲۰٪) و نوک هرم E2E Test‌ها (~۱۰٪). ابزارهای داخلی Go مانند <bdi dir="ltr">go test</bdi>، <bdi dir="ltr">-race</bdi> و <bdi dir="ltr">fuzzing</bdi> لایه‌ی Unit را قوی می‌سازند، در حالی که <bdi dir="ltr">testcontainers</bdi> و <bdi dir="ltr">httpexpect</bdi> لایه‌های بالاتر را پوشش می‌دهند.</figcaption>
+</figure>
 <h3 id="در-این-فصل-چه-خواهید-آموخت">11.0.4 در این فصل چه خواهید آموخت</h3>
 <p>Unit Test ساده شروع می‌شود و تا تست‌های End-to-End پیش می‌رود. هر بخش بر روی یک مفهوم کلیدی تمرکز دارد و مقایسه‌های مستمری با معادل‌های PHP ارائه می‌دهد تا مهاجرت ذهنی شما آسان‌تر شود. در ادامه خلاصه‌ای از مباحث هر بخش آورده شده است:</p>
 <p><strong>بخش ۱۱.۱ — مقدمات تست‌نویسی:</strong> استفاده از پکیج استاندارد <bdi dir="ltr">testing</bdi> برای نوشتن تست‌های ساده و سریع بدون نیاز به فریم‌ورک‌های خارجی، با فایل‌های دارای پسوند <code dir="ltr">_test.go</code> و توابع شروع‌شونده با <code dir="ltr">Test</code>. </p><p>همچنین با قابلیت Fuzzing (از Go 1.18) آشنا می‌شوید که ابزاری خودکار برای یافتن ورودی‌های مشکل‌ساز است و در PHPUnit معادل مستقیمی ندارد. </p><p>الگوهای Table-driven Tests مشابه Data Provider، setup/teardown با <code dir="ltr">t.Cleanup()</code>، helpers با <code dir="ltr">t.Helper()</code> و الگوی Golden File نیز بررسی می‌شوند.</p>

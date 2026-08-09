@@ -793,6 +793,54 @@ func BenchmarkNew(b *testing.B) {
 <h3 id="چرخه-حیات-اجرای-تست-در-go">11.1.19 چرخه حیات اجرای تست در Go</h3>
 <p>درک چرخه حیات اجرای تست در Go برای نوشتن تست‌های اصولی و قابل نگهداری بسیار مهم است. </p><p>وقتی دستور <bdi dir="ltr">go test</bdi> را اجرا می‌کنید، فرآیندی چند مرحله‌ای طی می‌شود: ابتدا ابزار تست Go فایل‌های <bdi dir="ltr">_test.go</bdi> را کشف می‌کند، سپس آن‌ها را به همراه کد اصلی کامپایل کرده و در نهایت توابع تست را به‌ترتیب اجرا و گزارش‌دهی می‌کند. </p><p>این چرخه حیات شامل مراحل <bdi dir="ltr">setup</bdi>، اجرای تست‌ها (ترتیبی یا موازی) و <bdi dir="ltr">teardown</bdi> است که هر کدام نقش مهمی در تضمین صحت تست‌ها دارند.</p>
 <p>در Go قراردادهای ساده‌ای وجود دارد: فایل‌های تست باید با پسوند <bdi dir="ltr">_test.go</bdi> ختم شوند، توابع تست باید با پیشوند <bdi dir="ltr">Test</bdi> شروع شوند و آرگومان <bdi dir="ltr">*testing.T</bdi> بپذیرند. تابع <bdi dir="ltr">TestMain</bdi> امکان اجرای کد قبل و بعد از همه تست‌ها را فراهم می‌کند و <bdi dir="ltr">t.Cleanup</bdi> منابع را حتی در صورت شکست تست آزاد می‌کند. </p><p>این رویکرد مینیمال با <bdi dir="ltr">PHPUnit</bdi> متفاوت است که در آن <bdi dir="ltr">setUp()</bdi> و <bdi dir="ltr">tearDown()</bdi> قبل و بعد از هر متد تست اجرا می‌شوند.</p>
+<figure class="diagram" dir="ltr">
+<svg viewBox="0 0 760 380" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<marker id="arrow-tl" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+<path d="M0,0 L10,5 L0,10 z" fill="#64748b"/>
+</marker>
+</defs>
+<text x="380" y="28" text-anchor="middle" class="title rtl">چرخه حیات اجرای تست در Go</text>
+<!-- Top row: 4 stages -->
+<rect x="30" y="70" width="150" height="80" class="box-go"/>
+<text x="105" y="100" text-anchor="middle" class="title">۱. Discovery</text>
+<text x="105" y="120" text-anchor="middle" class="small rtl">کشف فایل‌های</text>
+<text x="105" y="138" text-anchor="middle" class="small">*_test.go</text>
+<rect x="210" y="70" width="150" height="80" class="box-go"/>
+<text x="285" y="100" text-anchor="middle" class="title">۲. Compile</text>
+<text x="285" y="120" text-anchor="middle" class="small rtl">به‌همراه کد اصلی</text>
+<text x="285" y="138" text-anchor="middle" class="small rtl">+ instrumentation</text>
+<rect x="390" y="70" width="150" height="80" class="box-action"/>
+<text x="465" y="100" text-anchor="middle" class="title">۳. TestMain</text>
+<text x="465" y="120" text-anchor="middle" class="small rtl">setup سراسری</text>
+<text x="465" y="138" text-anchor="middle" class="small rtl">(پایگاه داده، لاگ)</text>
+<rect x="570" y="70" width="160" height="80" class="box"/>
+<text x="650" y="100" text-anchor="middle" class="title">۴. Run Tests</text>
+<text x="650" y="120" text-anchor="middle" class="small rtl">ترتیبی یا</text>
+<text x="650" y="138" text-anchor="middle" class="small">t.Parallel()</text>
+<!-- Arrows top row -->
+<line x1="180" y1="110" x2="210" y2="110" stroke="#64748b" stroke-width="2" marker-end="url(#arrow-tl)"/>
+<line x1="360" y1="110" x2="390" y2="110" stroke="#64748b" stroke-width="2" marker-end="url(#arrow-tl)"/>
+<line x1="540" y1="110" x2="570" y2="110" stroke="#64748b" stroke-width="2" marker-end="url(#arrow-tl)"/>
+<!-- Down arrow -->
+<line x1="650" y1="150" x2="650" y2="200" stroke="#64748b" stroke-width="2" marker-end="url(#arrow-tl)"/>
+<!-- Middle: per-test box -->
+<rect x="200" y="200" width="360" height="110" class="box-go"/>
+<text x="380" y="225" text-anchor="middle" class="title rtl">چرخه هر تابع تست: TestXxx(t *testing.T)</text>
+<line x1="220" y1="238" x2="540" y2="238" stroke="#cbd5e1" stroke-width="1"/>
+<text x="280" y="262" text-anchor="middle" class="small rtl">① setup محلی</text>
+<text x="380" y="262" text-anchor="middle" class="small rtl">→ اجرای منطق</text>
+<text x="480" y="262" text-anchor="middle" class="small rtl">→ t.Cleanup</text>
+<text x="380" y="290" text-anchor="middle" class="small rtl">t.Helper برای گزارش خط فراخوانی‌کننده · t.Run برای زیرتست</text>
+<line x1="380" y1="200" x2="380" y2="180" stroke="#64748b" stroke-width="2" marker-end="url(#arrow-tl)"/>
+<text x="380" y="172" text-anchor="middle" class="small rtl">هر تابع Test</text>
+<!-- Bottom: report -->
+<line x1="380" y1="310" x2="380" y2="335" stroke="#64748b" stroke-width="2" marker-end="url(#arrow-tl)"/>
+<rect x="250" y="335" width="260" height="38" class="box-result"/>
+<text x="380" y="358" text-anchor="middle" class="title rtl">۵. گزارش: PASS / FAIL / SKIP</text>
+</svg>
+<figcaption>شکل ۱۱-۲: چرخه حیات اجرای تست در Go — ابزار <bdi dir="ltr">go test</bdi> ابتدا فایل‌های <bdi dir="ltr">*_test.go</bdi> را کشف، سپس همراه با کد اصلی کامپایل (با instrumentation برای coverage) می‌کند. <bdi dir="ltr">TestMain</bdi> اگر تعریف شده باشد setup سراسری را اجرا می‌کند، سپس هر تابع <bdi dir="ltr">Test*</bdi> به‌ترتیب یا موازی با <bdi dir="ltr">t.Parallel()</bdi> اجرا می‌شود و در پایان گزارش <bdi dir="ltr">PASS/FAIL/SKIP</bdi> چاپ می‌شود. <bdi dir="ltr">t.Cleanup</bdi> برخلاف <bdi dir="ltr">defer</bdi> حتی در شکست یا skip هم منابع را آزاد می‌کند.</figcaption>
+</figure>
 <h3 id="سناریوهای-عملیاتی-تستنویسی">11.1.20 سناریوهای عملیاتی تست‌نویسی</h3>
 <p>در پروژه‌های واقعی، تسلط بر الگوهای عملیاتی تست‌نویسی به اندازه دانستن مفاهیم پایه مهم است. هر سناریو زیر چالش خاصی را حل می‌کند که توسعه‌دهندگان مهاجر از <bdi dir="ltr">PHP</bdi> ممکن است در ابتدا با آن مواجه شوند. </p><p>این الگوها در کدبیس‌های بزرگ و تیمی حیاتی هستند و رعایت آن‌ها باعث می‌شود تست‌ها قابل نگهداری، سریع و معنادار باقی بمانند.</p>
 <ul>

@@ -573,6 +573,66 @@ func monitorMemory(ctx context.Context) {
 <div class="tip"><strong>نکته عملی:</strong> تابع <code>runtime.ReadMemStats</code> باعث stop-the-world می‌شود (تمام goroutine‌ها متوقف می‌شوند). در برنامه‌های حساس به تأخیر، از این تابع با احتیاط استفاده کنید. جایگزین سبک‌تر، <code>runtime.NumGoroutine()</code> است که بدون توقف کار می‌کند و برای مانیتورینگ نشت goroutine مناسب است.</div>
 <h3 id="گردش-کار-دیباگ-کامپایل-تا-بازرسی">10.1.5 گردش کار دیباگ: از کامپایل تا بازرسی</h3>
 <p>فرآیند دیباگ در Go برخلاف PHP یک فرآیند چندمرحله‌ای است که از نوشتن کد با باگ شروع شده و با رفع مشکل و کامپایل مجدد پایان می‌یابد. در PHP کافیست صفحه را refresh کنید تا تغییرات منعکس شود، اما در Go باید برنامه را مجدداً کامپایل و اجرا نمایید.</p><p>این تفاوت بنیادین به معنای آن است که هر چرخه دیباگ در Go زمان‌برتر است و به همین دلیل انتخاب ابزار و روش مناسب اهمیت بسیار بیشتری دارد.</p><p>درک کامل این گردش کار به شما کمک می‌کند زمان دیباگ را به حداقل برسانید و از ابزار مناسب در هر مرحله استفاده کنید.</p>
+<figure class="diagram" dir="ltr">
+<svg viewBox="0 0 760 430" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+<path d="M0,0 L10,5 L0,10 z" fill="#64748b"/>
+</marker>
+</defs>
+<text x="380" y="30" text-anchor="middle" class="title rtl">گردش کار دیباگ در Go: هشت مرحله تا رفع باگ</text>
+<!-- Row 1: stages 1-4 left to right -->
+<rect x="50" y="65" width="155" height="80" class="box-go"/>
+<text x="127" y="90" text-anchor="middle" class="title rtl">۱. نوشتن کد</text>
+<text x="127" y="115" text-anchor="middle" class="small">main.go</text>
+<text x="127" y="135" text-anchor="middle" class="small rtl">با باگ احتمالی</text>
+<line x1="205" y1="105" x2="225" y2="105" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="225" y="65" width="155" height="80" class="box-action"/>
+<text x="302" y="90" text-anchor="middle" class="title rtl">۲. کامپایل با فلگ</text>
+<text x="302" y="115" text-anchor="middle" class="small">-gcflags="all=-N -l"</text>
+<text x="302" y="135" text-anchor="middle" class="small rtl">غیرفعال‌سازی opt و inline</text>
+<line x1="380" y1="105" x2="400" y2="105" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="400" y="65" width="155" height="80" class="box-go"/>
+<text x="477" y="90" text-anchor="middle" class="title rtl">۳. اجرای دیباگر</text>
+<text x="477" y="115" text-anchor="middle" class="small">dlv debug</text>
+<text x="477" y="135" text-anchor="middle" class="small rtl">شروع session تعاملی</text>
+<line x1="555" y1="105" x2="575" y2="105" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="575" y="65" width="155" height="80" class="box-action"/>
+<text x="652" y="90" text-anchor="middle" class="title rtl">۴. تعیین breakpoint</text>
+<text x="652" y="115" text-anchor="middle" class="small">break main.go:42</text>
+<text x="652" y="135" text-anchor="middle" class="small rtl">با شرط اختیاری</text>
+<!-- Down arrow from box 4 to box 5 -->
+<line x1="652" y1="145" x2="652" y2="265" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+<!-- Row 2: stages 5-8 right to left -->
+<rect x="575" y="265" width="155" height="80" class="box-action"/>
+<text x="652" y="290" text-anchor="middle" class="title rtl">۵. اجرا و توقف</text>
+<text x="652" y="315" text-anchor="middle" class="small">continue · step · next</text>
+<text x="652" y="335" text-anchor="middle" class="small rtl">توقف در breakpoint</text>
+<line x1="575" y1="305" x2="555" y2="305" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="400" y="265" width="155" height="80" class="box-go"/>
+<text x="477" y="290" text-anchor="middle" class="title rtl">۶. بررسی متغیرها</text>
+<text x="477" y="315" text-anchor="middle" class="small">print · locals · stack</text>
+<text x="477" y="335" text-anchor="middle" class="small rtl">تحلیل علت باگ</text>
+<line x1="400" y1="305" x2="380" y2="305" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="225" y="265" width="155" height="80" class="box-result"/>
+<text x="302" y="290" text-anchor="middle" class="title rtl">۷. رفع مشکل</text>
+<text x="302" y="315" text-anchor="middle" class="small">edit main.go</text>
+<text x="302" y="335" text-anchor="middle" class="small rtl">تغییر کد و ذخیره</text>
+<line x1="225" y1="305" x2="205" y2="305" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="50" y="265" width="155" height="80" class="box-join"/>
+<text x="127" y="290" text-anchor="middle" class="title rtl">۸. restart</text>
+<text x="127" y="315" text-anchor="middle" class="small">r · Ctrl+Shift+F5</text>
+<text x="127" y="335" text-anchor="middle" class="small rtl">کامپایل مجدد و اجرای دوباره</text>
+<!-- Loop arrow from box 8 back to box 1 -->
+<path d="M 50 305 C 15 305, 15 105, 50 105" fill="none" stroke="#64748b" stroke-width="2" stroke-dasharray="6,4" marker-end="url(#arrow)"/>
+<text x="40" y="200" text-anchor="end" class="small rtl">چرخه‌ی تکرار</text>
+<text x="40" y="218" text-anchor="end" class="small rtl">تا رفع کامل باگ</text>
+<!-- Bottom note -->
+<text x="380" y="380" text-anchor="middle" class="small rtl">در PHP با Xdebug کافیست صفحه refresh شود؛ در Go هر چرخه نیاز به کامپایل مجدد دارد.</text>
+<text x="380" y="402" text-anchor="middle" class="small rtl">دستور restart در Delve باینری را با کد به‌روزشده بازسازی می‌کند — بدون خروج از session.</text>
+</svg>
+<figcaption>شکل ۱۰-۲: گردش کار هشت‌مرحله‌ای دیباگ در Go از نوشتن کد تا restart. در Delve دستور restart (یا Ctrl+Shift+F5 در VS Code) باینری را با کد به‌روزشده بازسازی می‌کند بدون خروج از session — برخلاف PHP که refresh مرورگر کافی است.</figcaption>
+</figure>
 <p>همان‌طور که در نمودار بالا مشاهده می‌کنید، فرآیند دیباگ در Go هشت مرحله مشخص دارد که هر کدام ابزار و دستورات خاص خود را نیاز دارند. </p><p>در PHP با Xdebug فرآیند ساده‌تر است چون extension در همان process اجرا می‌شود و نیازی به کامپایل مجدد ندارید، اما در Go باید هر بار پس از تغییر کد، برنامه را با فلگ‌های دیباگ کامپایل و دیباگر را مجدداً متصل کنید. </p><p>این تفاوت مهمی است که برنامه‌نویسان مهاجر از PHP باید به آن عادت کنند. خوشبختانه دستور <bdi dir="ltr">restart</bdi> در Delve این فرآیند را ساده می‌کند و نیازی به خروج و ورود مجدد به دیباگر نیست.</p>
 <div class="note"><strong>نکته:</strong> در Delve، دستور <bdi dir="ltr">restart</bdi> (یا مخفف <bdi dir="ltr">r</bdi>) باینری را با کد به‌روزشده بازمی‌سازد و بدون خروج از جلسه دیباگ، اجرای جدید را شروع می‌کند. این یعنی breakpoint‌ها، watch variables و سایر تنظیمات جلسه حفظ می‌شوند. اما در <bdi dir="ltr">VS Code</bdi>، کلید <bdi dir="ltr">Ctrl+Shift+F5</bdi> همان کار را انجام می‌دهد. بدون <bdi dir="ltr">restart</bdi>، اگر کد را تغییر دهید و فقط <bdi dir="ltr">continue</bdi> بزنید، روی باینری قدیمی دیباگ می‌کنید و تغییرات شما اثر نخواهند داشت — این یکی از رایج‌ترین سردرگمی‌های مهاجران از PHP است که به refresh مرورگر عادت دارند.</div>
 <h3 id="سناریوهای-عملیاتی-دیباگ">10.1.6 سناریوهای عملیاتی دیباگ</h3>

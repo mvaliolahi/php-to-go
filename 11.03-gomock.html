@@ -578,6 +578,59 @@ func TestCreateArticle(t *testing.T) {
 <h3 id="خط-لوله-تولید-و-تزریق-mock">11.3.11 خط لوله تولید و تزریق Mock</h3>
 <p>یکی از مهم‌ترین مفاهیم در کار با <bdi dir="ltr">gomock</bdi> درک خط لوله کامل تولید و تزریق mock است. این خط لوله از تعریف <bdi dir="ltr">interface</bdi> شروع می‌شود، با ابزار <bdi dir="ltr">mockgen</bdi> فایل mock تولید می‌شود، و در نهایت mock در تست استفاده می‌شود. هر مرحله از این خط لوله نقش حیاتی دارد: اگر <bdi dir="ltr">interface</bdi> بیش از حد بزرگ باشد، mock کردن سخت می‌شود. </p><p>اگر mock به‌درستی تولید نشود، رفتار تست اشتباه خواهد بود. و اگر تزریق mock به‌درستی انجام نشود، کد واقعی به‌جای mock اجرا می‌شود.</p>
 <p>در <bdi dir="ltr">PHP</bdi> با <bdi dir="ltr">PHPUnit</bdi> این خط لوله ساده‌تر است: با <bdi dir="ltr">$this-&gt;createMock()</bdi> یک mock می‌سازید و با <bdi dir="ltr">$mock-&gt;method()-&gt;willReturn()</bdi> رفتار آن را تعریف می‌کنید. اما در Go این فرآیند ساختاریافته‌تر و type-safe است. </p><p>تولید خودکار mock از interface تضمین می‌کند که اگر interface تغییر کند، mock باید دوباره تولید شود و کامپایلر خطا را نشان می‌دهد. این مکانیزم ایمنی بزرگی است که در <bdi dir="ltr">PHPUnit</bdi> وجود ندارد.</p>
+<figure class="diagram" dir="ltr">
+<svg viewBox="0 0 760 380" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<marker id="arrow-mk" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+<path d="M0,0 L10,5 L0,10 z" fill="#64748b"/>
+</marker>
+</defs>
+<text x="380" y="28" text-anchor="middle" class="title rtl">خط لوله تولید و تزریق Mock: Go در برابر PHP</text>
+<!-- Go pipeline (top) -->
+<text x="60" y="78" text-anchor="start" class="title">Go + gomock</text>
+<rect x="30" y="90" width="160" height="80" class="box-go"/>
+<text x="110" y="115" text-anchor="middle" class="title rtl">۱. تعریف Interface</text>
+<text x="110" y="135" text-anchor="middle" class="small">type UserRepository</text>
+<text x="110" y="152" text-anchor="middle" class="small">interface { ... }</text>
+<rect x="210" y="90" width="160" height="80" class="box-action"/>
+<text x="290" y="115" text-anchor="middle" class="title rtl">۲. mockgen</text>
+<text x="290" y="135" text-anchor="middle" class="small">go generate ./...</text>
+<text x="290" y="152" text-anchor="middle" class="small rtl">تولید خودکار کد</text>
+<rect x="390" y="90" width="160" height="80" class="box-go"/>
+<text x="470" y="115" text-anchor="middle" class="title rtl">۳. فایل mock</text>
+<text x="470" y="135" text-anchor="middle" class="small">mock_user_repo.go</text>
+<text x="470" y="152" text-anchor="middle" class="small rtl">type-safe · commit در git</text>
+<rect x="570" y="90" width="160" height="80" class="box-result"/>
+<text x="650" y="115" text-anchor="middle" class="title rtl">۴. تزریق در تست</text>
+<text x="650" y="135" text-anchor="middle" class="small">NewMockUserRepository</text>
+<text x="650" y="152" text-anchor="middle" class="small">EXPECT().Return(...)</text>
+<!-- Go arrows -->
+<line x1="190" y1="130" x2="210" y2="130" stroke="#64748b" stroke-width="2" marker-end="url(#arrow-mk)"/>
+<line x1="370" y1="130" x2="390" y2="130" stroke="#64748b" stroke-width="2" marker-end="url(#arrow-mk)"/>
+<line x1="550" y1="130" x2="570" y2="130" stroke="#64748b" stroke-width="2" marker-end="url(#arrow-mk)"/>
+<!-- PHP pipeline (bottom) -->
+<text x="60" y="218" text-anchor="start" class="title">PHP + PHPUnit</text>
+<rect x="30" y="230" width="240" height="80" class="box-php"/>
+<text x="150" y="255" text-anchor="middle" class="title rtl">۱. ساخت Mock</text>
+<text x="150" y="275" text-anchor="middle" class="small">$this-&gt;createMock(</text>
+<text x="150" y="292" text-anchor="middle" class="small">UserRepository::class)</text>
+<rect x="290" y="230" width="240" height="80" class="box-php"/>
+<text x="410" y="255" text-anchor="middle" class="title rtl">۲. تعریف رفتار</text>
+<text x="410" y="275" text-anchor="middle" class="small">$mock-&gt;method('find')</text>
+<text x="410" y="292" text-anchor="middle" class="small">-&gt;willReturn($user)</text>
+<rect x="550" y="230" width="180" height="80" class="box"/>
+<text x="640" y="255" text-anchor="middle" class="title rtl">۳. استفاده در تست</text>
+<text x="640" y="275" text-anchor="middle" class="small rtl">تزریق در constructor</text>
+<text x="640" y="292" text-anchor="middle" class="small rtl">یا service container</text>
+<!-- PHP arrows -->
+<line x1="270" y1="270" x2="290" y2="270" stroke="#64748b" stroke-width="2" marker-end="url(#arrow-mk)"/>
+<line x1="530" y1="270" x2="550" y2="270" stroke="#64748b" stroke-width="2" marker-end="url(#arrow-mk)"/>
+<!-- Comparison notes -->
+<rect x="30" y="335" width="700" height="38" class="tip-box"/>
+<text x="380" y="358" text-anchor="middle" class="small rtl">مزیت Go: اگر interface تغییر کند و mock بازتولید نشود، کامپایلر خطا می‌دهد. PHPUnit این ایمنی را ندارد و خطا فقط در زمان اجرا دیده می‌شود.</text>
+</svg>
+<figcaption>شکل ۱۱-۴: خط لوله تولید و تزریق Mock در Go و PHP — در Go، <bdi dir="ltr">interface</bdi> توسط ابزار <bdi dir="ltr">mockgen</bdi> به فایل <bdi dir="ltr">mock</bdi> تبدیل می‌شود (که در <bdi dir="ltr">git</bdi> commit می‌شود)، سپس در تست تزریق می‌شود. در PHP، mock در زمان اجرا با <bdi dir="ltr">createMock()</bdi> ساخته می‌شود. مزیت Go: type-safety کامپایل‌زمان و کشف خودکار تغییرات interface.</figcaption>
+</figure>
 <h3 id="سناریوهای-عملیاتی-gomock">11.3.12 سناریوهای عملیاتی gomock</h3>
 <p>در پروژه‌های واقعی، کار با mock فراتر از مثال‌های ساده است. هر سناریو عملیاتی زیر یک چالش رایج در تست‌نویسی را پوشش می‌دهد که توسعه‌دهندگان مهاجر از <bdi dir="ltr">PHP</bdi> احتمالاً با آن مواجه خواهند شد. </p><p>این الگوها به شما کمک می‌کنند تست‌های قابل اعتماد و قابل نگهداری بنویسید که در برابر تغییرات کد مقاوم هستند و رفتار واقعی سیستم را به‌درستی تأیید می‌کنند.</p>
 <ul>

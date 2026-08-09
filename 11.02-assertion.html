@@ -430,6 +430,63 @@ func NoError(t *testing.T, err error) {
 <p>خروجی testify بسیار خواناتر و برای دیباگ مؤثرتر است. به همین دلیل اکثر پروژه‌های Go حرفه‌ای از testify استفاده می‌کنند، حتی اگر فلسفه‌ی Go بر سادگی تأکید دارد.</p>
 <h3 id="جریان-کامل-assertion-از-مقدار-مورد-انتظار-تا-نتیجه">11.2.11 جریان کامل Assertion: از مقدار مورد انتظار تا نتیجه</h3>
 <p>برای درک عمیق‌تر نحوه کار assertion‌ها، بیایید کل جریان را از ورودی مقادیر مورد انتظار و واقعی تا نتیجه نهایی بررسی کنیم. هر assertion سه بخش اصلی دارد: مقدار مورد انتظار (<bdi dir="ltr">Expected</bdi>)، عمل مقایسه (<bdi dir="ltr">Comparison</bdi>) و نتیجه (<bdi dir="ltr">Result</bdi>). </p><p>نوع مقایسه تعیین می‌کند که کدام روش بررسی استفاده شود: مقایسه ساده با <bdi dir="ltr">==</bdi>، مقایسه عمیق با <bdi dir="ltr">reflect.DeepEqual</bdi>، بررسی وجود با <bdi dir="ltr">Contains</bdi> یا مقایسه تفاضلی با <bdi dir="ltr">cmp.Diff</bdi>. </p><p>وقتی assertion موفق می‌شود، تست ادامه می‌یابد اما وقتی شکست می‌خورد، خروجی تفاضلی (<bdi dir="ltr">diff</bdi>) نشان داده می‌شود که دقیقاً مشخص می‌کند تفاوت کجاست. </p><p>این خروجی تفاضلی در تست‌های table-driven که چندین مورد بررسی می‌شوند، اهمیت ویژه‌ای دارد زیرا به شما کمک می‌کند سریعاً مورد شکست‌خورده را شناسایی کنید.</p>
+<figure class="diagram" dir="ltr">
+<svg viewBox="0 0 720 400" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<marker id="arrow-as" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+<path d="M0,0 L10,5 L0,10 z" fill="#64748b"/>
+</marker>
+</defs>
+<text x="360" y="28" text-anchor="middle" class="title rtl">جریان Assertion: از ورودی تا نتیجه</text>
+<!-- Inputs row -->
+<rect x="50" y="60" width="170" height="60" class="box-go"/>
+<text x="135" y="85" text-anchor="middle" class="title">Expected</text>
+<text x="135" y="105" text-anchor="middle" class="small rtl">مقدار مورد انتظار</text>
+<rect x="50" y="135" width="170" height="60" class="box-php"/>
+<text x="135" y="160" text-anchor="middle" class="title">Actual (got)</text>
+<text x="135" y="180" text-anchor="middle" class="small rtl">مقدار واقعی تابع</text>
+<!-- Comparison methods (4 stacked boxes) -->
+<text x="380" y="50" text-anchor="middle" class="title rtl">روش مقایسه</text>
+<rect x="290" y="60" width="180" height="32" class="box"/>
+<text x="380" y="80" text-anchor="middle" class="small">== (ساده)</text>
+<rect x="290" y="100" width="180" height="32" class="box"/>
+<text x="380" y="120" text-anchor="middle" class="small">reflect.DeepEqual</text>
+<rect x="290" y="140" width="180" height="32" class="box"/>
+<text x="380" y="160" text-anchor="middle" class="small">Contains / HasPrefix</text>
+<rect x="290" y="180" width="180" height="32" class="box-action"/>
+<text x="380" y="200" text-anchor="middle" class="small">cmp.Diff (تفاضلی)</text>
+<!-- Arrows from inputs to methods -->
+<line x1="220" y1="90" x2="290" y2="76" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow-as)"/>
+<line x1="220" y1="165" x2="290" y2="196" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow-as)"/>
+<!-- Result column -->
+<rect x="540" y="60" width="150" height="65" class="box-result"/>
+<text x="615" y="85" text-anchor="middle" class="title rtl">موفق ✓</text>
+<text x="615" y="105" text-anchor="middle" class="small rtl">تست ادامه می‌یابد</text>
+<rect x="540" y="145" width="150" height="85" class="warn-box"/>
+<text x="615" y="170" text-anchor="middle" class="title rtl">شکست ✗</text>
+<text x="615" y="190" text-anchor="middle" class="small rtl">گزارش diff</text>
+<text x="615" y="208" text-anchor="middle" class="small rtl">+ trace فراخوانی</text>
+<text x="615" y="222" text-anchor="middle" class="small rtl">t.Errorf / t.Fatal</text>
+<!-- Arrows to results -->
+<line x1="470" y1="76" x2="540" y2="80" stroke="#4caf50" stroke-width="2" marker-end="url(#arrow-as)"/>
+<line x1="470" y1="196" x2="540" y2="175" stroke="#ff9800" stroke-width="2" marker-end="url(#arrow-as)"/>
+<!-- Quality bar at bottom -->
+<rect x="50" y="270" width="640" height="100" class="box"/>
+<text x="360" y="295" text-anchor="middle" class="title rtl">کیفیت گزارش شکست: از ضعیف به قوی</text>
+<line x1="50" y1="278" x2="50" y2="350" stroke="#cbd5e1" stroke-width="0"/>
+<!-- Quality gradient bars -->
+<rect x="80" y="315" width="100" height="22" fill="rgba(239,68,68,0.15)" stroke="#ef4444" stroke-width="1" rx="4"/>
+<text x="130" y="331" text-anchor="middle" class="small">== "نامساوی"</text>
+<rect x="200" y="315" width="130" height="22" fill="rgba(255,152,0,0.15)" stroke="#ff9800" stroke-width="1" rx="4"/>
+<text x="265" y="331" text-anchor="middle" class="small">DeepEqual: true/false</text>
+<rect x="350" y="315" width="130" height="22" fill="rgba(33,150,243,0.15)" stroke="#2196f3" stroke-width="1" rx="4"/>
+<text x="415" y="331" text-anchor="middle" class="small">testify: diff خودکار</text>
+<rect x="500" y="315" width="160" height="22" fill="rgba(76,175,80,0.15)" stroke="#4caf50" stroke-width="1" rx="4"/>
+<text x="580" y="331" text-anchor="middle" class="small">cmp.Diff: diff ساختاری</text>
+<text x="360" y="362" text-anchor="middle" class="small rtl">cmp.Diff دقیقاً نشان می‌دهد کدام فیلد، با چه مقدار مورد انتظار و واقعی، متفاوت است — استاندارد تیم Go در گوگل.</text>
+</svg>
+<figcaption>شکل ۱۱-۳: جریان Assertion — ورودی‌های Expected و Actual به یکی از روش‌های مقایسه وارد می‌شوند و نتیجه یا «موفق» (ادامه تست) یا «شکست» (گزارش diff) است. کیفیت گزارش شکست از <bdi dir="ltr">==</bdi> (فقط «نامساوی») تا <bdi dir="ltr">cmp.Diff</bdi> (نمایش دقیق فیلد متفاوت) متغیر است؛ به همین دلیل برای <bdi dir="ltr">struct</bdi>های پیچیده <bdi dir="ltr">cmp.Diff</bdi> ترجیح داده می‌شود.</figcaption>
+</figure>
 <p>همان‌طور که در نمودار بالا مشاهده می‌کنید، هر سه رویکرد همان هدف را دنبال می‌کنند اما کیفیت گزارش شکست متفاوتی ارائه می‌دهند. روش بومی <bdi dir="ltr">if + t.Errorf</bdi> ساده‌ترین و سبک‌ترین است اما خروجی مفیدی در صورت شکست ارائه نمی‌دهد و شما باید خودتان پیام خطا را بنویسید. <bdi dir="ltr">testify/assert</bdi> با ارائه <bdi dir="ltr">diff</bdi> خودکار و <bdi dir="ltr">trace</bdi> کامل فراخوانی، دیباگ را بسیار ساده‌تر می‌کند و به همین دلیل در اکثر پروژه‌های Go رایج است. <bdi dir="ltr">google/go-cmp</bdi> تخصصی‌ترین گزینه است و برای مقایسه <bdi dir="ltr">struct</bdi>های پیچیده بهترین خروجی <bdi dir="ltr">diff</bdi> را تولید می‌کند، به‌خصوص وقتی فیلدهایی وجود دارند که باید نادیده گرفته شوند یا مقایسه خاصی داشته باشند.</p>
 <h3 id="مقایسه-struct-های-پیچیده-با-cmpdiff">11.2.12 مقایسه struct‌های پیچیده با cmp.Diff</h3>
 <p>وقتی ساختارهای داده پیچیده‌ای مثل <bdi dir="ltr">struct</bdi>های تو در تو، <bdi dir="ltr">slice</bdi>ها و <bdi dir="ltr">map</bdi>ها را مقایسه می‌کنید، <bdi dir="ltr">reflect.DeepEqual</bdi> فقط یک مقدار بولی برمی‌گرداند و نمی‌گوید تفاوت دقیقاً کجاست. </p><p>در مقابل، <bdi dir="ltr">cmp.Diff</bdi> خروجی تفاضلی خوانایی تولید می‌کند که دقیقاً نشان می‌دهد کدام فیلد متفاوت است و مقدار مورد انتظار و واقعی هر کدام چیست. </p><p>علاوه بر این، با <bdi dir="ltr">cmpopts</bdi> می‌توانید فیلدهایی مثل <bdi dir="ltr">ID</bdi> یا <bdi dir="ltr">CreatedAt</bdi> را از مقایسه حذف کنید یا تحمل خطا برای اعداد اعشاری تعریف کنید. </p><p>این قابلیت‌ها در تست‌های واقعی بسیار ارزشمند هستند و به‌خصوص در تست‌های <bdi dir="ltr">table-driven</bdi> که چندین مورد را همزمان بررسی می‌کنید، زمان دیباگ را به‌شدت کاهش می‌دهند.</p>

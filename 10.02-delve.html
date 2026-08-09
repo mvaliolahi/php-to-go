@@ -352,6 +352,62 @@ $ dlv connect localhost:2345
 <p><strong>pprof برای دیباگ زنده:</strong> وقتی <bdi dir="ltr">net/http/pprof</bdi> فعال باشد، می‌توانید در زمان اجرا وضعیت goroutine‌ها، حافظه، block‌ها و mutex‌ها را بدون توقف برنامه بررسی کنید. endpoint‌های <bdi dir="ltr">/debug/pprof/goroutine</bdi>، <bdi dir="ltr">heap</bdi>، <bdi dir="ltr">block</bdi> و <bdi dir="ltr">mutex</bdi> به‌تفصیل در بخش ۱۰.۱ شرح داده شده‌اند. </p><p>در اینجا صرفاً به یادآوری می‌پردازیم که ترکیب این endpoint‌ها با دستور <bdi dir="ltr">goroutines</bdi> در Delve (که در ادامه می‌آید) مؤثرترین روش ریشه‌یابی مشکلات هم‌روندی است.</p>
 <h3 id="معماری-delve-دیباگر-و-پردازش-هدف">10.2.10 معماری Delve: دیباگر و پردازش هدف</h3>
 <p>همان‌طور که در بخش قبل بررسی کردیم، Delve برخلاف Xdebug یک process جداگانه است که از طریق رابط‌های سیستم‌عامل به باینری Go متصل می‌شود. نمودار زیر جزئیات این معماری و ارتباط بین دیباگر و پردازش هدف را نشان می‌دهد:</p>
+<figure class="diagram" dir="ltr">
+<svg viewBox="0 0 760 400" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+<path d="M0,0 L10,5 L0,10 z" fill="#64748b"/>
+</marker>
+</defs>
+<text x="380" y="30" text-anchor="middle" class="title rtl">معماری Delve: دیباگر و پردازش هدف</text>
+<!-- Column 1: Client -->
+<rect x="30" y="70" width="200" height="260" class="box-action"/>
+<text x="130" y="95" text-anchor="middle" class="title rtl">کلاینت دیباگ</text>
+<line x1="50" y1="108" x2="210" y2="108" stroke="#cbd5e1" stroke-width="1"/>
+<text x="130" y="135" text-anchor="middle" class="title">VS Code</text>
+<text x="130" y="155" text-anchor="middle" class="small">Go extension (gopls)</text>
+<text x="130" y="185" text-anchor="middle" class="title">dlv CLI</text>
+<text x="130" y="205" text-anchor="middle" class="small rtl">ترمینال تعاملی</text>
+<text x="130" y="245" text-anchor="middle" class="small rtl">ارسال دستورات:</text>
+<text x="130" y="263" text-anchor="middle" class="small">break · step · print</text>
+<text x="130" y="295" text-anchor="middle" class="small rtl">دریافت:</text>
+<text x="130" y="313" text-anchor="middle" class="small">variables · stack</text>
+<!-- Column 2: Delve Process -->
+<rect x="280" y="70" width="200" height="260" class="box-go"/>
+<text x="380" y="95" text-anchor="middle" class="title rtl">پردازش Delve</text>
+<line x1="300" y1="108" x2="460" y2="108" stroke="#cbd5e1" stroke-width="1"/>
+<text x="380" y="135" text-anchor="middle" class="title">DAP Server</text>
+<text x="380" y="155" text-anchor="middle" class="small">JSON-RPC protocol</text>
+<text x="380" y="185" text-anchor="middle" class="title">DWARF Reader</text>
+<text x="380" y="205" text-anchor="middle" class="small rtl">خط کد ← آدرس حافظه</text>
+<text x="380" y="235" text-anchor="middle" class="title rtl">کنترل اجرا</text>
+<text x="380" y="255" text-anchor="middle" class="small">ptrace (Linux/Mac)</text>
+<text x="380" y="275" text-anchor="middle" class="small">DebugActiveProcess (Win)</text>
+<text x="380" y="305" text-anchor="middle" class="small rtl">خواندن حافظه و</text>
+<text x="380" y="322" text-anchor="middle" class="small rtl">ارزیابی متغیرها</text>
+<!-- Column 3: Target Process -->
+<rect x="530" y="70" width="200" height="260" class="box"/>
+<text x="630" y="95" text-anchor="middle" class="title rtl">برنامه‌ی هدف</text>
+<line x1="550" y1="108" x2="710" y2="108" stroke="#cbd5e1" stroke-width="1"/>
+<text x="630" y="135" text-anchor="middle" class="title">Go binary</text>
+<text x="630" y="155" text-anchor="middle" class="small">-gcflags="all=-N -l"</text>
+<text x="630" y="185" text-anchor="middle" class="title rtl">goroutine‌ها</text>
+<text x="630" y="205" text-anchor="middle" class="small rtl">در حال اجرا</text>
+<text x="630" y="245" text-anchor="middle" class="title rtl">breakpoint</text>
+<text x="630" y="265" text-anchor="middle" class="small rtl">جایگزینی دستور</text>
+<text x="630" y="283" text-anchor="middle" class="small rtl">ماشین با SIGTRAP</text>
+<text x="630" y="313" text-anchor="middle" class="small rtl">ارسال سیگنال</text>
+<text x="630" y="322" text-anchor="middle" class="small rtl">به Delve</text>
+<!-- Arrows: bidirectional -->
+<line x1="230" y1="200" x2="280" y2="200" stroke="#64748b" stroke-width="2" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
+<text x="255" y="190" text-anchor="middle" class="small">DAP</text>
+<line x1="480" y1="200" x2="530" y2="200" stroke="#64748b" stroke-width="2" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
+<text x="505" y="190" text-anchor="middle" class="small">ptrace</text>
+<!-- Bottom note -->
+<text x="380" y="365" text-anchor="middle" class="small rtl">برخلاف Xdebug که داخل همان process اجرا می‌شود، Delve یک process جداگانه است.</text>
+</svg>
+<figcaption>شکل ۱۰-۳: Delve یک process مستقل است که از طریق پروتکل DAP با کلاینت (VS Code یا dlv CLI) و از طریق ptrace (یا DebugActiveProcess در Windows) با باینری Go ارتباط برقرار می‌کند. اطلاعات DWARF برای ترجمه‌ی آدرس حافظه به متغیر و خط کد استفاده می‌شود.</figcaption>
+</figure>
 <p>نمودار بالا نشان می‌دهد که Delve چگونه از طریق <bdi dir="ltr">ptrace</bdi> (در Linux و macOS) یا <bdi dir="ltr">DebugActiveProcess</bdi> (در Windows) با برنامه هدف ارتباط برقرار می‌کند. وقتی شما دستوری مثل <bdi dir="ltr">break main.go:42</bdi> صادر می‌کنید، Delve دستورالعمل ماشین مناسب را در آن آدرس حافظه جایگزین می‌کند تا برنامه در آن نقطه متوقف شود. </p><p>وقتی برنامه به breakpoint می‌رسد، سیستم‌عامل سیگنال <bdi dir="ltr">SIGTRAP</bdi> ارسال می‌کند و Delve کنترل را به دست می‌گیرد. سپس می‌تواند حافظه process را بخواند، مقادیر متغیرها را ارزیابی کند و اطلاعات DWARF را برای نمایش نام متغیرها و انواع آن‌ها به جای آدرس‌های خام استفاده نماید. </p><p>این معماری کاملاً متفاوت از Xdebug است که مستقیماً در همان process اجرا می‌شود و از opcode‌های PHP برای کنترل جریان استفاده می‌کند.</p>
 <h3 id="سناریوهای-عملیاتی-delve">10.2.11 سناریوهای عملیاتی Delve</h3>
 <p>در محیط‌های عملیاتی واقعی، Delve فراتر از دیباگ ساده کاربرد دارد. ترکیب قابلیت‌های breakpoint شرطی، بازرسی goroutine و تحلیل call stack به شما امکان می‌دهد مشکلات پیچیده‌ای را ریشه‌یابی کنید که با log ساده قابل شناسایی نیستند.</p><p>این سناریوها معمولاً در برنامه‌های production-grade با صدها goroutine فعال و منطق پیچیده رخ می‌دهند و بدون ابزار مناسب، پیدا کردن ریشه مشکل ممکن است ساعت‌ها یا حتی روزها طول بکشد.</p><p>در ادامه مهم‌ترین سناریوهای عملیاتی و روش‌های دیباگ آن‌ها را بررسی می‌کنیم:</p>

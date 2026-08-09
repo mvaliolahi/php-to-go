@@ -883,6 +883,48 @@ func TestParallelE2E(t *testing.T) {
 <h3 id="معماری-تست-e2e-در-go">11.5.14 معماری تست E2E در Go</h3>
 <p>معماری تست E2E در Go بر پایه چند مؤلفه اصلی استوار است: کد تست، سرور واقعی روی پورت تصادفی، و دیتابیس واقعی (معمولاً در Docker Container). برخلاف Unit Test که فقط یک تابع را ایزوله تست می‌کند، E2E Test کل جریان برنامه را از دریافت درخواست HTTP تا بازگرداندن پاسخ با دیتابیس واقعی بررسی می‌کند.</p><p>این رویکرد شبیه‌ترین حالت به محیط Production است و باگ‌هایی را کشف می‌کند که در تست‌های ایزوله‌شده قابل شناسایی نیستند.</p>
 <p>در Go ابزارهای قدرتمندی برای E2E testing وجود دارد: <bdi dir="ltr">httptest.Server</bdi> برای ساخت سرور واقعی درون پروسه تست، <bdi dir="ltr">Testcontainers</bdi> برای اجرای دیتابیس واقعی در Docker، و <bdi dir="ltr">build tags</bdi> برای جداسازی تست‌های E2E از تست‌های واحد. </p><p>این معماری تضمین می‌کند که تست‌ها سریع‌تر از محیط Production اجرا شوند اما دقیقاً همان رفتار را نشان دهند. </p><p>در <bdi dir="ltr">Laravel</bdi> این مفاهیم با Feature Test و <bdi dir="ltr">RefreshDatabase</bdi> پیاده‌سازی می‌شوند اما در Go کنترل بیشتری روی هر مؤلفه دارید.</p>
+<figure class="diagram" dir="ltr">
+<svg viewBox="0 0 720 400" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<marker id="arrow-e2e" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+<path d="M0,0 L10,5 L0,10 z" fill="#64748b"/>
+</marker>
+</defs>
+<text x="360" y="28" text-anchor="middle" class="title rtl">معماری تست E2E در Go</text>
+<!-- Layer 1: Test code -->
+<rect x="30" y="60" width="660" height="70" class="box-action"/>
+<text x="360" y="83" text-anchor="middle" class="title rtl">لایه‌ی ۱ — کد تست (Go test)</text>
+<line x1="50" y1="95" x2="670" y2="95" stroke="#cbd5e1" stroke-width="1"/>
+<text x="160" y="115" text-anchor="middle" class="small">//go:build e2e</text>
+<text x="360" y="115" text-anchor="middle" class="small">func TestUserSignupE2E(t *testing.T)</text>
+<text x="560" y="115" text-anchor="middle" class="small">cookiejar · http.Client</text>
+<!-- Layer 2: Real HTTP server (in-process) -->
+<rect x="30" y="150" width="660" height="70" class="box-go"/>
+<text x="360" y="173" text-anchor="middle" class="title rtl">لایه‌ی ۲ — httptest.Server (سرور واقعی روی پورت تصادفی)</text>
+<line x1="50" y1="185" x2="670" y2="185" stroke="#cbd5e1" stroke-width="1"/>
+<text x="160" y="205" text-anchor="middle" class="small rtl">routing واقعی</text>
+<text x="360" y="205" text-anchor="middle" class="small rtl">middleware واقعی (auth · logging)</text>
+<text x="560" y="205" text-anchor="middle" class="small rtl">handler واقعی</text>
+<!-- Layer 3: Database (Docker) -->
+<rect x="30" y="240" width="660" height="80" class="box-join"/>
+<text x="360" y="263" text-anchor="middle" class="title rtl">لایه‌ی ۳ — Testcontainers (PostgreSQL واقعی در Docker)</text>
+<line x1="50" y1="275" x2="670" y2="275" stroke="#cbd5e1" stroke-width="1"/>
+<text x="160" y="295" text-anchor="middle" class="small rtl">migration واقعی</text>
+<text x="360" y="295" text-anchor="middle" class="small rtl">constraint و index واقعی</text>
+<text x="560" y="295" text-anchor="middle" class="small rtl">SQL واقعی</text>
+<text x="360" y="312" text-anchor="middle" class="small rtl">container پس از تست حذف می‌شود</text>
+<!-- Arrows between layers -->
+<line x1="360" y1="130" x2="360" y2="150" stroke="#64748b" stroke-width="2" marker-end="url(#arrow-e2e)"/>
+<text x="395" y="142" text-anchor="middle" class="small rtl">درخواست HTTP واقعی</text>
+<line x1="360" y1="220" x2="360" y2="240" stroke="#64748b" stroke-width="2" marker-end="url(#arrow-e2e)"/>
+<text x="395" y="232" text-anchor="middle" class="small rtl">query واقعی SQL</text>
+<!-- Bottom note -->
+<rect x="30" y="340" width="660" height="48" class="tip-box"/>
+<text x="360" y="362" text-anchor="middle" class="small rtl">تفاوت با Unit Test: Unit Test فقط یک تابع را ایزوله تست می‌کند، اما E2E کل جریان از HTTP تا SQL را با اجزای واقعی بررسی می‌کند.</text>
+<text x="360" y="380" text-anchor="middle" class="small rtl">معادل Laravel: Feature Test با RefreshDatabase — اما در Go کنترل دقیق‌تری روی هر لایه دارید.</text>
+</svg>
+<figcaption>شکل ۱۱-۶: معماری تست E2E در Go — سه لایه‌ی روی‌هم‌افتاده: کد تست (با <bdi dir="ltr">//go:build e2e</bdi>)، <bdi dir="ltr">httptest.Server</bdi> با routing/middleware/handler واقعی، و <bdi dir="ltr">Testcontainers</bdi> با دیتابیس PostgreSQL واقعی در Docker. برخلاف Unit Test که فقط یک تابع را ایزوله تست می‌کند، E2E کل جریان از درخواست HTTP تا SQL را با اجزای واقعی بررسی می‌کند — باگ‌هایی کشف می‌شود که در تست‌های ایزوله پنهان می‌مانند.</figcaption>
+</figure>
 <h3 id="سناریوهای-عملیاتی-تست-e2e">11.5.15 سناریوهای عملیاتی تست E2E</h3>
 <p>در پروژه‌های واقعی، تست‌های E2E سناریوهایی را پوشش می‌دهند که با هیچ نوع تست دیگری قابل بررسی نیستند. هر سناریو زیر یک چالش عملیاتی رایج است که تیم‌های توسعه‌دهنده با آن مواجه می‌شوند. </p><p>این الگوها به‌طور خاص برای توسعه‌دهندگان مهاجر از <bdi dir="ltr">PHP</bdi> طراحی شده‌اند تا بتوانند معادل‌های صحیح الگوهای آشنای <bdi dir="ltr">Laravel</bdi> را در <bdi dir="ltr">Go</bdi> پیدا کنند و تست‌های E2E مؤثری بنویسند.</p>
 <ul>

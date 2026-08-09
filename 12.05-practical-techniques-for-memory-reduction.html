@@ -100,6 +100,55 @@ fmt.Println(unsafe.Sizeof(GoodOrder{})) // 24
 </figure>
 <p>این تفاوت ۱۶ بایتی ممکن است کم به نظر برسد، اما وقتی میلیون‌ها نمونه از این struct در یک slice داشته باشید، تفاوت قابل‌توجهی پیدا می‌شود. مثلاً برای یک slice با ۱ میلیون عنصر: ۴۰MB مقابل ۲۴MB — صرفه‌جویی ۴۰٪.</p>
 <div class="important"><strong>نکته مهم:</strong> همیشه فیلدهای struct را از بزرگ به کوچک مرتب کنید. از ابزار <code dir="ltr">fieldalignment</code> برای بررسی خودکار استفاده کنید: <code>go install golang.org/x/tools/go/analysis/passes/fieldalignment/cmd/fieldalignment@latest</code> و سپس <code>fieldalignment -fix ./...</code></div>
+<figure class="diagram" dir="ltr">
+<svg viewBox="0 0 760 320" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<marker id="arrow-pad" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+<path d="M0,0 L10,5 L0,10 z" fill="#64748b"/>
+</marker>
+</defs>
+<text x="380" y="28" text-anchor="middle" class="title rtl">مرتب‌سازی فیلدهای struct و تأثیر بر padding</text>
+<text x="30" y="62" text-anchor="start" class="title">BadOrder</text>
+<text x="730" y="62" text-anchor="end" class="small rtl">۴۰ بایت — ۱۶ بایت هدر رفته</text>
+<rect x="80" y="76" width="14" height="40" fill="#ef4444" stroke="#475569" stroke-width="1"/>
+<text x="87" y="100" text-anchor="middle" class="small" fill="#fff">b</text>
+<rect x="94" y="76" width="98" height="40" fill="#94a3b8" stroke="#475569" stroke-width="1" stroke-dasharray="3,2"/>
+<text x="143" y="100" text-anchor="middle" class="small" fill="#fff">۷B pad</text>
+<rect x="192" y="76" width="112" height="40" fill="#2196f3" stroke="#475569" stroke-width="1"/>
+<text x="248" y="100" text-anchor="middle" class="small" fill="#fff">int64</text>
+<rect x="304" y="76" width="56" height="40" fill="#4caf50" stroke="#475569" stroke-width="1"/>
+<text x="332" y="100" text-anchor="middle" class="small" fill="#fff">i32</text>
+<rect x="360" y="76" width="56" height="40" fill="#94a3b8" stroke="#475569" stroke-width="1" stroke-dasharray="3,2"/>
+<text x="388" y="100" text-anchor="middle" class="small" fill="#fff">۴B pad</text>
+<rect x="416" y="76" width="14" height="40" fill="#ef4444" stroke="#475569" stroke-width="1"/>
+<text x="423" y="100" text-anchor="middle" class="small" fill="#fff">b</text>
+<rect x="430" y="76" width="98" height="40" fill="#94a3b8" stroke="#475569" stroke-width="1" stroke-dasharray="3,2"/>
+<text x="479" y="100" text-anchor="middle" class="small" fill="#fff">۷B pad</text>
+<rect x="528" y="76" width="112" height="40" fill="#2196f3" stroke="#475569" stroke-width="1"/>
+<text x="584" y="100" text-anchor="middle" class="small" fill="#fff">f64</text>
+<line x1="80" y1="125" x2="640" y2="125" stroke="#475569" stroke-width="1"/>
+<text x="360" y="142" text-anchor="middle" class="small">۱ + ۷ + ۸ + ۴ + ۴ + ۱ + ۷ + ۸ = ۴۰ بایت</text>
+<text x="30" y="182" text-anchor="start" class="title">GoodOrder</text>
+<text x="730" y="182" text-anchor="end" class="small rtl">۲۴ بایت — صرفه‌جویی ۴۰٪</text>
+<rect x="80" y="196" width="112" height="40" fill="#2196f3" stroke="#475569" stroke-width="1"/>
+<text x="136" y="220" text-anchor="middle" class="small" fill="#fff">int64</text>
+<rect x="192" y="196" width="112" height="40" fill="#2196f3" stroke="#475569" stroke-width="1"/>
+<text x="248" y="220" text-anchor="middle" class="small" fill="#fff">f64</text>
+<rect x="304" y="196" width="56" height="40" fill="#4caf50" stroke="#475569" stroke-width="1"/>
+<text x="332" y="220" text-anchor="middle" class="small" fill="#fff">i32</text>
+<rect x="360" y="196" width="14" height="40" fill="#ef4444" stroke="#475569" stroke-width="1"/>
+<text x="367" y="220" text-anchor="middle" class="small" fill="#fff">b</text>
+<rect x="374" y="196" width="14" height="40" fill="#ef4444" stroke="#475569" stroke-width="1"/>
+<text x="381" y="220" text-anchor="middle" class="small" fill="#fff">b</text>
+<rect x="388" y="196" width="28" height="40" fill="#94a3b8" stroke="#475569" stroke-width="1" stroke-dasharray="3,2"/>
+<text x="402" y="220" text-anchor="middle" class="small" fill="#fff">۲B</text>
+<line x1="80" y1="245" x2="416" y2="245" stroke="#475569" stroke-width="1"/>
+<text x="248" y="262" text-anchor="middle" class="small">۸ + ۸ + ۴ + ۱ + ۱ + ۲ = ۲۴ بایت</text>
+<rect x="40" y="280" width="680" height="30" class="tip-box"/>
+<text x="380" y="300" text-anchor="middle" class="small rtl">قانون: فیلدها را از بزرگ به کوچک مرتب کنید (int64 → float64 → int32 → bool) — بدون تغییر رفتار برنامه</text>
+</svg>
+<figcaption>شکل ۱۲-۱۱: مرتب‌سازی فیلدهای struct و تأثیر بر padding — در BadOrder فیلدهای bool (۱ بایتی) بین فیلدهای ۸ بایتی قرار گرفته‌اند و کامپایلر مجبور است ۷ بایت padding بعد از هر bool اضافه کند تا فیلدهای بزرگ‌تر روی مرز ۸ بایتی align شوند. در GoodOrder فیلدها از بزرگ به کوچک مرتب شده‌اند و فقط ۲ بایت padding در انتها لازم است. صرفه‌جویی: ۱۶ بایت به ازای هر struct (۴۰٪).</figcaption>
+</figure>
 <h3 id="استفاده-از-انواع-کوچکتر">12.5.2 استفاده از انواع کوچک‌تر</h3>
 <p>بسیاری از برنامه‌نویسان Go به‌صورت پیش‌فرض از <code>int64</code> یا <code>int</code> استفاده می‌کنند، حتی وقتی محدوده‌ی مقدارها کوچک‌تر است. اگر مقادیر شما همیشه کمتر از ۲ میلیارد (<bdi dir="ltr">2³¹-1</bdi>) است، <code>int32</code> کافی است. اگر کمتر از ۳۲۷۶۷ است، <code>int16</code> و اگر کمتر از ۱۲۷ است، <code>int8</code>:</p>
 <figure class="code go" dir="ltr">
@@ -406,6 +455,47 @@ for method := range v.Methods() {
 </div>
 <h3 id="مقایسه-تکنیکهای-کاهش-حافظه">12.5.11 مقایسه تأثیر و دشواری تکنیک‌های کاهش حافظه</h3>
 <p>همه‌ی تکنیک‌های کاهش مصرف حافظه تأثیر یکسانی ندارند و پیاده‌سازی برخی از آن‌ها ساده‌تر از دیگری است. برای تصمیم‌گیری مؤثر، باید هم میزان صرفه‌جویی حافظه و هم سطح دشواری پیاده‌سازی را در نظر بگیرید.</p><p>بهترین استراتژی این است که ابتدا تکنیک‌هایی با تأثیر بالا و دشواری پایین را پیاده‌سازی کنید تا بیشترین بازدهی را با کمترین تلاش به‌دست آورید.</p><p>نمودار زیر مقایسه‌ی بصری شش تکنیک اصلی را بر اساس این دو معیار نشان می‌دهد.</p>
+<figure class="diagram" dir="ltr">
+<svg viewBox="0 0 760 400" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<marker id="arrow-mat" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+<path d="M0,0 L10,5 L0,10 z" fill="#64748b"/>
+</marker>
+</defs>
+<text x="380" y="28" text-anchor="middle" class="title rtl">مقایسه‌ی تکنیک‌های کاهش حافظه: تأثیر در برابر دشواری</text>
+<line x1="120" y1="330" x2="730" y2="330" stroke="#475569" stroke-width="2" marker-end="url(#arrow-mat)"/>
+<line x1="120" y1="330" x2="120" y2="60" stroke="#475569" stroke-width="2" marker-end="url(#arrow-mat)"/>
+<text x="425" y="365" text-anchor="middle" class="title rtl">دشواری پیاده‌سازی →</text>
+<text x="60" y="195" text-anchor="middle" class="title rtl" transform="rotate(-90, 60, 195)">→ تأثیر بر حافظه</text>
+<line x1="425" y1="60" x2="425" y2="330" stroke="#94a3b8" stroke-width="1" stroke-dasharray="4,3"/>
+<line x1="120" y1="195" x2="730" y2="195" stroke="#94a3b8" stroke-width="1" stroke-dasharray="4,3"/>
+<text x="272" y="78" text-anchor="middle" class="small rtl">★ اول این‌ها را انجام دهید</text>
+<text x="578" y="78" text-anchor="middle" class="small rtl">بازدهی بالا، پیچیده</text>
+<text x="272" y="320" text-anchor="middle" class="small rtl">کم‌اثر، ساده</text>
+<text x="578" y="320" text-anchor="middle" class="small rtl">بازدهی پایین، هزینه بالا</text>
+<rect x="160" y="100" width="140" height="40" class="box-result"/>
+<text x="230" y="118" text-anchor="middle" class="title rtl">پیش‌تخصیص slice</text>
+<text x="230" y="135" text-anchor="middle" class="small">make([]T, 0, n)</text>
+<rect x="160" y="150" width="140" height="40" class="box-result"/>
+<text x="230" y="168" text-anchor="middle" class="title rtl">struct alignment</text>
+<text x="230" y="185" text-anchor="middle" class="small rtl">بزرگ → کوچک</text>
+<rect x="440" y="100" width="130" height="40" class="box-go"/>
+<text x="505" y="118" text-anchor="middle" class="title">sync.Pool</text>
+<text x="505" y="135" text-anchor="middle" class="small rtl">بازیافت بافرها</text>
+<rect x="590" y="100" width="130" height="40" class="box-go"/>
+<text x="655" y="118" text-anchor="middle" class="title">mmap</text>
+<text x="655" y="135" text-anchor="middle" class="small rtl">فایل‌های حجیم فقط‌خواندنی</text>
+<rect x="475" y="215" width="180" height="40" class="box-action"/>
+<text x="565" y="233" text-anchor="middle" class="title rtl">JSON marshaling</text>
+<text x="565" y="250" text-anchor="middle" class="small">easyjson / go-json</text>
+<rect x="325" y="275" width="160" height="40" class="box-join"/>
+<text x="405" y="293" text-anchor="middle" class="title rtl">string interning</text>
+<text x="405" y="310" text-anchor="middle" class="small rtl">فقط رشته‌های تکراری</text>
+<rect x="40" y="378" width="690" height="18" class="tip-box"/>
+<text x="385" y="391" text-anchor="middle" class="small rtl">استراتژی بهینه: شروع با تکنیک‌های بالا-چپ (ساده و پربازده)، سپس بالا-راست بر حسب نیاز</text>
+</svg>
+<figcaption>شکل ۱۲-۱۲: مقایسه‌ی شش تکنیک اصلی کاهش حافظه بر اساس تأثیر و دشواری — پیش‌تخصیص slice و struct alignment در بالا-چپ قرار می‌گیرند (ساده و پربازده) و باید اول انجام شوند. sync.Pool و mmap در بالا-راست (پربازده اما پیچیده). JSON marshaling در میانه (توسط کتابخانه‌های codegen مثل easyjson). string interning فقط برای موارد خاص با رشته‌های تکراری زیاد مفید است.</figcaption>
+</figure>
 <h3 id="سناریوهای-عملیاتی-کاهش-حافظه">12.5.12 سناریوهای عملیاتی کاهش حافظه</h3>
 <p>هر تکنیک کاهش مصرف حافظه در Go برای سناریوهای خاصی طراحی شده و در زمینه‌های متفاوت کارایی متفاوتی دارد. به‌کارگیری تکنیک مناسب در جای درست، نه‌تنها مصرف حافظه را کاهش می‌دهد، بلکه عملکرد کلی برنامه را نیز بهبود می‌بخشد.</p><p>در مقابل، استفاده نادرست از تکنیک‌های بهینه‌سازی می‌تواند پیچیدگی کد را بدون مزیت واقعی افزایش دهد و حتی باگ‌های جدیدی ایجاد کند.</p><p>در ادامه مهم‌ترین سناریوهای عملیاتی و بهترین رویکرد برای هر کدام را بررسی می‌کنیم و نشان می‌دهیم کدام تکنیک در چه شرایطی بیشترین بازدهی را دارد.</p>
 <ul>
