@@ -70,46 +70,27 @@
 <div class="chapter">فصل ۱۱.۴</div>
 <h2 id="تست-پیشرفته-apiهای-restful-با-httpexpect">تست پیشرفته APIهای RESTful با httpexpect</h2>
 <figure class="diagram" dir="ltr">
-<svg height="300" viewBox="0 0 650 300" width="650" xmlns="http://www.w3.org/2000/svg">
-<defs><filter id="sh183" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
-<marker id="arrowh" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5">
-<polygon fill="#00ADD8" points="0 0, 10 3.5, 0 7"></polygon>
-</marker>
-</defs>
-<text class="title" text-anchor="middle" x="325" y="25" direction="rtl" unicode-bidi="embed">جریان تست <tspan direction="ltr" unicode-bidi="embed">API</tspan> با <tspan direction="ltr" unicode-bidi="embed">httpexpect</tspan></text>
-<!-- Step 1: Build Request -->
-<rect class="box-req" height="55" width="140" x="30" y="55"></rect>
-<text font-weight="bold" text-anchor="middle" x="100" y="75" direction="rtl" unicode-bidi="embed">۱. ساخت درخواست</text>
-<text class="small" text-anchor="middle" x="100" y="95" direction="ltr" unicode-bidi="embed">e.GET / e.POST</text>
-<line marker-end="url(#arrowh)" stroke="#2196f3" stroke-width="2" x1="170" x2="210" y1="82" y2="82"></line>
-<!-- Step 2: Add Data -->
-<rect class="box-req" height="55" width="140" x="210" y="55"></rect>
-<text font-weight="bold" text-anchor="middle" x="280" y="75" direction="rtl" unicode-bidi="embed">۲. ارسال داده</text>
-<text class="small" text-anchor="middle" x="280" y="95" direction="ltr" unicode-bidi="embed">WithJSON / WithForm</text>
-<line marker-end="url(#arrowh)" stroke="#00ADD8" stroke-width="2" x1="350" x2="390" y1="82" y2="82"></line>
-<!-- Step 3: Server Processes -->
-<rect class="box-server" height="55" width="140" x="390" y="55"></rect>
-<text font-weight="bold" text-anchor="middle" x="460" y="75" direction="rtl" unicode-bidi="embed">۳. پردازش سرور</text>
-<text class="small" text-anchor="middle" x="460" y="95" direction="ltr" unicode-bidi="embed">httptest.Server</text>
-<line marker-end="url(#arrowh)" stroke="#4caf50" stroke-width="2" x1="530" x2="560" y1="82" y2="82"></line>
-<!-- Step 4: Get Response -->
-<rect class="box-res" height="55" width="80" x="560" y="55"></rect>
-<text font-weight="bold" text-anchor="middle" x="600" y="75" direction="rtl" unicode-bidi="embed">۴. پاسخ</text>
-<text class="small" text-anchor="middle" x="600" y="95" direction="ltr" unicode-bidi="embed">Expect()</text>
-<!-- Assertion section -->
-<rect fill="#fafafa" height="120" rx="10" stroke="#ddd" stroke-width="1" width="490" x="80" y="160"></rect>
-<text font-size="14" font-weight="bold" text-anchor="middle" x="325" y="185" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">Assertions</tspan> قابل بررسی</text>
-<rect class="box-assert" height="35" width="130" x="100" y="200"></rect>
-<text text-anchor="middle" x="165" y="222" direction="ltr" unicode-bidi="embed">Status Code</text>
-<rect class="box-assert" height="35" width="130" x="245" y="200"></rect>
-<text text-anchor="middle" x="310" y="222" direction="ltr" unicode-bidi="embed">JSON Body</text>
-<rect class="box-assert" height="35" width="160" x="390" y="200"></rect>
-<text text-anchor="middle" x="470" y="222" direction="ltr" unicode-bidi="embed">Headers / Cookies</text>
-<rect class="box-assert" height="35" width="130" x="170" y="250"></rect>
-<text text-anchor="middle" x="235" y="272" direction="ltr" unicode-bidi="embed">Array Length</text>
-<rect class="box-assert" height="35" width="160" x="320" y="250"></rect>
-<text text-anchor="middle" x="400" y="272" direction="ltr" unicode-bidi="embed">Nested JSON Values</text>
-</svg>
+<pre class="mermaid">flowchart LR
+    subgraph HEADER["جریان تست API با httpexpect"]
+        direction LR
+        S1["۱. ساخت درخواست<br/>e.GET / e.POST"] --> S2["۲. ارسال داده<br/>WithJSON / WithForm"]
+        S2 --> S3["۳. پردازش سرور<br/>httptest.Server"]
+        S3 --> S4["۴. پاسخ<br/>Expect&#40;&#41;"]
+    end
+
+    subgraph ASSERTS["Assertions قابل بررسی"]
+        direction TB
+        A1["Status Code"]
+        A2["JSON Body"]
+        A3["Headers / Cookies"]
+        A4["Array Length"]
+        A5["Nested JSON Values"]
+    end
+
+    classDef stepBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
+    classDef asrtBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
+    class S1,S2,S3,S4 stepBox;
+    class A1,A2,A3,A4,A5 asrtBox;</pre>
 <figcaption>شکل ۱۱-۴: جریان تست <bdi dir="ltr">API</bdi> با <bdi dir="ltr">httpexpect</bdi></figcaption>
 </figure>
 <p>پیش تر در مورد تست کردن http handler ها توضیح داده شد. در سیستم‌های واقعی بخش مهمی از برنامه APIهای HTTP هستند که با کلاینت‌ها، مرورگر یا سیستم‌های دیگر ارتباط برقرار می‌کنند. تست این APIها هم از نظر صحت عملکرد و هم از جهت امنیت، ساختار پاسخ و سازگاری اهمیت دارد.</p>
@@ -357,49 +338,36 @@ assert.Greater(t, value.(int), 10)
 </table>
 
 <figure class="diagram" dir="ltr">
-<svg height="300" viewBox="0 0 620 300" width="620" xmlns="http://www.w3.org/2000/svg">
-<defs><filter id="sh184" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
-<marker id="arrowapi" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5">
-<polygon fill="#00ADD8" points="0 0, 10 3.5, 0 7"></polygon>
-</marker>
-</defs>
-<rect fill="#fafafa" height="300" rx="8" width="620" x="0" y="0"></rect>
-<text fill="#333" font-size="16" font-weight="bold" text-anchor="middle" x="310" y="28" direction="rtl" unicode-bidi="embed">جریان تست <tspan direction="ltr" unicode-bidi="embed">API</tspan> با <tspan direction="ltr" unicode-bidi="embed">httpexpect</tspan></text>
-<!-- Request -->
-<rect fill="#2196F3" height="50" rx="6" width="100" x="30" y="55"></rect>
-<text fill="#fff" font-weight="bold" text-anchor="middle" x="80" y="77" direction="rtl" unicode-bidi="embed">درخواست</text>
-<text fill="#e3f2fd" font-size="9" text-anchor="middle" x="80" y="95" direction="ltr" unicode-bidi="embed">GET/POST/PUT</text>
-<line marker-end="url(#arrowapi)" stroke="#2196F3" stroke-width="2" x1="130" x2="160" y1="80" y2="80"></line>
-<!-- Handler -->
-<rect fill="#4CAF50" height="50" rx="6" width="120" x="160" y="55"></rect>
-<text fill="#fff" font-weight="bold" text-anchor="middle" x="220" y="77" direction="rtl" unicode-bidi="embed">هندلر</text>
-<text fill="#e8f5e9" font-size="9" text-anchor="middle" x="220" y="95" direction="ltr" unicode-bidi="embed">httptest.Server</text>
-<line marker-end="url(#arrowapi)" stroke="#4CAF50" stroke-width="2" x1="280" x2="310" y1="80" y2="80"></line>
-<!-- Response -->
-<rect fill="#FF9800" height="50" rx="6" width="100" x="310" y="55"></rect>
-<text fill="#fff" font-weight="bold" text-anchor="middle" x="360" y="77" direction="rtl" unicode-bidi="embed">پاسخ</text>
-<text fill="#fff3e0" font-size="9" text-anchor="middle" x="360" y="95" direction="ltr" unicode-bidi="embed">Expect()</text>
-<line marker-end="url(#arrowapi)" stroke="#FF9800" stroke-width="2" x1="410" x2="440" y1="80" y2="80"></line>
-<!-- Assertion -->
-<rect fill="#e91e63" height="50" rx="6" width="130" x="440" y="55"></rect>
-<text fill="#fff" font-weight="bold" text-anchor="middle" x="505" y="77" direction="rtl" unicode-bidi="embed">اعتبارسنجی</text>
-<text fill="#fce4ec" font-size="9" text-anchor="middle" x="505" y="95" direction="ltr" unicode-bidi="embed">JSON().Object()</text>
-<!-- Validation details -->
-<rect fill="#f5f5f5" height="100" rx="8" stroke="#ddd" stroke-width="1" width="560" x="30" y="130"></rect>
-<text fill="#333" font-size="12" font-weight="bold" text-anchor="middle" x="310" y="155" direction="rtl" unicode-bidi="embed">اعتبارسنجی‌های قابل بررسی</text>
-<rect fill="#fff" height="25" rx="4" stroke="#2196F3" stroke-width="1" width="130" x="45" y="170"></rect>
-<text fill="#1565C0" font-size="9" text-anchor="middle" x="110" y="187" direction="ltr" unicode-bidi="embed">Status Code</text>
-<rect fill="#fff" height="25" rx="4" stroke="#4CAF50" stroke-width="1" width="130" x="190" y="170"></rect>
-<text fill="#2E7D32" font-size="9" text-anchor="middle" x="255" y="187" direction="ltr" unicode-bidi="embed">JSON Schema</text>
-<rect fill="#fff" height="25" rx="4" stroke="#FF9800" stroke-width="1" width="130" x="335" y="170"></rect>
-<text fill="#E65100" font-size="9" text-anchor="middle" x="400" y="187" direction="ltr" unicode-bidi="embed">Headers/Cookies</text>
-<rect fill="#fff" height="25" rx="4" stroke="#e91e63" stroke-width="1" width="130" x="460" y="170"></rect>
-<text fill="#880E4F" font-size="9" text-anchor="middle" x="525" y="187" direction="ltr" unicode-bidi="embed">Nested Values</text>
-<!-- Auth -->
-<rect fill="#9C27B0" height="40" rx="6" width="560" x="30" y="240"></rect>
-<text fill="#fff" font-size="10" text-anchor="middle" x="310" y="260" direction="rtl" unicode-bidi="embed">احراز هویت: <tspan direction="ltr" unicode-bidi="embed">JWT</tspan> <tspan direction="ltr" unicode-bidi="embed">Bearer</tspan> <tspan direction="ltr" unicode-bidi="embed">Token</tspan> | <tspan direction="ltr" unicode-bidi="embed">Session</tspan> <tspan direction="ltr" unicode-bidi="embed">Cookie</tspan> | <tspan direction="ltr" unicode-bidi="embed">API</tspan> <tspan direction="ltr" unicode-bidi="embed">Key</tspan> <tspan direction="ltr" unicode-bidi="embed">Header</tspan></text>
-<text fill="#e1bee7" font-size="9" text-anchor="middle" x="310" y="278" direction="ltr" unicode-bidi="embed">WithHeader() | WithCookie() | e.Builder for reusable auth</text>
-</svg>
+<pre class="mermaid">flowchart LR
+    subgraph HEADER["جریان تست API با httpexpect"]
+        direction LR
+        REQ["درخواست<br/>GET/POST/PUT"] --> HANDLER["هندلر<br/>httptest.Server"]
+        HANDLER --> RES["پاسخ<br/>Expect&#40;&#41;"]
+        RES --> VALID["اعتبارسنجی<br/>JSON&#40;&#41;.Object&#40;&#41;"]
+    end
+
+    subgraph CHECKS["اعتبارسنجی‌های قابل بررسی"]
+        direction TB
+        C1["Status Code"]
+        C2["JSON Schema"]
+        C3["Headers/Cookies"]
+        C4["Nested Values"]
+    end
+
+    note(["احراز هویت: JWT Bearer Token | Session Cookie | API Key Header<br/>WithHeader&#40;&#41; | WithCookie&#40;&#41; | e.Builder for reusable auth"])
+
+    classDef reqBox   fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
+    classDef hndBox   fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
+    classDef resBox   fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
+    classDef valBox   fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
+    classDef chkBox   fill:#e6f9fc,stroke:#00ADD8,stroke-width:1px,color:#1f2937;
+    classDef noteBox  fill:#fffbeb,stroke:#f59e0b,stroke-width:1px,color:#1f2937,font-style:italic;
+    class REQ reqBox;
+    class HANDLER hndBox;
+    class RES resBox;
+    class VALID valBox;
+    class C1,C2,C3,C4 chkBox;
+    class note noteBox;</pre>
 <figcaption>شکل ۱۱-۵: جریان تست <bdi dir="ltr">API</bdi> با <bdi dir="ltr">httpexpect</bdi> و انواع اعتبارسنجی</figcaption>
 </figure>
 
@@ -585,132 +553,72 @@ assert.Greater(t, value.(int), 10)
 <p>برای درک جامع نحوه تست API‌های RESTful، بیایید کل جریان را از ایجاد سرور تست تا اعتبارسنجی نهایی مرحله‌به‌مرحله بررسی کنیم. هر تست HTTP از هفت مرحله تشکیل شده است: ابتدا سرور تست با <bdi dir="ltr">httptest.NewServer</bdi> ایجاد می‌شود که بدون نیاز به پورت واقعی یا شبکه، هندلرهای شما را اجرا می‌کند. سپس درخواست با متد، مسیر، بدنه و هدرهای مناسب ساخته شده و ارسال می‌شود. پس از دریافت پاسخ، سه سطح اعتبارسنجی انجام می‌شود: کد وضعیت، بدنه JSON و هدرها. httpexpect این مراحل را در یک API روان (<bdi dir="ltr">fluent</bdi>) ترکیب می‌کند که هر مرحله به مرحله بعد متصل می‌شود و خوانایی تست را به‌شدت افزایش می‌دهد.</p>
 
 <figure class="diagram" dir="ltr">
-<svg height="580" viewBox="0 0 780 580" width="780" xmlns="http://www.w3.org/2000/svg">
-<defs><filter id="sh185" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
-<marker id="arrowHTTPPipe" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#555" points="0 0, 10 3.5, 0 7"></polygon></marker>
-<marker id="arrowBlueHTTP" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#00ADD8" points="0 0, 10 3.5, 0 7"></polygon></marker>
-<marker id="arrowGreenHTTP" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#4CAF50" points="0 0, 10 3.5, 0 7"></polygon></marker>
-<marker id="arrowOrangeHTTP" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#FF9800" points="0 0, 10 3.5, 0 7"></polygon></marker>
-</defs>
-<rect fill="#fafafa" height="580" rx="8" width="780" x="0" y="0"></rect>
-<text fill="#333" font-size="15" font-weight="bold" text-anchor="middle" x="390" y="28" direction="rtl" unicode-bidi="embed">جریان تست <tspan direction="ltr" unicode-bidi="embed">HTTP</tspan>: درخواست ← پاسخ ← اعتبارسنجی</text>
+<pre class="mermaid">flowchart TB
+    subgraph HEADER["جریان تست HTTP: درخواست ← پاسخ ← اعتبارسنجی"]
+        direction TB
+        S1["۱. ایجاد سرور تست<br/>httptest.NewServer&#40;handler&#41;"]
+        S2["۲. ساخت درخواست<br/>e.GET / e.POST / WithJSON"]
+        S3["۳. ارسال درخواست<br/>Expect&#40;&#41;"]
+        S4["۴. دریافت پاسخ<br/>Status / Body / Headers"]
+        S5["۵. اعتبارسنجی وضعیت<br/>.Status&#40;200&#41;"]
+        S6["۶. اعتبارسنجی بدنه<br/>.JSON&#40;&#41;.Object&#40;&#41;"]
+        S7["۷. اعتبارسنجی هدرها<br/>.Header&#40;&quot;Content-Type&quot;&#41;"]
+        S1 --> S2 --> S3 --> S4
+        S4 -- "HTTP" --> S5 --> S6 --> S7
+    end
 
-<!-- Step 1: Create Test Server -->
-<rect fill="#00ADD8" height="50" rx="8" width="200" x="30" y="50"></rect>
-<text fill="#fff" font-size="12" font-weight="bold" text-anchor="middle" x="130" y="70" direction="rtl" unicode-bidi="embed">۱. ایجاد سرور تست</text>
-<text fill="#e0f7fa" font-size="9" text-anchor="middle" x="130" y="88" direction="ltr" unicode-bidi="embed">httptest.NewServer(handler)</text>
+    subgraph FLUENT["httpexpect Fluent API"]
+        direction TB
+        F1["e.GET&#40;&quot;/users/1&quot;&#41;.Expect&#40;&#41;.Status&#40;200&#41;.JSON&#40;&#41;.Object&#40;&#41;.ValueEqual&#40;&quot;name&quot;,&quot;Ali&quot;&#41;"]
+        F2["Step 1-2 → e.GET / Expect"]
+        F3["Step 3-4 → Status / Body / Headers"]
+        F4["Step 5 → .Status&#40;200&#41;"]
+        F5["Step 6 → .JSON&#40;&#41;.Object&#40;&#41;"]
+        F6["Step 6-7 → .ValueEqual&#40;&quot;name&quot;,&quot;Ali&quot;&#41;"]
+    end
 
-<!-- Step 2: Build Request -->
-<rect fill="#00ADD8" height="50" rx="8" width="200" x="30" y="115"></rect>
-<text fill="#fff" font-size="12" font-weight="bold" text-anchor="middle" x="130" y="135" direction="rtl" unicode-bidi="embed">۲. ساخت درخواست</text>
-<text fill="#e0f7fa" font-size="9" text-anchor="middle" x="130" y="153" direction="ltr" unicode-bidi="embed">e.GET / e.POST / WithJSON</text>
+    subgraph RESULT["در صورت شکست اعتبارسنجی"]
+        direction TB
+        R1["Expected status 200, got 404"]
+        R2["Expected &quot;Ali&quot;, got &quot;Sara&quot; (JSON path: .name)"]
+    end
 
-<!-- Step 3: Send Request -->
-<rect fill="#00ADD8" height="50" rx="8" width="200" x="30" y="180"></rect>
-<text fill="#fff" font-size="12" font-weight="bold" text-anchor="middle" x="130" y="200" direction="rtl" unicode-bidi="embed">۳. ارسال درخواست</text>
-<text fill="#e0f7fa" font-size="9" text-anchor="middle" x="130" y="218" direction="ltr" unicode-bidi="embed">Expect()</text>
+    subgraph PASS["در صورت موفقیت"]
+        direction TB
+        P1["PASS: Status 200 ✓"]
+        P2["PASS: JSON.name == &quot;Ali&quot; ✓"]
+    end
 
-<!-- Vertical arrow connecting steps 1→2→3 -->
-<line marker-end="url(#arrowBlueHTTP)" stroke="#00ADD8" stroke-width="2" x1="130" x2="130" y1="100" y2="115"></line>
-<line marker-end="url(#arrowBlueHTTP)" stroke="#00ADD8" stroke-width="2" x1="130" x2="130" y1="165" y2="180"></line>
+    subgraph CMP["مقایسه PHP و Go در تست API"]
+        direction LR
+        subgraph PHP["PHP: Laravel HTTP Tests"]
+            direction TB
+            P3["$response = $this-&gt;get&#40;'/users/1'&#41;;"]
+            P4["$response-&gt;assertStatus&#40;200&#41;;"]
+            P5["$response-&gt;assertJson&#40;&#123;'name' =&gt; 'Ali'&#125;&#41;;"]
+            P6["نیاز به سرور واقعی یا PHPUnit"]
+        end
+        subgraph GO["Go: httptest + httpexpect"]
+            direction TB
+            G1["e.GET&#40;&quot;/users/1&quot;&#41;.Expect&#40;&#41;"]
+            G2[".Status&#40;200&#41;"]
+            G3[".JSON&#40;&#41;.Object&#40;&#41;.ValueEqual&#40;&quot;name&quot;,&quot;Ali&quot;&#41;"]
+            G4["بدون شبکه، in-process، بسیار سریع"]
+        end
+    end
 
-<!-- Step 4: Receive Response -->
-<rect fill="#4CAF50" height="50" rx="8" width="200" x="290" y="115"></rect>
-<text fill="#fff" font-size="12" font-weight="bold" text-anchor="middle" x="390" y="135" direction="rtl" unicode-bidi="embed">۴. دریافت پاسخ</text>
-<text fill="#e8f5e9" font-size="9" text-anchor="middle" x="390" y="153" direction="ltr" unicode-bidi="embed">Status / Body / Headers</text>
-
-<!-- Arrow: Send → Receive -->
-<line marker-end="url(#arrowGreenHTTP)" stroke="#4CAF50" stroke-width="2" x1="230" x2="290" y1="205" y2="160"></line>
-<text fill="#4CAF50" font-size="9" text-anchor="middle" x="260" y="172" direction="ltr" unicode-bidi="embed">HTTP</text>
-
-<!-- Step 5: Assert Status -->
-<rect fill="#FF9800" height="45" rx="8" width="180" x="530" y="50"></rect>
-<text fill="#fff" font-size="11" font-weight="bold" text-anchor="middle" x="620" y="70" direction="rtl" unicode-bidi="embed">۵. اعتبارسنجی وضعیت</text>
-<text fill="#fff3e0" font-size="9" text-anchor="middle" x="620" y="85" direction="ltr" unicode-bidi="embed">.Status(200)</text>
-
-<!-- Step 6: Assert Body -->
-<rect fill="#FF9800" height="45" rx="8" width="180" x="530" y="110"></rect>
-<text fill="#fff" font-size="11" font-weight="bold" text-anchor="middle" x="620" y="130" direction="rtl" unicode-bidi="embed">۶. اعتبارسنجی بدنه</text>
-<text fill="#fff3e0" font-size="9" text-anchor="middle" x="620" y="145" direction="ltr" unicode-bidi="embed">.JSON().Object()</text>
-
-<!-- Step 7: Assert Headers -->
-<rect fill="#FF9800" height="45" rx="8" width="180" x="530" y="170"></rect>
-<text fill="#fff" font-size="11" font-weight="bold" text-anchor="middle" x="620" y="190" direction="rtl" unicode-bidi="embed">۷. اعتبارسنجی هدرها</text>
-<text fill="#fff3e0" font-size="9" text-anchor="middle" x="620" y="205" direction="ltr" unicode-bidi="embed">.Header("Content-Type")</text>
-
-<!-- Arrow: Response → Assertions -->
-<line marker-end="url(#arrowOrangeHTTP)" stroke="#FF9800" stroke-width="2" x1="490" x2="530" y1="140" y2="140"></line>
-
-<!-- httpexpect Fluent API Example -->
-<rect fill="#f5f5f5" height="100" rx="8" stroke="#ddd" stroke-width="1" width="740" x="20" y="240"></rect>
-<text fill="#333" font-size="12" font-weight="bold" text-anchor="middle" x="390" y="262" direction="ltr" unicode-bidi="embed">httpexpect Fluent API</text>
-
-<rect fill="#00ADD8" height="22" rx="4" width="60" x="35" y="275"></rect>
-<text fill="#fff" font-size="9" font-weight="bold" text-anchor="middle" x="65" y="291" direction="ltr" unicode-bidi="embed">e.GET</text>
-
-<rect fill="#e3f2fd" height="22" rx="4" stroke="#00ADD8" stroke-width="1" width="90" x="105" y="275"></rect>
-<text fill="#006064" font-size="9" text-anchor="middle" x="150" y="291" direction="ltr" unicode-bidi="embed">("/users/1")</text>
-
-<rect fill="#4CAF50" height="22" rx="4" width="70" x="205" y="275"></rect>
-<text fill="#fff" font-size="9" font-weight="bold" text-anchor="middle" x="240" y="291" direction="ltr" unicode-bidi="embed">.Expect</text>
-
-<rect fill="#e8f5e9" height="22" rx="4" stroke="#4CAF50" stroke-width="1" width="75" x="285" y="275"></rect>
-<text fill="#2E7D32" font-size="9" text-anchor="middle" x="322" y="291" direction="ltr" unicode-bidi="embed">().Status</text>
-
-<rect fill="#e8f5e9" height="22" rx="4" stroke="#4CAF50" stroke-width="1" width="55" x="370" y="275"></rect>
-<text fill="#2E7D32" font-size="9" text-anchor="middle" x="397" y="291" direction="ltr" unicode-bidi="embed">(200)</text>
-
-<rect fill="#FF9800" height="22" rx="4" width="60" x="435" y="275"></rect>
-<text fill="#fff" font-size="9" font-weight="bold" text-anchor="middle" x="465" y="291" direction="ltr" unicode-bidi="embed">.JSON</text>
-
-<rect fill="#fff3e0" height="22" rx="4" stroke="#FF9800" stroke-width="1" width="65" x="505" y="275"></rect>
-<text fill="#E65100" font-size="9" text-anchor="middle" x="537" y="291" direction="ltr" unicode-bidi="embed">().Object</text>
-
-<rect fill="#fff3e0" height="22" rx="4" stroke="#FF9800" stroke-width="1" width="95" x="580" y="275"></rect>
-<text fill="#E65100" font-size="9" text-anchor="middle" x="627" y="291" direction="ltr" unicode-bidi="embed">().ValueEqual</text>
-
-<rect fill="#fff3e0" height="22" rx="4" stroke="#FF9800" stroke-width="1" width="90" x="685" y="275"></rect>
-<text fill="#E65100" font-size="9" text-anchor="middle" x="730" y="291" direction="ltr" unicode-bidi="embed">("name","Ali")</text>
-
-<!-- Step labels -->
-<text fill="#00ADD8" font-size="7" text-anchor="middle" x="65" y="310" direction="ltr" unicode-bidi="embed">Step 1-2</text>
-<text fill="#4CAF50" font-size="7" text-anchor="middle" x="240" y="310" direction="ltr" unicode-bidi="embed">Step 3-4</text>
-<text fill="#4CAF50" font-size="7" text-anchor="middle" x="322" y="310" direction="ltr" unicode-bidi="embed">Step 5</text>
-<text fill="#FF9800" font-size="7" text-anchor="middle" x="465" y="310" direction="ltr" unicode-bidi="embed">Step 6</text>
-<text fill="#FF9800" font-size="7" text-anchor="middle" x="627" y="310" direction="ltr" unicode-bidi="embed">Step 6-7</text>
-
-<!-- Failure flow -->
-<rect fill="#fce4ec" height="60" rx="6" stroke="#e91e63" stroke-width="1.5" width="340" x="30" y="355"></rect>
-<text fill="#880E4F" font-size="11" font-weight="bold" text-anchor="middle" x="200" y="378" direction="rtl" unicode-bidi="embed">در صورت شکست اعتبارسنجی</text>
-<text fill="#880E4F" font-size="9" text-anchor="middle" x="200" y="395" direction="ltr" unicode-bidi="embed">Expected status 200, got 404</text>
-<text fill="#880E4F" font-size="9" text-anchor="middle" x="200" y="408" direction="ltr" unicode-bidi="embed">Expected "Ali", got "Sara" (JSON path: .name)</text>
-
-<!-- Success flow -->
-<rect fill="#e8f5e9" height="60" rx="6" stroke="#4CAF50" stroke-width="1.5" width="340" x="410" y="355"></rect>
-<text fill="#2E7D32" font-size="11" font-weight="bold" text-anchor="middle" x="580" y="378" direction="rtl" unicode-bidi="embed">در صورت موفقیت</text>
-<text fill="#2E7D32" font-size="9" text-anchor="middle" x="580" y="395" direction="ltr" unicode-bidi="embed">PASS: Status 200 ✓</text>
-<text fill="#2E7D32" font-size="9" text-anchor="middle" x="580" y="408" direction="ltr" unicode-bidi="embed">PASS: JSON.name == "Ali" ✓</text>
-
-<!-- PHP vs Go comparison -->
-<rect fill="#f5f5f5" height="140" rx="8" stroke="#ddd" stroke-width="1" width="740" x="20" y="430"></rect>
-<text fill="#333" font-size="12" font-weight="bold" text-anchor="middle" x="390" y="455" direction="rtl" unicode-bidi="embed">مقایسه <tspan direction="ltr" unicode-bidi="embed">PHP</tspan> و <tspan direction="ltr" unicode-bidi="embed">Go</tspan> در تست <tspan direction="ltr" unicode-bidi="embed">API</tspan></text>
-
-<!-- PHP side -->
-<rect fill="#777BB4" height="90" rx="6" width="340" x="40" y="468"></rect>
-<text fill="#fff" font-size="11" font-weight="bold" text-anchor="middle" x="210" y="488" direction="ltr" unicode-bidi="embed">PHP: Laravel HTTP Tests</text>
-<text fill="#e8eaf6" font-size="8" text-anchor="start" x="55" y="505" direction="ltr" unicode-bidi="embed">$response = $this->get('/users/1');</text>
-<text fill="#e8eaf6" font-size="8" text-anchor="start" x="55" y="518" direction="ltr" unicode-bidi="embed">$response->assertStatus(200);</text>
-<text fill="#e8eaf6" font-size="8" text-anchor="start" x="55" y="531" direction="ltr" unicode-bidi="embed">$response->assertJson(['name' => 'Ali']);</text>
-<text fill="#e8eaf6" font-size="7" text-anchor="start" x="55" y="547" direction="rtl" unicode-bidi="embed">نیاز به سرور واقعی یا <tspan direction="ltr" unicode-bidi="embed">PHPUnit</tspan></text>
-
-<!-- Go side -->
-<rect fill="#00ADD8" height="90" rx="6" width="340" x="400" y="468"></rect>
-<text fill="#fff" font-size="11" font-weight="bold" text-anchor="middle" x="570" y="488" direction="ltr" unicode-bidi="embed">Go: httptest + httpexpect</text>
-<text fill="#e0f7fa" font-size="8" text-anchor="start" x="415" y="505" direction="ltr" unicode-bidi="embed">e.GET("/users/1").Expect()</text>
-<text fill="#e0f7fa" font-size="8" text-anchor="start" x="415" y="518" direction="ltr" unicode-bidi="embed">  .Status(200)</text>
-<text fill="#e0f7fa" font-size="8" text-anchor="start" x="415" y="531" direction="ltr" unicode-bidi="embed">  .JSON().Object().ValueEqual("name","Ali")</text>
-<text fill="#e0f7fa" font-size="7" text-anchor="start" x="415" y="547" direction="rtl" unicode-bidi="embed">بدون شبکه، <tspan direction="ltr" unicode-bidi="embed">in-process</tspan>، بسیار سریع</text>
-</svg>
+    classDef stepBox  fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
+    classDef flBox    fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
+    classDef resBox   fill:#fef2f2,stroke:#ef4444,stroke-width:1.5px,color:#1f2937;
+    classDef passBox  fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
+    classDef phpBox   fill:#f5f0fb,stroke:#777BB4,stroke-width:1.5px,color:#1f2937;
+    classDef goBox    fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
+    class S1,S2,S3,S4,S5,S6,S7 stepBox;
+    class F1,F2,F3,F4,F5,F6 flBox;
+    class R1,R2 resBox;
+    class P1,P2 passBox;
+    class P3,P4,P5,P6 phpBox;
+    class G1,G2,G3,G4 goBox;</pre>
 <figcaption>شکل ۱۱-۶: جریان کامل تست <bdi dir="ltr">HTTP API</bdi> — از ایجاد سرور تست تا اعتبارسنجی نهایی و مقایسه <bdi dir="ltr">fluent API</bdi> با <bdi dir="ltr">PHP Laravel</bdi></figcaption>
 </figure>
 

@@ -79,48 +79,29 @@
 <p>در PHP تعامل با دنیای بیرون عمدتاً از طریق توابع ساده‌ای مانند <code dir="ltr">file_get_contents()</code> ، <code dir="ltr">json_encode()</code> و <code dir="ltr">curl_exec()</code> انجام می‌شود. هر کدام از این توابع امضای مخصوص به خود را دارند: یکی رشته برمی‌گرداند، دیگری <code>false</code> در صورت خطا، و سومی resource باز می‌کند. هیچ قرارداد یکتایی وجود ندارد. اما Go با یک مدل متفاوت و ساخت‌یافته‌تر این امکانات را ارائه می‌دهد: رابط‌های <code dir="ltr">io.Reader</code> و <code dir="ltr">io.Writer</code> به عنوان قراردادهای یکتای ورودی/خروجی، پکیج <code>embed</code> برای جاسازی فایل‌ها در باینری، و <code>os/signal</code> برای مدیریت خاموشی ایمن. این تفاوت‌ها هم در سطح سینتکس و هم در فلسفه‌ی طراحی ریشه دارند.</p>
 
 <figure class="diagram" dir="ltr">
-<svg height="420" viewBox="0 0 680 420" width="680" xmlns="http://www.w3.org/2000/svg">
-<defs><filter id="sh119" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
-<marker id="arrCh6" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#00ADD8" points="0 0, 10 3.5, 0 7"></polygon></marker>
-</defs>
-<rect fill="#fafafa" height="420" rx="8" width="680" x="0" y="0"></rect>
-<text class="title" text-anchor="middle" x="340" y="30" direction="rtl" unicode-bidi="embed">موضوعات فصل ۶: تعامل با دنیای بیرون</text>
-<!-- File I/O -->
-<rect fill="#fff3e0" height="60" rx="8" stroke="#ff9800" stroke-width="2" width="150" x="30" y="60"></rect>
-<text fill="#e65100" font-size="14" font-weight="bold" text-anchor="middle" x="105" y="85" direction="rtl" unicode-bidi="embed">فایل‌ها</text>
-<text fill="#666" font-size="11" text-anchor="middle" x="105" y="105" direction="ltr" unicode-bidi="embed">os, bufio, embed</text>
-<!-- JSON/YAML -->
-<rect fill="#f3e5f5" height="60" rx="8" stroke="#9c27b0" stroke-width="2" width="150" x="265" y="60"></rect>
-<text fill="#7b1fa2" font-size="14" font-weight="bold" text-anchor="middle" x="340" y="85" direction="ltr" unicode-bidi="embed">JSON / YAML</text>
-<text fill="#666" font-size="11" text-anchor="middle" x="340" y="105" direction="ltr" unicode-bidi="embed">encoding/json</text>
-<!-- Signals -->
-<rect fill="#fce4ec" height="60" rx="8" stroke="#e91e63" stroke-width="2" width="150" x="500" y="60"></rect>
-<text fill="#c2185b" font-size="14" font-weight="bold" text-anchor="middle" x="575" y="85" direction="rtl" unicode-bidi="embed">سیگنال‌ها</text>
-<text fill="#666" font-size="11" text-anchor="middle" x="575" y="105" direction="ltr" unicode-bidi="embed">os/signal</text>
-<!-- io.Reader/Writer core -->
-<rect fill="#00ADD8" height="70" opacity="0.12" rx="12" stroke="#00ADD8" stroke-width="2" width="620" x="30" y="160"></rect>
-<text fill="#00ADD8" font-size="16" font-weight="bold" text-anchor="middle" x="340" y="190" direction="ltr" unicode-bidi="embed">io.Reader / io.Writer</text>
-<text fill="#666" font-size="12" text-anchor="middle" x="340" y="212" direction="rtl" unicode-bidi="embed">قلب تپنده‌ی تمام عملیات <tspan direction="ltr" unicode-bidi="embed">I/O</tspan> در <tspan direction="ltr" unicode-bidi="embed">Go</tspan></text>
-<!-- Arrows from core to each topic -->
-<line marker-end="url(#arrCh6)" stroke="#ff9800" stroke-width="1.5" x1="105" x2="105" y1="120" y2="160"></line>
-<line marker-end="url(#arrCh6)" stroke="#9c27b0" stroke-width="1.5" x1="340" x2="340" y1="120" y2="160"></line>
-<line marker-end="url(#arrCh6)" stroke="#e91e63" stroke-width="1.5" x1="575" x2="575" y1="120" y2="160"></line>
-<!-- Sub-topics -->
-<rect fill="#e8f5e9" height="40" rx="6" stroke="#27ae60" stroke-width="1" width="140" x="30" y="270"></rect>
-<text fill="#2e7d32" font-size="11" text-anchor="middle" x="100" y="295" direction="rtl" unicode-bidi="embed">خواندن خط‌به‌خط</text>
-<rect fill="#e8f5e9" height="40" rx="6" stroke="#27ae60" stroke-width="1" width="140" x="190" y="270"></rect>
-<text fill="#2e7d32" font-size="11" text-anchor="middle" x="260" y="295" direction="ltr" unicode-bidi="embed">//go:embed</text>
-<rect fill="#e8f5e9" height="40" rx="6" stroke="#27ae60" stroke-width="1" width="140" x="350" y="270"></rect>
-<text fill="#2e7d32" font-size="11" text-anchor="middle" x="420" y="295" direction="rtl" unicode-bidi="embed">نوشتن اتمیک</text>
-<rect fill="#e8f5e9" height="40" rx="6" stroke="#27ae60" stroke-width="1" width="140" x="510" y="270"></rect>
-<text fill="#2e7d32" font-size="11" text-anchor="middle" x="580" y="295" direction="ltr" unicode-bidi="embed">Graceful Shutdown</text>
-<!-- PHP comparison bar -->
-<rect fill="#777BB4" height="45" opacity="0.08" rx="6" stroke="#777BB4" stroke-dasharray="6,3" stroke-width="1.5" width="620" x="30" y="330"></rect>
-<text fill="#777BB4" font-size="12" text-anchor="middle" x="340" y="355" direction="ltr" unicode-bidi="embed">PHP: file_get_contents, json_encode → Go: io.Reader, json.Marshal, embed.FS</text>
-<!-- Key insight box -->
-<rect fill="#e3f2fd" height="40" rx="6" stroke="#2196f3" stroke-width="1" width="620" x="30" y="380"></rect>
-<text fill="#1565c0" font-size="11" text-anchor="middle" x="340" y="405" direction="rtl" unicode-bidi="embed">ذهنیت کلیدی: هر منبع <tspan direction="ltr" unicode-bidi="embed">I/O</tspan> در <tspan direction="ltr" unicode-bidi="embed">Go</tspan> فقط یک <tspan direction="ltr" unicode-bidi="embed">Reader</tspan> یا <tspan direction="ltr" unicode-bidi="embed">Writer</tspan> است — فایل، شبکه، حافظه فرقی نمی‌کند</text>
-</svg>
+<pre class="mermaid">flowchart TB
+    subgraph TOPIC["موضوعات فصل ۶: تعامل با دنیای بیرون"]
+        direction TB
+        F["فایل‌ها<br/>os, bufio, embed"] --> IO
+        J["JSON / YAML<br/>encoding/json"] --> IO
+        S["سیگنال‌ها<br/>os/signal"] --> IO
+    end
+    IO["io.Reader / io.Writer<br/>قلب تپنده‌ی تمام عملیات I/O در Go"]
+    IO --> O1["خواندن خط‌به‌خط<br/>//go:embed"]
+    IO --> O2["نوشتن اتمیک<br/>Graceful Shutdown"]
+    note1(["PHP: file_get_contents, json_encode → Go: io.Reader, json.Marshal, embed.FS"])
+    note2(["ذهنیت کلیدی: هر منبع I/O در Go فقط یک Reader یا Writer است — فایل، شبکه، حافظه فرقی نمی‌کند"])
+    TOPIC ~~~ note1
+    TOPIC ~~~ note2
+
+    classDef topicBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
+    classDef ioBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937,font-weight:bold;
+    classDef outBox fill:#f8fafc,stroke:#475569,stroke-width:1px,color:#1f2937;
+    classDef noteBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1px,color:#1f2937,font-style:italic;
+    class F,J,S topicBox;
+    class IO ioBox;
+    class O1,O2 outBox;
+    class note1,note2 noteBox;</pre>
 <figcaption dir="rtl">شکل ۶-۰: نقشه‌ی موضوعات فصل ششم — تعامل با دنیای بیرون</figcaption>
 </figure>
 

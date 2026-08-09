@@ -72,29 +72,24 @@
 <p>یکی از عملیات‌های رایج در هر برنامه‌ای خواندن فایل است. چه فایل پیکربندی باشد، چه داده‌های ورودی و چه سیستم Logs، همیشه نیاز به خواندن محتوای فایل دارید. در این بخش با روش‌های مختلف خواندن فایل در Go آشنا می‌شوید و تفاوت‌های آن با PHP را بررسی می‌کنید.</p>
 
 <figure class="diagram" dir="ltr">
-<svg  font-family="sans-serif" viewBox="0 0 700 320" xmlns="http://www.w3.org/2000/svg" width="700" height="320">
-<defs><filter id="sh124" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter><marker id="arrRead" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#00ADD8" points="0 0, 10 3.5, 0 7"></polygon></marker></defs>
-<rect fill="#fff3e0" height="80" rx="10" stroke="#ff9800" stroke-width="2" width="140" x="20" y="110"></rect>
-<text fill="#e65100" font-size="14" text-anchor="middle" x="90" y="145" direction="rtl" unicode-bidi="embed">فایل روی دیسک</text>
-<text fill="#666" font-size="12" text-anchor="middle" x="90" y="168" direction="ltr" unicode-bidi="embed">notes.txt</text>
-<line marker-end="url(#arrRead)" stroke="#00ADD8" stroke-width="2" x1="160" x2="250" y1="150" y2="150"></line>
-<text fill="#00ADD8" font-size="11" text-anchor="middle" x="205" y="140" direction="ltr" unicode-bidi="embed">os.ReadFile()</text>
-<rect fill="#e0f7fa" height="80" rx="10" stroke="#00ADD8" stroke-width="2" width="170" x="250" y="110"></rect>
-<text fill="#006064" font-size="13" text-anchor="middle" x="335" y="140" direction="rtl" unicode-bidi="embed">خواندن کل محتوا</text>
-<text fill="#666" font-size="12" text-anchor="middle" x="335" y="160" direction="rtl" unicode-bidi="embed">خروجی: []<tspan direction="ltr" unicode-bidi="embed">byte</tspan></text>
-<text fill="#666" font-size="12" text-anchor="middle" x="335" y="178" direction="ltr" unicode-bidi="embed">+ error</text>
-<line marker-end="url(#arrRead)" stroke="#00ADD8" stroke-width="2" x1="420" x2="510" y1="150" y2="150"></line>
-<text fill="#00ADD8" font-size="11" text-anchor="middle" x="465" y="140" direction="ltr" unicode-bidi="embed">string(data)</text>
-<rect fill="#e8f5e9" height="80" rx="10" stroke="#4caf50" stroke-width="2" width="170" x="510" y="110"></rect>
-<text fill="#2e7d32" font-size="13" text-anchor="middle" x="595" y="140" direction="rtl" unicode-bidi="embed">محتوای فایل</text>
-<text fill="#666" font-size="12" text-anchor="middle" x="595" y="160" direction="rtl" unicode-bidi="embed">به‌صورت رشته</text>
-<text fill="#666" font-size="12" text-anchor="middle" x="595" y="178" direction="rtl" unicode-bidi="embed">آماده استفاده</text>
-<rect fill="#fce4ec" height="55" rx="10" stroke="#e91e63" stroke-width="1.5" width="150" x="290" y="230"></rect>
-<text fill="#c2185b" font-size="13" text-anchor="middle" x="365" y="255" direction="rtl" unicode-bidi="embed">خطا!</text>
-<text fill="#666" font-size="12" text-anchor="middle" x="365" y="273" direction="rtl" unicode-bidi="embed">فایل یافت نشد / دسترسی</text>
-<line marker-end="url(#arrRead)" stroke="#e91e63" stroke-dasharray="5,3" stroke-width="1.5" x1="335" x2="365" y1="190" y2="230"></line>
-<text fill="#e91e63" font-size="11" text-anchor="middle" x="330" y="215" direction="ltr" unicode-bidi="embed">err != nil</text>
-</svg>
+<pre class="mermaid">flowchart TB
+    D["فایل روی دیسک<br/>notes.txt"] --> RF["os.ReadFile()<br/>خواندن کل محتوا"]
+    RF --> Q{"err != nil?"}
+    Q -- "بله" --> E["خطا!<br/>فایل یافت نشد / دسترسی"]
+    Q -- "خیر" --> B["خروجی: &#91;&#93;byte<br/>+ error"]
+    B --> S["string(data)"]
+    S --> U["محتوای فایل به‌صورت رشته<br/>آماده استفاده"]
+
+    classDef fileBox  fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
+    classDef opBox    fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
+    classDef okBox    fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
+    classDef errBox   fill:#fef2f2,stroke:#ef4444,stroke-width:1.5px,color:#1f2937;
+    classDef decBox   fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
+    class D fileBox;
+    class RF,B opBox;
+    class S,U okBox;
+    class E errBox;
+    class Q decBox;</pre>
 <figcaption>شکل ۶-۲ — جریان خواندن فایل با <bdi dir="ltr">os.ReadFile</bdi> در <bdi dir="ltr">Go</bdi></figcaption>
 </figure>
 
@@ -253,40 +248,46 @@ func mmapRead(path string) ([]byte, error) {
 </div>
 
 <figure class="diagram" dir="ltr">
-<svg  font-family="sans-serif" viewBox="0 0 700 280" xmlns="http://www.w3.org/2000/svg" width="700" height="280">
-<defs><filter id="sh125" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter><marker id="arrStrat" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#00ADD8" points="0 0, 10 3.5, 0 7"></polygon></marker></defs>
-<rect fill="#fafafa" height="280" rx="8" width="700" x="0" y="0"></rect>
-<text fill="#333" font-size="16" font-weight="bold" text-anchor="middle" x="350" y="30" direction="rtl" unicode-bidi="embed">مقایسه استراتژی‌های خواندن فایل</text>
-<!-- ReadFile -->
-<rect fill="#4caf50" height="55" rx="8" stroke="#27ae60" stroke-width="2" width="190" x="20" y="60"></rect>
-<text fill="#fff" font-size="12" font-weight="bold" text-anchor="middle" x="115" y="82" direction="ltr" unicode-bidi="embed">os.ReadFile()</text>
-<text fill="#e8f5e9" font-size="10" text-anchor="middle" x="115" y="100" direction="rtl" unicode-bidi="embed">فایل‌های کوچک (&<tspan direction="ltr" unicode-bidi="embed">lt</tspan>;10<tspan direction="ltr" unicode-bidi="embed">MB</tspan>)</text>
-<!-- io.Reader stream -->
-<rect fill="#ff9800" height="55" rx="8" stroke="#f39c12" stroke-width="2" width="190" x="250" y="60"></rect>
-<text fill="#fff" font-size="12" font-weight="bold" text-anchor="middle" x="345" y="82" direction="ltr" unicode-bidi="embed">io.Reader + bufio</text>
-<text fill="#fff3e0" font-size="10" text-anchor="middle" x="345" y="100" direction="rtl" unicode-bidi="embed">فایل‌های متوسط و بزرگ</text>
-<!-- mmap -->
-<rect fill="#e91e63" height="55" rx="8" stroke="#e74c3c" stroke-width="2" width="190" x="490" y="60"></rect>
-<text fill="#fff" font-size="12" font-weight="bold" text-anchor="middle" x="585" y="82" direction="ltr" unicode-bidi="embed">mmap</text>
-<text fill="#fce4ec" font-size="10" text-anchor="middle" x="585" y="100" direction="rtl" unicode-bidi="embed">فایل‌های بسیار بزرگ</text>
-<!-- Comparison rows -->
-<text fill="#555" font-size="12" text-anchor="end" x="160" y="150" direction="rtl" unicode-bidi="embed">سرعت:</text>
-<text fill="#4caf50" font-size="11" text-anchor="middle" x="115" y="150" direction="rtl" unicode-bidi="embed">سریع</text>
-<text fill="#ff9800" font-size="11" text-anchor="middle" x="345" y="150" direction="rtl" unicode-bidi="embed">متوسط</text>
-<text fill="#e91e63" font-size="11" text-anchor="middle" x="585" y="150" direction="rtl" unicode-bidi="embed">بسیار سریع</text>
-<text fill="#555" font-size="12" text-anchor="end" x="160" y="180" direction="rtl" unicode-bidi="embed">مصرف حافظه:</text>
-<text fill="#e74c3c" font-size="11" text-anchor="middle" x="115" y="180" direction="rtl" unicode-bidi="embed">کل فایل</text>
-<text fill="#27ae60" font-size="11" text-anchor="middle" x="345" y="180" direction="rtl" unicode-bidi="embed">بافر فقط</text>
-<text fill="#f39c12" font-size="11" text-anchor="middle" x="585" y="180" direction="rtl" unicode-bidi="embed">صفحات <tspan direction="ltr" unicode-bidi="embed">OS</tspan></text>
-<text fill="#555" font-size="12" text-anchor="end" x="160" y="210" direction="rtl" unicode-bidi="embed">سادگی:</text>
-<text fill="#27ae60" font-size="11" text-anchor="middle" x="115" y="210" direction="rtl" unicode-bidi="embed">بسیار ساده</text>
-<text fill="#f39c12" font-size="11" text-anchor="middle" x="345" y="210" direction="rtl" unicode-bidi="embed">متوسط</text>
-<text fill="#e74c3c" font-size="11" text-anchor="middle" x="585" y="210" direction="rtl" unicode-bidi="embed">پیچیده</text>
-<text fill="#555" font-size="12" text-anchor="end" x="160" y="240" direction="rtl" unicode-bidi="embed">قابل‌حمل:</text>
-<text fill="#27ae60" font-size="11" text-anchor="middle" x="115" y="240" direction="rtl" unicode-bidi="embed">کاملاً</text>
-<text fill="#27ae60" font-size="11" text-anchor="middle" x="345" y="240" direction="rtl" unicode-bidi="embed">کاملاً</text>
-<text fill="#e74c3c" font-size="11" text-anchor="middle" x="585" y="240" direction="rtl" unicode-bidi="embed">وابسته به <tspan direction="ltr" unicode-bidi="embed">OS</tspan></text>
-</svg>
+<pre class="mermaid">flowchart TB
+    subgraph HEADER["مقایسه استراتژی‌های خواندن فایل"]
+        direction LR
+        A1["os.ReadFile()<br/>فایل‌های کوچک (&lt;10MB)"]
+        A2["io.Reader + bufio<br/>فایل‌های متوسط و بزرگ"]
+        A3["mmap<br/>فایل‌های بسیار بزرگ"]
+    end
+    subgraph SPEED["سرعت:"]
+        direction LR
+        S1["سریع"] -.-> S2["متوسط"] -.-> S3["بسیار سریع"]
+    end
+    subgraph MEM["مصرف حافظه:"]
+        direction LR
+        M1["کل فایل"] -.-> M2["بافر فقط"] -.-> M3["صفحات OS"]
+    end
+    subgraph SIMPLE["سادگی:"]
+        direction LR
+        SI1["بسیار ساده"] -.-> SI2["متوسط"] -.-> SI3["پیچیده"]
+    end
+    subgraph PORT["قابل‌حمل:"]
+        direction LR
+        P1["کاملاً"] -.-> P2["کاملاً"] -.-> P3["وابسته به OS"]
+    end
+    A1 -.- S1
+    A2 -.- S2
+    A3 -.- S3
+    A1 -.- M1
+    A2 -.- M2
+    A3 -.- M3
+    A1 -.- SI1
+    A2 -.- SI2
+    A3 -.- SI3
+    A1 -.- P1
+    A2 -.- P2
+    A3 -.- P3
+
+    classDef hdrBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937,font-weight:bold;
+    classDef attrBox fill:#f8fafc,stroke:#475569,stroke-width:1px,color:#1f2937;
+    class A1,A2,A3 hdrBox;
+    class S1,S2,S3,M1,M2,M3,SI1,SI2,SI3,P1,P2,P3 attrBox;</pre>
 <figcaption>شکل ۶-۲-ب — مقایسه استراتژی‌های خواندن فایل در <bdi dir="ltr">Go</bdi></figcaption>
 </figure>
 
@@ -423,127 +424,50 @@ func readLastNLines(path string, n int) ([]string, error) {
 <p>در Go سه رویکرد اصلی برای خواندن فایل وجود دارد که هر کدام برای موقعیت خاصی مناسب هستند. شناخت تفاوت‌های این سه روش و انتخاب درست بین آن‌ها، تأثیر مستقیم بر عملکرد، مصرف حافظه و قابلیت نگهداری برنامه شما دارد. در ادامه هر سه روش را به‌صورت تفصیلی مقایسه می‌کنیم و فلوچارتی برای تصمیم‌گیری ارائه می‌دهیم که به شما کمک می‌کند در هر شرایطی بهترین ابزار را انتخاب کنید.</p>
 
 <figure class="diagram" dir="ltr">
-<svg font-family="sans-serif" viewBox="0 0 860 660" xmlns="http://www.w3.org/2000/svg" width="860" height="660">
-<defs><filter id="sh126" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
-<marker id="arrCmp1" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#4CAF50" points="0 0, 10 3.5, 0 7"></polygon></marker>
-<marker id="arrCmp2" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#FF9800" points="0 0, 10 3.5, 0 7"></polygon></marker>
-<marker id="arrCmp3" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#e91e63" points="0 0, 10 3.5, 0 7"></polygon></marker>
-<marker id="arrCmpD" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#555" points="0 0, 10 3.5, 0 7"></polygon></marker>
-</defs>
-<rect fill="#fafafa" height="660" rx="8" width="860" x="0" y="0"></rect>
+<pre class="mermaid">flowchart TB
+    subgraph HEADER["مقایسه سه روش خواندن فایل در Go"]
+        direction LR
+        M1["os.ReadFile()<br/>خواندن کل فایل یکجا در حافظه<br/>ساده‌ترین روش — دو خط کد<br/>✓ مناسب: فایل‌های کوچک (&lt; 1MB)<br/>✗ خطر: فایل‌های بزرگ → پر شدن حافظه<br/>return &#91;&#93;byte, error"]
+        M2["bufio.Scanner<br/>خواندن خط‌به‌خط از فایل<br/>بهره‌وری حافظه — فقط یک خط در حافظه<br/>✓ مناسب: پردازش خطی، فایل‌های متنی<br/>⚠ محدودیت: حداکثر ۶۴KB هر خط<br/>scanner.Scan() → scanner.Text()"]
+        M3["io.Reader + bufio.NewReader<br/>انعطاف‌پذیرترین روش — کنترل دستی بافر<br/>قابل ترکیب با هر io.Reader<br/>✓ مناسب: streaming، فایل‌های بزرگ<br/>⚠ پیچیده‌تر: مدیریت دستی Read<br/>reader.Read(buf) → n, err"]
+    end
 
-<!-- Title -->
-<text fill="#333" font-size="18" font-weight="bold" text-anchor="middle" x="430" y="32" direction="rtl" unicode-bidi="embed">مقایسه سه روش خواندن فایل در Go</text>
+    subgraph DEC["فلوچارت تصمیم‌گیری: کدام روش را انتخاب کنم؟"]
+        direction TB
+        Q1{"اندازه فایل چقدر است؟<br/>یا چه نوع پردازشی نیاز دارید؟"}
+        Q1 -- "فایل کوچک (&lt; 1MB)<br/>یا نیاز به کل محتوا" --> D1["os.ReadFile()<br/>ساده و سریع ✓"]
+        Q1 -- "فایل بزرگ" --> Q2{"نوع پردازش؟"}
+        Q2 -- "خط‌به‌خط" --> D2["bufio.Scanner<br/>بینه بهینه حافظه ✓"]
+        Q2 -- "Streaming / ترکیب‌پذیری" --> D3["io.Reader + bufio<br/>انعطاف‌پذیر ⚠"]
+    end
 
-<!-- ============ THREE APPROACH BOXES (Top Row) ============ -->
-<!-- os.ReadFile -->
-<rect fill="#e8f5e9" height="130" rx="10" stroke="#4CAF50" stroke-width="2.5" width="250" x="30" y="55"></rect>
-<text fill="#2e7d32" font-size="15" font-weight="bold" text-anchor="middle" x="155" y="80" direction="ltr" unicode-bidi="embed">os.ReadFile()</text>
-<text fill="#555" font-size="11" text-anchor="middle" x="155" y="100" direction="rtl" unicode-bidi="embed">خواندن کل فایل یکجا در حافظه</text>
-<text fill="#555" font-size="11" text-anchor="middle" x="155" y="118" direction="rtl" unicode-bidi="embed">ساده‌ترین روش — دو خط کد</text>
-<text fill="#4CAF50" font-size="11" text-anchor="middle" x="155" y="138" direction="rtl" unicode-bidi="embed">✓ مناسب: فایل‌های کوچک (&lt; 1MB)</text>
-<text fill="#e91e63" font-size="11" text-anchor="middle" x="155" y="155" direction="rtl" unicode-bidi="embed">✗ خطر: فایل‌های بزرگ → پر شدن حافظه</text>
-<text fill="#999" font-size="10" text-anchor="middle" x="155" y="175" direction="ltr" unicode-bidi="embed">return []byte, error</text>
+    subgraph TRAP["⚠ تله‌ها"]
+        direction TB
+        T1["⚠ تله: ReadFile برای فایل بزرگ<br/>فایل ۲ گیگابایتی = ۲ گیگابایت حافظه!<br/>ممکن است OOM Killer فرآیند را بکشد"]
+        T2["⚠ تله: حد ۶۴KB Scanner<br/>خط بلندتر از ۶۴KB → ErrTooLong<br/>راه‌حل: scanner.Buffer(buf, max)"]
+    end
 
-<!-- bufio.Scanner -->
-<rect fill="#e0f7fa" height="130" rx="10" stroke="#00ADD8" stroke-width="2.5" width="250" x="310" y="55"></rect>
-<text fill="#006064" font-size="15" font-weight="bold" text-anchor="middle" x="435" y="80" direction="ltr" unicode-bidi="embed">bufio.Scanner</text>
-<text fill="#555" font-size="11" text-anchor="middle" x="435" y="100" direction="rtl" unicode-bidi="embed">خواندن خط‌به‌خط از فایل</text>
-<text fill="#555" font-size="11" text-anchor="middle" x="435" y="118" direction="rtl" unicode-bidi="embed">بهره‌وری حافظه — فقط یک خط در حافظه</text>
-<text fill="#4CAF50" font-size="11" text-anchor="middle" x="435" y="138" direction="rtl" unicode-bidi="embed">✓ مناسب: پردازش خطی، فایل‌های متنی</text>
-<text fill="#FF9800" font-size="11" text-anchor="middle" x="435" y="155" direction="rtl" unicode-bidi="embed">⚠ محدودیت: حداکثر ۶۴KB هر خط</text>
-<text fill="#999" font-size="10" text-anchor="middle" x="435" y="175" direction="ltr" unicode-bidi="embed">scanner.Scan() → scanner.Text()</text>
+    subgraph SAMPLE["نمونه کد هر سه روش"]
+        direction TB
+        C1["data, _ := os.ReadFile(&quot;config.json&quot;)<br/>fmt.Println(string(data))<br/>// 2 lines — simple!"]
+        C2["s := bufio.NewScanner(file)<br/>for s.Scan() &#123; process(s.Text()) &#125;<br/>// memory efficient, line-by-line"]
+        C3["r := bufio.NewReader(file)<br/>for &#123; n, err := r.Read(buf); ... &#125;<br/>// most flexible, streaming"]
+    end
 
-<!-- io.Reader + bufio.NewReader -->
-<rect fill="#fff3e0" height="130" rx="10" stroke="#FF9800" stroke-width="2.5" width="250" x="590" y="55"></rect>
-<text fill="#e65100" font-size="15" font-weight="bold" text-anchor="middle" x="715" y="80" direction="ltr" unicode-bidi="embed">io.Reader + bufio.NewReader</text>
-<text fill="#555" font-size="11" text-anchor="middle" x="715" y="100" direction="rtl" unicode-bidi="embed">انعطاف‌پذیرترین روش — کنترل دستی بافر</text>
-<text fill="#555" font-size="11" text-anchor="middle" x="715" y="118" direction="rtl" unicode-bidi="embed">قابل ترکیب با هر io.Reader</text>
-<text fill="#4CAF50" font-size="11" text-anchor="middle" x="715" y="138" direction="rtl" unicode-bidi="embed">✓ مناسب: streaming، فایل‌های بزرگ</text>
-<text fill="#FF9800" font-size="11" text-anchor="middle" x="715" y="155" direction="rtl" unicode-bidi="embed">⚠ پیچیده‌تر: مدیریت دستی Read</text>
-<text fill="#999" font-size="10" text-anchor="middle" x="715" y="175" direction="ltr" unicode-bidi="embed">reader.Read(buf) → n, err</text>
+    note(["قانون طلایی: ساده‌ترین ابزاری که نیاز شما را برآورده می‌کند انتخاب کنید. اگر شکی دارید، bufio.Scanner نقطه شروع خوبی است."])
 
-<!-- ============ DECISION FLOWCHART ============ -->
-<text fill="#333" font-size="15" font-weight="bold" text-anchor="middle" x="430" y="220" direction="rtl" unicode-bidi="embed">فلوچارت تصمیم‌گیری: کدام روش را انتخاب کنم؟</text>
-
-<!-- Decision diamond 1 -->
-<polygon fill="#e8f5e9" points="430,240 560,290 430,340 300,290" stroke="#4CAF50" stroke-width="2"></polygon>
-<text fill="#2e7d32" font-size="12" font-weight="bold" text-anchor="middle" x="430" y="285" direction="rtl" unicode-bidi="embed">اندازه فایل چقدر است؟</text>
-<text fill="#555" font-size="10" text-anchor="middle" x="430" y="300" direction="rtl" unicode-bidi="embed">یا چه نوع پردازشی نیاز دارید؟</text>
-
-<!-- Left branch: small file → ReadFile -->
-<line marker-end="url(#arrCmp1)" stroke="#4CAF50" stroke-width="2.5" x1="300" y1="290" x2="140" y2="290"></line>
-<text fill="#4CAF50" font-size="11" font-weight="bold" text-anchor="middle" x="220" y="280" direction="rtl" unicode-bidi="embed">فایل کوچک (&lt; 1MB)</text>
-<text fill="#4CAF50" font-size="10" text-anchor="middle" x="220" y="265" direction="rtl" unicode-bidi="embed">یا نیاز به کل محتوا</text>
-
-<rect fill="#4CAF50" height="50" rx="8" stroke="#388E3C" stroke-width="2" width="180" x="50" y="265"></rect>
-<text fill="#fff" font-size="13" font-weight="bold" text-anchor="middle" x="140" y="288" direction="ltr" unicode-bidi="embed">os.ReadFile()</text>
-<text fill="#e8f5e9" font-size="10" text-anchor="middle" x="140" y="305" direction="rtl" unicode-bidi="embed">ساده و سریع ✓</text>
-
-<!-- Right branch: large file → another decision -->
-<line marker-end="url(#arrCmp2)" stroke="#FF9800" stroke-width="2.5" x1="560" y1="290" x2="620" y2="290"></line>
-<text fill="#FF9800" font-size="11" font-weight="bold" text-anchor="middle" x="590" y="278" direction="rtl" unicode-bidi="embed">فایل بزرگ</text>
-
-<!-- Decision diamond 2 -->
-<polygon fill="#fff3e0" points="730,260 850,290 730,320 610,290" stroke="#FF9800" stroke-width="2"></polygon>
-<text fill="#e65100" font-size="11" font-weight="bold" text-anchor="middle" x="730" y="288" direction="rtl" unicode-bidi="embed">نوع پردازش؟</text>
-
-<!-- Sub-branch: line-by-line → Scanner -->
-<line marker-end="url(#arrCmp1)" stroke="#4CAF50" stroke-width="2" x1="730" y1="320" x2="620" y2="400"></line>
-<text fill="#4CAF50" font-size="10" font-weight="bold" text-anchor="middle" x="650" y="365" direction="rtl" unicode-bidi="embed">خط‌به‌خط</text>
-
-<rect fill="#4CAF50" height="50" rx="8" stroke="#388E3C" stroke-width="2" width="180" x="530" y="400"></rect>
-<text fill="#fff" font-size="13" font-weight="bold" text-anchor="middle" x="620" y="423" direction="ltr" unicode-bidi="embed">bufio.Scanner</text>
-<text fill="#e8f5e9" font-size="10" text-anchor="middle" x="620" y="440" direction="rtl" unicode-bidi="embed">بهینه حافظه ✓</text>
-
-<!-- Sub-branch: streaming → io.Reader -->
-<line marker-end="url(#arrCmp2)" stroke="#FF9800" stroke-width="2" x1="850" y1="290" x2="810" y2="400"></line>
-<text fill="#FF9800" font-size="10" font-weight="bold" text-anchor="middle" x="850" y="355" direction="rtl" unicode-bidi="embed">Streaming / ترکیب‌پذیری</text>
-
-<rect fill="#FF9800" height="50" rx="8" stroke="#F57C00" stroke-width="2" width="180" x="720" y="400"></rect>
-<text fill="#fff" font-size="12" font-weight="bold" text-anchor="middle" x="810" y="423" direction="ltr" unicode-bidi="embed">io.Reader + bufio</text>
-<text fill="#fff3e0" font-size="10" text-anchor="middle" x="810" y="440" direction="rtl" unicode-bidi="embed">انعطاف‌پذیر ⚠</text>
-
-<!-- ============ PITFALL BOXES ============ -->
-<!-- Pitfall 1: ReadFile on large files -->
-<rect fill="#fce4ec" height="55" rx="8" stroke="#e91e63" stroke-width="1.5" width="220" x="30" y="370"></rect>
-<text fill="#c2185b" font-size="12" font-weight="bold" text-anchor="middle" x="140" y="390" direction="rtl" unicode-bidi="embed">⚠ تله: ReadFile برای فایل بزرگ</text>
-<text fill="#666" font-size="10" text-anchor="middle" x="140" y="408" direction="rtl" unicode-bidi="embed">فایل ۲ گیگابایتی = ۲ گیگابایت حافظه!</text>
-<text fill="#666" font-size="10" text-anchor="middle" x="140" y="420" direction="rtl" unicode-bidi="embed">ممکن است OOM Killer فرآیند را بکشد</text>
-<line stroke="#e91e63" stroke-dasharray="4,3" stroke-width="1.5" x1="140" y1="315" x2="140" y2="370"></line>
-
-<!-- Pitfall 2: Scanner 64KB limit -->
-<rect fill="#fce4ec" height="55" rx="8" stroke="#e91e63" stroke-width="1.5" width="220" x="30" y="445"></rect>
-<text fill="#c2185b" font-size="12" font-weight="bold" text-anchor="middle" x="140" y="465" direction="rtl" unicode-bidi="embed">⚠ تله: حد ۶۴KB Scanner</text>
-<text fill="#666" font-size="10" text-anchor="middle" x="140" y="483" direction="rtl" unicode-bidi="embed">خط بلندتر از ۶۴KB → ErrTooLong</text>
-<text fill="#666" font-size="10" text-anchor="middle" x="140" y="495" direction="rtl" unicode-bidi="embed">راه‌حل: <tspan direction="ltr" unicode-bidi="embed">scanner.Buffer(buf, max)</tspan></text>
-<line stroke="#e91e63" stroke-dasharray="4,3" stroke-width="1.5" x1="530" y1="450" x2="250" y2="475"></line>
-
-<!-- ============ CODE EXAMPLES (Bottom Section) ============ -->
-<text fill="#333" font-size="14" font-weight="bold" text-anchor="middle" x="430" y="540" direction="rtl" unicode-bidi="embed">نمونه کد هر سه روش</text>
-
-<!-- ReadFile code snippet -->
-<rect fill="#e8f5e9" height="55" rx="6" stroke="#4CAF50" stroke-width="1" width="250" x="30" y="555"></rect>
-<text fill="#2e7d32" font-size="10" text-anchor="start" x="40" y="572" direction="ltr" unicode-bidi="embed">data, _ := os.ReadFile("config.json")</text>
-<text fill="#2e7d32" font-size="10" text-anchor="start" x="40" y="587" direction="ltr" unicode-bidi="embed">fmt.Println(string(data))</text>
-<text fill="#2e7d32" font-size="10" text-anchor="start" x="40" y="602" direction="ltr" unicode-bidi="embed">// 2 lines — simple!</text>
-
-<!-- Scanner code snippet -->
-<rect fill="#e0f7fa" height="55" rx="6" stroke="#00ADD8" stroke-width="1" width="260" x="300" y="555"></rect>
-<text fill="#006064" font-size="10" text-anchor="start" x="310" y="572" direction="ltr" unicode-bidi="embed">s := bufio.NewScanner(file)</text>
-<text fill="#006064" font-size="10" text-anchor="start" x="310" y="587" direction="ltr" unicode-bidi="embed">for s.Scan() { process(s.Text()) }</text>
-<text fill="#006064" font-size="10" text-anchor="start" x="310" y="602" direction="ltr" unicode-bidi="embed">// memory efficient, line-by-line</text>
-
-<!-- io.Reader code snippet -->
-<rect fill="#fff3e0" height="55" rx="6" stroke="#FF9800" stroke-width="1" width="260" x="580" y="555"></rect>
-<text fill="#e65100" font-size="10" text-anchor="start" x="590" y="572" direction="ltr" unicode-bidi="embed">r := bufio.NewReader(file)</text>
-<text fill="#e65100" font-size="10" text-anchor="start" x="590" y="587" direction="ltr" unicode-bidi="embed">for { n, err := r.Read(buf); ... }</text>
-<text fill="#e65100" font-size="10" text-anchor="start" x="590" y="602" direction="ltr" unicode-bidi="embed">// most flexible, streaming</text>
-
-<!-- Golden Rule Bar -->
-<rect fill="#4CAF50" height="28" rx="4" width="820" x="20" y="620" opacity="0.15"></rect>
-<text fill="#2e7d32" font-size="12" font-weight="bold" text-anchor="middle" x="430" y="640" direction="rtl" unicode-bidi="embed">قانون طلایی: ساده‌ترین ابزاری که نیاز شما را برآورده می‌کند انتخاب کنید. اگر شکی دارید، <tspan direction="ltr" unicode-bidi="embed">bufio.Scanner</tspan> نقطه شروع خوبی است.</text>
-</svg>
+    classDef hdrBox  fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
+    classDef decBox  fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
+    classDef resBox  fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
+    classDef trapBox fill:#fef2f2,stroke:#ef4444,stroke-width:1.5px,color:#1f2937;
+    classDef codeBox fill:#f8fafc,stroke:#475569,stroke-width:1px,color:#1f2937;
+    classDef noteBox fill:#ecfdf5,stroke:#10b981,stroke-width:1px,color:#1f2937,font-style:italic;
+    class M1,M2,M3 hdrBox;
+    class Q1,Q2 decBox;
+    class D1,D2,D3 resBox;
+    class T1,T2 trapBox;
+    class C1,C2,C3 codeBox;
+    class note noteBox;</pre>
 <figcaption>شکل ۶-۲-ج — مقایسه سه روش خواندن فایل و فلوچارت تصمیم‌گیری: <bdi dir="ltr">os.ReadFile</bdi> در مقابل <bdi dir="ltr">bufio.Scanner</bdi> در مقابل <bdi dir="ltr">io.Reader</bdi></figcaption>
 </figure>
 

@@ -85,38 +85,19 @@
 </div>
 
 <figure class="diagram" dir="ltr">
-<svg  font-family="sans-serif" viewBox="0 0 680 400" xmlns="http://www.w3.org/2000/svg" width="680" height="400">
-<defs><filter id="sh120" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
-<marker id="arrowGo" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#00ADD8" points="0 0, 10 3.5, 0 7"></polygon></marker>
-</defs>
-<!-- Central Go Program -->
-<rect fill="#00ADD8" height="80" opacity="0.15" rx="12" stroke="#00ADD8" stroke-width="2" width="200" x="240" y="150"></rect>
-<text fill="#00ADD8" font-size="18" font-weight="bold" text-anchor="middle" x="340" y="195" direction="ltr" unicode-bidi="embed">Go Program</text>
-<!-- File System -->
-<rect fill="#fff3e0" height="50" rx="8" stroke="#ff9800" stroke-width="1.5" width="130" x="40" y="30"></rect>
-<text fill="#e65100" font-size="14" text-anchor="middle" x="105" y="60" direction="rtl" unicode-bidi="embed">فایل‌سیستم</text>
-<line marker-end="url(#arrowGo)" stroke="#ff9800" stroke-width="1.5" x1="170" x2="240" y1="55" y2="165"></line>
-<!-- Network / HTTP -->
-<rect fill="#e8f5e9" height="50" rx="8" stroke="#4caf50" stroke-width="1.5" width="130" x="510" y="30"></rect>
-<text fill="#2e7d32" font-size="14" text-anchor="middle" x="575" y="60" direction="rtl" unicode-bidi="embed">شبکه / <tspan direction="ltr" unicode-bidi="embed">HTTP</tspan></text>
-<line marker-end="url(#arrowGo)" stroke="#4caf50" stroke-width="1.5" x1="510" x2="440" y1="55" y2="165"></line>
-<!-- User Input -->
-<rect fill="#e3f2fd" height="50" rx="8" stroke="#2196f3" stroke-width="1.5" width="130" x="40" y="300"></rect>
-<text fill="#1565c0" font-size="14" text-anchor="middle" x="105" y="330" direction="rtl" unicode-bidi="embed">ورودی کاربر</text>
-<line marker-end="url(#arrowGo)" stroke="#2196f3" stroke-width="1.5" x1="170" x2="240" y1="325" y2="215"></line>
-<!-- JSON / YAML -->
-<rect fill="#f3e5f5" height="50" rx="8" stroke="#9c27b0" stroke-width="1.5" width="130" x="510" y="300"></rect>
-<text fill="#7b1fa2" font-size="14" text-anchor="middle" x="575" y="330" direction="ltr" unicode-bidi="embed">JSON / YAML</text>
-<line marker-end="url(#arrowGo)" stroke="#9c27b0" stroke-width="1.5" x1="510" x2="440" y1="325" y2="215"></line>
-<!-- OS Signals -->
-<rect fill="#fce4ec" height="50" rx="8" stroke="#e91e63" stroke-width="1.5" width="140" x="270" y="340"></rect>
-<text fill="#c2185b" font-size="14" text-anchor="middle" x="340" y="370" direction="rtl" unicode-bidi="embed">سیگنال‌های <tspan direction="ltr" unicode-bidi="embed">OS</tspan></text>
-<line marker-end="url(#arrowGo)" stroke="#e91e63" stroke-width="1.5" x1="340" x2="340" y1="340" y2="230"></line>
-<!-- Embed -->
-<rect fill="#e0f7fa" height="50" rx="8" stroke="#00acc1" stroke-width="1.5" width="120" x="530" y="170"></rect>
-<text fill="#00838f" font-size="14" text-anchor="middle" x="590" y="200" direction="ltr" unicode-bidi="embed">embed</text>
-<line marker-end="url(#arrowGo)" stroke="#00acc1" stroke-width="1.5" x1="530" x2="440" y1="195" y2="190"></line>
-</svg>
+<pre class="mermaid">flowchart TB
+    G["Go Program"]
+    G --> F["فایل‌سیستم"]
+    G --> N["شبکه / HTTP"]
+    G --> U["ورودی کاربر"]
+    G --> J["JSON / YAML"]
+    G --> S["سیگنال‌های OS"]
+    G --> E["embed"]
+
+    classDef rootBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:2px,color:#1f2937,font-weight:bold;
+    classDef extBox  fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
+    class G rootBox;
+    class F,N,U,J,S,E extBox;</pre>
 <figcaption>شکل ۶-۱ — نمای کلی تعامل یک برنامه <bdi dir="ltr">Go</bdi> با دنیای بیرون</figcaption>
 </figure>
 
@@ -151,51 +132,42 @@ type Writer interface {
 <p>اهمیت این دو رابط در این است که تقریباً هر نوع I/O در Go آن‌ها را پیاده‌سازی می‌کند: <code>*os.File</code> ، <code dir="ltr">net.Conn</code> ، <code dir="ltr">bytes.Buffer</code> ، <code dir="ltr">http.ResponseWriter</code> ، <code>compress/gzip.Reader</code> و صدها نوع دیگر. به این ترتیب هر تابعی که <code dir="ltr">io.Reader</code> بپذیرد، می‌تواند از هر منبعی بخواند و هر تابعی که <code dir="ltr">io.Writer</code> بپذیرد، می‌تواند در هر مقصدی بنویسد.</p>
 
 <figure class="diagram" dir="ltr">
-<svg  font-family="sans-serif" viewBox="0 0 700 340" xmlns="http://www.w3.org/2000/svg" width="700" height="340">
-<defs><filter id="sh121" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
-<marker id="arrIO" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#00ADD8" points="0 0, 10 3.5, 0 7"></polygon></marker>
-</defs>
-<rect fill="#fafafa" height="340" rx="8" stroke="#e0e0e0" stroke-width="1.5" width="700" x="0" y="0"></rect>
-<text fill="#333" font-size="16" font-weight="bold" text-anchor="middle" x="350" y="30" direction="rtl" unicode-bidi="embed">سلسله‌مراتب رابط‌های <tspan direction="ltr" unicode-bidi="embed">io.Reader</tspan> و <tspan direction="ltr" unicode-bidi="embed">io.Writer</tspan></text>
-<!-- io.Reader -->
-<rect fill="#00ADD8" height="50" rx="8" stroke="#00ADD8" stroke-width="2" width="160" x="20" y="60"></rect>
-<text fill="#fff" font-size="14" font-weight="bold" text-anchor="middle" x="100" y="90" direction="ltr" unicode-bidi="embed">io.Reader</text>
-<!-- io.Writer -->
-<rect fill="#00ADD8" height="50" rx="8" stroke="#00ADD8" stroke-width="2" width="160" x="520" y="60"></rect>
-<text fill="#fff" font-size="14" font-weight="bold" text-anchor="middle" x="600" y="90" direction="ltr" unicode-bidi="embed">io.Writer</text>
-<!-- Reader implementations -->
-<rect fill="#e0f7fa" height="35" rx="6" stroke="#00ADD8" stroke-width="1" width="120" x="10" y="140"></rect>
-<text fill="#006064" font-size="11" text-anchor="middle" x="70" y="162" direction="ltr" unicode-bidi="embed">*os.File</text>
-<rect fill="#e0f7fa" height="35" rx="6" stroke="#00ADD8" stroke-width="1" width="120" x="10" y="190"></rect>
-<text fill="#006064" font-size="11" text-anchor="middle" x="70" y="212" direction="ltr" unicode-bidi="embed">bytes.Reader</text>
-<rect fill="#e0f7fa" height="35" rx="6" stroke="#00ADD8" stroke-width="1" width="120" x="10" y="240"></rect>
-<text fill="#006064" font-size="11" text-anchor="middle" x="70" y="262" direction="ltr" unicode-bidi="embed">net.Conn</text>
-<rect fill="#e0f7fa" height="35" rx="6" stroke="#00ADD8" stroke-width="1" width="120" x="10" y="290"></rect>
-<text fill="#006064" font-size="11" text-anchor="middle" x="70" y="312" direction="ltr" unicode-bidi="embed">http.Request.Body</text>
-<!-- Writer implementations -->
-<rect fill="#e0f7fa" height="35" rx="6" stroke="#00ADD8" stroke-width="1" width="140" x="530" y="140"></rect>
-<text fill="#006064" font-size="11" text-anchor="middle" x="600" y="162" direction="ltr" unicode-bidi="embed">*os.File</text>
-<rect fill="#e0f7fa" height="35" rx="6" stroke="#00ADD8" stroke-width="1" width="140" x="530" y="190"></rect>
-<text fill="#006064" font-size="11" text-anchor="middle" x="600" y="212" direction="ltr" unicode-bidi="embed">bytes.Buffer</text>
-<rect fill="#e0f7fa" height="35" rx="6" stroke="#00ADD8" stroke-width="1" width="140" x="530" y="240"></rect>
-<text fill="#006064" font-size="11" text-anchor="middle" x="600" y="262" direction="ltr" unicode-bidi="embed">http.ResponseWriter</text>
-<rect fill="#e0f7fa" height="35" rx="6" stroke="#00ADD8" stroke-width="1" width="140" x="530" y="290"></rect>
-<text fill="#006064" font-size="11" text-anchor="middle" x="600" y="312" direction="ltr" unicode-bidi="embed">bufio.Writer</text>
-<!-- Decorators -->
-<rect fill="#f3e5f5" height="170" rx="8" stroke="#9c27b0" stroke-width="1.5" width="260" x="220" y="130"></rect>
-<text fill="#7b1fa2" font-size="13" font-weight="bold" text-anchor="middle" x="350" y="155" direction="rtl" unicode-bidi="embed">دکوراتورها (<tspan direction="ltr" unicode-bidi="embed">Decorator</tspan>)</text>
-<rect fill="#e1bee7" height="30" rx="4" stroke="#9c27b0" stroke-width="1" width="220" x="240" y="170"></rect>
-<text fill="#4a148c" font-size="11" text-anchor="middle" x="350" y="190" direction="ltr" unicode-bidi="embed">io.TeeReader(r, w)</text>
-<rect fill="#e1bee7" height="30" rx="4" stroke="#9c27b0" stroke-width="1" width="220" x="240" y="210"></rect>
-<text fill="#4a148c" font-size="11" text-anchor="middle" x="350" y="230" direction="ltr" unicode-bidi="embed">io.MultiWriter(w1, w2, ...)</text>
-<rect fill="#e1bee7" height="30" rx="4" stroke="#9c27b0" stroke-width="1" width="220" x="240" y="250"></rect>
-<text fill="#4a148c" font-size="11" text-anchor="middle" x="350" y="270" direction="ltr" unicode-bidi="embed">io.LimitReader(r, n)</text>
-<rect fill="#e1bee7" height="30" rx="4" stroke="#9c27b0" stroke-width="1" width="220" x="240" y="290"></rect>
-<text fill="#4a148c" font-size="11" text-anchor="middle" x="350" y="310" direction="ltr" unicode-bidi="embed">bufio.NewReader / NewScanner</text>
-<!-- Arrows from Reader to Decorators -->
-<line marker-end="url(#arrIO)" stroke="#9c27b0" stroke-width="1.5" x1="130" x2="220" y1="170" y2="200"></line>
-<line marker-end="url(#arrIO)" stroke="#9c27b0" stroke-width="1.5" x1="130" x2="220" y1="260" y2="260"></line>
-</svg>
+<pre class="mermaid">flowchart TB
+    subgraph ROOT["سلسله‌مراتب رابط‌های io.Reader و io.Writer"]
+        direction TB
+        R["io.Reader"]
+        W["io.Writer"]
+        subgraph RImpl[" "]
+            direction LR
+            RF["*os.File"]
+            RB["bytes.Reader"]
+            RC["net.Conn"]
+            RH["http.Request.Body"]
+        end
+        subgraph WImpl[" "]
+            direction LR
+            WF["*os.File"]
+            WB["bytes.Buffer"]
+            WH["http.ResponseWriter"]
+            WBR["bufio.Writer"]
+        end
+        R --> RImpl
+        W --> WImpl
+    end
+    subgraph DEC["دکوراتورها (Decorator)"]
+        direction TB
+        D1["io.TeeReader(r, w)"]
+        D2["io.MultiWriter(w1, w2, ...)"]
+        D3["io.LimitReader(r, n)"]
+        D4["bufio.NewReader / NewScanner"]
+    end
+
+    classDef ifaceBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937,font-weight:bold;
+    classDef implBox  fill:#f8fafc,stroke:#475569,stroke-width:1px,color:#1f2937;
+    classDef decBox   fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
+    class R,W ifaceBox;
+    class RF,RB,RC,RH,WF,WB,WH,WBR implBox;
+    class D1,D2,D3,D4 decBox;</pre>
 <figcaption>شکل ۶-۱-ب — سلسله‌مراتب رابط‌های <bdi dir="ltr">io.Reader/io.Writer</bdi> و دکوراتورهای آن‌ها</figcaption>
 </figure>
 
@@ -273,40 +245,28 @@ writer.Flush() // without this, data is lost!
 </div>
 
 <figure class="diagram" dir="ltr">
-<svg  font-family="sans-serif" viewBox="0 0 700 340" xmlns="http://www.w3.org/2000/svg" width="700" height="340">
-<defs><filter id="sh122" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
-<marker id="arrPHP6" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#777BB4" points="0 0, 10 3.5, 0 7"></polygon></marker>
-<marker id="arrBack6" markerheight="7" markerwidth="10" orient="auto" refx="0" refy="3.5"><polygon fill="#ff9800" points="10 0, 0 3.5, 10 7"></polygon></marker>
-</defs>
-<!-- PHP Side -->
-<rect fill="#777BB4" height="300" opacity="0.08" rx="12" stroke="#777BB4" stroke-dasharray="6,3" stroke-width="2" width="310" x="20" y="20"></rect>
-<text fill="#777BB4" font-size="16" font-weight="bold" text-anchor="middle" x="175" y="52" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">PHP</tspan> (مدل <tspan direction="ltr" unicode-bidi="embed">Request-Response</tspan>)</text>
-<rect fill="#f3e5f5" height="55" rx="8" stroke="#777BB4" stroke-width="1.5" width="230" x="60" y="80"></rect>
-<text fill="#4a148c" font-size="13" text-anchor="middle" x="175" y="100" direction="rtl" unicode-bidi="embed">درخواست <tspan direction="ltr" unicode-bidi="embed">HTTP</tspan> وارد می‌شود</text>
-<text fill="#666" font-size="12" text-anchor="middle" x="175" y="120" direction="ltr" unicode-bidi="embed">Apache / Nginx + PHP-FPM</text>
-<rect fill="#f3e5f5" height="55" rx="8" stroke="#777BB4" stroke-width="1.5" width="230" x="60" y="160"></rect>
-<text fill="#4a148c" font-size="13" text-anchor="middle" x="175" y="180" direction="rtl" unicode-bidi="embed">اسکریپت اجرا و خروجی تولید می‌کند</text>
-<text fill="#666" font-size="12" text-anchor="middle" x="175" y="200" direction="ltr" unicode-bidi="embed">file_get_contents / fwrite</text>
-<rect fill="#f3e5f5" height="55" rx="8" stroke="#777BB4" stroke-width="1.5" width="230" x="60" y="240"></rect>
-<text fill="#4a148c" font-size="13" text-anchor="middle" x="175" y="260" direction="rtl" unicode-bidi="embed">پاسخ ارسال و فرآیند تمام می‌شود</text>
-<text fill="#666" font-size="12" text-anchor="middle" x="175" y="280" direction="rtl" unicode-bidi="embed">حافظه آزاد می‌شود</text>
-<line marker-end="url(#arrPHP6)" stroke="#777BB4" stroke-width="1.5" x1="175" x2="175" y1="135" y2="160"></line>
-<line marker-end="url(#arrPHP6)" stroke="#777BB4" stroke-width="1.5" x1="175" x2="175" y1="215" y2="240"></line>
-<!-- Go Side -->
-<rect fill="#00ADD8" height="300" opacity="0.08" rx="12" stroke="#00ADD8" stroke-dasharray="6,3" stroke-width="2" width="310" x="370" y="20"></rect>
-<text fill="#00ADD8" font-size="16" font-weight="bold" text-anchor="middle" x="525" y="52" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">Go</tspan> (مدل فرآیند مداوم)</text>
-<rect fill="#e0f7fa" height="55" rx="8" stroke="#00ADD8" stroke-width="1.5" width="230" x="410" y="80"></rect>
-<text fill="#006064" font-size="13" text-anchor="middle" x="525" y="100" direction="rtl" unicode-bidi="embed">برنامه شروع و حافظه تخصیص می‌یابد</text>
-<text fill="#666" font-size="12" text-anchor="middle" x="525" y="120" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">Binary</tspan> مستقل / بدون وابستگی</text>
-<rect fill="#e0f7fa" height="55" rx="8" stroke="#00ADD8" stroke-width="1.5" width="230" x="410" y="160"></rect>
-<text fill="#006064" font-size="13" text-anchor="middle" x="525" y="180" direction="rtl" unicode-bidi="embed">گوروتین‌ها همزمان کار می‌کنند</text>
-<text fill="#666" font-size="12" text-anchor="middle" x="525" y="200" direction="ltr" unicode-bidi="embed">os.ReadFile / embed / signal</text>
-<rect fill="#e0f7fa" height="55" rx="8" stroke="#00ADD8" stroke-width="1.5" width="230" x="410" y="240"></rect>
-<text fill="#006064" font-size="13" text-anchor="middle" x="525" y="260" direction="rtl" unicode-bidi="embed">مدیریت سیگنال و خاموشی ایمن</text>
-<text fill="#666" font-size="12" text-anchor="middle" x="525" y="280" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">defer</tspan> / <tspan direction="ltr" unicode-bidi="embed">cleanup</tspan> قبل از خروج</text>
-<line marker-end="url(#arrPHP6)" stroke="#00ADD8" stroke-width="1.5" x1="525" x2="525" y1="135" y2="160"></line>
-<line marker-end="url(#arrPHP6)" stroke="#00ADD8" stroke-width="1.5" x1="525" x2="525" y1="215" y2="240"></line>
-</svg>
+<pre class="mermaid">flowchart LR
+    subgraph PHP["PHP (مدل Request-Response)"]
+        direction TB
+        P1["درخواست HTTP وارد می‌شود"] --> P2["Apache / Nginx + PHP-FPM"]
+        P2 --> P3["اسکریپت اجرا و خروجی تولید می‌کند"]
+        P3 --> P4["file_get_contents / fwrite"]
+        P4 --> P5["پاسخ ارسال و فرآیند تمام می‌شود"]
+        P5 --> P6["حافظه آزاد می‌شود"]
+    end
+    subgraph GO["Go (مدل فرآیند مداوم)"]
+        direction TB
+        G1["برنامه شروع و حافظه تخصیص می‌یابد"] --> G2["Binary مستقل / بدون وابستگی"]
+        G2 --> G3["گوروتین‌ها همزمان کار می‌کنند"]
+        G3 --> G4["os.ReadFile / embed / signal"]
+        G4 --> G5["مدیریت سیگنال و خاموشی ایمن"]
+        G5 --> G6["defer / cleanup قبل از خروج"]
+    end
+
+    classDef phpBox fill:#f5f0fb,stroke:#777BB4,stroke-width:1.5px,color:#1f2937;
+    classDef goBox  fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
+    class PHP phpBox;
+    class GO goBox;</pre>
 <figcaption>شکل ۶-۱-ج — مقایسه مدل تعامل <bdi dir="ltr">PHP</bdi> و <bdi dir="ltr">Go</bdi> با سیستم‌عامل</figcaption>
 </figure>
 
@@ -496,142 +456,64 @@ written, _ := io.CopyN(dst, src, 1024)
 <p>یکی از زیباترین جنبه‌های طراحی کتابخانه استاندارد <bdi dir="ltr">Go</bdi>، نحوه ترکیب رابط‌های <code dir="ltr">io.Reader</code> و <code dir="ltr">io.Writer</code> برای ساخت رابط‌های پیچیده‌تر است. در شکل زیر می‌بینید که چگونه رابط‌های ساده‌ی تک‌متدی، با ترکیب یکدیگر رابط‌های قوی‌تری می‌سازند. هر کدام از رابط‌های ترکیبی (مثل <code dir="ltr">io.ReadWriteCloser</code>) دقیقاً متدهای رابط‌های سازنده‌ی خود را به ارث می‌برند. این الگوی ترکیب رابط‌ها یکی از اصول بنیادین طراحی <bdi dir="ltr">Go</bdi> است و اجازه می‌دهد بدون ساختار سلسله‌مراتبی پیچیده، رفتارهای جدید را از ترکیب رفتارهای ساده ایجاد کنید.</p>
 
 <figure class="diagram" dir="ltr">
-<svg font-family="sans-serif" viewBox="0 0 780 560" xmlns="http://www.w3.org/2000/svg" width="780" height="560">
-<defs><filter id="sh123" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
-<marker id="arrIOTree" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#00ADD8" points="0 0, 10 3.5, 0 7"></polygon></marker>
-<marker id="arrCombined" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#FF9800" points="0 0, 10 3.5, 0 7"></polygon></marker>
-<marker id="arrConcrete" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#4CAF50" points="0 0, 10 3.5, 0 7"></polygon></marker>
-</defs>
-<rect fill="#fafafa" height="560" rx="8" stroke="#e0e0e0" stroke-width="1.5" width="780" x="0" y="0"></rect>
-<text fill="#333" font-size="16" font-weight="bold" text-anchor="middle" x="390" y="30" direction="rtl" unicode-bidi="embed">سلسله‌مراتب رابط‌های <tspan direction="ltr" unicode-bidi="embed">io.Reader</tspan> و <tspan direction="ltr" unicode-bidi="embed">io.Writer</tspan></text>
+<pre class="mermaid">flowchart TB
+    subgraph ROOT["سلسله‌مراتب رابط‌های io.Reader و io.Writer"]
+        direction TB
+        R["io.Reader<br/>Read(p &#91;&#93;byte) (n int, err error)"]
+        W["io.Writer<br/>Write(p &#91;&#93;byte) (n int, err error)"]
+        C["io.Closer<br/>Close() error"]
+    end
+    subgraph COMP["رابط‌های ترکیبی"]
+        direction TB
+        RW["io.ReadWriter<br/>Reader + Writer"]
+        RC2["io.ReadCloser<br/>Reader + Closer"]
+        WC["io.WriteCloser<br/>Writer + Closer"]
+        RWC["io.ReadWriteCloser<br/>Reader + Writer + Closer"]
+    end
+    R --> RW
+    W --> RW
+    R --> RC2
+    C --> RC2
+    W --> WC
+    C --> WC
+    R --> RWC
+    W --> RWC
+    C --> RWC
 
-<!-- io.Reader root -->
-<rect fill="#00ADD8" height="50" rx="10" stroke="#00ADD8" stroke-width="2" width="180" x="50" y="55"></rect>
-<text fill="#fff" font-size="14" font-weight="bold" text-anchor="middle" x="140" y="77" direction="ltr" unicode-bidi="embed">io.Reader</text>
-<text fill="#fff" font-size="10" text-anchor="middle" x="140" y="95" direction="ltr" unicode-bidi="embed">Read(p []byte) (n int, err error)</text>
+    subgraph CONC["Concrete Types"]
+        direction TB
+        CF["*os.File<br/>ReadWriteCloser"]
+        CB["bytes.Buffer<br/>ReadWriter"]
+        CC["net.Conn<br/>ReadWriteCloser"]
+        CH["http.Response.Body<br/>ReadCloser"]
+        CBR["bufio.Reader<br/>Reader"]
+        CBW["bufio.Writer<br/>Writer"]
+        CRW["http.ResponseWriter<br/>Writer + Flusher + Hijacker"]
+        CG["compress/gzip<br/>ReadCloser"]
+    end
 
-<!-- io.Writer root -->
-<rect fill="#00ADD8" height="50" rx="10" stroke="#00ADD8" stroke-width="2" width="180" x="550" y="55"></rect>
-<text fill="#fff" font-size="14" font-weight="bold" text-anchor="middle" x="640" y="77" direction="ltr" unicode-bidi="embed">io.Writer</text>
-<text fill="#fff" font-size="10" text-anchor="middle" x="640" y="95" direction="ltr" unicode-bidi="embed">Write(p []byte) (n int, err error)</text>
+    subgraph IFACE["Interface Composition"]
+        direction TB
+        IC1["type ReadWriter interface &#123;"]
+        IC2["Reader  // embeds io.Reader"]
+        IC3["Writer  // embeds io.Writer"]
+        IC4["&#125;"]
+        IC1 --- IC2 --- IC3 --- IC4
+        ICN1(["ترکیب دو رابط ساده → یک رابط قدرتمند"])
+        ICN2(["هر نوعی که هم Read و هم Write را پیاده‌سازی کند، به‌طور خودکار io.ReadWriter را هم ارضا می‌کند."])
+        ICN3(["قانون طلایی: رابط‌های کوچک بسازید و آن‌ها را ترکیب کنید — نه رابط‌های بزرگ"])
+    end
 
-<!-- io.Closer -->
-<rect fill="#00ADD8" height="50" rx="10" stroke="#00ADD8" stroke-width="2" width="180" x="300" y="55"></rect>
-<text fill="#fff" font-size="14" font-weight="bold" text-anchor="middle" x="390" y="77" direction="ltr" unicode-bidi="embed">io.Closer</text>
-<text fill="#fff" font-size="10" text-anchor="middle" x="390" y="95" direction="ltr" unicode-bidi="embed">Close() error</text>
-
-<!-- Combined interfaces section label -->
-<rect fill="#FF9800" height="24" rx="4" stroke="none" width="200" x="290" y="125"></rect>
-<text fill="#fff" font-size="11" font-weight="bold" text-anchor="middle" x="390" y="142" direction="rtl" unicode-bidi="embed">رابط‌های ترکیبی</text>
-
-<!-- io.ReadWriter -->
-<rect fill="#fff3e0" height="36" rx="6" stroke="#FF9800" stroke-width="1.5" width="150" x="50" y="165"></rect>
-<text fill="#e65100" font-size="12" font-weight="bold" text-anchor="middle" x="125" y="188" direction="ltr" unicode-bidi="embed">io.ReadWriter</text>
-<text fill="#999" font-size="9" text-anchor="middle" x="125" y="200" direction="ltr" unicode-bidi="embed">Reader + Writer</text>
-
-<!-- io.ReadCloser -->
-<rect fill="#fff3e0" height="36" rx="6" stroke="#FF9800" stroke-width="1.5" width="140" x="220" y="165"></rect>
-<text fill="#e65100" font-size="12" font-weight="bold" text-anchor="middle" x="290" y="188" direction="ltr" unicode-bidi="embed">io.ReadCloser</text>
-<text fill="#999" font-size="9" text-anchor="middle" x="290" y="200" direction="ltr" unicode-bidi="embed">Reader + Closer</text>
-
-<!-- io.WriteCloser -->
-<rect fill="#fff3e0" height="36" rx="6" stroke="#FF9800" stroke-width="1.5" width="150" x="380" y="165"></rect>
-<text fill="#e65100" font-size="12" font-weight="bold" text-anchor="middle" x="455" y="188" direction="ltr" unicode-bidi="embed">io.WriteCloser</text>
-<text fill="#999" font-size="9" text-anchor="middle" x="455" y="200" direction="ltr" unicode-bidi="embed">Writer + Closer</text>
-
-<!-- io.ReadWriteCloser -->
-<rect fill="#fff3e0" height="36" rx="6" stroke="#FF9800" stroke-width="2" width="170" x="570" y="165"></rect>
-<text fill="#e65100" font-size="12" font-weight="bold" text-anchor="middle" x="655" y="188" direction="ltr" unicode-bidi="embed">io.ReadWriteCloser</text>
-<text fill="#999" font-size="9" text-anchor="middle" x="655" y="200" direction="ltr" unicode-bidi="embed">Reader + Writer + Closer</text>
-
-<!-- Arrows from roots to combined -->
-<!-- Reader → ReadWriter -->
-<line marker-end="url(#arrCombined)" stroke="#FF9800" stroke-width="1.5" x1="140" x2="125" y1="105" y2="165"></line>
-<!-- Writer → ReadWriter -->
-<line marker-end="url(#arrCombined)" stroke="#FF9800" stroke-width="1.5" x1="590" x2="175" y1="105" y2="183"></line>
-<!-- Reader → ReadCloser -->
-<line marker-end="url(#arrCombined)" stroke="#FF9800" stroke-width="1.5" x1="180" x2="290" y1="105" y2="165"></line>
-<!-- Closer → ReadCloser -->
-<line marker-end="url(#arrCombined)" stroke="#FF9800" stroke-width="1.5" x1="370" x2="310" y1="105" y2="165"></line>
-<!-- Writer → WriteCloser -->
-<line marker-end="url(#arrCombined)" stroke="#FF9800" stroke-width="1.5" x1="610" x2="455" y1="105" y2="165"></line>
-<!-- Closer → WriteCloser -->
-<line marker-end="url(#arrCombined)" stroke="#FF9800" stroke-width="1.5" x1="410" x2="500" y1="105" y2="165"></line>
-<!-- Reader → ReadWriteCloser -->
-<line marker-end="url(#arrCombined)" stroke="#FF9800" stroke-width="1.2" stroke-dasharray="4,2" x1="200" x2="620" y1="100" y2="165"></line>
-<!-- Writer → ReadWriteCloser -->
-<line marker-end="url(#arrCombined)" stroke="#FF9800" stroke-width="1.2" stroke-dasharray="4,2" x1="660" x2="660" y1="105" y2="165"></line>
-<!-- Closer → ReadWriteCloser -->
-<line marker-end="url(#arrCombined)" stroke="#FF9800" stroke-width="1.2" stroke-dasharray="4,2" x1="440" x2="650" y1="100" y2="165"></line>
-
-<!-- Concrete types section label -->
-<rect fill="#4CAF50" height="24" rx="4" stroke="none" width="200" x="290" y="220"></rect>
-<text fill="#fff" font-size="11" font-weight="bold" text-anchor="middle" x="390" y="237" direction="rtl" unicode-bidi="embed">Concrete Types</text>
-
-<!-- os.File -->
-<rect fill="#e8f5e9" height="42" rx="8" stroke="#4CAF50" stroke-width="1.5" width="155" x="20" y="260"></rect>
-<text fill="#2e7d32" font-size="13" font-weight="bold" text-anchor="middle" x="97" y="278" direction="ltr" unicode-bidi="embed">*os.File</text>
-<text fill="#555" font-size="9" text-anchor="middle" x="97" y="294" direction="ltr" unicode-bidi="embed">ReadWriteCloser</text>
-
-<!-- bytes.Buffer -->
-<rect fill="#e8f5e9" height="42" rx="8" stroke="#4CAF50" stroke-width="1.5" width="155" x="195" y="260"></rect>
-<text fill="#2e7d32" font-size="13" font-weight="bold" text-anchor="middle" x="272" y="278" direction="ltr" unicode-bidi="embed">bytes.Buffer</text>
-<text fill="#555" font-size="9" text-anchor="middle" x="272" y="294" direction="ltr" unicode-bidi="embed">ReadWriter</text>
-
-<!-- net.Conn -->
-<rect fill="#e8f5e9" height="42" rx="8" stroke="#4CAF50" stroke-width="1.5" width="155" x="370" y="260"></rect>
-<text fill="#2e7d32" font-size="13" font-weight="bold" text-anchor="middle" x="447" y="278" direction="ltr" unicode-bidi="embed">net.Conn</text>
-<text fill="#555" font-size="9" text-anchor="middle" x="447" y="294" direction="ltr" unicode-bidi="embed">ReadWriteCloser</text>
-
-<!-- http.Response.Body -->
-<rect fill="#e8f5e9" height="42" rx="8" stroke="#4CAF50" stroke-width="1.5" width="175" x="545" y="260"></rect>
-<text fill="#2e7d32" font-size="12" font-weight="bold" text-anchor="middle" x="632" y="278" direction="ltr" unicode-bidi="embed">http.Response.Body</text>
-<text fill="#555" font-size="9" text-anchor="middle" x="632" y="294" direction="ltr" unicode-bidi="embed">ReadCloser</text>
-
-<!-- bufio.Reader -->
-<rect fill="#e8f5e9" height="42" rx="8" stroke="#4CAF50" stroke-width="1.5" width="155" x="20" y="320"></rect>
-<text fill="#2e7d32" font-size="13" font-weight="bold" text-anchor="middle" x="97" y="338" direction="ltr" unicode-bidi="embed">bufio.Reader</text>
-<text fill="#555" font-size="9" text-anchor="middle" x="97" y="354" direction="ltr" unicode-bidi="embed">Reader</text>
-
-<!-- bufio.Writer -->
-<rect fill="#e8f5e9" height="42" rx="8" stroke="#4CAF50" stroke-width="1.5" width="155" x="195" y="320"></rect>
-<text fill="#2e7d32" font-size="13" font-weight="bold" text-anchor="middle" x="272" y="338" direction="ltr" unicode-bidi="embed">bufio.Writer</text>
-<text fill="#555" font-size="9" text-anchor="middle" x="272" y="354" direction="ltr" unicode-bidi="embed">Writer</text>
-
-<!-- http.ResponseWriter -->
-<rect fill="#e8f5e9" height="42" rx="8" stroke="#4CAF50" stroke-width="1.5" width="175" x="370" y="320"></rect>
-<text fill="#2e7d32" font-size="12" font-weight="bold" text-anchor="middle" x="457" y="338" direction="ltr" unicode-bidi="embed">http.ResponseWriter</text>
-<text fill="#555" font-size="9" text-anchor="middle" x="457" y="354" direction="ltr" unicode-bidi="embed">Writer + Flusher + Hijacker</text>
-
-<!-- gzip.Reader -->
-<rect fill="#e8f5e9" height="42" rx="8" stroke="#4CAF50" stroke-width="1.5" width="155" x="560" y="320"></rect>
-<text fill="#2e7d32" font-size="13" font-weight="bold" text-anchor="middle" x="637" y="338" direction="ltr" unicode-bidi="embed">compress/gzip</text>
-<text fill="#555" font-size="9" text-anchor="middle" x="637" y="354" direction="ltr" unicode-bidi="embed">ReadCloser</text>
-
-<!-- Arrows from combined to concrete -->
-<line marker-end="url(#arrConcrete)" stroke="#4CAF50" stroke-width="1" stroke-dasharray="4,2" x1="125" x2="97" y1="201" y2="260"></line>
-<line marker-end="url(#arrConcrete)" stroke="#4CAF50" stroke-width="1" stroke-dasharray="4,2" x1="125" x2="272" y1="201" y2="260"></line>
-<line marker-end="url(#arrConcrete)" stroke="#4CAF50" stroke-width="1" stroke-dasharray="4,2" x1="290" x2="97" y1="201" y2="260"></line>
-<line marker-end="url(#arrConcrete)" stroke="#4CAF50" stroke-width="1" stroke-dasharray="4,2" x1="290" x2="632" y1="201" y2="260"></line>
-<line marker-end="url(#arrConcrete)" stroke="#4CAF50" stroke-width="1" stroke-dasharray="4,2" x1="455" x2="447" y1="201" y2="260"></line>
-<line marker-end="url(#arrConcrete)" stroke="#4CAF50" stroke-width="1" stroke-dasharray="4,2" x1="655" x2="447" y1="201" y2="260"></line>
-
-<!-- Composition info box -->
-<rect fill="#f3e5f5" height="120" rx="10" stroke="#9c27b0" stroke-width="1.5" width="720" x="30" y="390"></rect>
-<text fill="#7b1fa2" font-size="13" font-weight="bold" text-anchor="middle" x="390" y="418" direction="rtl" unicode-bidi="embed">Interface Composition</text>
-<line stroke="#9c27b0" stroke-width="0.5" x1="50" x2="730" y1="430" y2="430"></line>
-<text fill="#4a148c" font-size="11" text-anchor="start" x="50" y="450" direction="ltr" unicode-bidi="embed">type ReadWriter interface {</text>
-<text fill="#4a148c" font-size="11" text-anchor="start" x="70" y="468" direction="ltr" unicode-bidi="embed">Reader  // embeds io.Reader</text>
-<text fill="#4a148c" font-size="11" text-anchor="start" x="70" y="486" direction="ltr" unicode-bidi="embed">Writer  // embeds io.Writer</text>
-<text fill="#4a148c" font-size="11" text-anchor="start" x="50" y="504" direction="ltr" unicode-bidi="embed">}</text>
-<text fill="#555" font-size="10" text-anchor="start" x="300" y="450" direction="rtl" unicode-bidi="embed">ترکیب دو رابط ساده → یک رابط قدرتمند</text>
-<text fill="#555" font-size="10" text-anchor="start" x="300" y="470" direction="rtl" unicode-bidi="embed">هر نوعی که هم <tspan direction="ltr" unicode-bidi="embed">Read</tspan> و هم <tspan direction="ltr" unicode-bidi="embed">Write</tspan> را پیاده‌سازی کند،</text>
-<text fill="#555" font-size="10" text-anchor="start" x="300" y="490" direction="rtl" unicode-bidi="embed">به‌طور خودکار <tspan direction="ltr" unicode-bidi="embed">io.ReadWriter</tspan> را هم ارضا می‌کند.</text>
-
-<!-- Golden rule bar -->
-<rect fill="#FF9800" height="28" rx="4" stroke="none" width="720" x="30" y="525"></rect>
-<text fill="#fff" font-size="12" font-weight="bold" text-anchor="middle" x="390" y="544" direction="rtl" unicode-bidi="embed">قانون طلایی: رابط‌های کوچک بسازید و آن‌ها را ترکیب کنید — نه رابط‌های بزرگ</text>
-</svg>
+    classDef baseBox  fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937,font-weight:bold;
+    classDef compBox  fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
+    classDef concBox  fill:#f8fafc,stroke:#475569,stroke-width:1px,color:#1f2937;
+    classDef ifaceBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1px,color:#1f2937;
+    classDef noteBox  fill:#fef2f2,stroke:#ef4444,stroke-width:1px,color:#1f2937,font-style:italic;
+    class R,W,C baseBox;
+    class RW,RC2,WC,RWC compBox;
+    class CF,CB,CC,CH,CBR,CBW,CRW,CG concBox;
+    class IC1,IC2,IC3,IC4 ifaceBox;
+    class ICN1,ICN2,ICN3 noteBox;</pre>
 <figcaption>شکل ۶-۱-د — سلسله‌مراتب کامل رابط‌های <bdi dir="ltr">io.Reader/io.Writer</bdi>: از رابط‌های بنیادین تا انواع عینی</figcaption>
 </figure>
 

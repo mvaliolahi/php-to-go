@@ -87,48 +87,28 @@
 </div>
 
 <figure class="diagram" dir="ltr">
-<svg height="320" viewBox="0 0 650 320" width="650" xmlns="http://www.w3.org/2000/svg">
-<defs><filter id="sh163" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
-<marker id="arrow10" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5">
-<polygon fill="#555" points="0 0, 10 3.5, 0 7"></polygon>
-</marker>
-</defs>
-<!-- Title -->
-<text class="title" text-anchor="middle" x="325" y="25" direction="rtl" unicode-bidi="embed">گردش کار دیباگ: از <tspan direction="ltr" unicode-bidi="embed">PHP</tspan> به <tspan direction="ltr" unicode-bidi="embed">Go</tspan></text>
-<!-- PHP side -->
-<rect class="box-php" height="45" width="180" x="20" y="50"></rect>
-<text text-anchor="middle" x="110" y="70" direction="ltr" unicode-bidi="embed">var_dump / dd()</text>
-<text class="subtitle" text-anchor="middle" x="110" y="86" direction="rtl" unicode-bidi="embed">خروجی سریع متغیر</text>
-<line marker-end="url(#arrow10)" stroke="#777BB4" stroke-width="2" x1="110" x2="110" y1="95" y2="120"></line>
-<rect class="box-php" height="45" width="180" x="20" y="120"></rect>
-<text text-anchor="middle" x="110" y="140" direction="ltr" unicode-bidi="embed">Xdebug + IDE</text>
-<text class="subtitle" text-anchor="middle" x="110" y="156" direction="rtl" unicode-bidi="embed">دیباگر گرافیکی</text>
-<line marker-end="url(#arrow10)" stroke="#777BB4" stroke-width="2" x1="110" x2="110" y1="165" y2="190"></line>
-<rect class="box-php" height="45" width="180" x="20" y="190"></rect>
-<text text-anchor="middle" x="110" y="210" direction="ltr" unicode-bidi="embed">Laravel Telescope</text>
-<text class="subtitle" text-anchor="middle" x="110" y="226" direction="rtl" unicode-bidi="embed">مانیتورینگ اپلیکیشن</text>
-<!-- Go side -->
-<rect class="box-go" height="45" width="180" x="450" y="50"></rect>
-<text text-anchor="middle" x="540" y="70" direction="ltr" unicode-bidi="embed">fmt.Println / log</text>
-<text class="subtitle" text-anchor="middle" x="540" y="86" direction="rtl" unicode-bidi="embed">خروجی سریع متغیر</text>
-<line marker-end="url(#arrow10)" stroke="#00ADD8" stroke-width="2" x1="540" x2="540" y1="95" y2="120"></line>
-<rect class="box-go" height="45" width="180" x="450" y="120"></rect>
-<text text-anchor="middle" x="540" y="140" direction="ltr" unicode-bidi="embed">Delve Debugger</text>
-<text class="subtitle" text-anchor="middle" x="540" y="156" direction="rtl" unicode-bidi="embed">دیباگر تخصصی <tspan direction="ltr" unicode-bidi="embed">Go</tspan></text>
-<line marker-end="url(#arrow10)" stroke="#00ADD8" stroke-width="2" x1="540" x2="540" y1="165" y2="190"></line>
-<rect class="box-go" height="45" width="180" x="450" y="190"></rect>
-<text text-anchor="middle" x="540" y="210" direction="ltr" unicode-bidi="embed">pprof + trace</text>
-<text class="subtitle" text-anchor="middle" x="540" y="226" direction="rtl" unicode-bidi="embed">پروفایلینگ عملکرد</text>
-<!-- VS Code in the middle -->
-<rect class="box-neutral" height="50" width="180" x="235" y="250"></rect>
-<text text-anchor="middle" x="325" y="272" direction="ltr" unicode-bidi="embed">VS Code + Go Extension</text>
-<text class="subtitle" text-anchor="middle" x="325" y="288" direction="rtl" unicode-bidi="embed">رابط گرافیکی مشترک</text>
-<line marker-end="url(#arrow10)" stroke="#999" stroke-dasharray="5,3" stroke-width="1.5" x1="110" x2="280" y1="235" y2="260"></line>
-<line marker-end="url(#arrow10)" stroke="#999" stroke-dasharray="5,3" stroke-width="1.5" x1="540" x2="370" y1="235" y2="260"></line>
-<!-- Labels -->
-<text fill="#777BB4" font-weight="bold" text-anchor="middle" x="110" y="45" direction="ltr" unicode-bidi="embed">PHP</text>
-<text fill="#00ADD8" font-weight="bold" text-anchor="middle" x="540" y="45" direction="ltr" unicode-bidi="embed">Go</text>
-</svg>
+<pre class="mermaid">flowchart LR
+    subgraph HEADER["گردش کار دیباگ: از PHP به Go"]
+        direction LR
+        subgraph PHP["PHP"]
+            direction TB
+            P1["var_dump / dd()<br/>خروجی سریع متغیر"]
+            P2["Xdebug + IDE<br/>دیباگر گرافیکی"]
+            P3["Laravel Telescope<br/>مانیتورینگ اپلیکیشن"]
+        end
+        subgraph GO["Go"]
+            direction TB
+            G1["fmt.Println / log<br/>خروجی سریع متغیر"]
+            G2["Delve Debugger<br/>دیباگر تخصصی Go"]
+            G3["pprof + trace<br/>پروفایلینگ عملکرد"]
+            G4["VS Code + Go Extension<br/>رابط گرافیکی مشترک"]
+        end
+    end
+
+    classDef phpBox fill:#f5f0fb,stroke:#777BB4,stroke-width:1.5px,color:#1f2937;
+    classDef goBox  fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
+    class PHP phpBox;
+    class GO goBox;</pre>
 <figcaption>شکل ۱۰-۱: مقایسه ابزارهای دیباگ در <bdi dir="ltr">PHP</bdi> و <bdi dir="ltr">Go</bdi></figcaption>
 </figure>
 
@@ -409,65 +389,19 @@ func main() {
 <p>برنامه‌نویسان Go معمولاً با دسته‌ای از مشکلات تکراری مواجه می‌شوند. در اینجا سناریوهای رایج و راه‌حل‌های آن‌ها را بررسی می‌کنیم:</p>
 
 <figure class="diagram" dir="ltr">
-<svg height="250" viewBox="0 0 700 250" width="700" xmlns="http://www.w3.org/2000/svg">
-<defs><filter id="sh164" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
-<marker id="arrowDbg" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#555" points="0 0, 10 3.5, 0 7"></polygon></marker>
-<marker id="arrowDbgBack" markerheight="7" markerwidth="10" orient="auto" refx="0" refy="3.5"><polygon fill="#f39c12" points="10 0, 0 3.5, 10 7"></polygon></marker>
-</defs>
-<rect fill="#fafafa" height="250" rx="8" width="700" x="0" y="0"></rect>
-<text fill="#333" font-size="15" font-weight="bold" text-anchor="middle" x="350" y="28" direction="rtl" unicode-bidi="embed">چرخه دیباگ در <tspan direction="ltr" unicode-bidi="embed">Go</tspan>: بازتولید ← جداسازی ← تشخیص ← رفع</text>
+<pre class="mermaid">flowchart LR
+    subgraph HEADER["چرخه دیباگ در Go: بازتولید ← جداسازی ← تشخیص ← رفع"]
+        direction LR
+        S1["۱. بازتولید<br/>Reproduce<br/>مشکل را تکرار کنید<br/>go test -race, curl"]
+        S2["۲. جداسازی<br/>Isolate<br/>محدوده مشکل را کوچک کنید<br/>GODEBUG, log<br/>git bisect, Delve"]
+        S3["۳. تشخیص<br/>Diagnose<br/>ریشه مشکل را بیابید<br/>Conditional break<br/>pprof, go tool trace<br/>Delve print, stack"]
+        S4["۴. رفع<br/>Fix<br/>تغییر و تأیید<br/>go test -bench<br/>go test -race, CI"]
+        S1 --> S2 --> S3 --> S4
+    end
+    S4 -.->|اگر مشکل رفع نشد، به مرحله قبل بازگردید| S3
 
-<!-- Step 1: Reproduce -->
-<rect fill="#e91e63" height="65" rx="8" width="140" x="30" y="60"></rect>
-<text fill="#fff" font-size="13" font-weight="bold" text-anchor="middle" x="100" y="85" direction="rtl" unicode-bidi="embed">۱. بازتولید</text>
-<text fill="#fce4ec" font-size="9" text-anchor="middle" x="100" y="102" direction="ltr" unicode-bidi="embed">Reproduce</text>
-<text fill="#fce4ec" font-size="8" text-anchor="middle" x="100" y="116" direction="rtl" unicode-bidi="embed">مشکل را تکرار کنید</text>
-
-<line marker-end="url(#arrowDbg)" stroke="#555" stroke-width="2" x1="170" x2="205" y1="92" y2="92"></line>
-
-<!-- Step 2: Isolate -->
-<rect fill="#FF9800" height="65" rx="8" width="140" x="205" y="60"></rect>
-<text fill="#fff" font-size="13" font-weight="bold" text-anchor="middle" x="275" y="85" direction="rtl" unicode-bidi="embed">۲. جداسازی</text>
-<text fill="#fff3e0" font-size="9" text-anchor="middle" x="275" y="102" direction="ltr" unicode-bidi="embed">Isolate</text>
-<text fill="#fff3e0" font-size="8" text-anchor="middle" x="275" y="116" direction="rtl" unicode-bidi="embed">محدوده مشکل را کوچک کنید</text>
-
-<line marker-end="url(#arrowDbg)" stroke="#555" stroke-width="2" x1="345" x2="380" y1="92" y2="92"></line>
-
-<!-- Step 3: Diagnose -->
-<rect fill="#00ADD8" height="65" rx="8" width="140" x="380" y="60"></rect>
-<text fill="#fff" font-size="13" font-weight="bold" text-anchor="middle" x="450" y="85" direction="rtl" unicode-bidi="embed">۳. تشخیص</text>
-<text fill="#e0f7fa" font-size="9" text-anchor="middle" x="450" y="102" direction="ltr" unicode-bidi="embed">Diagnose</text>
-<text fill="#e0f7fa" font-size="8" text-anchor="middle" x="450" y="116" direction="rtl" unicode-bidi="embed">ریشه مشکل را بیابید</text>
-
-<line marker-end="url(#arrowDbg)" stroke="#555" stroke-width="2" x1="520" x2="555" y1="92" y2="92"></line>
-
-<!-- Step 4: Fix -->
-<rect fill="#27ae60" height="65" rx="8" width="140" x="555" y="60"></rect>
-<text fill="#fff" font-size="13" font-weight="bold" text-anchor="middle" x="625" y="85" direction="rtl" unicode-bidi="embed">۴. رفع</text>
-<text fill="#e8f5e9" font-size="9" text-anchor="middle" x="625" y="102" direction="ltr" unicode-bidi="embed">Fix</text>
-<text fill="#e8f5e9" font-size="8" text-anchor="middle" x="625" y="116" direction="rtl" unicode-bidi="embed">تغییر و تأیید</text>
-
-<!-- Back arrow: Fix → Reproduce if not resolved -->
-<path d="M 625 125 Q 625 160 350 170 Q 100 160 100 125" fill="none" marker-start="url(#arrowDbgBack)" stroke="#f39c12" stroke-dasharray="6,3" stroke-width="1.5"></path>
-<text fill="#f39c12" font-size="9" text-anchor="middle" x="350" y="180" direction="rtl" unicode-bidi="embed">اگر مشکل رفع نشد، به مرحله قبل بازگردید</text>
-
-<!-- Tools per step -->
-<rect fill="#fce4ec" height="50" rx="4" stroke="#e91e63" stroke-width="1" width="140" x="30" y="195"></rect>
-<text fill="#880E4F" font-size="8" text-anchor="middle" x="100" y="212" direction="ltr" unicode-bidi="embed">go test -race, curl</text>
-<text fill="#880E4F" font-size="8" text-anchor="middle" x="100" y="226" direction="ltr" unicode-bidi="embed">GODEBUG, log</text>
-
-<rect fill="#fff3e0" height="50" rx="4" stroke="#FF9800" stroke-width="1" width="140" x="205" y="195"></rect>
-<text fill="#E65100" font-size="8" text-anchor="middle" x="275" y="212" direction="ltr" unicode-bidi="embed">git bisect, Delve</text>
-<text fill="#E65100" font-size="8" text-anchor="middle" x="275" y="226" direction="ltr" unicode-bidi="embed">Conditional break</text>
-
-<rect fill="#e0f7fa" height="50" rx="4" stroke="#00ADD8" stroke-width="1" width="140" x="380" y="195"></rect>
-<text fill="#00695C" font-size="8" text-anchor="middle" x="450" y="212" direction="ltr" unicode-bidi="embed">pprof, go tool trace</text>
-<text fill="#00695C" font-size="8" text-anchor="middle" x="450" y="226" direction="ltr" unicode-bidi="embed">Delve print, stack</text>
-
-<rect fill="#e8f5e9" height="50" rx="4" stroke="#27ae60" stroke-width="1" width="140" x="555" y="195"></rect>
-<text fill="#2E7D32" font-size="8" text-anchor="middle" x="625" y="212" direction="ltr" unicode-bidi="embed">go test -bench</text>
-<text fill="#2E7D32" font-size="8" text-anchor="middle" x="625" y="226" direction="ltr" unicode-bidi="embed">go test -race, CI</text>
-</svg>
+    classDef stepBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
+    class S1,S2,S3,S4 stepBox;</pre>
 <figcaption>شکل ۱۰-۲: چرخه دیباگ در <bdi dir="ltr">Go</bdi> — از بازتولید مشکل تا رفع نهایی با ابزارهای مناسب هر مرحله</figcaption>
 </figure>
 
@@ -729,99 +663,39 @@ func monitorMemory(ctx context.Context) {
 <div class="tip"><strong>نکته عملی:</strong> تابع <code>runtime.ReadMemStats</code> باعث stop-the-world می‌شود (تمام goroutine‌ها متوقف می‌شوند). در برنامه‌های حساس به تأخیر، از این تابع با احتیاط استفاده کنید. جایگزین سبک‌تر، <code>runtime.NumGoroutine()</code> است که بدون توقف کار می‌کند و برای مانیتورینگ نشت goroutine مناسب است.</div>
 
 <figure class="diagram" dir="ltr">
-<svg height="450" viewBox="0 0 700 450" width="700" xmlns="http://www.w3.org/2000/svg">
-<defs><filter id="sh165" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
-<marker id="arrowdbg2" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5">
-<polygon fill="#00ADD8" points="0 0, 10 3.5, 0 7"></polygon>
-</marker>
-</defs>
-<rect fill="#fafafa" height="450" rx="8" width="700" x="0" y="0"></rect>
-<text fill="#333" font-size="16" font-weight="bold" text-anchor="middle" x="350" y="28" direction="rtl" unicode-bidi="embed">درخت تصمیم دیباگ: انتخاب ابزار مناسب</text>
+<pre class="mermaid">flowchart TB
+    subgraph HEADER["درخت تصمیم دیباگ: انتخاب ابزار مناسب"]
+        direction TB
+        Q0["مشکل شناسایی شد"]
+        Q0 --> Q1{"کندی عملکرد؟"}
+        Q0 --> Q2{"مشکل همزمانی؟"}
+        Q0 --> Q3{"مشکل حافظه؟"}
+        Q0 --> Q4{"خطای منطقی / Runtime؟"}
 
-<!-- Root: Problem identified -->
-<rect fill="#e91e63" height="45" rx="6" width="180" x="260" y="50"></rect>
-<text fill="#fff" font-weight="bold" text-anchor="middle" x="350" y="77" direction="rtl" unicode-bidi="embed">مشکل شناسایی شد</text>
+        Q1 -- "بله" --> A1A["pprof CPU<br/>نقاط داغ CPU<br/>Flame Graph"]
+        Q1 -- "بله" --> A1B["go tool trace<br/>GC pause<br/>Scheduler"]
 
-<!-- Level 1 branches -->
-<line stroke="#555" stroke-width="2" x1="260" x2="130" y1="95" y2="130"></line>
-<line stroke="#555" stroke-width="2" x1="350" x2="350" y1="95" y2="130"></line>
-<line stroke="#555" stroke-width="2" x1="440" x2="570" y1="95" y2="130"></line>
+        Q2 -- "بله" --> A2A["go test -race<br/>Data race<br/>Atomic issues"]
+        Q2 -- "بله" --> A2B["pprof goroutine<br/>Goroutine leak<br/>Deadlock"]
 
-<!-- Branch 1: Performance -->
-<rect fill="#FF9800" height="40" rx="6" width="160" x="50" y="130"></rect>
-<text fill="#fff" font-weight="bold" text-anchor="middle" x="130" y="155" direction="rtl" unicode-bidi="embed">کندی عملکرد</text>
+        Q3 -- "بله" --> A3A["pprof heap<br/>نشت حافظه<br/>-base compare"]
+        Q3 -- "بله" --> A3B["-gcflags -m<br/>Escape analysis<br/>تخصیص heap"]
 
-<!-- Branch 2: Concurrency -->
-<rect fill="#9C27B0" height="40" rx="6" width="160" x="270" y="130"></rect>
-<text fill="#fff" font-weight="bold" text-anchor="middle" x="350" y="155" direction="rtl" unicode-bidi="embed">مشکل همزمانی</text>
+        Q4 -- "بله" --> A4A["Delve debugger<br/>break, step, print<br/>Conditional BP"]
+        Q4 -- "بله" --> A4B["Stack trace<br/>Panic location<br/>recover()"]
+        Q4 -- "بله" --> A4C["GODEBUG<br/>schedtrace<br/>gctrace"]
+    end
 
-<!-- Branch 3: Memory -->
-<rect fill="#2196F3" height="40" rx="6" width="160" x="490" y="130"></rect>
-<text fill="#fff" font-weight="bold" text-anchor="middle" x="570" y="155" direction="rtl" unicode-bidi="embed">مشکل حافظه</text>
+    note(["قانون طلایی: ابتدا pprof/trace برای اندازه‌گیری ← سپس Delve برای بررسی عمیق ← در نهایت رفع مشکل"])
 
-<!-- Level 2: Performance sub-branches -->
-<line stroke="#FF9800" stroke-width="1.5" x1="130" x2="70" y1="170" y2="195"></line>
-<line stroke="#FF9800" stroke-width="1.5" x1="130" x2="190" y1="170" y2="195"></line>
-<rect fill="#fff3e0" height="65" rx="4" stroke="#FF9800" stroke-width="1" width="110" x="15" y="195"></rect>
-<text fill="#E65100" font-size="9" font-weight="bold" text-anchor="middle" x="70" y="213" direction="ltr" unicode-bidi="embed">pprof CPU</text>
-<text fill="#BF360C" font-size="8" text-anchor="middle" x="70" y="228" direction="rtl" unicode-bidi="embed">نقاط داغ <tspan direction="ltr" unicode-bidi="embed">CPU</tspan></text>
-<text fill="#BF360C" font-size="8" text-anchor="middle" x="70" y="242" direction="ltr" unicode-bidi="embed">Flame Graph</text>
-<rect fill="#fff3e0" height="65" rx="4" stroke="#FF9800" stroke-width="1" width="110" x="135" y="195"></rect>
-<text fill="#E65100" font-size="9" font-weight="bold" text-anchor="middle" x="190" y="213" direction="ltr" unicode-bidi="embed">go tool trace</text>
-<text fill="#BF360C" font-size="8" text-anchor="middle" x="190" y="228" direction="rtl" unicode-bidi="embed">GC pause</text>
-<text fill="#BF360C" font-size="8" text-anchor="middle" x="190" y="242" direction="rtl" unicode-bidi="embed">Scheduler</text>
-
-<!-- Level 2: Concurrency sub-branches -->
-<line stroke="#9C27B0" stroke-width="1.5" x1="350" x2="290" y1="170" y2="195"></line>
-<line stroke="#9C27B0" stroke-width="1.5" x1="350" x2="410" y1="170" y2="195"></line>
-<rect fill="#f3e5f5" height="65" rx="4" stroke="#9C27B0" stroke-width="1" width="110" x="235" y="195"></rect>
-<text fill="#6A1B9A" font-size="9" font-weight="bold" text-anchor="middle" x="290" y="213" direction="ltr" unicode-bidi="embed">go test -race</text>
-<text fill="#8E24AA" font-size="8" text-anchor="middle" x="290" y="228" direction="rtl" unicode-bidi="embed">Data race</text>
-<text fill="#8E24AA" font-size="8" text-anchor="middle" x="290" y="242" direction="ltr" unicode-bidi="embed">Atomic issues</text>
-<rect fill="#f3e5f5" height="65" rx="4" stroke="#9C27B0" stroke-width="1" width="110" x="355" y="195"></rect>
-<text fill="#6A1B9A" font-size="9" font-weight="bold" text-anchor="middle" x="410" y="213" direction="ltr" unicode-bidi="embed">pprof goroutine</text>
-<text fill="#8E24AA" font-size="8" text-anchor="middle" x="410" y="228" direction="rtl" unicode-bidi="embed">Goroutine leak</text>
-<text fill="#8E24AA" font-size="8" text-anchor="middle" x="410" y="242" direction="rtl" unicode-bidi="embed">Deadlock</text>
-
-<!-- Level 2: Memory sub-branches -->
-<line stroke="#2196F3" stroke-width="1.5" x1="570" x2="510" y1="170" y2="195"></line>
-<line stroke="#2196F3" stroke-width="1.5" x1="570" x2="630" y1="170" y2="195"></line>
-<rect fill="#e3f2fd" height="65" rx="4" stroke="#2196F3" stroke-width="1" width="110" x="455" y="195"></rect>
-<text fill="#1565C0" font-size="9" font-weight="bold" text-anchor="middle" x="510" y="213" direction="ltr" unicode-bidi="embed">pprof heap</text>
-<text fill="#1976D2" font-size="8" text-anchor="middle" x="510" y="228" direction="rtl" unicode-bidi="embed">نشت حافظه</text>
-<text fill="#1976D2" font-size="8" text-anchor="middle" x="510" y="242" direction="ltr" unicode-bidi="embed">-base compare</text>
-<rect fill="#e3f2fd" height="65" rx="4" stroke="#2196F3" stroke-width="1" width="110" x="575" y="195"></rect>
-<text fill="#1565C0" font-size="9" font-weight="bold" text-anchor="middle" x="630" y="213" direction="ltr" unicode-bidi="embed">-gcflags -m</text>
-<text fill="#1976D2" font-size="8" text-anchor="middle" x="630" y="228" direction="rtl" unicode-bidi="embed">Escape analysis</text>
-<text fill="#1976D2" font-size="8" text-anchor="middle" x="630" y="242" direction="rtl" unicode-bidi="embed">تخصیص <tspan direction="ltr" unicode-bidi="embed">heap</tspan></text>
-
-<!-- Logic Error section -->
-<rect fill="#4CAF50" height="40" rx="6" width="160" x="260" y="290"></rect>
-<text fill="#fff" font-weight="bold" text-anchor="middle" x="340" y="315" direction="rtl" unicode-bidi="embed">خطای منطقی / <tspan direction="ltr" unicode-bidi="embed">Runtime</tspan></text>
-
-<line stroke="#4CAF50" stroke-width="1.5" x1="260" x2="160" y1="330" y2="355"></line>
-<line stroke="#4CAF50" stroke-width="1.5" x1="340" x2="340" y1="330" y2="355"></line>
-<line stroke="#4CAF50" stroke-width="1.5" x1="420" x2="520" y1="330" y2="355"></line>
-
-<rect fill="#e8f5e9" height="55" rx="4" stroke="#4CAF50" stroke-width="1" width="130" x="95" y="355"></rect>
-<text fill="#2E7D32" font-size="9" font-weight="bold" text-anchor="middle" x="160" y="373" direction="ltr" unicode-bidi="embed">Delve debugger</text>
-<text fill="#388E3C" font-size="8" text-anchor="middle" x="160" y="388" direction="rtl" unicode-bidi="embed">break, step, print</text>
-<text fill="#388E3C" font-size="8" text-anchor="middle" x="160" y="402" direction="rtl" unicode-bidi="embed">Conditional BP</text>
-
-<rect fill="#e8f5e9" height="55" rx="4" stroke="#4CAF50" stroke-width="1" width="130" x="275" y="355"></rect>
-<text fill="#2E7D32" font-size="9" font-weight="bold" text-anchor="middle" x="340" y="373" direction="ltr" unicode-bidi="embed">Stack trace</text>
-<text fill="#388E3C" font-size="8" text-anchor="middle" x="340" y="388" direction="rtl" unicode-bidi="embed">Panic location</text>
-<text fill="#388E3C" font-size="8" text-anchor="middle" x="340" y="402" direction="ltr" unicode-bidi="embed">recover()</text>
-
-<rect fill="#e8f5e9" height="55" rx="4" stroke="#4CAF50" stroke-width="1" width="130" x="455" y="355"></rect>
-<text fill="#2E7D32" font-size="9" font-weight="bold" text-anchor="middle" x="520" y="373" direction="ltr" unicode-bidi="embed">GODEBUG</text>
-<text fill="#388E3C" font-size="8" text-anchor="middle" x="520" y="388" direction="ltr" unicode-bidi="embed">schedtrace</text>
-<text fill="#388E3C" font-size="8" text-anchor="middle" x="520" y="402" direction="ltr" unicode-bidi="embed">gctrace</text>
-
-<!-- Bottom tip -->
-<rect fill="#e8f5e9" height="35" rx="6" stroke="#4caf50" stroke-width="1.5" width="580" x="60" y="415"></rect>
-<text fill="#2e7d32" font-size="10" font-weight="bold" text-anchor="middle" x="350" y="437" direction="rtl" unicode-bidi="embed">قانون طلایی: ابتدا <tspan direction="ltr" unicode-bidi="embed">pprof/trace</tspan> برای اندازه‌گیری ← سپس <tspan direction="ltr" unicode-bidi="embed">Delve</tspan> برای بررسی عمیق ← در نهایت رفع مشکل</text>
-</svg>
+    classDef startBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937,font-weight:bold;
+    classDef decBox  fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
+    classDef toolBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
+    classDef noteBox fill:#ecfdf5,stroke:#10b981,stroke-width:1px,color:#1f2937,font-style:italic;
+    class Q0 startBox;
+    class Q1,Q2,Q3,Q4 decBox;
+    class A1A,A1B,A2A,A2B,A3A,A3B,A4A,A4B,A4C toolBox;
+    class note noteBox;</pre>
 <figcaption dir="rtl">شکل ۱۰-۲: درخت تصمیم دیباگ — انتخاب ابزار مناسب بر اساس نوع مشکل</figcaption>
 </figure>
 
@@ -829,128 +703,53 @@ func monitorMemory(ctx context.Context) {
 <p>فرآیند دیباگ در Go برخلاف PHP یک فرآیند چندمرحله‌ای است که از نوشتن کد با باگ شروع شده و با رفع مشکل و کامپایل مجدد پایان می‌یابد. در PHP کافیست صفحه را refresh کنید تا تغییرات منعکس شود، اما در Go باید برنامه را مجدداً کامپایل و اجرا نمایید. این تفاوت بنیادین به معنای آن است که هر چرخه دیباگ در Go زمان‌برتر است و به همین دلیل انتخاب ابزار و روش مناسب اهمیت بسیار بیشتری دارد. درک کامل این گردش کار به شما کمک می‌کند زمان دیباگ را به حداقل برسانید و از ابزار مناسب در هر مرحله استفاده کنید.</p>
 
 <figure class="diagram" dir="ltr">
-<svg height="520" viewBox="0 0 780 520" width="780" xmlns="http://www.w3.org/2000/svg">
-<defs><filter id="sh166" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
-<marker id="arrowwf1" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5">
-<polygon fill="#555" points="0 0, 10 3.5, 0 7"></polygon>
-</marker>
-<marker id="arrowwf1back" markerheight="7" markerwidth="10" orient="auto" refx="0" refy="3.5">
-<polygon fill="#4CAF50" points="10 0, 0 3.5, 10 7"></polygon>
-</marker>
-</defs>
-<rect fill="#fafafa" height="520" rx="8" width="780" x="0" y="0"></rect>
-<text fill="#333" font-size="16" font-weight="bold" text-anchor="middle" x="390" y="28" direction="rtl" unicode-bidi="embed">گردش کار دیباگ در <tspan direction="ltr" unicode-bidi="embed">Go</tspan>: کامپایل ← اتصال ← <tspan direction="ltr" unicode-bidi="embed">Breakpoint</tspan> ← بازرسی</text>
+<pre class="mermaid">flowchart TB
+    subgraph HEADER["گردش کار دیباگ در Go: کامپایل ← اتصال ← Breakpoint ← بازرسی"]
+        direction TB
+        S1["۱. نوشتن کد با باگ<br/>Write code with bug<br/>Unexpected behavior"]
+        S2["۲. کامپایل با دیباگ<br/>Compile with debug info<br/>go build -gcflags=&quot;all=-N -l&quot;"]
+        S3["۳. شروع دیباگر<br/>Start debugger<br/>dlv debug / dlv attach"]
+        S4["۴. تنظیم Breakpoint<br/>Set breakpoints<br/>break main.go:42"]
+        S5["۵. اجرای برنامه<br/>Run program<br/>continue / c"]
+        S6["۶. بازرسی متغیرها<br/>Inspect variables<br/>print, locals, args"]
+        S7["۷. گام‌به‌گام در کد<br/>Step through code<br/>step, next, stepout"]
+        S8["۸. رفع و کامپایل مجدد<br/>Fix bug &amp; recompile<br/>restart / r"]
+        S1 --> S2 --> S3 --> S4 --> S5 --> S6 --> S7 --> S8
+        S8 -.->|اگر مشکل رفع نشد، به مرحله ۲ بازگردید| S2
+    end
 
-<!-- Step 1: Write code with bug -->
-<rect fill="#e91e63" height="55" rx="8" width="160" x="30" y="50"></rect>
-<text fill="#fff" font-size="12" font-weight="bold" text-anchor="middle" x="110" y="72" direction="rtl" unicode-bidi="embed">۱. نوشتن کد با باگ</text>
-<text fill="#fce4ec" font-size="9" text-anchor="middle" x="110" y="90" direction="ltr" unicode-bidi="embed">Write code with bug</text>
-<rect fill="#fff" height="20" rx="3" width="140" x="40" y="100"></rect>
-<text fill="#880E4F" font-size="8" text-anchor="middle" x="110" y="114" direction="ltr" unicode-bidi="embed">Unexpected behavior</text>
+    subgraph CMP["مقایسه: PHP Xdebug در برابر Go Delve"]
+        direction LR
+        subgraph PHP["PHP Xdebug"]
+            direction TB
+            P1["• نصب: pecl install xdebug"]
+            P2["• اجرا: extension در همان process"]
+            P3["• پروتکل: DBGP"]
+            P4["• Overhead: ۲۰-۴۰٪ کاهش عملکرد"]
+            P5["• پیکربندی: php.ini + پورت ۹۰۰۳"]
+            P6["• همزمانی: تک‌نخی (بدون goroutine)"]
+        end
+        subgraph GO["Go Delve"]
+            direction TB
+            G1["• نصب: go install .../dlv@latest"]
+            G2["• اجرا: process جداگانه + ptrace"]
+            G3["• پروتکل: DAP"]
+            G4["• Overhead: صفر (only when debugging)"]
+            G5["• پیکربندی: launch.json + پورت ۲۳۴۵"]
+            G6["• همزمانی: goroutine، channel، mutex"]
+        end
+    end
 
-<line marker-end="url(#arrowwf1)" stroke="#555" stroke-width="2" x1="190" x2="220" y1="75" y2="75"></line>
+    note(["قانون طلایی: ابتدا ساده‌ترین روش را امتحان کنید (fmt.Println) ← اگر کافی نبود Delve ← برای عملکرد pprof"])
 
-<!-- Step 2: Compile with debug info -->
-<rect fill="#00ADD8" height="55" rx="8" width="160" x="220" y="50"></rect>
-<text fill="#fff" font-size="12" font-weight="bold" text-anchor="middle" x="300" y="72" direction="rtl" unicode-bidi="embed">۲. کامپایل با دیباگ</text>
-<text fill="#e0f7fa" font-size="9" text-anchor="middle" x="300" y="90" direction="ltr" unicode-bidi="embed">Compile with debug info</text>
-<rect fill="#fff" height="20" rx="3" width="140" x="230" y="100"></rect>
-<text fill="#006064" font-size="8" text-anchor="middle" x="300" y="114" direction="ltr" unicode-bidi="embed">go build -gcflags="all=-N -l"</text>
-
-<line marker-end="url(#arrowwf1)" stroke="#555" stroke-width="2" x1="380" x2="410" y1="75" y2="75"></line>
-
-<!-- Step 3: Start debugger -->
-<rect fill="#00ADD8" height="55" rx="8" width="160" x="410" y="50"></rect>
-<text fill="#fff" font-size="12" font-weight="bold" text-anchor="middle" x="490" y="72" direction="rtl" unicode-bidi="embed">۳. شروع دیباگر</text>
-<text fill="#e0f7fa" font-size="9" text-anchor="middle" x="490" y="90" direction="ltr" unicode-bidi="embed">Start debugger</text>
-<rect fill="#fff" height="20" rx="3" width="140" x="420" y="100"></rect>
-<text fill="#006064" font-size="8" text-anchor="middle" x="490" y="114" direction="ltr" unicode-bidi="embed">dlv debug / dlv attach</text>
-
-<line marker-end="url(#arrowwf1)" stroke="#555" stroke-width="2" x1="570" x2="600" y1="75" y2="75"></line>
-
-<!-- Step 4: Set breakpoints -->
-<rect fill="#FF9800" height="55" rx="8" width="160" x="600" y="50"></rect>
-<text fill="#fff" font-size="12" font-weight="bold" text-anchor="middle" x="680" y="72" direction="rtl" unicode-bidi="embed">۴. تنظیم <tspan direction="ltr" unicode-bidi="embed">Breakpoint</tspan></text>
-<text fill="#fff3e0" font-size="9" text-anchor="middle" x="680" y="90" direction="ltr" unicode-bidi="embed">Set breakpoints</text>
-<rect fill="#fff" height="20" rx="3" width="140" x="610" y="100"></rect>
-<text fill="#E65100" font-size="8" text-anchor="middle" x="680" y="114" direction="ltr" unicode-bidi="embed">break main.go:42</text>
-
-<!-- Row 2 -->
-<!-- Step 5: Run program -->
-<rect fill="#00ADD8" height="55" rx="8" width="160" x="30" y="145"></rect>
-<text fill="#fff" font-size="12" font-weight="bold" text-anchor="middle" x="110" y="167" direction="rtl" unicode-bidi="embed">۵. اجرای برنامه</text>
-<text fill="#e0f7fa" font-size="9" text-anchor="middle" x="110" y="185" direction="ltr" unicode-bidi="embed">Run program</text>
-<rect fill="#fff" height="20" rx="3" width="140" x="40" y="195"></rect>
-<text fill="#006064" font-size="8" text-anchor="middle" x="110" y="209" direction="ltr" unicode-bidi="embed">continue / c</text>
-
-<line marker-end="url(#arrowwf1)" stroke="#555" stroke-width="2" x1="190" x2="220" y1="170" y2="170"></line>
-
-<!-- Step 6: Inspect variables -->
-<rect fill="#4CAF50" height="55" rx="8" width="160" x="220" y="145"></rect>
-<text fill="#fff" font-size="12" font-weight="bold" text-anchor="middle" x="300" y="167" direction="rtl" unicode-bidi="embed">۶. بازرسی متغیرها</text>
-<text fill="#e8f5e9" font-size="9" text-anchor="middle" x="300" y="185" direction="ltr" unicode-bidi="embed">Inspect variables</text>
-<rect fill="#fff" height="20" rx="3" width="140" x="230" y="195"></rect>
-<text fill="#2E7D32" font-size="8" text-anchor="middle" x="300" y="209" direction="ltr" unicode-bidi="embed">print, locals, args</text>
-
-<line marker-end="url(#arrowwf1)" stroke="#555" stroke-width="2" x1="380" x2="410" y1="170" y2="170"></line>
-
-<!-- Step 7: Step through code -->
-<rect fill="#4CAF50" height="55" rx="8" width="160" x="410" y="145"></rect>
-<text fill="#fff" font-size="12" font-weight="bold" text-anchor="middle" x="490" y="167" direction="rtl" unicode-bidi="embed">۷. گام‌به‌گام در کد</text>
-<text fill="#e8f5e9" font-size="9" text-anchor="middle" x="490" y="185" direction="ltr" unicode-bidi="embed">Step through code</text>
-<rect fill="#fff" height="20" rx="3" width="140" x="420" y="195"></rect>
-<text fill="#2E7D32" font-size="8" text-anchor="middle" x="490" y="209" direction="ltr" unicode-bidi="embed">step, next, stepout</text>
-
-<line marker-end="url(#arrowwf1)" stroke="#555" stroke-width="2" x1="570" x2="600" y1="170" y2="170"></line>
-
-<!-- Step 8: Fix bug and recompile -->
-<rect fill="#4CAF50" height="55" rx="8" width="160" x="600" y="145"></rect>
-<text fill="#fff" font-size="12" font-weight="bold" text-anchor="middle" x="680" y="167" direction="rtl" unicode-bidi="embed">۸. رفع و کامپایل مجدد</text>
-<text fill="#e8f5e9" font-size="9" text-anchor="middle" x="680" y="185" direction="ltr" unicode-bidi="embed">Fix bug &amp; recompile</text>
-<rect fill="#fff" height="20" rx="3" width="140" x="610" y="195"></rect>
-<text fill="#2E7D32" font-size="8" text-anchor="middle" x="680" y="209" direction="ltr" unicode-bidi="embed">restart / r</text>
-
-<!-- Back arrow: Step 8 back to Step 2 -->
-<path d="M 680 200 Q 680 230 390 240 Q 300 240 300 200" fill="none" marker-start="url(#arrowwf1back)" stroke="#4CAF50" stroke-dasharray="6,3" stroke-width="1.5"></path>
-<text fill="#4CAF50" font-size="9" font-weight="bold" text-anchor="middle" x="490" y="252" direction="rtl" unicode-bidi="embed">اگر مشکل رفع نشد، به مرحله ۲ بازگردید</text>
-
-<!-- Comparison section: PHP Xdebug vs Go Delve -->
-<rect fill="#f5f5f5" height="210" rx="8" stroke="#ddd" stroke-width="1" width="720" x="30" y="270"></rect>
-<text fill="#333" font-size="14" font-weight="bold" text-anchor="middle" x="390" y="298" direction="rtl" unicode-bidi="embed">مقایسه: <tspan direction="ltr" unicode-bidi="embed">PHP Xdebug</tspan> در برابر <tspan direction="ltr" unicode-bidi="embed">Go Delve</tspan></text>
-
-<!-- PHP Xdebug column -->
-<rect fill="#777BB4" height="35" rx="6" width="320" x="50" y="315"></rect>
-<text fill="#fff" font-size="12" font-weight="bold" text-anchor="middle" x="210" y="338" direction="ltr" unicode-bidi="embed">PHP Xdebug</text>
-
-<rect fill="#e8eaf6" height="115" rx="4" stroke="#777BB4" stroke-width="1" width="320" x="50" y="350"></rect>
-<text fill="#333" font-size="9" x="65" y="370" direction="rtl" unicode-bidi="embed">• نصب: <tspan direction="ltr" unicode-bidi="embed">pecl install xdebug</tspan></text>
-<text fill="#333" font-size="9" x="65" y="388" direction="rtl" unicode-bidi="embed">• اجرا: <tspan direction="ltr" unicode-bidi="embed">extension</tspan> در همان <tspan direction="ltr" unicode-bidi="embed">process</tspan></text>
-<text fill="#333" font-size="9" x="65" y="406" direction="rtl" unicode-bidi="embed">• پروتکل: <tspan direction="ltr" unicode-bidi="embed">DBGP</tspan></text>
-<text fill="#333" font-size="9" x="65" y="424" direction="rtl" unicode-bidi="embed">• <tspan direction="ltr" unicode-bidi="embed">Overhead</tspan>: ۲۰-۴۰٪ کاهش عملکرد</text>
-<text fill="#333" font-size="9" x="65" y="442" direction="rtl" unicode-bidi="embed">• پیکربندی: <tspan direction="ltr" unicode-bidi="embed">php.ini</tspan> + پورت ۹۰۰۳</text>
-<text fill="#333" font-size="9" x="65" y="460" direction="rtl" unicode-bidi="embed">• همزمانی: تک‌نخی (بدون <tspan direction="ltr" unicode-bidi="embed">goroutine</tspan>)</text>
-
-<!-- Go Delve column -->
-<rect fill="#00ADD8" height="35" rx="6" width="320" x="410" y="315"></rect>
-<text fill="#fff" font-size="12" font-weight="bold" text-anchor="middle" x="570" y="338" direction="ltr" unicode-bidi="embed">Go Delve</text>
-
-<rect fill="#e0f7fa" height="115" rx="4" stroke="#00ADD8" stroke-width="1" width="320" x="410" y="350"></rect>
-<text fill="#333" font-size="9" x="425" y="370" direction="rtl" unicode-bidi="embed">• نصب: <tspan direction="ltr" unicode-bidi="embed">go install .../dlv@latest</tspan></text>
-<text fill="#333" font-size="9" x="425" y="388" direction="rtl" unicode-bidi="embed">• اجرا: <tspan direction="ltr" unicode-bidi="embed">process</tspan> جداگانه + <tspan direction="ltr" unicode-bidi="embed">ptrace</tspan></text>
-<text fill="#333" font-size="9" x="425" y="406" direction="rtl" unicode-bidi="embed">• پروتکل: <tspan direction="ltr" unicode-bidi="embed">DAP</tspan></text>
-<text fill="#333" font-size="9" x="425" y="424" direction="rtl" unicode-bidi="embed">• <tspan direction="ltr" unicode-bidi="embed">Overhead</tspan>: صفر (<tspan direction="ltr" unicode-bidi="embed">only when debugging</tspan>)</text>
-<text fill="#333" font-size="9" x="425" y="442" direction="rtl" unicode-bidi="embed">• پیکربندی: <tspan direction="ltr" unicode-bidi="embed">launch.json</tspan> + پورت ۲۳۴۵</text>
-<text fill="#333" font-size="9" x="425" y="460" direction="rtl" unicode-bidi="embed">• همزمانی: <tspan direction="ltr" unicode-bidi="embed">goroutine</tspan>، <tspan direction="ltr" unicode-bidi="embed">channel</tspan>، <tspan direction="ltr" unicode-bidi="embed">mutex</tspan></text>
-
-<!-- VS Code in middle -->
-<rect fill="#fff" height="25" rx="4" stroke="#999" stroke-width="1" width="30" x="375" y="365"></rect>
-<text fill="#555" font-size="10" text-anchor="middle" x="390" y="383" direction="ltr" unicode-bidi="embed">VS</text>
-<text fill="#999" font-size="7" text-anchor="middle" x="390" y="393" direction="ltr" unicode-bidi="embed">Code</text>
-
-<!-- Golden rule bar -->
-<rect fill="#4CAF50" height="35" rx="6" width="720" x="30" y="480"></rect>
-<text fill="#fff" font-size="11" font-weight="bold" text-anchor="middle" x="390" y="502" direction="rtl" unicode-bidi="embed">قانون طلایی: ابتدا ساده‌ترین روش را امتحان کنید (<tspan direction="ltr" unicode-bidi="embed">fmt.Println</tspan>) ← اگر کافی نبود <tspan direction="ltr" unicode-bidi="embed">Delve</tspan> ← برای عملکرد <tspan direction="ltr" unicode-bidi="embed">pprof</tspan></text>
-</svg>
+    classDef stepBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
+    classDef phpBox  fill:#f5f0fb,stroke:#777BB4,stroke-width:1.5px,color:#1f2937;
+    classDef goBox   fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
+    classDef noteBox fill:#ecfdf5,stroke:#10b981,stroke-width:1px,color:#1f2937,font-style:italic;
+    class S1,S2,S3,S4,S5,S6,S7,S8 stepBox;
+    class P1,P2,P3,P4,P5,P6 phpBox;
+    class G1,G2,G3,G4,G5,G6 goBox;
+    class note noteBox;</pre>
 <figcaption>شکل ۱۰-۳: گردش کار دیباگ در <bdi dir="ltr">Go</bdi> — از کشف باگ تا رفع نهایی با مقایسه <bdi dir="ltr">PHP Xdebug</bdi> و <bdi dir="ltr">Go Delve</bdi></figcaption>
 </figure>
 

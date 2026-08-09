@@ -70,39 +70,25 @@
 <div class="chapter">فصل ۱۱.۲</div>
 <h2 id="assertion">Assertion</h2>
 <figure class="diagram" dir="ltr">
-<svg height="280" viewBox="0 0 650 280" width="650" xmlns="http://www.w3.org/2000/svg"><defs><filter id="sh177" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter></defs>
-<text class="title" text-anchor="middle" x="325" y="25" direction="rtl" unicode-bidi="embed">الگوهای <tspan direction="ltr" unicode-bidi="embed">Assertion</tspan> در <tspan direction="ltr" unicode-bidi="embed">Go</tspan></text>
-<!-- Center: testing package -->
-<rect class="box-center" height="45" width="170" x="240" y="50"></rect>
-<text font-weight="bold" text-anchor="middle" x="325" y="72" direction="ltr" unicode-bidi="embed">testing.T</text>
-<text class="small" text-anchor="middle" x="325" y="88" direction="rtl" unicode-bidi="embed">پکیج استاندارد</text>
-<!-- Left branch: Native -->
-<line stroke="#00ADD8" stroke-width="2" x1="240" x2="100" y1="72" y2="130"></line>
-<rect class="box-native" height="45" width="200" x="10" y="115"></rect>
-<text font-weight="bold" text-anchor="middle" x="110" y="137" direction="ltr" unicode-bidi="embed">if + t.Errorf</text>
-<text class="small" text-anchor="middle" x="110" y="153" direction="rtl" unicode-bidi="embed">روش بومی <tspan direction="ltr" unicode-bidi="embed">Go</tspan></text>
-<!-- Examples of native -->
-<rect fill="#e0f7fa" height="35" rx="6" stroke="#00ADD8" stroke-width="1" width="200" x="10" y="175"></rect>
-<text class="small" text-anchor="middle" x="110" y="197" direction="ltr" unicode-bidi="embed">if result != expected {</text>
-<rect fill="#e0f7fa" height="35" rx="6" stroke="#00ADD8" stroke-width="1" width="200" x="10" y="220"></rect>
-<text class="small" text-anchor="middle" x="110" y="242" direction="ltr" unicode-bidi="embed">t.Errorf("got %d", result)</text>
-<!-- Right branch: Testify -->
-<line stroke="#777BB4" stroke-width="2" x1="410" x2="550" y1="72" y2="130"></line>
-<rect class="box-testify" height="45" width="200" x="440" y="115"></rect>
-<text font-weight="bold" text-anchor="middle" x="540" y="137" direction="ltr" unicode-bidi="embed">testify/assert</text>
-<text class="small" text-anchor="middle" x="540" y="153" direction="rtl" unicode-bidi="embed">کتابخانه جانبی</text>
-<!-- Examples of testify -->
-<rect fill="#f3e5f5" height="35" rx="6" stroke="#777BB4" stroke-width="1" width="200" x="440" y="175"></rect>
-<text class="small" text-anchor="middle" x="540" y="197" direction="ltr" unicode-bidi="embed">assert.Equal(t, 5, result)</text>
-<rect fill="#f3e5f5" height="35" rx="6" stroke="#777BB4" stroke-width="1" width="200" x="440" y="220"></rect>
-<text class="small" text-anchor="middle" x="540" y="242" direction="ltr" unicode-bidi="embed">assert.NotNil, assert.True</text>
-<!-- require branch -->
-<rect fill="#fce4ec" height="35" rx="6" stroke="#e91e63" stroke-width="1" width="100" x="330" y="175"></rect>
-<text class="small" text-anchor="middle" x="380" y="197" direction="ltr" unicode-bidi="embed">require.*</text>
-<rect fill="#fce4ec" height="35" rx="6" stroke="#e91e63" stroke-width="1" width="100" x="330" y="220"></rect>
-<text class="small" text-anchor="middle" x="380" y="242" direction="rtl" unicode-bidi="embed">توقف فوری</text>
-<line stroke="#e91e63" stroke-dasharray="4,3" stroke-width="1.5" x1="440" x2="380" y1="155" y2="175"></line>
-</svg>
+<pre class="mermaid">flowchart LR
+    subgraph HEADER["الگوهای Assertion در Go"]
+        direction LR
+        subgraph NATIVE["testing.T — پکیج استاندارد"]
+            direction TB
+            N1["if + t.Errorf<br/>روش بومی Go"]
+            N2["if result != expected &#123;<br/>t.Errorf&#40;&quot;got %d&quot;, result&#41;<br/>&#125;"]
+        end
+        subgraph TESTIFY["testify/assert — کتابخانه جانبی"]
+            direction TB
+            T1["assert.Equal&#40;t, 5, result&#41;<br/>assert.NotNil, assert.True"]
+            T2["require.*<br/>توقف فوری"]
+        end
+    end
+
+    classDef nativeBox  fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
+    classDef testifyBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
+    class NATIVE nativeBox;
+    class TESTIFY testifyBox;</pre>
 <figcaption>شکل ۱۱-۲: الگوهای <bdi dir="ltr">Assertion</bdi> در <bdi dir="ltr">Go</bdi> - مقایسه روش بومی و <bdi dir="ltr">testify</bdi></figcaption>
 </figure>
 <p>در زبان‌هایی مثل PHP یا JavaScript استفاده از ابزارهای تست مانند PHPUnit یا Jest وابسته به مجموعه‌ای از assertion‌هاست یعنی عباراتی که انتظار داریم در طول اجرای تست درست باشند. در Go پکیج رسمی testing هیچ assertion آماده‌ای ندارد و هدف آن ارائه‌ی یک محیط بسیار ساده برای نوشتن تست‌ها است.</p>
@@ -112,57 +98,26 @@
 </p>
 
 <figure class="diagram" dir="ltr">
-<svg height="220" viewBox="0 0 700 220" width="700" xmlns="http://www.w3.org/2000/svg">
-<defs><filter id="sh178" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
-<marker id="arrowAssert" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#555" points="0 0, 10 3.5, 0 7"></polygon></marker>
-</defs>
-<rect fill="#fafafa" height="220" rx="8" width="700" x="0" y="0"></rect>
-<text fill="#333" font-size="15" font-weight="bold" text-anchor="middle" x="350" y="28" direction="rtl" unicode-bidi="embed">جریان <tspan direction="ltr" unicode-bidi="embed">Assertion</tspan>: مقایسه مقدار مورد انتظار و واقعی</text>
+<pre class="mermaid">flowchart TB
+    subgraph HEADER["جریان Assertion: مقایسه مقدار مورد انتظار و واقعی"]
+        direction TB
+        INP["ورودی تست<br/>Test Input"] --> CMP{"Comparison<br/>expected == actual ?<br/>assert.Equal&#40;t, exp, got&#41;"}
+        CMP -- "match (بله)" --> PASS["PASS (بله)<br/>ادامه تست"]
+        CMP -- "mismatch (خیر)" --> BR{"روش Assertion?"}
+        BR -- "assert.*" --> A1["گزارش خطا + ادامه<br/>ادامه بررسی سایر assertionها"]
+        BR -- "require.*" --> A2["توقف فوری t.FailNow&#40;&#41;<br/>FAIL — t.FailNow&#40;&#41;"]
+    end
 
-<!-- Test Input -->
-<rect fill="#2196F3" height="50" rx="6" width="120" x="30" y="65"></rect>
-<text fill="#fff" font-size="12" font-weight="bold" text-anchor="middle" x="90" y="87" direction="rtl" unicode-bidi="embed">ورودی تست</text>
-<text fill="#e3f2fd" font-size="9" text-anchor="middle" x="90" y="103" direction="ltr" unicode-bidi="embed">Test Input</text>
-
-<line marker-end="url(#arrowAssert)" stroke="#555" stroke-width="2" x1="150" x2="195" y1="90" y2="90"></line>
-
-<!-- Comparison -->
-<rect fill="#00ADD8" height="70" rx="8" width="150" x="195" y="55"></rect>
-<text fill="#fff" font-size="12" font-weight="bold" text-anchor="middle" x="270" y="78" direction="ltr" unicode-bidi="embed">Comparison</text>
-<text fill="#e0f7fa" font-size="9" text-anchor="middle" x="270" y="95" direction="rtl" unicode-bidi="embed">expected == actual ?</text>
-<text fill="#e0f7fa" font-size="8" text-anchor="middle" x="270" y="110" direction="ltr" unicode-bidi="embed">assert.Equal(t, exp, got)</text>
-
-<!-- Branch: Pass -->
-<line marker-end="url(#arrowAssert)" stroke="#27ae60" stroke-width="2" x1="345" x2="410" y1="72" y2="50"></line>
-<text fill="#27ae60" font-size="9" font-weight="bold" text-anchor="middle" x="380" y="48" direction="ltr" unicode-bidi="embed">(بله) match</text>
-<rect fill="#27ae60" height="50" rx="6" width="110" x="410" y="25"></rect>
-<text fill="#fff" font-size="12" font-weight="bold" text-anchor="middle" x="465" y="47" direction="ltr" unicode-bidi="embed">PASS (بله)</text>
-<text fill="#e8f5e9" font-size="9" text-anchor="middle" x="465" y="63" direction="rtl" unicode-bidi="embed">ادامه تست</text>
-
-<!-- Branch: Fail -->
-<line marker-end="url(#arrowAssert)" stroke="#e74c3c" stroke-width="2" x1="345" x2="410" y1="105" y2="130"></line>
-<text fill="#e74c3c" font-size="9" font-weight="bold" text-anchor="middle" x="380" y="135" direction="ltr" unicode-bidi="embed">(خیر) mismatch</text>
-
-<!-- assert path -->
-<rect fill="#FF9800" height="40" rx="6" width="130" x="410" y="110"></rect>
-<text fill="#fff" font-size="10" font-weight="bold" text-anchor="middle" x="475" y="130" direction="ltr" unicode-bidi="embed">assert.*</text>
-<text fill="#fff3e0" font-size="8" text-anchor="middle" x="475" y="143" direction="rtl" unicode-bidi="embed">گزارش خطا + ادامه</text>
-
-<!-- require path -->
-<rect fill="#e74c3c" height="40" rx="6" width="130" x="560" y="110"></rect>
-<text fill="#fff" font-size="10" font-weight="bold" text-anchor="middle" x="625" y="130" direction="ltr" unicode-bidi="embed">require.*</text>
-<text fill="#fce4ec" font-size="8" text-anchor="middle" x="625" y="143" direction="rtl" unicode-bidi="embed">توقف فوری <tspan direction="ltr" unicode-bidi="embed">t.FailNow()</tspan></text>
-
-<!-- assert continues to next assertion -->
-<line marker-end="url(#arrowAssert)" stroke="#FF9800" stroke-width="1.5" x1="475" x2="475" y1="150" y2="175"></line>
-<rect fill="#fff3e0" height="30" rx="4" stroke="#FF9800" stroke-width="1" width="200" x="375" y="175"></rect>
-<text fill="#E65100" font-size="9" text-anchor="middle" x="475" y="195" direction="rtl" unicode-bidi="embed">ادامه بررسی سایر <tspan direction="ltr" unicode-bidi="embed">assertion</tspan>ها</text>
-
-<!-- require stops -->
-<line marker-end="url(#arrowAssert)" stroke="#e74c3c" stroke-width="1.5" x1="625" x2="625" y1="150" y2="175"></line>
-<rect fill="#fce4ec" height="30" rx="4" stroke="#e74c3c" stroke-width="1" width="170" x="540" y="175"></rect>
-<text fill="#880E4F" font-size="9" text-anchor="middle" x="625" y="195" direction="ltr" unicode-bidi="embed">FAIL — t.FailNow()</text>
-</svg>
+    classDef inBox   fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
+    classDef decBox  fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937,font-weight:bold;
+    classDef passBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
+    classDef resBox  fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
+    classDef failBox fill:#fef2f2,stroke:#ef4444,stroke-width:1.5px,color:#1f2937;
+    class INP inBox;
+    class CMP,BR decBox;
+    class PASS passBox;
+    class A1 resBox;
+    class A2 failBox;</pre>
 <figcaption>شکل ۱۱-۳: جریان <bdi dir="ltr">Assertion</bdi> — مقایسه مقدار مورد انتظار و واقعی و تفاوت رفتار <bdi dir="ltr">assert</bdi> و <bdi dir="ltr">require</bdi></figcaption>
 </figure>
 
@@ -547,109 +502,59 @@ func NoError(t *testing.T, err error) {
 <p>برای درک عمیق‌تر نحوه کار assertion‌ها، بیایید کل جریان را از ورودی مقادیر مورد انتظار و واقعی تا نتیجه نهایی بررسی کنیم. هر assertion سه بخش اصلی دارد: مقدار مورد انتظار (<bdi dir="ltr">Expected</bdi>)، عمل مقایسه (<bdi dir="ltr">Comparison</bdi>) و نتیجه (<bdi dir="ltr">Result</bdi>). نوع مقایسه تعیین می‌کند که کدام روش بررسی استفاده شود: مقایسه ساده با <bdi dir="ltr">==</bdi>، مقایسه عمیق با <bdi dir="ltr">reflect.DeepEqual</bdi>، بررسی وجود با <bdi dir="ltr">Contains</bdi> یا مقایسه تفاضلی با <bdi dir="ltr">cmp.Diff</bdi>. وقتی assertion موفق می‌شود، تست ادامه می‌یابد اما وقتی شکست می‌خورد، خروجی تفاضلی (<bdi dir="ltr">diff</bdi>) نشان داده می‌شود که دقیقاً مشخص می‌کند تفاوت کجاست. این خروجی تفاضلی در تست‌های table-driven که چندین مورد بررسی می‌شوند، اهمیت ویژه‌ای دارد زیرا به شما کمک می‌کند سریعاً مورد شکست‌خورده را شناسایی کنید.</p>
 
 <figure class="diagram" dir="ltr">
-<svg height="520" viewBox="0 0 780 520" width="780" xmlns="http://www.w3.org/2000/svg">
-<defs><filter id="sh179" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
-<marker id="arrowAssertFlow" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#555" points="0 0, 10 3.5, 0 7"></polygon></marker>
-<marker id="arrowGreenAF" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#4CAF50" points="0 0, 10 3.5, 0 7"></polygon></marker>
-<marker id="arrowRedAF" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#e91e63" points="0 0, 10 3.5, 0 7"></polygon></marker>
-</defs>
-<rect fill="#fafafa" height="520" rx="8" width="780" x="0" y="0"></rect>
-<text fill="#333" font-size="15" font-weight="bold" text-anchor="middle" x="390" y="28" direction="rtl" unicode-bidi="embed">جریان <tspan direction="ltr" unicode-bidi="embed">Assertion</tspan>: مقدار مورد انتظار ← مقایسه ← نتیجه</text>
+<pre class="mermaid">flowchart TB
+    subgraph HEADER["جریان Assertion: مقدار مورد انتظار ← مقایسه ← نتیجه"]
+        direction TB
+        EXP["مقدار مورد انتظار<br/>Expected<br/>User&#123;Name: &quot;Ali&quot;&#125;<br/>Age: 30, Active: true"]
+        ACT["مقدار واقعی<br/>Actual<br/>User&#123;Name: &quot;Sara&quot;&#125;<br/>Age: 25, Active: false"]
+        CMP["عمل مقایسه<br/>Comparison<br/>== (simple equal)<br/>reflect.DeepEqual<br/>cmp.Diff / assert.Equal"]
+        EXP --> CMP
+        ACT --> CMP
+        CMP --> Q{"نتیجه؟"}
+        Q -- "match ✓" --> PASS["PASS ✓<br/>تست ادامه می‌یابد"]
+        Q -- "mismatch ✗" --> FAIL["FAIL ✗<br/>گزارش خطا + diff"]
+        FAIL --> DIFF["Diff Output<br/>Name: &quot;Ali&quot; → &quot;Sara&quot;<br/>- Age: 30<br/>+ Age: 25<br/>- Active: true<br/>+ Active: false"]
+    end
 
-<!-- Expected Value (Left) -->
-<rect fill="#E3F2FD" height="90" rx="8" stroke="#1976D2" stroke-width="2" width="160" x="30" y="55"></rect>
-<text fill="#1565C0" font-size="13" font-weight="bold" text-anchor="middle" x="110" y="78" direction="rtl" unicode-bidi="embed">مقدار مورد انتظار</text>
-<text fill="#1565C0" font-size="10" text-anchor="middle" x="110" y="95" direction="ltr" unicode-bidi="embed">Expected</text>
-<text fill="#333" font-size="9" text-anchor="middle" x="110" y="115" direction="ltr" unicode-bidi="embed">User{Name: "Ali"}</text>
-<text fill="#333" font-size="9" text-anchor="middle" x="110" y="130" direction="ltr" unicode-bidi="embed">Age: 30, Active: true</text>
+    subgraph CMP3["مقایسه رویکردهای Assertion"]
+        direction LR
+        subgraph A["if + t.Errorf"]
+            direction TB
+            A1["if result != expected &#123;<br/>t.Errorf&#40;&quot;got %v, want %v&quot;,<br/>result, expected&#41;<br/>&#125;"]
+            A2["بدون diff قابل خواندن<br/>بدون trace فراخوانی"]
+        end
+        subgraph B["testify/assert"]
+            direction TB
+            B1["assert.Equal&#40;t, expected,<br/>result, &quot;should match&quot;&#41;"]
+            B2["diff خودکار<br/>trace کامل فراخوانی<br/>پیام سفارشی<br/>انواع assertion آماده"]
+        end
+        subgraph C["google/go-cmp"]
+            direction TB
+            C1["if diff := cmp.Diff&#40;<br/>expected, result&#41;; diff != &quot;&quot; &#123;<br/>t.Errorf&#40;&quot;diff: %s&quot;, diff&#41;<br/>&#125;"]
+            C2["diff معنادار و دقیق<br/>قابل سفارشی‌سازی با cmpopts"]
+        end
+    end
 
-<!-- Arrow: Expected → Comparison -->
-<line marker-end="url(#arrowAssertFlow)" stroke="#555" stroke-width="2" x1="190" x2="255" y1="100" y2="100"></line>
+    note(["مقایسه با PHP: assertEquals&#40;&#41; ≈ assert.Equal | assertSame&#40;&#41; ≈ assert.Exactly | assertEqualsCanonicalizing&#40;&#41; ≈ cmp.Diff + cmpopts.SortSlices"])
 
-<!-- Comparison Operation (Center) -->
-<rect fill="#00ADD8" height="130" rx="8" width="200" x="260" y="45"></rect>
-<text fill="#fff" font-size="13" font-weight="bold" text-anchor="middle" x="360" y="68" direction="rtl" unicode-bidi="embed">عمل مقایسه</text>
-<text fill="#e0f7fa" font-size="10" text-anchor="middle" x="360" y="85" direction="ltr" unicode-bidi="embed">Comparison</text>
-
-<!-- Comparison types -->
-<rect fill="#fff" height="22" rx="4" stroke="#fff" stroke-width="0.5" width="170" x="275" y="95"></rect>
-<text fill="#006064" font-size="9" text-anchor="middle" x="360" y="110" direction="ltr" unicode-bidi="embed">==  (simple equal)</text>
-<rect fill="#fff" height="22" rx="4" stroke="#fff" stroke-width="0.5" width="170" x="275" y="120"></rect>
-<text fill="#006064" font-size="9" text-anchor="middle" x="360" y="135" direction="ltr" unicode-bidi="embed">reflect.DeepEqual</text>
-<rect fill="#fff" height="22" rx="4" stroke="#fff" stroke-width="0.5" width="170" x="275" y="145"></rect>
-<text fill="#006064" font-size="9" text-anchor="middle" x="360" y="160" direction="ltr" unicode-bidi="embed">cmp.Diff / assert.Equal</text>
-
-<!-- Actual Value (Left bottom) -->
-<rect fill="#F3E5F5" height="90" rx="8" stroke="#7B1FA2" stroke-width="2" width="160" x="30" y="160"></rect>
-<text fill="#7B1FA2" font-size="13" font-weight="bold" text-anchor="middle" x="110" y="183" direction="rtl" unicode-bidi="embed">مقدار واقعی</text>
-<text fill="#7B1FA2" font-size="10" text-anchor="middle" x="110" y="200" direction="ltr" unicode-bidi="embed">Actual</text>
-<text fill="#333" font-size="9" text-anchor="middle" x="110" y="220" direction="ltr" unicode-bidi="embed">User{Name: "Sara"}</text>
-<text fill="#333" font-size="9" text-anchor="middle" x="110" y="235" direction="ltr" unicode-bidi="embed">Age: 25, Active: false</text>
-
-<!-- Arrow: Actual → Comparison -->
-<line marker-end="url(#arrowAssertFlow)" stroke="#555" stroke-width="2" x1="190" x2="255" y1="205" y2="145"></line>
-
-<!-- PASS branch -->
-<line marker-end="url(#arrowGreenAF)" stroke="#4CAF50" stroke-width="2.5" x1="460" x2="530" y1="90" y2="70"></line>
-<text fill="#4CAF50" font-size="10" font-weight="bold" text-anchor="middle" x="495" y="65" direction="ltr" unicode-bidi="embed">match ✓</text>
-<rect fill="#4CAF50" height="55" rx="8" width="140" x="530" y="45"></rect>
-<text fill="#fff" font-size="14" font-weight="bold" text-anchor="middle" x="600" y="68" direction="ltr" unicode-bidi="embed">PASS ✓</text>
-<text fill="#E8F5E9" font-size="9" text-anchor="middle" x="600" y="88" direction="rtl" unicode-bidi="embed">تست ادامه می‌یابد</text>
-
-<!-- FAIL branch -->
-<line marker-end="url(#arrowRedAF)" stroke="#e91e63" stroke-width="2.5" x1="460" x2="530" y1="150" y2="170"></line>
-<text fill="#e91e63" font-size="10" font-weight="bold" text-anchor="middle" x="495" y="175" direction="ltr" unicode-bidi="embed">mismatch ✗</text>
-<rect fill="#e91e63" height="55" rx="8" width="140" x="530" y="145"></rect>
-<text fill="#fff" font-size="14" font-weight="bold" text-anchor="middle" x="600" y="168" direction="ltr" unicode-bidi="embed">FAIL ✗</text>
-<text fill="#FCE4EC" font-size="9" text-anchor="middle" x="600" y="188" direction="rtl" unicode-bidi="embed">گزارش خطا + <tspan direction="ltr" unicode-bidi="embed">diff</tspan></text>
-
-<!-- Diff Output Box -->
-<rect fill="#FFF8E1" height="100" rx="6" stroke="#FF9800" stroke-width="1.5" width="220" x="530" y="215"></rect>
-<text fill="#E65100" font-size="10" font-weight="bold" text-anchor="middle" x="640" y="235" direction="ltr" unicode-bidi="embed">Diff Output</text>
-<text fill="#333" font-size="8" text-anchor="start" x="540" y="252" direction="ltr" unicode-bidi="embed">  Name: "Ali" → "Sara"</text>
-<text fill="#e91e63" font-size="8" text-anchor="start" x="540" y="265" direction="ltr" unicode-bidi="embed">- Age: 30</text>
-<text fill="#4CAF50" font-size="8" text-anchor="start" x="540" y="278" direction="ltr" unicode-bidi="embed">+ Age: 25</text>
-<text fill="#e91e63" font-size="8" text-anchor="start" x="540" y="291" direction="ltr" unicode-bidi="embed">- Active: true</text>
-<text fill="#4CAF50" font-size="8" text-anchor="start" x="540" y="304" direction="ltr" unicode-bidi="embed">+ Active: false</text>
-
-<!-- Approach comparison section -->
-<rect fill="#f5f5f5" height="155" rx="8" stroke="#ddd" stroke-width="1" width="740" x="20" y="340"></rect>
-<text fill="#333" font-size="12" font-weight="bold" text-anchor="middle" x="390" y="362" direction="rtl" unicode-bidi="embed">مقایسه رویکردهای <tspan direction="ltr" unicode-bidi="embed">Assertion</tspan></text>
-
-<!-- Manual if + t.Errorf -->
-<rect fill="#E0F7FA" height="110" rx="6" stroke="#00ADD8" stroke-width="1.5" width="220" x="35" y="375"></rect>
-<text fill="#006064" font-size="11" font-weight="bold" text-anchor="middle" x="145" y="395" direction="ltr" unicode-bidi="embed">if + t.Errorf</text>
-<text fill="#333" font-size="8" text-anchor="start" x="45" y="412" direction="ltr" unicode-bidi="embed">if result != expected {</text>
-<text fill="#333" font-size="8" text-anchor="start" x="45" y="424" direction="ltr" unicode-bidi="embed">  t.Errorf("got %v, want %v",</text>
-<text fill="#333" font-size="8" text-anchor="start" x="45" y="436" direction="ltr" unicode-bidi="embed">    result, expected)</text>
-<text fill="#333" font-size="8" text-anchor="start" x="45" y="448" direction="ltr" unicode-bidi="embed">}</text>
-<text fill="#e91e63" font-size="7" text-anchor="start" x="45" y="462" direction="rtl" unicode-bidi="embed">بدون <tspan direction="ltr" unicode-bidi="embed">diff</tspan> قابل خواندن</text>
-<text fill="#e91e63" font-size="7" text-anchor="start" x="45" y="474" direction="rtl" unicode-bidi="embed">بدون <tspan direction="ltr" unicode-bidi="embed">trace</tspan> فراخوانی</text>
-
-<!-- testify/assert -->
-<rect fill="#F3E5F5" height="110" rx="6" stroke="#777BB4" stroke-width="1.5" width="220" x="275" y="375"></rect>
-<text fill="#4A148C" font-size="11" font-weight="bold" text-anchor="middle" x="385" y="395" direction="ltr" unicode-bidi="embed">testify/assert</text>
-<text fill="#333" font-size="8" text-anchor="start" x="285" y="412" direction="ltr" unicode-bidi="embed">assert.Equal(t, expected,</text>
-<text fill="#333" font-size="8" text-anchor="start" x="285" y="424" direction="ltr" unicode-bidi="embed">  result, "should match")</text>
-<text fill="#4CAF50" font-size="7" text-anchor="start" x="285" y="442" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">diff</tspan> خودکار</text>
-<text fill="#4CAF50" font-size="7" text-anchor="start" x="285" y="454" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">trace</tspan> کامل فراخوانی</text>
-<text fill="#4CAF50" font-size="7" text-anchor="start" x="285" y="466" direction="rtl" unicode-bidi="embed">پیام سفارشی</text>
-<text fill="#4CAF50" font-size="7" text-anchor="start" x="285" y="478" direction="rtl" unicode-bidi="embed">انواع <tspan direction="ltr" unicode-bidi="embed">assertion</tspan> آماده</text>
-
-<!-- cmp.Diff -->
-<rect fill="#FFF8E1" height="110" rx="6" stroke="#FF9800" stroke-width="1.5" width="220" x="515" y="375"></rect>
-<text fill="#E65100" font-size="11" font-weight="bold" text-anchor="middle" x="625" y="395" direction="ltr" unicode-bidi="embed">google/go-cmp</text>
-<text fill="#333" font-size="8" text-anchor="start" x="525" y="412" direction="ltr" unicode-bidi="embed">if diff := cmp.Diff(</text>
-<text fill="#333" font-size="8" text-anchor="start" x="525" y="424" direction="ltr" unicode-bidi="embed">  expected, result); diff != "" {</text>
-<text fill="#333" font-size="8" text-anchor="start" x="525" y="436" direction="ltr" unicode-bidi="embed">  t.Errorf("diff: %s", diff)</text>
-<text fill="#333" font-size="8" text-anchor="start" x="525" y="448" direction="ltr" unicode-bidi="embed">}</text>
-<text fill="#4CAF50" font-size="7" text-anchor="start" x="525" y="462" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">diff</tspan> معنادار و دقیق</text>
-<text fill="#4CAF50" font-size="7" text-anchor="start" x="525" y="474" direction="rtl" unicode-bidi="embed">قابل سفارشی‌سازی با <tspan direction="ltr" unicode-bidi="embed">cmpopts</tspan></text>
-
-<!-- PHP comparison info box -->
-<rect fill="#E8F5E9" height="30" rx="4" stroke="#4CAF50" stroke-width="1" width="500" x="140" y="500"></rect>
-<text fill="#2E7D32" font-size="9" text-anchor="middle" x="390" y="518" direction="rtl" unicode-bidi="embed">مقایسه با PHP: <tspan direction="ltr" unicode-bidi="embed">assertEquals()</tspan> ≈ <tspan direction="ltr" unicode-bidi="embed">assert.Equal</tspan> | <tspan direction="ltr" unicode-bidi="embed">assertSame()</tspan> ≈ <tspan direction="ltr" unicode-bidi="embed">assert.Exactly</tspan> | <tspan direction="ltr" unicode-bidi="embed">assertEqualsCanonicalizing()</tspan> ≈ <tspan direction="ltr" unicode-bidi="embed">cmp.Diff + cmpopts.SortSlices</tspan></text>
-</svg>
+    classDef expBox   fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
+    classDef actBox   fill:#f5f0fb,stroke:#777BB4,stroke-width:1.5px,color:#1f2937;
+    classDef cmpBox   fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
+    classDef decBox   fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937,font-weight:bold;
+    classDef passBox  fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
+    classDef failBox  fill:#fef2f2,stroke:#ef4444,stroke-width:1.5px,color:#1f2937;
+    classDef diffBox  fill:#fef2f2,stroke:#ef4444,stroke-width:1px,color:#1f2937;
+    classDef apprBox  fill:#e6f9fc,stroke:#00ADD8,stroke-width:1px,color:#1f2937;
+    classDef noteBox  fill:#ecfdf5,stroke:#10b981,stroke-width:1px,color:#1f2937,font-style:italic;
+    class EXP expBox;
+    class ACT actBox;
+    class CMP cmpBox;
+    class Q decBox;
+    class PASS passBox;
+    class FAIL diffBox;
+    class DIFF diffBox;
+    class A1,A2,B1,B2,C1,C2 apprBox;
+    class note noteBox;</pre>
 <figcaption>شکل ۱۱-۴: جریان کامل <bdi dir="ltr">Assertion</bdi> — از مقایسه مقدار مورد انتظار و واقعی تا نمایش <bdi dir="ltr">diff</bdi> و مقایسه سه رویکرد اصلی</figcaption>
 </figure>
 

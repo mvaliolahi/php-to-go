@@ -70,41 +70,38 @@
 <div class="chapter">فصل ۱۱.۳</div>
 <h2 id="gomock">gomock</h2>
 <figure class="diagram" dir="ltr">
-<svg height="320" viewBox="0 0 650 320" width="650" xmlns="http://www.w3.org/2000/svg">
-<defs><filter id="sh180" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
-<marker id="arrowm" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5">
-<polygon fill="#00ADD8" points="0 0, 10 3.5, 0 7"></polygon>
-</marker>
-</defs>
-<text class="title" text-anchor="middle" x="325" y="25" direction="rtl" unicode-bidi="embed">فرآیند <tspan direction="ltr" unicode-bidi="embed">Mock</tspan> کردن با <tspan direction="ltr" unicode-bidi="embed">gomock</tspan></text>
-<!-- Step 1: Define Interface -->
-<rect class="box-step" height="55" width="160" x="30" y="55"></rect>
-<text font-weight="bold" text-anchor="middle" x="110" y="75" direction="rtl" unicode-bidi="embed">۱. تعریف <tspan direction="ltr" unicode-bidi="embed">Interface</tspan></text>
-<text class="small" text-anchor="middle" x="110" y="95" direction="ltr" unicode-bidi="embed">type UserRepository interface</text>
-<line marker-end="url(#arrowm)" stroke="#00ADD8" stroke-width="2" x1="190" x2="220" y1="82" y2="82"></line>
-<!-- Step 2: Generate Mock -->
-<rect class="box-mock" height="55" width="180" x="220" y="55"></rect>
-<text font-weight="bold" text-anchor="middle" x="310" y="75" direction="rtl" unicode-bidi="embed">۲. تولید <tspan direction="ltr" unicode-bidi="embed">Mock</tspan></text>
-<text class="small" text-anchor="middle" x="310" y="95" direction="ltr" unicode-bidi="embed">mockgen -source=user.go</text>
-<line marker-end="url(#arrowm)" stroke="#00ADD8" stroke-width="2" x1="400" x2="430" y1="82" y2="82"></line>
-<!-- Step 3: Use in Test -->
-<rect class="box-test" height="55" width="190" x="430" y="55"></rect>
-<text font-weight="bold" text-anchor="middle" x="525" y="75" direction="rtl" unicode-bidi="embed">۳. استفاده در تست</text>
-<text class="small" text-anchor="middle" x="525" y="95" direction="ltr" unicode-bidi="embed">EXPECT().Return()</text>
-<!-- Detailed flow below -->
-<rect class="box-code" height="60" width="200" x="80" y="160"></rect>
-<text text-anchor="middle" x="180" y="180" direction="ltr" unicode-bidi="embed">UserRepository</text>
-<text class="small" text-anchor="middle" x="180" y="200" direction="ltr" unicode-bidi="embed">FindByID(id int) (*User, error)</text>
-<line marker-end="url(#arrowm)" stroke="#00ADD8" stroke-width="2" x1="280" x2="340" y1="190" y2="190"></line>
-<rect class="box-mock" height="60" width="230" x="340" y="160"></rect>
-<text text-anchor="middle" x="455" y="180" direction="ltr" unicode-bidi="embed">MockUserRepository</text>
-<text class="small" text-anchor="middle" x="455" y="200" direction="ltr" unicode-bidi="embed">EXPECT().FindByID(1).Return(...)</text>
-<!-- Test execution -->
-<rect class="box-test" height="50" width="310" x="170" y="260"></rect>
-<text text-anchor="middle" x="325" y="282" direction="ltr" unicode-bidi="embed">UserService.GetName(1)</text>
-<text class="small" text-anchor="middle" x="325" y="298" direction="rtl" unicode-bidi="embed">سرویس از <tspan direction="ltr" unicode-bidi="embed">Mock</tspan> استفاده می‌کند نه دیتابیس واقعی</text>
-<line marker-end="url(#arrowm)" stroke="#00ADD8" stroke-width="2" x1="455" x2="400" y1="220" y2="260"></line>
-</svg>
+<pre class="mermaid">flowchart TB
+    subgraph HEADER["فرآیند Mock کردن با gomock"]
+        direction TB
+        S1["۱. تعریف Interface<br/>type UserRepository interface"]
+        S2["۲. تولید Mock<br/>mockgen -source=user.go"]
+        S3["۳. استفاده در تست<br/>EXPECT&#40;&#41;.Return&#40;&#41;"]
+        S1 --> S2 --> S3
+    end
+
+    subgraph IFACE["UserRepository"]
+        direction TB
+        IF1["FindByID&#40;id int&#41; &#40;*User, error&#41;"]
+    end
+
+    subgraph MOCK["MockUserRepository"]
+        direction TB
+        MK1["EXPECT&#40;&#41;.FindByID&#40;1&#41;.Return&#40;...&#41;"]
+    end
+
+    SVC["UserService.GetName&#40;1&#41;<br/>سرویس از Mock استفاده می‌کند نه دیتابیس واقعی"]
+    IFACE --> MOCK
+    MOCK --> SVC
+    SVC --> IFACE
+
+    classDef stepBox  fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
+    classDef ifaceBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
+    classDef mockBox  fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
+    classDef svcBox   fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937,font-weight:bold;
+    class S1,S2,S3 stepBox;
+    class IFACE,IF1 ifaceBox;
+    class MOCK,MK1 mockBox;
+    class SVC svcBox;</pre>
 <figcaption>شکل ۱۱-۳: فرآیند <bdi dir="ltr">Mock</bdi> کردن با <bdi dir="ltr">gomock</bdi></figcaption>
 </figure>
 <p>پیش در در مورد mock کردن توضیحاتی داده شد ولی در پروژه‌های واقعی اغلب نیاز داریم در هنگام تست، dependency های خارجی مثل دیتابیس، سرویس‌های دیگر یا APIها را <strong dir="ltr">mock</strong> کنیم تا side affect ها را کنترل کنیم. یعنی به‌جای اجرای واقعی آن‌ها یک نسخه‌ی شبیه‌سازی‌شده ایجاد می‌کنیم که رفتار مورد انتظار را تقلید می‌کند. این کار:</p>
@@ -499,51 +496,37 @@ $ mockgen -destination=mocks/io_mock.go \
 </figure>
 
 <figure class="diagram" dir="ltr">
-<svg height="340" viewBox="0 0 650 340" width="650" xmlns="http://www.w3.org/2000/svg">
-<defs><filter id="sh181" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
-<marker id="arrowmock" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5">
-<polygon fill="#555" points="0 0, 10 3.5, 0 7"></polygon>
-</marker>
-</defs>
-<rect fill="#fafafa" height="340" rx="8" width="650" x="0" y="0"></rect>
-<text fill="#333" font-size="16" font-weight="bold" text-anchor="middle" x="325" y="28" direction="rtl" unicode-bidi="embed">جریان تعامل <tspan direction="ltr" unicode-bidi="embed">Mock</tspan> در تست</text>
-<!-- Test -->
-<rect fill="#2196F3" height="50" rx="6" width="120" x="30" y="55"></rect>
-<text fill="#fff" font-weight="bold" text-anchor="middle" x="90" y="77" direction="rtl" unicode-bidi="embed">تست</text>
-<text fill="#e3f2fd" font-size="9" text-anchor="middle" x="90" y="95" direction="ltr" unicode-bidi="embed">TestXxx</text>
-<line marker-end="url(#arrowmock)" stroke="#2196F3" stroke-width="2" x1="150" x2="200" y1="80" y2="80"></line>
-<!-- EXPECT -->
-<rect fill="#FF9800" height="50" rx="6" width="160" x="200" y="55"></rect>
-<text fill="#fff" font-weight="bold" text-anchor="middle" x="280" y="77" direction="ltr" unicode-bidi="embed">EXPECT().Return()</text>
-<text fill="#fff3e0" font-size="9" text-anchor="middle" x="280" y="95" direction="rtl" unicode-bidi="embed">تعریف رفتار مورد انتظار</text>
-<line marker-end="url(#arrowmock)" stroke="#FF9800" stroke-width="2" x1="360" x2="400" y1="80" y2="80"></line>
-<!-- Mock Object -->
-<rect fill="#9C27B0" height="50" rx="6" width="120" x="400" y="55"></rect>
-<text fill="#fff" font-weight="bold" text-anchor="middle" x="460" y="77" direction="ltr" unicode-bidi="embed">Mock Object</text>
-<text fill="#e1bee7" font-size="9" text-anchor="middle" x="460" y="95" direction="rtl" unicode-bidi="embed">شبیه‌سازی وابستگی</text>
-<line marker-end="url(#arrowmock)" stroke="#9C27B0" stroke-width="2" x1="520" x2="540" y1="80" y2="80"></line>
-<!-- Real Code -->
-<rect fill="#4CAF50" height="50" rx="6" width="100" x="540" y="55"></rect>
-<text fill="#fff" font-weight="bold" text-anchor="middle" x="590" y="77" direction="rtl" unicode-bidi="embed">کد واقعی</text>
-<text fill="#e8f5e9" font-size="9" text-anchor="middle" x="590" y="95" direction="ltr" unicode-bidi="embed">SUT</text>
-<!-- Verification -->
-<rect fill="#f5f5f5" height="140" rx="8" stroke="#ddd" stroke-width="1" width="580" x="35" y="130"></rect>
-<text fill="#333" font-size="12" font-weight="bold" text-anchor="middle" x="325" y="155" direction="rtl" unicode-bidi="embed">تأیید رفتار <tspan direction="ltr" unicode-bidi="embed">Mock</tspan> (<tspan direction="ltr" unicode-bidi="embed">Verification</tspan>)</text>
-<rect fill="#fff" height="30" rx="4" stroke="#FF9800" stroke-width="1" width="170" x="50" y="170"></rect>
-<text fill="#E65100" font-size="9" text-anchor="middle" x="135" y="190" direction="ltr" unicode-bidi="embed">ctrl.Finish()</text>
-<rect fill="#fff" height="30" rx="4" stroke="#00ADD8" stroke-width="1" width="170" x="240" y="170"></rect>
-<text fill="#00695C" font-size="9" text-anchor="middle" x="325" y="190" direction="ltr" unicode-bidi="embed">EXPECT().Times(n)</text>
-<rect fill="#fff" height="30" rx="4" stroke="#e91e63" stroke-width="1" width="170" x="430" y="170"></rect>
-<text fill="#880E4F" font-size="9" text-anchor="middle" x="515" y="190" direction="ltr" unicode-bidi="embed">gomock.InOrder()</text>
-<!-- Bottom -->
-<rect fill="#fff" height="30" rx="4" stroke="#9C27B0" stroke-width="1" width="170" x="145" y="220"></rect>
-<text fill="#6A1B9A" font-size="9" text-anchor="middle" x="230" y="240" direction="ltr" unicode-bidi="embed">gomock.Any()</text>
-<rect fill="#fff" height="30" rx="4" stroke="#4CAF50" stroke-width="1" width="170" x="335" y="220"></rect>
-<text fill="#2E7D32" font-size="9" text-anchor="middle" x="420" y="240" direction="ltr" unicode-bidi="embed">EXPECT().Do(func)</text>
-<!-- Warning -->
-<rect fill="#fce4ec" height="30" rx="6" stroke="#e91e63" stroke-width="1" width="540" x="55" y="290"></rect>
-<text fill="#880E4F" font-size="10" text-anchor="middle" x="325" y="310" direction="rtl" unicode-bidi="embed">توجه: هر <tspan direction="ltr" unicode-bidi="embed">EXPECT</tspan> که فراخوانی نشود = شکست تست | هر فراخوانی بدون <tspan direction="ltr" unicode-bidi="embed">EXPECT</tspan> = شکست تست</text>
-</svg>
+<pre class="mermaid">flowchart LR
+    subgraph HEADER["جریان تعامل Mock در تست"]
+        direction LR
+        TEST["تست<br/>TestXxx"] --> EXP["EXPECT&#40;&#41;.Return&#40;&#41;<br/>تعریف رفتار مورد انتظار"]
+        EXP --> MOCK["Mock Object<br/>شبیه‌سازی وابستگی"]
+        MOCK --> SUT["کد واقعی<br/>SUT"]
+    end
+
+    subgraph VERIFY["تأیید رفتار Mock (Verification)"]
+        direction TB
+        V1["ctrl.Finish&#40;&#41;"]
+        V2["EXPECT&#40;&#41;.Times&#40;n&#41;"]
+        V3["gomock.InOrder&#40;&#41;"]
+        V4["gomock.Any&#40;&#41;"]
+        V5["EXPECT&#40;&#41;.Do&#40;func&#41;"]
+    end
+
+    note(["توجه: هر EXPECT که فراخوانی نشود = شکست تست | هر فراخوانی بدون EXPECT = شکست تست"])
+
+    classDef testBox  fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937,font-weight:bold;
+    classDef expBox   fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
+    classDef mockBox  fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
+    classDef sutBox   fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937,font-weight:bold;
+    classDef verBox   fill:#e6f9fc,stroke:#00ADD8,stroke-width:1px,color:#1f2937;
+    classDef noteBox  fill:#fef2f2,stroke:#ef4444,stroke-width:1px,color:#1f2937,font-style:italic;
+    class TEST testBox;
+    class EXP expBox;
+    class MOCK mockBox;
+    class SUT sutBox;
+    class V1,V2,V3,V4,V5 verBox;
+    class note noteBox;</pre>
 <figcaption>شکل ۱۱-۴: جریان تعامل <bdi dir="ltr">Mock</bdi> و تأیید رفتار در تست</figcaption>
 </figure>
 
@@ -686,106 +669,59 @@ func TestCreateArticle(t *testing.T) {
 <p>در <bdi dir="ltr">PHP</bdi> با <bdi dir="ltr">PHPUnit</bdi> این خط لوله ساده‌تر است: با <bdi dir="ltr">$this-&gt;createMock()</bdi> یک mock می‌سازید و با <bdi dir="ltr">$mock-&gt;method()-&gt;willReturn()</bdi> رفتار آن را تعریف می‌کنید. اما در Go این فرآیند ساختاریافته‌تر و type-safe است. تولید خودکار mock از interface تضمین می‌کند که اگر interface تغییر کند، mock باید دوباره تولید شود و کامپایلر خطا را نشان می‌دهد. این مکانیزم ایمنی بزرگی است که در <bdi dir="ltr">PHPUnit</bdi> وجود ندارد.</p>
 
 <figure class="diagram" dir="ltr">
-<svg height="560" viewBox="0 0 720 560" width="720" xmlns="http://www.w3.org/2000/svg">
-<defs><filter id="sh182" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
-<marker id="arrowmp" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5">
-<polygon fill="#555" points="0 0, 10 3.5, 0 7"></polygon>
-</marker>
-</defs>
-<rect fill="#fafafa" height="560" rx="8" width="720" x="0" y="0"></rect>
+<pre class="mermaid">flowchart TB
+    subgraph PIPE["خط لوله تولید و تزریق Mock — gomock"]
+        direction LR
+        S1["① Interface<br/>type Xxx interface"] --> S2["② mockgen<br/>mockgen -source=..."]
+        S2 --> S3["③ Mock File<br/>mock_xxx.go created"]
+        S3 --> S4["④ Test Code<br/>NewMockXxx&#40;ctrl&#41;"]
+        S4 --> S5["⑤ EXPECT&#40;&#41;.Method&#40;&#41;<br/>.Return&#40;value&#41;"]
+        S5 --> S6["⑥ Inject Mock<br/>Svc&#123;Repo: mockRepo&#125;"]
+        S6 --> S7["⑦ Verify<br/>ctrl.Finish&#40;&#41;"]
+    end
 
-<!-- Title -->
-<text fill="#333" font-size="16" font-weight="bold" text-anchor="middle" x="360" y="28" direction="rtl" unicode-bidi="embed">خط لوله تولید و تزریق <tspan direction="ltr" unicode-bidi="embed">Mock</tspan> — <tspan direction="ltr" unicode-bidi="embed">gomock</tspan></text>
+    subgraph DI["الگوی تزریق وابستگی (Dependency Injection)"]
+        direction LR
+        subgraph PROD["Production: Constructor&#40;realImpl&#41;"]
+            direction TB
+            P1["NewService&#40;postgresRepo&#41;"]
+        end
+        subgraph TEST["Test: Constructor&#40;mockImpl&#41;"]
+            direction TB
+            T1["NewService&#40;mockRepo&#41;"]
+        end
+    end
 
-<!-- Step 1: Interface -->
-<rect fill="#00ADD8" height="50" rx="6" width="140" x="20" y="50"></rect>
-<text fill="#fff" font-weight="bold" text-anchor="middle" x="90" y="72" direction="ltr" unicode-bidi="embed">① Interface</text>
-<text fill="#e0f7fa" font-size="8" text-anchor="middle" x="90" y="88" direction="ltr" unicode-bidi="embed">type Xxx interface</text>
+    subgraph CMP["مقایسه با PHPUnit Mock"]
+        direction LR
+        subgraph GO["Go: gomock"]
+            direction TB
+            G1["mockgen -source=xxx.go (auto-gen)"]
+            G2["EXPECT&#40;&#41;.Method&#40;&#41;.Return&#40;val&#41;"]
+            G3["Type-safe at compile time ✓"]
+        end
+        subgraph PHP["PHP: PHPUnit Mock"]
+            direction TB
+            P2["$this-&gt;createMock&#40;Class::class&#41;"]
+            P3["$mock-&gt;method&#40;'name'&#41;-&gt;willReturn&#40;$val&#41;"]
+            P4["Runtime errors if method changes ✗"]
+        end
+    end
 
-<line marker-end="url(#arrowmp)" stroke="#555" stroke-width="2" x1="160" x2="195" y1="75" y2="75"></line>
+    note1(["قانون طلایی: Interface کوچک = Mock آسان | Interface بزرگ = Refactor کنید"])
+    note2(["اگر mock شما ۲۰ EXPECT دارد<br/>Interface شما خیلی بزرگ است! آن را بشکنید"])
+    note3(["از go:generate استفاده کنید<br/>تولید خودکار mock با go generate ./..."])
 
-<!-- Step 2: mockgen -->
-<rect fill="#9C27B0" height="50" rx="6" width="140" x="195" y="50"></rect>
-<text fill="#fff" font-weight="bold" text-anchor="middle" x="265" y="72" direction="ltr" unicode-bidi="embed">② mockgen</text>
-<text fill="#e1bee7" font-size="8" text-anchor="middle" x="265" y="88" direction="ltr" unicode-bidi="embed">mockgen -source=...</text>
-
-<line marker-end="url(#arrowmp)" stroke="#555" stroke-width="2" x1="335" x2="370" y1="75" y2="75"></line>
-
-<!-- Step 3: Mock file -->
-<rect fill="#4CAF50" height="50" rx="6" width="140" x="370" y="50"></rect>
-<text fill="#fff" font-weight="bold" text-anchor="middle" x="440" y="72" direction="ltr" unicode-bidi="embed">③ Mock File</text>
-<text fill="#e8f5e9" font-size="8" text-anchor="middle" x="440" y="88" direction="ltr" unicode-bidi="embed">mock_xxx.go created</text>
-
-<line marker-end="url(#arrowmp)" stroke="#555" stroke-width="2" x1="510" x2="545" y1="75" y2="75"></line>
-
-<!-- Step 4: Test -->
-<rect fill="#FF9800" height="50" rx="6" width="150" x="545" y="50"></rect>
-<text fill="#fff" font-weight="bold" text-anchor="middle" x="620" y="72" direction="ltr" unicode-bidi="embed">④ Test Code</text>
-<text fill="#fff3e0" font-size="8" text-anchor="middle" x="620" y="88" direction="ltr" unicode-bidi="embed">NewMockXxx(ctrl)</text>
-
-<!-- Steps 5-7 -->
-<rect fill="#9C27B0" height="45" rx="6" width="200" x="30" y="120"></rect>
-<text fill="#fff" font-weight="bold" text-anchor="middle" x="130" y="140" direction="ltr" unicode-bidi="embed">⑤ EXPECT().Method()</text>
-<text fill="#e1bee7" font-size="8" text-anchor="middle" x="130" y="155" direction="ltr" unicode-bidi="embed">.Return(value)</text>
-
-<line marker-end="url(#arrowmp)" stroke="#555" stroke-width="2" x1="230" x2="270" y1="142" y2="142"></line>
-
-<rect fill="#4CAF50" height="45" rx="6" width="200" x="270" y="120"></rect>
-<text fill="#fff" font-weight="bold" text-anchor="middle" x="370" y="140" direction="ltr" unicode-bidi="embed">⑥ Inject Mock</text>
-<text fill="#e8f5e9" font-size="8" text-anchor="middle" x="370" y="155" direction="ltr" unicode-bidi="embed">Svc{Repo: mockRepo}</text>
-
-<line marker-end="url(#arrowmp)" stroke="#555" stroke-width="2" x1="470" x2="510" y1="142" y2="142"></line>
-
-<rect fill="#FF9800" height="45" rx="6" width="200" x="510" y="120"></rect>
-<text fill="#fff" font-weight="bold" text-anchor="middle" x="610" y="140" direction="ltr" unicode-bidi="embed">⑦ Verify</text>
-<text fill="#fff3e0" font-size="8" text-anchor="middle" x="610" y="155" direction="ltr" unicode-bidi="embed">ctrl.Finish()</text>
-
-<!-- DI Pattern box -->
-<rect fill="#f5f5f5" height="140" rx="8" stroke="#ddd" stroke-width="1" width="660" x="30" y="185"></rect>
-<text fill="#333" font-size="12" font-weight="bold" text-anchor="middle" x="360" y="208" direction="rtl" unicode-bidi="embed">الگوی تزریق وابستگی (<tspan direction="ltr" unicode-bidi="embed">Dependency Injection</tspan>)</text>
-
-<!-- Production -->
-<rect fill="#00ADD8" height="55" rx="6" width="300" x="50" y="220"></rect>
-<text fill="#fff" font-size="11" font-weight="bold" text-anchor="middle" x="200" y="240" direction="ltr" unicode-bidi="embed">Production: Constructor(realImpl)</text>
-<text fill="#e0f7fa" font-size="9" text-anchor="middle" x="200" y="260" direction="ltr" unicode-bidi="embed">NewService(postgresRepo)</text>
-
-<!-- Test -->
-<rect fill="#4CAF50" height="55" rx="6" width="300" x="370" y="220"></rect>
-<text fill="#fff" font-size="11" font-weight="bold" text-anchor="middle" x="520" y="240" direction="ltr" unicode-bidi="embed">Test: Constructor(mockImpl)</text>
-<text fill="#e8f5e9" font-size="9" text-anchor="middle" x="520" y="260" direction="ltr" unicode-bidi="embed">NewService(mockRepo)</text>
-
-<!-- PHP comparison -->
-<rect fill="#777BB4" height="120" rx="8" width="660" x="30" y="340"></rect>
-<text fill="#fff" font-size="13" font-weight="bold" text-anchor="middle" x="360" y="362" direction="rtl" unicode-bidi="embed">مقایسه با <tspan direction="ltr" unicode-bidi="embed">PHPUnit Mock</tspan></text>
-
-<rect fill="#00ADD8" height="22" rx="4" width="300" x="50" y="375"></rect>
-<text fill="#fff" font-size="10" font-weight="bold" text-anchor="middle" x="200" y="391" direction="ltr" unicode-bidi="embed">Go: gomock</text>
-
-<rect fill="#777BB4" height="22" rx="4" width="300" x="370" y="375"></rect>
-<text fill="#fff" font-size="10" font-weight="bold" text-anchor="middle" x="520" y="391" direction="ltr" unicode-bidi="embed">PHP: PHPUnit Mock</text>
-
-<text fill="#e8f5e9" font-size="9" text-anchor="start" x="60" y="415" direction="ltr" unicode-bidi="embed">mockgen -source=xxx.go (auto-gen)</text>
-<text fill="#fce4ec" font-size="9" text-anchor="start" x="380" y="415" direction="ltr" unicode-bidi="embed">$this->createMock(Class::class)</text>
-
-<text fill="#e8f5e9" font-size="9" text-anchor="start" x="60" y="435" direction="ltr" unicode-bidi="embed">EXPECT().Method().Return(val)</text>
-<text fill="#fce4ec" font-size="9" text-anchor="start" x="380" y="435" direction="ltr" unicode-bidi="embed">$mock->method('name')->willReturn($val)</text>
-
-<text fill="#e8f5e9" font-size="9" text-anchor="start" x="60" y="455" direction="ltr" unicode-bidi="embed">Type-safe at compile time ✓</text>
-<text fill="#fce4ec" font-size="9" text-anchor="start" x="380" y="455" direction="ltr" unicode-bidi="embed">Runtime errors if method changes ✗</text>
-
-<!-- Golden Rule bar -->
-<rect fill="#FFD600" height="35" rx="6" width="660" x="30" y="475"></rect>
-<text fill="#333" font-size="12" font-weight="bold" text-anchor="middle" x="360" y="497" direction="rtl" unicode-bidi="embed">قانون طلایی: <tspan direction="ltr" unicode-bidi="embed">Interface</tspan> کوچک = <tspan direction="ltr" unicode-bidi="embed">Mock</tspan> آسان | <tspan direction="ltr" unicode-bidi="embed">Interface</tspan> بزرگ = <tspan direction="ltr" unicode-bidi="embed">Refactor</tspan> کنید</text>
-
-<!-- Info boxes -->
-<rect fill="#e8f5e9" height="55" rx="6" stroke="#4CAF50" stroke-width="1" width="310" x="30" y="520"></rect>
-<text fill="#2E7D32" font-size="10" font-weight="bold" text-anchor="middle" x="185" y="540" direction="rtl" unicode-bidi="embed">اگر <tspan direction="ltr" unicode-bidi="embed">mock</tspan> شما ۲۰ <tspan direction="ltr" unicode-bidi="embed">EXPECT</tspan> دارد</text>
-<text fill="#2E7D32" font-size="8" text-anchor="middle" x="185" y="556" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">Interface</tspan> شما خیلی بزرگ است! آن را بشکنید</text>
-
-<rect fill="#fff3e0" height="55" rx="6" stroke="#FF9800" stroke-width="1" width="310" x="380" y="520"></rect>
-<text fill="#E65100" font-size="10" font-weight="bold" text-anchor="middle" x="535" y="540" direction="rtl" unicode-bidi="embed">از <tspan direction="ltr" unicode-bidi="embed">go:generate</tspan> استفاده کنید</text>
-<text fill="#E65100" font-size="8" text-anchor="middle" x="535" y="556" direction="rtl" unicode-bidi="embed">تولید خودکار <tspan direction="ltr" unicode-bidi="embed">mock</tspan> با <tspan direction="ltr" unicode-bidi="embed">go generate ./...</tspan></text>
-</svg>
+    classDef pipeBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
+    classDef diBox   fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
+    classDef goBox   fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
+    classDef phpBox  fill:#f5f0fb,stroke:#777BB4,stroke-width:1.5px,color:#1f2937;
+    classDef noteBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1px,color:#1f2937,font-style:italic;
+    class S1,S2,S3,S4,S5,S6,S7 pipeBox;
+    class P1,T1 diBox;
+    class G1,G2,G3 goBox;
+    class P2,P3,P4 phpBox;
+    class note1,note2,note3 noteBox;</pre>
 <figcaption>شکل ۱۱-۵: خط لوله تولید و تزریق <bdi dir="ltr">Mock</bdi> — از <bdi dir="ltr">Interface</bdi> تا <bdi dir="ltr">Verify</bdi></figcaption>
 </figure>
 
