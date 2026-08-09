@@ -71,54 +71,30 @@
 <h2 id="اصول-بهینهسازی">اصول بهینه‌سازی</h2>
 
 <figure class="diagram" dir="ltr">
-<svg height="420" viewBox="0 0 650 420" width="650" xmlns="http://www.w3.org/2000/svg">
-<defs><filter id="sh194" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
-<marker id="arrowo" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5">
-<polygon fill="#555" points="0 0, 10 3.5, 0 7"></polygon>
-</marker>
-</defs>
-<rect fill="#fafafa" height="420" rx="8" width="650" x="0" y="0"></rect>
-<text class="title" text-anchor="middle" x="325" y="25" direction="rtl" unicode-bidi="embed">درخت تصمیم بهینه‌سازی</text>
-<!-- Start -->
-<rect fill="#e91e63" height="40" rx="8" width="260" x="195" y="45"></rect>
-<text fill="#fff" font-size="12" font-weight="bold" text-anchor="middle" x="325" y="70" direction="rtl" unicode-bidi="embed">آیا عملکرد فعلی مشکل دارد؟</text>
-<!-- No branch -->
-<line stroke="#4CAF50" stroke-width="2" x1="455" x2="530" y1="65" y2="65"></line>
-<text fill="#4CAF50" font-size="10" font-weight="bold" text-anchor="middle" x="490" y="58" direction="rtl" unicode-bidi="embed">خیر</text>
-<rect fill="#e8f5e9" height="30" rx="4" stroke="#4CAF50" stroke-width="1" width="100" x="530" y="50"></rect>
-<text fill="#2E7D32" font-size="10" text-anchor="middle" x="580" y="70" direction="rtl" unicode-bidi="embed">تغییری لازم نیست</text>
-<!-- Yes branch -->
-<line marker-end="url(#arrowo)" stroke="#e91e63" stroke-width="2" x1="325" x2="325" y1="85" y2="110"></line>
-<text fill="#e91e63" font-size="10" font-weight="bold" text-anchor="middle" x="340" y="100" direction="rtl" unicode-bidi="embed">بله</text>
-<!-- Measure -->
-<rect fill="#FF9800" height="40" rx="6" width="260" x="195" y="110"></rect>
-<text fill="#fff" font-size="12" font-weight="bold" text-anchor="middle" x="325" y="135" direction="rtl" unicode-bidi="embed">اندازه‌گیری: <tspan direction="ltr" unicode-bidi="embed">Benchmark</tspan> + <tspan direction="ltr" unicode-bidi="embed">pprof</tspan></text>
-<line marker-end="url(#arrowo)" stroke="#555" stroke-width="2" x1="325" x2="325" y1="150" y2="170"></line>
-<!-- Identify -->
-<rect fill="#2196F3" height="40" rx="6" width="260" x="195" y="170"></rect>
-<text fill="#fff" font-size="12" font-weight="bold" text-anchor="middle" x="325" y="195" direction="rtl" unicode-bidi="embed">شناسایی گلوگاه: <tspan direction="ltr" unicode-bidi="embed">pprof</tspan> <tspan direction="ltr" unicode-bidi="embed">top</tspan> / <tspan direction="ltr" unicode-bidi="embed">web</tspan></text>
-<line marker-end="url(#arrowo)" stroke="#555" stroke-width="2" x1="325" x2="325" y1="210" y2="230"></line>
-<!-- Decision -->
-<rect fill="#9C27B0" height="40" rx="6" width="300" x="175" y="230"></rect>
-<text fill="#fff" font-size="11" font-weight="bold" text-anchor="middle" x="325" y="255" direction="rtl" unicode-bidi="embed">مشکل الگوریتمیک (O(n²)) یا پیاده‌سازی؟</text>
-<!-- Algorithm branch -->
-<line stroke="#e91e63" stroke-width="2" x1="175" x2="100" y1="250" y2="250"></line>
-<text fill="#e91e63" font-size="9" font-weight="bold" text-anchor="middle" x="135" y="243" direction="rtl" unicode-bidi="embed">الگوریتم</text>
-<rect fill="#fce4ec" height="30" rx="4" stroke="#e91e63" stroke-width="1" width="120" x="20" y="235"></rect>
-<text fill="#880E4F" font-size="9" text-anchor="middle" x="80" y="255" direction="rtl" unicode-bidi="embed">تغییر الگوریتم</text>
-<!-- Implementation branch -->
-<line stroke="#2196F3" stroke-width="2" x1="475" x2="530" y1="250" y2="250"></line>
-<text fill="#2196F3" font-size="9" font-weight="bold" text-anchor="middle" x="500" y="243" direction="rtl" unicode-bidi="embed">پیاده‌سازی</text>
-<rect fill="#e3f2fd" height="30" rx="4" stroke="#2196F3" stroke-width="1" width="120" x="530" y="235"></rect>
-<text fill="#1565C0" font-size="9" text-anchor="middle" x="590" y="255" direction="rtl" unicode-bidi="embed">کاهش <tspan direction="ltr" unicode-bidi="embed">allocation</tspan></text>
-<!-- Verify -->
-<line marker-end="url(#arrowo)" stroke="#555" stroke-width="2" x1="325" x2="325" y1="270" y2="295"></line>
-<rect fill="#4CAF50" height="40" rx="6" width="260" x="195" y="295"></rect>
-<text fill="#fff" font-size="12" font-weight="bold" text-anchor="middle" x="325" y="320" direction="rtl" unicode-bidi="embed">تأیید: <tspan direction="ltr" unicode-bidi="embed">benchstat</tspan> قبل/بعد</text>
-<!-- Loop -->
-<path d="M 455 315 Q 560 315 560 380 Q 560 410 325 410 Q 90 410 90 380 Q 90 65 195 65" fill="none" marker-end="url(#arrowo)" stroke="#ff9800" stroke-dasharray="5,3" stroke-width="1.5"></path>
-<text fill="#ff9800" font-size="10" text-anchor="middle" x="325" y="405" direction="rtl" unicode-bidi="embed">تکرار تا رسیدن به هدف عملکرد</text>
-</svg>
+<pre class="mermaid">flowchart TB
+    TITLE["درخت تصمیم بهینه‌سازی — مسیر صحیح از اندازه‌گیری تا تأیید"]
+
+    Q1{"آیا عملکرد فعلی مشکل دارد؟"}
+    Q1 -- "خیر" --> N1["تغییری لازم نیست"]
+    Q1 -- "بله" --> M["اندازه‌گیری: Benchmark + pprof"]
+    M --> I["شناسایی گلوگاه: pprof top / web"]
+    I --> Q2{"مشکل الگوریتمیک (O&#40;n²&#41;) یا پیاده‌سازی؟"}
+    Q2 -- "الگوریتم" --> A["تغییر الگوریتم"]
+    Q2 -- "پیاده‌سازی" --> IM["کاهش allocation"]
+    A --> V["تأیید: benchstat قبل/بعد"]
+    IM --> V
+    V -- "تکرار تا رسیدن به هدف عملکرد" --> M
+
+    TITLE --> Q1
+
+    classDef titleBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
+    classDef decBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
+    classDef stopBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
+    classDef actBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
+    class TITLE titleBox;
+    class Q1,Q2 decBox;
+    class N1 stopBox;
+    class M,I,A,IM,V actBox;</pre>
 <figcaption dir="rtl">شکل ۱۲-۲: درخت تصمیم بهینه‌سازی — مسیر صحیح از اندازه‌گیری تا تأیید</figcaption>
 </figure>
 
@@ -128,56 +104,38 @@
 <p>این اصل همیشه صادق است: <strong>هرگز بدون داده بهینه‌سازی نکنید.</strong> برنامه‌نویسان اغلب تصور می‌دانند گلوگاه کجاست، اما در عمل حدس‌هایشان غلط است. به این پدیده wrong guessing می‌گویند. ذهن انسان تمایل دارد بخش‌هایی از کد که پیچیده‌تر یا آشناتر هستند را به‌عنوان گلوگاه فرض کند، در حالی که گلوگاه واقعی ممکن است در کد کاملاً متفاوتی باشد.</p>
 
 <figure class="diagram" dir="ltr">
-<svg height="280" viewBox="0 0 700 280" width="700" xmlns="http://www.w3.org/2000/svg">
-<defs>
-<marker id="arrowWO" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#555" points="0 0, 10 3.5, 0 7"></polygon></marker>
-<filter height="104%" id="shWO" width="104%" x="-2%" y="-2%"><fedropshadow dx="1" dy="1" flood-opacity="0.1" stddeviation="2"></fedropshadow></filter>
-</defs>
-<rect fill="#fafafa" height="280" rx="8" width="700" x="0" y="0"></rect>
-<text fill="#333" font-size="15" font-weight="bold" text-anchor="middle" x="350" y="28" direction="rtl" unicode-bidi="embed">گردش کار بهینه‌سازی: اندازه‌گیری ← پروفایل ← بهینه‌سازی ← تأیید</text>
+<pre class="mermaid">flowchart LR
+    TITLE["گردش کار بهینه‌سازی: اندازه‌گیری ← پروفایل ← بهینه‌سازی ← تأیید"]
 
-<!-- Step 1: Measure -->
-<rect fill="#e91e63" filter="url(#shWO)" height="70" rx="8" width="150" x="30" y="55"></rect>
-<text fill="#fff" font-size="13" font-weight="bold" text-anchor="middle" x="105" y="78" direction="ltr" unicode-bidi="embed">Measure</text>
-<text fill="#fce4ec" font-size="9" text-anchor="middle" x="105" y="95" direction="rtl" unicode-bidi="embed">اندازه‌گیری عملکرد فعلی</text>
-<text fill="#fce4ec" font-size="8" text-anchor="middle" x="105" y="110" direction="ltr" unicode-bidi="embed">go test -bench -benchmem</text>
+    M["Measure<br/>اندازه‌گیری عملکرد فعلی<br/>go test -bench -benchmem"]
+    P["Profile<br/>شناسایی گلوگاه<br/>pprof top, web, list"]
+    O["Optimize<br/>رفع گلوگاه شناسایی‌شده<br/>algorithm, allocation"]
+    V["Verify<br/>تأیید بهبود عملکرد<br/>benchstat before.prof after"]
+    DEC{"بهبود حاصل شد؟"}
+    OK["بهبود تأیید شد (بله)"]
+    NO["بازگشت تغییر (خیر)<br/>اگر بهبود معنادار نیست"]
+    LOOP["اگر هنوز مشکل دارید → تکرار چرخه"]
 
-<line marker-end="url(#arrowWO)" stroke="#555" stroke-width="2" x1="180" x2="220" y1="90" y2="90"></line>
+    M --> P --> O --> V --> DEC
+    DEC -- "بله" --> OK
+    DEC -- "خیر" --> NO
+    NO --> LOOP
+    LOOP -- "تکرار" --> M
 
-<!-- Step 2: Profile -->
-<rect fill="#FF9800" filter="url(#shWO)" height="70" rx="8" width="150" x="220" y="55"></rect>
-<text fill="#fff" font-size="13" font-weight="bold" text-anchor="middle" x="295" y="78" direction="ltr" unicode-bidi="embed">Profile</text>
-<text fill="#fff3e0" font-size="9" text-anchor="middle" x="295" y="95" direction="rtl" unicode-bidi="embed">شناسایی گلوگاه</text>
-<text fill="#fff3e0" font-size="8" text-anchor="middle" x="295" y="110" direction="ltr" unicode-bidi="embed">pprof top, web, list</text>
+    TITLE --> M
 
-<line marker-end="url(#arrowWO)" stroke="#555" stroke-width="2" x1="370" x2="410" y1="90" y2="90"></line>
-
-<!-- Step 3: Optimize -->
-<rect fill="#00ADD8" filter="url(#shWO)" height="70" rx="8" width="150" x="410" y="55"></rect>
-<text fill="#fff" font-size="13" font-weight="bold" text-anchor="middle" x="485" y="78" direction="ltr" unicode-bidi="embed">Optimize</text>
-<text fill="#e0f7fa" font-size="9" text-anchor="middle" x="485" y="95" direction="rtl" unicode-bidi="embed">رفع گلوگاه شناسایی‌شده</text>
-<text fill="#e0f7fa" font-size="8" text-anchor="middle" x="485" y="110" direction="ltr" unicode-bidi="embed">algorithm, allocation</text>
-
-<line marker-end="url(#arrowWO)" stroke="#555" stroke-width="2" x1="560" x2="525" y1="90" y2="175"></line>
-
-<!-- Step 4: Verify -->
-<rect fill="#27ae60" filter="url(#shWO)" height="70" rx="8" width="150" x="410" y="175"></rect>
-<text fill="#fff" font-size="13" font-weight="bold" text-anchor="middle" x="485" y="198" direction="ltr" unicode-bidi="embed">Verify</text>
-<text fill="#e8f5e9" font-size="9" text-anchor="middle" x="485" y="215" direction="rtl" unicode-bidi="embed">تأیید بهبود عملکرد</text>
-<text fill="#e8f5e9" font-size="8" text-anchor="middle" x="485" y="230" direction="ltr" unicode-bidi="embed">benchstat before.prof after</text>
-
-<!-- Loop back arrow: Verify → Measure -->
-<path d="M 410 210 Q 250 260 105 230 Q 30 210 50 125" fill="none" marker-end="url(#arrowWO)" stroke="#f39c12" stroke-dasharray="6,3" stroke-width="2"></path>
-<text fill="#f39c12" font-size="9" font-weight="bold" text-anchor="middle" x="225" y="255" direction="rtl" unicode-bidi="embed">اگر هنوز مشکل دارید → تکرار چرخه</text>
-
-<!-- Result box -->
-<rect fill="#e8f5e9" height="35" rx="4" stroke="#27ae60" stroke-width="1.5" width="200" x="30" y="175"></rect>
-<text fill="#2E7D32" font-size="10" font-weight="bold" text-anchor="middle" x="130" y="197" direction="rtl" unicode-bidi="embed">بهبود تأیید شد (بله)</text>
-<line stroke="#27ae60" stroke-dasharray="4,3" stroke-width="1" x1="230" x2="350" y1="192" y2="210"></line>
-<rect fill="#fce4ec" height="35" rx="4" stroke="#e74c3c" stroke-width="1.5" width="150" x="30" y="220"></rect>
-<text fill="#880E4F" font-size="10" font-weight="bold" text-anchor="middle" x="105" y="242" direction="rtl" unicode-bidi="embed">بازگشت تغییر (خیر)</text>
-<text fill="#880E4F" font-size="8" text-anchor="middle" x="105" y="252" direction="rtl" unicode-bidi="embed">اگر بهبود معنادار نیست</text>
-</svg>
+    classDef titleBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
+    classDef stageBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
+    classDef decBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
+    classDef okBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
+    classDef noBox fill:#fef2f2,stroke:#ef4444,stroke-width:1.5px,color:#1f2937;
+    classDef loopBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
+    class TITLE titleBox;
+    class M,P,O,V stageBox;
+    class DEC decBox;
+    class OK okBox;
+    class NO noBox;
+    class LOOP loopBox;</pre>
 <figcaption>شکل ۱۲-۳: گردش کار بهینه‌سازی عملکرد — چرخه تکرارشونده اندازه‌گیری تا تأیید نهایی</figcaption>
 </figure>
 
@@ -311,130 +269,46 @@ $ go tool trace trace.out
 <p>فرآیند بهینه‌سازی یک مسیر تصمیم‌گیری مشخص دارد که از اندازه‌گیری شروع شده و با تأیید بهبود خاتمه می‌یابد. اولین و مهم‌ترین سؤال این است: آیا اصلاً مشکل عملکردی وجود دارد؟ اگر پاسخ منفی است، بهینه‌سازی نکنید — این همان تله بهینه‌سازی زودرس است. اگر مشکل وجود دارد، باید با بنچمارک اندازه‌گیری کنید، سپس با pprof پروفایل بگیرید و گلوگاه را شناسایی کنید. گلوگاه یا CPU-bound است (نیاز به بهبود الگوریتم) یا Memory-bound (نیاز به کاهش allocation). پس از بهینه‌سازی، دوباره بنچمارک بگیرید و اگر بهبود معنادار نبود، رویکرد خود را بازبینی کنید. قانون ۸۰/۲۰ را همیشه به خاطر بسپارید: ۸۰٪ زمان اجرا در ۲۰٪ کد صرف می‌شود — فقط همان ۲۰٪ را بهینه کنید.</p>
 
 <figure class="diagram" dir="ltr">
-<svg height="650" viewBox="0 0 780 650" width="780" xmlns="http://www.w3.org/2000/svg">
-<defs><filter id="sh195" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
-<marker id="arrowOptTree" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#555" points="0 0, 10 3.5, 0 7"></polygon></marker>
-<marker id="arrowGreenOpt" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#4CAF50" points="0 0, 10 3.5, 0 7"></polygon></marker>
-<marker id="arrowRedOpt" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#e91e63" points="0 0, 10 3.5, 0 7"></polygon></marker>
-<marker id="arrowOrangeOpt" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#FF9800" points="0 0, 10 3.5, 0 7"></polygon></marker>
-<marker id="arrowBlueOpt" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#00ADD8" points="0 0, 10 3.5, 0 7"></polygon></marker>
-</defs>
-<rect fill="#fafafa" height="650" rx="8" width="780" x="0" y="0"></rect>
-<text fill="#333" font-size="15" font-weight="bold" text-anchor="middle" x="390" y="28" direction="rtl" unicode-bidi="embed">درخت تصمیم بهینه‌سازی: اندازه‌گیری ← پروفایل ← بهینه‌سازی ← تأیید</text>
+<pre class="mermaid">flowchart TB
+    TITLE["درخت تصمیم بهینه‌سازی: اندازه‌گیری ← پروفایل ← بهینه‌سازی ← تأیید"]
 
-<!-- Start: Performance problem? -->
-<rect fill="#e91e63" height="45" rx="10" width="280" x="250" y="45"></rect>
-<text fill="#fff" font-size="13" font-weight="bold" text-anchor="middle" x="390" y="72" direction="rtl" unicode-bidi="embed">آیا مشکل عملکردی وجود دارد؟</text>
+    Q1{"آیا مشکل عملکردی وجود دارد؟"}
+    Q1 -- "خیر" --> NO["بهینه‌سازی نکن!<br/>کد خوانا بنویس"]
+    Q1 -- "بله" --> M["اندازه‌گیری با Benchmark<br/>go test -bench . -benchmem"]
+    M --> P["پروفایل با pprof<br/>go tool pprof cpu.prof / mem.prof"]
+    P --> I["شناسایی گلوگاه<br/>pprof top / web / list funcName"]
+    I --> Q2{"گلوگاه CPU یا حافظه؟"}
+    Q2 -- "CPU" --> C["بهینه‌سازی الگوریتم<br/>O&#40;n²&#41; → O&#40;n log n&#41;<br/>reduce computation"]
+    Q2 -- "Memory" --> ME["کاهش allocation<br/>sync.Pool, preallocate<br/>reduce GC pressure"]
+    C --> R["بنچمارک مجدد: قبل / بعد<br/>benchstat before.txt after.txt"]
+    ME --> R
+    R --> Q3{"بهبود حاصل شد؟"}
+    Q3 -- "بله" --> OK["انجام شد! ✓<br/>تست و بنچمارک سبز"]
+    Q3 -- "خیر" --> REV["بازبینی رویکرد<br/>گلوگاه دیگری وجود دارد<br/>بازگشت به اندازه‌گیری"]
+    REV -- "تکرار" --> M
 
-<!-- No branch → Don't optimize! -->
-<line stroke="#4CAF50" stroke-width="2.5" x1="530" x2="620" y1="67" y2="67"></line>
-<text fill="#4CAF50" font-size="11" font-weight="bold" text-anchor="middle" x="575" y="60" direction="rtl" unicode-bidi="embed">خیر</text>
-<rect fill="#4CAF50" height="45" rx="8" width="140" x="620" y="45"></rect>
-<text fill="#fff" font-size="12" font-weight="bold" text-anchor="middle" x="690" y="65" direction="rtl" unicode-bidi="embed">بهینه‌سازی نکن!</text>
-<text fill="#E8F5E9" font-size="8" text-anchor="middle" x="690" y="80" direction="rtl" unicode-bidi="embed">کد خوانا بنویس</text>
+    subgraph NOTES["قانون ۸۰/۲۰ (پارتو) + تله بهینه‌سازی زودرس"]
+        direction TB
+        P80["قانون ۸۰/۲۰ — ۸۰٪ زمان اجرا در ۲۰٪ کد صرف می‌شود. فقط همان ۲۰٪ را بهینه کنید، بقیه را رها کنید."]
+        PREM["تله بهینه‌سازی زودرس — &quot;Premature optimization is the root of all evil&quot; — Donald Knuth"]
+        GOLD["قانون طلایی: اندازه بگیر، حدس نزن. اول پروفایل کن، فقط گلوگاه را بهینه کن، با بنچمارک تأیید کن."]
+    end
 
-<!-- Info box: Premature optimization -->
-<rect fill="#fce4ec" height="40" rx="4" stroke="#e91e63" stroke-width="1" width="200" x="560" y="100"></rect>
-<text fill="#880E4F" font-size="8" text-anchor="middle" x="660" y="115" direction="ltr" unicode-bidi="embed">"Premature optimization is</text>
-<text fill="#880E4F" font-size="8" text-anchor="middle" x="660" y="128" direction="ltr" unicode-bidi="embed">the root of all evil" — Knuth</text>
+    TITLE --> Q1
+    OK --> NOTES
 
-<!-- Yes branch → Measure -->
-<line marker-end="url(#arrowRedOpt)" stroke="#e91e63" stroke-width="2.5" x1="390" x2="390" y1="90" y2="115"></line>
-<text fill="#e91e63" font-size="11" font-weight="bold" text-anchor="middle" x="405" y="108" direction="rtl" unicode-bidi="embed">بله</text>
-
-<!-- Step: Measure with benchmarks -->
-<rect fill="#00ADD8" height="45" rx="8" width="300" x="240" y="115"></rect>
-<text fill="#fff" font-size="12" font-weight="bold" text-anchor="middle" x="390" y="137" direction="rtl" unicode-bidi="embed">اندازه‌گیری با <tspan direction="ltr" unicode-bidi="embed">Benchmark</tspan></text>
-<text fill="#e0f7fa" font-size="8" text-anchor="middle" x="390" y="152" direction="ltr" unicode-bidi="embed">go test -bench . -benchmem</text>
-
-<line marker-end="url(#arrowOptTree)" stroke="#555" stroke-width="2" x1="390" x2="390" y1="160" y2="180"></line>
-
-<!-- Step: Profile with pprof -->
-<rect fill="#FF9800" height="45" rx="8" width="300" x="240" y="180"></rect>
-<text fill="#fff" font-size="12" font-weight="bold" text-anchor="middle" x="390" y="202" direction="rtl" unicode-bidi="embed">پروفایل با <tspan direction="ltr" unicode-bidi="embed">pprof</tspan></text>
-<text fill="#fff3e0" font-size="8" text-anchor="middle" x="390" y="217" direction="ltr" unicode-bidi="embed">go tool pprof cpu.prof / mem.prof</text>
-
-<line marker-end="url(#arrowOptTree)" stroke="#555" stroke-width="2" x1="390" x2="390" y1="225" y2="245"></line>
-
-<!-- Step: Find bottleneck -->
-<rect fill="#FF9800" height="40" rx="8" width="300" x="240" y="245"></rect>
-<text fill="#fff" font-size="12" font-weight="bold" text-anchor="middle" x="390" y="268" direction="rtl" unicode-bidi="embed">شناسایی گلوگاه</text>
-<text fill="#fff3e0" font-size="8" text-anchor="middle" x="390" y="280" direction="ltr" unicode-bidi="embed">pprof top / web / list funcName</text>
-
-<line marker-end="url(#arrowOptTree)" stroke="#555" stroke-width="2" x1="390" x2="390" y1="285" y2="305"></line>
-
-<!-- Decision: CPU or Memory? -->
-<rect fill="#9C27B0" height="45" rx="8" width="280" x="250" y="305"></rect>
-<text fill="#fff" font-size="12" font-weight="bold" text-anchor="middle" x="390" y="328" direction="rtl" unicode-bidi="embed">گلوگاه CPU یا حافظه؟</text>
-
-<!-- CPU branch (Left) -->
-<line marker-end="url(#arrowRedOpt)" stroke="#e91e63" stroke-width="2" x1="250" x2="130" y1="327" y2="327"></line>
-<text fill="#e91e63" font-size="10" font-weight="bold" text-anchor="middle" x="190" y="320" direction="ltr" unicode-bidi="embed">CPU</text>
-<rect fill="#e91e63" height="55" rx="8" width="180" x="30" y="305"></rect>
-<text fill="#fff" font-size="11" font-weight="bold" text-anchor="middle" x="120" y="328" direction="rtl" unicode-bidi="embed">بهینه‌سازی الگوریتم</text>
-<text fill="#FCE4EC" font-size="8" text-anchor="middle" x="120" y="343" direction="ltr" unicode-bidi="embed">O(n²) → O(n log n)</text>
-<text fill="#FCE4EC" font-size="8" text-anchor="middle" x="120" y="355" direction="ltr" unicode-bidi="embed">reduce computation</text>
-
-<!-- Memory branch (Right) -->
-<line marker-end="url(#arrowBlueOpt)" stroke="#00ADD8" stroke-width="2" x1="530" x2="580" y1="327" y2="327"></line>
-<text fill="#00ADD8" font-size="10" font-weight="bold" text-anchor="middle" x="555" y="320" direction="ltr" unicode-bidi="embed">Memory</text>
-<rect fill="#00ADD8" height="55" rx="8" width="180" x="580" y="305"></rect>
-<text fill="#fff" font-size="11" font-weight="bold" text-anchor="middle" x="670" y="328" direction="rtl" unicode-bidi="embed">کاهش allocation</text>
-<text fill="#e0f7fa" font-size="8" text-anchor="middle" x="670" y="343" direction="ltr" unicode-bidi="embed">sync.Pool, preallocate</text>
-<text fill="#e0f7fa" font-size="8" text-anchor="middle" x="670" y="355" direction="ltr" unicode-bidi="embed">reduce GC pressure</text>
-
-<!-- Both paths merge → Benchmark again -->
-<line stroke="#555" stroke-width="1.5" x1="120" x2="120" y1="360" y2="390"></line>
-<line stroke="#555" stroke-width="1.5" x1="120" x2="240" y1="390" y2="390"></line>
-<line stroke="#555" stroke-width="1.5" x1="670" x2="670" y1="360" y2="390"></line>
-<line stroke="#555" stroke-width="1.5" x1="670" x2="540" y1="390" y2="390"></line>
-<line marker-end="url(#arrowOptTree)" stroke="#555" stroke-width="1.5" x1="390" x2="390" y1="390" y2="400"></line>
-
-<!-- Step: Benchmark again -->
-<rect fill="#00ADD8" height="40" rx="8" width="300" x="240" y="400"></rect>
-<text fill="#fff" font-size="12" font-weight="bold" text-anchor="middle" x="390" y="422" direction="rtl" unicode-bidi="embed">بنچمارک مجدد: قبل / بعد</text>
-<text fill="#e0f7fa" font-size="8" text-anchor="middle" x="390" y="435" direction="ltr" unicode-bidi="embed">benchstat before.txt after.txt</text>
-
-<line marker-end="url(#arrowOptTree)" stroke="#555" stroke-width="2" x1="390" x2="390" y1="440" y2="460"></line>
-
-<!-- Decision: Improved? -->
-<rect fill="#9C27B0" height="40" rx="8" width="200" x="290" y="460"></rect>
-<text fill="#fff" font-size="12" font-weight="bold" text-anchor="middle" x="390" y="483" direction="rtl" unicode-bidi="embed">بهبود حاصل شد؟</text>
-
-<!-- Yes → Done -->
-<line stroke="#4CAF50" stroke-width="2.5" x1="490" x2="580" y1="480" y2="480"></line>
-<text fill="#4CAF50" font-size="11" font-weight="bold" text-anchor="middle" x="535" y="473" direction="rtl" unicode-bidi="embed">بله</text>
-<rect fill="#4CAF50" height="45" rx="8" width="170" x="580" y="458"></rect>
-<text fill="#fff" font-size="13" font-weight="bold" text-anchor="middle" x="665" y="478" direction="rtl" unicode-bidi="embed">انجام شد! ✓</text>
-<text fill="#E8F5E9" font-size="8" text-anchor="middle" x="665" y="495" direction="rtl" unicode-bidi="embed">تست و بنچمارک سبز</text>
-
-<!-- No → Re-examine -->
-<line stroke="#e91e63" stroke-width="2.5" x1="290" x2="170" y1="480" y2="480"></line>
-<text fill="#e91e63" font-size="11" font-weight="bold" text-anchor="middle" x="230" y="473" direction="rtl" unicode-bidi="embed">خیر</text>
-<rect fill="#e91e63" height="45" rx="8" width="170" x="20" y="458"></rect>
-<text fill="#fff" font-size="11" font-weight="bold" text-anchor="middle" x="105" y="478" direction="rtl" unicode-bidi="embed">بازبینی رویکرد</text>
-<text fill="#FCE4EC" font-size="8" text-anchor="middle" x="105" y="495" direction="rtl" unicode-bidi="embed">گلوگاه دیگری وجود دارد</text>
-
-<!-- Loop back: Re-examine → Measure -->
-<path d="M 20 480 Q 5 480 5 200 Q 5 135 240 135" fill="none" marker-end="url(#arrowRedOpt)" stroke="#e91e63" stroke-dasharray="5,3" stroke-width="1.5"></path>
-<text fill="#e91e63" font-size="8" text-anchor="middle" x="15" y="310" direction="rtl" unicode-bidi="embed">بازگشت به اندازه‌گیری</text>
-
-<!-- 80/20 Rule Box -->
-<rect fill="#FFF8E1" height="60" rx="8" stroke="#FF9800" stroke-width="1.5" width="350" x="30" y="530"></rect>
-<text fill="#E65100" font-size="12" font-weight="bold" text-anchor="middle" x="205" y="553" direction="rtl" unicode-bidi="embed">قانون ۸۰/۲۰ (پارتو)</text>
-<text fill="#333" font-size="9" text-anchor="middle" x="205" y="568" direction="rtl" unicode-bidi="embed">۸۰٪ زمان اجرا در ۲۰٪ کد صرف می‌شود</text>
-<text fill="#333" font-size="9" text-anchor="middle" x="205" y="581" direction="rtl" unicode-bidi="embed">فقط همان ۲۰٪ را بهینه کنید، بقیه را رها کنید</text>
-
-<!-- Premature Optimization Warning -->
-<rect fill="#fce4ec" height="60" rx="8" stroke="#e91e63" stroke-width="1.5" width="350" x="410" y="530"></rect>
-<text fill="#880E4F" font-size="12" font-weight="bold" text-anchor="middle" x="585" y="553" direction="rtl" unicode-bidi="embed">تله بهینه‌سازی زودرس</text>
-<text fill="#880E4F" font-size="9" text-anchor="middle" x="585" y="568" direction="ltr" unicode-bidi="embed">"Premature optimization is the root</text>
-<text fill="#880E4F" font-size="9" text-anchor="middle" x="585" y="581" direction="ltr" unicode-bidi="embed">of all evil" — Donald Knuth</text>
-
-<!-- Golden Rule bar -->
-<rect fill="#4CAF50" height="35" rx="6" width="740" x="20" y="605"></rect>
-<text fill="#fff" font-size="12" font-weight="bold" text-anchor="middle" x="390" y="626" direction="rtl" unicode-bidi="embed">قانون طلایی: اندازه بگیر، حدس نزن. اول پروفایل کن، فقط گلوگاه را بهینه کن، با بنچمارک تأیید کن.</text>
-</svg>
+    classDef titleBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
+    classDef decBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
+    classDef stopBox fill:#fef2f2,stroke:#ef4444,stroke-width:1.5px,color:#1f2937;
+    classDef actBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
+    classDef okBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
+    classDef noteBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
+    class TITLE titleBox;
+    class Q1,Q2,Q3 decBox;
+    class NO stopBox;
+    class M,P,I,C,ME,R,REV actBox;
+    class OK okBox;
+    class P80,PREM,GOLD noteBox;</pre>
 <figcaption>شکل ۱۲-۴: درخت تصمیم کامل بهینه‌سازی — از تشخیص مشکل تا تأیید بهبود، با قانون ۸۰/۲۰ و هشدار بهینه‌سازی زودرس</figcaption>
 </figure>
 

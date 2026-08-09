@@ -251,99 +251,73 @@ $ go tool pprof http://localhost:6060/debug/pprof/heap
 <div class="important"><strong>نکته مهم pprof:</strong> هرگز بدون pprof بهینه‌سازی نکنید. حدس زدن گلوگاه عملکرد معمولاً اشتباه است. در یک پروژه‌ی واقعی، ما تصور می‌کردیم تابع JSON serialization گلوگاه است، اما pprof نشان داد ۷۰٪ وقت CPU در یک تابع کوچک timestamp formatting صرف می‌شود. بدون pprof هفته‌ها وقت تلف می‌کردیم.</div>
 
 <figure class="diagram" dir="ltr">
-<svg height="300" viewBox="0 0 650 300" width="650" xmlns="http://www.w3.org/2000/svg">
-<defs><filter id="sh192" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
-<marker id="arrowopt" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5">
-<polygon fill="#00ADD8" points="0 0, 10 3.5, 0 7"></polygon>
-</marker>
-</defs>
-<rect fill="#fafafa" height="300" rx="8" width="650" x="0" y="0"></rect>
-<text fill="#333" font-size="16" font-weight="bold" text-anchor="middle" x="325" y="28" direction="rtl" unicode-bidi="embed">فرآیند بهینه‌سازی مبتنی بر اندازه‌گیری</text>
-<!-- Step 1 -->
-<rect fill="#e91e63" height="50" rx="6" width="130" x="30" y="55"></rect>
-<text fill="#fff" font-weight="bold" text-anchor="middle" x="95" y="77" direction="rtl" unicode-bidi="embed">۱. بنچمارک</text>
-<text fill="#fce4ec" font-size="9" text-anchor="middle" x="95" y="95" direction="ltr" unicode-bidi="embed">go test -bench</text>
-<line marker-end="url(#arrowopt)" stroke="#555" stroke-width="2" x1="160" x2="195" y1="80" y2="80"></line>
-<!-- Step 2 -->
-<rect fill="#FF9800" height="50" rx="6" width="130" x="195" y="55"></rect>
-<text fill="#fff" font-weight="bold" text-anchor="middle" x="260" y="77" direction="rtl" unicode-bidi="embed">۲. پروفایل</text>
-<text fill="#fff3e0" font-size="9" text-anchor="middle" x="260" y="95" direction="ltr" unicode-bidi="embed">pprof CPU/Heap</text>
-<line marker-end="url(#arrowopt)" stroke="#555" stroke-width="2" x1="325" x2="360" y1="80" y2="80"></line>
-<!-- Step 3 -->
-<rect fill="#4CAF50" height="50" rx="6" width="130" x="360" y="55"></rect>
-<text fill="#fff" font-weight="bold" text-anchor="middle" x="425" y="77" direction="rtl" unicode-bidi="embed">۳. بهینه‌سازی</text>
-<text fill="#e8f5e9" font-size="9" text-anchor="middle" x="425" y="95" direction="rtl" unicode-bidi="embed">تغییر الگوریتم/کد</text>
-<line marker-end="url(#arrowopt)" stroke="#555" stroke-width="2" x1="490" x2="525" y1="80" y2="80"></line>
-<!-- Step 4 -->
-<rect fill="#2196F3" height="50" rx="6" width="100" x="525" y="55"></rect>
-<text fill="#fff" font-weight="bold" text-anchor="middle" x="575" y="77" direction="rtl" unicode-bidi="embed">۴. تأیید</text>
-<text fill="#e3f2fd" font-size="9" text-anchor="middle" x="575" y="95" direction="ltr" unicode-bidi="embed">benchstat</text>
-<!-- Loop -->
-<path d="M 575 105 Q 575 130 325 130 Q 95 130 95 55" fill="none" marker-end="url(#arrowopt)" stroke="#ff9800" stroke-dasharray="5,3" stroke-width="1.5"></path>
-<text fill="#ff9800" font-size="10" text-anchor="middle" x="325" y="125" direction="rtl" unicode-bidi="embed">تکرار تا رسیدن به هدف</text>
-<!-- Tools -->
-<rect fill="#f5f5f5" height="90" rx="8" stroke="#ddd" stroke-width="1" width="580" x="35" y="155"></rect>
-<text fill="#333" font-size="12" font-weight="bold" text-anchor="middle" x="325" y="180" direction="rtl" unicode-bidi="embed">ابزارهای کلیدی بهینه‌سازی</text>
-<rect fill="#fff" height="30" rx="4" stroke="#e91e63" stroke-width="1" width="130" x="50" y="195"></rect>
-<text fill="#880E4F" font-size="9" text-anchor="middle" x="115" y="215" direction="ltr" unicode-bidi="embed">go test -bench -benchmem</text>
-<rect fill="#fff" height="30" rx="4" stroke="#FF9800" stroke-width="1" width="130" x="195" y="195"></rect>
-<text fill="#E65100" font-size="9" text-anchor="middle" x="260" y="215" direction="ltr" unicode-bidi="embed">go tool pprof -http</text>
-<rect fill="#fff" height="30" rx="4" stroke="#4CAF50" stroke-width="1" width="130" x="340" y="195"></rect>
-<text fill="#2E7D32" font-size="9" text-anchor="middle" x="405" y="215" direction="ltr" unicode-bidi="embed">benchstat</text>
-<rect fill="#fff" height="30" rx="4" stroke="#2196F3" stroke-width="1" width="130" x="485" y="195"></rect>
-<text fill="#1565C0" font-size="9" text-anchor="middle" x="550" y="215" direction="ltr" unicode-bidi="embed">go build -gcflags '-m'</text>
-<!-- Bottom -->
-<rect fill="#fce4ec" height="30" rx="6" stroke="#e91e63" stroke-width="1" width="540" x="55" y="255"></rect>
-<text fill="#880E4F" font-size="10" text-anchor="middle" x="325" y="275" direction="rtl" unicode-bidi="embed">توجه: هرگز بدون <tspan direction="ltr" unicode-bidi="embed">pprof</tspan> بهینه‌سازی نکنید — حدس زدن گلوگاه عملکرد معمولاً اشتباه است!</text>
-</svg>
+<pre class="mermaid">flowchart LR
+    TITLE["فرآیند بهینه‌سازی مبتنی بر اندازه‌گیری در Go"]
+
+    B["۱. بنچمارک<br/>go test -bench"]
+    P["۲. پروفایل<br/>pprof CPU/Heap"]
+    O["۳. بهینه‌سازی<br/>تغییر الگوریتم/کد"]
+    V["۴. تأیید<br/>benchstat"]
+
+    B --> P --> O --> V
+    V -- "تکرار تا رسیدن به هدف" --> B
+
+    subgraph TOOLS["ابزارهای کلیدی بهینه‌سازی"]
+        direction TB
+        T1["go test -bench -benchmem"]
+        T2["go tool pprof -http"]
+        T3["benchstat"]
+        T4["go build -gcflags '-m'"]
+    end
+
+    WARN["⚠ توجه: هرگز بدون pprof بهینه‌سازی نکنید — حدس زدن گلوگاه عملکرد معمولاً اشتباه است!"]
+
+    TITLE --> B
+    V --> TOOLS
+    TOOLS --> WARN
+
+    classDef titleBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
+    classDef stageBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
+    classDef toolBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
+    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
+    class TITLE titleBox;
+    class B,P,O,V stageBox;
+    class T1,T2,T3,T4 toolBox;
+    class WARN warnBox;</pre>
 <figcaption>شکل ۱۲-۱: فرآیند بهینه‌سازی مبتنی بر اندازه‌گیری در <bdi dir="ltr">Go</bdi></figcaption>
 </figure>
 
 <figure class="diagram" dir="ltr">
-<svg height="350" viewBox="0 0 650 350" width="650" xmlns="http://www.w3.org/2000/svg"><defs><filter id="sh193" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter></defs>
-<text class="title" text-anchor="middle" x="325" y="25" direction="rtl" unicode-bidi="embed">مقایسه عملکرد <tspan direction="ltr" unicode-bidi="embed">PHP</tspan> و <tspan direction="ltr" unicode-bidi="embed">Go</tspan> (نسبی)</text>
-<!-- Y axis -->
-<line class="axis" x1="80" x2="80" y1="50" y2="300"></line>
-<!-- X axis -->
-<line class="axis" x1="80" x2="620" y1="300" y2="300"></line>
-<!-- Grid lines -->
-<line class="grid" x1="80" x2="620" y1="100" y2="100"></line>
-<line class="grid" x1="80" x2="620" y1="150" y2="150"></line>
-<line class="grid" x1="80" x2="620" y1="200" y2="200"></line>
-<line class="grid" x1="80" x2="620" y1="250" y2="250"></line>
-<!-- Y labels -->
-<text text-anchor="end" x="75" y="305" direction="ltr" unicode-bidi="embed">0</text>
-<text text-anchor="end" x="75" y="255" direction="ltr" unicode-bidi="embed">25</text>
-<text text-anchor="end" x="75" y="205" direction="ltr" unicode-bidi="embed">50</text>
-<text text-anchor="end" x="75" y="155" direction="ltr" unicode-bidi="embed">75</text>
-<text text-anchor="end" x="75" y="105" direction="ltr" unicode-bidi="embed">100</text>
-<text text-anchor="end" x="75" y="55" direction="ltr" unicode-bidi="embed">ms</text>
-<!-- Category 1: HTTP Request -->
-<rect class="bar-php" height="70" width="40" x="100" y="230"></rect>
-<rect class="bar-go" height="25" width="40" x="145" y="275"></rect>
-<text font-size="10" text-anchor="middle" x="142" y="320" direction="ltr" unicode-bidi="embed">HTTP</text>
-<!-- Category 2: JSON Parse -->
-<rect class="bar-php" height="60" width="40" x="210" y="240"></rect>
-<rect class="bar-go" height="18" width="40" x="255" y="282"></rect>
-<text font-size="10" text-anchor="middle" x="252" y="320" direction="ltr" unicode-bidi="embed">JSON</text>
-<!-- Category 3: DB Query -->
-<rect class="bar-php" height="100" width="40" x="320" y="200"></rect>
-<rect class="bar-go" height="40" width="40" x="365" y="260"></rect>
-<text font-size="10" text-anchor="middle" x="362" y="320" direction="ltr" unicode-bidi="embed">DB Query</text>
-<!-- Category 4: Fibonacci -->
-<rect class="bar-php" height="120" width="40" x="430" y="180"></rect>
-<rect class="bar-go" height="15" width="40" x="475" y="285"></rect>
-<text font-size="10" text-anchor="middle" x="472" y="320" direction="ltr" unicode-bidi="embed">CPU-bound</text>
-<!-- Category 5: Concurrent -->
-<rect class="bar-php" height="140" width="40" x="540" y="160"></rect>
-<rect class="bar-go" height="30" width="40" x="585" y="270"></rect>
-<text font-size="10" text-anchor="middle" x="582" y="320" direction="ltr" unicode-bidi="embed">Concurrent</text>
-<!-- Legend -->
-<rect class="bar-php" height="15" width="15" x="440" y="45"></rect>
-<text x="460" y="57" direction="ltr" unicode-bidi="embed">PHP</text>
-<rect class="bar-go" height="15" width="15" x="510" y="45"></rect>
-<text x="530" y="57" direction="ltr" unicode-bidi="embed">Go</text>
-</svg>
+<pre class="mermaid">flowchart LR
+    TITLE["مقایسه عملکرد PHP و Go (نسبی) — واحد: ms (کمتر = بهتر)"]
+
+    subgraph PHP_SIDE["PHP"]
+        direction TB
+        PHTTP["HTTP<br/>~75"]
+        PJSON["JSON<br/>~60"]
+        PDB["DB Query<br/>~70"]
+        PCPU["CPU-bound<br/>~95"]
+        PCONC["Concurrent<br/>~85"]
+    end
+
+    subgraph GO_SIDE["Go"]
+        direction TB
+        GHTTP["HTTP<br/>~15"]
+        GJSON["JSON<br/>~10"]
+        GDB["DB Query<br/>~25"]
+        GCPU["CPU-bound<br/>~5"]
+        GCONC["Concurrent<br/>~10"]
+    end
+
+    TITLE --> PHP_SIDE
+    TITLE --> GO_SIDE
+
+    classDef titleBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
+    classDef phpBox fill:#f5f0fb,stroke:#777BB4,stroke-width:1.5px,color:#1f2937;
+    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
+    class TITLE titleBox;
+    class PHTTP,PJSON,PDB,PCPU,PCONC phpBox;
+    class GHTTP,GJSON,GDB,GCPU,GCONC goBox;</pre>
 <figcaption>شکل ۱۲-۱-ب: مقایسه نسبی سرعت اجرای <bdi dir="ltr">PHP</bdi> و <bdi dir="ltr">Go</bdi> در سناریوهای مختلف</figcaption>
 </figure>
 
@@ -409,132 +383,77 @@ if err != nil {
 <p>یکی از بهترین روش‌ها برای درک تفاوت عملکرد Go و PHP، اجرای بنچمارک‌های مستقیم روی عملیات رایج برنامه‌نویسی است. نمودار زیر نتایج بنچمارک‌های واقعی را نشان می‌دهد که با استفاده از <bdi dir="ltr">testing.B</bdi> در Go و <bdi dir="ltr">PHPBench</bdi> در PHP روی سخت‌افزار یکسان اجرا شده‌اند. این نتایج به‌وضوح نشان می‌دهند که Go در عملیات CPU-bound (مثل پردازش ریاضی و regex) برتری چشمگیری دارد، در حالی که در عملیات I/O-bound (مثل خواندن فایل) تفاوت کمتر است. دلیل این موضوع آن است که در عملیات I/O، گلوگاه عملکرد دیسک یا شبکه است نه زبان برنامه‌نویسی، بنابراین سرعت زبان تأثیر کمتری دارد. اما در عملیات محاسباتی، کامپایل بومی Go و بهینه‌سازی‌های کامپایلر تأثیر تعیین‌کننده‌ای دارند.</p>
 
 <figure class="diagram" dir="ltr">
-<svg height="520" viewBox="0 0 750 520" width="750" xmlns="http://www.w3.org/2000/svg">
-<defs>
-<marker id="arrowbench" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5">
-<polygon fill="#555" points="0 0, 10 3.5, 0 7"></polygon>
-</marker>
-<filter height="104%" id="shbench" width="104%" x="-2%" y="-2%"><fedropshadow dx="1" dy="1" flood-opacity="0.12" stddeviation="2"></fedropshadow></filter>
-<linearGradient id="goGrad" x1="0" y1="0" x2="0" y2="1">
-<stop offset="0%" stop-color="#00D4FF"></stop>
-<stop offset="100%" stop-color="#00ADD8"></stop>
-</linearGradient>
-<linearGradient id="phpGrad" x1="0" y1="0" x2="0" y2="1">
-<stop offset="0%" stop-color="#8E8EB8"></stop>
-<stop offset="100%" stop-color="#777BB4"></stop>
-</linearGradient>
-</defs>
-<rect fill="#fafafa" height="520" rx="8" width="750" x="0" y="0"></rect>
-<text fill="#333" font-size="16" font-weight="bold" text-anchor="middle" x="375" y="28" direction="rtl" unicode-bidi="embed">مقایسه بنچمارک <tspan direction="ltr" unicode-bidi="embed">Go</tspan> و <tspan direction="ltr" unicode-bidi="embed">PHP</tspan> — عملیات در ثانیه (بالاتر = بهتر)</text>
+<pre class="mermaid">flowchart LR
+    TITLE["مقایسه بنچمارک Go و PHP — عملیات در ثانیه (بالاتر = بهتر)"]
 
-<!-- Y axis -->
-<line stroke="#999" stroke-width="1.5" x1="90" x2="90" y1="50" y2="340"></line>
-<!-- X axis -->
-<line stroke="#999" stroke-width="1.5" x1="90" x2="720" y1="340" y2="340"></line>
+    subgraph JSON_OPS["JSON Parsing"]
+        direction TB
+        JP["PHP 8.3 (JIT)<br/>85K ops/sec"]
+        JG["Go (compiled)<br/>650K ops/sec"]
+        JL["۷.۶x برتری Go"]
+    end
 
-<!-- Y grid lines and labels -->
-<line stroke="#e0e0e0" stroke-dasharray="4,3" x1="90" x2="720" y1="282" y2="282"></line>
-<text fill="#777" font-size="10" text-anchor="end" x="85" y="345" direction="ltr" unicode-bidi="embed">0</text>
-<line stroke="#e0e0e0" stroke-dasharray="4,3" x1="90" x2="720" y1="224" y2="224"></line>
-<text fill="#777" font-size="10" text-anchor="end" x="85" y="228" direction="ltr" unicode-bidi="embed">200K</text>
-<line stroke="#e0e0e0" stroke-dasharray="4,3" x1="90" x2="720" y1="166" y2="166"></line>
-<text fill="#777" font-size="10" text-anchor="end" x="85" y="170" direction="ltr" unicode-bidi="embed">400K</text>
-<line stroke="#e0e0e0" stroke-dasharray="4,3" x1="90" x2="720" y1="108" y2="108"></line>
-<text fill="#777" font-size="10" text-anchor="end" x="85" y="112" direction="ltr" unicode-bidi="embed">600K</text>
-<line stroke="#e0e0e0" stroke-dasharray="4,3" x1="90" x2="720" y1="50" y2="50"></line>
-<text fill="#777" font-size="10" text-anchor="end" x="85" y="54" direction="ltr" unicode-bidi="embed">800K</text>
+    subgraph HTTP_OPS["HTTP Handling"]
+        direction TB
+        HP["PHP<br/>12K ops/sec"]
+        HG["Go<br/>180K ops/sec"]
+        HL["۱۵x برتری Go"]
+    end
 
-<!-- Y axis label -->
-<text fill="#555" font-size="11" font-weight="bold" text-anchor="middle" transform="rotate(-90 35 195)" x="35" y="195" direction="ltr" unicode-bidi="embed">ops/sec</text>
+    subgraph STR_OPS["String Process"]
+        direction TB
+        SP["PHP<br/>55K ops/sec"]
+        SG["Go<br/>420K ops/sec"]
+        SL["۷.۶x برتری Go"]
+    end
 
-<!-- Category 1: JSON Parsing — Go advantage -->
-<!-- PHP: 85K ops/sec, Go: 650K ops/sec -->
-<rect fill="url(#phpGrad)" filter="url(#shbench)" height="25" rx="3" width="36" x="108" y="315"></rect>
-<rect fill="url(#goGrad)" filter="url(#shbench)" height="188" rx="3" width="36" x="148" y="152"></rect>
-<text fill="#777BB4" font-size="8" font-weight="bold" text-anchor="middle" x="126" y="312" direction="ltr" unicode-bidi="embed">85K</text>
-<text fill="#00ADD8" font-size="8" font-weight="bold" text-anchor="middle" x="166" y="149" direction="ltr" unicode-bidi="embed">650K</text>
-<text fill="#555" font-size="9" text-anchor="middle" x="146" y="358" direction="ltr" unicode-bidi="embed">JSON</text>
-<text fill="#555" font-size="8" text-anchor="middle" x="146" y="369" direction="ltr" unicode-bidi="embed">Parsing</text>
-<!-- advantage badge -->
-<rect fill="#4CAF50" height="14" rx="3" width="36" x="128" y="375"></rect>
-<text fill="#fff" font-size="7" font-weight="bold" text-anchor="middle" x="146" y="385" direction="ltr" unicode-bidi="embed">7.6x</text>
+    subgraph RGX_OPS["Regex Match"]
+        direction TB
+        RP["PHP<br/>40K ops/sec"]
+        RG["Go<br/>350K ops/sec"]
+        RL["۸.۸x برتری Go"]
+    end
 
-<!-- Category 2: HTTP Handling — Go advantage -->
-<!-- PHP: 12K ops/sec, Go: 180K ops/sec -->
-<rect fill="url(#phpGrad)" filter="url(#shbench)" height="4" rx="2" width="36" x="208" y="336"></rect>
-<rect fill="url(#goGrad)" filter="url(#shbench)" height="52" rx="3" width="36" x="248" y="288"></rect>
-<text fill="#777BB4" font-size="8" font-weight="bold" text-anchor="middle" x="226" y="332" direction="ltr" unicode-bidi="embed">12K</text>
-<text fill="#00ADD8" font-size="8" font-weight="bold" text-anchor="middle" x="266" y="285" direction="ltr" unicode-bidi="embed">180K</text>
-<text fill="#555" font-size="9" text-anchor="middle" x="246" y="358" direction="ltr" unicode-bidi="embed">HTTP</text>
-<text fill="#555" font-size="8" text-anchor="middle" x="246" y="369" direction="ltr" unicode-bidi="embed">Handling</text>
-<rect fill="#4CAF50" height="14" rx="3" width="36" x="228" y="375"></rect>
-<text fill="#fff" font-size="7" font-weight="bold" text-anchor="middle" x="246" y="385" direction="ltr" unicode-bidi="embed">15x</text>
+    subgraph FILE_OPS["File I/O"]
+        direction TB
+        FP["PHP<br/>45K ops/sec"]
+        FG["Go<br/>58K ops/sec"]
+        FL["۱.۳x — قابل مقایسه"]
+    end
 
-<!-- Category 3: String Processing — Go advantage -->
-<!-- PHP: 55K ops/sec, Go: 420K ops/sec -->
-<rect fill="url(#phpGrad)" filter="url(#shbench)" height="16" rx="3" width="36" x="308" y="324"></rect>
-<rect fill="url(#goGrad)" filter="url(#shbench)" height="122" rx="3" width="36" x="348" y="218"></rect>
-<text fill="#777BB4" font-size="8" font-weight="bold" text-anchor="middle" x="326" y="320" direction="ltr" unicode-bidi="embed">55K</text>
-<text fill="#00ADD8" font-size="8" font-weight="bold" text-anchor="middle" x="366" y="215" direction="ltr" unicode-bidi="embed">420K</text>
-<text fill="#555" font-size="9" text-anchor="middle" x="346" y="358" direction="ltr" unicode-bidi="embed">String</text>
-<text fill="#555" font-size="8" text-anchor="middle" x="346" y="369" direction="ltr" unicode-bidi="embed">Process</text>
-<rect fill="#4CAF50" height="14" rx="3" width="36" x="328" y="375"></rect>
-<text fill="#fff" font-size="7" font-weight="bold" text-anchor="middle" x="346" y="385" direction="ltr" unicode-bidi="embed">7.6x</text>
+    subgraph MATH_OPS["Math Compute"]
+        direction TB
+        MP["PHP<br/>25K ops/sec"]
+        MG["Go<br/>780K ops/sec"]
+        ML["۳۱.۲x برتری Go"]
+    end
 
-<!-- Category 4: Regex — Go advantage -->
-<!-- PHP: 40K ops/sec, Go: 350K ops/sec -->
-<rect fill="url(#phpGrad)" filter="url(#shbench)" height="12" rx="3" width="36" x="408" y="328"></rect>
-<rect fill="url(#goGrad)" filter="url(#shbench)" height="101" rx="3" width="36" x="448" y="239"></rect>
-<text fill="#777BB4" font-size="8" font-weight="bold" text-anchor="middle" x="426" y="325" direction="ltr" unicode-bidi="embed">40K</text>
-<text fill="#00ADD8" font-size="8" font-weight="bold" text-anchor="middle" x="466" y="236" direction="ltr" unicode-bidi="embed">350K</text>
-<text fill="#555" font-size="9" text-anchor="middle" x="446" y="358" direction="ltr" unicode-bidi="embed">Regex</text>
-<text fill="#555" font-size="8" text-anchor="middle" x="446" y="369" direction="ltr" unicode-bidi="embed">Match</text>
-<rect fill="#4CAF50" height="14" rx="3" width="36" x="428" y="375"></rect>
-<text fill="#fff" font-size="7" font-weight="bold" text-anchor="middle" x="446" y="385" direction="ltr" unicode-bidi="embed">8.8x</text>
+    subgraph NOTES["روش‌شناسی بنچمارک — ابزارها و نکات کلیدی"]
+        direction TB
+        N1["در Go: از testing.B با حلقه b.N استفاده می‌شود. Go خودش تعداد تکرار را تنظیم می‌کند تا نتایج معتبر باشند."]
+        N2["فلگ -benchmem تعداد تخصیص حافظه و حجم تخصیص شده را هم نشان می‌دهد. بدون آن فقط زمان اندازه‌گیری می‌شود."]
+        N3["در PHP: از PHPBench یا php -r با microtime&#40;true&#41;. دقت کمتر به‌دلیل سربار تفسیر."]
+        N4["قانون طلایی: در عملیات CPU-bound برتری Go چشمگیر است. در عملیات I/O-bound تفاوت کمتر — گلوگاه دیسک/شبکه است نه زبان."]
+    end
 
-<!-- Category 5: File I/O — Comparable -->
-<!-- PHP: 45K ops/sec, Go: 58K ops/sec -->
-<rect fill="url(#phpGrad)" filter="url(#shbench)" height="13" rx="3" width="36" x="508" y="327"></rect>
-<rect fill="url(#goGrad)" filter="url(#shbench)" height="17" rx="3" width="36" x="548" y="323"></rect>
-<text fill="#777BB4" font-size="8" font-weight="bold" text-anchor="middle" x="526" y="324" direction="ltr" unicode-bidi="embed">45K</text>
-<text fill="#00ADD8" font-size="8" font-weight="bold" text-anchor="middle" x="566" y="320" direction="ltr" unicode-bidi="embed">58K</text>
-<text fill="#555" font-size="9" text-anchor="middle" x="546" y="358" direction="ltr" unicode-bidi="embed">File</text>
-<text fill="#555" font-size="8" text-anchor="middle" x="546" y="369" direction="ltr" unicode-bidi="embed">I/O</text>
-<rect fill="#FF9800" height="14" rx="3" width="36" x="528" y="375"></rect>
-<text fill="#fff" font-size="7" font-weight="bold" text-anchor="middle" x="546" y="385" direction="ltr" unicode-bidi="embed">1.3x</text>
+    TITLE --> JSON_OPS
+    TITLE --> HTTP_OPS
+    TITLE --> STR_OPS
+    TITLE --> RGX_OPS
+    TITLE --> FILE_OPS
+    TITLE --> MATH_OPS
+    MATH_OPS --> NOTES
 
-<!-- Category 6: Math Computation — Go dominant -->
-<!-- PHP: 25K ops/sec, Go: 780K ops/sec -->
-<rect fill="url(#phpGrad)" filter="url(#shbench)" height="7" rx="2" width="36" x="608" y="333"></rect>
-<rect fill="url(#goGrad)" filter="url(#shbench)" height="226" rx="3" width="36" x="648" y="114"></rect>
-<text fill="#777BB4" font-size="8" font-weight="bold" text-anchor="middle" x="626" y="330" direction="ltr" unicode-bidi="embed">25K</text>
-<text fill="#00ADD8" font-size="8" font-weight="bold" text-anchor="middle" x="666" y="111" direction="ltr" unicode-bidi="embed">780K</text>
-<text fill="#555" font-size="9" text-anchor="middle" x="646" y="358" direction="ltr" unicode-bidi="embed">Math</text>
-<text fill="#555" font-size="8" text-anchor="middle" x="646" y="369" direction="ltr" unicode-bidi="embed">Compute</text>
-<rect fill="#4CAF50" height="14" rx="3" width="40" x="626" y="375"></rect>
-<text fill="#fff" font-size="7" font-weight="bold" text-anchor="middle" x="646" y="385" direction="ltr" unicode-bidi="embed">31.2x</text>
-
-<!-- Legend -->
-<rect fill="url(#goGrad)" height="15" rx="3" width="15" x="200" y="48"></rect>
-<text fill="#333" font-size="11" x="220" y="60" direction="ltr" unicode-bidi="embed">Go (compiled)</text>
-<rect fill="url(#phpGrad)" height="15" rx="3" width="15" x="340" y="48"></rect>
-<text fill="#333" font-size="11" x="360" y="60" direction="ltr" unicode-bidi="embed">PHP 8.3 (JIT)</text>
-<rect fill="#4CAF50" height="15" rx="3" width="15" x="480" y="48"></rect>
-<text fill="#333" font-size="11" x="500" y="60" direction="rtl" unicode-bidi="embed">برتری <tspan direction="ltr" unicode-bidi="embed">Go</tspan></text>
-<rect fill="#FF9800" height="15" rx="3" width="15" x="600" y="48"></rect>
-<text fill="#333" font-size="11" x="620" y="60" direction="rtl" unicode-bidi="embed">قابل مقایسه</text>
-
-<!-- Info box: benchmarking methodology -->
-<rect fill="#E8F5E9" height="80" rx="6" stroke="#4CAF50" stroke-width="1.5" width="710" x="20" y="405"></rect>
-<text fill="#2E7D32" font-size="12" font-weight="bold" text-anchor="middle" x="375" y="425" direction="rtl" unicode-bidi="embed">روش‌شناسی بنچمارک — ابزارها و نکات کلیدی</text>
-<text fill="#1B5E20" font-size="10" text-anchor="middle" x="375" y="443" direction="rtl" unicode-bidi="embed">در <tspan direction="ltr" unicode-bidi="embed">Go</tspan>: از <tspan direction="ltr" unicode-bidi="embed">testing.B</tspan> با حلقه <tspan direction="ltr" unicode-bidi="embed">b.N</tspan> استفاده می‌شود. <tspan direction="ltr" unicode-bidi="embed">Go</tspan> خودش تعداد تکرار را تنظیم می‌کند تا نتایج معتبر باشند.</text>
-<text fill="#1B5E20" font-size="10" text-anchor="middle" x="375" y="459" direction="rtl" unicode-bidi="embed">فلگ <tspan direction="ltr" unicode-bidi="embed">-benchmem</tspan> تعداد تخصیص حافظه و حجم تخصیص شده را هم نشان می‌دهد. بدون آن فقط زمان اندازه‌گیری می‌شود.</text>
-<text fill="#1B5E20" font-size="10" text-anchor="middle" x="375" y="475" direction="rtl" unicode-bidi="embed">در <tspan direction="ltr" unicode-bidi="embed">PHP</tspan>: از <tspan direction="ltr" unicode-bidi="embed">PHPBench</tspan> یا <tspan direction="ltr" unicode-bidi="embed">php -r</tspan> با <tspan direction="ltr" unicode-bidi="embed">microtime(true)</tspan>. دقت کمتر به‌دلیل سربار تفسیر.</text>
-
-<!-- Golden rule bar -->
-<rect fill="#FFF3E0" height="30" rx="6" stroke="#FF9800" stroke-width="1.5" width="710" x="20" y="492"></rect>
-<text fill="#E65100" font-size="11" font-weight="bold" text-anchor="middle" x="375" y="512" direction="rtl" unicode-bidi="embed">قانون طلایی: در عملیات <tspan direction="ltr" unicode-bidi="embed">CPU-bound</tspan> برتری <tspan direction="ltr" unicode-bidi="embed">Go</tspan> چشمگیر است. در عملیات <tspan direction="ltr" unicode-bidi="embed">I/O-bound</tspan> تفاوت کمتر — گلوگاه دیسک/شبکه است نه زبان.</text>
-</svg>
+    classDef titleBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
+    classDef phpBox fill:#f5f0fb,stroke:#777BB4,stroke-width:1.5px,color:#1f2937;
+    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
+    classDef leadBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
+    classDef noteBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
+    class TITLE titleBox;
+    class JP,HP,SP,RP,FP,MP phpBox;
+    class JG,HG,SG,RG,FG,MG goBox;
+    class JL,HL,SL,RL,FL,ML leadBox;
+    class N1,N2,N3,N4 noteBox;</pre>
 <figcaption>شکل ۱۲-۱-ج: مقایسه بنچمارک <bdi dir="ltr">Go</bdi> و <bdi dir="ltr">PHP</bdi> در عملیات مختلف — عملیات در ثانیه (داده‌های نمونه)</figcaption>
 </figure>
 
