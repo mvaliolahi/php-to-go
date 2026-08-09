@@ -135,15 +135,15 @@ if err := rows.Err(); err != nil {
 
     subgraph PIPE["خط لوله اجرا"]
         direction TB
-        P1["db.Prepare()<br/>اتصال پارامترها"]
-        P2["stmt.Query()<br/>ایجاد cursor"]
-        P3["rows.Next()<br/>پیمایش سطرها"]
-        P4["rows.Scan()<br/>تبدیل نوع"]
-        P5["rows.Close()<br/>آزادسازی منابع"]
+        P1["db.Prepare()اتصال پارامترها"]
+        P2["stmt.Query()ایجاد cursor"]
+        P3["rows.Next()پیمایش سطرها"]
+        P4["rows.Scan()تبدیل نوع"]
+        P5["rows.Close()آزادسازی منابع"]
         P1 -- "کوئری فقط ۱ بار پارس می‌شود" --&gt; P2
-        P2 -- "مقادیر جایگزین پارامترها<br/>ایجاد cursor" --&gt; P3
-        P3 -- "loop: true → سطر بعدی<br/>حلقه تکرار برای هر سطر" --&gt; P4
-        P4 -- "SQL → Go types<br/>تبدیل نوع‌ها در Scan" --&gt; P5
+        P2 -- "مقادیر جایگزین پارامترهاایجاد cursor" --&gt; P3
+        P3 -- "loop: true → سطر بعدیحلقه تکرار برای هر سطر" --&gt; P4
+        P4 -- "SQL → Go typesتبدیل نوع‌ها در Scan" --&gt; P5
         P5 -- "بستن اتصال cursor" --&gt; END_P[" "]
     end
 
@@ -176,7 +176,7 @@ if err := rows.Err(); err != nil {
         PH1["$stmt = $pdo-&gt;prepare(); $stmt-&gt;execute();"]
     end
 
-    Golden["قانون طلایی: همیشه rows.Close() را با defer فراخوانی کنید و بعد از حلقه rows.Err() را بررسی کنید"]
+    Golden[قانون طلایی: همیشه rows.Close() را با defer فراخوانی کنید و بعد از حلقه...]
 
     Title --&gt; PIPE
     PIPE --&gt; TYPES

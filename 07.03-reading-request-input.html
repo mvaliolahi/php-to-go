@@ -394,22 +394,22 @@ func createArticleHandler(w http.ResponseWriter, r *http.Request) {
 
     subgraph GO["Go Method"]
         direction TB
-        G1["r.FormValue("key")<br/>ابتدا کوئری، سپس body"]
-        G2["r.URL.Query().Get("key")<br/>بدون فراخوانی ParseForm"]
-        G3["r.FormFile("file")<br/>بررسی نوع واقعی فایل"]
-        G4["json.NewDecoder(r.Body)<br/>استریم + اعتبارسنجی ساختار"]
+        G1["r.FormValue("key")ابتدا کوئری، سپس body"]
+        G2["r.URL.Query().Get("key")بدون فراخوانی ParseForm"]
+        G3["r.FormFile("file")بررسی نوع واقعی فایل"]
+        G4["json.NewDecoder(r.Body)استریم + اعتبارسنجی ساختار"]
         G5["r.Header.Get("Key")"]
-        G6["r.PathValue("id")<br/>mux.HandleFunc pattern"]
+        G6["r.PathValue("id")mux.HandleFunc pattern"]
     end
 
     subgraph PHP["PHP Equivalent"]
         direction TB
-        P1["$_GET['key'] · $_POST['key']<br/>تفکیک‌شده بر متد"]
-        P2["$_GET['key']<br/>معادل دقیق"]
-        P3["$_FILES['file']<br/>شامل tmp_name, name, size"]
-        P4["json_decode(<br/>file_get_contents(<br/>'php://input'))"]
-        P5["$_SERVER['HTTP_*']<br/>پیشوند HTTP_ اضافه می‌شود"]
-        P6["$_GET['id']<br/>توسط .htaccess بازنویسی"]
+        P1["$_GET['key'] · $_POST['key']تفکیک‌شده بر متد"]
+        P2["$_GET['key']معادل دقیق"]
+        P3["$_FILES['file']شامل tmp_name, name, size"]
+        P4["json_decode(file_get_contents('php://input'))"]
+        P5["$_SERVER['HTTP_*']پیشوند HTTP_ اضافه می‌شود"]
+        P6["$_GET['id']توسط .htaccess بازنویسی"]
     end
 
     subgraph SRC["نمونه‌ی منبع"]
@@ -435,7 +435,7 @@ func createArticleHandler(w http.ResponseWriter, r *http.Request) {
     G5 -.- S5
     G6 -.- S6
 
-    GOLD(["قانون طلایی: همیشه Content-Type هدر را قبل از پارس بررسی کنید — هرگز سعی نکنید JSON را از یک فرم multipart پارس کنید"])
+    GOLD([قانون طلایی: همیشه Content-Type هدر را قبل از پارس بررسی کنید — هرگز سعی...])
 
     classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
     classDef phpBox fill:#f5f0fb,stroke:#777BB4,stroke-width:1.5px,color:#1f2937;

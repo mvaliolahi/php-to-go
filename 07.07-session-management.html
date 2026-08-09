@@ -518,12 +518,12 @@ func initSessionStore(redisURL string) *scs.SessionManager {
     subgraph BR["Browser"]
         direction TB
         BR1["🌐 Chrome / Firefox"]
-        BR2["Cookie:<br/>session_id=abc123"]
+        BR2["Cookie:session_id=abc123"]
     end
 
     BR --&gt;|"1 +Cookie"| GS["Go Server"]
     GS --&gt;|"2 → Extract session_id from Cookie"| SS["Session Store"]
-    SS --&gt;|"3"| SS2["map[string]SessionData<br/>"abc123" → {userID: "u42",<br/>role: "admin", expires: ...}"]
+    SS --&gt;|"3"| SS2["map[string]SessionData"abc123" → {userID: "u42",role: "admin", expires: ...}"]
     SS2 --&gt;|"4 → Get SessionData {userID, role}"| GS2["Go Server — 5 → Process Request"]
     GS2 --&gt;|"6 → Update Session in Store"| SS
     GS2 --&gt;|"7 → Response + Set-Cookie"| BR
@@ -541,7 +541,7 @@ func initSessionStore(redisURL string) *scs.SessionManager {
         ME2["✓ Simple setup — just map[string]SessionData"]
         ME3["✗ Lost on server restart"]
         ME4["✗ Not shared across instances"]
-        CODE1["// In-Memory Store<br/>var sessions = map[string]SessionData{}<br/>// ← lost on restart<br/>// needs sync.Mutex for concurrency"]
+        CODE1[// In-Memory Storevar sessions = map[string]SessionData{}// ← lost on...]
     end
 
     subgraph RDS["ذخیره‌گاه Redis"]
@@ -549,7 +549,7 @@ func initSessionStore(redisURL string) *scs.SessionManager {
         RD1["✓ Persistent — survives restarts"]
         RD2["✓ Shared across multiple instances"]
         RD3["✓ Auto-expiry with TTL"]
-        CODE2["// Redis Store<br/>sessionManager.Store = redisstore.New(client)<br/>// ← persistent · auto TTL, shared, scalable"]
+        CODE2[// Redis StoresessionManager.Store = redisstore.New(client)// ← persistent ·...]
     end
 
     subgraph WHEN["چه زمانی از کدام ذخیره‌گاه استفاده کنیم؟"]
@@ -559,7 +559,7 @@ func initSessionStore(redisURL string) *scs.SessionManager {
         WH3["داده حساس: هرگز در کوکی ذخیره نکنید"]
     end
 
-    GOLD(["قانون طلایی: همیشه HttpOnly + Secure + SameSite روی کوکی سشن تنظیم کنید و شناسه سشن را بعد از لاگین بازتولید کنید"])
+    GOLD([قانون طلایی: همیشه HttpOnly + Secure + SameSite روی کوکی سشن تنظیم کنید و...])
 
     classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
     classDef neuBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;

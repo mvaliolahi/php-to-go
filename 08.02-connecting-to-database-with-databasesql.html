@@ -68,36 +68,8 @@
 <h2 id="اتصال-به-دیتابیس-با-databasesql">اتصال به دیتابیس با database/sql</h2><div class="abstract">
 <strong>چکیده:</strong> این بخش اتصال به پایگاه داده با database/sql را پوشش می‌دهد: sql.Open، driver و connection pool. تفاوت با PDO در PHP و الگوی Go بررسی می‌شود. تنظیم pool و timeout پوشش داده می‌گردد.
 </div>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart LR
-    Title["ماشین حالت Connection Pool در database/sql"]
-
-    Idle["Idle"]
-    InUse["InUse"]
-    WaitQ["WaitQueue"]
-    Closed["Closed/Expired"]
-
-    Idle -- "Query()" --&gt; InUse
-    InUse -- "Release" --&gt; Idle
-    Idle -- "MaxLifetime" --&gt; Closed
-    InUse -- "Pool پر شد" --&gt; WaitQ
-    WaitQ -- "Conn freed" --&gt; InUse
-
-    Opener["openerCh → goroutine connectionOpener"]
-
-    Idle ~~~ Opener
-
-    classDef titleBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:2px,color:#1f2937,font-weight:bold;
-    classDef goBox   fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef bothBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
-    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
-    classDef errBox  fill:#fef2f2,stroke:#ef4444,stroke-width:1.5px,color:#1f2937;
-    classDef neuBox  fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
-    class Title titleBox;
-    class Idle,InUse goBox;
-    class WaitQ warnBox;
-    class Closed errBox;
-    class Opener bothBox;</pre>
+<figure class="diagram d2-diagram" dir="ltr">
+<img alt="نمودار" loading="lazy" src="assets/diagrams/ch08_02_connection_pool.svg"/>
 <figcaption>شکل ۸-۲: ماشین حالت <bdi dir="ltr">Connection</bdi> <bdi dir="ltr">Pool</bdi> — رفتار اتصال‌ها در <bdi dir="ltr">Pool</bdi></figcaption>
 </figure>
 <div class="comparison"><strong>مقایسه با PHP:</strong> در Laravel اتصال به دیتابیس از طریق Eloquent ORM و Query Builder به‌صورت خودکار مدیریت می‌شود. اما در Go پکیج <code>database/sql</code> یک رابط سطح پایین‌تر ارائه می‌دهد که کنترل بیشتری بر عملکرد و مدیریت منابع به شما می‌دهد. اگر تجربه‌ی کار با PDO در PHP را دارید، <code>database/sql</code> بسیار شبیه به آن عمل می‌کند.</div>
@@ -392,7 +364,7 @@ stats.WaitDuration,
     Health["بررسی سلامت: db.Ping()"]
     Recycle["بازیافت: اتصال‌های منقضی‌شده بسته و جایگزین می‌شوند"]
     Opener["openerCh → connectionOpener goroutine"]
-    Golden["قانون طلایی: MaxOpenConns پیش‌فرض نامحدود است — حتماً در production مقدار مشخص تعیین کنید"]
+    Golden[قانون طلایی: MaxOpenConns پیش‌فرض نامحدود است — حتماً در production مقدار...]
 
     Title --&gt; APP
     APP --&gt; Pool

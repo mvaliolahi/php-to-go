@@ -553,22 +553,22 @@ func queryWithTimeout(ctx context.Context) {
 <p>همان‌طور که در ابتدای این بخش اشاره شد، <bdi dir="ltr">Context</bdi> در Go یک ساختار درختی دارد و لغو والد به‌صورت بازگشتی به تمام فرزندان و نوادگان منتشر می‌شود. این رفتار تضمین می‌کند که هیچ <bdi dir="ltr">Goroutine</bdi> ای پس از لغو درخواست اصلی به کار بیهوده ادامه ندهد و منابع سیستم از جمله اتصالات دیتابیس، <bdi dir="ltr">HTTP</bdi> و حافظه آزاد شوند. </p><p>در PHP معمولاً هر درخواست مستقل است و لغو یک فرآیند تأثیری روی دیگران ندارد اما در Go که یک سرور هزاران درخواست را به صورت همزمان پردازش می‌کند این مکانیزم حیاتی است. نمودار زیر این درخت را در عمل نشان می‌دهد.</p>
 <figure class="diagram" dir="ltr">
 <pre class="mermaid">flowchart TB
-    Root["context.Background()<br/>ریشه — بدون deadline ، بدون cancel"]
+    Root["context.Background()ریشه — بدون deadline ، بدون cancel"]
 
-    WC["WithCancel<br/>لغو دستی با cancel()<br/>props: cancel func"]
-    WT["WithTimeout<br/>لغو خودکار بعد از مدت زمان<br/>props: timeout, cancel func"]
-    WD["WithDeadline<br/>لغو در زمان مشخص<br/>props: deadline time, cancel func"]
+    WC["WithCancelلغو دستی با cancel()props: cancel func"]
+    WT["WithTimeoutلغو خودکار بعد از مدت زمانprops: timeout, cancel func"]
+    WD["WithDeadlineلغو در زمان مشخصprops: deadline time, cancel func"]
 
     Root --&gt; WC
     Root --&gt; WT
     Root --&gt; WD
 
-    DBQ["WithTimeout(ctx, 5s)<br/>گوریوتین DB Query"]
-    CACHE["WithCancel(ctx)<br/>گوریوتین Cache"]
-    API["WithCancel(ctx)<br/>گوریوتین API Call"]
-    EMAIL["WithTimeout(ctx, 2s)<br/>گوریوتین Email"]
-    LOG["WithCancel(ctx)<br/>گوریوتین Logger"]
-    NOT["WithTimeout(ctx, 3s)<br/>گوریوتین Notify"]
+    DBQ["WithTimeout(ctx, 5s)گوریوتین DB Query"]
+    CACHE["WithCancel(ctx)گوریوتین Cache"]
+    API["WithCancel(ctx)گوریوتین API Call"]
+    EMAIL["WithTimeout(ctx, 2s)گوریوتین Email"]
+    LOG["WithCancel(ctx)گوریوتین Logger"]
+    NOT["WithTimeout(ctx, 3s)گوریوتین Notify"]
 
     WC --&gt; DBQ
     WT --&gt; CACHE
@@ -579,15 +579,15 @@ func queryWithTimeout(ctx context.Context) {
 
     subgraph CANCEL["فراخوانی cancel() والد — انتشار لغو به پایین"]
         direction TB
-        C1["WithCancel ✗<br/>Done() closed → Err() = Canceled"]
-        C2["WithTimeout ✗<br/>Done() closed → Err() = Canceled"]
-        C3["WithDeadline ✗<br/>Done() closed → Err() = Canceled"]
-        G1["DB Query ✗<br/>ctx.Done() → return"]
-        G2["Cache ✗<br/>ctx.Done() → return"]
-        G3["API Call ✗<br/>ctx.Done() → return"]
-        G4["Email ✗<br/>ctx.Done() → return"]
-        G5["Logger ✗<br/>ctx.Done() → return"]
-        G6["Notify ✗<br/>ctx.Done() → return"]
+        C1["WithCancel ✗Done() closed → Err() = Canceled"]
+        C2["WithTimeout ✗Done() closed → Err() = Canceled"]
+        C3["WithDeadline ✗Done() closed → Err() = Canceled"]
+        G1["DB Query ✗ctx.Done() → return"]
+        G2["Cache ✗ctx.Done() → return"]
+        G3["API Call ✗ctx.Done() → return"]
+        G4["Email ✗ctx.Done() → return"]
+        G5["Logger ✗ctx.Done() → return"]
+        G6["Notify ✗ctx.Done() → return"]
         C1 --&gt; G1
         C2 --&gt; G2
         C2 --&gt; G3
@@ -596,8 +596,8 @@ func queryWithTimeout(ctx context.Context) {
         C3 --&gt; G6
     end
 
-    N1["کانال Done() بسته می‌شود → &lt;-ctx.Done() سیگنال دریافت می‌کند → Goroutine متوقف می‌شود"]
-    GOLD["قاعده طلایی: لغو والد = لغو تمام فرزندان و نوادگان —<br/>سیگنال لغو فقط به پایین منتشر می‌شود، هرگز به بالا"]
+    N1[کانال Done() بسته می‌شود → &lt;-ctx.Done() سیگنال دریافت می‌کند → Goroutine...]
+    GOLD[قاعده طلایی: لغو والد = لغو تمام فرزندان و نوادگان —سیگنال لغو فقط به پایین...]
 
     classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
     classDef bothBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;

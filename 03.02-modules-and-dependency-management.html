@@ -418,12 +418,12 @@ ignore (
 <figure class="diagram" dir="ltr">
 <pre class="mermaid">flowchart TB
     title(["جریان تأیید Checksum در go.sum — امنیت زنجیره‌ی تأمین"])
-    S1["① go get github.com/foo/bar@v1.2.3<br/>دستور افزودن وابستگی اجرا می‌شود"]
-    S2["② Download Module<br/>دانلود از GOPROXY"]
-    S3["③ Compute SHA-256 Hash<br/>محاسبه‌ی هش محلی"]
-    S4{"④ Compare with go.sum entry<br/>مقایسه‌ی هش محلی با هش ثبت‌شده"}
-    S5A["⑤الف: استفاده از ماژول<br/>واکایی تأیید شد — build ادامه می‌یابد"]
-    S5B["⑤ب: SECURITY ERROR<br/>build متوقف می‌شود — ماژول مخرب嫌疑"]
+    S1["① go get github.com/foo/bar@v1.2.3دستور افزودن وابستگی اجرا می‌شود"]
+    S2["② Download Moduleدانلود از GOPROXY"]
+    S3["③ Compute SHA-256 Hashمحاسبه‌ی هش محلی"]
+    S4{"④ Compare with go.sum entryمقایسه‌ی هش محلی با هش ثبت‌شده"}
+    S5A["⑤الف: استفاده از ماژولواکایی تأیید شد — build ادامه می‌یابد"]
+    S5B["⑤ب: SECURITY ERRORbuild متوقف می‌شود — ماژول مخرب嫌疑"]
 
     S1 --&gt; S2 --&gt; S3 --&gt; S4
     S4 -- "تطابق ✓" --&gt; S5A
@@ -431,7 +431,7 @@ ignore (
 
     subgraph SUMFMT["go.sum format"]
         direction TB
-        L1["github.com/google/uuid v1.3.0 h1:ey4XPjaR/KGfH2S7Nj2M7Cdyh5m9M6Q6v9...  ← هش محتوای ماژول"]
+        L1[github.com/google/uuid v1.3.0 h1:ey4XPjaR/KGfH2S7Nj2M7Cdyh5m9M6Q6v9...  ← هش...]
         L2["github.com/google/uuid v1.3.0/go.mod h1:K1S5d0E5bBPU7...  ← هش فایل go.mod ماژول"]
     end
     subgraph MODFMT["go.mod directives"]

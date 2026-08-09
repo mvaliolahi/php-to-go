@@ -479,37 +479,37 @@ func NoError(t *testing.T, err error) {
 <pre class="mermaid">flowchart TB
     subgraph HEADER["جریان Assertion: مقدار مورد انتظار ← مقایسه ← نتیجه"]
         direction TB
-        EXP["مقدار مورد انتظار<br/>Expected<br/>User{Name: "Ali"}<br/>Age: 30, Active: true"]
-        ACT["مقدار واقعی<br/>Actual<br/>User{Name: "Sara"}<br/>Age: 25, Active: false"]
-        CMP["عمل مقایسه<br/>Comparison<br/>== (simple equal)<br/>reflect.DeepEqual<br/>cmp.Diff / assert.Equal"]
+        EXP["مقدار مورد انتظارExpectedUser{Name: "Ali"}Age: 30, Active: true"]
+        ACT["مقدار واقعیActualUser{Name: "Sara"}Age: 25, Active: false"]
+        CMP["عمل مقایسهComparison== (simple equal)reflect.DeepEqualcmp.Diff / assert.Equal"]
         EXP --&gt; CMP
         ACT --&gt; CMP
         CMP --&gt; Q{"نتیجه؟"}
-        Q -- "match ✓" --&gt; PASS["PASS ✓<br/>تست ادامه می‌یابد"]
-        Q -- "mismatch ✗" --&gt; FAIL["FAIL ✗<br/>گزارش خطا + diff"]
-        FAIL --&gt; DIFF["Diff Output<br/>Name: "Ali" → "Sara"<br/>- Age: 30<br/>+ Age: 25<br/>- Active: true<br/>+ Active: false"]
+        Q -- "match ✓" --&gt; PASS["PASS ✓تست ادامه می‌یابد"]
+        Q -- "mismatch ✗" --&gt; FAIL["FAIL ✗گزارش خطا + diff"]
+        FAIL --&gt; DIFF["Diff OutputName: "Ali" → "Sara"- Age: 30+ Age: 25- Active: true+ Active: false"]
     end
 
     subgraph CMP3["مقایسه رویکردهای Assertion"]
         direction LR
         subgraph A["if + t.Errorf"]
             direction TB
-            A1["if result != expected {<br/>t.Errorf("got %v, want %v",<br/>result, expected)<br/>}"]
-            A2["بدون diff قابل خواندن<br/>بدون trace فراخوانی"]
+            A1["if result != expected {t.Errorf("got %v, want %v",result, expected)}"]
+            A2["بدون diff قابل خواندنبدون trace فراخوانی"]
         end
         subgraph B["testify/assert"]
             direction TB
-            B1["assert.Equal(t, expected,<br/>result, "should match")"]
-            B2["diff خودکار<br/>trace کامل فراخوانی<br/>پیام سفارشی<br/>انواع assertion آماده"]
+            B1["assert.Equal(t, expected,result, "should match")"]
+            B2["diff خودکارtrace کامل فراخوانیپیام سفارشیانواع assertion آماده"]
         end
         subgraph C["google/go-cmp"]
             direction TB
-            C1["if diff := cmp.Diff(<br/>expected, result); diff != "" {<br/>t.Errorf("diff: %s", diff)<br/>}"]
-            C2["diff معنادار و دقیق<br/>قابل سفارشی‌سازی با cmpopts"]
+            C1["if diff := cmp.Diff(expected, result); diff != "" {t.Errorf("diff: %s", diff)}"]
+            C2["diff معنادار و دقیققابل سفارشی‌سازی با cmpopts"]
         end
     end
 
-    note(["مقایسه با PHP: assertEquals() ≈ assert.Equal | assertSame() ≈ assert.Exactly | assertEqualsCanonicalizing() ≈ cmp.Diff + cmpopts.SortSlices"])
+    note([مقایسه با PHP: assertEquals() ≈ assert.Equal | assertSame() ≈ assert.Exactly...])
 
     classDef expBox   fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
     classDef actBox   fill:#f5f0fb,stroke:#777BB4,stroke-width:1.5px,color:#1f2937;

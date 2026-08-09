@@ -484,15 +484,15 @@ func (h *Hub) Run(ctx context.Context) {
 <p>یکی از مهم‌ترین الگوهای هم‌روندی در <bdi dir="ltr">Go</bdi>، الگوی <bdi dir="ltr">Worker Pool</bdi> است. این الگو به شما اجازه می‌دهد تعداد مشخصی <bdi dir="ltr">goroutine</bdi> برای پردازش موازی کارها ایجاد کنید و از طریق <bdi dir="ltr">channel</bdi>‌ها ورودی و خروجی آن‌ها را مدیریت کنید. </p><p>برخلاف <bdi dir="ltr">PHP</bdi> که برای هر <bdi dir="ltr">Worker</bdi> نیاز به <bdi dir="ltr">Process</bdi> جداگانه دارید، در <bdi dir="ltr">Go</bdi> تمام <bdi dir="ltr">Worker</bdi>ها درون یک <bdi dir="ltr">Process</bdi> با حافظه مشترک اجرا می‌شوند. </p><p>ترکیب <bdi dir="ltr">Worker Pool</bdi> با <bdi dir="ltr">Context</bdi> برای لغو عملیات و <bdi dir="ltr">WaitGroup</bdi> برای انتظار روی اتمام تمام <bdi dir="ltr">Worker</bdi>ها، یک سیستم مقیاس‌پذیر و امن ایجاد می‌کند.</p>
 <figure class="diagram" dir="ltr">
 <pre class="mermaid">flowchart TB
-    Prod["Job Producer<br/>تولیدکننده کارها<br/>jobs &lt;- Job{}"]
-    JobsC["jobs chan Job<br/>cap: 100"]
+    Prod["Job Producerتولیدکننده کارهاjobs &lt;- Job{}"]
+    JobsC["jobs chan Jobcap: 100"]
 
-    W1["Worker 1 (goroutine)<br/>&lt;-jobs → process(job) → result<br/>wg.Done()"]
-    W2["Worker 2 (goroutine)<br/>&lt;-jobs → process(job) → result<br/>wg.Done()"]
-    W3["Worker 3 (goroutine)<br/>&lt;-jobs → process(job) → result<br/>wg.Done()"]
+    W1["Worker 1 (goroutine)&lt;-jobs → process(job) → resultwg.Done()"]
+    W2["Worker 2 (goroutine)&lt;-jobs → process(job) → resultwg.Done()"]
+    W3["Worker 3 (goroutine)&lt;-jobs → process(job) → resultwg.Done()"]
 
-    ResC["results chan Result<br/>cap: 100"]
-    Coll["Result Collector<br/>جمع‌آوری نتایج<br/>&lt;-results"]
+    ResC["results chan Resultcap: 100"]
+    Coll["Result Collectorجمع‌آوری نتایج&lt;-results"]
 
     Prod -- "jobs &lt;- Job{}" --&gt; JobsC
     JobsC -- "&lt;-jobs" --&gt; W1
@@ -546,7 +546,7 @@ func (h *Hub) Run(ctx context.Context) {
         SL1 --&gt; SL2
     end
 
-    GOLD["قانون طلایی: همیشه Worker Pool + Context + WaitGroup را با هم استفاده کنید —<br/>هرگز goroutine رها شده نسازید"]
+    GOLD[قانون طلایی: همیشه Worker Pool + Context + WaitGroup را با هم استفاده کنید...]
 
     LEG["تولیدکننده/جمع‌آوری · Worker · Channel · Context / WaitGroup"]
 

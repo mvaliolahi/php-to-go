@@ -69,45 +69,6 @@
 <strong>چکیده:</strong> تبدیل نوع در Go همیشه صریح است؛ هیچ Type Juggling مانند PHP وجود ندارد. این بخش strconv، type assertion، type switch و unsafe.Pointer را پوشش می‌دهد. هر روش با مثال و هشدار درباره‌ی خطرات سطح پایین ارائه می‌شود.
 </div>
 <p>در زبان <bdi dir="ltr">Go</bdi> برخلاف <bdi dir="ltr">PHP</bdi>، تبدیل نوع به صورت صریح انجام می‌شود و کامپایلر به‌هیچ‌وجه به‌طور خودکار مقادیر را بین انواع مختلف تبدیل نمی‌کند. </p><p>قاعده‌ی کلی این است که هر زمان بخواهیم مقدار یک متغیر را به نوع دیگری تغییر دهیم، باید نام نوع مقصد را مانند یک تابع فراخوانی کنیم و مقدار مورد نظر را به‌عنوان آرگومان قرار دهیم. </p><p>این الزام به صراحت باعث می‌شود کد شفاف‌تر، قابل پیش‌بینی‌تر و عاری از تبدیل‌های پنهان یا ناخواسته باشد.</p>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-    TITLE["تبدیل نوع در Go — صریح و بدون خودکار"]
-
-    subgraph NUM["تبدیل اعداد"]
-        direction TB
-        N1["var f float64 = 3.14"]
-        N2["var i int = int(f) // 3"]
-        N1 --&gt; N2
-    end
-
-    subgraph STR["تبدیل string ↔ عدد"]
-        direction TB
-        S1["strconv.Itoa(42) // "42""]
-        S2["strconv.Atoi("42") // 42, error"]
-        S3["strconv.ParseFloat() // string → float"]
-        S4["strconv.FormatFloat() // float → string"]
-        S1 --- S2 --- S3 --- S4
-    end
-
-    subgraph BYTES["تبدیل byte ↔ string"]
-        direction TB
-        B1["string([]byte{72, 105}) // "Hi""]
-        B2["[]byte("Hi") // [72, 105]"]
-        B1 --- B2
-    end
-
-    TITLE --&gt; NUM
-    TITLE --&gt; STR
-    TITLE --&gt; BYTES
-
-    classDef titleBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:2px,color:#1f2937;
-    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef neutralBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
-    class TITLE titleBox;
-    class NUM,STR,BYTES goBox;
-    class N1,N2,S1,S2,S3,S4,B1,B2 neutralBox;</pre>
-<figcaption>شکل ۷-۲: انواع توابع تبدیل نوع در <bdi dir="ltr">Go</bdi></figcaption>
-</figure>
 <p>بسیاری از تبدیل‌های string نیاز به استفاده از پکیج استاندارد strconv دارند. هنگام تبدیل بین انواع عددی با اندازه مختلف مثل int64 به int32 مراقب overflow باشید.</p>
 <div class="comparison"><strong>تبدیل نوع در Go در مقابل Type Juggling در PHP:</strong>
 <br/><br/>
@@ -290,29 +251,28 @@ s = fmt.Sprintf("%d", 42) // Wrong — slower — generic
 </figure>
 <figure class="diagram" dir="ltr">
 <pre class="mermaid">flowchart TB
-    TITLE["راهبردهای تبدیل نوع در Go"]
 
     subgraph TC["Type Conversion"]
         direction TB
-        T1["int(float64)<br/>[]byte(string)"]
+        T1["int(float64)[]byte(string)"]
         T2["زمان بررسی: کامپایل"]
     end
 
     subgraph SC["بسته‌ی strconv"]
         direction TB
-        SC1["Itoa() / Atoi()<br/>ParseFloat() / FormatFloat()"]
+        SC1["Itoa() / Atoi()ParseFloat() / FormatFloat()"]
         SC2["خطای احتمالی دارد"]
     end
 
     subgraph TA["Type Assertion"]
         direction TB
-        TA1["val.(Type)<br/>val, ok := x.(Type)"]
+        TA1["val.(Type)val, ok := x.(Type)"]
         TA2["زمان بررسی: اجرا"]
     end
 
     subgraph UNSAFE["unsafe.Pointer"]
         direction TB
-        U1["تبدیل بدون کپی (فقط در شرایط خاص)<br/>*(*string)(unsafe.Pointer(&amp;b))<br/>[]byte ↔ string بدون کپی"]
+        U1[تبدیل بدون کپی (فقط در شرایط خاص)*(*string)(unsafe.Pointer(&amp;b))[]byte ↔...]
         U2["⚠ توجه: ایمنی حافظه تضمین نمی‌شود — فقط مسیر بحرانی کد"]
     end
 
@@ -325,12 +285,7 @@ s = fmt.Sprintf("%d", 42) // Wrong — slower — generic
         D5["• تبدیل سفارشی → متد String() یا UnmarshalJSON()"]
     end
 
-    TITLE --&gt; TC
-    TITLE --&gt; SC
-    TITLE --&gt; TA
-    TITLE --&gt; UNSAFE
-    TITLE --&gt; DEC
-
+                    
     classDef titleBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:2px,color:#1f2937;
     classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
     classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
@@ -343,72 +298,7 @@ s = fmt.Sprintf("%d", 42) // Wrong — slower — generic
 </figure>
 <h3 id="php-type-juggling-vs-go-explicit">2.2.7 PHP Type Juggling در برابر تبدیل صریح Go</h3>
 <p>همان‌طور که در ابتدای این بخش دیدید، <bdi dir="ltr">PHP Type Juggling</bdi> منبع بسیاری از باگ‌های ظریف است (مانند <code>"hello" + 1 = 1</code> یا <code>"foo" == 0 → true</code>). نمودار زیر این تفاوت فلسفی را به‌صورت بصری کنار هم قرار می‌دهد و تبدیل‌های ایمن و ناایمن در <bdi dir="ltr">Go</bdi> را فهرست می‌کند.</p>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-    TITLE["PHP Type Juggling در برابر تبدیل صریح Go"]
 
-    subgraph PHP["PHP — Type Juggling (تبدیل خودکار)"]
-        direction TB
-        P1[""1" + 2 = 3<br/>رشته به عدد تبدیل می‌شود — به‌صورت خودکار"]
-        P2[""hello" + 1 = 1<br/>رشته غیرعددی ← ۰ — باگ خاموش!"]
-        P3["true + 1 = 2<br/>بولین به عدد: true ← 1, false ← 0"]
-        P4[""foo" == 0 → true<br/>مقایسه‌ی سست — خطرناک و غیرمنتظره!"]
-        P5["مشکل اصلی:<br/>تبدیل‌های خودکار ممکن است باگ‌های ظریفی ایجاد کنند<br/>که ردیابی آن‌ها بسیار دشوار است"]
-        P6["== مقایسه‌ی سست (تبدیل نوع)<br/>=== مقایسه‌ی سخت (بدون تبدیل)"]
-        P1 --- P2 --- P3 --- P4 --- P5 --- P6
-    end
-
-    subgraph GO["Go — Explicit Conversion (تبدیل صریح)"]
-        direction TB
-        G1["int(floatVal) — safe numeric conversion<br/>تبدیل عددی مستقیم — بخش اعشاری حذف می‌شود"]
-        G2["strconv.Atoi("123") → 123, error<br/>رشته به عدد — با مدیریت خطا"]
-        G3["strconv.Itoa(123) → "123"<br/>عدد به رشته — همیشه موفق"]
-        G4["string([]byte{72, 105}) → "Hi"<br/>تبدیل slice بایت به رشته — کپی داده"]
-        G5[""1" + 2 → COMPILE ERROR!<br/>عدم تطابق نوع — کامپایلر اجازه نمی‌دهد"]
-        G6["Go فقط == دارد — مقایسه‌ی سخت (همیشه بدون تبدیل نوع)"]
-        G1 --- G2 --- G3 --- G4 --- G5 --- G6
-    end
-
-    subgraph SAFE["تبدیل‌های ایمن و ناایمن در Go"]
-        direction LR
-        subgraph S["ایمن (Safe)"]
-            direction TB
-            S1["• int → float64 (no data loss)"]
-            S2["• string → []byte (copies data, always works)"]
-            S3["• type assertion with comma-ok (no panic)"]
-        end
-        subgraph U["ناایمن (Unsafe)"]
-            direction TB
-            U1["• int64 → int (may overflow on 32-bit)"]
-            U2["• float64 → int (loses decimal part)"]
-            U3["• type assertion without ok (may panic!)"]
-        end
-    end
-
-    GOLD["قانون طلایی: در Go هر تبدیل نوع باید صریح باشد — اگر مطمئن نیستید، از comma-ok استفاده کنید"]
-
-    TITLE --&gt; PHP
-    TITLE --&gt; GO
-    TITLE --&gt; SAFE
-    TITLE --&gt; GOLD
-
-    classDef titleBox fill:#ecfdf5,stroke:#10b981,stroke-width:2px,color:#1f2937;
-    classDef phpBox fill:#f5f0fb,stroke:#777BB4,stroke-width:1.5px,color:#1f2937;
-    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef safeBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
-    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
-    classDef errBox fill:#fef2f2,stroke:#ef4444,stroke-width:1.5px,color:#1f2937;
-    classDef neutralBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
-    class TITLE titleBox;
-    class PHP,P1,P2,P3,P4,P5,P6 phpBox;
-    class GO,G1,G2,G3,G4,G6 goBox;
-    class G5 errBox;
-    class S,S1,S2,S3 safeBox;
-    class U,U1,U2,U3 warnBox;
-    class SAFE neutralBox;
-    class GOLD warnBox;</pre>
-<figcaption>شکل ۹-۲: مقایسه‌ی <bdi dir="ltr">PHP Type Juggling</bdi> با تبدیل صریح <bdi dir="ltr">Go</bdi> — تبدیل‌های ایمن و ناایمن</figcaption>
-</figure>
 <h3 id="سناریوهای-عملیاتی-تبدیل-نوع">2.2.8 سناریوهای عملیاتی</h3>
 <p>در پروژه‌های واقعی، تبدیل نوع یکی از رایج‌ترین عملیات‌هاست و درک صحیح آن از بروز باگ‌های پنهان جلوگیری می‌کند. در ادامه پنج سناریوی عملیاتی کلیدی را بررسی می‌کنیم که هر برنامه‌نویس Go باید به‌خوبی بشناسد. </p><p>این سناریوها شامل تبدیل رشته به عدد با مدیریت خطا، تبدیل بین انواع عددی، هزینه‌ی تبدیل <bdi dir="ltr">[]byte</bdi> و <bdi dir="ltr">string</bdi>، استفاده از <bdi dir="ltr">type assertion</bdi> با <bdi dir="ltr">interface</bdi> و پیاده‌سازی <bdi dir="ltr">Stringer</bdi> سفارشی است. هر یک از این موارد در عمل با اهمیت بالایی مواجه هستند و تسلط بر آن‌ها کد شما را ایمن‌تر و کارآمدتر می‌کند.</p>
 <ul>

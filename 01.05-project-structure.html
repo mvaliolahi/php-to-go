@@ -290,16 +290,16 @@ func (u *User) validate() bool { // unexported method
 <figure class="diagram" dir="ltr">
 <pre class="mermaid">flowchart TB
     Root["project/"]
-    CMD["cmd/<br/>└── myapp/main.go<br/>← نقاط ورود"]
-    INT["internal/<br/>← کد خصوصی پروژه"]
-    DOM["├── domain/<br/>← موجودیت‌ها و قوانین"]
-    APP["├── application/<br/>← use case‌ها"]
-    INF["├── infrastructure/<br/>← پیاده‌سازی فنی"]
-    IFC["└── interfaces/<br/>← HTTP handlers"]
-    PKG["pkg/<br/>← پکیج‌های عمومی"]
+    CMD["cmd/└── myapp/main.go← نقاط ورود"]
+    INT["internal/← کد خصوصی پروژه"]
+    DOM["├── domain/← موجودیت‌ها و قوانین"]
+    APP["├── application/← use case‌ها"]
+    INF["├── infrastructure/← پیاده‌سازی فنی"]
+    IFC["└── interfaces/← HTTP handlers"]
+    PKG["pkg/← پکیج‌های عمومی"]
     PLG["├── logger/"]
     PRS["└── response/"]
-    API["api/<br/>← تعاریف proto/OpenAPI"]
+    API["api/← تعاریف proto/OpenAPI"]
     CFG["configs/"]
     MOD["go.mod"]
 
@@ -316,7 +316,7 @@ func (u *User) validate() bool { // unexported method
     Root --&gt; CFG
     Root --&gt; MOD
 
-    rules(["قانون کلیدی: وابستگی‌ها فقط به داخل حرکت می‌کنند<br/>• domain ← بدون وابستگی به لایه‌های دیگر<br/>• application ← وابسته به domain<br/>• infrastructure ← پیاده‌سازی interface‌های domain<br/>• interfaces ← handler‌ها و adapter‌ها<br/><br/>✓ domain هیچ import از لایه‌های بیرونی ندارد!<br/>✓ تست domain بدون mock کردن دیتابیس<br/>✓ تغییر دیتابیس بدون تأثیر بر منطق<br/>✓ جایگزینی فریم‌ورک HTTP بدون بازنویسی"])
+    rules([قانون کلیدی: وابستگی‌ها فقط به داخل حرکت می‌کنند• domain ← بدون وابستگی به...])
 
     classDef rootBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937,font-weight:bold;
     classDef dirBox  fill:#e6f9fc,stroke:#00ADD8,stroke-width:1px,color:#1f2937;
@@ -366,18 +366,18 @@ use (
 <pre class="mermaid">flowchart TB
     subgraph CMD["cmd/ — نقاط ورود برنامه (به همه وابسته است)"]
         direction LR
-        C1["cmd/myapp/main.go<br/>نقطه‌ی ورود اصلی"]
-        C2["cmd/migrate/main.go<br/>ابزار مهاجرت"]
-        C3["cmd/worker/main.go<br/>پردازش پس‌زمینه"]
-        C4["cmd/cli/main.go<br/>ابزار خط فرمان"]
+        C1["cmd/myapp/main.goنقطه‌ی ورود اصلی"]
+        C2["cmd/migrate/main.goابزار مهاجرت"]
+        C3["cmd/worker/main.goپردازش پس‌زمینه"]
+        C4["cmd/cli/main.goابزار خط فرمان"]
     end
 
     subgraph INT["internal/ — کد خصوصی پروژه (فقط به pkg وابسته است)"]
         direction LR
-        I1["internal/handler/<br/>دریافت درخواست HTTP"]
-        I2["internal/service/<br/>منطق کسب‌وکار"]
-        I3["internal/repository/<br/>دسترسی داده"]
-        I4["internal/model/<br/>مدل‌های دامنه"]
+        I1["internal/handler/دریافت درخواست HTTP"]
+        I2["internal/service/منطق کسب‌وکار"]
+        I3["internal/repository/دسترسی داده"]
+        I4["internal/model/مدل‌های دامنه"]
         I1 --&gt; I2 --&gt; I3
     end
 
@@ -391,13 +391,13 @@ use (
 
     CMD --&gt; INT --&gt; PKG
 
-    BLOCKED["ممنوع!<br/>وابستگی معکوس<br/>pkg ← internal ← cmd<br/>هرگز برعکس!"]
+    BLOCKED["ممنوع!وابستگی معکوسpkg ← internal ← cmdهرگز برعکس!"]
 
     subgraph CMP["مقایسه: ساختار PHP/Laravel"]
         direction TB
-        PH1["app/Http/Controllers → app/Models → app/Services<br/>وابستگی‌ها اغلب دوطرفه — circular شایع"]
+        PH1[app/Http/Controllers → app/Models → app/Servicesوابستگی‌ها اغلب دوطرفه —...]
         PH2["فریم‌ورک ساخت را تحمیل می‌کند نه نیاز پروژه"]
-        PH3["ساختار Go: جریان یک‌طرفه<br/>cmd → internal → pkg (one direction only)<br/>وابستگی‌ها همیشه یک‌طرفه — بدون چرخه<br/>ساختار بر اساس نیاز پروژه شکل می‌گیرد"]
+        PH3[ساختار Go: جریان یک‌طرفهcmd → internal → pkg (one direction only)وابستگی‌ها...]
     end
 
     classDef cmdBox  fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;

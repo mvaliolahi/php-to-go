@@ -205,9 +205,9 @@ type Product struct {
         R3["BIGINT / INT8 → int64 — نگاشت مستقیم — NULL → sql.NullInt64"]
         R4["BOOLEAN / BOOL → bool — نگاشت مستقیم — NULL → sql.NullBool"]
         R5["TIMESTAMP / TIMESTAMPTZ → time.Time — همیشه UTC ذخیره کنید — NULL → sql.NullTime"]
-        R6["JSON / JSONB → []byte / json.RawMessage — custom Scanner/Valuer — نیاز به Unmarshal — json.RawMessage = deferred"]
+        R6[JSON / JSONB → []byte / json.RawMessage — custom Scanner/Valuer — نیاز به...]
         R7["BYTEA / BLOB → []byte — داده‌های باینری — فایل‌ها، تصاویر، هش‌ها"]
-        R8["DECIMAL / NUMERIC → float64 ⚠ or shopspring/decimal — خطر از دست رفت دقت! — داده مالی ← decimal سفارشی"]
+        R8[DECIMAL / NUMERIC → float64 ⚠ or shopspring/decimal — خطر از دست رفت دقت! —...]
     end
 
     subgraph NULLMGMT["مدیریت مقادیر NULL در Go"]
@@ -215,7 +215,7 @@ type Product struct {
         N1["sql.NullString{String: "value", Valid: true}"]
         N2["sql.NullInt64{Int64: 42, Valid: true}"]
         N3["sql.NullTime{Time: time.Now(), Valid: true}"]
-        N4["یا از اشاره‌گر استفاده کنید:<br/>*string, *int64, *time.Time<br/>nil = NULL در دیتابیس"]
+        N4["یا از اشاره‌گر استفاده کنید:*string, *int64, *time.Timenil = NULL در دیتابیس"]
     end
 
     subgraph LEGEND["راهنما"]
@@ -225,7 +225,7 @@ type Product struct {
         L3["قرمز: خطر از دست رفت دقت"]
     end
 
-    Golden["قانون طلایی: برای داده‌های مالی هرگز از float64 استفاده نکنید — از shopspring/decimal یا نوع سفارشی استفاده کنید"]
+    Golden[قانون طلایی: برای داده‌های مالی هرگز از float64 استفاده نکنید — از...]
 
     Title --&gt; MATRIX
     MATRIX --&gt; NULLMGMT

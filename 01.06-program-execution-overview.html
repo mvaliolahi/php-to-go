@@ -77,33 +77,8 @@
 ۳. وقتی شما یک <bdi dir="ltr">Goroutine</bdi> ایجاد می‌کنید زمان‌بند <bdi dir="ltr">Go</bdi> آن را در صف اجرای داخلی قرار می‌دهد.
 </p><p>۴. </p><p>زمان‌بند <bdi dir="ltr">Go</bdi> بر اساس نیاز آن‌ها را بین <bdi dir="ltr">thread</bdi> های واقعی توزیع می‌کند.
 </p><p>۵. </p><p>در طول اجرا <bdi dir="ltr">process</bdi> ممکن است از چند هسته‌ی <bdi dir="ltr">CPU</bdi> استفاده کند و با سیستم‌عامل تعامل داشته باشد مثلاً فایل بخواند، شبکه برقرار کند یا سیگنال بگیرد.</p>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart LR
-    subgraph PHP["PHP و سیستم‌عامل"]
-        direction TB
-        P1["وب‌سرور"]
-        P2["PHP-FPM"]
-        P3["process از pool (موقت)"]
-        P4["برنامه‌نویس کنترلی ندارد"]
-        P1 --&gt; P2 --&gt; P3 --&gt; P4
-    end
-    subgraph GO["Go و سیستم‌عامل"]
-        direction TB
-        G1["فایل باینری مستقل"]
-        G2["process مستقل (دائمی)"]
-        G3["Goroutines"]
-        G4["Channels"]
-        G5["کنترل کامل توسط برنامه‌نویس"]
-        G1 --&gt; G2 --&gt; G3
-        G2 --&gt; G4
-        G3 --&gt; G5
-        G4 --&gt; G5
-    end
-
-    classDef phpBox fill:#f5f0fb,stroke:#777BB4,stroke-width:1.5px,color:#1f2937;
-    classDef goBox  fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    class PHP phpBox;
-    class GO goBox;</pre>
+<figure class="diagram d2-diagram" dir="ltr">
+<img alt="نمودار" loading="lazy" src="assets/diagrams/ch01_06_gmp_scheduler.svg"/>
 <figcaption>شکل ۳-۱: نحوه‌ی ارتباط <bdi dir="ltr">PHP</bdi> و <bdi dir="ltr">Go</bdi> با سیستم‌عامل</figcaption>
 </figure>
 <p><strong dir="ltr">Process</strong></p>
@@ -442,25 +417,9 @@ func run() error {
 </code></pre>
 </figure>
 <h3 id="نمودار-شروع-برنامه">1.6.8 نمودار توالی شروع برنامه Go</h3>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-    S1["۱. OS بارگذاری باینری<br/>mmap + exec"]
-    S2["۲. _rt0_amd64 → تنظیم stack و CPU"]
-    S3["۳. runtime.main → راه‌اندازی runtime<br/>GC initialization · sysmon start · goroutine scheduler"]
-    S4["۴. init() پکیج‌های وابسته<br/>(ترتیب عمق‌اول)"]
-    S5["۵. init() پکیج main"]
-    S6["۶. main.main() → اجرای برنامه<br/>اینجا کد شما شروع به اجرا می‌کند"]
-    S7["۷. خروج: return / os.Exit / signal"]
-
-    S1 --&gt; S2 --&gt; S3 --&gt; S4 --&gt; S5 --&gt; S6 --&gt; S7
-
-    classDef stageBox  fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
-    classDef startBox  fill:#ecfdf5,stroke:#10b981,stroke-width:2px,color:#1f2937,font-weight:bold;
-    classDef exitBox   fill:#fef2f2,stroke:#ef4444,stroke-width:1.5px,color:#1f2937;
-    class S1,S2,S3,S4,S5 stageBox;
-    class S6 startBox;
-    class S7 exitBox;</pre>
-<figcaption>شکل ۱-۶-الف: توالی کامل شروع و خروج برنامه <bdi dir="ltr">Go</bdi></figcaption>
+<figure class="diagram d2-diagram" dir="ltr">
+<img alt="نمودار" loading="lazy" src="assets/diagrams/ch01_06_compilation_pipeline.svg"/>
+<figcaption>شکل ۱-۶-الف: توالی کامل شروع و خروج برنامهGo</figcaption>
 </figure>
 <h3 id="نمودار-gmp-جزئیات">1.6.9 نمودار تفصیلی مدل GMP: زمان‌بند Go در عمل</h3>
 <p>مدل <bdi dir="ltr">GMP</bdi> قلب تپنده‌ی هم‌زمانی <bdi dir="ltr">Go</bdi> است و درک بصری آن به شما کمک می‌کند تا رفتار برنامه‌های <bdi dir="ltr">Go</bdi> را در شرایط مختلف پیش‌بینی کنید. </p><p>در نمودار زیر سه مؤلفه‌ی اصلی مدل را مشاهده می‌کنید: <bdi dir="ltr">G</bdi> (رنگ فیروزه‌ای #00ADD8) نشان‌دهنده‌ی <bdi dir="ltr">goroutine</bdi> ‌هاست که واحدهای سبک‌وزن اجرا هستند و تعدادشان می‌تواند به میلیون‌ها برسد. <bdi dir="ltr">M</bdi> (رنگ سبز #4CAF50) نماینده‌ی <bdi dir="ltr">thread</bdi> ‌های واقعی سیستم‌عامل است که تعدادشان توسط <bdi dir="ltr">OS</bdi> محدود می‌شود. <bdi dir="ltr">P</bdi> (رنگ نارنجی #FF9800) نشان‌دهنده‌ی پردازنده‌های منطقی است که تعدادشان برابر با <code dir="ltr">GOMAXPROCS</code> تنظیم می‌شود. هر <bdi dir="ltr">P</bdi> یک صف محلی از <bdi dir="ltr">goroutine</bdi> ‌ها دارد و <bdi dir="ltr">M</bdi> با گرفتن یک <bdi dir="ltr">P</bdi> می‌تواند <bdi dir="ltr">goroutine</bdi> ‌ها را اجرا کند. </p><p>مکانیزم <bdi dir="ltr">work-stealing</bdi> تضمین می‌کند که هیچ <bdi dir="ltr">P</bdi> بیکاری وجود نداشته باشد و وقتی <bdi dir="ltr">goroutine</bdi> ‌ای در <bdi dir="ltr">syscall</bdi> مسدود شود، <bdi dir="ltr">P</bdi> از <bdi dir="ltr">M</bdi> جدا شده و به <bdi dir="ltr">M</bdi> دیگری اختصاص می‌یابد تا سایر <bdi dir="ltr">goroutine</bdi> ‌ها بتوانند ادامه دهند.</p>
@@ -468,28 +427,28 @@ func run() error {
 <pre class="mermaid">flowchart TB
     subgraph P1["P1 (GOMAXPROCS=1)"]
         direction TB
-        Q1["Local Run Queue:<br/>G1 → G2 → G3 → G4 → G5"]
-        M1["M1 → running G1<br/>G1*"]
+        Q1["Local Run Queue:G1 → G2 → G3 → G4 → G5"]
+        M1["M1 → running G1G1*"]
     end
     subgraph P2["P2 (GOMAXPROCS=2)"]
         direction TB
-        Q2["Local Run Queue:<br/>G6 → G7 → G8"]
-        M2["M2 → running G6<br/>G6*"]
+        Q2["Local Run Queue:G6 → G7 → G8"]
+        M2["M2 → running G6G6*"]
     end
 
-    GRQ["Global Run Queue<br/>(اشتراکی بین همه Pها)"]
-    SYS["sysmon<br/>watchdog"]
+    GRQ["Global Run Queue(اشتراکی بین همه Pها)"]
+    SYS["sysmonwatchdog"]
 
     P1 -.-&gt; GRQ
     P2 -.-&gt; GRQ
     SYS -.-&gt; P1
     SYS -.-&gt; P2
 
-    STEAL["Work Stealing<br/>اگر صف محلی P1 خالی شود،<br/>نیمی از صف P2 را می‌دزدد"]
+    STEAL["Work Stealingاگر صف محلی P1 خالی شود،نیمی از صف P2 را می‌دزدد"]
     P2 ==o STEAL
     STEAL ==&gt; P1
 
-    BLOCK["هنگام مسدودسازی M (syscall/blocking):<br/>• P از M جدا می‌شود<br/>• M دیگری به P متصل می‌شود<br/>• Goroutine‌های دیگر متوقف نمی‌شوند"]
+    BLOCK[هنگام مسدودسازی M (syscall/blocking):• P از M جدا می‌شود• M دیگری به P متصل...]
 
     legend(["G = Goroutine · M = Machine (OS Thread) · P = Processor (Logical Core)"])
 

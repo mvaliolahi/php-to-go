@@ -82,22 +82,8 @@
 <tr><td>قبل و بعد</td><td>قبل: $<span dir="ltr">next($request)</span> / بعد: تغییر response</td><td>قبل: <span dir="ltr">next.ServeHTTP()</span> / بعد: تغییر response</td></tr>
 </tbody>
 </table>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart LR
-    REQ["Request"] --&gt; L["Logging<br/>Middleware"]
-    L --&gt; S["Security<br/>Headers<br/>Middleware"]
-    S --&gt; C["CORS<br/>Middleware"]
-    C --&gt; H["Handler"]
-    H -.-&gt;|"مسیر بازگشت پاسخ (بعد از اجرای هندلر)"| C
-    C -.-&gt;|"CORS headers"| S
-    S -.-&gt;|"add headers"| L
-    L -.-&gt;|"log end"| R["Response"]
-
-    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef neuBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
-    classDef bothBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
-    class L,S,C goBox;
-    class H,REQ,R neuBox;</pre>
+<figure class="diagram d2-diagram" dir="ltr">
+<img alt="نمودار" loading="lazy" src="assets/diagrams/ch07_04_middleware_chain.svg"/>
 <figcaption>شکل ۷-۴: زنجیره <bdi dir="ltr">Middleware</bdi> — درخواست از چپ به راست و پاسخ از راست به چپ</figcaption>
 </figure>
 <p>در ساختار یک وب‌سرور، معمولاً نیازمند اضافه کردن قابلیت‌های جانبی مانند Logging، کنترل دسترسی، مدیریت خطا، افزودن هدرهای امنیتی و بسیاری موارد دیگر هستیم که نباید در تک‌تک Handler برنامه تکرار شوند. اینجا نقش <strong dir="ltr">Middleware</strong> مطرح می‌شود.</p>
@@ -535,7 +521,7 @@ $userID = app('userID');
         O1["Logging Middleware"]
         O2["Auth Middleware"]
         O3["Rate Limit Middleware"]
-        O4["Handler<br/>Business Logic<br/>Process Request → Return Response"]
+        O4["HandlerBusiness LogicProcess Request → Return Response"]
         O1 --&gt; O2 --&gt; O3 --&gt; O4
     end
 
@@ -591,7 +577,7 @@ $userID = app('userID');
         C7["}"]
     end
 
-    GOLD(["قانون طلایی: Recover بیرونی‌ترین ← Logging بعد از آن ← Rate Limit قبل از Auth — تا درخواست‌های ردشده هم لاگ شوند و Recover همه panic‌ها را شکار کند"])
+    GOLD([قانون طلایی: Recover بیرونی‌ترین ← Logging بعد از آن ← Rate Limit قبل از...])
 
     classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
     classDef neuBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;

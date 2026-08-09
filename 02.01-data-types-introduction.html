@@ -251,24 +251,6 @@ fmt.Println(len(runes)) // 4 — actual number of letters
 </figure>
 <br/>
 فیلد <code>Data</code> اشاره‌گری به آرایه‌ای از بایت‌های فقط‌خواندنی است و <code>Len</code> تعداد بایت‌ها را نگه می‌دارد. به همین دلیل است که رشته‌ها immutable هستند — داده‌ی زیربنایی در حافظه‌ی فقط‌خواندنی قرار دارد و هنگام تغییر، یک آرایه‌ی جدید ساخته می‌شود. انتساب رشته فقط کپی ۱۶ بایتِ header است نه خود داده. این مکانیزم شبیه به Copy-on-Write در PHP است اما تفاوت مهمی دارد: در PHP رشته‌ها هنگام تغییر واقعاً کپی می‌شوند (به‌دلیل reference counting) اما در Go چندین رشته می‌توانند به همان بایت‌های زیربنایی اشاره کنند تا زمانی که تغییری نیاز نباشد.</div>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-    subgraph STR["توابع مهم کار با رشته در Go"]
-        direction TB
-        S1["len(str)<br/>→ تعداد بایت‌ها"]
-        S2["utf8.RuneCountInString()<br/>→ تعداد کاراکترها"]
-        S3["strings.Contains()<br/>→ بررسی وجود زیررشته"]
-        S4["strings.Split()<br/>→ شکافتن رشته"]
-        S5["strings.Join()<br/>→ پیوند دادن رشته‌ها"]
-        S6["strconv.Itoa() / Atoi()<br/>→ تبدیل int ↔ string"]
-        S7["[]rune(str)<br/>→ دسترسی به کاراکترهای Unicode"]
-        S1 --- S2 --- S3 --- S4 --- S5 --- S6 --- S7
-    end
-
-    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    class STR,S1,S2,S3,S4,S5,S6,S7 goBox;</pre>
-<figcaption>شکل ۲-۲: توابع مهم کار با رشته در <bdi dir="ltr">Go</bdi></figcaption>
-</figure>
 <h4 id="pointer">Pointer</h4>
 <p>در PHP هیچ نوع صریحی از اشاره‌گر وجود ندارد. در Go اشاره‌گرها بخشی طبیعی از زبان هستند. در بخش های بعد مفهوم اشاره‌گر و کاربردهای آن به صورت مفصل تشریح خواهد شد.</p>
 <figure class="diagram" dir="ltr">
@@ -306,12 +288,11 @@ p := &amp;x // p is a pointer to x
 <p>آرایه‌ها در Go ساختارهایی با اندازه ثابت و نوع مشخص هستند که مجموعه‌ای از مقادیر هم‌نوع را در خود نگه می‌دارند. برخلاف PHP که آرایه‌ها می‌توانند اندازه متغیر و انواع مختلف داده را در خود جای دهند آرایه‌های Go بسیار سخت‌گیرانه‌تر و ایستا هستند.</p>
 <figure class="diagram" dir="ltr">
 <pre class="mermaid">flowchart LR
-    TITLE["آرایه با ۳ عنصر: [3]int{1, 2, 3}"]
-    E0["[0]<br/>1"]
-    E1["[1]<br/>2"]
-    E2["[2]<br/>3"]
+    E0["[0]1"]
+    E1["[1]2"]
+    E2["[2]3"]
     TITLE --- E0 --- E1 --- E2
-    NOTE["طول ثابت = بخشی از نوع<br/>تمام عناصر هم‌نوع"]
+    NOTE["طول ثابت = بخشی از نوعتمام عناصر هم‌نوع"]
 
     classDef titleBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
     classDef elemBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
@@ -381,41 +362,7 @@ fmt.Println(arr)
 </figure>
 <br/>
 <code>Data</code> اشاره‌گری به اولین عنصر آرایه‌ی زیربنایی است. <code>Len</code> تعداد عناصری است که slice در حال حاضر شامل می‌شود و <code>Cap</code> ظرفیت کل آرایه‌ی زیربنایی از نقطه‌ی شروع Data به بعد را نشان می‌دهد. انتساب یک slice به متغیر دیگر فقط این ۲۴ بایت header را کپی می‌کند نه داده‌ها را — به همین دلیل دو slice می‌توانند به همان آرایه‌ی زیربنایی اشتراک داشته باشند. این رفتار با Copy-on-Write در آرایه‌های PHP تفاوت بنیادین دارد: در PHP وقتی <code>$b = $a</code> می‌نویسید ابتدا داده‌ها به‌اشتراک گذاشته می‌شوند اما به‌محض تغییر یکی از آن‌ها کپی ایجاد می‌شود. اما در Go داده‌ها واقعاً مشترک می‌مانند مگر اینکه <code>append</code> باعث ایجاد آرایه‌ی جدید شود.</div>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-    subgraph HDR["Slice Header"]
-        direction TB
-        H1["ptr → آدرس آرایه"]
-        H2["len=3, cap=5"]
-    end
 
-    subgraph ARR["Underlying Array"]
-        direction LR
-        A0["1"]
-        A1["2"]
-        A2["3"]
-        A3["—"]
-        A4["—"]
-    end
-
-    LEN["len<br/>تعداد عناصر قابل دسترسی"]
-    CAP["cap<br/>ظرفیت کل (از اولین عنصر تا انتهای آرایه)"]
-    APPEND["append() در صورت نیاز آرایه جدیدی با ظرفیت بیشتر می‌سازد"]
-
-    HDR -- "ptr" --&gt; A0
-    LEN -.-&gt; HDR
-    CAP -.-&gt; HDR
-
-    classDef hdrBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef arrBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
-    classDef noteBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
-    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
-    class HDR,H1,H2 hdrBox;
-    class ARR,A0,A1,A2,A3,A4 arrBox;
-    class LEN,CAP noteBox;
-    class APPEND warnBox;</pre>
-<figcaption>شکل ۴-۲: ساختار داخلی <bdi dir="ltr">Slice</bdi></figcaption>
-</figure>
 <p>ویژگی‌های Slice:</p>
 <ul>
 <li>نمایی از یک بخش از آرایه یا زیرمجموعه‌ای از آن است</li>
@@ -580,7 +527,6 @@ if ok {
 <p>در زبان Go مفهومی به نام <em>کلاس</em> وجود ندارد اما به‌جای آن ساختار داده‌ای به نام <strong dir="ltr">struct</strong> برای تعریف داده‌های ترکیبی و سازمان‌دهی اطلاعات استفاده می‌شود. Structها مانند جعبه‌هایی هستند که می‌توانند چندین مقدار با انواع مختلف را در خود جای دهند. یکی از تفاوت‌های مهم Go با PHP این است که در Go ارث‌بری وجود ندارد. </p><p>به جای آن می‌توان Composition انجام داد یعنی یک struct می‌تواند شامل struct دیگری به صورت embedding باشد که باعث قابلیت استفاده مجدد و سازماندهی بهتر کد می‌شود که این موارد در فصل های بعد در بخش مربوط به شی‌گرایی بیشتر توضیح داده خواهد شد.</p>
 <figure class="diagram" dir="ltr">
 <pre class="mermaid">flowchart TB
-    TITLE["Struct در Go مشابه کلاس در PHP"]
 
     subgraph GO["Go: struct"]
         direction TB
@@ -602,9 +548,7 @@ if ok {
         P1 --- P2 --- P3 --- P4 --- P5
     end
 
-    TITLE --&gt; GO
-    TITLE --&gt; PHP
-
+        
     classDef titleBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
     classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
     classDef phpBox fill:#f5f0fb,stroke:#777BB4,stroke-width:1.5px,color:#1f2937;
@@ -966,39 +910,36 @@ func processRunes(data string) {
 <p>این تفاوت ساختاری پیامدهای عملی مهمی دارد: برنامه‌های <bdi dir="ltr">Go</bdi> معمولاً حافظه‌ی بسیار کمتری نسبت به معادل <bdi dir="ltr">PHP</bdi> خود مصرف می‌کنند. برای نمونه، ذخیره‌ی هزار عدد صحیح در <bdi dir="ltr">PHP</bdi> حدود ۱۶ کیلوبایت فقط برای ساختارهای <bdi dir="ltr">zval</bdi> نیاز دارد اما در <bdi dir="ltr">Go</bdi> فقط ۸ کیلوبایت. </p><p>این بهره‌وری حافظه مستقیماً بر کارایی کش پردازنده و سرعت اجرای برنامه تأثیر می‌گذارد و یکی از دلایل اصلی برتری عملکرد <bdi dir="ltr">Go</bdi> در کارهای محاسباتی است.</p>
 <figure class="diagram" dir="ltr">
 <pre class="mermaid">flowchart TB
-    TITLE["مقایسه‌ی ساختار حافظه: PHP zval در برابر Go Typed Values"]
 
     subgraph PHP["PHP — zval structure (runtime overhead)"]
         direction TB
-        PI["zval for $x = 10 (integer)<br/>type_tag = IS_LONG (4B)<br/>value.lval = 10 (8B)<br/>refcount = 1 (4B)<br/>is_ref = false (1B)<br/><b>Total: 16 bytes overhead per integer!</b>"]
-        PS["zval for $s = "hello" (string)<br/>type_tag = IS_STRING (4B)<br/>ptr → zend_string*<br/>zend_string: gc(8B) + hash(8B) + len(8B) + val(5B) + \0<br/><b>Total: 16B zval + 30B zend_string = 46 bytes</b>"]
-        PA["zval for $arr = [1,2,3] (array)<br/>type_tag = IS_ARRAY (4B)<br/>ptr → HashTable*<br/><b>Total: 16B zval + HashTable + Buckets = ~300+ bytes</b>"]
+        PI[zval for $x = 10 (integer)type_tag = IS_LONG (4B)value.lval = 10...]
+        PS["zval for $s = "hello" (string)type_tag = IS_STRING (4B)ptr → zend_string*zend_string: gc(8B) + hash(8B) + len(8B) + val(5B) + \0Total: 16B zval + 30B zend_string = 46 bytes"]
+        PA[zval for $arr = [1,2,3] (array)type_tag = IS_ARRAY (4B)ptr →...]
         PI --- PS --- PA
     end
 
     subgraph GO["Go — Typed Values (zero overhead)"]
         direction TB
-        GI["var x int = 10<br/>10 — 8 bytes (64-bit system) — just the raw value<br/>✓ 50% less memory than PHP zval"]
-        GS["var s string = "hello"<br/>Data ptr → "hello" (5B readonly)<br/>Len = 5 (8B)<br/>stringHeader = {ptr, len} = 16 bytes header<br/>✓ No refcount, no hash, no gc overhead"]
-        GA["var arr = []int{1, 2, 3}<br/>Data ptr<br/>Len=3 (8B)<br/>Cap=3 (8B)<br/>sliceHeader = 24B + underlying array = 24 + 24 = 48 bytes"]
+        GI[var x int = 1010 — 8 bytes (64-bit system) — just the raw value✓ 50% less...]
+        GS["var s string = "hello"Data ptr → "hello" (5B readonly)Len = 5 (8B)stringHeader = {ptr, len} = 16 bytes header✓ No refcount, no hash, no gc overhead"]
+        GA[var arr = []int{1, 2, 3}Data ptrLen=3 (8B)Cap=3 (8B)sliceHeader = 24B +...]
         GI --- GS --- GA
     end
 
     subgraph INIT["مقادیر اولیه"]
         direction TB
-        PHPI["مقدار اولیه‌ی PHP<br/>Uninitialized → null (zval with IS_NULL type)<br/>Every variable starts as null until assigned"]
-        GOI["مقدار صفر Go — همیشه مقدار معتبر<br/>int→0 | float64→0.0 | bool→false | string→""<br/>No null, no undefined — every type has a safe zero value"]
+        PHPI[مقدار اولیه‌ی PHPUninitialized → null (zval with IS_NULL type)Every variable...]
+        GOI["مقدار صفر Go — همیشه مقدار معتبرint→0 | float64→0.0 | bool→false | string→""No null, no undefined — every type has a safe zero value"]
     end
 
     subgraph SUM["خلاصه‌ی بهره‌وری حافظه"]
         direction TB
-        S1["Go بدون سربار runtime type حافظه تخصیص می‌دهد<br/>CPU cache مؤثرتر به‌دلیل تراکم بالاتر داده"]
-        S2["بدون refcounting و GC overhead در هر متغیر<br/>zero value = مقدار امن پیش‌فرض به‌جای null"]
+        S1[Go بدون سربار runtime type حافظه تخصیص می‌دهدCPU cache مؤثرتر به‌دلیل تراکم...]
+        S2[بدون refcounting و GC overhead در هر متغیرzero value = مقدار امن پیش‌فرض...]
     end
 
-    TITLE --&gt; PHP
-    TITLE --&gt; GO
-    PHP --&gt; INIT
+            PHP --&gt; INIT
     GO --&gt; INIT
     INIT --&gt; SUM
 

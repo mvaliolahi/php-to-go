@@ -88,21 +88,8 @@ go func() { // run anonymous function in goroutine
 </p>
 </div>
 <div class="tip"><strong>نکته‌ی حرفه‌ای:</strong> مدیریت چرخه‌ی حیات <bdi dir="ltr">Goroutine</bdi> حیاتی است — هر <bdi dir="ltr">Goroutine</bdi> که شروع می‌کنید باید شرط خروج مشخصی داشته باشد، در غیر این صورت نشت <bdi dir="ltr">Goroutine</bdi> رخ می‌دهد (مبحث فصل ۵.۹). قاعده‌ی ساده: اگر <code>go func()</code> می‌نویسید، بلافاصله از خود بپرسید «این چه زمانی تمام می‌شود؟».</div>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-    subgraph POOL["PHP-FPM / Apache Worker Pool"]
-        direction TB
-        P1["Process 1<br/>Request A<br/>~8MB RAM"]
-        P2["Process 2<br/>Request B<br/>~8MB RAM"]
-        P3["Process 3<br/>Request C<br/>~8MB RAM"]
-        PN["...<br/>Process N<br/>Request N<br/>~8MB RAM"]
-    end
-    Note["هر پردازش حافظه و منابع مستقل دارد<br/>→ مقیاس‌پذیری محدود"]
-
-    classDef phpBox fill:#f5f0fb,stroke:#777BB4,stroke-width:1.5px,color:#1f2937;
-    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
-    class P1,P2,P3,PN,POOL phpBox;
-    class Note warnBox;</pre>
+<figure class="diagram d2-diagram" dir="ltr">
+<img alt="نمودار" loading="lazy" src="assets/diagrams/ch05_01_goroutine_vs_thread.svg"/>
 <figcaption>شکل ۵-۱: مدل پردازشی <bdi dir="ltr">PHP</bdi> - هر درخواست در یک <bdi dir="ltr">Process</bdi> مستقل اجرا می‌شود</figcaption>
 </figure>
 <h3 id="مقایسه-goroutine-و-thread-و-process">5.1.1 مقایسهGoroutineوThreadو فرآیند PHP</h3>
@@ -140,14 +127,14 @@ go func() { // run anonymous function in goroutine
 <p>از Go 1.3 به بعد مکانیزم <strong dir="ltr">Contiguous Stacks</strong> جایگزین شد. در این روش وقتی <bdi dir="ltr">Stack</bdi> فعلی پر می‌شود یک <bdi dir="ltr">Block</bdi> جدید حافظه با اندازه‌ی دو برابر تخصیص داده می‌شود، محتویات <bdi dir="ltr">Stack</bdi> قدیمی به جای جدید کپی می‌شود و <bdi dir="ltr">Stack</bdi> قدیمی آزاد می‌شود. این کار توسط تابع <code dir="ltr">runtime.newstack</code> انجام می‌شود. </p><p>مزیت اصلی این روش حذف مشکل <bdi dir="ltr">Thrashing</bdi> و سادگی پیاده‌سازی است. </p><p>همچنین کوچک‌سازی <bdi dir="ltr">Stack</bdi> (<bdi dir="ltr">Shrinking</bdi>) در زمان <bdi dir="ltr">Garbage Collection</bdi> انجام می‌شود: اگر کمتر از یک‌چهارم <bdi dir="ltr">Stack</bdi> استفاده شده باشد، اندازه‌ی آن به نصف کاهش می‌یابد.</p>
 <figure class="diagram" dir="ltr">
 <pre class="mermaid">flowchart LR
-    S1["شروع<br/>2 KB"]
-    S2["پر شد<br/>4 KB<br/>×2 رشد"]
-    S3["پر شد<br/>8 KB<br/>×2 رشد"]
-    S4["GC<br/>4 KB<br/>کوچک‌سازی"]
+    S1["شروع2 KB"]
+    S2["پر شد4 KB×2 رشد"]
+    S3["پر شد8 KB×2 رشد"]
+    S4["GC4 KBکوچک‌سازی"]
     S1 --&gt; S2 --&gt; S3 --&gt; S4
     S4 -. "بازگشت به رشد" .-&gt; S2
 
-    Note1["مکانیزم Contiguous Stack (از Go 1.3):<br/>۱. وقتی Stack پر می‌شود → حافظه‌ی دو برابر تخصیص → کپی → آزادسازی قدیمی<br/>۲. کوچک‌سازی در GC: اگر کمتر از ¼ استفاده شده → نصف شدن<br/>حداکثر اندازه: ۱ گیگابایت (پیش‌فرض) |<br/>قابل تغییر با runtime/debug.SetMaxStack"]
+    Note1[مکانیزم Contiguous Stack (از Go 1.3):۱. وقتی Stack پر می‌شود → حافظه‌ی دو...]
 
     classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
     classDef bothBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
@@ -165,7 +152,7 @@ go func() { // run anonymous function in goroutine
 <p><strong><bdi dir="ltr">P (Processor)</bdi>:</strong> هر <bdi dir="ltr">P</bdi> نماینده‌ی یک منبع مجازی اجرایی است (<code dir="ltr">runtime.p</code>). تعداد <bdi dir="ltr">P</bdi>‌ها برابر با <code>GOMAXPROCS</code> (پیش‌فرض: تعداد هسته‌های <bdi dir="ltr">CPU</bdi>) است. هر <bdi dir="ltr">P</bdi> یک <bdi dir="ltr">Local Run Queue</bdi> با ظرفیت ۲۵۶ <bdi dir="ltr">Goroutine</bdi> دارد.</p>
 <figure class="diagram" dir="ltr">
 <pre class="mermaid">flowchart TB
-    GRQ["Global Run Queue<br/>صف سراسری — همه Pها به آن دسترسی دارند"]
+    GRQ["Global Run Queueصف سراسری — همه Pها به آن دسترسی دارند"]
 
     subgraph P1G["P1 (Processor)"]
         direction TB
@@ -177,7 +164,7 @@ go func() { // run anonymous function in goroutine
         LQ1 --&gt; G2
         LQ1 --&gt; G3
     end
-    M1["M1 (Thread)<br/>G (running)"]
+    M1["M1 (Thread)G (running)"]
 
     subgraph P2G["P2 (Processor)"]
         direction TB
@@ -187,7 +174,7 @@ go func() { // run anonymous function in goroutine
         LQ2 --&gt; G4
         LQ2 --&gt; G5
     end
-    M2["M2 (Thread)<br/>G (running)"]
+    M2["M2 (Thread)G (running)"]
 
     GRQ --&gt; P1G
     GRQ --&gt; P2G
@@ -195,7 +182,7 @@ go func() { // run anonymous function in goroutine
     P2G --&gt; M2
     M1 -. "Work Stealing" .-&gt; M2
 
-    Note1["مکانیزم Hand-off و Work-Stealing:<br/>Hand-off: وقتی G وارد Syscall مسدودکننده می‌شود، P از M جدا شده و به M دیگر داده می‌شود<br/>Work-Stealing: وقتی صف محلی P خالی شود، نیمی از Gها را از صف محلی P دیگر می‌دزدد<br/>تعداد P = GOMAXPROCS (پیش‌فرض: تعداد هسته‌های CPU) |<br/>Mها می‌توانند بیشتر از Pها باشند"]
+    Note1[مکانیزم Hand-off و Work-Stealing:Hand-off: وقتی G وارد Syscall مسدودکننده...]
 
     classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
     classDef bothBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
@@ -484,18 +471,18 @@ fmt.Println("GOMAXPROCS:", runtime.GOMAXPROCS(0))
 <p>همان‌طور که در بخش قبل دیدیم، هر <bdi dir="ltr">Goroutine</bdi> در طول اجرای خود از وضعیت‌های مختلفی عبور می‌کند. این <bdi dir="ltr">State Machine</bdi> به‌صورت بصری نشان می‌دهد که یک <bdi dir="ltr">Goroutine</bdi> چگونه از وضعیت ایجاد تا مرگ طی می‌کند و چه عواملی باعث انتقال بین وضعیت‌ها می‌شوند. درک این چرخه برای دیباگ مشکلاتی مثل نشت <bdi dir="ltr">Goroutine</bdi> و <bdi dir="ltr">Deadlock</bdi> بسیار حیاتی است. </p><p>هر فلش در نمودار نشان‌دهنده‌ی یک رویداد یا عملیاتی است که باعث تغییر وضعیت می‌شود و هر جعبه رنگی نمایانگر یک وضعیت مشخص در <bdi dir="ltr">Runtime</bdi> Go است.</p>
 <figure class="diagram" dir="ltr">
 <pre class="mermaid">flowchart TB
-    Created["Created<br/>_Gidle"]
-    Runnable["Runnable<br/>_Grunnable"]
-    Running["Running<br/>_Grunning"]
-    Blocked["Blocked<br/>_Gwaiting"]
-    Syscall["Syscall<br/>_Gsyscall"]
-    Dead["Dead<br/>_Gdead"]
+    Created["Created_Gidle"]
+    Runnable["Runnable_Grunnable"]
+    Running["Running_Grunning"]
+    Blocked["Blocked_Gwaiting"]
+    Syscall["Syscall_Gsyscall"]
+    Dead["Dead_Gdead"]
 
     Created -- "go f()" --&gt; Runnable
     Runnable -- "انتخاب توسط Scheduler" --&gt; Running
     Running -- "return" --&gt; Dead
-    Running -- "ارسال روی Channel<br/>دریافت از Channel خالی<br/>I/O wait / select / Timer" --&gt; Blocked
-    Blocked -- "بیدار شدن:<br/>داده رسید / I/O تمام شد / Timer سر رسید" --&gt; Runnable
+    Running -- "ارسال روی Channelدریافت از Channel خالیI/O wait / select / Timer" --&gt; Blocked
+    Blocked -- "بیدار شدن:داده رسید / I/O تمام شد / Timer سر رسید" --&gt; Runnable
     Running -- "Preemption / Gosched" --&gt; Runnable
     Running -- "blocking syscall" --&gt; Syscall
     Syscall -- "syscall returns" --&gt; Runnable
@@ -508,8 +495,8 @@ fmt.Println("GOMAXPROCS:", runtime.GOMAXPROCS(0))
         I4["Blocked (_Gwaiting): منتظر Channel، I/O، Select، Timer یا GC"]
         I5["Syscall (_Gsyscall): فراخوانی سیستم‌عامل مسدودکننده — P جدا می‌شود"]
         I6["Dead (_Gdead): تابع برگشت — ساختار بازیافت و دوباره استفاده می‌شود"]
-        I7["نمونه مسیر اجرا: go f() → Created → Runnable → Running → ch&lt;-v → Blocked → Runnable → Running → return → Dead"]
-        I8["قانون طلایی: هر Goroutine باید شرط خروج مشخصی داشته باشد — Goroutine یتیم = نشت حافظه"]
+        I7[نمونه مسیر اجرا: go f() → Created → Runnable → Running → ch&lt;-v → Blocked →...]
+        I8[قانون طلایی: هر Goroutine باید شرط خروج مشخصی داشته باشد — Goroutine یتیم =...]
         I1 --&gt; I2 --&gt; I3 --&gt; I4 --&gt; I5 --&gt; I6 --&gt; I7 --&gt; I8
     end
 

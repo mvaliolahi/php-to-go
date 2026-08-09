@@ -70,17 +70,17 @@
 </div>
 <figure class="diagram" dir="ltr">
 <pre class="mermaid">flowchart LR
-    SRC["static/<br/>├── css/<br/>├── js/<br/>└── images/"]
-    EMB["//go:embed<br/>embed.FS"]
-    SUB["fs.Sub()<br/>subtree"]
-    HFS["http.FS()<br/>http.FileSystem"]
-    FS["http.FileServer()<br/>handler"]
-    SP["http.StripPrefix()<br/>route"]
-    OUT["HTTP Response<br/>/static/css/style.css"]
+    SRC["static/├── css/├── js/└── images/"]
+    EMB["//go:embedembed.FS"]
+    SUB["fs.Sub()subtree"]
+    HFS["http.FS()http.FileSystem"]
+    FS["http.FileServer()handler"]
+    SP["http.StripPrefix()route"]
+    OUT["HTTP Response/static/css/style.css"]
 
     SRC --&gt; EMB --&gt; SUB --&gt; HFS --&gt; FS --&gt; SP --&gt; OUT
 
-    note(["مزایای embed برای فایل‌های استاتیک:<br/>• استقرار با یک فایل باینری — بدون وابستگی به فایل‌های خارجی<br/>• امنیت بالاتر — فایل‌ها قابل تغییر نیستند"])
+    note([مزایای embed برای فایل‌های استاتیک:• استقرار با یک فایل باینری — بدون...])
     OUT ~~~ note
 
     classDef srcBox  fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
@@ -209,10 +209,10 @@ func embeddedCacheMiddleware(next http.Handler) http.Handler {
 <pre class="mermaid">flowchart TB
     subgraph CHAIN["زنجیره‌ی embed.FS → http.FS → FileServer"]
         direction LR
-        E1["//go:embed<br/>embed.FS"]
-        F1["fs.Sub()<br/>fs.FS"]
-        H1["http.FS()<br/>http.FS"]
-        S1["http.FileServer()<br/>http.FileServer"]
+        E1["//go:embedembed.FS"]
+        F1["fs.Sub()fs.FS"]
+        H1["http.FS()http.FS"]
+        S1["http.FileServer()http.FileServer"]
         END["HTTP Handler"]
         E1 --&gt; F1 --&gt; H1 --&gt; S1 --&gt; END
     end
@@ -226,11 +226,11 @@ func embeddedCacheMiddleware(next http.Handler) http.Handler {
 
     subgraph PATHS["نگاشت مسیرها"]
         direction TB
-        P1["embed.FS paths ≡ source tree paths<br/>static/css/style.css → /static/css/style.css"]
-        P2["PHP: public/ → Apache/Nginx serves files<br/>در PHP فایل‌ها روی دیسک و توسط وب‌سرور سرو می‌شوند"]
+        P1["embed.FS paths ≡ source tree pathsstatic/css/style.css → /static/css/style.css"]
+        P2[PHP: public/ → Apache/Nginx serves filesدر PHP فایل‌ها روی دیسک و توسط...]
     end
 
-    note(["مزیت: باینری واحد با تمام فایل‌های استاتیک — بدون وابستگی خارجی<br/>قاعده‌ی طلایی: مسیرهای embed.FS نسبت به فایل منبع هستند — ساختار پوشه را از قبل برنامه‌ریزی کنید"])
+    note([مزیت: باینری واحد با تمام فایل‌های استاتیک — بدون وابستگی خارجیقاعده‌ی...])
 
     CHAIN ~~~ IFACES ~~~ PATHS ~~~ note
 

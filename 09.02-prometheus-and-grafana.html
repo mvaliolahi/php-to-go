@@ -68,50 +68,8 @@
 <h2 id="prometheus-و-grafana">Prometheus و Grafana</h2><div class="abstract">
 <strong>چکیده:</strong> این بخش Prometheus و Grafana را پوشش می‌دهد: counter، gauge، histogram و dashboard. الگوی instrument و exposition بررسی می‌شود. تفاوت با statsd در PHP و الگوی Go پوشش داده می‌گردد.
 </div>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart LR
-    title(["خط لوله جمع‌آوری Metrics"])
-
-    APP["Go App<br/>Counter/Gauge/Histogram"]
-    PROM["Prometheus<br/>Scrape + TSDB<br/>PromQL"]
-    GRAF["Grafana<br/>Dashboards<br/>Alerting"]
-    APP -- "/metrics" --&gt; PROM
-    PROM -- "query" --&gt; GRAF
-
-    subgraph TYPES["انواع متریک"]
-        direction LR
-        C["Counter<br/>فقط افزایش"]
-        G["Gauge<br/>افزایش/کاهش"]
-        H["Histogram<br/>توزیع + percentiles"]
-        S["Summary<br/>percentile سمت کلاینت"]
-    end
-
-    ALERT(["Alerting → Slack / Email / Telegram"])
-    LABELS(["Labels: method="GET", path="/api/users", status="200""])
-
-    title ~~~ APP
-    GRAF ~~~ ALERT
-    ALERT ~~~ TYPES
-    TYPES ~~~ LABELS
-
-    classDef titleBox fill:#f8fafc,stroke:#475569,stroke-width:1px,color:#1f2937,font-weight:bold;
-    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
-    classDef vizBox fill:#fffbeb,stroke:#F46800,stroke-width:2px,color:#1f2937,font-weight:bold;
-    classDef okBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
-    classDef traceBox fill:#f5f0fb,stroke:#9C27B0,stroke-width:1.5px,color:#1f2937;
-    classDef errBox fill:#fef2f2,stroke:#ef4444,stroke-width:1.5px,color:#1f2937;
-    classDef noteBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1px,color:#1f2937,font-style:italic;
-    class title titleBox;
-    class APP goBox;
-    class PROM warnBox;
-    class GRAF vizBox;
-    class C okBox;
-    class G warnBox;
-    class H traceBox;
-    class S errBox;
-    class ALERT errBox;
-    class LABELS noteBox;</pre>
+<figure class="diagram d2-diagram" dir="ltr">
+<img alt="نمودار" loading="lazy" src="assets/diagrams/ch09_03_observability_pipeline.svg"/>
 <figcaption>شکل ۹-۲: خط لوله جمع‌آوری Metrics — از <bdi dir="ltr">Go</bdi> <bdi dir="ltr">App</bdi> تا داشبورد <bdi dir="ltr">Grafana</bdi></figcaption>
 </figure>
 <p>در عمل زمانی که یک برنامه وارد محیط <bdi dir="ltr">Production</bdi> می‌شود موفقیت آن هم به درستی کد و هم به پایداری، کارایی و قابلیت <bdi dir="ltr">Observability</bdi> آن بستگی دارد. یکی از استانداردهای شناخته‌شده برای مانیتورینگ در اکوسیستم <bdi dir="ltr">cloud-native</bdi> استفاده از <bdi dir="ltr">Prometheus</bdi> برای جمع‌آوری Metrics و <bdi dir="ltr">Grafana</bdi> برای مصورسازی آن‌هاست.</p>
@@ -148,11 +106,11 @@
 
     subgraph INFO["api.RequestsTotal"]
         direction TB
-        WHAT["چه چیزهایی شمارش شود؟<br/>• تعداد درخواست‌های HTTP<br/>• تعداد خطاهای دیتابیس<br/>• تعداد بایت‌های ارسالی"]
-        PROMQL["PromQL<br/>rate(http_requests_total[5m])<br/>نرخ درخواست در هر ثانیه<br/>نکته: هرگز Counter را مستقیم رسم نکنید!"]
+        WHAT[چه چیزهایی شمارش شود؟• تعداد درخواست‌های HTTP• تعداد خطاهای دیتابیس• تعداد...]
+        PROMQL[PromQLrate(http_requests_total[5m])نرخ درخواست در هر ثانیهنکته: هرگز Counter...]
     end
 
-    RULE(["قانون طلایی: Counter فقط با rate() یا increase() معنا دارد — مقدار مطلق آن اهمیت ندارد"])
+    RULE([قانون طلایی: Counter فقط با rate() یا increase() معنا دارد — مقدار مطلق آن...])
 
     title ~~~ GRAPH
     GRAPH ~~~ INFO
@@ -224,11 +182,11 @@ func metricsMiddleware(next http.Handler) http.Handler {
 
     subgraph INFO["app.ActiveConnections"]
         direction TB
-        WHAT["چه چیزهایی اندازه‌گیری شود؟<br/>• اتصال‌های فعال دیتابیس<br/>• تعداد goroutine‌ها<br/>• مصرف حافظه / دمای CPU"]
-        PROMQL["PromQL<br/>go_goroutines<br/>avg_over_time(temp[1h])<br/>مقدار Gauge مستقیم معنادار است"]
+        WHAT[چه چیزهایی اندازه‌گیری شود؟• اتصال‌های فعال دیتابیس• تعداد goroutine‌ها•...]
+        PROMQL["PromQLgo_goroutinesavg_over_time(temp[1h])مقدار Gauge مستقیم معنادار است"]
     end
 
-    RULE(["قانون طلایی: Gauge وضعیت فعلی را نشان می‌دهد — برعکس Counter، مقدار مطلق آن مهم است"])
+    RULE([قانون طلایی: Gauge وضعیت فعلی را نشان می‌دهد — برعکس Counter، مقدار مطلق آن...])
 
     title ~~~ GRAPH
     GRAPH ~~~ INFO
@@ -306,13 +264,13 @@ dbConnections.WithLabelValues("primary").Set(float64(dbPool.Stats().OpenConnecti
 
     subgraph SERIES["Histogram = 3 Time Series"]
         direction TB
-        S1["_bucket{le="0.05"} 80<br/>تعداد نمونه‌های ≤ 50ms"]
-        S2["_sum 4.52<br/>مجموع تمام مقادیر"]
-        S3["_count 100<br/>تعداد کل نمونه‌ها"]
+        S1["_bucket{le="0.05"} 80تعداد نمونه‌های ≤ 50ms"]
+        S2["_sum 4.52مجموع تمام مقادیر"]
+        S3["_count 100تعداد کل نمونه‌ها"]
     end
 
     PROMQL(["PromQL: histogram_quantile(0.95, rate(http_duration_bucket[5m]))"])
-    RULE(["قانون طلایی: Histogram را وقتی استفاده کنید که نیاز به percentile دارید و می‌خواهید از چند نمونه تجمیع کنید<br/>مثال عملی: p95 زمان پاسخ در 10 پاد سرویس → فقط Histogram می‌تواند تجمیع را درست محاسبه کند"])
+    RULE([قانون طلایی: Histogram را وقتی استفاده کنید که نیاز به percentile دارید و...])
 
     title ~~~ BUCKETS
     BUCKETS ~~~ PERCENTILES
@@ -377,12 +335,12 @@ func durationMiddleware(next http.Handler) http.Handler {
     title(["Summary — Percentile سمت کلاینت (بدون قابلیت تجمیع)"])
 
     APP["Go App (Client)"]
-    OBS["Observe(value)<br/>ذخیره در حافظه محلی<br/>محاسبه percentile در سمت کلاینت"]
-    SERIES["_seconds{quantile="0.5"}<br/>_seconds{quantile="0.9"}<br/>_seconds{quantile="0.99"}<br/>_seconds_sum / _seconds_count"]
+    OBS["Observe(value)ذخیره در حافظه محلیمحاسبه percentile در سمت کلاینت"]
+    SERIES["_seconds{quantile="0.5"}_seconds{quantile="0.9"}_seconds{quantile="0.99"}_seconds_sum / _seconds_count"]
     PROM["Prometheus"]
     APP --&gt; OBS --&gt; SERIES --&gt; PROM
 
-    WARN(["مشکل: نمی‌توانید از چند نمونه تجمیع کنید!<br/>p95 نمونه A = 100ms + p95 نمونه B = 200ms ≠ p95 کل سیستم<br/>دلیل: percentile از روی percentile قابل ترکیب نیست — نیاز به داده‌های خام دارد"])
+    WARN([مشکل: نمی‌توانید از چند نمونه تجمیع کنید!p95 نمونه A = 100ms + p95 نمونه B =...])
 
     subgraph CMP["Summary vs Histogram"]
         direction LR
@@ -390,7 +348,7 @@ func durationMiddleware(next http.Handler) http.Handler {
         S["Summary: غیرقابل تجمیع ✗"]
     end
 
-    RULE(["قانون طلایی: فقط وقتی از Summary استفاده کنید که یک نمونه دارید و تجمیع لازم ندارید<br/>در غیر این صورت همیشه Histogram ترجیح داده می‌شود"])
+    RULE([قانون طلایی: فقط وقتی از Summary استفاده کنید که یک نمونه دارید و تجمیع لازم...])
 
     title ~~~ APP
     PROM ~~~ WARN
@@ -561,21 +519,21 @@ scrape_configs:
 
     subgraph RED["RED Method — For Services/APIs"]
         direction TB
-        R["R — Rate<br/>تعداد درخواست‌ها در ثانیه"]
-        E["E — Errors<br/>نرخ درخواست‌های ناموفق"]
-        D["D — Duration<br/>توزیع زمان پاسخ‌دهی"]
+        R["R — Rateتعداد درخواست‌ها در ثانیه"]
+        E["E — Errorsنرخ درخواست‌های ناموفق"]
+        D["D — Durationتوزیع زمان پاسخ‌دهی"]
         REDUSE["مناسب برای: API endpoints, HTTP handlers, microservices"]
     end
 
     subgraph USE["USE Method — For Resources"]
         direction TB
-        U["U — Utilization<br/>درصد استفاده از منبع (CPU, RAM, Disk)"]
-        SAT["S — Saturation<br/>مقدار کار در صف انتظار"]
-        UE["E — Errors<br/>تعداد خطاهای منبع"]
+        U["U — Utilizationدرصد استفاده از منبع (CPU, RAM, Disk)"]
+        SAT["S — Saturationمقدار کار در صف انتظار"]
+        UE["E — Errorsتعداد خطاهای منبع"]
         USEUSE["مناسب برای: CPU, Memory, Disk, Network, DB connections"]
     end
 
-    RULE(["قانون ساده: برای هر سرویس RED را پیاده کنید + برای هر منبع USE را<br/>اگر فقط ۶ متریک داشتید: request_rate, error_rate, latency_p99 + cpu_usage, memory_usage, disk_saturation"])
+    RULE([قانون ساده: برای هر سرویس RED را پیاده کنید + برای هر منبع USE رااگر فقط ۶...])
 
     title ~~~ RED
     title ~~~ USE

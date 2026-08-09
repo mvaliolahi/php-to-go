@@ -71,14 +71,8 @@
 <div class="tip"><strong>نکته:</strong> Channel‌ها در Go الهام‌گرفته از مدل CSP هستند. شعار معروف Go در این زمینه این است: <bdi dir="ltr">"Share memory by communicating, don't communicate by sharing memory."</bdi> به جای اینکه چند <bdi dir="ltr">Goroutine</bdi> از حافظه‌ی مشترک استفاده کنند، از طریق Channel‌ها با یکدیگر ارتباط برقرار می‌کنند.</div>
 <p>تا اینجا دیدیم که <bdi dir="ltr">Goroutine</bdi>‌ها همانند <bdi dir="ltr">Thread</bdi>‌های بسیار سبک و کم‌هزینه عمل می‌کنند. اما سؤال مهم این است که اگر چند <bdi dir="ltr">Goroutine</bdi> نیاز به ارتباط و تبادل داده داشته باشند چه راهکاری وجود دارد؟ </p><p>در بسیاری از زبان‌ها مثل PHP این کار معمولاً از طریق یک واسطه‌ی خارجی مانند فایل، دیتابیس، Redis یا RabbitMQ انجام می‌شود. </p><p>اما Go یک رویکرد متفاوت و بسیار قدرتمند به نام <bdi dir="ltr">Channel</bdi> را ارائه می‌دهد — یک ساختار <bdi dir="ltr">Built-in</bdi> که امکان انتقال داده بین <bdi dir="ltr">Goroutine</bdi>‌ها را به صورت ایمن و بدون نیاز به <bdi dir="ltr">Lock</bdi> فراهم می‌کند.</p>
 <p><bdi dir="ltr">Channel</bdi>‌ها در واقع لوله‌های ارتباطی نوع‌دار هستند. یعنی شما به‌طور دقیق مشخص می‌کنید چه نوع داده‌ای از یک کانال عبور خواهد کرد. <strong>ارسال</strong> با دستور <code>ch &lt;- value</code> و <strong>دریافت</strong> با دستور <code>value := &lt;-ch</code> انجام می‌شود. </p><p>نکته کلیدی اینجاست که <bdi dir="ltr">Channel</bdi> به طور پیش‌فرض <bdi dir="ltr">Synchronous</bdi> است — اگر گیرنده آماده نباشد ارسال‌کننده بلاک می‌شود و بالعکس. این رفتار باعث می‌شود <bdi dir="ltr">Channel</bdi>‌ها هم نقش انتقال داده و هم نقش مکانیزم همگام‌سازی را ایفا کنند.</p>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">sequenceDiagram
-    participant A as Goroutine A<br/>(ارسال‌کننده)
-    participant C as Channel<br/>chan T
-    participant B as Goroutine B<br/>(دریافت‌کننده)
-    Note over A,B: نوع‌دار و ایمن — فقط مقدار از نوع T عبور می‌کند
-    A-&gt;&gt;C: ch &lt;- v (send)
-    C-&gt;&gt;B: v &lt;- ch (receive)</pre>
+<figure class="diagram d2-diagram" dir="ltr">
+<img alt="نمودار" loading="lazy" src="assets/diagrams/ch05_02_channel_anatomy.svg"/>
 <figcaption>شکل ۵-۵: <bdi dir="ltr">Channel</bdi> ساده برای ارسال و دریافت داده بین دو <bdi dir="ltr">Goroutine</bdi></figcaption>
 </figure>
 <h3 id="channel-internals">5.2.1 ساختار داخلی Channel (hchan)</h3>
@@ -95,52 +89,9 @@
 </ul>
 نکته مهم: هر عملیات ارسال یا دریافت روی channel ابتدا قفل <code dir="ltr">hchan.mutex</code> را می‌گیرد. این یعنی دسترسی همزمان به یک channel از چند goroutine به صورت خودکار ایمن است. اما به همین دلیل استفاده‌ی شدید از یک channel مشترک می‌تواند <bdi dir="ltr">Lock Contention</bdi> ایجاد کند.
 </div>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-    H["runtime.hchan"]
-
-    subgraph BUF["buf *array (Ring Buffer)"]
-        direction LR
-        V0["val0"]
-        V1["val1"]
-        V2["val2"]
-        V3["خالی"]
-        Meta["qcount=3  dataqsiz=4<br/>sendx=3  recvx=0"]
-    end
-
-    ET["elemtype *type"]
-    SQ["sendq waitq<br/>صف فرستنده‌های مسدود"]
-    RQ["recvq waitq<br/>صف گیرنده‌های مسدود"]
-    MX["mutex sync.Mutex"]
-
-    H --&gt; BUF
-    H --&gt; ET
-    H --&gt; SQ
-    H --&gt; RQ
-    H --&gt; MX
-
-    subgraph SEND["جریان ارسال"]
-        direction TB
-        S1["۱. گیرنده در انتظار → کپی مستقیم به Stack"]
-        S2["۲. بافر جای خالی → کپی به Ring Buffer"]
-        S3["۳. بافر پر → فرستنده در sendq مسدود"]
-        S1 --&gt; S2 --&gt; S3
-    end
-
-    subgraph RECV["جریان دریافت"]
-        direction TB
-        R1["۱. فرستنده در sendq → کپی از Stack"]
-        R2["۲. بافر خالی نیست → خواندن از Ring Buffer"]
-        R3["۳. بافر خالی → گیرنده در recvq مسدود"]
-        R1 --&gt; R2 --&gt; R3
-    end
-
-    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef bothBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
-    classDef neuBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
-    class H,BUF,V0,V1,V2,V3,Meta,ET,SQ,RQ,MX goBox;
-    class SEND,RECV,S1,S2,S3,R1,R2,R3 bothBox;</pre>
-<figcaption>شکل ۵-۶: ساختار داخلی <bdi dir="ltr">hchan</bdi> — <bdi dir="ltr">Ring</bdi> <bdi dir="ltr">Buffer</bdi> و صف‌های انتظار <bdi dir="ltr">sendq</bdi> و <bdi dir="ltr">recvq</bdi></figcaption>
+<figure class="diagram d2-diagram" dir="ltr">
+<img alt="نمودار" loading="lazy" src="assets/diagrams/ch05_02_channel_flow.svg"/>
+<figcaption>شکل ۵-۶: ساختار داخلیhchan—RingBufferو صف‌های انتظارsendqوrecvq</figcaption>
 </figure>
 <h3 id="buffered-vs-unbuffered">5.2.2 Buffered vs Unbuffered</h3>
 <figure class="diagram" dir="ltr">
@@ -378,9 +329,9 @@ func main() {
 <pre class="mermaid">flowchart LR
     subgraph UB["کانال بدون بافر (make(chan T))"]
         direction TB
-        US["Sender G<br/>مسدود ⏸ منتظر"]
-        UC["chan T<br/>ظرفیت: ۰ — بافر ندارد"]
-        UR["Receiver G<br/>مسدود ⏸ منتظر"]
+        US["Sender Gمسدود ⏸ منتظر"]
+        UC["chan Tظرفیت: ۰ — بافر ندارد"]
+        UR["Receiver Gمسدود ⏸ منتظر"]
         US --&gt; UC
         UC --&gt; UR
         UT["دست دادن همگام (Synchronous Handoff)"]
@@ -392,7 +343,7 @@ func main() {
         UB2["دریافت: همیشه مسدود می‌شود تا فرستنده ارسال کند"]
         UB3["ch &lt;- v   // blocks until receiver"]
         UBH --&gt; UB1 --&gt; UB2 --&gt; UB3
-        UU["کاربرد اصلی:<br/>سیگنال‌دهی، اطلاع‌رسانی، همگام‌سازی دقیق بین دو Goroutine"]
+        UU["کاربرد اصلی:سیگنال‌دهی، اطلاع‌رسانی، همگام‌سازی دقیق بین دو Goroutine"]
         UC2["ch := make(chan struct{})  // unbuffered signal"]
         UU --&gt; UC2
         USUM["همگام — هر دو طرف همزمان آماده می‌شوند"]
@@ -400,12 +351,12 @@ func main() {
 
     subgraph BB["کانال با بافر (make(chan T, 4))"]
         direction TB
-        BS["Sender G<br/>غیرمسدود ✅<br/>ch&lt;-v"]
-        BRB["Ring Buffer (hchan.buf)<br/>val0 · val1 · val2 · خالی<br/>↑recvx   ↑sendx"]
-        BR["Receiver G<br/>&lt;-ch"]
+        BS["Sender Gغیرمسدود ✅ch&lt;-v"]
+        BRB["Ring Buffer (hchan.buf)val0 · val1 · val2 · خالی↑recvx   ↑sendx"]
+        BR["Receiver G&lt;-ch"]
         BS --&gt; BRB
         BRB --&gt; BR
-        BM["cap(ch) = 4    |    len(ch) = 3<br/>ظرفیت ثابت است، طول با ارسال/دریافت تغییر می‌کند"]
+        BM["cap(ch) = 4    |    len(ch) = 3ظرفیت ثابت است، طول با ارسال/دریافت تغییر می‌کند"]
         BN1["بافر میانی — جداسازی فرستنده و گیرنده"]
         BN2["فرستنده داده را در Ring Buffer می‌نویسد و بدون انتظار ادامه می‌دهد"]
         BN3["گیرنده از Ring Buffer می‌خواند — مشابه صف Redis Queue"]
@@ -418,7 +369,7 @@ func main() {
         BSUM["ناهمگام — بافر میانی، فرستنده و گیرنده مستقل‌تر"]
     end
 
-    GOLD["قانون طلایی: بدون بافر = سیگنال‌دهی | با بافر = صف کار.<br/>ظرفیت بافر را بر اساس سرعت تولید و مصرف تنظیم کنید"]
+    GOLD[قانون طلایی: بدون بافر = سیگنال‌دهی | با بافر = صف کار.ظرفیت بافر را بر اساس...]
 
     classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
     classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;

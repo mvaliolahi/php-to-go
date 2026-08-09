@@ -696,7 +696,7 @@ func fetchAll(ctx context.Context, urls []string) ([]string, error) {
     N1["تعداد ثابت Worker — محدودیت هم‌روندی — کنترل منابع"]
     N2["ترتیب نتایج تضمین نمی‌شود — اول آمده اول پرداخت می‌شود"]
     N1 --&gt; N2
-    GOLD["قاعده طلایی: Fan-Out = توزیع کار بین Goroutine‌ها |Fan-In = تجمیع نتایج در یک کانال واحد"]
+    GOLD[قاعده طلایی: Fan-Out = توزیع کار بین Goroutine‌ها |Fan-In = تجمیع نتایج در...]
 
     classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
     classDef bothBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
@@ -713,15 +713,15 @@ func fetchAll(ctx context.Context, urls []string) ([]string, error) {
 <p>الگوی <bdi dir="ltr">Pipeline</bdi> که در بخش قبل معرفی شد، مزیت کلیدی دارد که هر مرحله به صورت مستقل و همزمان با مراحل دیگر اجرا می‌شود. مکانیزم <bdi dir="ltr">Backpressure</bdi> از طریق مسدود شدن کانال‌ها به صورت طبیعی پیاده‌سازی می‌شود — اگر مرحله پایین‌دست کند باشد، مرحله بالادست به صورت خودکند کندتر می‌شود. در نمودار زیر این الگو را به‌تفصیل مشاهده می‌کنید.</p>
 <figure class="diagram" dir="ltr">
 <pre class="mermaid">flowchart LR
-    Input["Input<br/>داده خام"]
+    Input["Inputداده خام"]
     Chan1["chan"]
-    S1["Stage 1: Read<br/>خواندن داده<br/>goroutine 1"]
+    S1["Stage 1: Readخواندن دادهgoroutine 1"]
     Chan2["chan"]
-    S2["Stage 2: Process<br/>پردازش و تبدیل<br/>goroutine 2"]
+    S2["Stage 2: Processپردازش و تبدیلgoroutine 2"]
     Chan3["chan"]
-    S3["Stage 3: Write<br/>نوشتن نتیجه<br/>goroutine 3"]
+    S3["Stage 3: Writeنوشتن نتیجهgoroutine 3"]
     Chan4["chan"]
-    Out["Out<br/>نتیجه"]
+    Out["Outنتیجه"]
 
     Input --&gt; Chan1 --&gt; S1 --&gt; Chan2 --&gt; S2 --&gt; Chan3 --&gt; S3 --&gt; Chan4 --&gt; Out
 
@@ -737,11 +737,11 @@ func fetchAll(ctx context.Context, urls []string) ([]string, error) {
         direction TB
         C1["nums := generate(ctx, 1,2,3,4,5)"]
         C2["squares := square(ctx, nums)"]
-        C3["evens := filterEven(ctx, squares)<br/>// each stage = 1 goroutine + 1 channel"]
+        C3["evens := filterEven(ctx, squares)// each stage = 1 goroutine + 1 channel"]
         C1 --&gt; C2 --&gt; C3
     end
 
-    GOLD["قاعده طلایی: هر مرحله یک Goroutine + یک کانال ورودی + یک کانال خروجی |<br/>Backpressure از طریق مسدود شدن کانال"]
+    GOLD[قاعده طلایی: هر مرحله یک Goroutine + یک کانال ورودی + یک کانال خروجی...]
 
     classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
     classDef bothBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;

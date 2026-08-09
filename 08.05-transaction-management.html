@@ -189,9 +189,9 @@ if affected == 0 {
 
     subgraph HAPPY["مسیر موفق (Happy Path)"]
         direction LR
-        H1["1. Create Order<br/>tx: Order Service"]
-        H2["2. Deduct Stock<br/>tx: Inventory Svc"]
-        H3["3. Payment<br/>tx: Payment Svc"]
+        H1["1. Create Ordertx: Order Service"]
+        H2["2. Deduct Stocktx: Inventory Svc"]
+        H3["3. Paymenttx: Payment Svc"]
         H4["✓"]
         H1 --&gt; H2 --&gt; H3 --&gt; H4
     end
@@ -205,7 +205,7 @@ if affected == 0 {
         F1 --&gt; F2 --&gt; F3 --&gt; F4
     end
 
-    Note["هر مرحله یک تراکنش محلی است — در صورت خطا، مراحل قبلی به ترتیب معکوس جبران می‌شوند"]
+    Note[هر مرحله یک تراکنش محلی است — در صورت خطا، مراحل قبلی به ترتیب معکوس جبران...]
 
     Title --&gt; HAPPY
     Title --&gt; FAIL
@@ -237,69 +237,9 @@ if affected == 0 {
 // → Compensate step 1: cancel order</code></pre></figure>
 <div class="comparison"><strong>مقایسه با Laravel:</strong> متد <code>DB::transaction()</code> در <bdi dir="ltr">Laravel</bdi> به صورت خودکار در صورت <bdi dir="ltr">Exception</bdi> تراکنش را <bdi dir="ltr">rollback</bdi> می‌کند. اما در <bdi dir="ltr">Go</bdi> باید صراحتاً مدیریت کنید. مزیت <bdi dir="ltr">Go</bdi> کنترل دقیق‌تر روی سطح ایزولاسیون و <bdi dir="ltr">timeout</bdi> است.</div>
 <h3 id="چرخه-حیات-تراکنش-و-ویژگیهای-acid">8.5.5 چرخه‌ی حیات تراکنش و ویژگی‌های ACID</h3>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-    Title["چرخه‌ی حیات تراکنش: Begin → Commit/Rollback و ویژگی‌های ACID"]
-
-    Begin["db.Begin() → tx"]
-    E1["tx.Exec() INSERT"]
-    E2["tx.Exec() UPDATE"]
-    Q1["tx.Query() SELECT"]
-    E3["tx.Exec() DELETE"]
-    Decision{"تصمیم"}
-
-    Commit["tx.Commit()<br/>موفق ✓"]
-    CommitResult["داده‌ها ذخیره شدند ✓"]
-    Rollback["tx.Rollback()<br/>خطا ✗"]
-    RollbackResult["داده‌ها بازگشت خوردند ↩"]
-    DeferNote["defer tx.Rollback() — safe: no-op after Commit"]
-
-    Begin --&gt; E1 --&gt; E2 --&gt; Q1 --&gt; E3 --&gt; Decision
-    Decision -- "موفق ✓" --&gt; Commit --&gt; CommitResult
-    Decision -- "خطا ✗" --&gt; Rollback --&gt; RollbackResult
-    Begin -.-&gt; DeferNote
-
-    subgraph ACID["ویژگی‌های ACID"]
-        direction TB
-        A["Atomicity<br/>همه یا هیچ — همه عملیات با هم اعمال یا همه بازگشت"]
-        C["Consistency<br/>گذار معتبر بین حالت‌ها — قیدها و محدودیت‌ها حفظ"]
-        I["Isolation<br/>تراکنش‌های همزمان یکدیگر را مختل نمی‌کنند"]
-        D["Durability<br/>داده‌های commit شده از خرابی جانا می‌مانند"]
-    end
-
-    subgraph ISOLEVELS["سطوح ایزولاسیون — از کمترین به بیشترین سخت‌گیری"]
-        direction LR
-        IL1["Read Uncommitted<br/>سست‌ترین<br/>Dirty Read ✓ / Non-Repeatable ✓ / Phantom Read ✓"]
-        IL2["Read Committed<br/>پیش‌فرض PostgreSQL"]
-        IL3["Repeatable Read"]
-        IL4["Serializable<br/>سخت‌گیرانه‌ترین<br/>Safe ✓"]
-        IL1 --&gt; IL2 --&gt; IL3 --&gt; IL4
-    end
-
-    Golden["قانون طلایی: بعد از Begin() همیشه defer tx.Rollback() بنویسید — حتی اگر قصد Commit دارید"]
-
-    Title --&gt; Begin
-    CommitResult ~~~ ACID
-    ACID --&gt; ISOLEVELS
-    ISOLEVELS --&gt; Golden
-
-    classDef titleBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:2px,color:#1f2937,font-weight:bold;
-    classDef goBox   fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef bothBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
-    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
-    classDef errBox  fill:#fef2f2,stroke:#ef4444,stroke-width:1.5px,color:#1f2937;
-    classDef neuBox  fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
-    class Title titleBox;
-    class Begin,E1,E2,Q1,E3 goBox;
-    class Commit,CommitResult bothBox;
-    class Rollback,RollbackResult errBox;
-    class DeferNote warnBox;
-    class A,C,I,D neuBox;
-    class IL1 errBox;
-    class IL2,IL3 warnBox;
-    class IL4 bothBox;
-    class Golden warnBox;</pre>
-<figcaption dir="rtl">شکل ۸-۵-ب: چرخه‌ی حیات تراکنش — <bdi dir="ltr">Begin → Commit/Rollback</bdi>، ویژگی‌های <bdi dir="ltr">ACID</bdi> و سطوح ایزولاسیون</figcaption>
+<figure class="diagram d2-diagram" dir="ltr">
+<img alt="نمودار" loading="lazy" src="assets/diagrams/ch08_05_transaction.svg"/>
+<figcaption>شکل ۸-۵-ب: چرخه‌ی حیات تراکنش —Begin → Commit/Rollback، ویژگی‌هایACIDو سطوح ایزولاسیون</figcaption>
 </figure>
 <p>این نمودار چرخه‌ی کامل حیات یک تراکنش را از نقطه‌ی شروع تا نتیجه‌ی نهایی نشان می‌دهد. تراکنش با فراخوانی <code dir="ltr">db.Begin()</code> آغاز می‌شود و یک شیء <code dir="ltr">*sql.Tx</code> برگردانده می‌شود که تمام عملیات بعدی باید از طریق آن انجام شوند. </p><p>پس از اجرای عملیات‌های مختلف (<code dir="ltr">INSERT</code>، <code dir="ltr">UPDATE</code>، <code dir="ltr">SELECT</code>، <code dir="ltr">DELETE</code>) یک نقطه‌ی تصمیم وجود دارد: اگر همه عملیات‌ها موفق بوده‌اند <code dir="ltr">tx.Commit()</code> تغییرات را به‌طور دائم ذخیره می‌کند و اگر هرکدام با خطا مواجه شده‌اند <code dir="ltr">tx.Rollback()</code> تمام تغییرات را لغو می‌کند.</p>
 <p>ویژگی‌های <bdi dir="ltr">ACID</bdi> تضمین‌های بنیادی تراکنش‌ها هستند. <bdi dir="ltr">Atomicity</bdi> (اتمی بودن) تضمین می‌کند که یا تمام عملیات‌ها اعمال می‌شوند یا هیچ‌کدام. <bdi dir="ltr">Consistency</bdi> (سازگاری) تضمین می‌کند دیتابیس همیشه از یک حالت معتبر به حالت معتبر دیگر گذار می‌کند و قیدها و محدودیت‌ها نقض نمی‌شوند. <bdi dir="ltr">Isolation</bdi> (ایزولاسیون) تضمین می‌کند تراکنش‌های همزمان روی یکدیگر تأثیر ناخواسته ندارند. <bdi dir="ltr">Durability</bdi> (ماندگاری) تضمین می‌کند داده‌هایی که <code dir="ltr">commit</code> شده‌اند حتی در صورت خرابی سیستم از بین نمی‌روند.</p>

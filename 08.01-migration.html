@@ -280,11 +280,11 @@ func Down(tx *sql.Tx) error {
 
     subgraph TIMELINE["خط زمانی نسخه‌ها"]
         direction LR
-        V0["v0<br/>خالی"]
-        V1["v1<br/>جدول users"]
-        V2["v2<br/>ستون email"]
-        V3["v3<br/>جدول orders"]
-        V4["v4<br/>کلید خارجی"]
+        V0["v0خالی"]
+        V1["v1جدول users"]
+        V2["v2ستون email"]
+        V3["v3جدول orders"]
+        V4["v4کلید خارجی"]
         V0 --&gt; V1 --&gt; V2 --&gt; V3 --&gt; V4
     end
 
@@ -303,8 +303,8 @@ func Down(tx *sql.Tx) error {
 
     subgraph CONFLICT["تداخل: وقتی دو توسعه‌دهنده همزمان Migration می‌سازند"]
         direction TB
-        DA["توسعه‌دهنده‌ی الف<br/>004_add_status.up.sql"]
-        DB["توسعه‌دهنده‌ی ب<br/>004_add_phone.up.sql"]
+        DA["توسعه‌دهنده‌ی الف004_add_status.up.sql"]
+        DB["توسعه‌دهنده‌ی ب004_add_phone.up.sql"]
         WARN["⚠ تداخل شماره‌گذاری!"]
         DA --&gt; WARN
         DB --&gt; WARN
@@ -317,7 +317,7 @@ func Down(tx *sql.Tx) error {
         S3["۳. شماره‌گذاری timestamp به‌جای ترتیبی"]
     end
 
-    Golden["قانون طلایی: هر Migration باید کاملاً قابل بازگشت باشد — فایل .down.sql را همیشه بنویسید و تست کنید"]
+    Golden[قانون طلایی: هر Migration باید کاملاً قابل بازگشت باشد — فایل .down.sql را...]
 
     Title --&gt; UpArrow
     Title --&gt; DownArrow

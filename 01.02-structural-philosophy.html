@@ -333,28 +333,28 @@ type User struct {
     subgraph PHP["مسیر PHP Exception — جریان پنهان"]
         direction TB
         P1["function findUser($id)"]
-        P2["throw new UserNotFoundException()<br/>① تابع exception پرابت می‌کند"]
-        P3["Call Stack: handler → service → repo<br/>② exception از طریق stack بالا می‌رود<br/>جریان کنترل نامرئی — در امضا مشخص نیست!"]
-        P4["try { $user = findUser($id); }<br/>catch (UserNotFoundException $e) { ... }<br/>③ بلوک catch مناسب پیدا شد"]
-        P5["Uncaught Exception → Fatal Error<br/>④ اگر catch نباشد → خطای مهلک، کل برنامه متوقف می‌شود!"]
+        P2["throw new UserNotFoundException()① تابع exception پرابت می‌کند"]
+        P3[Call Stack: handler → service → repo② exception از طریق stack بالا...]
+        P4[try { $user = findUser($id); }catch (UserNotFoundException $e) { ... }③ بلوک...]
+        P5[Uncaught Exception → Fatal Error④ اگر catch نباشد → خطای مهلک، کل برنامه...]
         P1 --&gt; P2 --&gt; P3 --&gt; P4 --&gt; P5
     end
-    warn1(["⚠ مشکل: جریان کنترل پنهان — از امضای تابع مشخص نیست که exception پرتاب می‌شود. فراموش کردن catch = فاجعه در زمان اجرا."])
+    warn1([⚠ مشکل: جریان کنترل پنهان — از امضای تابع مشخص نیست که exception پرتاب...])
 
     subgraph GO["مسیر Go Error Value — جریان صریح"]
         direction TB
-        G1["func FindUser(id int) (*User, error)<br/>return nil, ErrUserNotFound<br/>① تابع error را برمی‌گرداند — در امضا مشخص است!"]
-        G2["user, err := FindUser(id)<br/>if err != nil { ... }<br/>② فراخوان‌دهنده صریحاً بررسی می‌کند"]
-        G3["// Handle: log and respond<br/>// OR wrap: return fmt.Errorf("...: %w", err)<br/>③ مدیریت مستقیم یا بسته‌بندی و بازگشت"]
-        G4["✓ No hidden control flow<br/>④ جریان کنترل همیشه محلی و قابل پیش‌بینی<br/>خطای بررسی‌نشده = هشدار کامپایلر"]
+        G1[func FindUser(id int) (*User, error)return nil, ErrUserNotFound① تابع error...]
+        G2[user, err := FindUser(id)if err != nil { ... }② فراخوان‌دهنده صریحاً بررسی...]
+        G3["// Handle: log and respond// OR wrap: return fmt.Errorf("...: %w", err)③ مدیریت مستقیم یا بسته‌بندی و بازگشت"]
+        G4[✓ No hidden control flow④ جریان کنترل همیشه محلی و قابل پیش‌بینیخطای...]
         G1 --&gt; G2 --&gt; G3 --&gt; G4
     end
-    warn2(["✓ مزیت: هر مسیر شکست قابل مشاهده است. امضای تابع دقیقاً نشان می‌دهد چه خطاهایی ممکن است. فراموش کردن بررسی = هشدار linter نه فاجعه‌ی زمان اجرا."])
+    warn2([✓ مزیت: هر مسیر شکست قابل مشاهده است. امضای تابع دقیقاً نشان می‌دهد چه...])
 
     PHP ~~~ warn1
     GO ~~~ warn2
 
-    summary(["قانون طلایی: Exception‌ها جریان کنترل پنهان هستند — Error Value‌ها جریان کنترل صریح هستند. در Go هر شکست در امضای تابع دیده می‌شود."])
+    summary([قانون طلایی: Exception‌ها جریان کنترل پنهان هستند — Error Value‌ها جریان...])
 
     classDef phpBox fill:#f5f0fb,stroke:#777BB4,stroke-width:1.5px,color:#1f2937;
     classDef goBox  fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;

@@ -202,14 +202,14 @@ func loadTemplates() *template.Template {
 
     subgraph CTX["Context-Aware Escaping"]
         direction TB
-        C1["HTML<br/>&lt;p&gt;{{.Name}}&lt;/p&gt;<br/>→ HTML escape"]
-        C2["href<br/>href="{{.URL}}"<br/>→ URL encode"]
-        C3["JS<br/>&lt;script&gt;{{.Data}}&lt;/script&gt;<br/>→ JS escape"]
-        C4["CSS<br/>style="{{.Color}}"<br/>→ CSS escape"]
+        C1["HTML&lt;p&gt;{{.Name}}&lt;/p&gt;→ HTML escape"]
+        C2["hrefhref="{{.URL}}"→ URL encode"]
+        C3["JS&lt;script&gt;{{.Data}}&lt;/script&gt;→ JS escape"]
+        C4["CSSstyle="{{.Color}}"→ CSS escape"]
     end
     CA --&gt; CTX
 
-    NOTE(["html/template به صورت خودکار بر اساس موقعیت، روش ایمن‌سازی مناسب را انتخاب می‌کند"])
+    NOTE([html/template به صورت خودکار بر اساس موقعیت، روش ایمن‌سازی مناسب را انتخاب...])
     CA ~~~ NOTE
 
     classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;

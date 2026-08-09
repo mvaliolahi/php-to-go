@@ -133,7 +133,6 @@ if err != nil {
 <p>یکی از ویژگی‌های قدرتمند Go در مدیریت خطا مفهوم <strong dir="ltr">Error Wrapping</strong> است. با استفاده از <code dir="ltr">fmt.Errorf</code> و فعل قالب <code>%w</code> می‌توان خطاها را در هم پیچید و زنجیره‌ی خطا ساخت. این قابلیت مشابه زنجیره‌ی Exceptions در PHP با <code dir="ltr">getPrevious()</code> است اما بسیار سبک‌تر و صریح‌تر عمل می‌کند.</p>
 <figure class="diagram" dir="ltr">
 <pre class="mermaid">flowchart TB
-    TITLE["جستجو در زنجیره‌ی خطا: errors.Is در برابر errors.As"]
 
     subgraph IS["errors.Is(err, target)"]
         direction TB
@@ -165,9 +164,7 @@ if err != nil {
         A5 --&gt; A6
     end
 
-    TITLE --&gt; IS
-    TITLE --&gt; AS
-
+        
     classDef titleBox fill:#ecfdf5,stroke:#10b981,stroke-width:2px,color:#1f2937;
     classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
     classDef bothBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
@@ -412,18 +409,17 @@ func GetUser(id int) (*User, error) {
 </figure>
 <figure class="diagram" dir="ltr">
 <pre class="mermaid">flowchart TB
-    TITLE["سلسله‌مراتب خطاهای سفارشی"]
 
     IFACE["error interface"]
 
     subgraph STD["خطاهای استاندارد کتابخانه"]
         direction TB
-        E1["*errorString<br/>errors.New()"]
-        E2["*wrapError<br/>fmt.Errorf("%w")"]
-        E3["*joinError<br/>errors.Join()"]
+        E1["*errorStringerrors.New()"]
+        E2["*wrapErrorfmt.Errorf("%w")"]
+        E3["*joinErrorerrors.Join()"]
     end
 
-    CUST["خطاهای سفارشی شما<br/>*DBError, *APIError, *ValidError..."]
+    CUST["خطاهای سفارشی شما*DBError, *APIError, *ValidError..."]
 
     IFACE --&gt; E1
     IFACE --&gt; E2
@@ -444,13 +440,12 @@ func GetUser(id int) (*User, error) {
 <p>در بخش «<a href="#خطای-پیچیده-تر-با-wrapping">خطای پیچیده‌تر با Wrapping</a>» دیدیم که <code dir="ltr">fmt.Errorf</code> با فعل <code dir="ltr">%w</code> چگونه زنجیره‌ی خطا می‌سازد و متد <code dir="ltr">Unwrap()</code> را به‌صورت خودکار پیاده‌سازی می‌کند. در این بخش روی نکته‌ی حیاتی‌ای تمرکز می‌کنیم که منبع رایج باگ‌های پنهان در پروژه‌های <bdi dir="ltr">Go</bdi> است: تفاوت <code dir="ltr">%w</code> با <code dir="ltr">%v</code>. <code dir="ltr">%v</code> فقط پیغام خطا را قالب‌بندی می‌کند و زنجیره را می‌شکند — فراخوانی‌کننده دیگر نمی‌تواند خطای اصلی را با <code dir="ltr">errors.Is()</code> یا <code dir="ltr">errors.As()</code> بررسی کند. نمودار زیر این تفاوت را در کنار مکانیزم <code dir="ltr">Unwrap()</code> سفارشی و ساخت درخت خطا نشان می‌دهد.</p>
 <figure class="diagram" dir="ltr">
 <pre class="mermaid">flowchart TB
-    TITLE["زنجیره‌ی پیچیدن خطا: fmt.Errorf %w"]
 
     subgraph CHAIN["زنجیره‌ی خطا"]
         direction TB
-        H["handleErr<br/>fmt.Errorf("handle request: %w", svcErr)"]
-        S["svcErr<br/>fmt.Errorf("get user: %w", dbErr)"]
-        D["sql.ErrNoRows<br/>original error (sentinel)"]
+        H["handleErrfmt.Errorf("handle request: %w", svcErr)"]
+        S["svcErrfmt.Errorf("get user: %w", dbErr)"]
+        D["sql.ErrNoRowsoriginal error (sentinel)"]
         H -- "Unwrap()" --&gt; S
         S -- "Unwrap()" --&gt; D
     end
@@ -487,17 +482,14 @@ func GetUser(id int) (*User, error) {
 
     subgraph CUSTOM["پیاده‌سازی Unwrap() سفارشی — درخت خطا"]
         direction TB
-        CU1["type DBError struct {<br/>    Query string<br/>    Err   error  // wrapped error<br/>}<br/>func (e *DBError) Error() string { return e.Query + ": " + e.Err.Error() }<br/>func (e *DBError) Unwrap() error { return e.Err }"]
-        CU2["نکته: errors.Join (Go 1.20+) زنجیره‌ی چندشاخه می‌سازد<br/>متد Unwrap() []error برگشتانی از error واحد پشتیبانی می‌کند<br/>با Unwrap سفارشی می‌توان درخت خطا ساخت نه فقط زنجیره‌ی خطی"]
+        CU1["type DBError struct {    Query string    Err   error  // wrapped error}func (e *DBError) Error() string { return e.Query + ": " + e.Err.Error() }func (e *DBError) Unwrap() error { return e.Err }"]
+        CU2[نکته: errors.Join (Go 1.20+) زنجیره‌ی چندشاخه می‌سازدمتد Unwrap() []error...]
     end
 
-    TITLE --&gt; CHAIN
-    CHAIN --&gt; IS
+        CHAIN --&gt; IS
     CHAIN --&gt; AS
-    TITLE --&gt; COMPARE
-    COMPARE --&gt; DANGER
-    TITLE --&gt; CUSTOM
-
+        COMPARE --&gt; DANGER
+    
     classDef titleBox fill:#ecfdf5,stroke:#10b981,stroke-width:2px,color:#1f2937;
     classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
     classDef bothBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;

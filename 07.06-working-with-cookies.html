@@ -210,24 +210,24 @@ func readSignedCookie(w http.ResponseWriter, r *http.Request) {
     subgraph S1["Step 1: GET /form"]
         direction LR
         B1["Browser"] --&gt;|"GET /form"| SV1["Server"]
-        SV1 --&gt;|"Set-Cookie + HTML"| B1B["Browser<br/>Cookie: csrf_token=abc<br/>+ Hidden field: abc"]
+        SV1 --&gt;|"Set-Cookie + HTML"| B1B["BrowserCookie: csrf_token=abc+ Hidden field: abc"]
     end
 
     subgraph S2["Step 2: POST /form (submit)"]
         direction LR
-        B2["Browser<br/>Cookie: csrf_token=abc<br/>Header: X-CSRF-Token: abc"] --&gt;|"POST"| SV2["Server"]
+        B2["BrowserCookie: csrf_token=abcHeader: X-CSRF-Token: abc"] --&gt;|"POST"| SV2["Server"]
         SV2 --&gt; CMP["مقایسه: کوکی == هدر؟"]
         CMP --&gt;|"برابر"| OK["درخواست معتبر ✓"]
     end
 
     subgraph S3["Step 3: Attack — malicious site sends POST"]
         direction LR
-        EV["Evil Site"] --&gt;|"POST"| B3["Browser<br/>Cookie: csrf_token=abc<br/>NO X-CSRF-Token header!"]
+        EV["Evil Site"] --&gt;|"POST"| B3["BrowserCookie: csrf_token=abcNO X-CSRF-Token header!"]
         B3 --&gt; SV3["Server"]
         SV3 --&gt; REJ["هدر موجود نیست → رد شد ✗"]
     end
 
-    NOTE(["نکته: کوکی CSRF نباید HttpOnly باشد — جاوااسکریپت باید بتواند آن را بخواند و در هدر ارسال کند"])
+    NOTE([نکته: کوکی CSRF نباید HttpOnly باشد — جاوااسکریپت باید بتواند آن را بخواند و...])
 
     classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
     classDef neuBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
@@ -303,16 +303,16 @@ func csrfMiddleware(next http.Handler) http.Handler {
 <pre class="mermaid">flowchart TB
     subgraph REQ1["درخواست ۱: تنظیم کوکی (اولین)"]
         direction LR
-        A1["Browser<br/>(no cookie)"] --&gt;|"GET /login"| A2["Server<br/>http.SetCookie()"]
-        A2 --&gt;|"Set-Cookie:<br/>session=abc123;<br/>Secure; HttpOnly; SameSite=Lax"| A3["Browser<br/>stores cookie ✓"]
+        A1["Browser(no cookie)"] --&gt;|"GET /login"| A2["Serverhttp.SetCookie()"]
+        A2 --&gt;|"Set-Cookie:session=abc123;Secure; HttpOnly; SameSite=Lax"| A3["Browserstores cookie ✓"]
     end
 
-    CODE1["http.SetCookie(w, &amp;http.Cookie{Name: "session", Value: "abc123",<br/>Secure: true, HttpOnly: true, SameSite: http.SameSiteLaxMode})"]
+    CODE1["http.SetCookie(w, &amp;http.Cookie{Name: "session", Value: "abc123",Secure: true, HttpOnly: true, SameSite: http.SameSiteLaxMode})"]
 
     subgraph REQ2["درخواست ۲: خواندن کوکی (بعدی)"]
         direction LR
-        B1["Browser<br/>Cookie: session=abc123"] --&gt;|"GET /dashboard"| B2["Server<br/>r.Cookie("session")"]
-        B2 --&gt;|"200 OK"| B3["Dashboard<br/>content shown ✓"]
+        B1["BrowserCookie: session=abc123"] --&gt;|"GET /dashboard"| B2["Serverr.Cookie("session")"]
+        B2 --&gt;|"200 OK"| B3["Dashboardcontent shown ✓"]
         B2 -.-&gt;|"(optionally update cookie)"| B1
     end
 
@@ -354,12 +354,12 @@ func csrfMiddleware(next http.Handler) http.Handler {
         end
         subgraph BAD["ناامن: بدون Secure + HttpOnly + SameSite"]
             direction TB
-            BA1["کوکی روی HTTP ارسال می‌شود + document.cookie قابل دسترسی است + درخواست‌های بین‌سایتی شامل کوکی می‌شوند"]
+            BA1[کوکی روی HTTP ارسال می‌شود + document.cookie قابل دسترسی است + درخواست‌های...]
             BA2["→ XSS + CSRF + MITM ✗"]
         end
     end
 
-    GOLD(["قانون طلایی: همیشه Secure=true + HttpOnly=true + SameSite=Lax/Strict برای کوکی‌های نشست — هرگز داده حساس را بدون رمزنگاری در کوکی ذخیره نکنید"])
+    GOLD([قانون طلایی: همیشه Secure=true + HttpOnly=true + SameSite=Lax/Strict برای...])
 
     classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
     classDef neuBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;

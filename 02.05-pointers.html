@@ -79,7 +79,6 @@ fmt.Println(*p) // Output: 10
 </figure>
 <figure class="diagram" dir="ltr">
 <pre class="mermaid">flowchart LR
-    TITLE["نمودار وضعیت: var a int = 10, var p *int = &amp;a"]
 
     subgraph VAR["a (int)"]
         direction TB
@@ -87,10 +86,10 @@ fmt.Println(*p) // Output: 10
         A2["آدرس: 0xC0001"]
     end
 
-    P["p (*int)<br/>0xC0001"]
+    P["p (*int)0xC0001"]
 
     P -- "p = &amp;a" --&gt; A1
-    A1 -- "*p = 20<br/>مقدار a از طریق اشاره‌گر تغییر می‌کند" --&gt; P
+    A1 -- "*p = 20مقدار a از طریق اشاره‌گر تغییر می‌کند" --&gt; P
 
     classDef titleBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
     classDef varBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
@@ -134,15 +133,14 @@ if p != nil {
 </div>
 <figure class="diagram" dir="ltr">
 <pre class="mermaid">flowchart TB
-    TITLE["مقایسه حافظه: انواع مقداری در برابر انواع مرجع‌دار"]
 
     subgraph VALUE["انواع مقداری (Value Types)"]
         direction TB
-        V1["c1 (Config)<br/>Timeout: 30<br/>Retries: 3<br/>addr: 0xA001"]
-        V2["c2 (Config)<br/>Timeout: 30<br/>Retries: 3<br/>addr: 0xA050"]
+        V1["c1 (Config)Timeout: 30Retries: 3addr: 0xA001"]
+        V2["c2 (Config)Timeout: 30Retries: 3addr: 0xA050"]
         V3["کپی"]
-        V4["c2.Timeout = 60<br/>فقط c2 تغییر می‌کند، c1 دست‌نخورده می‌ماند"]
-        V5["c1.Timeout = 30 ✓<br/>c2.Timeout = 60"]
+        V4["c2.Timeout = 60فقط c2 تغییر می‌کند، c1 دست‌نخورده می‌ماند"]
+        V5["c1.Timeout = 30 ✓c2.Timeout = 60"]
         VNOTE["مستقل — هر کپی حافظه مجزا دارد"]
         V1 -- "copy" --&gt; V2
         V2 --&gt; V3 --&gt; V4 --&gt; V5 --&gt; VNOTE
@@ -150,19 +148,17 @@ if p != nil {
 
     subgraph REF["انواع مرجع‌دار (Reference Types)"]
         direction TB
-        R1["s1 (slice)<br/>ptr → 0xB100"]
-        R2["s2 (slice)<br/>ptr → 0xB100"]
-        R3["آرایه زیرین مشترک (0xB100)<br/>[1, 2, 3]"]
-        R4["s2[0] = 99<br/>هر دو متغیر تغییر را می‌بینند!"]
+        R1["s1 (slice)ptr → 0xB100"]
+        R2["s2 (slice)ptr → 0xB100"]
+        R3["آرایه زیرین مشترک (0xB100)[1, 2, 3]"]
+        R4["s2[0] = 99هر دو متغیر تغییر را می‌بینند!"]
         RNOTE["مشترک — هر دو به همان داده اشاره می‌کنند"]
         R1 --&gt; R3
         R2 --&gt; R3
         R3 --&gt; R4 --&gt; RNOTE
     end
 
-    TITLE --&gt; VALUE
-    TITLE --&gt; REF
-
+        
     classDef titleBox fill:#ecfdf5,stroke:#10b981,stroke-width:2px,color:#1f2937;
     classDef valueBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
     classDef refBox fill:#f5f0fb,stroke:#777BB4,stroke-width:1.5px,color:#1f2937;
@@ -365,7 +361,6 @@ func (b *BigData) Process() { // only 8 bytes copy
 </figure>
 <figure class="diagram" dir="ltr">
 <pre class="mermaid"><code>flowchart TB
-    TITLE["طرح حافظه: اشاره‌گر در برابر مقدار"]
 
     subgraph BYVAL["ارسال مقداری (by value)"]
         direction TB
@@ -391,10 +386,7 @@ func (b *BigData) Process() { // only 8 bytes copy
 
     RULE["قانون تجربی: struct زیر ۶۴ بایت → valueبالای ۶۴ بایت یا نیاز به تغییر → pointer"]
 
-    TITLE --&gt; BYVAL
-    TITLE --&gt; BYPTR
-    TITLE --&gt; RULE
-
+            
     classDef titleBox fill:#ecfdf5,stroke:#10b981,stroke-width:2px,color:#1f2937;
     classDef valueBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
     classDef ptrBox fill:#f5f0fb,stroke:#777BB4,stroke-width:1.5px,color:#1f2937;
@@ -507,44 +499,43 @@ person := Person{
  </p>
 <figure class="diagram" dir="ltr">
 <pre class="mermaid">flowchart TB
-    TITLE["آناتومی حافظه: Stack در برابر Heap — اشاره‌گرها و تحلیل فرار"]
 
     subgraph STACK["ناحیه‌ی Stack — تخصیص سریع و خودکار"]
         direction TB
         subgraph MAIN["func main()"]
             direction TB
-            M1["x int = 42<br/>addr: 0xA001"]
-            M2["p *int = &amp;x<br/>→ آدرس x"]
-            M3["s []int = {1,2,3}<br/>سرآیند روی stack"]
+            M1["x int = 42addr: 0xA001"]
+            M2["p *int = &amp;x→ آدرس x"]
+            M3["s []int = {1,2,3}سرآیند روی stack"]
         end
         subgraph PROC["func process(data *BigStruct)"]
             direction TB
-            PR1["data *BigStruct<br/>← اشاره به heap"]
-            PR2["local int = 7<br/>فقط stack ✓"]
+            PR1["data *BigStruct← اشاره به heap"]
+            PR2["local int = 7فقط stack ✓"]
         end
         subgraph CREAT["func createPtr() *Config"]
             direction TB
-            CR1["c Config{...}<br/>فرار به heap!"]
-            CR2["return &amp;c<br/>escapes to heap!"]
+            CR1["c Config{...}فرار به heap!"]
+            CR2["return &amp;cescapes to heap!"]
         end
-        STACKNOTE["تخصیص: O(1) فقط حرکت pointer<br/>آزادسازی: خودکار با خروج از تابع"]
+        STACKNOTE["تخصیص: O(1) فقط حرکت pointerآزادسازی: خودکار با خروج از تابع"]
     end
 
     subgraph HEAP["ناحیه‌ی Heap — تخصیص دینامیک و GC"]
         direction TB
-        H1["BigStruct @ 0xD001<br/>Records [10000]Record | Meta Metadata<br/>≈ 1 MB allocation — large struct"]
-        H2["Config @ 0xD200 (escaped!)<br/>Timeout: 30 | Retries: 3<br/>دلیل فرار: return &amp;c"]
-        H3["[]int backing array @ 0xD300<br/>[1, 2, 3]<br/>سرآیند روی stack، داده روی heap"]
-        H4["int @ 0xD400 (fmt.Println escape)<br/>value: 42 — escaped via interface{}<br/>دلیل فرار: ارسال به fmt.Println(interface{})"]
-        H5["counter int @ 0xD500 (closure escape)<br/>captured by func() int { counter++; return counter }<br/>دلیل فرار: ضبط در closure"]
-        HEAPNOTE["تخصیص: پرهزینه<br/>آزادسازی: GC mark &amp; sweep • خطر pause"]
+        H1[BigStruct @ 0xD001Records [10000]Record | Meta Metadata≈ 1 MB allocation —...]
+        H2["Config @ 0xD200 (escaped!)Timeout: 30 | Retries: 3دلیل فرار: return &amp;c"]
+        H3["[]int backing array @ 0xD300[1, 2, 3]سرآیند روی stack، داده روی heap"]
+        H4[int @ 0xD400 (fmt.Println escape)value: 42 — escaped via interface{}دلیل...]
+        H5[counter int @ 0xD500 (closure escape)captured by func() int { counter++;...]
+        HEAPNOTE["تخصیص: پرهزینهآزادسازی: GC mark &amp; sweep • خطر pause"]
     end
 
     subgraph PTR["آناتومی اشاره‌گر: آدرس حافظه → مقدار"]
         direction LR
         P1["p *int = &amp;x"]
-        P2["→ p stores: 0xA001<br/>آدرس حافظه"]
-        P3["→ *p<br/>value: 42<br/>مقدار واقعی"]
+        P2["→ p stores: 0xA001آدرس حافظه"]
+        P3["→ *pvalue: 42مقدار واقعی"]
         P1 --&gt; P2 --&gt; P3
         PTRNOTE["&amp;x → address | *p → deref"]
     end
@@ -560,20 +551,14 @@ person := Person{
 
     subgraph CMP["مقایسه با PHP"]
         direction TB
-        PH["PHP: همه‌چیز روی Heap • Reference Counting • Copy-on-Write<br/>هر zval شمارنده‌ی ارجاع دارد — overhead بالا"]
-        GO["Go: اولویت Stack • Escape Analysis خودکار • GC بدون شمارش<br/>متغیرهای محلی رایگان — فقط فرارکنندگان GC دارند"]
+        PH[PHP: همه‌چیز روی Heap • Reference Counting • Copy-on-Writeهر zval شمارنده‌ی...]
+        GO[Go: اولویت Stack • Escape Analysis خودکار • GC بدون شمارشمتغیرهای محلی...]
     end
 
-    GOLD["قانون طلایی: متغیرها پیش‌فرض روی Stack هستند<br/>فقط وقتی ضروری است به Heap فرار می‌کنند<br/>با go build -gcflags="-m" بررسی کنید"]
+    GOLD["قانون طلایی: متغیرها پیش‌فرض روی Stack هستندفقط وقتی ضروری است به Heap فرار می‌کنندبا go build -gcflags="-m" بررسی کنید"]
 
-    TITLE --&gt; STACK
-    TITLE --&gt; HEAP
-    STACK -- "*BigStruct ptr<br/>escape: return &amp;c" --&gt; HEAP
-    TITLE --&gt; PTR
-    TITLE --&gt; ESCAPE
-    TITLE --&gt; CMP
-    TITLE --&gt; GOLD
-
+            STACK -- "*BigStruct ptrescape: return &amp;c" --&gt; HEAP
+                
     classDef titleBox fill:#ecfdf5,stroke:#10b981,stroke-width:2px,color:#1f2937;
     classDef stackBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
     classDef heapBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;

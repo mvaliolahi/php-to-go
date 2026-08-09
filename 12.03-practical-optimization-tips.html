@@ -70,16 +70,15 @@
 </div>
 <figure class="diagram" dir="ltr">
 <pre class="mermaid">flowchart TB
-    TITLE["تکنیک‌های کاهش تخصیص حافظه در Go"]
 
     subgraph TECH["تکنیک‌ها"]
         direction TB
-        T1["پیش‌تخصیص Slice<br/>make([]T, 0, n)<br/>جلوگیری از reallocation و کپی مکرر داده"]
-        T2["پیش‌تخصیص Map<br/>make(map[K]V, hint)<br/>کاهش resize bucket در map بزرگ"]
-        T3["strings.Builder<br/>sb.Grow(n)<br/>به جای + در حلقه — ۱ allocation نهایی"]
-        T4["تبدیل []byte ↔ string<br/>هر تبدیل = allocation جدید<br/>از conversion اجتناب کنید، مخصوصاً در hot path"]
-        T5["مدیریت Goroutine<br/>context + WaitGroup<br/>goroutine leak = نشت حافظه — همیشه عمر را کنترل کنید"]
-        T6["defer با احتیاط<br/>در حلقه‌های پرتکرار از defer استفاده نکنید<br/>مستقیماً پاک‌سازی کنید"]
+        T1["پیش‌تخصیص Slicemake([]T, 0, n)جلوگیری از reallocation و کپی مکرر داده"]
+        T2["پیش‌تخصیص Mapmake(map[K]V, hint)کاهش resize bucket در map بزرگ"]
+        T3["strings.Buildersb.Grow(n)به جای + در حلقه — ۱ allocation نهایی"]
+        T4[تبدیل []byte ↔ stringهر تبدیل = allocation جدیداز conversion اجتناب کنید،...]
+        T5[مدیریت Goroutinecontext + WaitGroupgoroutine leak = نشت حافظه — همیشه عمر را...]
+        T6["defer با احتیاطدر حلقه‌های پرتکرار از defer استفاده نکنیدمستقیماً پاک‌سازی کنید"]
     end
 
     subgraph MIST["اشتباهات رایج در بهینه‌سازی"]
@@ -89,8 +88,7 @@
         M3["۳. استفاده بیش از حد از pointer و افزایش فشار GC"]
     end
 
-    TITLE --&gt; TECH
-    TECH --&gt; MIST
+        TECH --&gt; MIST
 
     classDef titleBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
     classDef techBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
@@ -307,19 +305,18 @@ $ go build -gcflags="-m" ./...
 <p>یکی از مهم‌ترین تصمیمات عملکردی در Go، انتخاب روش مناسب برای ترکیب رشته‌هاست. تفاوت بین روش‌های مختلف الحاق رشته می‌تواند چندین مرتبه‌ای باشد و تأثیر مستقیمی بر latency و مصرف حافظه‌ی برنامه داشته باشد. در نمودار زیر، پنج روش رایج الحاق رشته بر اساس زمان اجرای نسبی مقایسه شده‌اند. </p><p>روش‌هایی با پیچیدگی <bdi dir="ltr">O(n²)</bdi> عملکرد بسیار ضعیف‌تری نسبت به روش‌های <bdi dir="ltr">O(n)</bdi> دارند و این تفاوت با افزایش تعداد الحاق‌ها به‌صورت نمایی رشد می‌کند.</p>
 <figure class="diagram" dir="ltr">
 <pre class="mermaid">flowchart LR
-    TITLE["مقایسه عملکرد روش‌های الحاق رشته در Go (مقیاس لگاریتمی — بنچمارک: ۱۰۰۰ الحاق × ۱۰ کاراکتر)"]
 
     subgraph SLOW["ناکارآمد (O(n²))"]
         direction TB
-        A1["+ =<br/>~500μs<br/>~۲۰۰۰ alloc"]
-        A2["fmt.Sprintf<br/>~350μs<br/>~۱۵۰۰ alloc"]
+        A1["+ =~500μs~۲۰۰۰ alloc"]
+        A2["fmt.Sprintf~350μs~۱۵۰۰ alloc"]
     end
 
     subgraph FAST["کارآمد (O(n))"]
         direction TB
-        B1["strings.Join<br/>~15μs<br/>~۱ alloc"]
-        B2["bytes.Buffer<br/>~5μs<br/>~۱ alloc"]
-        B3["strings.Builder ★<br/>~1.5μs<br/>~۱ alloc<br/>×۳۳۳ سریع‌تر"]
+        B1["strings.Join~15μs~۱ alloc"]
+        B2["bytes.Buffer~5μs~۱ alloc"]
+        B3["strings.Builder ★~1.5μs~۱ alloc×۳۳۳ سریع‌تر"]
     end
 
     subgraph WHY["چرا این تفاوت؟"]
@@ -328,14 +325,14 @@ $ go build -gcflags="-m" ./...
         W2["▪ fmt.Sprintf overhead پارس دارد"]
         W3["▪ strings.Join یک‌بار join می‌کند"]
         W4["▪ bytes.Buffer بافر داخلی دارد"]
-        W5["▪ strings.Builder بهینه‌ترین<br/>Grow() → ۱ allocation<br/>String() → بدون کپی اضافی"]
+        W5["▪ strings.Builder بهینه‌ترینGrow() → ۱ allocationString() → بدون کپی اضافی"]
     end
 
     subgraph CODE["الگوی idiom (strings.Builder)"]
         direction TB
         C1["var b strings.Builder"]
         C2["b.Grow(totalSize)"]
-        C3["for _, s := range parts {<br/>    b.WriteString(s)<br/>}"]
+        C3["for _, s := range parts {    b.WriteString(s)}"]
         C4["return b.String()"]
         C5["✓ ۱ allocation، بدون کپی اضافی"]
         C1 --&gt; C2 --&gt; C3 --&gt; C4 --&gt; C5
@@ -343,14 +340,12 @@ $ go build -gcflags="-m" ./...
 
     subgraph RULE["قانون طلایی"]
         direction TB
-        R1["⚡ در حلقه‌های الحاق رشته، همیشه از strings.Builder با Grow() استفاده کنید. برای قالب‌بندی یکباره، fmt.Sprintf مناسب‌تر است."]
-        R2["⚠ هرگز از عملگر += برای الحاق مکرر رشته‌ها در حلقه استفاده نکنید — پیچیدگی O(n²) دارد."]
+        R1[⚡ در حلقه‌های الحاق رشته، همیشه از strings.Builder با Grow() استفاده کنید....]
+        R2[⚠ هرگز از عملگر += برای الحاق مکرر رشته‌ها در حلقه استفاده نکنید — پیچیدگی...]
         R3["بنچمارک: Go 1.22 / amd64"]
     end
 
-    TITLE --&gt; SLOW
-    TITLE --&gt; FAST
-    SLOW --&gt; WHY
+            SLOW --&gt; WHY
     FAST --&gt; CODE
     WHY --&gt; RULE
     CODE --&gt; RULE

@@ -179,7 +179,7 @@ var funcs = template.FuncMap{
         L2["template.Must(template.ParseFS(embedFS, "templates/*.html", "templates/**/*.html"))"]
     end
 
-    BASE["base.html<br/>{{ template "header" }} {{ block "content" }} {{ template "footer" }}"]
+    BASE["base.html{{ template "header" }} {{ block "content" }} {{ template "footer" }}"]
     BASE --&gt; H["header.html"]
     BASE --&gt; C["content (varies)"]
     BASE --&gt; F["footer.html"]
@@ -192,7 +192,7 @@ var funcs = template.FuncMap{
 
     NOTE1(["ترتیب بارگذاری مهم نیست — ParseGlob همه {{ define }}ها را جمع‌آوری می‌کند"])
     NOTE2(["اما ترتیب رندر مهم است: ExecuteTemplate(w, "base.html", data) — نه نام قالب محتوا"])
-    GOLD(["قاعده‌ی طلایی: همه قالب‌ها را یکجا Parse کنید و هرگز قالب تکی را در هر درخواست Parse نکنید"])
+    GOLD([قاعده‌ی طلایی: همه قالب‌ها را یکجا Parse کنید و هرگز قالب تکی را در هر...])
 
     classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
     classDef neuBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;

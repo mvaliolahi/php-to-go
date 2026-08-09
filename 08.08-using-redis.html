@@ -109,9 +109,9 @@
 
     subgraph STACK["سه لایه"]
         direction TB
-        Go["Go App<br/>go-redis client"]
-        Redis["Redis<br/>In-Memory Cache"]
-        DB["Database<br/>PostgreSQL / MySQL"]
+        Go["Go Appgo-redis client"]
+        Redis["RedisIn-Memory Cache"]
+        DB["DatabasePostgreSQL / MySQL"]
         Go -- "rdb.Get()" --&gt; Redis
         Redis -- "MISS → Query" --&gt; DB
     end
@@ -131,7 +131,7 @@
     end
 
     Compare["مقایسه سرعت: Redis ~۱میلی‌ثانیه • DB ~۱۰-۱۰۰میلی‌ثانیه — کشینگ تا ۱۰۰× سریع‌تر"]
-    Note["الگوی Cache-Aside: ابتدا کش بررسی شود، در صورت نبود از دیتابیس خوانده و در کش ذخیره شود"]
+    Note[الگوی Cache-Aside: ابتدا کش بررسی شود، در صورت نبود از دیتابیس خوانده و در...]
 
     Title --&gt; STACK
     STACK --&gt; HIT

@@ -419,19 +419,19 @@ func readUsersCSV(path string) ([]User, error) {
 <pre class="mermaid">flowchart TB
     subgraph HEADER["خط لوله توکنایزیشن bufio.Scanner"]
         direction LR
-        R["جریان ورودی<br/>io.Reader<br/>فایل / شبکه / هر منبع"]
+        R["جریان ورودیio.Readerفایل / شبکه / هر منبع"]
         R --&gt; READ["Read()"]
-        READ --&gt; BUF["Internal Buffer<br/>اندازه اولیه: ۶۴KB<br/>MaxTokenLength = 65536<br/>قابل افزایش با scanner.Buffer()"]
-        BUF --&gt; SPLIT["تقسیم<br/>SplitFunc<br/>توکنایزر قابل تعویض<br/>→ advance, token, err<br/>ScanLines | ScanWords | custom"]
-        SPLIT --&gt; TOK["Token<br/>[]byte<br/>scanner.Text()"]
+        READ --&gt; BUF[Internal Bufferاندازه اولیه: ۶۴KBMaxTokenLength = 65536قابل افزایش با...]
+        BUF --&gt; SPLIT[تقسیمSplitFuncتوکنایزر قابل تعویض→ advance, token, errScanLines | ScanWords...]
+        SPLIT --&gt; TOK["Token[]bytescanner.Text()"]
     end
 
     subgraph SPLITS["توابع Split داخلی و سفارشی"]
         direction TB
-        SP1["ScanLines<br/>تقسیم بر اساس \n یا \r\n<br/>پیش‌فرض Scanner — حذف انتهای خط"]
-        SP2["ScanWords<br/>تقسیم بر اساس فاصله<br/>هر توکن = یک کلمه"]
-        SP3["ScanBytes<br/>هر بایت یک توکن<br/>معادل خواندن بایت‌به‌بایت"]
-        SP4["Custom SplitFunc<br/>جداکننده دلخواه (کاما، pipe، ...)<br/>func(data, atEOF) → adv, tok, err"]
+        SP1["ScanLinesتقسیم بر اساس \n یا \r\nپیش‌فرض Scanner — حذف انتهای خط"]
+        SP2["ScanWordsتقسیم بر اساس فاصلههر توکن = یک کلمه"]
+        SP3["ScanBytesهر بایت یک توکنمعادل خواندن بایت‌به‌بایت"]
+        SP4[Custom SplitFuncجداکننده دلخواه (کاما، pipe، ...)func(data, atEOF) → adv,...]
     end
 
     subgraph MEMVIEW["بافر داخلی Scanner — نمایی از حافظه"]
@@ -448,8 +448,8 @@ func readUsersCSV(path string) ([]User, error) {
 
     subgraph EXEC["جریان اجرای SplitFunc سفارشی"]
         direction TB
-        E1["data []byte<br/>داده خوانده‌شده از بافر"]
-        E1 --&gt; E2["SplitFunc(data, atEOF)<br/>پیدا کردن مرز توکن بعدی"]
+        E1["data []byteداده خوانده‌شده از بافر"]
+        E1 --&gt; E2["SplitFunc(data, atEOF)پیدا کردن مرز توکن بعدی"]
         E2 --&gt; E3["advance — تعداد بایت جلو"]
         E2 --&gt; E4["token — محتوای توکن"]
         E2 --&gt; E5["err — خطا یا nil"]
@@ -471,7 +471,7 @@ func readUsersCSV(path string) ([]User, error) {
         PC3["Go: Scanner → streaming + tokenization ✓"]
     end
 
-    note(["قانون طلایی: اگر خطای «token too long» گرفتید، بافر Scanner را افزایش دهید: scanner.Buffer(make([]byte, 64*1024), 1024*1024)"])
+    note([قانون طلایی: اگر خطای «token too long» گرفتید، بافر Scanner را افزایش دهید:...])
 
     classDef hdrBox  fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937,font-weight:bold;
     classDef opBox   fill:#e6f9fc,stroke:#00ADD8,stroke-width:1px,color:#1f2937;

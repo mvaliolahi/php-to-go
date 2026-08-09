@@ -78,15 +78,15 @@
 <pre class="mermaid">flowchart TB
     subgraph TOPIC["موضوعات فصل ۶: تعامل با دنیای بیرون"]
         direction TB
-        F["فایل‌ها<br/>os, bufio, embed"] --&gt; IO
-        J["JSON / YAML<br/>encoding/json"] --&gt; IO
-        S["سیگنال‌ها<br/>os/signal"] --&gt; IO
+        F["فایل‌هاos, bufio, embed"] --&gt; IO
+        J["JSON / YAMLencoding/json"] --&gt; IO
+        S["سیگنال‌هاos/signal"] --&gt; IO
     end
-    IO["io.Reader / io.Writer<br/>قلب تپنده‌ی تمام عملیات I/O در Go"]
-    IO --&gt; O1["خواندن خط‌به‌خط<br/>//go:embed"]
-    IO --&gt; O2["نوشتن اتمیک<br/>Graceful Shutdown"]
+    IO["io.Reader / io.Writerقلب تپنده‌ی تمام عملیات I/O در Go"]
+    IO --&gt; O1["خواندن خط‌به‌خط//go:embed"]
+    IO --&gt; O2["نوشتن اتمیکGraceful Shutdown"]
     note1(["PHP: file_get_contents, json_encode → Go: io.Reader, json.Marshal, embed.FS"])
-    note2(["ذهنیت کلیدی: هر منبع I/O در Go فقط یک Reader یا Writer است — فایل، شبکه، حافظه فرقی نمی‌کند"])
+    note2([ذهنیت کلیدی: هر منبع I/O در Go فقط یک Reader یا Writer است — فایل، شبکه،...])
     TOPIC ~~~ note1
     TOPIC ~~~ note2
 

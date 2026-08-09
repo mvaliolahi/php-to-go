@@ -509,7 +509,7 @@ func NewMailer(config Config) *smtp.Mailer {
         IF2["Notifier, io.Reader, etc."]
     end
 
-    ITAB["itab (cached per interface+type pair)<br/>inter *interfacetype | _type *_type | fun [1]uintptr"]
+    ITAB[itab (cached per interface+type pair)inter *interfacetype | _type *_type |...]
     NOTE(["ذخیره‌شده در کش عمومی — فقط یک‌بار ساخته می‌شود"])
 
     title ~~~ EFACE
@@ -536,31 +536,31 @@ func NewMailer(config Config) *smtp.Mailer {
 <pre class="mermaid">flowchart TB
     title(["ساختار داخلی Interface: iface و itab"])
 
-    IFACE["iface (non-empty interface value)<br/>tab *itab | data unsafe.Pointer"]
-    ITAB["itab (cached per interface+type pair)<br/>inter *interfacetype → type of interface (io.Writer)<br/>_type *_type → concrete type (*bufio.Writer)<br/>fun [N]uintptr → method function pointers<br/>hash uint32 → for fast type switch lookup"]
-    FUN["fun[0] = &amp;bufio.Writer.Write<br/>fun[1] = &amp;bufio.Writer.Read<br/>... (if more methods)"]
-    DATA["data → &amp;bufio.Writer{...}<br/>actual value in heap"]
+    IFACE["iface (non-empty interface value)tab *itab | data unsafe.Pointer"]
+    ITAB[itab (cached per interface+type pair)inter *interfacetype → type of...]
+    FUN["fun[0] = &amp;bufio.Writer.Writefun[1] = &amp;bufio.Writer.Read... (if more methods)"]
+    DATA["data → &amp;bufio.Writer{...}actual value in heap"]
     IFACE --&gt; ITAB
     IFACE --&gt; DATA
     ITAB --&gt; FUN
 
-    EFACE["eface (empty interface / any)<br/>_type *_type | data unsafe.Pointer"]
+    EFACE["eface (empty interface / any)_type *_type | data unsafe.Pointer"]
 
     subgraph NILCASES["سه حالت nil در Interface"]
         direction LR
-        NC1["Case 1: nil interface<br/>tab/itab = nil<br/>data = nil<br/>w == nil → true ✓<br/>var w io.Writer"]
-        NC2["Case 2: typed nil ← PITFALL!<br/>tab/itab = &amp;itab{io.Writer, *User, ...}<br/>data = nil<br/>w == nil → false ✗ (type is non-nil!)<br/>var u *User = nil; w = u"]
-        NC3["Case 3: non-nil interface<br/>tab/itab = &amp;itab{io.Writer, *User}<br/>data = &amp;User{Name: "Ali"}<br/>w == nil → false<br/>w = &amp;User{Name: "Ali"}"]
+        NC1["Case 1: nil interfacetab/itab = nildata = nilw == nil → true ✓var w io.Writer"]
+        NC2[Case 2: typed nil ← PITFALL!tab/itab = &amp;itab{io.Writer, *User, ...}data =...]
+        NC3["Case 3: non-nil interfacetab/itab = &amp;itab{io.Writer, *User}data = &amp;User{Name: "Ali"}w == nil → falsew = &amp;User{Name: "Ali"}"]
     end
 
     subgraph EXAMPLE["Example: var w io.Writer = &amp;bufio.Writer{}"]
         direction TB
-        EX1["w.tab → itab{ inter: io.Writer, _type: *bufio.Writer, fun[0]: &amp;bufio.Writer.Write }"]
+        EX1[w.tab → itab{ inter: io.Writer, _type: *bufio.Writer, fun[0]:...]
         EX2["w.data → heap pointer to bufio.Writer instance"]
         EX3["Calling w.Write(p) → itab.fun[0](w.data, p) → fast indirect call via cached itab"]
     end
 
-    note(["فراخوانی متد از طریق itab.fun[] — فقط یک indirection اضافی نسبت به فراخوانی مستقیم"])
+    note([فراخوانی متد از طریق itab.fun[] — فقط یک indirection اضافی نسبت به فراخوانی...])
 
     title ~~~ IFACE
     EFACE ~~~ NILCASES

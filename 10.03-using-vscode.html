@@ -449,25 +449,25 @@ $ docker compose -f docker-compose.debug.yml up
 <pre class="mermaid">flowchart TB
     subgraph HEADER["نقشه ویژگی‌های VS Code Go و جریان پیکربندی دیباگ"]
         direction TB
-        ROOT["VS Code + Go Extension<br/>ویرایشگر + افزونه Go"]
-        ROOT --&gt; F1["Go to Definition<br/>F12"]
-        ROOT --&gt; F2["Find References<br/>Shift+F12"]
-        ROOT --&gt; F3["Rename Symbol<br/>F2"]
-        ROOT --&gt; F4["Code Completion<br/>IntelliSense"]
-        ROOT --&gt; F5["Diagnostics<br/>خطاهای لحظه‌ای"]
-        ROOT --&gt; F6["Debug (F5)<br/>با launch.json"]
+        ROOT["VS Code + Go Extensionویرایشگر + افزونه Go"]
+        ROOT --&gt; F1["Go to DefinitionF12"]
+        ROOT --&gt; F2["Find ReferencesShift+F12"]
+        ROOT --&gt; F3["Rename SymbolF2"]
+        ROOT --&gt; F4["Code CompletionIntelliSense"]
+        ROOT --&gt; F5["Diagnosticsخطاهای لحظه‌ای"]
+        ROOT --&gt; F6["Debug (F5)با launch.json"]
     end
 
     subgraph FLOW["جریان پیکربندی دیباگ: launch.json ← پیکربندی ← F5 ← Breakpoint ← Debug Toolbar"]
         direction LR
-        S1["launch.json<br/>.vscode/launch.json"]
-        S2["پیکربندی<br/>program, args, env<br/>mode, buildFlags"]
-        S3["F5 → Debug<br/>dlv-dap starts<br/>Compile -N -l"]
-        S4["Breakpoint Hit<br/>متوقف در خط<br/>بازرسی متغیرها"]
+        S1["launch.json.vscode/launch.json"]
+        S2["پیکربندیprogram, args, envmode, buildFlags"]
+        S3["F5 → Debugdlv-dap startsCompile -N -l"]
+        S4["Breakpoint Hitمتوقف در خطبازرسی متغیرها"]
         S1 --&gt; S2 --&gt; S3 --&gt; S4
     end
 
-    subgraph TOOLBAR["Debug Toolbar: ▶ Continue | ⏭ Step Over | ⬇ Step Into | ⬆ Step Out | ⏹ Stop | 🔄 Restart"]
+    subgraph TOOLBAR[Debug Toolbar: ▶ Continue | ⏭ Step Over | ⬇ Step Into | ⬆ Step Out | ⏹ Stop...]
         direction TB
         KB["F9=Continue  F10=Step Over  F11=Step Into  Shift+F11=Step Out  Shift+F5=Stop"]
         PANELS["پنل‌ها: Variables | Watch | Call Stack | Breakpoints | Goroutines"]
@@ -489,7 +489,7 @@ $ docker compose -f docker-compose.debug.yml up
         end
     end
 
-    note1(["ℹ️ VS Code برای توسعه Go پیشنهاد رسمی تیم Go است — افزونه golang.go توسط Google توسعه داده می‌شود"])
+    note1([ℹ️ VS Code برای توسعه Go پیشنهاد رسمی تیم Go است — افزونه golang.go توسط...])
     note2(["قانون طلایی: launch.json درست پیکربندی کنید — console: "integratedTerminal" برای stdin، remotePath برای Docker"])
 
     classDef rootBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937,font-weight:bold;

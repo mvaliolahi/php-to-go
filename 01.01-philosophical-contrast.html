@@ -74,21 +74,8 @@
 <p>به همین خاطر بسیاری از ویژگی‌های رایج در زبان‌های مدرن مثل <strong>ارث‌بری شیءگرا</strong>، <strong dir="ltr">Overloading</strong> توابع، <strong dir="ltr">Exception</strong> ‌ها و حتی <strong dir="ltr">Generic</strong> ‌ها، در نسخه‌های اولیه Go عمداً کنار گذاشته شدند. </p><p>حذف‌ این امکانات نشانه کمبود یا ضعف نبودند بلکه انتخابی آگاهانه برای رسیدن به سه اصل کلیدی <strong>خوانایی، صراحت، و رفتار قابل پیش‌بینی</strong> بود.</p>
 <p>این رویکرد ممکن است برای یک توسعه‌دهنده PHP غیرمنطقی به نظر برسد " <strong>چطور بدون ارث‌بری</strong> ؟! <strong>بدون</strong> <strong dir="ltr">Exception</strong> ؟!" اما Go با این تصمیم‌ها مسیر دیگری را دنبال می‌کند مسیری که هدفش تولید کدی است که حتی سال‌ها بعد بدون نیاز به تفسیرهای پیچیده همچنان واضح و قابل اعتماد باقی بماند.</p>
 <p>این تفاوت‌ها فقط به فلسفه طراحی محدود نمی‌شود بلکه <strong>مدل اجرایی</strong> این دو زبان هم بازتابی از جهان‌بینی متفاوتشان است. در <strong dir="ltr">PHP</strong> هر بار که یک درخواست به سرور می‌رسد مفسر PHP از ابتدا وارد عمل می‌شود. </p><p>کد را اجرا می‌کند داده‌ها را پردازش می‌کند و در نهایت خروجی را به‌صورت HTML از طریق وب‌سرور برای کاربر می‌فرستد. </p><p>این چرخه کوتاه و مستقل برای اپلیکیشن‌های <strong dir="ltr">Stateless</strong> بسیار ایده‌آل است اما در پردازش‌های طولانی یا سنگین به سرعت به محدودیت‌هایی می‌رسد. </p><p>به همین علت تقریباً در هر پروژه PHP با ابزارهای جانبی مانند <strong dir="ltr">Queue</strong> ‌ها، <strong dir="ltr">Cache Server</strong> ‌ها روبه‌رو هستیم تا فشار را از لایه PHP برداریم.</p>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart LR
-    subgraph PHP["PHP — هر درخواست = فرآیند جدید"]
-        direction LR
-        B1["مرورگر"] --&gt; N1["Nginx"] --&gt; F1["PHP-FPM"] --&gt; R1["Response"]
-    end
-    subgraph GO["Go — process واحد، درخواست‌های هم‌زمان"]
-        direction LR
-        B2["مرورگر"] --&gt; S2["HTTP Server<br/>(باینری مستقل)"] --&gt; G2["Goroutines"] --&gt; R2["Response"]
-    end
-
-    classDef phpBox fill:#f5f0fb,stroke:#777BB4,stroke-width:1.5px,color:#1f2937;
-    classDef goBox  fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    class PHP phpBox;
-    class GO goBox;</pre>
+<figure class="diagram d2-diagram" dir="ltr">
+<img alt="نمودار" loading="lazy" src="assets/diagrams/ch01_01_php_vs_go_execution.svg"/>
 <figcaption>شکل ۱-۱: نحوه‌ی تعامل کاربر با برنامه <bdi dir="ltr">Go</bdi> و <bdi dir="ltr">PHP</bdi></figcaption>
 </figure>
 <p>خروجی یک برنامه Go یک <strong>فایل باینری مستقل</strong> است که بدون نیاز به وب‌سرور یا لایه‌های واسط مستقیماً اجرا می‌شود. این کار یعنی بدون درگیری با پیچیدگی‌های PHP-FPM یا تنظیمات Nginx به‌طور دقیق همان چیزی را که ساخته‌اید اجرا می‌کنید.</p>
@@ -213,29 +200,9 @@ func GetFromCache(key string) (string, bool) {
 </div>
 <h3 id="مقایسه‌ی-زمان-حیات-درخواست">1.1.5 مقایسه‌ی زمان حیات درخواست: PHP-FPM در برابر Go</h3>
 <p>تفاوت عملکرد ریشه در مدل اجرایی دارد. نمودار زیر چرخه‌ی حیات کامل یک درخواست <bdi dir="ltr">HTTP</bdi> را در هر دو زبان نشان می‌دهد:</p>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-    subgraph PHP["چرخه‌ی حیات درخواست PHP-FPM"]
-        direction LR
-        B1["Browser"] --&gt; N1["Nginx"] --&gt; F1["PHP-FPM"] --&gt; O1["OPcache"] --&gt; Z1["Zend VM"] --&gt; R1["Response"]
-    end
-    note1(["هر درخواست: state جدید + اتصال دیتابیس جدید + اجرای opcode + آزادسازی منابع<br/>overhead: ۴ لایه‌ی واسط + ایجاد/آزادسازی فرآیند"])
-    PHP ~~~ note1
-
-    subgraph GO["چرخه‌ی حیات درخواست Go"]
-        direction LR
-        B2["Browser"] --&gt; S2["Go HTTP Server<br/>(binary)"] --&gt; G2["Goroutine"] --&gt; H2["Handler"] --&gt; R2["Response"]
-    end
-    note2(["فرآیند دائمی: connection pool + کش درون‌حافظه‌ای + goroutine سبک (۲KB)<br/>مزیت: بدون واسطه + حفظ state + pooling بومی"])
-    GO ~~~ note2
-
-    classDef phpBox fill:#f5f0fb,stroke:#777BB4,stroke-width:1.5px,color:#1f2937;
-    classDef goBox  fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef noteBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1px,color:#1f2937,font-style:italic;
-    class PHP phpBox;
-    class GO goBox;
-    class note1,note2 noteBox;</pre>
-<figcaption>شکل ۱-۱-الف: چرخه‌ی حیات کامل درخواست در <bdi dir="ltr">PHP-FPM</bdi> و <bdi dir="ltr">Go</bdi></figcaption>
+<figure class="diagram d2-diagram" dir="ltr">
+<img alt="نمودار" loading="lazy" src="assets/diagrams/ch01_01_request_lifecycle.svg"/>
+<figcaption>شکل ۱-۱-الف: چرخه‌ی حیات کامل درخواست درPHP-FPMوGo</figcaption>
 </figure>
 <h3 id="مقایسه‌ی-دیکلری-کانتینر">1.1.6 مقایسه‌ی دیپلوی کانتینری: PHP در برابر Go</h3>
 <p>در دنیای <bdi dir="ltr">Docker</bdi> و <bdi dir="ltr">Kubernetes</bdi>، اندازه‌ی <bdi dir="ltr">image</bdi> و زمان شروع کانتینر اهمیت بالایی دارد. تفاوت بین دیپلوی <bdi dir="ltr">PHP</bdi> و <bdi dir="ltr">Go</bdi> در محیط کانتینری قابل‌توجه است:</p>
@@ -332,7 +299,7 @@ ENTRYPOINT ["/server"]
         G8["Defer / Multiple Returns"]
     end
     PHPO ~~~ BOTH ~~~ GOO
-    note(["💡 نکته‌ی کلیدی: مهارت‌های مشترک قابل انتقال هستند — اما مدل ذهنی هر زبان متفاوت است.<br/>قانون طلایی: ذهنیت PHP «فریم‌ورک بقیه‌اش را انجام می‌دهد» ← ذهنیت Go «همه‌چیز را صریح بنویس»."])
+    note([💡 نکته‌ی کلیدی: مهارت‌های مشترک قابل انتقال هستند — اما مدل ذهنی هر زبان...])
 
     classDef phpBox fill:#f5f0fb,stroke:#777BB4,stroke-width:1.5px,color:#1f2937;
     classDef goBox  fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;

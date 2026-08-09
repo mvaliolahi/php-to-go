@@ -294,13 +294,13 @@ go func() {
 <pre class="mermaid">flowchart TB
     subgraph OK["مسیر موفق — ماشین وضعیت شمارنده"]
         direction TB
-        S0["counter=0<br/>وضعیت اولیه"]
-        SA["Add(3)<br/>counter=3"]
-        S1["G1: Done()<br/>counter=2"]
-        S2["G2: Done()<br/>counter=1"]
-        S3["G3: Done()<br/>counter=0"]
-        SW["Wait()<br/>آزاد شد! ✓"]
-        SWB["Wait() در حال بلاک —<br/>منتظر صفر شدن شمارنده"]
+        S0["counter=0وضعیت اولیه"]
+        SA["Add(3)counter=3"]
+        S1["G1: Done()counter=2"]
+        S2["G2: Done()counter=1"]
+        S3["G3: Done()counter=0"]
+        SW["Wait()آزاد شد! ✓"]
+        SWB["Wait() در حال بلاک —منتظر صفر شدن شمارنده"]
         S0 -- "Add(3)" --&gt; SA
         SA -- "G1: Done()" --&gt; S1
         S1 -- "G2: Done()" --&gt; S2
@@ -320,7 +320,7 @@ go func() {
 
     subgraph ERR["حالت خطا: عدم تطابق Add و Done"]
         direction TB
-        E1["Add(2) → Done() → Done() → Done()<br/>counter: 2 → 1 → 0 → -1 = PANIC!"]
+        E1["Add(2) → Done() → Done() → Done()counter: 2 → 1 → 0 → -1 = PANIC!"]
         E2["wg.Add(2)       // counter = 2"]
         E3["wg.Done()       // counter = 1"]
         E4["wg.Done()       // counter = 0"]
@@ -333,13 +333,13 @@ go func() {
         R1["Add() شمارنده را افزایش می‌دهد — قبل از go فراخوانی شود"]
         R2["Done() شمارنده را کاهش می‌دهد — با defer فراخوانی شود"]
         R3["Wait() تا صفر شدن بلاک می‌شود — صفر شد → آزاد می‌شود"]
-        R4["شمارنده منفی → panic:<br/>sync: WaitGroup is reused before previous Wait has returned"]
+        R4["شمارنده منفی → panic:sync: WaitGroup is reused before previous Wait has returned"]
         R5["همیشه تعداد Add و Done باید برابر باشند — از defer wg.Done() استفاده کنید"]
         R1 --&gt; R2 --&gt; R3 --&gt; R4 --&gt; R5
     end
 
-    GOLD["قانون طلایی: Add() قبل از go، defer Done() داخل goroutine،<br/>و هرگز شمارنده منفی نشود"]
-    NT["نکته: Add(delta) با delta مثبت → افزایش |<br/>Done() = Add(-1) → کاهش | شمارنده صفر → Wait آزاد"]
+    GOLD[قانون طلایی: Add() قبل از go، defer Done() داخل goroutine،و هرگز شمارنده...]
+    NT[نکته: Add(delta) با delta مثبت → افزایش |Done() = Add(-1) → کاهش | شمارنده...]
 
     classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
     classDef bothBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;

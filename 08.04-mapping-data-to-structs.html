@@ -166,8 +166,8 @@ if err := rows.Err(); err != nil {
 
     subgraph SOLUTIONS["راه‌حل‌های ستون Nullable"]
         direction TB
-        SOL1["① sql.NullString<br/>Email sql.NullString<br/>if user.Email.Valid { ... }"]
-        SOL2["② *string (Pointer)<br/>Email *string<br/>if user.Email != nil { ... }"]
+        SOL1["① sql.NullStringEmail sql.NullStringif user.Email.Valid { ... }"]
+        SOL2["② *string (Pointer)Email *stringif user.Email != nil { ... }"]
     end
 
     subgraph ERRORS["خطاهای رایج نگاشت"]
@@ -192,7 +192,7 @@ if err := rows.Err(); err != nil {
 
     subgraph POINTER["الگوی Pointer"]
         direction TB
-        P1["&amp;user.ID → آدرس حافظه<br/>Scan مقدار را مستقیم در آدرس حافظه می‌نویسد"]
+        P1["&amp;user.ID → آدرس حافظهScan مقدار را مستقیم در آدرس حافظه می‌نویسد"]
         P2["Zero alloc per row ✓"]
     end
 
@@ -202,7 +202,7 @@ if err := rows.Err(); err != nil {
         X2["نیازی به ترتیب دقیق نیست"]
     end
 
-    Golden["قانون طلایی: برای ستون‌های nullable همیشه از sql.Null* یا pointer استفاده کنید — اسکن NULL به نوع غیراشاره‌ای = خطا"]
+    Golden[قانون طلایی: برای ستون‌های nullable همیشه از sql.Null* یا pointer استفاده...]
 
     Title --&gt; ROW
     ROW --&gt; CONVERT

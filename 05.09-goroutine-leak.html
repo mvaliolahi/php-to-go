@@ -420,11 +420,11 @@ go tool pprof leak.prof</code></pre>
 <figure class="diagram" dir="ltr">
 <pre class="mermaid">flowchart TB
     Start(["شروع: بررسی Goroutine"])
-    Q1{"مسدود شده؟<br/>(Is it blocked?)"}
-    Q2{"شرط خروج دارد؟<br/>(Exit condition?)"}
-    Q3{"روی چه مسدود شده؟<br/>(Blocked on what?)"}
+    Q1{"مسدود شده؟(Is it blocked?)"}
+    Q2{"شرط خروج دارد؟(Exit condition?)"}
+    Q3{"روی چه مسدود شده؟(Blocked on what?)"}
     OK["✓ OK"]
-    Leak1["LEAK<br/>Fix: add ctx.Done() / break"]
+    Leak1["LEAKFix: add ctx.Done() / break"]
 
     Start --&gt; Q1
     Q1 -- "No" --&gt; Q2
@@ -432,16 +432,16 @@ go tool pprof leak.prof</code></pre>
     Q2 -- "No" --&gt; Leak1
     Q1 -- "Yes" --&gt; Q3
 
-    CS["Channel Send<br/>ch &lt;- val<br/>گیرنده‌ای نیست"]
-    CSF["LEAK!<br/>Fix: buffered chan / close(ch)"]
-    CR["Channel Recv<br/>&lt;-ch<br/>فرستنده‌ای نیست"]
-    CRF["LEAK!<br/>Fix: close(ch) / ctx.Done()"]
-    WG["WaitGroup<br/>wg.Wait()<br/>Done() فراموش شده"]
-    WGF["LEAK!<br/>Fix: defer wg.Done() always"]
-    LK["Lock<br/>mu.Lock()<br/>Unlock هرگز فراخوانی نمی‌شود"]
-    LKF["LEAK!<br/>Fix: defer mu.Unlock() always"]
-    HT["HTTP Request<br/>http.Get()<br/>بدون timeout"]
-    HTF["LEAK!<br/>Fix: ctx + http.Client{Timeout}"]
+    CS["Channel Sendch &lt;- valگیرنده‌ای نیست"]
+    CSF["LEAK!Fix: buffered chan / close(ch)"]
+    CR["Channel Recv&lt;-chفرستنده‌ای نیست"]
+    CRF["LEAK!Fix: close(ch) / ctx.Done()"]
+    WG["WaitGroupwg.Wait()Done() فراموش شده"]
+    WGF["LEAK!Fix: defer wg.Done() always"]
+    LK["Lockmu.Lock()Unlock هرگز فراخوانی نمی‌شود"]
+    LKF["LEAK!Fix: defer mu.Unlock() always"]
+    HT["HTTP Requesthttp.Get()بدون timeout"]
+    HTF["LEAK!Fix: ctx + http.Client{Timeout}"]
 
     Q3 -- "Channel Send" --&gt; CS --&gt; CSF
     Q3 -- "Channel Recv" --&gt; CR --&gt; CRF
@@ -478,11 +478,11 @@ go tool pprof leak.prof</code></pre>
         N1 --&gt; N2
     end
 
-    GOLD["قانون طلایی: هر Goroutine باید Context بپذیرد، select با ctx.Done() داشته باشد<br/>و مسیر خروج مشخصی داشته باشد"]
+    GOLD[قانون طلایی: هر Goroutine باید Context بپذیرد، select با ctx.Done() داشته...]
 
     LEG1["مسیر نشت"]
-    LEG2["مسیر صحیح:<br/>select + ctx.Done() + close(ch)"]
-    LEG3["نشتی رایج:<br/>for {} without ctx.Done()"]
+    LEG2["مسیر صحیح:select + ctx.Done() + close(ch)"]
+    LEG3["نشتی رایج:for {} without ctx.Done()"]
 
     classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
     classDef bothBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;

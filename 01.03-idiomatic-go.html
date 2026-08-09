@@ -495,35 +495,35 @@ func newUser() *User {
 
     subgraph S1["رفکتور ۱: مدیریت خطا — panic → error return"]
         direction LR
-        S1A["// PHP-style: panic on error<br/>func GetUser(id int) *User {<br/>  if err != nil { panic(err) }<br/>}"]
-        S1B["// Idiomatic: return error<br/>func FindUser(id int) (*User, error) {<br/>  if err != nil { return nil, err }<br/>}"]
+        S1A[// PHP-style: panic on errorfunc GetUser(id int) *User {  if err != nil {...]
+        S1B[// Idiomatic: return errorfunc FindUser(id int) (*User, error) {  if err !=...]
         S1A --&gt; S1B
     end
 
     subgraph S2["رفکتور ۲: دسترسی مستقیم — GetX()/SetX() → field access"]
         direction LR
-        S2A["// PHP-style: getter/setter<br/>func (u *User) GetName() string<br/>func (u *User) SetName(n string)"]
-        S2B["// Idiomatic: direct field access<br/>u.Name = "Ali"<br/>fmt.Println(u.Name)"]
+        S2A[// PHP-style: getter/setterfunc (u *User) GetName() stringfunc (u *User)...]
+        S2B["// Idiomatic: direct field accessu.Name = "Ali"fmt.Println(u.Name)"]
         S2A --&gt; S2B
     end
 
     subgraph S3["رفکتور ۳: ترکیب به‌جای ارث‌بری — extends → embedding"]
         direction LR
-        S3A["// PHP-style: inheritance<br/>type Admin struct { User }<br/>// Admin inherits all User behavior"]
-        S3B["// Idiomatic: composition<br/>type Admin struct { BaseModel }<br/>// Pick only what you need"]
+        S3A[// PHP-style: inheritancetype Admin struct { User }// Admin inherits all...]
+        S3B[// Idiomatic: compositiontype Admin struct { BaseModel }// Pick only what...]
         S3A --&gt; S3B
     end
 
     subgraph S4["رفکتور ۴: interface در سمت مصرف‌کننده"]
         direction LR
-        S4A["// PHP-style: switch on type<br/>switch v := data.(type) { ... }<br/>// producer defines interface"]
-        S4B["// Idiomatic: consumer interface<br/>type UserFinder interface { ... }<br/>// consumer defines what it needs"]
+        S4A[// PHP-style: switch on typeswitch v := data.(type) { ... }// producer...]
+        S4B[// Idiomatic: consumer interfacetype UserFinder interface { ... }// consumer...]
         S4A --&gt; S4B
     end
 
     S0 --&gt; S1 --&gt; S2 --&gt; S3 --&gt; S4
 
-    principle(["اصل Go: واضح بودن به‌تر از هوشمندانه بودن — با هم ارتباط برقرار نکنید، از طریق ارتباط با هم به اشتراک بگذارید."])
+    principle([اصل Go: واضح بودن به‌تر از هوشمندانه بودن — با هم ارتباط برقرار نکنید، از...])
 
     classDef stageBox fill:#f8fafc,stroke:#cbd5e1,stroke-width:1.5px,color:#1f2937;
     classDef oldBox    fill:#fef2f2,stroke:#ef4444,stroke-width:1px,color:#1f2937;

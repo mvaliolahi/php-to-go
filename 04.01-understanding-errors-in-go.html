@@ -298,19 +298,17 @@ if err != nil {
 <p>یکی از قدرتمندترین ویژگی‌های مدیریت خطا در Go قابلیت <bdi dir="ltr">Error Wrapping</bdi> است. با استفاده از <code dir="ltr">fmt.Errorf</code> و فعل قالب <code>%w</code> می‌توان خطاها را در هم پیچید و زنجیره‌ای از خطاها ساخت:</p>
 <figure class="diagram" dir="ltr">
 <pre class="mermaid">flowchart TB
-    TITLE["زنجیره‌ی Error Wrapping"]
 
-    L3["خطای سطح ۳ (API)<br/>fmt.Errorf("api: %w", svcErr)"]
-    L2["خطای سطح ۲ (Service)<br/>fmt.Errorf("service: %w", dbErr)"]
-    L1["خطای سطح ۱ (DB)<br/>sql.ErrNoRows"]
+    L3["خطای سطح ۳ (API)fmt.Errorf("api: %w", svcErr)"]
+    L2["خطای سطح ۲ (Service)fmt.Errorf("service: %w", dbErr)"]
+    L1["خطای سطح ۱ (DB)sql.ErrNoRows"]
 
     L3 -- "Unwrap()" --&gt; L2
     L2 -- "Unwrap()" --&gt; L1
 
-    CHECK["errors.Is(err, sql.ErrNoRows) → true<br/>errors.As(err, &amp;dbErr) → true (extracts *DBError)<br/>هر دو تابع زنجیره را با Unwrap() پیمایش می‌کنند"]
+    CHECK[errors.Is(err, sql.ErrNoRows) → trueerrors.As(err, &amp;dbErr) → true (extracts...]
 
-    TITLE --&gt; L3
-    L1 --&gt; CHECK
+        L1 --&gt; CHECK
 
     classDef titleBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
     classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
@@ -436,14 +434,13 @@ if code, ok := errors.AsType[ErrorCode](err); ok {
 <p>در لایه‌ی <bdi dir="ltr">Repository</bdi> خطا با اطلاعاتی درباره‌ی عملیات پایگاه‌داده بسته‌بندی می‌شود، مثلاً <code dir="ltr">fmt.Errorf("query user: %w", err)</code>. در لایه‌ی <bdi dir="ltr">Service</bdi> همان خطا با زمینه‌ی منطق کسب‌وکار بسته‌بندی می‌شود مثل <code dir="ltr">fmt.Errorf("get user: %w", err)</code>. </p><p>در نهایت <bdi dir="ltr">HTTP Handler</bdi> خطا را بررسی کرده و تصمیم می‌گیرد چه کد وضعیت مناسبی به کلاینت برگردانده شود. این الگوی لایه‌ای بسته‌بندی، ردیابی خطا را در سیستم‌های بزرگ ساده‌تر و قابل‌اتکاتر می‌کند.</p>
 <figure class="diagram" dir="ltr">
 <pre class="mermaid">flowchart TB
-    TITLE["جریان خطا در Call Stack: از Database تا Handler"]
 
     subgraph STACK["پشته‌ی فراخوانی"]
         direction TB
-        H["HTTP Handler<br/>بررسی خطا و تصمیم‌گیری درباره‌ی کد وضعیت پاسخ<br/>errors.Is(err, sql.ErrNoRows) → 404 Not Found<br/>errors.As(err, &amp;ValidationErr) → 400 Bad Request"]
-        S["Service Layer<br/>منطق کسب‌وکار و اعتبارسنجی<br/>بسته‌بندی با زمینه‌ی سرویس:<br/>fmt.Errorf("get user: %w", err)"]
-        R["Repository<br/>دسترسی به داده‌ها و کوئری‌ها<br/>بسته‌بندی با زمینه‌ی ریپازیتوری:<br/>fmt.Errorf("query user: %w", err)"]
-        D["Database<br/>منشأ خطا: کوئری ناموفق (مثلاً سطر پیدا نشد)<br/>منشأ خطا — بدون بسته‌بندی:<br/>return nil, sql.ErrNoRows"]
+        H[HTTP Handlerبررسی خطا و تصمیم‌گیری درباره‌ی کد وضعیت پاسخerrors.Is(err,...]
+        S["Service Layerمنطق کسب‌وکار و اعتبارسنجیبسته‌بندی با زمینه‌ی سرویس:fmt.Errorf("get user: %w", err)"]
+        R["Repositoryدسترسی به داده‌ها و کوئری‌هابسته‌بندی با زمینه‌ی ریپازیتوری:fmt.Errorf("query user: %w", err)"]
+        D[Databaseمنشأ خطا: کوئری ناموفق (مثلاً سطر پیدا نشد)منشأ خطا — بدون...]
         H -- "wrap" --&gt; S
         S -- "wrap" --&gt; R
         R -- "root" --&gt; D
@@ -460,23 +457,20 @@ if code, ok := errors.AsType[ErrorCode](err); ok {
         C1 --&gt; C2 --&gt; C3
     end
 
-    UNWRAP["errors.Is و errors.As با فراخوانی Unwrap() زنجیره را از راست به چپ پیمایش می‌کنند"]
+    UNWRAP[errors.Is و errors.As با فراخوانی Unwrap() زنجیره را از راست به چپ پیمایش...]
 
     subgraph CODE["// Handler: inspect the error chain"]
         direction TB
-        CO1["if errors.Is(err, sql.ErrNoRows) {<br/>    http.Error(w, "Not Found", 404)<br/>} else {<br/>    http.Error(w, "Internal Error", 500)<br/>}"]
+        CO1["if errors.Is(err, sql.ErrNoRows) {    http.Error(w, "Not Found", 404)} else {    http.Error(w, "Internal Error", 500)}"]
     end
 
-    GOLD["قانون طلایی: هر لایه خطا را با fmt.Errorf("context: %w", err) بسته‌بندی کنید<br/>اما هر خطا را فقط یک‌بار wrap کنید!"]
+    GOLD["قانون طلایی: هر لایه خطا را با fmt.Errorf("context: %w", err) بسته‌بندی کنیداما هر خطا را فقط یک‌بار wrap کنید!"]
 
-    TITLE --&gt; STACK
-    STACK --&gt; FLOW_SUCC
+        STACK --&gt; FLOW_SUCC
     STACK --&gt; FLOW_ERR
     STACK --&gt; CHAIN
     CHAIN --&gt; UNWRAP
-    TITLE --&gt; CODE
-    TITLE --&gt; GOLD
-
+        
     classDef titleBox fill:#ecfdf5,stroke:#10b981,stroke-width:2px,color:#1f2937;
     classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
     classDef neutralBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;

@@ -68,40 +68,9 @@
 <h2 id="gomock">gomock</h2><div class="abstract">
 <strong>چکیده:</strong> این بخش gomock را پوشش می‌دهد: mock generation، expectation و verification. الگوی mock interface و dependency injection بررسی می‌شود. تفاوت با Mockery در PHP مشخص می‌گردد.
 </div>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-    subgraph HEADER["فرآیند Mock کردن با gomock"]
-        direction TB
-        S1["۱. تعریف Interface<br/>type UserRepository interface"]
-        S2["۲. تولید Mock<br/>mockgen -source=user.go"]
-        S3["۳. استفاده در تست<br/>EXPECT().Return()"]
-        S1 --&gt; S2 --&gt; S3
-    end
-
-    subgraph IFACE["UserRepository"]
-        direction TB
-        IF1["FindByID(id int) (*User, error)"]
-    end
-
-    subgraph MOCK["MockUserRepository"]
-        direction TB
-        MK1["EXPECT().FindByID(1).Return(...)"]
-    end
-
-    SVC["UserService.GetName(1)<br/>سرویس از Mock استفاده می‌کند نه دیتابیس واقعی"]
-    IFACE --&gt; MOCK
-    MOCK --&gt; SVC
-    SVC --&gt; IFACE
-
-    classDef stepBox  fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef ifaceBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
-    classDef mockBox  fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
-    classDef svcBox   fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937,font-weight:bold;
-    class S1,S2,S3 stepBox;
-    class IFACE,IF1 ifaceBox;
-    class MOCK,MK1 mockBox;
-    class SVC svcBox;</pre>
-<figcaption>شکل ۱۱-۳: فرآیند <bdi dir="ltr">Mock</bdi> کردن با <bdi dir="ltr">gomock</bdi></figcaption>
+<figure class="diagram d2-diagram" dir="ltr">
+<img alt="نمودار" loading="lazy" src="assets/diagrams/ch11_03_gomock_workflow.svg"/>
+<figcaption>شکل ۱۱-۳: فرآیندMockکردن باgomock</figcaption>
 </figure>
 <p>پیش در در مورد mock کردن توضیحاتی داده شد ولی در پروژه‌های واقعی اغلب نیاز داریم در هنگام تست، dependency های خارجی مثل دیتابیس، سرویس‌های دیگر یا APIها را <strong dir="ltr">mock</strong> کنیم تا side affect ها را کنترل کنیم. </p><p>یعنی به‌جای اجرای واقعی آن‌ها یک نسخه‌ی شبیه‌سازی‌شده ایجاد می‌کنیم که رفتار مورد انتظار را تقلید می‌کند. این کار:</p>
 <p>تست‌ها را سریع‌تر و قابل پیش‌بینی‌تر می‌کند</p>
@@ -647,61 +616,9 @@ func TestCreateArticle(t *testing.T) {
 <h3 id="خط-لوله-تولید-و-تزریق-mock">11.3.11 خط لوله تولید و تزریق Mock</h3>
 <p>یکی از مهم‌ترین مفاهیم در کار با <bdi dir="ltr">gomock</bdi> درک خط لوله کامل تولید و تزریق mock است. این خط لوله از تعریف <bdi dir="ltr">interface</bdi> شروع می‌شود، با ابزار <bdi dir="ltr">mockgen</bdi> فایل mock تولید می‌شود، و در نهایت mock در تست استفاده می‌شود. هر مرحله از این خط لوله نقش حیاتی دارد: اگر <bdi dir="ltr">interface</bdi> بیش از حد بزرگ باشد، mock کردن سخت می‌شود. </p><p>اگر mock به‌درستی تولید نشود، رفتار تست اشتباه خواهد بود. و اگر تزریق mock به‌درستی انجام نشود، کد واقعی به‌جای mock اجرا می‌شود.</p>
 <p>در <bdi dir="ltr">PHP</bdi> با <bdi dir="ltr">PHPUnit</bdi> این خط لوله ساده‌تر است: با <bdi dir="ltr">$this-&gt;createMock()</bdi> یک mock می‌سازید و با <bdi dir="ltr">$mock-&gt;method()-&gt;willReturn()</bdi> رفتار آن را تعریف می‌کنید. اما در Go این فرآیند ساختاریافته‌تر و type-safe است. </p><p>تولید خودکار mock از interface تضمین می‌کند که اگر interface تغییر کند، mock باید دوباره تولید شود و کامپایلر خطا را نشان می‌دهد. این مکانیزم ایمنی بزرگی است که در <bdi dir="ltr">PHPUnit</bdi> وجود ندارد.</p>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-    subgraph PIPE["خط لوله تولید و تزریق Mock — gomock"]
-        direction LR
-        S1["① Interface<br/>type Xxx interface"] --&gt; S2["② mockgen<br/>mockgen -source=..."]
-        S2 --&gt; S3["③ Mock File<br/>mock_xxx.go created"]
-        S3 --&gt; S4["④ Test Code<br/>NewMockXxx(ctrl)"]
-        S4 --&gt; S5["⑤ EXPECT().Method()<br/>.Return(value)"]
-        S5 --&gt; S6["⑥ Inject Mock<br/>Svc{Repo: mockRepo}"]
-        S6 --&gt; S7["⑦ Verify<br/>ctrl.Finish()"]
-    end
-
-    subgraph DI["الگوی تزریق وابستگی (Dependency Injection)"]
-        direction LR
-        subgraph PROD["Production: Constructor(realImpl)"]
-            direction TB
-            P1["NewService(postgresRepo)"]
-        end
-        subgraph TEST["Test: Constructor(mockImpl)"]
-            direction TB
-            T1["NewService(mockRepo)"]
-        end
-    end
-
-    subgraph CMP["مقایسه با PHPUnit Mock"]
-        direction LR
-        subgraph GO["Go: gomock"]
-            direction TB
-            G1["mockgen -source=xxx.go (auto-gen)"]
-            G2["EXPECT().Method().Return(val)"]
-            G3["Type-safe at compile time ✓"]
-        end
-        subgraph PHP["PHP: PHPUnit Mock"]
-            direction TB
-            P2["$this-&gt;createMock(Class::class)"]
-            P3["$mock-&gt;method('name')-&gt;willReturn($val)"]
-            P4["Runtime errors if method changes ✗"]
-        end
-    end
-
-    note1(["قانون طلایی: Interface کوچک = Mock آسان | Interface بزرگ = Refactor کنید"])
-    note2(["اگر mock شما ۲۰ EXPECT دارد<br/>Interface شما خیلی بزرگ است! آن را بشکنید"])
-    note3(["از go:generate استفاده کنید<br/>تولید خودکار mock با go generate ./..."])
-
-    classDef pipeBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef diBox   fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
-    classDef goBox   fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef phpBox  fill:#f5f0fb,stroke:#777BB4,stroke-width:1.5px,color:#1f2937;
-    classDef noteBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1px,color:#1f2937,font-style:italic;
-    class S1,S2,S3,S4,S5,S6,S7 pipeBox;
-    class P1,T1 diBox;
-    class G1,G2,G3 goBox;
-    class P2,P3,P4 phpBox;
-    class note1,note2,note3 noteBox;</pre>
-<figcaption>شکل ۱۱-۵: خط لوله تولید و تزریق <bdi dir="ltr">Mock</bdi> — از <bdi dir="ltr">Interface</bdi> تا <bdi dir="ltr">Verify</bdi></figcaption>
+<figure class="diagram d2-diagram" dir="ltr">
+<img alt="نمودار" loading="lazy" src="assets/diagrams/ch11_03_gomock_workflow.svg"/>
+<figcaption>شکل ۱۱-۵: خط لوله تولید و تزریقMock— ازInterfaceتاVerify</figcaption>
 </figure>
 <h3 id="سناریوهای-عملیاتی-gomock">11.3.12 سناریوهای عملیاتی gomock</h3>
 <p>در پروژه‌های واقعی، کار با mock فراتر از مثال‌های ساده است. هر سناریو عملیاتی زیر یک چالش رایج در تست‌نویسی را پوشش می‌دهد که توسعه‌دهندگان مهاجر از <bdi dir="ltr">PHP</bdi> احتمالاً با آن مواجه خواهند شد. </p><p>این الگوها به شما کمک می‌کنند تست‌های قابل اعتماد و قابل نگهداری بنویسید که در برابر تغییرات کد مقاوم هستند و رفتار واقعی سیستم را به‌درستی تأیید می‌کنند.</p>
