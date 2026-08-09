@@ -2360,3 +2360,116 @@ figure.code { direction: ltr; text-align: left; }
   /* Typography */
   p { orphans: 3; widows: 3; }
 }
+
+/* ============================================
+   MERMAID DIAGRAMS
+   Rendered from <pre class="mermaid"> by assets/js/diagrams.js
+   ============================================ */
+
+/* Source <pre> — invisible until Mermaid replaces it with SVG */
+figure.diagram pre.mermaid,
+pre.mermaid {
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  border: 0;
+  font-family: 'Fira Code', 'SFMono-Regular', Consolas, monospace;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--color-text-muted);
+  text-align: center;
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow: hidden;
+}
+
+/* After Mermaid renders, the <pre> contains the <svg>. Make sure it sits nicely. */
+figure.diagram pre.mermaid > svg {
+  display: block;
+  margin: 0 auto;
+  max-width: 100%;
+  height: auto;
+  font-family: Vazirmatn, Inter, system-ui, sans-serif !important;
+}
+
+/* Persian text inside mermaid nodes — most nodes use foreignObject+HTML so
+   dir=rtl is inherited from <html>. For svg <text> elements we set direction. */
+figure.diagram pre.mermaid svg text {
+  direction: rtl;
+  unicode-bidi: embed;
+  font-family: Vazirmatn, Inter, system-ui, sans-serif;
+}
+/* LTR labels (code/identifiers) inside otherwise-RTL nodes */
+figure.diagram pre.mermaid svg text.ltr,
+figure.diagram pre.mermaid svg text[data-ltr] {
+  direction: ltr;
+  unicode-bidi: embed;
+}
+
+/* Mermaid nodes use HTML foreignObject; ensure proper bidi rendering */
+figure.diagram pre.mermaid .nodeLabel,
+figure.diagram pre.mermaid .edgeLabel,
+figure.diagram pre.mermaid .label {
+  font-family: Vazirmatn, Inter, system-ui, sans-serif !important;
+  direction: rtl;
+  unicode-bidi: plaintext;
+}
+figure.diagram pre.mermaid .edgeLabel {
+  direction: rtl;
+  unicode-bidi: plaintext;
+  background: var(--color-bg);
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+/* Cluster/subgraph titles */
+figure.diagram pre.mermaid .cluster-label,
+figure.diagram pre.mermaid .cluster text {
+  font-family: Vazirmatn, Inter, system-ui, sans-serif !important;
+  font-weight: 700;
+  direction: rtl;
+  unicode-bidi: plaintext;
+}
+
+/* Subtle entrance animation for freshly-rendered mermaid SVGs */
+@keyframes mermaidFadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+figure.diagram pre.mermaid[data-processed] > svg {
+  animation: mermaidFadeIn 0.35s ease-out;
+}
+@media (prefers-reduced-motion: reduce) {
+  figure.diagram pre.mermaid[data-processed] > svg { animation: none; }
+}
+
+/* While Mermaid is loading, show a faint placeholder so the figure doesn't collapse */
+figure.diagram:has(pre.mermaid:not([data-processed])) {
+  min-height: 120px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+figure.diagram pre.mermaid:not([data-processed])::before {
+  content: 'در حال آماده‌سازی نمودار…';
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+  font-style: italic;
+  padding: 24px 0;
+}
+
+/* Diagram fallback (if Mermaid fails to load) — show source as preformatted text */
+pre.mermaid.mermaid-failed {
+  display: block;
+  padding: var(--spacing-md);
+  background: var(--color-bg-tertiary);
+  border: 1px dashed var(--color-border);
+  border-radius: var(--radius-md);
+  color: var(--color-text-muted);
+  text-align: left;
+  direction: ltr;
+  font-size: 12px;
+  overflow-x: auto;
+}
+

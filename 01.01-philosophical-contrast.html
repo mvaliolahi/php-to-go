@@ -76,41 +76,20 @@
 <p>این رویکرد ممکن است برای یک توسعه‌دهنده PHP غیرمنطقی به نظر برسد " <strong>چطور بدون ارث‌بری</strong> ؟! <strong>بدون</strong> <strong dir="ltr">Exception</strong> ؟!" اما Go با این تصمیم‌ها مسیر دیگری را دنبال می‌کند مسیری که هدفش تولید کدی است که حتی سال‌ها بعد بدون نیاز به تفسیرهای پیچیده همچنان واضح و قابل اعتماد باقی بماند.</p>
 <p>این تفاوت‌ها فقط به فلسفه طراحی محدود نمی‌شود بلکه <strong>مدل اجرایی</strong> این دو زبان هم بازتابی از جهان‌بینی متفاوتشان است. در <strong dir="ltr">PHP</strong> هر بار که یک درخواست به سرور می‌رسد مفسر PHP از ابتدا وارد عمل می‌شود. کد را اجرا می‌کند داده‌ها را پردازش می‌کند و در نهایت خروجی را به‌صورت HTML از طریق وب‌سرور برای کاربر می‌فرستد. این چرخه کوتاه و مستقل برای اپلیکیشن‌های <strong dir="ltr">Stateless</strong> بسیار ایده‌آل است اما در پردازش‌های طولانی یا سنگین به سرعت به محدودیت‌هایی می‌رسد. به همین علت تقریباً در هر پروژه PHP با ابزارهای جانبی مانند <strong dir="ltr">Queue</strong> ‌ها، <strong dir="ltr">Cache Server</strong> ‌ها روبه‌رو هستیم تا فشار را از لایه PHP برداریم.</p>
 <figure class="diagram" dir="ltr">
-<svg height="320" viewBox="0 0 700 320" width="700" xmlns="http://www.w3.org/2000/svg">
-<defs><filter id="sh1" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
-<marker id="arrow1" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#666" points="0 0, 10 3.5, 0 7"></polygon></marker>
-</defs>
-<!-- PHP Side -->
-<rect fill="#f3e5f5" height="300" rx="12" stroke="#777BB4" stroke-width="2" width="320" x="10" y="10"></rect>
-<text fill="#777BB4" font-size="16" font-weight="bold" text-anchor="middle" x="170" y="40" direction="ltr" unicode-bidi="embed">PHP</text>
-<rect fill="#fff" height="40" rx="6" stroke="#777BB4" stroke-width="1.5" width="120" x="40" y="60"></rect>
-<text fill="#333" font-size="13" text-anchor="middle" x="100" y="85" direction="rtl" unicode-bidi="embed">مرورگر</text>
-<rect fill="#fff" height="40" rx="6" stroke="#777BB4" stroke-width="1.5" width="120" x="40" y="130"></rect>
-<text fill="#333" font-size="13" text-anchor="middle" x="100" y="155" direction="ltr" unicode-bidi="embed">Nginx</text>
-<rect fill="#fff" height="40" rx="6" stroke="#777BB4" stroke-width="1.5" width="120" x="40" y="200"></rect>
-<text fill="#333" font-size="13" text-anchor="middle" x="100" y="225" direction="ltr" unicode-bidi="embed">PHP-FPM</text>
-<rect fill="#fff" height="36" rx="6" stroke="#777BB4" stroke-width="1.5" width="120" x="40" y="260"></rect>
-<text fill="#333" font-size="12" text-anchor="middle" x="100" y="283" direction="ltr" unicode-bidi="embed">Response</text>
-<line marker-end="url(#arrow1)" stroke="#777BB4" stroke-width="1.5" x1="100" x2="100" y1="100" y2="130"></line>
-<line marker-end="url(#arrow1)" stroke="#777BB4" stroke-width="1.5" x1="100" x2="100" y1="170" y2="200"></line>
-<line marker-end="url(#arrow1)" stroke="#777BB4" stroke-width="1.5" x1="100" x2="100" y1="240" y2="260"></line>
-<text fill="#777BB4" font-size="11" x="200" y="150" direction="rtl" unicode-bidi="embed">هر درخواست =</text>
-<text fill="#777BB4" font-size="11" x="200" y="168" direction="rtl" unicode-bidi="embed">فرآیند جدید</text>
-<!-- Go Side -->
-<rect fill="#e0f7fa" height="300" rx="12" stroke="#00ADD8" stroke-width="2" width="320" x="370" y="10"></rect>
-<text fill="#00ADD8" font-size="16" font-weight="bold" text-anchor="middle" x="530" y="40" direction="ltr" unicode-bidi="embed">Go</text>
-<rect fill="#fff" height="40" rx="6" stroke="#00ADD8" stroke-width="1.5" width="120" x="400" y="60"></rect>
-<text fill="#333" font-size="13" text-anchor="middle" x="460" y="85" direction="rtl" unicode-bidi="embed">مرورگر</text>
-<rect fill="#fff" height="50" rx="6" stroke="#00ADD8" stroke-width="1.5" width="120" x="400" y="140"></rect>
-<text fill="#333" font-size="13" text-anchor="middle" x="460" y="162" direction="ltr" unicode-bidi="embed">HTTP Server</text>
-<text fill="#00ADD8" font-size="11" text-anchor="middle" x="460" y="178" direction="rtl" unicode-bidi="embed">(باینری مستقل)</text>
-<rect fill="#fff" height="36" rx="6" stroke="#00ADD8" stroke-width="1.5" width="120" x="400" y="230"></rect>
-<text fill="#333" font-size="12" text-anchor="middle" x="460" y="253" direction="ltr" unicode-bidi="embed">Goroutines</text>
-<line marker-end="url(#arrow1)" stroke="#00ADD8" stroke-width="1.5" x1="460" x2="460" y1="100" y2="140"></line>
-<line marker-end="url(#arrow1)" stroke="#00ADD8" stroke-width="1.5" x1="460" x2="460" y1="190" y2="230"></line>
-<text fill="#00ADD8" font-size="11" x="560" y="160" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">process</tspan> واحد،</text>
-<text fill="#00ADD8" font-size="11" x="560" y="178" direction="rtl" unicode-bidi="embed">درخواست‌های هم‌زمان</text>
-</svg>
+<pre class="mermaid">flowchart LR
+    subgraph PHP["PHP — هر درخواست = فرآیند جدید"]
+        direction LR
+        B1["مرورگر"] --> N1["Nginx"] --> F1["PHP-FPM"] --> R1["Response"]
+    end
+    subgraph GO["Go — process واحد، درخواست‌های هم‌زمان"]
+        direction LR
+        B2["مرورگر"] --> S2["HTTP Server<br/>(باینری مستقل)"] --> G2["Goroutines"] --> R2["Response"]
+    end
+
+    classDef phpBox fill:#f5f0fb,stroke:#777BB4,stroke-width:1.5px,color:#1f2937;
+    classDef goBox  fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
+    class PHP phpBox;
+    class GO goBox;</pre>
 <figcaption>شکل ۱-۱: نحوه‌ی تعامل کاربر با برنامه <bdi dir="ltr">Go</bdi> و <bdi dir="ltr">PHP</bdi></figcaption>
 </figure>
 <p>خروجی یک برنامه Go یک <strong>فایل باینری مستقل</strong> است که بدون نیاز به وب‌سرور یا لایه‌های واسط مستقیماً اجرا می‌شود. این کار یعنی بدون درگیری با پیچیدگی‌های PHP-FPM یا تنظیمات Nginx به‌طور دقیق همان چیزی را که ساخته‌اید اجرا می‌کنید.</p>
@@ -125,40 +104,21 @@
 <p>مسئله دیگر ساختار پروژه است که در ادامه مفصل تر به آن خواهیم پرداخت. در PHP ساختار پروژه به شدت به فریم‌ورک انتخابی شما وابسته است. اگر با Laravel کار می‌کنید ساختار شما به سبک این فریم‌ورک خواهد بود در Symfony و فریم ورک های دیگر ساختار متفاوت است. این وابستگی باعث می‌شود که درک کد یک پروژه بزرگ PHP اغلب نیازمند دانش از ابزارهای جانبی باشد که البته این موضوع مزایای مربوط به خودش را نیز دارد. در مقابل Go ساختار مشخص و یکنواختی دارد. پروژه‌ها با استفاده از go mod تعریف می‌شوند پکیج‌ها به وضوح تفکیک شده‌اند و ابزار go fmt تضمین می‌کند که کد همه توسعه‌دهندگان ظاهری یکدست داشته باشد. </p>
 <p>در زمینه‌ی Deployment باز هم نگاه این دو زبان متفاوت است. PHP به یک وب سرور نیاز دارد تنظیمات PHP-FPM و نسخه‌های مختلف ممکن است مشکل‌ساز شود و انتقال از محیط توسعه به پروداکشن ممکن است نیازمند تطبیق نسخه و تنظیمات خاصی باشد. اما در Go شما تنها یک فایل باینری می‌سازید و آن را روی سرور مقصد کپی می‌کنید. هیچ dependency‌ای لازم نیست. هیچ وب‌سروری نیاز نیست! در محيط هایی مانند Docker یا Kubernetes این مزیت به‌شدت خودش را نشان می‌دهد و روند DevOps را ساده‌تر و پایدارتر می‌سازد.</p>
 <figure class="diagram" dir="ltr">
-<svg height="280" viewBox="0 0 700 280" width="700" xmlns="http://www.w3.org/2000/svg">
-<defs><filter id="sh2" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
-<marker id="arrow2" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#666" points="0 0, 10 3.5, 0 7"></polygon></marker>
-</defs>
-<!-- PHP Deployment -->
-<rect fill="#f3e5f5" height="260" rx="12" stroke="#777BB4" stroke-width="2" width="320" x="10" y="10"></rect>
-<text fill="#777BB4" font-size="15" font-weight="bold" text-anchor="middle" x="170" y="38" direction="rtl" unicode-bidi="embed">دیپلوی <tspan direction="ltr" unicode-bidi="embed">PHP</tspan></text>
-<rect fill="#fff" height="35" rx="6" stroke="#777BB4" stroke-width="1.5" width="130" x="30" y="55"></rect>
-<text fill="#333" font-size="12" text-anchor="middle" x="95" y="77" direction="rtl" unicode-bidi="embed">کد <tspan direction="ltr" unicode-bidi="embed">PHP</tspan></text>
-<rect fill="#fff" height="35" rx="6" stroke="#777BB4" stroke-width="1.5" width="130" x="180" y="55"></rect>
-<text fill="#333" font-size="12" text-anchor="middle" x="245" y="77" direction="ltr" unicode-bidi="embed">Composer</text>
-<rect fill="#fff" height="35" rx="6" stroke="#777BB4" stroke-width="1.5" width="130" x="30" y="115"></rect>
-<text fill="#333" font-size="12" text-anchor="middle" x="95" y="137" direction="ltr" unicode-bidi="embed">PHP-FPM</text>
-<rect fill="#fff" height="35" rx="6" stroke="#777BB4" stroke-width="1.5" width="130" x="180" y="115"></rect>
-<text fill="#333" font-size="12" text-anchor="middle" x="245" y="137" direction="ltr" unicode-bidi="embed">Nginx</text>
-<rect fill="#fff" height="35" rx="6" stroke="#777BB4" stroke-width="1.5" width="170" x="80" y="180"></rect>
-<text fill="#333" font-size="12" text-anchor="middle" x="165" y="202" direction="rtl" unicode-bidi="embed">تنظیمات <tspan direction="ltr" unicode-bidi="embed">php.ini</tspan></text>
-<rect fill="#ffe0e0" height="30" rx="6" stroke="#c62828" stroke-width="1.5" width="170" x="80" y="230"></rect>
-<text fill="#c62828" font-size="11" text-anchor="middle" x="165" y="250" direction="rtl" unicode-bidi="embed">وابسته به محیط</text>
-<line marker-end="url(#arrow2)" stroke="#777BB4" stroke-width="1.2" x1="95" x2="95" y1="90" y2="115"></line>
-<line marker-end="url(#arrow2)" stroke="#777BB4" stroke-width="1.2" x1="245" x2="245" y1="90" y2="115"></line>
-<!-- Go Deployment -->
-<rect fill="#e0f7fa" height="260" rx="12" stroke="#00ADD8" stroke-width="2" width="320" x="370" y="10"></rect>
-<text fill="#00ADD8" font-size="15" font-weight="bold" text-anchor="middle" x="530" y="38" direction="rtl" unicode-bidi="embed">دیپلوی <tspan direction="ltr" unicode-bidi="embed">Go</tspan></text>
-<rect fill="#fff" height="35" rx="6" stroke="#00ADD8" stroke-width="1.5" width="220" x="420" y="55"></rect>
-<text fill="#333" font-size="12" text-anchor="middle" x="530" y="77" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">go</tspan> <tspan direction="ltr" unicode-bidi="embed">build</tspan> → فایل باینری</text>
-<rect fill="#e8f5e9" height="35" rx="6" stroke="#4caf50" stroke-width="1.5" width="220" x="420" y="115"></rect>
-<text fill="#2e7d32" font-size="12" text-anchor="middle" x="530" y="137" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">scp</tspan> <tspan direction="ltr" unicode-bidi="embed">binary</tspan> → سرور</text>
-<rect fill="#e8f5e9" height="35" rx="6" stroke="#4caf50" stroke-width="1.5" width="220" x="420" y="175"></rect>
-<text fill="#2e7d32" font-size="12" text-anchor="middle" x="530" y="197" direction="ltr" unicode-bidi="embed">Docker (image ~10MB)</text>
-<rect fill="#e8f5e9" height="30" rx="6" stroke="#2e7d32" stroke-width="1.5" width="220" x="420" y="230"></rect>
-<text fill="#2e7d32" font-size="11" text-anchor="middle" x="530" y="250" direction="rtl" unicode-bidi="embed">بدون وابستگی خارجی</text>
-<line marker-end="url(#arrow2)" stroke="#00ADD8" stroke-width="1.2" x1="530" x2="530" y1="90" y2="115"></line>
-</svg>
+<pre class="mermaid">flowchart LR
+    subgraph PHP["دیپلوی PHP — وابسته به محیط"]
+        direction TB
+        P1["کد PHP"] --> P2["Composer"] --> P3["PHP-FPM"] --> P4["Nginx"]
+        P5["تنظیمات php.ini"]
+    end
+    subgraph GO["دیپلوی Go — بدون وابستگی خارجی"]
+        direction TB
+        G1["go build → فایل باینری"] --> G2["scp binary → سرور"] --> G3["Docker<br/>(image ~10MB)"]
+    end
+
+    classDef phpBox fill:#f5f0fb,stroke:#777BB4,stroke-width:1.5px,color:#1f2937;
+    classDef goBox  fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
+    class PHP phpBox;
+    class GO goBox;</pre>
 <figcaption>شکل ۲-۱: نحوه‌ی دیپلوی <bdi dir="ltr">PHP</bdi> و <bdi dir="ltr">Go</bdi></figcaption>
 </figure>
 <p>با همه این‌ها نباید فراموش کرد که PHP همچنان در قلمرو خود هنوز بی‌رقیب است. فریم ورکی مثل Laravel تجربه‌ای سریع، روان و لذت‌بخش فراهم می‌کند و زمان توسعه‌ی یک‌محصول را به شدت کاهش می‌دهد. جامعه عظیم PHP پکیج‌های بی‌شمار، مستندات و اکوسیستم بالغ آن باعث می‌شود این زبان در بسیاری از پروژه‌ها هنوز جزء انتخابهای اول باشد. اگرچه Go در زمینه ساخت API و میکروسرویس‌ بی‌نظیر است اما برای توسعه سریع وب اپلیکیشن های full-stack هنوز آن‌طور که باید ابزارهای کاملی ندارد.</p>
@@ -256,71 +216,27 @@ func GetFromCache(key string) (string, bool) {
 <h3 id="مقایسه‌ی-زمان-حیات-درخواست">مقایسه‌ی زمان حیات درخواست: PHP-FPM در برابر Go</h3>
 <p>تفاوت عملکرد ریشه در مدل اجرایی دارد. نمودار زیر چرخه‌ی حیات کامل یک درخواست <bdi dir="ltr">HTTP</bdi> را در هر دو زبان نشان می‌دهد:</p>
 <figure class="diagram" dir="ltr">
-<svg height="440" viewBox="0 0 700 440" width="700" xmlns="http://www.w3.org/2000/svg">
-<defs>
-<linearGradient id="phpBgLife" x1="0" y1="0" x2="1" y2="1">
-<stop offset="0%" stop-color="#f3e5f5"/>
-<stop offset="100%" stop-color="#e1bee7"/>
-</linearGradient>
-<linearGradient id="goBgLife" x1="0" y1="0" x2="1" y2="1">
-<stop offset="0%" stop-color="#e0f7fa"/>
-<stop offset="100%" stop-color="#b2ebf2"/>
-</linearGradient>
-<filter id="shadowLife" x="-10%" y="-10%" width="120%" height="120%">
-<feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.08"/>
-</filter>
-<marker id="arrLife" markerheight="8" markerwidth="10" orient="auto" refx="9" refy="4"><polygon fill="currentColor" points="0 0, 10 4, 0 8"></polygon></marker>
-</defs>
-<!-- PHP Lifecycle -->
-<rect fill="url(#phpBgLife)" filter="url(#shadowLife)" height="195" rx="14" stroke="#777BB4" stroke-width="1.5" width="660" x="20" y="10"/>
-<text fill="#5e3585" font-size="15" font-weight="700" text-anchor="middle" x="350" y="36" direction="rtl" unicode-bidi="embed">چرخه‌ی حیات درخواست <tspan direction="ltr" unicode-bidi="embed">PHP-FPM</tspan></text>
-<line stroke="#777BB4" stroke-opacity="0.25" stroke-width="1" x1="40" x2="660" y1="48" y2="48"/>
-<rect fill="#fff" filter="url(#shadowLife)" height="32" rx="7" stroke="#777BB4" stroke-width="1" width="90" x="35" y="58"/>
-<text fill="#333" font-size="11.5" font-weight="500" text-anchor="middle" x="80" y="79" direction="ltr" unicode-bidi="embed">Browser</text>
-<rect fill="#fff" filter="url(#shadowLife)" height="32" rx="7" stroke="#777BB4" stroke-width="1" width="90" x="145" y="58"/>
-<text fill="#333" font-size="11.5" font-weight="500" text-anchor="middle" x="190" y="79" direction="ltr" unicode-bidi="embed">Nginx</text>
-<rect fill="#fff" filter="url(#shadowLife)" height="32" rx="7" stroke="#777BB4" stroke-width="1" width="90" x="255" y="58"/>
-<text fill="#333" font-size="11.5" font-weight="500" text-anchor="middle" x="300" y="79" direction="ltr" unicode-bidi="embed">PHP-FPM</text>
-<rect fill="#fff" filter="url(#shadowLife)" height="32" rx="7" stroke="#777BB4" stroke-width="1" width="90" x="365" y="58"/>
-<text fill="#333" font-size="11.5" font-weight="500" text-anchor="middle" x="410" y="79" direction="ltr" unicode-bidi="embed">OPcache</text>
-<rect fill="#fff" filter="url(#shadowLife)" height="32" rx="7" stroke="#777BB4" stroke-width="1" width="90" x="475" y="58"/>
-<text fill="#333" font-size="11.5" font-weight="500" text-anchor="middle" x="520" y="79" direction="ltr" unicode-bidi="embed">Zend VM</text>
-<rect fill="#fff" filter="url(#shadowLife)" height="32" rx="7" stroke="#777BB4" stroke-width="1" width="90" x="585" y="58"/>
-<text fill="#333" font-size="11.5" font-weight="500" text-anchor="middle" x="630" y="79" direction="ltr" unicode-bidi="embed">Response</text>
-<g color="#777BB4">
-<line marker-end="url(#arrLife)" stroke="currentColor" stroke-width="1.5" x1="125" x2="145" y1="74" y2="74"/>
-<line marker-end="url(#arrLife)" stroke="currentColor" stroke-width="1.5" x1="235" x2="255" y1="74" y2="74"/>
-<line marker-end="url(#arrLife)" stroke="currentColor" stroke-width="1.5" x1="345" x2="365" y1="74" y2="74"/>
-<line marker-end="url(#arrLife)" stroke="currentColor" stroke-width="1.5" x1="455" x2="475" y1="74" y2="74"/>
-<line marker-end="url(#arrLife)" stroke="currentColor" stroke-width="1.5" x1="565" x2="585" y1="74" y2="74"/>
-</g>
-<text fill="#5e3585" font-size="10.5" text-anchor="middle" x="350" y="118" direction="rtl" unicode-bidi="embed">هر درخواست: مقداردهی <tspan direction="ltr" unicode-bidi="embed">state</tspan> جدید، اتصال دیتابیس جدید، اجرای <tspan direction="ltr" unicode-bidi="embed">opcode</tspan>، آزادسازی همه منابع</text>
-<rect fill="#ffe0e0" filter="url(#shadowLife)" height="34" rx="7" stroke="#e74c3c" stroke-width="1.5" width="620" x="40" y="140"/>
-<text fill="#c62828" font-size="11.5" font-weight="500" text-anchor="middle" x="350" y="161" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">overhead</tspan>: ۴ لایه‌ی واسط + ایجاد/آزادسازی فرآیند + بدون حفظ <tspan direction="ltr" unicode-bidi="embed">state</tspan> بین درخواست‌ها</text>
-<!-- Go Lifecycle -->
-<rect fill="url(#goBgLife)" filter="url(#shadowLife)" height="195" rx="14" stroke="#00ADD8" stroke-width="1.5" width="660" x="20" y="225"/>
-<text fill="#00838f" font-size="15" font-weight="700" text-anchor="middle" x="350" y="251" direction="rtl" unicode-bidi="embed">چرخه‌ی حیات درخواست <tspan direction="ltr" unicode-bidi="embed">Go</tspan></text>
-<line stroke="#00ADD8" stroke-opacity="0.25" stroke-width="1" x1="40" x2="660" y1="263" y2="263"/>
-<rect fill="#fff" filter="url(#shadowLife)" height="32" rx="7" stroke="#00ADD8" stroke-width="1" width="90" x="35" y="273"/>
-<text fill="#333" font-size="11.5" font-weight="500" text-anchor="middle" x="80" y="294" direction="ltr" unicode-bidi="embed">Browser</text>
-<rect fill="#fff" filter="url(#shadowLife)" height="32" rx="7" stroke="#00ADD8" stroke-width="1" width="200" x="145" y="273"/>
-<text fill="#333" font-size="11.5" font-weight="500" text-anchor="middle" x="245" y="294" direction="ltr" unicode-bidi="embed">Go HTTP Server (binary)</text>
-<rect fill="#fff" filter="url(#shadowLife)" height="32" rx="7" stroke="#00ADD8" stroke-width="1" width="90" x="365" y="273"/>
-<text fill="#333" font-size="11.5" font-weight="500" text-anchor="middle" x="410" y="294" direction="ltr" unicode-bidi="embed">Goroutine</text>
-<rect fill="#fff" filter="url(#shadowLife)" height="32" rx="7" stroke="#00ADD8" stroke-width="1" width="90" x="475" y="273"/>
-<text fill="#333" font-size="11.5" font-weight="500" text-anchor="middle" x="520" y="294" direction="ltr" unicode-bidi="embed">Handler</text>
-<rect fill="#fff" filter="url(#shadowLife)" height="32" rx="7" stroke="#00ADD8" stroke-width="1" width="90" x="585" y="273"/>
-<text fill="#333" font-size="11.5" font-weight="500" text-anchor="middle" x="630" y="294" direction="ltr" unicode-bidi="embed">Response</text>
-<g color="#00ADD8">
-<line marker-end="url(#arrLife)" stroke="currentColor" stroke-width="1.5" x1="125" x2="145" y1="289" y2="289"/>
-<line marker-end="url(#arrLife)" stroke="currentColor" stroke-width="1.5" x1="345" x2="365" y1="289" y2="289"/>
-<line marker-end="url(#arrLife)" stroke="currentColor" stroke-width="1.5" x1="455" x2="475" y1="289" y2="289"/>
-<line marker-end="url(#arrLife)" stroke="currentColor" stroke-width="1.5" x1="565" x2="585" y1="289" y2="289"/>
-</g>
-<text fill="#00838f" font-size="10.5" text-anchor="middle" x="350" y="333" direction="rtl" unicode-bidi="embed">فرآیند دائمی: <tspan direction="ltr" unicode-bidi="embed">connection</tspan> <tspan direction="ltr" unicode-bidi="embed">pool</tspan> فعال، کش درون‌حافظه‌ای، <tspan direction="ltr" unicode-bidi="embed">goroutine</tspan> سبک (۲<tspan direction="ltr" unicode-bidi="embed">KB</tspan>)، <tspan direction="ltr" unicode-bidi="embed">state</tspan> حفظ می‌شود</text>
-<rect fill="#e8f5e9" filter="url(#shadowLife)" height="34" rx="7" stroke="#27ae60" stroke-width="1.5" width="620" x="40" y="355"/>
-<text fill="#1b5e20" font-size="11.5" font-weight="500" text-anchor="middle" x="350" y="376" direction="rtl" unicode-bidi="embed">مزیت: بدون واسطه + حفظ <tspan direction="ltr" unicode-bidi="embed">state</tspan> + <tspan direction="ltr" unicode-bidi="embed">pooling</tspan> بومی + <tspan direction="ltr" unicode-bidi="embed">overhead</tspan> کم <tspan direction="ltr" unicode-bidi="embed">Goroutine</tspan></text>
-</svg>
+<pre class="mermaid">flowchart TB
+    subgraph PHP["چرخه‌ی حیات درخواست PHP-FPM"]
+        direction LR
+        B1["Browser"] --> N1["Nginx"] --> F1["PHP-FPM"] --> O1["OPcache"] --> Z1["Zend VM"] --> R1["Response"]
+    end
+    note1(["هر درخواست: state جدید + اتصال دیتابیس جدید + اجرای opcode + آزادسازی منابع<br/>overhead: ۴ لایه‌ی واسط + ایجاد/آزادسازی فرآیند"])
+    PHP ~~~ note1
+
+    subgraph GO["چرخه‌ی حیات درخواست Go"]
+        direction LR
+        B2["Browser"] --> S2["Go HTTP Server<br/>(binary)"] --> G2["Goroutine"] --> H2["Handler"] --> R2["Response"]
+    end
+    note2(["فرآیند دائمی: connection pool + کش درون‌حافظه‌ای + goroutine سبک (۲KB)<br/>مزیت: بدون واسطه + حفظ state + pooling بومی"])
+    GO ~~~ note2
+
+    classDef phpBox fill:#f5f0fb,stroke:#777BB4,stroke-width:1.5px,color:#1f2937;
+    classDef goBox  fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
+    classDef noteBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1px,color:#1f2937,font-style:italic;
+    class PHP phpBox;
+    class GO goBox;
+    class note1,note2 noteBox;</pre>
 <figcaption>شکل ۱-۱-الف: چرخه‌ی حیات کامل درخواست در <bdi dir="ltr">PHP-FPM</bdi> و <bdi dir="ltr">Go</bdi></figcaption>
 </figure>
 <h3 id="مقایسه‌ی-دیکلری-کانتینر">مقایسه‌ی دیپلوی کانتینری: PHP در برابر Go</h3>
@@ -386,92 +302,48 @@ ENTRYPOINT ["/server"]
 <h3 id="مدل-ذهنی-php-در-برابر-go">مدل ذهنی PHP در برابر Go: نمودار ون</h3>
 <p>یکی از مؤثرترین راه‌ها برای درک تفاوت فلسفی دو زبان، ترسیم مدل ذهنی هرکدام و یافتن نقاط اشتراک و افتراق آن‌هاست. نمودار ون زیر دو دایره‌ی ذهنی <bdi dir="ltr">PHP</bdi> و <bdi dir="ltr">Go</bdi> را نشان می‌دهد: دایره‌ی بنفش (<bdi dir="ltr">PHP</bdi>) شامل مفاهیمی است که ریشه در دنیای پویا و مبتنی بر فریم‌ورک دارند و دایره‌ی فیروزه‌ای (<bdi dir="ltr">Go</bdi>) مفاهیمی را در بر می‌گیرد که بر صراحت، هم‌زمانی و کامپایل ایستا استوارند. بخش اشتراک — یعنی نقاطی که هر دو زبان در آن‌ها هم‌سو هستند — شامل حوزه‌هایی مانند ساخت سرور وب، مدیریت <bdi dir="ltr">HTTP</bdi>، دسترسی به پایگاه داده، کار با <bdi dir="ltr">JSON</bdi> و تست‌نویسی است. اما خارج از این اشتراک، تفاوت‌های بنیادین خود را نشان می‌دهند: <bdi dir="ltr">PHP</bdi> با <bdi dir="ltr">magic methods</bdi> ، <bdi dir="ltr">traits</bdi> و <bdi dir="ltr">dynamic dispatch</bdi> کار می‌کند در حالی که <bdi dir="ltr">Go</bdi> با <bdi dir="ltr">channels</bdi> ، <bdi dir="ltr">interfaces</bdi> ، <bdi dir="ltr">defer</bdi> و بازگرداندن چند مقداری عمل می‌کند. درک این تقاطع‌ها و تفاوت‌ها به شما کمک می‌کند تا بدانید کدام مهارت‌های <bdi dir="ltr">PHP</bdi> قابل انتقال هستند و کدام باید از نو آموخته شوند.</p>
 <figure class="diagram" dir="ltr">
-<svg height="580" viewBox="0 0 800 580" width="800" xmlns="http://www.w3.org/2000/svg">
-<defs><filter id="sh3" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
-<marker id="arrVenn" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#666" points="0 0, 10 3.5, 0 7"></polygon></marker>
-</defs>
-<!-- Background -->
-<rect fill="#fafafa" height="580" rx="12" width="800" x="0" y="0"></rect>
-<!-- Title -->
-<text fill="#333" font-size="16" font-weight="bold" text-anchor="middle" x="400" y="30" direction="rtl" unicode-bidi="embed">مدل ذهنی <tspan direction="ltr" unicode-bidi="embed">PHP</tspan> در برابر <tspan direction="ltr" unicode-bidi="embed">Go</tspan> — نمودار ون</text>
+<pre class="mermaid">flowchart LR
+    subgraph PHPO["فقط PHP"]
+        direction TB
+        P1["Dynamic Typing"]
+        P2["Inheritance"]
+        P3["Exceptions"]
+        P4["Shared-Nothing"]
+        P5["Request-Scoped"]
+        P6["Magic Methods"]
+        P7["Traits"]
+        P8["Dynamic Dispatch"]
+    end
+    subgraph BOTH["اشتراک"]
+        direction TB
+        C1["Web Servers"]
+        C2["HTTP Handling"]
+        C3["Database Access"]
+        C4["JSON"]
+        C5["Testing"]
+    end
+    subgraph GOO["فقط Go"]
+        direction TB
+        G1["Static Typing"]
+        G2["Composition"]
+        G3["Error Values"]
+        G4["Goroutines"]
+        G5["Compiled Binary"]
+        G6["Channels"]
+        G7["Interfaces (implicit)"]
+        G8["Defer / Multiple Returns"]
+    end
+    PHPO ~~~ BOTH ~~~ GOO
+    note(["💡 نکته‌ی کلیدی: مهارت‌های مشترک قابل انتقال هستند — اما مدل ذهنی هر زبان متفاوت است.<br/>قانون طلایی: ذهنیت PHP «فریم‌ورک بقیه‌اش را انجام می‌دهد» ← ذهنیت Go «همه‌چیز را صریح بنویس»."])
 
-<!-- PHP Circle -->
-<circle cx="300" cy="230" fill="#777BB4" fill-opacity="0.12" r="190" stroke="#777BB4" stroke-width="2.5"></circle>
-<text fill="#777BB4" font-size="18" font-weight="bold" text-anchor="middle" x="190" y="80" direction="ltr" unicode-bidi="embed">PHP</text>
-
-<!-- Go Circle -->
-<circle cx="500" cy="230" fill="#00ADD8" fill-opacity="0.12" r="190" stroke="#00ADD8" stroke-width="2.5"></circle>
-<text fill="#00ADD8" font-size="18" font-weight="bold" text-anchor="middle" x="610" y="80" direction="ltr" unicode-bidi="embed">Go</text>
-
-<!-- PHP-only items (left) -->
-<rect fill="#f3e5f5" height="26" rx="5" stroke="#777BB4" stroke-width="1" width="130" x="80" y="140"></rect>
-<text fill="#5E35B1" font-size="11" text-anchor="middle" x="145" y="158" direction="ltr" unicode-bidi="embed">Dynamic Typing</text>
-<rect fill="#f3e5f5" height="26" rx="5" stroke="#777BB4" stroke-width="1" width="130" x="80" y="175"></rect>
-<text fill="#5E35B1" font-size="11" text-anchor="middle" x="145" y="193" direction="ltr" unicode-bidi="embed">Inheritance</text>
-<rect fill="#f3e5f5" height="26" rx="5" stroke="#777BB4" stroke-width="1" width="130" x="80" y="210"></rect>
-<text fill="#5E35B1" font-size="11" text-anchor="middle" x="145" y="228" direction="ltr" unicode-bidi="embed">Exceptions</text>
-<rect fill="#f3e5f5" height="26" rx="5" stroke="#777BB4" stroke-width="1" width="130" x="80" y="245"></rect>
-<text fill="#5E35B1" font-size="11" text-anchor="middle" x="145" y="263" direction="ltr" unicode-bidi="embed">Shared-Nothing</text>
-<rect fill="#f3e5f5" height="26" rx="5" stroke="#777BB4" stroke-width="1" width="130" x="80" y="280"></rect>
-<text fill="#5E35B1" font-size="11" text-anchor="middle" x="145" y="298" direction="ltr" unicode-bidi="embed">Request-Scoped</text>
-
-<!-- PHP-exclusive outside circle -->
-<rect fill="#fff" height="26" rx="5" stroke="#9C27B0" stroke-dasharray="4,3" stroke-width="1" width="140" x="30" y="340"></rect>
-<text fill="#7B1FA2" font-size="10" text-anchor="middle" x="100" y="358" direction="ltr" unicode-bidi="embed">Magic Methods</text>
-<rect fill="#fff" height="26" rx="5" stroke="#9C27B0" stroke-dasharray="4,3" stroke-width="1" width="140" x="30" y="375"></rect>
-<text fill="#7B1FA2" font-size="10" text-anchor="middle" x="100" y="393" direction="ltr" unicode-bidi="embed">Traits</text>
-<rect fill="#fff" height="26" rx="5" stroke="#9C27B0" stroke-dasharray="4,3" stroke-width="1" width="140" x="30" y="410"></rect>
-<text fill="#7B1FA2" font-size="10" text-anchor="middle" x="100" y="428" direction="ltr" unicode-bidi="embed">Dynamic Dispatch</text>
-
-<!-- Go-only items (right) -->
-<rect fill="#e0f7fa" height="26" rx="5" stroke="#00ADD8" stroke-width="1" width="130" x="590" y="140"></rect>
-<text fill="#00838F" font-size="11" text-anchor="middle" x="655" y="158" direction="ltr" unicode-bidi="embed">Static Typing</text>
-<rect fill="#e0f7fa" height="26" rx="5" stroke="#00ADD8" stroke-width="1" width="130" x="590" y="175"></rect>
-<text fill="#00838F" font-size="11" text-anchor="middle" x="655" y="193" direction="ltr" unicode-bidi="embed">Composition</text>
-<rect fill="#e0f7fa" height="26" rx="5" stroke="#00ADD8" stroke-width="1" width="130" x="590" y="210"></rect>
-<text fill="#00838F" font-size="11" text-anchor="middle" x="655" y="228" direction="ltr" unicode-bidi="embed">Error Values</text>
-<rect fill="#e0f7fa" height="26" rx="5" stroke="#00ADD8" stroke-width="1" width="130" x="590" y="245"></rect>
-<text fill="#00838F" font-size="11" text-anchor="middle" x="655" y="263" direction="ltr" unicode-bidi="embed">Goroutines</text>
-<rect fill="#e0f7fa" height="26" rx="5" stroke="#00ADD8" stroke-width="1" width="130" x="590" y="280"></rect>
-<text fill="#00838F" font-size="11" text-anchor="middle" x="655" y="298" direction="ltr" unicode-bidi="embed">Compiled Binary</text>
-
-<!-- Go-exclusive outside circle -->
-<rect fill="#fff" height="26" rx="5" stroke="#00838F" stroke-dasharray="4,3" stroke-width="1" width="160" x="620" y="340"></rect>
-<text fill="#006064" font-size="10" text-anchor="middle" x="700" y="358" direction="ltr" unicode-bidi="embed">Channels</text>
-<rect fill="#fff" height="26" rx="5" stroke="#00838F" stroke-dasharray="4,3" stroke-width="1" width="160" x="620" y="375"></rect>
-<text fill="#006064" font-size="10" text-anchor="middle" x="700" y="393" direction="ltr" unicode-bidi="embed">Interfaces (implicit)</text>
-<rect fill="#fff" height="26" rx="5" stroke="#00838F" stroke-dasharray="4,3" stroke-width="1" width="160" x="620" y="410"></rect>
-<text fill="#006064" font-size="10" text-anchor="middle" x="700" y="428" direction="ltr" unicode-bidi="embed">Defer / Multiple Returns</text>
-
-<!-- Overlap items (center) -->
-<rect fill="#e8eaf6" height="26" rx="5" stroke="#5C6BC0" stroke-width="1.5" width="120" x="340" y="165"></rect>
-<text fill="#283593" font-size="11" text-anchor="middle" x="400" y="183" direction="ltr" unicode-bidi="embed">Web Servers</text>
-<rect fill="#e8eaf6" height="26" rx="5" stroke="#5C6BC0" stroke-width="1.5" width="120" x="340" y="200"></rect>
-<text fill="#283593" font-size="11" text-anchor="middle" x="400" y="218" direction="ltr" unicode-bidi="embed">HTTP Handling</text>
-<rect fill="#e8eaf6" height="26" rx="5" stroke="#5C6BC0" stroke-width="1.5" width="120" x="340" y="235"></rect>
-<text fill="#283593" font-size="11" text-anchor="middle" x="400" y="253" direction="ltr" unicode-bidi="embed">Database Access</text>
-<rect fill="#e8eaf6" height="26" rx="5" stroke="#5C6BC0" stroke-width="1.5" width="120" x="340" y="270"></rect>
-<text fill="#283593" font-size="11" text-anchor="middle" x="400" y="288" direction="ltr" unicode-bidi="embed">JSON</text>
-<rect fill="#e8eaf6" height="26" rx="5" stroke="#5C6BC0" stroke-width="1.5" width="120" x="340" y="305"></rect>
-<text fill="#283593" font-size="11" text-anchor="middle" x="400" y="323" direction="ltr" unicode-bidi="embed">Testing</text>
-
-<!-- PHP-exclusive label -->
-<text fill="#7B1FA2" font-size="10" font-weight="bold" text-anchor="middle" x="100" y="330" direction="rtl" unicode-bidi="embed">فقط <tspan direction="ltr" unicode-bidi="embed">PHP</tspan></text>
-<!-- Go-exclusive label -->
-<text fill="#006064" font-size="10" font-weight="bold" text-anchor="middle" x="700" y="330" direction="rtl" unicode-bidi="embed">فقط <tspan direction="ltr" unicode-bidi="embed">Go</tspan></text>
-<!-- Overlap label -->
-<text fill="#283593" font-size="10" font-weight="bold" text-anchor="middle" x="400" y="155" direction="rtl" unicode-bidi="embed">اشتراک</text>
-
-<!-- Info Box -->
-<rect fill="#fff8e1" height="56" rx="8" stroke="#FF8F00" stroke-width="1.5" width="720" x="40" y="458"></rect>
-<text fill="#E65100" font-size="11" font-weight="bold" text-anchor="middle" x="400" y="480" direction="rtl" unicode-bidi="embed">💡 نکته‌ی کلیدی: مهارت‌های مشترک (اشتراک) قابل انتقال هستند — اما مدل ذهنی هر زبان متفاوت است</text>
-<text fill="#E65100" font-size="10" text-anchor="middle" x="400" y="500" direction="rtl" unicode-bidi="embed">بخش‌های انحصاری هر زبان نیازمند بازآموزی ذهنی هستند، نه فقط یادگیری <tspan direction="ltr" unicode-bidi="embed">syntax</tspan> جدید</text>
-
-<!-- Golden Rule Bar -->
-<rect fill="#37474F" height="42" rx="8" width="720" x="40" y="524"></rect>
-<text fill="#FFD54F" font-size="12" font-weight="bold" text-anchor="middle" x="400" y="541" direction="rtl" unicode-bidi="embed">قانون طلایی:</text>
-<text fill="#FFF" font-size="11" text-anchor="middle" x="400" y="557" direction="rtl" unicode-bidi="embed">ذهنیت <tspan direction="ltr" unicode-bidi="embed">PHP</tspan>: «فریم‌ورک بقیه‌اش را انجام می‌دهد» ← ذهنیت <tspan direction="ltr" unicode-bidi="embed">Go</tspan>: «همه‌چیز را صریح بنویس»</text>
-</svg>
+    classDef phpBox fill:#f5f0fb,stroke:#777BB4,stroke-width:1.5px,color:#1f2937;
+    classDef goBox  fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
+    classDef bothBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
+    classDef noteBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1px,color:#1f2937,font-style:italic;
+    class PHPO phpBox;
+    class GOO goBox;
+    class BOTH bothBox;
+    class note noteBox;</pre>
 <figcaption>شکل ۱-۱-ب: نمودار ون مدل ذهنی <bdi dir="ltr">PHP</bdi> و <bdi dir="ltr">Go</bdi> — نقاط اشتراک و افتراق فلسفی</figcaption>
 </figure>
 
@@ -527,6 +399,7 @@ ENTRYPOINT ["/server"]
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/xml.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/ini.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/plaintext.min.js"></script>
+<script src="assets/js/diagrams.js"></script>
 <script src="assets/js/main.js"></script>
 </body>
 </html>

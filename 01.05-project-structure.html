@@ -76,134 +76,99 @@
 <p>صریح‌تر و واضح‌تر است.</p>
 <p>و وابسته به مفاهیم پایه زبان است نه ابزارهای جانبی.</p>
 <figure class="diagram" dir="ltr">
-<svg height="350" viewBox="0 0 650 350" width="650" xmlns="http://www.w3.org/2000/svg"><defs><filter id="sh11" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter></defs>
-<text fill="#777BB4" font-size="15" font-weight="bold" text-anchor="middle" x="160" y="25" direction="ltr" unicode-bidi="embed">PHP (Laravel)</text>
-<text fill="#00ADD8" font-size="15" font-weight="bold" text-anchor="middle" x="490" y="25" direction="ltr" unicode-bidi="embed">Go</text>
-<!-- PHP structure -->
-<rect fill="#f3e5f5" height="300" rx="8" stroke="#777BB4" stroke-width="1.5" width="260" x="30" y="40"></rect>
-<text fill="#333" font-family="monospace" font-size="12" x="45" y="65" direction="ltr" unicode-bidi="embed">app/</text>
-<text fill="#666" font-family="monospace" font-size="11" x="60" y="85" direction="ltr" unicode-bidi="embed">├── Http/Controllers/</text>
-<text fill="#666" font-family="monospace" font-size="11" x="60" y="102" direction="ltr" unicode-bidi="embed">├── Models/</text>
-<text fill="#666" font-family="monospace" font-size="11" x="60" y="119" direction="ltr" unicode-bidi="embed">└── Services/</text>
-<text fill="#333" font-family="monospace" font-size="12" x="45" y="142" direction="ltr" unicode-bidi="embed">config/</text>
-<text fill="#333" font-family="monospace" font-size="12" x="45" y="160" direction="ltr" unicode-bidi="embed">database/</text>
-<text fill="#333" font-family="monospace" font-size="12" x="45" y="178" direction="ltr" unicode-bidi="embed">public/</text>
-<text fill="#333" font-family="monospace" font-size="12" x="45" y="196" direction="ltr" unicode-bidi="embed">resources/</text>
-<text fill="#333" font-family="monospace" font-size="12" x="45" y="214" direction="ltr" unicode-bidi="embed">routes/</text>
-<text fill="#333" font-family="monospace" font-size="12" x="45" y="232" direction="ltr" unicode-bidi="embed">tests/</text>
-<text fill="#333" font-family="monospace" font-size="12" x="45" y="250" direction="ltr" unicode-bidi="embed">vendor/</text>
-<text fill="#777BB4" font-family="monospace" font-size="12" x="45" y="270" direction="ltr" unicode-bidi="embed">composer.json</text>
-<!-- Go structure -->
-<rect fill="#e0f7fa" height="300" rx="8" stroke="#00ADD8" stroke-width="1.5" width="260" x="360" y="40"></rect>
-<text fill="#333" font-family="monospace" font-size="12" x="375" y="65" direction="ltr" unicode-bidi="embed">cmd/</text>
-<text fill="#666" font-family="monospace" font-size="11" x="390" y="85" direction="ltr" unicode-bidi="embed">└── myapp/main.go</text>
-<text fill="#00ADD8" font-family="monospace" font-size="12" x="375" y="108" direction="ltr" unicode-bidi="embed">internal/</text>
-<text fill="#666" font-family="monospace" font-size="11" x="390" y="128" direction="ltr" unicode-bidi="embed">├── service/</text>
-<text fill="#666" font-family="monospace" font-size="11" x="390" y="145" direction="ltr" unicode-bidi="embed">├── handler/</text>
-<text fill="#666" font-family="monospace" font-size="11" x="390" y="162" direction="ltr" unicode-bidi="embed">└── repository/</text>
-<text fill="#00ADD8" font-family="monospace" font-size="12" x="375" y="185" direction="ltr" unicode-bidi="embed">pkg/</text>
-<text fill="#666" font-family="monospace" font-size="11" x="390" y="205" direction="ltr" unicode-bidi="embed">├── logger/</text>
-<text fill="#666" font-family="monospace" font-size="11" x="390" y="222" direction="ltr" unicode-bidi="embed">└── utils/</text>
-<text fill="#333" font-family="monospace" font-size="12" x="375" y="245" direction="ltr" unicode-bidi="embed">api/</text>
-<text fill="#333" font-family="monospace" font-size="12" x="375" y="263" direction="ltr" unicode-bidi="embed">configs/</text>
-<text fill="#333" font-family="monospace" font-size="12" x="375" y="281" direction="ltr" unicode-bidi="embed">scripts/</text>
-<text fill="#00ADD8" font-family="monospace" font-size="12" x="375" y="301" direction="ltr" unicode-bidi="embed">go.mod</text>
-<text fill="#00ADD8" font-family="monospace" font-size="12" x="375" y="319" direction="ltr" unicode-bidi="embed">go.sum</text>
-</svg>
+<pre class="mermaid">flowchart LR
+    subgraph PHP["PHP (Laravel)"]
+        direction TB
+        P1["app/<br/>├── Http/Controllers/<br/>├── Models/<br/>└── Services/"]
+        P2["config/"]
+        P3["database/"]
+        P4["public/"]
+        P5["resources/"]
+        P6["routes/"]
+        P7["tests/"]
+        P8["vendor/"]
+        P9["composer.json"]
+    end
+    subgraph GO["Go"]
+        direction TB
+        G1["cmd/<br/>└── myapp/main.go"]
+        G2["internal/<br/>├── service/<br/>├── handler/<br/>└── repository/"]
+        G3["pkg/<br/>├── logger/<br/>└── utils/"]
+        G4["api/"]
+        G5["configs/"]
+        G6["scripts/"]
+        G7["go.mod"]
+        G8["go.sum"]
+    end
+
+    classDef phpBox fill:#f5f0fb,stroke:#777BB4,stroke-width:1.5px,color:#1f2937;
+    classDef goBox  fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
+    class PHP phpBox;
+    class GO goBox;</pre>
 <figcaption>مقایسه‌ی ساختار پروژه در <bdi dir="ltr">PHP</bdi> (<bdi dir="ltr">Laravel</bdi>) و <bdi dir="ltr">Go</bdi></figcaption>
 </figure>
 <p><strong>ساختار متداول پروژه در</strong> <strong dir="ltr">PHP</strong></p>
 <p>در اغلب پروژه‌های PHP خصوصاً آن‌هایی که از فریم‌ورک‌هایی مانند Laravel یا Symfony استفاده می‌کنند ساختار پروژه معمولاً به‌صورت درختی و مبتنی بر لایه‌های معماری و با پوشه‌های متعدد است:</p>
 <figure class="diagram" dir="ltr">
-<svg height="395" viewBox="0 0 420 395" width="420" xmlns="http://www.w3.org/2000/svg"><defs><filter id="sh12" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter></defs>
-<rect fill="#fafafa" height="395" rx="8" stroke="#e0e0e0" stroke-width="1.5" width="420" x="0" y="0"></rect>
-<!-- Tree connector lines -->
-<g fill="none" stroke="#ccc" stroke-linecap="round" stroke-width="1.5">
-<!-- Level 0 vertical line -->
-<line x1="32" x2="32" y1="54" y2="362"></line>
-<!-- Level 0 horizontal connectors (├── and └──) -->
-<line x1="32" x2="46" y1="54" y2="54"></line>
-<line x1="32" x2="46" y1="166" y2="166"></line>
-<line x1="32" x2="46" y1="194" y2="194"></line>
-<line x1="32" x2="46" y1="222" y2="222"></line>
-<line x1="32" x2="46" y1="250" y2="250"></line>
-<line x1="32" x2="46" y1="278" y2="278"></line>
-<line x1="32" x2="46" y1="306" y2="306"></line>
-<line x1="32" x2="46" y1="334" y2="334"></line>
-<line x1="32" x2="46" y1="362" y2="362"></line>
-<!-- Level 1 vertical line (under app/) -->
-<line x1="54" x2="54" y1="54" y2="138"></line>
-<!-- Level 1 horizontal connectors -->
-<line x1="54" x2="68" y1="82" y2="82"></line>
-<line x1="54" x2="68" y1="110" y2="110"></line>
-<line x1="54" x2="68" y1="138" y2="138"></line>
-</g>
-<!-- Root -->
-<text fill="#777BB4" font-family="monospace" font-size="13" font-weight="bold" x="16" y="30" direction="ltr" unicode-bidi="embed">project/</text>
-<!-- Level 0 items -->
-<text fill="#777BB4" font-family="monospace" font-size="13" font-weight="bold" x="50" y="58" direction="ltr" unicode-bidi="embed">app/</text>
-<!-- Level 1 items (under app/) -->
-<text fill="#777BB4" font-family="monospace" font-size="12" x="72" y="86" direction="ltr" unicode-bidi="embed">Http/Controllers/</text>
-<text fill="#777BB4" font-family="monospace" font-size="12" x="72" y="114" direction="ltr" unicode-bidi="embed">Models/</text>
-<text fill="#777BB4" font-family="monospace" font-size="12" x="72" y="142" direction="ltr" unicode-bidi="embed">Services/</text>
-<!-- Remaining level 0 items -->
-<text fill="#777BB4" font-family="monospace" font-size="13" font-weight="bold" x="50" y="170" direction="ltr" unicode-bidi="embed">config/</text>
-<text fill="#777BB4" font-family="monospace" font-size="13" font-weight="bold" x="50" y="198" direction="ltr" unicode-bidi="embed">database/</text>
-<text fill="#777BB4" font-family="monospace" font-size="13" font-weight="bold" x="50" y="226" direction="ltr" unicode-bidi="embed">public/</text>
-<text fill="#777BB4" font-family="monospace" font-size="13" font-weight="bold" x="50" y="254" direction="ltr" unicode-bidi="embed">resources/</text>
-<text fill="#777BB4" font-family="monospace" font-size="13" font-weight="bold" x="50" y="282" direction="ltr" unicode-bidi="embed">routes/</text>
-<text fill="#777BB4" font-family="monospace" font-size="13" font-weight="bold" x="50" y="310" direction="ltr" unicode-bidi="embed">tests/</text>
-<text fill="#777BB4" font-family="monospace" font-size="13" font-weight="bold" x="50" y="338" direction="ltr" unicode-bidi="embed">vendor/</text>
-<text fill="#555" font-family="monospace" font-size="13" x="50" y="366" direction="ltr" unicode-bidi="embed">composer.json</text>
-</svg>
+<pre class="mermaid">flowchart TB
+    Root["project/"]
+    A["app/<br/>├── Http/Controllers/<br/>├── Models/<br/>└── Services/"]
+    C["config/"]
+    D["database/"]
+    P["public/"]
+    R["resources/"]
+    RT["routes/"]
+    T["tests/"]
+    V["vendor/"]
+    J["composer.json"]
+
+    Root --> A
+    Root --> C
+    Root --> D
+    Root --> P
+    Root --> R
+    Root --> RT
+    Root --> T
+    Root --> V
+    Root --> J
+
+    classDef rootBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937,font-weight:bold;
+    classDef dirBox  fill:#f5f0fb,stroke:#777BB4,stroke-width:1px,color:#1f2937;
+    class Root rootBox;
+    class A,C,D,P,R,RT,T,V,J dirBox;</pre>
 <figcaption>ساختار متداول پروژه <bdi dir="ltr">PHP</bdi> (<bdi dir="ltr">Laravel</bdi>)</figcaption>
 </figure>
 <p>این ساختار تا حد زیادی وابسته به conventions فریم‌ورک است و در عمل مهاجرت از یک فریم‌ورک به دیگری یا خروج از چارچوب پیشنهادی هزینه‌ی بالایی دارد یا گاهاً امکان‌پذیر نیست. مثلاً کدی که در <code>app/Http/Controllers/</code> قرار دارد به شدت به زیرساخت <bdi dir="ltr">Laravel</bdi> وابسته است و انتقال آن به <bdi dir="ltr">Symfony</bdi> عملاً بازنویسی کامل را می‌طلبد.</p>
 <p>در Go ساختار پروژه‌ها اغلب بدون اتکا به فریم‌ورک و از صفر طراحی می‌شود. جامعه‌ی Go به‌مرور ساختارهایی استاندارد و توصیه‌شده ارائه داده است که به‌صورت غیررسمی پذیرفته شده‌اند. از رایج‌ترین ساختارها، ساختار موسوم به «<bdi dir="ltr">Standard Project Layout</bdi>» است. مزیت اصلی این ساختار آن است که هر توسعه‌دهنده‌ی <bdi dir="ltr">Go</bdi> با ورود به پروژه‌ی جدید فوراً می‌داند هر پوشه چه محتوایی دارد — برخلاف <bdi dir="ltr">PHP</bdi> که هر فریم‌ورک ساختار متفاوتی دارد.</p>
 <figure class="diagram" dir="ltr">
-<svg height="370" viewBox="0 0 520 370" width="520" xmlns="http://www.w3.org/2000/svg"><defs><filter id="sh13" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter></defs>
-<rect fill="#fafafa" height="370" rx="8" stroke="#e0e0e0" stroke-width="1.5" width="520" x="0" y="0"></rect>
-<!-- Tree connector lines -->
-<g fill="none" stroke="#ccc" stroke-linecap="round" stroke-width="1.5">
-<!-- Level 0 vertical line -->
-<line x1="32" x2="32" y1="54" y2="334"></line>
-<!-- Level 0 horizontal connectors -->
-<line x1="32" x2="46" y1="54" y2="54"></line>
-<line x1="32" x2="46" y1="110" y2="110"></line>
-<line x1="32" x2="46" y1="138" y2="138"></line>
-<line x1="32" x2="46" y1="166" y2="166"></line>
-<line x1="32" x2="46" y1="194" y2="194"></line>
-<line x1="32" x2="46" y1="222" y2="222"></line>
-<line x1="32" x2="46" y1="250" y2="250"></line>
-<line x1="32" x2="46" y1="278" y2="278"></line>
-<line x1="32" x2="46" y1="306" y2="306"></line>
-<line x1="32" x2="46" y1="334" y2="334"></line>
-<!-- Level 1 vertical line (under cmd/) -->
-<line x1="54" x2="54" y1="62" y2="82"></line>
-<!-- Level 1 horizontal connector -->
-<line x1="54" x2="68" y1="82" y2="82"></line>
-</g>
-<!-- Root -->
-<text fill="#00ADD8" font-family="monospace" font-size="13" font-weight="bold" x="16" y="30" direction="ltr" unicode-bidi="embed">project/</text>
-<!-- Level 0 items -->
-<text fill="#00ADD8" font-family="monospace" font-size="13" font-weight="bold" x="50" y="58" direction="ltr" unicode-bidi="embed">cmd/</text>
-<!-- Level 1 item (under cmd/) -->
-<text fill="#00ADD8" font-family="monospace" font-size="12" x="72" y="86" direction="ltr" unicode-bidi="embed">myapp/</text>
-<text fill="#999" font-family="sans-serif" font-size="10" x="130" y="87" direction="rtl" unicode-bidi="embed">← نقطه‌ی ورود اصلی</text>
-<!-- Remaining level 0 items -->
-<text fill="#00ADD8" font-family="monospace" font-size="13" font-weight="bold" x="50" y="114" direction="ltr" unicode-bidi="embed">internal/</text>
-<text fill="#999" font-family="sans-serif" font-size="10" x="140" y="115" direction="rtl" unicode-bidi="embed">← کدهایی که نباید در خارج ایمپورت شوند</text>
-<text fill="#00ADD8" font-family="monospace" font-size="13" font-weight="bold" x="50" y="142" direction="ltr" unicode-bidi="embed">pkg/</text>
-<text fill="#999" font-family="sans-serif" font-size="10" x="96" y="143" direction="rtl" unicode-bidi="embed">← پکیج‌های قابل استفاده توسط سایر پروژه‌ها</text>
-<text fill="#00ADD8" font-family="monospace" font-size="13" font-weight="bold" x="50" y="170" direction="ltr" unicode-bidi="embed">api/</text>
-<text fill="#999" font-family="sans-serif" font-size="10" x="96" y="171" direction="rtl" unicode-bidi="embed">← فایل‌های <tspan direction="ltr" unicode-bidi="embed">API</tspan></text>
-<text fill="#00ADD8" font-family="monospace" font-size="13" font-weight="bold" x="50" y="198" direction="ltr" unicode-bidi="embed">configs/</text>
-<text fill="#00ADD8" font-family="monospace" font-size="13" font-weight="bold" x="50" y="226" direction="ltr" unicode-bidi="embed">scripts/</text>
-<text fill="#00ADD8" font-family="monospace" font-size="13" font-weight="bold" x="50" y="254" direction="ltr" unicode-bidi="embed">build/</text>
-<text fill="#00ADD8" font-family="monospace" font-size="13" font-weight="bold" x="50" y="282" direction="ltr" unicode-bidi="embed">test/</text>
-<text fill="#555" font-family="monospace" font-size="13" x="50" y="310" direction="ltr" unicode-bidi="embed">go.mod</text>
-<text fill="#555" font-family="monospace" font-size="13" x="50" y="338" direction="ltr" unicode-bidi="embed">go.sum</text>
-</svg>
+<pre class="mermaid">flowchart TB
+    Root["project/"]
+    CMD["cmd/<br/>└── myapp/<br/>← نقطه‌ی ورود اصلی"]
+    INT["internal/<br/>← کدهایی که نباید در خارج ایمپورت شوند"]
+    PKG["pkg/<br/>← پکیج‌های قابل استفاده توسط سایر پروژه‌ها"]
+    API["api/<br/>← فایل‌های API"]
+    CFG["configs/"]
+    SCR["scripts/"]
+    BLD["build/"]
+    TST["test/"]
+    MOD["go.mod"]
+    SUM["go.sum"]
+
+    Root --> CMD
+    Root --> INT
+    Root --> PKG
+    Root --> API
+    Root --> CFG
+    Root --> SCR
+    Root --> BLD
+    Root --> TST
+    Root --> MOD
+    Root --> SUM
+
+    classDef rootBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937,font-weight:bold;
+    classDef dirBox  fill:#e6f9fc,stroke:#00ADD8,stroke-width:1px,color:#1f2937;
+    class Root rootBox;
+    class CMD,INT,PKG,API,CFG,SCR,BLD,TST,MOD,SUM dirBox;</pre>
 <figcaption>ساختار استاندارد پروژه <bdi dir="ltr">Go</bdi> (<bdi dir="ltr">Standard</bdi> <bdi dir="ltr">Project</bdi> <bdi dir="ltr">Layout</bdi>)</figcaption>
 </figure>
 <p dir="ltr"><strong>cmd، internal، pkg</strong></p>
@@ -325,44 +290,44 @@ func (u *User) validate() bool { // unexported method
 <h3 id="ddd-در-go">ساختار Domain-Driven Design در Go</h3>
 <p>برای پروژه‌های بزرگ‌تر با منطق کسب‌وکار پیچیده، معماری <bdi dir="ltr">DDD</bdi> (<bdi dir="ltr">Domain-Driven Design</bdi>) در <bdi dir="ltr">Go</bdi> رایج است. برخلاف <bdi dir="ltr">PHP</bdi> که فریم‌ورک‌هایی مثل <bdi dir="ltr">Laravel</bdi> ساختار <bdi dir="ltr">DDD</bdi> را تحمیل می‌کنند، در <bdi dir="ltr">Go</bdi> شما خودتان ساختار را طراحی می‌کنید:</p>
 <figure class="diagram" dir="ltr">
-<svg height="350" viewBox="0 0 650 350" width="650" xmlns="http://www.w3.org/2000/svg"><defs><filter id="sh14" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter></defs>
-<rect fill="#fafafa" height="330" rx="8" width="650" x="0" y="0"></rect>
-<text fill="#00ADD8" font-size="15" font-weight="bold" text-anchor="middle" x="325" y="25" direction="rtl" unicode-bidi="embed">ساختار <tspan direction="ltr" unicode-bidi="embed">DDD</tspan> پیشنهادی در <tspan direction="ltr" unicode-bidi="embed">Go</tspan></text>
-<rect fill="#e0f7fa" height="290" rx="8" stroke="#00ADD8" stroke-width="1.5" width="280" x="15" y="40"></rect>
-<text fill="#00ADD8" font-family="monospace" font-size="13" font-weight="bold" x="30" y="65" direction="ltr" unicode-bidi="embed">cmd/</text>
-<text fill="#666" font-size="11" x="80" y="65" direction="ltr" unicode-bidi="embed">← نقاط ورود</text>
-<text fill="#333" font-family="monospace" font-size="12" x="45" y="85" direction="ltr" unicode-bidi="embed">└── myapp/main.go</text>
-<text fill="#00ADD8" font-family="monospace" font-size="13" font-weight="bold" x="30" y="110" direction="ltr" unicode-bidi="embed">internal/</text>
-<text fill="#666" font-size="11" x="105" y="110" direction="ltr" unicode-bidi="embed">← کد خصوصی پروژه</text>
-<text fill="#333" font-family="monospace" font-size="12" x="45" y="130" direction="ltr" unicode-bidi="embed">├── domain/</text>
-<text fill="#999" font-size="10" x="150" y="130" direction="rtl" unicode-bidi="embed">← موجودیت‌ها و قوانین</text>
-<text fill="#333" font-family="monospace" font-size="12" x="45" y="150" direction="ltr" unicode-bidi="embed">├── application/</text>
-<text fill="#999" font-size="10" x="165" y="150" direction="rtl" unicode-bidi="embed">← <tspan direction="ltr" unicode-bidi="embed">use</tspan> <tspan direction="ltr" unicode-bidi="embed">case</tspan>‌ها</text>
-<text fill="#333" font-family="monospace" font-size="12" x="45" y="170" direction="ltr" unicode-bidi="embed">├── infrastructure/</text>
-<text fill="#999" font-size="10" x="190" y="170" direction="rtl" unicode-bidi="embed">← پیاده‌سازی فنی</text>
-<text fill="#333" font-family="monospace" font-size="12" x="45" y="190" direction="ltr" unicode-bidi="embed">└── interfaces/</text>
-<text fill="#999" font-size="10" x="165" y="190" direction="rtl" unicode-bidi="embed">← HTTP handlers</text>
-<text fill="#27ae60" font-family="monospace" font-size="13" font-weight="bold" x="30" y="215" direction="ltr" unicode-bidi="embed">pkg/</text>
-<text fill="#666" font-size="11" x="65" y="215" direction="ltr" unicode-bidi="embed">← پکیج‌های عمومی</text>
-<text fill="#333" font-family="monospace" font-size="12" x="45" y="235" direction="ltr" unicode-bidi="embed">├── logger/</text>
-<text fill="#333" font-family="monospace" font-size="12" x="45" y="255" direction="ltr" unicode-bidi="embed">└── response/</text>
-<text fill="#f39c12" font-family="monospace" font-size="13" font-weight="bold" x="30" y="280" direction="ltr" unicode-bidi="embed">api/</text>
-<text fill="#666" font-size="11" x="60" y="280" direction="ltr" unicode-bidi="embed">← تعاریف proto/OpenAPI</text>
-<text fill="#f39c12" font-family="monospace" font-size="13" font-weight="bold" x="30" y="305" direction="ltr" unicode-bidi="embed">configs/</text>
-<text fill="#f39c12" font-family="monospace" font-size="13" font-weight="bold" x="30" y="325" direction="ltr" unicode-bidi="embed">go.mod</text>
-<!-- Right side: explanations -->
-<rect fill="#fff3e0" height="290" rx="8" stroke="#f39c12" stroke-width="1.5" width="310" x="320" y="40"></rect>
-<text fill="#e65100" font-size="13" font-weight="bold" text-anchor="middle" x="475" y="65" direction="rtl" unicode-bidi="embed">وابستگی‌ها فقط به داخل حرکت می‌کنند</text>
-<text fill="#333" font-size="12" x="340" y="95" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">domain</tspan> ← بدون وابستگی به لایه‌های دیگر</text>
-<text fill="#333" font-size="12" x="340" y="120" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">application</tspan> ← وابسته به <tspan direction="ltr" unicode-bidi="embed">domain</tspan></text>
-<text fill="#333" font-size="12" x="340" y="145" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">infrastructure</tspan> ← پیاده‌سازی <tspan direction="ltr" unicode-bidi="embed">interface</tspan>‌های <tspan direction="ltr" unicode-bidi="embed">domain</tspan></text>
-<text fill="#333" font-size="12" x="340" y="170" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">interfaces</tspan> ← <tspan direction="ltr" unicode-bidi="embed">handler</tspan>‌ها و <tspan direction="ltr" unicode-bidi="embed">adapter</tspan>‌ها</text>
-<text fill="#e65100" font-size="12" font-weight="bold" x="340" y="205" direction="rtl" unicode-bidi="embed">قانون کلیدی: <tspan direction="ltr" unicode-bidi="embed">domain</tspan> هیچ <tspan direction="ltr" unicode-bidi="embed">import</tspan> از</text>
-<text fill="#e65100" font-size="12" font-weight="bold" x="340" y="225" direction="rtl" unicode-bidi="embed">لایه‌های بیرونی ندارد!</text>
-<text fill="#27ae60" font-size="12" x="340" y="260" direction="rtl" unicode-bidi="embed">تست <tspan direction="ltr" unicode-bidi="embed">domain</tspan> بدون <tspan direction="ltr" unicode-bidi="embed">mock</tspan> کردن دیتابیس</text>
-<text fill="#27ae60" font-size="12" x="340" y="280" direction="rtl" unicode-bidi="embed">تغییر دیتابیس بدون تأثیر بر منطق</text>
-<text fill="#27ae60" font-size="12" x="340" y="300" direction="rtl" unicode-bidi="embed">جایگزینی فریم‌ورک <tspan direction="ltr" unicode-bidi="embed">HTTP</tspan> بدون بازنویسی</text>
-</svg>
+<pre class="mermaid">flowchart TB
+    Root["project/"]
+    CMD["cmd/<br/>└── myapp/main.go<br/>← نقاط ورود"]
+    INT["internal/<br/>← کد خصوصی پروژه"]
+    DOM["├── domain/<br/>← موجودیت‌ها و قوانین"]
+    APP["├── application/<br/>← use case‌ها"]
+    INF["├── infrastructure/<br/>← پیاده‌سازی فنی"]
+    IFC["└── interfaces/<br/>← HTTP handlers"]
+    PKG["pkg/<br/>← پکیج‌های عمومی"]
+    PLG["├── logger/"]
+    PRS["└── response/"]
+    API["api/<br/>← تعاریف proto/OpenAPI"]
+    CFG["configs/"]
+    MOD["go.mod"]
+
+    Root --> CMD
+    Root --> INT
+    INT --> DOM
+    INT --> APP
+    INT --> INF
+    INT --> IFC
+    Root --> PKG
+    PKG --> PLG
+    PKG --> PRS
+    Root --> API
+    Root --> CFG
+    Root --> MOD
+
+    rules(["قانون کلیدی: وابستگی‌ها فقط به داخل حرکت می‌کنند<br/>• domain ← بدون وابستگی به لایه‌های دیگر<br/>• application ← وابسته به domain<br/>• infrastructure ← پیاده‌سازی interface‌های domain<br/>• interfaces ← handler‌ها و adapter‌ها<br/><br/>✓ domain هیچ import از لایه‌های بیرونی ندارد!<br/>✓ تست domain بدون mock کردن دیتابیس<br/>✓ تغییر دیتابیس بدون تأثیر بر منطق<br/>✓ جایگزینی فریم‌ورک HTTP بدون بازنویسی"])
+
+    classDef rootBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937,font-weight:bold;
+    classDef dirBox  fill:#e6f9fc,stroke:#00ADD8,stroke-width:1px,color:#1f2937;
+    classDef domBox  fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
+    classDef ruleBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937,font-style:italic;
+    class Root rootBox;
+    class CMD,INT,PKG,API,CFG,MOD,APP,INF,IFC,PLG,PRS dirBox;
+    class DOM domBox;
+    class rules ruleBox;</pre>
 <figcaption>شکل ۱-۵-الف: ساختار <bdi dir="ltr">DDD</bdi> پیشنهادی برای پروژه‌های بزرگ <bdi dir="ltr">Go</bdi></figcaption>
 </figure>
 <h3 id="monorepo-vs-polyrepo">Monorepo در برابر Polyrepo</h3>
@@ -402,109 +367,53 @@ use (
 <p>درک جهت جریان وابستگی‌ها در ساختار پروژه‌ی <bdi dir="ltr">Go</bdi> بسیار مهم‌تر از خود ساختار پوشه‌هاست. برخلاف <bdi dir="ltr">PHP/Laravel</bdi> که وابستگی‌ها بین لایه‌ها غالباً دوطرفه هستند (مثلاً <bdi dir="ltr">Controller</bdi> ممکن است مستقیماً <bdi dir="ltr">Model</bdi> را فراخوانی کند و <bdi dir="ltr">Model</bdi> هم از <bdi dir="ltr">Service</bdi> استفاده کند)، در <bdi dir="ltr">Go</bdi> جریان وابستگی‌ها باید <strong>یک‌طرفه</strong> باشد. قانون ساده این است: <bdi dir="ltr">cmd</bdi> به همه وابسته است، <bdi dir="ltr">internal</bdi> فقط به <bdi dir="ltr">pkg</bdi> وابسته است، و <bdi dir="ltr">pkg</bdi> به هیچ‌چیز از داخل پروژه وابسته نیست. هرگز وابستگی معکوس مجاز نیست — یعنی <bdi dir="ltr">pkg</bdi> نمی‌تواند از <bdi dir="ltr">internal</bdi> <bdi dir="ltr">import</bdi> کند.</p>
 <p>این قانون یک‌طرفه بودن وابستگی‌ها مشکل <bdi dir="ltr">circular dependencies</bdi> را از ریشه حل می‌کند. در <bdi dir="ltr">PHP</bdi> وابستگی‌های چرخه‌ای معمولاً با <bdi dir="ltr">service container</bdi> و <bdi dir="ltr">lazy loading</bdi> پنهان می‌شوند اما در <bdi dir="ltr">Go</bdi> کامپایلر اجازه چرخه‌ی <bdi dir="ltr">import</bdi> نمی‌دهد و این محدودیت در واقع یک مزیت بزرگ است — وابستگی‌های چرخه‌ای نشانه‌ی طراحی ضعیف هستند و بهتر است در همان ابتدا اصلاح شوند.</p>
 <figure class="diagram" dir="ltr">
-<svg height="600" viewBox="0 0 820 600" width="820" xmlns="http://www.w3.org/2000/svg">
-<defs><filter id="sh15" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
-<marker id="arrDep1" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#00ADD8" points="0 0, 10 3.5, 0 7"></polygon></marker>
-<marker id="arrDep2" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#4CAF50" points="0 0, 10 3.5, 0 7"></polygon></marker>
-<marker id="arrDep3" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#FF9800" points="0 0, 10 3.5, 0 7"></polygon></marker>
-<marker id="arrForbid" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#e91e63" points="0 0, 10 3.5, 0 7"></polygon></marker>
-</defs>
-<rect fill="#fafafa" height="580" rx="8" width="820" x="0" y="0"></rect>
-<text fill="#333" font-size="16" font-weight="bold" text-anchor="middle" x="410" y="28" direction="rtl" unicode-bidi="embed">نمودار جریان وابستگی: <tspan direction="ltr" unicode-bidi="embed">cmd → internal → pkg</tspan></text>
+<pre class="mermaid">flowchart TB
+    subgraph CMD["cmd/ — نقاط ورود برنامه (به همه وابسته است)"]
+        direction LR
+        C1["cmd/myapp/main.go<br/>نقطه‌ی ورود اصلی"]
+        C2["cmd/migrate/main.go<br/>ابزار مهاجرت"]
+        C3["cmd/worker/main.go<br/>پردازش پس‌زمینه"]
+        C4["cmd/cli/main.go<br/>ابزار خط فرمان"]
+    end
 
-<!-- cmd/ layer - TOP -->
-<rect fill="#e0f7fa" height="120" rx="10" stroke="#00ADD8" stroke-width="2" width="790" x="15" y="45"></rect>
-<text fill="#00ADD8" font-size="14" font-weight="bold" text-anchor="middle" x="410" y="68" direction="rtl" unicode-bidi="embed">cmd/ — نقاط ورود برنامه (به همه وابسته است)</text>
+    subgraph INT["internal/ — کد خصوصی پروژه (فقط به pkg وابسته است)"]
+        direction LR
+        I1["internal/handler/<br/>دریافت درخواست HTTP"]
+        I2["internal/service/<br/>منطق کسب‌وکار"]
+        I3["internal/repository/<br/>دسترسی داده"]
+        I4["internal/model/<br/>مدل‌های دامنه"]
+        I1 --> I2 --> I3
+    end
 
-<rect fill="#fff" height="36" rx="4" stroke="#00ADD8" stroke-width="1.5" width="160" x="35" y="80"></rect>
-<text fill="#333" font-family="monospace" font-size="10" text-anchor="middle" x="115" y="102" direction="ltr" unicode-bidi="embed">cmd/myapp/main.go</text>
-<text fill="#666" font-size="8" text-anchor="middle" x="115" y="112" direction="rtl" unicode-bidi="embed">نقطه‌ی ورود اصلی</text>
+    subgraph PKG["pkg/ — پکیج‌های عمومی (به هیچ‌چیز داخلی وابسته نیست)"]
+        direction LR
+        P1["pkg/validator/"]
+        P2["pkg/logger/"]
+        P3["pkg/response/"]
+        P4["pkg/httputil/"]
+    end
 
-<rect fill="#fff" height="36" rx="4" stroke="#00ADD8" stroke-width="1.5" width="160" x="220" y="80"></rect>
-<text fill="#333" font-family="monospace" font-size="10" text-anchor="middle" x="300" y="102" direction="ltr" unicode-bidi="embed">cmd/migrate/main.go</text>
-<text fill="#666" font-size="8" text-anchor="middle" x="300" y="112" direction="rtl" unicode-bidi="embed">ابزار مهاجرت</text>
+    CMD --> INT --> PKG
 
-<rect fill="#fff" height="36" rx="4" stroke="#00ADD8" stroke-width="1.5" width="160" x="405" y="80"></rect>
-<text fill="#333" font-family="monospace" font-size="10" text-anchor="middle" x="485" y="102" direction="ltr" unicode-bidi="embed">cmd/worker/main.go</text>
-<text fill="#666" font-size="8" text-anchor="middle" x="485" y="112" direction="rtl" unicode-bidi="embed">پردازش پس‌زمینه</text>
+    BLOCKED["ممنوع!<br/>وابستگی معکوس<br/>pkg ← internal ← cmd<br/>هرگز برعکس!"]
 
-<rect fill="#fff" height="36" rx="4" stroke="#00ADD8" stroke-width="1.5" width="160" x="590" y="80"></rect>
-<text fill="#333" font-family="monospace" font-size="10" text-anchor="middle" x="670" y="102" direction="ltr" unicode-bidi="embed">cmd/cli/main.go</text>
-<text fill="#666" font-size="8" text-anchor="middle" x="670" y="112" direction="rtl" unicode-bidi="embed">ابزار خط فرمان</text>
+    subgraph CMP["مقایسه: ساختار PHP/Laravel"]
+        direction TB
+        PH1["app/Http/Controllers → app/Models → app/Services<br/>وابستگی‌ها اغلب دوطرفه — circular شایع"]
+        PH2["فریم‌ورک ساخت را تحمیل می‌کند نه نیاز پروژه"]
+        PH3["ساختار Go: جریان یک‌طرفه<br/>cmd → internal → pkg (one direction only)<br/>وابستگی‌ها همیشه یک‌طرفه — بدون چرخه<br/>ساختار بر اساس نیاز پروژه شکل می‌گیرد"]
+    end
 
-<!-- Dependency arrow cmd → internal -->
-<line marker-end="url(#arrDep1)" stroke="#00ADD8" stroke-width="2.5" x1="300" x2="300" y1="165" y2="190"></line>
-<line marker-end="url(#arrDep1)" stroke="#00ADD8" stroke-width="2.5" x1="520" x2="520" y1="165" y2="190"></line>
-<text fill="#00ADD8" font-size="10" font-weight="bold" text-anchor="middle" x="410" y="183" direction="ltr" unicode-bidi="embed">depends on ↓</text>
-
-<!-- internal/ layer - MIDDLE -->
-<rect fill="#e8f5e9" height="160" rx="10" stroke="#4CAF50" stroke-width="2" width="790" x="15" y="190"></rect>
-<text fill="#4CAF50" font-size="14" font-weight="bold" text-anchor="middle" x="410" y="213" direction="rtl" unicode-bidi="embed">internal/ — کد خصوصی پروژه (فقط به <tspan direction="ltr" unicode-bidi="embed">pkg</tspan> وابسته است)</text>
-
-<rect fill="#fff" height="50" rx="4" stroke="#4CAF50" stroke-width="1.5" width="140" x="35" y="225"></rect>
-<text fill="#333" font-family="monospace" font-size="10" text-anchor="middle" x="105" y="245" direction="ltr" unicode-bidi="embed">internal/handler/</text>
-<text fill="#666" font-size="9" text-anchor="middle" x="105" y="262" direction="rtl" unicode-bidi="embed">دریافت درخواست <tspan direction="ltr" unicode-bidi="embed">HTTP</tspan></text>
-
-<rect fill="#fff" height="50" rx="4" stroke="#4CAF50" stroke-width="1.5" width="140" x="195" y="225"></rect>
-<text fill="#333" font-family="monospace" font-size="10" text-anchor="middle" x="265" y="245" direction="ltr" unicode-bidi="embed">internal/service/</text>
-<text fill="#666" font-size="9" text-anchor="middle" x="265" y="262" direction="rtl" unicode-bidi="embed">منطق کسب‌وکار</text>
-
-<rect fill="#fff" height="50" rx="4" stroke="#4CAF50" stroke-width="1.5" width="140" x="355" y="225"></rect>
-<text fill="#333" font-family="monospace" font-size="10" text-anchor="middle" x="425" y="245" direction="ltr" unicode-bidi="embed">internal/repository/</text>
-<text fill="#666" font-size="9" text-anchor="middle" x="425" y="262" direction="rtl" unicode-bidi="embed">دسترسی داده</text>
-
-<rect fill="#fff" height="50" rx="4" stroke="#4CAF50" stroke-width="1.5" width="140" x="515" y="225"></rect>
-<text fill="#333" font-family="monospace" font-size="10" text-anchor="middle" x="585" y="245" direction="ltr" unicode-bidi="embed">internal/model/</text>
-<text fill="#666" font-size="9" text-anchor="middle" x="585" y="262" direction="rtl" unicode-bidi="embed">مدل‌های دامنه</text>
-
-<!-- Internal dependency arrows -->
-<text fill="#4CAF50" font-size="9" text-anchor="middle" x="265" y="288" direction="rtl" unicode-bidi="embed">handler → service → repository</text>
-<line marker-end="url(#arrDep2)" stroke="#4CAF50" stroke-width="1.5" x1="175" x2="195" y1="275" y2="275"></line>
-<line marker-end="url(#arrDep2)" stroke="#4CAF50" stroke-width="1.5" x1="335" x2="355" y1="275" y2="275"></line>
-
-<!-- Dependency arrow internal → pkg -->
-<line marker-end="url(#arrDep2)" stroke="#4CAF50" stroke-width="2.5" x1="300" x2="300" y1="350" y2="375"></line>
-<line marker-end="url(#arrDep2)" stroke="#4CAF50" stroke-width="2.5" x1="520" x2="520" y1="350" y2="375"></line>
-<text fill="#4CAF50" font-size="10" font-weight="bold" text-anchor="middle" x="410" y="368" direction="ltr" unicode-bidi="embed">depends on ↓</text>
-
-<!-- pkg/ layer - BOTTOM -->
-<rect fill="#fff3e0" height="100" rx="10" stroke="#FF9800" stroke-width="2" width="790" x="15" y="375"></rect>
-<text fill="#FF9800" font-size="14" font-weight="bold" text-anchor="middle" x="410" y="398" direction="rtl" unicode-bidi="embed">pkg/ — پکیج‌های عمومی (به هیچ‌چیز داخلی وابسته نیست)</text>
-
-<rect fill="#fff" height="36" rx="4" stroke="#FF9800" stroke-width="1.5" width="140" x="60" y="410"></rect>
-<text fill="#333" font-family="monospace" font-size="10" text-anchor="middle" x="130" y="432" direction="ltr" unicode-bidi="embed">pkg/validator/</text>
-
-<rect fill="#fff" height="36" rx="4" stroke="#FF9800" stroke-width="1.5" width="140" x="225" y="410"></rect>
-<text fill="#333" font-family="monospace" font-size="10" text-anchor="middle" x="295" y="432" direction="ltr" unicode-bidi="embed">pkg/logger/</text>
-
-<rect fill="#fff" height="36" rx="4" stroke="#FF9800" stroke-width="1.5" width="140" x="390" y="410"></rect>
-<text fill="#333" font-family="monospace" font-size="10" text-anchor="middle" x="460" y="432" direction="ltr" unicode-bidi="embed">pkg/response/</text>
-
-<rect fill="#fff" height="36" rx="4" stroke="#FF9800" stroke-width="1.5" width="140" x="555" y="410"></rect>
-<text fill="#333" font-family="monospace" font-size="10" text-anchor="middle" x="625" y="432" direction="ltr" unicode-bidi="embed">pkg/httputil/</text>
-
-<!-- FORBIDDEN reverse dependencies -->
-<line stroke="#e91e63" stroke-dasharray="6,4" stroke-width="2" x1="740" x2="740" y1="475" y2="60"></line>
-<line marker-end="url(#arrForbid)" stroke="#e91e63" stroke-width="2" x1="740" x2="740" y1="475" y2="60"></line>
-<text fill="#e91e63" font-size="11" font-weight="bold" x="760" y="290" direction="rtl" unicode-bidi="embed">ممنوع!</text>
-<text fill="#e91e63" font-size="9" x="760" y="308" direction="rtl" unicode-bidi="embed">وابستگی معکوس</text>
-<text fill="#e91e63" font-size="9" x="760" y="324" direction="rtl" unicode-bidi="embed">pkg ← internal ← cmd</text>
-<text fill="#e91e63" font-size="9" x="760" y="340" direction="rtl" unicode-bidi="embed">هرگز برعکس!</text>
-
-<!-- PHP Comparison box -->
-<rect fill="#f3e5f5" height="80" rx="8" stroke="#777BB4" stroke-width="1.5" width="380" x="15" y="490"></rect>
-<text fill="#777BB4" font-size="12" font-weight="bold" text-anchor="middle" x="205" y="510" direction="rtl" unicode-bidi="embed">مقایسه: ساختار <tspan direction="ltr" unicode-bidi="embed">PHP/Laravel</tspan></text>
-<text fill="#666" font-size="10" x="30" y="530" direction="ltr" unicode-bidi="embed">app/Http/Controllers → app/Models → app/Services</text>
-<text fill="#c62828" font-size="10" x="30" y="548" direction="rtl" unicode-bidi="embed">وابستگی‌ها اغلب دوطرفه — <tspan direction="ltr" unicode-bidi="embed">circular</tspan> شایع</text>
-<text fill="#c62828" font-size="10" x="30" y="562" direction="rtl" unicode-bidi="embed">فریم‌ورک ساخت را تحمیل می‌کند نه نیاز پروژه</text>
-
-<!-- Go comparison box -->
-<rect fill="#e0f7fa" height="80" rx="8" stroke="#00ADD8" stroke-width="1.5" width="380" x="415" y="490"></rect>
-<text fill="#00ADD8" font-size="12" font-weight="bold" text-anchor="middle" x="605" y="510" direction="rtl" unicode-bidi="embed">ساختار <tspan direction="ltr" unicode-bidi="embed">Go</tspan>: جریان یک‌طرفه</text>
-<text fill="#666" font-size="10" x="430" y="530" direction="ltr" unicode-bidi="embed">cmd → internal → pkg (one direction only)</text>
-<text fill="#2e7d32" font-size="10" x="430" y="548" direction="rtl" unicode-bidi="embed">وابستگی‌ها همیشه یک‌طرفه — بدون چرخه</text>
-<text fill="#2e7d32" font-size="10" x="430" y="562" direction="rtl" unicode-bidi="embed">ساختار بر اساس نیاز پروژه شکل می‌گیرد</text>
-</svg>
+    classDef cmdBox  fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
+    classDef intBox  fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
+    classDef pkgBox  fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
+    classDef blockBox fill:#fef2f2,stroke:#ef4444,stroke-width:2px,color:#1f2937,font-weight:bold;
+    classDef cmpBox  fill:#f5f0fb,stroke:#777BB4,stroke-width:1px,color:#1f2937;
+    class CMD cmdBox;
+    class INT intBox;
+    class PKG pkgBox;
+    class BLOCKED blockBox;
+    class CMP cmpBox;</pre>
 <figcaption>شکل ۱-۵-ب: نمودار جریان وابستگی در ساختار استاندارد <bdi dir="ltr">Go</bdi> — <bdi dir="ltr">cmd → internal → pkg</bdi> (هرگز برعکس)</figcaption>
 </figure>
 <p>همان‌طور که نمودار نشان می‌دهد هر لایه فقط به لایه‌ی زیرین خود وابسته است و هرگز وابستگی معکوس مجاز نیست. این رویکرد چند مزیت مهم دارد: اول، <strong>کامپایلر <bdi dir="ltr">Go</bdi> وابستگی‌های چرخه‌ای را ممنوع می‌کند</strong> و خطای کامپایل صادر می‌کند. دوم، هر تغییر در <bdi dir="ltr">pkg/</bdi> فقط بر لایه‌های بالایی تأثیر می‌گذارد نه برعکس. سوم، تست‌نویسی ساده‌تر می‌شود چون <bdi dir="ltr">pkg/</bdi> بدون وابستگی به داخل پروژه قابل تست است. و چهارم، تیم‌های جدید با ورود به پروژه فوراً می‌فهمند چه چیزی به چه وابسته است و کدام قسمت‌ها مستقل‌اند.</p>
@@ -560,6 +469,7 @@ use (
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/xml.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/ini.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/plaintext.min.js"></script>
+<script src="assets/js/diagrams.js"></script>
 <script src="assets/js/main.js"></script>
 </body>
 </html>
