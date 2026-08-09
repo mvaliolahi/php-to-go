@@ -87,36 +87,47 @@
 <strong>نکته‌ی حرفه‌ای:</strong> سیستم نوع‌دهی صریح <bdi dir="ltr">Go</bdi> در کدبیس‌های بزرگ یک مزیت رقابتی است. در <bdi dir="ltr">PHP</bdi> با رشد پروژه، عدم قطعیت نوع متغیرها باعث می‌شود هر فراخوانی تابع نیازمند بررسی مستندات یا کد منبع باشد. اما در <bdi dir="ltr">Go</bdi> امضای تابع <code>func Process(order Order, repo Repository) error</code> فوراً می‌گوید چه ورودی‌هایی لازم است و چه خروجی‌ای ممکن است. همین صراحت، زمان درک کد را کاهش و اطمینان از صحت تغییرات را افزایش می‌دهد — به‌ویژه وقتی ده‌ها توسعه‌دهنده روی یک پروژه کار می‌کنند.
 </div>
 <figure class="diagram" dir="ltr">
-<svg height="380" viewBox="0 0 600 380" width="600" xmlns="http://www.w3.org/2000/svg"><defs><filter id="sh24" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter></defs>
-<rect fill="#fafafa" height="360" rx="12" stroke="#00ADD8" stroke-width="2" width="580" x="10" y="10"></rect>
-<text fill="#00ADD8" font-size="16" font-weight="bold" text-anchor="middle" x="300" y="38" direction="rtl" unicode-bidi="embed">انواع داده در <tspan direction="ltr" unicode-bidi="embed">Go</tspan></text>
-<!-- Primitive -->
-<rect fill="#e3f2fd" height="180" rx="8" stroke="#2196f3" stroke-width="1.5" width="260" x="30" y="55"></rect>
-<text fill="#1565c0" font-size="14" font-weight="bold" text-anchor="middle" x="160" y="80" direction="ltr" unicode-bidi="embed">Primitive Types</text>
-<text fill="#333" font-size="12" x="50" y="105" direction="ltr" unicode-bidi="embed">int, int8, int16, int32, int64</text>
-<text fill="#333" font-size="12" x="50" y="125" direction="ltr" unicode-bidi="embed">uint, uint8, uint16, uint32, uint64</text>
-<text fill="#333" font-size="12" x="50" y="145" direction="ltr" unicode-bidi="embed">float32, float64</text>
-<text fill="#333" font-size="12" x="50" y="165" direction="ltr" unicode-bidi="embed">bool</text>
-<text fill="#333" font-size="12" x="50" y="185" direction="ltr" unicode-bidi="embed">string</text>
-<text fill="#333" font-size="12" x="50" y="205" direction="ltr" unicode-bidi="embed">byte (uint8), rune (int32)</text>
-<text fill="#333" font-size="12" x="50" y="225" direction="ltr" unicode-bidi="embed">uintptr</text>
-<!-- Composite -->
-<rect fill="#e8f5e9" height="180" rx="8" stroke="#4caf50" stroke-width="1.5" width="260" x="310" y="55"></rect>
-<text fill="#2e7d32" font-size="14" font-weight="bold" text-anchor="middle" x="440" y="80" direction="ltr" unicode-bidi="embed">Composite Types</text>
-<text fill="#333" font-size="12" x="330" y="105" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">array</tspan> — [n]T (طول ثابت)</text>
-<text fill="#333" font-size="12" x="330" y="125" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">slice</tspan> — []T (دینامیک)</text>
-<text fill="#333" font-size="12" x="330" y="145" direction="ltr" unicode-bidi="embed">map — map[K]V</text>
-<text fill="#333" font-size="12" x="330" y="165" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">struct</tspan> — فیلدهای نام‌دار</text>
-<text fill="#333" font-size="12" x="330" y="185" direction="ltr" unicode-bidi="embed">pointer — *T</text>
-<text fill="#333" font-size="12" x="330" y="205" direction="ltr" unicode-bidi="embed">function — func(...)</text>
-<text fill="#333" font-size="12" x="330" y="225" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">interface</tspan> — متدهای انتزاعی</text>
-<!-- Other -->
-<rect fill="#fff3e0" height="100" rx="8" stroke="#ff9800" stroke-width="1.5" width="360" x="120" y="255"></rect>
-<text fill="#e65100" font-size="14" font-weight="bold" text-anchor="middle" x="300" y="280" direction="ltr" unicode-bidi="embed">Concepts</text>
-<text fill="#333" font-size="12" x="140" y="305" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">const</tspan> — ثابت‌ها (<tspan direction="ltr" unicode-bidi="embed">compile-time</tspan>)</text>
-<text fill="#333" font-size="12" x="140" y="325" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">iota</tspan> — شمارنده‌ی خودکار</text>
-<text fill="#333" font-size="12" x="140" y="345" direction="ltr" unicode-bidi="embed">Custom Types — type Score int</text>
-</svg>
+<pre class="mermaid">flowchart TB
+    ROOT["انواع داده در Go"]
+
+    subgraph PRIM["Primitive Types"]
+        direction TB
+        P1["int, int8, int16, int32, int64<br/>uint, uint8, uint16, uint32, uint64"]
+        P2["float32, float64"]
+        P3["bool"]
+        P4["string"]
+        P5["byte (uint8), rune (int32)"]
+        P6["uintptr"]
+    end
+
+    subgraph COMP["Composite Types"]
+        direction TB
+        C1["array — &#91;n&#93;T (طول ثابت)"]
+        C2["slice — &#91;&#93;T (دینامیک)"]
+        C3["map — map&#91;K&#93;V"]
+        C4["struct — فیلدهای نام‌دار"]
+        C5["pointer — *T"]
+        C6["function — func(...)"]
+        C7["interface — متدهای انتزاعی"]
+    end
+
+    subgraph CONC["Concepts"]
+        direction TB
+        N1["const — ثابت‌ها (compile-time)"]
+        N2["iota — شمارنده‌ی خودکار"]
+        N3["Custom Types — type Score int"]
+    end
+
+    ROOT --> PRIM
+    ROOT --> COMP
+    ROOT --> CONC
+
+    classDef rootBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:2px,color:#1f2937;
+    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
+    classDef neutralBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
+    class ROOT rootBox;
+    class PRIM,COMP,CONC goBox;
+    class P1,P2,P3,P4,P5,P6,C1,C2,C3,C4,C5,C6,C7,N1,N2,N3 neutralBox;</pre>
 <figcaption>شکل ۱-۲: انواع داده در <bdi dir="ltr">Go</bdi></figcaption>
 </figure>
 <h3 id="primitive-types">Primitive Types</h3>
@@ -242,37 +253,44 @@ fmt.Println(len(runes)) // 4 — actual number of letters
 <br/>
 فیلد <code>Data</code> اشاره‌گری به آرایه‌ای از بایت‌های فقط‌خواندنی است و <code>Len</code> تعداد بایت‌ها را نگه می‌دارد. به همین دلیل است که رشته‌ها immutable هستند — داده‌ی زیربنایی در حافظه‌ی فقط‌خواندنی قرار دارد و هنگام تغییر، یک آرایه‌ی جدید ساخته می‌شود. انتساب رشته فقط کپی ۱۶ بایتِ header است نه خود داده. این مکانیزم شبیه به Copy-on-Write در PHP است اما تفاوت مهمی دارد: در PHP رشته‌ها هنگام تغییر واقعاً کپی می‌شوند (به‌دلیل reference counting) اما در Go چندین رشته می‌توانند به همان بایت‌های زیربنایی اشاره کنند تا زمانی که تغییری نیاز نباشد.</div>
 <figure class="diagram" dir="ltr">
-<svg height="250" viewBox="0 0 600 250" width="600" xmlns="http://www.w3.org/2000/svg"><defs><filter id="sh25" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter></defs>
-<rect fill="#fafafa" height="230" rx="12" stroke="#00ADD8" stroke-width="2" width="580" x="10" y="10"></rect>
-<text fill="#00ADD8" font-size="15" font-weight="bold" text-anchor="middle" x="300" y="38" direction="rtl" unicode-bidi="embed">توابع مهم کار با رشته در <tspan direction="ltr" unicode-bidi="embed">Go</tspan></text>
-<text fill="#333" font-family="monospace" font-size="13" x="50" y="70" direction="ltr" unicode-bidi="embed">len(str)</text><text fill="#666" font-size="12" x="180" y="70" direction="rtl" unicode-bidi="embed">→ تعداد بایت‌ها</text>
-<text fill="#333" font-family="monospace" font-size="13" x="50" y="95" direction="ltr" unicode-bidi="embed">utf8.RuneCountInString()</text><text fill="#666" font-size="12" x="280" y="95" direction="rtl" unicode-bidi="embed">→ تعداد کاراکترها</text>
-<text fill="#333" font-family="monospace" font-size="13" x="50" y="120" direction="ltr" unicode-bidi="embed">strings.Contains()</text><text fill="#666" font-size="12" x="220" y="120" direction="rtl" unicode-bidi="embed">→ بررسی وجود زیررشته</text>
-<text fill="#333" font-family="monospace" font-size="13" x="50" y="145" direction="ltr" unicode-bidi="embed">strings.Split()</text><text fill="#666" font-size="12" x="200" y="145" direction="rtl" unicode-bidi="embed">→ شکافتن رشته</text>
-<text fill="#333" font-family="monospace" font-size="13" x="50" y="170" direction="ltr" unicode-bidi="embed">strings.Join()</text><text fill="#666" font-size="12" x="200" y="170" direction="rtl" unicode-bidi="embed">→ پیوند دادن رشته‌ها</text>
-<text fill="#333" font-family="monospace" font-size="13" x="50" y="195" direction="ltr" unicode-bidi="embed">strconv.Itoa() / Atoi()</text><text fill="#666" font-size="12" x="260" y="195" direction="rtl" unicode-bidi="embed">→ تبدیل <tspan direction="ltr" unicode-bidi="embed">int</tspan> ↔ <tspan direction="ltr" unicode-bidi="embed">string</tspan></text>
-<text fill="#333" font-family="monospace" font-size="13" x="50" y="220" direction="ltr" unicode-bidi="embed">[]rune(str)</text><text fill="#666" font-size="12" x="200" y="220" direction="rtl" unicode-bidi="embed">→ دسترسی به کاراکترهای <tspan direction="ltr" unicode-bidi="embed">Unicode</tspan></text>
-</svg>
+<pre class="mermaid">flowchart TB
+    subgraph STR["توابع مهم کار با رشته در Go"]
+        direction TB
+        S1["len(str)<br/>→ تعداد بایت‌ها"]
+        S2["utf8.RuneCountInString()<br/>→ تعداد کاراکترها"]
+        S3["strings.Contains()<br/>→ بررسی وجود زیررشته"]
+        S4["strings.Split()<br/>→ شکافتن رشته"]
+        S5["strings.Join()<br/>→ پیوند دادن رشته‌ها"]
+        S6["strconv.Itoa() / Atoi()<br/>→ تبدیل int ↔ string"]
+        S7["&#91;&#93;rune(str)<br/>→ دسترسی به کاراکترهای Unicode"]
+        S1 --- S2 --- S3 --- S4 --- S5 --- S6 --- S7
+    end
+
+    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
+    class STR,S1,S2,S3,S4,S5,S6,S7 goBox;</pre>
 <figcaption>شکل ۲-۲: توابع مهم کار با رشته در <bdi dir="ltr">Go</bdi></figcaption>
 </figure>
 <h4 id="pointer">Pointer</h4>
 <p>در PHP هیچ نوع صریحی از اشاره‌گر وجود ندارد. در Go اشاره‌گرها بخشی طبیعی از زبان هستند. در بخش های بعد مفهوم اشاره‌گر و کاربردهای آن به صورت مفصل تشریح خواهد شد.</p>
 <figure class="diagram" dir="ltr">
-<svg height="180" viewBox="0 0 500 180" width="500" xmlns="http://www.w3.org/2000/svg">
-<rect fill="#e3f2fd" height="80" rx="8" stroke="#2196f3" stroke-width="1.5" width="180" x="20" y="20"></rect>
-<text fill="#1565c0" font-size="14" font-weight="bold" text-anchor="middle" x="110" y="50" direction="rtl" unicode-bidi="embed">متغیر x</text>
-<text fill="#333" font-family="monospace" font-size="16" text-anchor="middle" x="110" y="80" direction="ltr" unicode-bidi="embed">10</text>
-<text fill="#888" font-size="10" text-anchor="middle" x="110" y="95" direction="rtl" unicode-bidi="embed">آدرس: 0<tspan direction="ltr" unicode-bidi="embed">xC0001</tspan></text>
-<rect fill="#e8f5e9" height="80" rx="8" stroke="#4caf50" stroke-width="1.5" width="180" x="280" y="20"></rect>
-<text fill="#2e7d32" font-size="14" font-weight="bold" text-anchor="middle" x="370" y="50" direction="rtl" unicode-bidi="embed">اشاره‌گر p</text>
-<text fill="#333" font-family="monospace" font-size="16" text-anchor="middle" x="370" y="80" direction="ltr" unicode-bidi="embed">0xC0001</text>
-<text fill="#888" font-size="10" text-anchor="middle" x="370" y="95" direction="ltr" unicode-bidi="embed">p = &amp;x</text>
-<defs><filter id="sh26" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter><marker id="arrp" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#4caf50" points="0 0, 10 3.5, 0 7"></polygon></marker></defs>
-<line marker-end="url(#arrp)" stroke="#4caf50" stroke-width="2" x1="280" x2="200" y1="60" y2="60"></line>
-<text fill="#555" font-size="12" text-anchor="middle" x="100" y="145" direction="rtl" unicode-bidi="embed">*p = مقدار در آدرس (10)</text>
-<text fill="#555" font-size="12" text-anchor="middle" x="370" y="145" direction="rtl" unicode-bidi="embed">&<tspan direction="ltr" unicode-bidi="embed">amp</tspan>;x = آدرس حافظه</text>
-<text fill="#888" font-size="11" text-anchor="middle" x="250" y="170" direction="rtl" unicode-bidi="embed">اشاره‌گر آدرس حافظه را ذخیره می‌کند نه مقدار را</text>
-</svg>
+<pre class="mermaid">flowchart LR
+    subgraph VAR["متغیر x"]
+        direction TB
+        X1["10"]
+        X2["آدرس: 0xC0001"]
+    end
+
+    P["اشاره‌گر p<br/>0xC0001"] -- "p = &x" --> X1
+    X1 -- "*p = مقدار در آدرس (10)" --> P
+
+    NOTE["اشاره‌گر آدرس حافظه را ذخیره می‌کند نه مقدار را<br/><b>&amp;x = آدرس حافظه</b><br/><b>*p = مقدار در آدرس</b>"]
+
+    classDef varBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
+    classDef ptrBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
+    classDef noteBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
+    class VAR,X1,X2 varBox;
+    class P ptrBox;
+    class NOTE noteBox;</pre>
 <figcaption>شکل ۳-۲: مفهوم اشاره‌گر در <bdi dir="ltr">Go</bdi></figcaption>
 </figure>
 <figure class="code go" dir="ltr">
@@ -288,19 +306,20 @@ p := &amp;x // p is a pointer to x
 <h4 id="array">Array</h4>
 <p>آرایه‌ها در Go ساختارهایی با اندازه ثابت و نوع مشخص هستند که مجموعه‌ای از مقادیر هم‌نوع را در خود نگه می‌دارند. برخلاف PHP که آرایه‌ها می‌توانند اندازه متغیر و انواع مختلف داده را در خود جای دهند آرایه‌های Go بسیار سخت‌گیرانه‌تر و ایستا هستند.</p>
 <figure class="diagram" dir="ltr">
-<svg height="150" viewBox="0 0 400 150" width="400" xmlns="http://www.w3.org/2000/svg">
-<text fill="#00ADD8" font-size="14" font-weight="bold" text-anchor="middle" x="200" y="25" direction="rtl" unicode-bidi="embed">آرایه با ۳ عنصر: [3]<tspan direction="ltr" unicode-bidi="embed">int</tspan>{1, 2, 3}</text>
-<rect fill="#e0f7fa" height="50" rx="6" stroke="#00ADD8" stroke-width="1.5" width="90" x="50" y="45"></rect>
-<text fill="#333" font-size="16" text-anchor="middle" x="95" y="68" direction="ltr" unicode-bidi="embed">1</text>
-<text fill="#888" font-size="10" text-anchor="middle" x="95" y="88" direction="ltr" unicode-bidi="embed">[0]</text>
-<rect fill="#e0f7fa" height="50" rx="6" stroke="#00ADD8" stroke-width="1.5" width="90" x="155" y="45"></rect>
-<text fill="#333" font-size="16" text-anchor="middle" x="200" y="68" direction="ltr" unicode-bidi="embed">2</text>
-<text fill="#888" font-size="10" text-anchor="middle" x="200" y="88" direction="ltr" unicode-bidi="embed">[1]</text>
-<rect fill="#e0f7fa" height="50" rx="6" stroke="#00ADD8" stroke-width="1.5" width="90" x="260" y="45"></rect>
-<text fill="#333" font-size="16" text-anchor="middle" x="305" y="68" direction="ltr" unicode-bidi="embed">3</text>
-<text fill="#888" font-size="10" text-anchor="middle" x="305" y="88" direction="ltr" unicode-bidi="embed">[2]</text>
-<text fill="#888" font-size="11" text-anchor="middle" x="200" y="130" direction="rtl" unicode-bidi="embed">طول ثابت = بخشی از نوع • تمام عناصر هم‌نوع</text>
-</svg>
+<pre class="mermaid">flowchart LR
+    TITLE["آرایه با ۳ عنصر: &#91;3&#93;int&#123;1, 2, 3&#125;"]
+    E0["&#91;0&#93;<br/>1"]
+    E1["&#91;1&#93;<br/>2"]
+    E2["&#91;2&#93;<br/>3"]
+    TITLE --- E0 --- E1 --- E2
+    NOTE["طول ثابت = بخشی از نوع<br/>تمام عناصر هم‌نوع"]
+
+    classDef titleBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
+    classDef elemBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
+    classDef noteBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
+    class TITLE titleBox;
+    class E0,E1,E2 elemBox;
+    class NOTE noteBox;</pre>
 <figcaption dir="rtl">شکل ۳-ب-۲: آرایه با طول ۳ عنصر</figcaption>
 </figure>
 <p>در PHP:</p>
@@ -364,31 +383,38 @@ fmt.Println(arr)
 <br/>
 <code>Data</code> اشاره‌گری به اولین عنصر آرایه‌ی زیربنایی است. <code>Len</code> تعداد عناصری است که slice در حال حاضر شامل می‌شود و <code>Cap</code> ظرفیت کل آرایه‌ی زیربنایی از نقطه‌ی شروع Data به بعد را نشان می‌دهد. انتساب یک slice به متغیر دیگر فقط این ۲۴ بایت header را کپی می‌کند نه داده‌ها را — به همین دلیل دو slice می‌توانند به همان آرایه‌ی زیربنایی اشتراک داشته باشند. این رفتار با Copy-on-Write در آرایه‌های PHP تفاوت بنیادین دارد: در PHP وقتی <code>$b = $a</code> می‌نویسید ابتدا داده‌ها به‌اشتراک گذاشته می‌شوند اما به‌محض تغییر یکی از آن‌ها کپی ایجاد می‌شود. اما در Go داده‌ها واقعاً مشترک می‌مانند مگر اینکه <code>append</code> باعث ایجاد آرایه‌ی جدید شود.</div>
 <figure class="diagram" dir="ltr">
-<svg height="220" viewBox="0 0 550 220" width="550" xmlns="http://www.w3.org/2000/svg"><defs><filter id="sh27" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter></defs>
-<text fill="#00ADD8" font-size="14" font-weight="bold" text-anchor="middle" x="275" y="25" direction="rtl" unicode-bidi="embed">ساختار داخلی <tspan direction="ltr" unicode-bidi="embed">Slice</tspan> در <tspan direction="ltr" unicode-bidi="embed">Go</tspan></text>
-<rect fill="#fff3e0" height="70" rx="8" stroke="#ff9800" stroke-width="1.5" width="160" x="30" y="45"></rect>
-<text fill="#e65100" font-size="13" font-weight="bold" text-anchor="middle" x="110" y="68" direction="ltr" unicode-bidi="embed">Slice Header</text>
-<text fill="#333" font-size="11" x="50" y="88" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">ptr</tspan> → آدرس آرایه</text>
-<text fill="#333" font-size="11" x="50" y="105" direction="ltr" unicode-bidi="embed">len=3, cap=5</text>
-<rect fill="#e0f7fa" height="70" rx="8" stroke="#00ADD8" stroke-width="1.5" width="280" x="250" y="45"></rect>
-<text fill="#00ADD8" font-size="13" font-weight="bold" text-anchor="middle" x="390" y="68" direction="ltr" unicode-bidi="embed">Underlying Array</text>
-<rect fill="#fff" height="28" rx="4" stroke="#00ADD8" stroke-width="1" width="45" x="265" y="78"></rect>
-<text fill="#333" font-size="12" text-anchor="middle" x="287" y="97" direction="ltr" unicode-bidi="embed">1</text>
-<rect fill="#fff" height="28" rx="4" stroke="#00ADD8" stroke-width="1" width="45" x="316" y="78"></rect>
-<text fill="#333" font-size="12" text-anchor="middle" x="338" y="97" direction="ltr" unicode-bidi="embed">2</text>
-<rect fill="#fff" height="28" rx="4" stroke="#00ADD8" stroke-width="1" width="45" x="367" y="78"></rect>
-<text fill="#333" font-size="12" text-anchor="middle" x="389" y="97" direction="ltr" unicode-bidi="embed">3</text>
-<rect fill="#f5f5f5" height="28" rx="4" stroke="#ccc" stroke-width="1" width="45" x="418" y="78"></rect>
-<text fill="#aaa" font-size="12" text-anchor="middle" x="440" y="97" direction="ltr" unicode-bidi="embed">—</text>
-<rect fill="#f5f5f5" height="28" rx="4" stroke="#ccc" stroke-width="1" width="45" x="469" y="78"></rect>
-<text fill="#aaa" font-size="12" text-anchor="middle" x="491" y="97" direction="ltr" unicode-bidi="embed">—</text>
-<text fill="#888" font-size="9" text-anchor="middle" x="287" y="118" direction="ltr" unicode-bidi="embed">len</text>
-<text fill="#888" font-size="9" text-anchor="middle" x="491" y="118" direction="ltr" unicode-bidi="embed">cap</text>
-<line stroke="#e65100" stroke-dasharray="5,3" stroke-width="1.5" x1="190" x2="265" y1="80" y2="92"></line>
-<text fill="#555" font-size="11" text-anchor="middle" x="275" y="155" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">len</tspan>: تعداد عناصر قابل دسترسی</text>
-<text fill="#555" font-size="11" text-anchor="middle" x="275" y="175" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">cap</tspan>: ظرفیت کل (از اولین عنصر تا انتهای آرایه)</text>
-<text fill="#00ADD8" font-size="11" text-anchor="middle" x="275" y="200" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">append()</tspan>در صورت نیاز آرایه جدیدی با ظرفیت بیشتر می‌سازد</text>
-</svg>
+<pre class="mermaid">flowchart TB
+    subgraph HDR["Slice Header"]
+        direction TB
+        H1["ptr → آدرس آرایه"]
+        H2["len=3, cap=5"]
+    end
+
+    subgraph ARR["Underlying Array"]
+        direction LR
+        A0["1"]
+        A1["2"]
+        A2["3"]
+        A3["—"]
+        A4["—"]
+    end
+
+    LEN["len<br/>تعداد عناصر قابل دسترسی"]
+    CAP["cap<br/>ظرفیت کل (از اولین عنصر تا انتهای آرایه)"]
+    APPEND["append() در صورت نیاز آرایه جدیدی با ظرفیت بیشتر می‌سازد"]
+
+    HDR -- "ptr" --> A0
+    LEN -.-> HDR
+    CAP -.-> HDR
+
+    classDef hdrBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
+    classDef arrBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
+    classDef noteBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
+    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
+    class HDR,H1,H2 hdrBox;
+    class ARR,A0,A1,A2,A3,A4 arrBox;
+    class LEN,CAP noteBox;
+    class APPEND warnBox;</pre>
 <figcaption>شکل ۴-۲: ساختار داخلی <bdi dir="ltr">Slice</bdi></figcaption>
 </figure>
 <p>ویژگی‌های Slice:</p>
@@ -457,21 +483,29 @@ copy(copyUsers, users)
 <h4 id="map">Map‌</h4>
 <p>ساختارهای <strong dir="ltr">Key-Value</strong> ابزاری متداول برای نگهداری داده‌های ساخت‌یافته هستند. در PHP این ساختار با آرایه‌های انجمنی پیاده‌سازی می‌شود:</p>
 <figure class="diagram" dir="ltr">
-<svg height="200" viewBox="0 0 500 200" width="500" xmlns="http://www.w3.org/2000/svg"><defs><filter id="sh28" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter></defs>
-<text fill="#00ADD8" font-size="14" font-weight="bold" text-anchor="middle" x="250" y="25" direction="rtl" unicode-bidi="embed">ساختار <tspan direction="ltr" unicode-bidi="embed">Map</tspan> در <tspan direction="ltr" unicode-bidi="embed">Go</tspan></text>
-<rect fill="#e8f5e9" height="130" rx="8" stroke="#4caf50" stroke-width="1.5" width="200" x="30" y="45"></rect>
-<text fill="#2e7d32" font-size="13" font-weight="bold" text-anchor="middle" x="130" y="70" direction="ltr" unicode-bidi="embed">map[string]int</text>
-<text fill="#333" font-size="12" x="50" y="95" direction="ltr" unicode-bidi="embed">"apple" → 2</text>
-<text fill="#333" font-size="12" x="50" y="115" direction="ltr" unicode-bidi="embed">"banana" → 3</text>
-<text fill="#333" font-size="12" x="50" y="135" direction="ltr" unicode-bidi="embed">"cherry" → 5</text>
-<text fill="#888" font-size="11" x="50" y="160" direction="ltr" unicode-bidi="embed">reference type • unordered</text>
-<rect fill="#fff3e0" height="130" rx="8" stroke="#ff9800" stroke-width="1.5" width="210" x="270" y="45"></rect>
-<text fill="#e65100" font-size="13" font-weight="bold" text-anchor="middle" x="375" y="70" direction="ltr" unicode-bidi="embed">PHP Array</text>
-<text fill="#333" font-size="12" x="290" y="95" direction="ltr" unicode-bidi="embed">'apple' =&gt; 2</text>
-<text fill="#333" font-size="12" x="290" y="115" direction="ltr" unicode-bidi="embed">'banana' =&gt; 3</text>
-<text fill="#333" font-size="12" x="290" y="135" direction="ltr" unicode-bidi="embed">'cherry' =&gt; 5</text>
-<text fill="#888" font-size="11" x="290" y="160" direction="ltr" unicode-bidi="embed">copy-on-write • ordered</text>
-</svg>
+<pre class="mermaid">flowchart TB
+    subgraph GO["ساختار Map در Go — map&#91;string&#93;int"]
+        direction TB
+        G0["&#34;apple&#34; → 2"]
+        G1["&#34;banana&#34; → 3"]
+        G2["&#34;cherry&#34; → 5"]
+        GN["reference type • unordered"]
+        G0 --- G1 --- G2 --- GN
+    end
+
+    subgraph PHP["PHP Array"]
+        direction TB
+        P0["'apple' =&gt; 2"]
+        P1["'banana' =&gt; 3"]
+        P2["'cherry' =&gt; 5"]
+        PN["copy-on-write • ordered"]
+        P0 --- P1 --- P2 --- PN
+    end
+
+    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
+    classDef phpBox fill:#f5f0fb,stroke:#777BB4,stroke-width:1.5px,color:#1f2937;
+    class GO,G0,G1,G2,GN goBox;
+    class PHP,P0,P1,P2,PN phpBox;</pre>
 <figcaption>شکل ۵-۲: مقایسه‌ی <bdi dir="ltr">Map</bdi> در <bdi dir="ltr">Go</bdi> و آرایه انجمنی در <bdi dir="ltr">PHP</bdi></figcaption>
 </figure>
 <figure class="code php" dir="ltr">
@@ -546,23 +580,38 @@ if ok {
 <h4 id="struct">Struct</h4>
 <p>در زبان Go مفهومی به نام <em>کلاس</em> وجود ندارد اما به‌جای آن ساختار داده‌ای به نام <strong dir="ltr">struct</strong> برای تعریف داده‌های ترکیبی و سازمان‌دهی اطلاعات استفاده می‌شود. Structها مانند جعبه‌هایی هستند که می‌توانند چندین مقدار با انواع مختلف را در خود جای دهند. یکی از تفاوت‌های مهم Go با PHP این است که در Go ارث‌بری وجود ندارد. به جای آن می‌توان Composition انجام داد یعنی یک struct می‌تواند شامل struct دیگری به صورت embedding باشد که باعث قابلیت استفاده مجدد و سازماندهی بهتر کد می‌شود که این موارد در فصل های بعد در بخش مربوط به شی‌گرایی بیشتر توضیح داده خواهد شد.</p>
 <figure class="diagram" dir="ltr">
-<svg height="200" viewBox="0 0 500 200" width="500" xmlns="http://www.w3.org/2000/svg"><defs><filter id="sh29" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter></defs>
-<text fill="#00ADD8" font-size="14" font-weight="bold" text-anchor="middle" x="250" y="25" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">Struct</tspan> در <tspan direction="ltr" unicode-bidi="embed">Go</tspan> مشابه کلاس در <tspan direction="ltr" unicode-bidi="embed">PHP</tspan></text>
-<rect fill="#e0f7fa" height="130" rx="8" stroke="#00ADD8" stroke-width="1.5" width="200" x="30" y="45"></rect>
-<text fill="#00ADD8" font-size="13" font-weight="bold" text-anchor="middle" x="130" y="70" direction="ltr" unicode-bidi="embed">Go: struct</text>
-<text fill="#333" font-size="12" x="50" y="95" direction="ltr" unicode-bidi="embed">type Product struct {</text>
-<text fill="#333" font-size="12" x="65" y="115" direction="ltr" unicode-bidi="embed">ID int</text>
-<text fill="#333" font-size="12" x="65" y="135" direction="ltr" unicode-bidi="embed">Title string</text>
-<text fill="#333" font-size="12" x="65" y="155" direction="ltr" unicode-bidi="embed">Price float64</text>
-<text fill="#333" font-size="12" x="50" y="170" direction="ltr" unicode-bidi="embed">}</text>
-<rect fill="#f3e5f5" height="130" rx="8" stroke="#777BB4" stroke-width="1.5" width="210" x="270" y="45"></rect>
-<text fill="#777BB4" font-size="13" font-weight="bold" text-anchor="middle" x="375" y="70" direction="ltr" unicode-bidi="embed">PHP: class</text>
-<text fill="#333" font-size="12" x="290" y="95" direction="ltr" unicode-bidi="embed">class Product {</text>
-<text fill="#333" font-size="12" x="305" y="115" direction="ltr" unicode-bidi="embed">public int $id;</text>
-<text fill="#333" font-size="12" x="305" y="135" direction="ltr" unicode-bidi="embed">public string $title;</text>
-<text fill="#333" font-size="12" x="305" y="155" direction="ltr" unicode-bidi="embed">public float $price;</text>
-<text fill="#333" font-size="12" x="290" y="170" direction="ltr" unicode-bidi="embed">}</text>
-</svg>
+<pre class="mermaid">flowchart TB
+    TITLE["Struct در Go مشابه کلاس در PHP"]
+
+    subgraph GO["Go: struct"]
+        direction TB
+        G1["type Product struct &#123;"]
+        G2["    ID int"]
+        G3["    Title string"]
+        G4["    Price float64"]
+        G5["&#125;"]
+        G1 --- G2 --- G3 --- G4 --- G5
+    end
+
+    subgraph PHP["PHP: class"]
+        direction TB
+        P1["class Product &#123;"]
+        P2["    public int $id;"]
+        P3["    public string $title;"]
+        P4["    public float $price;"]
+        P5["&#125;"]
+        P1 --- P2 --- P3 --- P4 --- P5
+    end
+
+    TITLE --> GO
+    TITLE --> PHP
+
+    classDef titleBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
+    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
+    classDef phpBox fill:#f5f0fb,stroke:#777BB4,stroke-width:1.5px,color:#1f2937;
+    class TITLE titleBox;
+    class GO,G1,G2,G3,G4,G5 goBox;
+    class PHP,P1,P2,P3,P4,P5 phpBox;</pre>
 <figcaption>شکل ۶-۲: مقایسه‌ی <bdi dir="ltr">struct</bdi> در <bdi dir="ltr">Go</bdi> با کلاس در <bdi dir="ltr">PHP</bdi></figcaption>
 </figure>
 <figure class="code go" dir="ltr">
@@ -859,146 +908,112 @@ func processRunes(data string) {
 </figure>
 <div class="tip"><strong>بهینه‌سازی پیشرفته:</strong> در مسیرهای بحرانی کد می‌توانید از <code>unsafe.Pointer</code> برای تبدیل بدون کپی استفاده کنید (که در بخش ۲.۲ توضیح داده شده). اما این روش فقط وقتی امن است که <code>[]byte</code> پس از تبدیل تغییر نکند. اگر داده‌ی بزرگ را فقط می‌خوانید، این بهینه‌سازی می‌تواند تأثیر قابل‌توجهی داشته باشد.</div>
 <figure class="diagram" dir="ltr">
-<svg height="340" viewBox="0 0 600 340" width="600" xmlns="http://www.w3.org/2000/svg"><defs><filter id="sh30" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter></defs>
-<rect fill="#fafafa" height="320" rx="12" stroke="#00ADD8" stroke-width="2" width="580" x="10" y="10"></rect>
-<text fill="#00ADD8" font-size="15" font-weight="bold" text-anchor="middle" x="300" y="38" direction="rtl" unicode-bidi="embed">سلسله‌مراتب سیستم نوع در <tspan direction="ltr" unicode-bidi="embed">Go</tspan></text>
-<!-- Root -->
-<rect fill="#e0f7fa" height="35" rx="6" stroke="#00ADD8" stroke-width="2" width="160" x="220" y="55"></rect>
-<text fill="#00838f" font-size="13" font-weight="bold" text-anchor="middle" x="300" y="78" direction="rtl" unicode-bidi="embed">انواع داده <tspan direction="ltr" unicode-bidi="embed">Go</tspan></text>
-<!-- Level 2 -->
-<rect fill="#e3f2fd" height="30" rx="5" stroke="#2196f3" stroke-width="1.5" width="130" x="30" y="115"></rect>
-<text fill="#1565c0" font-size="12" font-weight="bold" text-anchor="middle" x="95" y="135" direction="rtl" unicode-bidi="embed">پایه (<tspan direction="ltr" unicode-bidi="embed">Primitive</tspan>)</text>
-<rect fill="#e8f5e9" height="30" rx="5" stroke="#4caf50" stroke-width="1.5" width="130" x="175" y="115"></rect>
-<text fill="#2e7d32" font-size="12" font-weight="bold" text-anchor="middle" x="240" y="135" direction="rtl" unicode-bidi="embed">مرکب (<tspan direction="ltr" unicode-bidi="embed">Composite</tspan>)</text>
-<rect fill="#fff3e0" height="30" rx="5" stroke="#ff9800" stroke-width="1.5" width="130" x="320" y="115"></rect>
-<text fill="#e65100" font-size="12" font-weight="bold" text-anchor="middle" x="385" y="135" direction="rtl" unicode-bidi="embed">مرجع‌دار (<tspan direction="ltr" unicode-bidi="embed">Ref</tspan>)</text>
-<rect fill="#f3e5f5" height="30" rx="5" stroke="#777BB4" stroke-width="1.5" width="130" x="465" y="115"></rect>
-<text fill="#777BB4" font-size="12" font-weight="bold" text-anchor="middle" x="530" y="135" direction="rtl" unicode-bidi="embed">مفهومی</text>
-<!-- Lines from root -->
-<line stroke="#2196f3" stroke-width="1.5" x1="260" y1="90" x2="95" y2="115"></line>
-<line stroke="#4caf50" stroke-width="1.5" x1="290" y1="90" x2="240" y2="115"></line>
-<line stroke="#ff9800" stroke-width="1.5" x1="330" y1="90" x2="385" y2="115"></line>
-<line stroke="#777BB4" stroke-width="1.5" x1="350" y1="90" x2="530" y2="115"></line>
-<!-- Level 3 items -->
-<text fill="#333" font-size="10" x="35" y="165" direction="ltr" unicode-bidi="embed">int8..64, uint8..64</text>
-<text fill="#333" font-size="10" x="35" y="180" direction="ltr" unicode-bidi="embed">float32, float64</text>
-<text fill="#333" font-size="10" x="35" y="195" direction="ltr" unicode-bidi="embed">bool, string</text>
-<text fill="#333" font-size="10" x="35" y="210" direction="ltr" unicode-bidi="embed">byte, rune</text>
+<pre class="mermaid">flowchart TB
+    ROOT["انواع داده Go"]
 
-<text fill="#333" font-size="10" x="180" y="165" direction="ltr" unicode-bidi="embed">array — [n]T</text>
-<text fill="#333" font-size="10" x="180" y="180" direction="ltr" unicode-bidi="embed">struct — فیلدها</text>
+    subgraph PRIM["پایه (Primitive)"]
+        direction TB
+        P1["int8..64, uint8..64"]
+        P2["float32, float64"]
+        P3["bool, string"]
+        P4["byte, rune"]
+    end
 
-<text fill="#333" font-size="10" x="325" y="165" direction="ltr" unicode-bidi="embed">slice, map, chan</text>
-<text fill="#333" font-size="10" x="325" y="180" direction="ltr" unicode-bidi="embed">pointer, func</text>
-<text fill="#333" font-size="10" x="325" y="195" direction="ltr" unicode-bidi="embed">interface</text>
+    subgraph COMP["مرکب (Composite)"]
+        direction TB
+        C1["array — &#91;n&#93;T"]
+        C2["struct — فیلدها"]
+        C3["slice, map, chan"]
+        C4["pointer, func"]
+    end
 
-<text fill="#333" font-size="10" x="470" y="165" direction="ltr" unicode-bidi="embed">const, iota</text>
-<text fill="#333" font-size="10" x="470" y="180" direction="ltr" unicode-bidi="embed">type definition</text>
-<text fill="#333" font-size="10" x="470" y="195" direction="ltr" unicode-bidi="embed">type alias</text>
+    subgraph REF["مرجع‌دار (Ref)"]
+        direction TB
+        R1["interface"]
+    end
 
-<!-- Zero values box -->
-<rect fill="#fff9c4" height="80" rx="6" stroke="#f9a825" stroke-width="1.5" width="540" x="30" y="230"></rect>
-<text fill="#f57f17" font-size="12" font-weight="bold" text-anchor="middle" x="300" y="250" direction="rtl" unicode-bidi="embed">مقادیر صفر — تضمین عدم وجود متغیر بدون مقدار</text>
-<text fill="#333" font-size="10" x="50" y="270" direction="ltr" unicode-bidi="embed">int → 0 | float64 → 0.0 | bool → false | string → ""</text>
-<text fill="#333" font-size="10" x="50" y="285" direction="ltr" unicode-bidi="embed">pointer → nil | slice → nil | map → nil | chan → nil</text>
-<text fill="#333" font-size="10" x="50" y="300" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">struct</tspan> → هر فیلد مقدار صفر خود را می‌گیرد</text>
-</svg>
+    subgraph CONC["مفهومی"]
+        direction TB
+        N1["const, iota"]
+        N2["type definition"]
+        N3["type alias"]
+    end
+
+    ROOT --> PRIM
+    ROOT --> COMP
+    ROOT --> REF
+    ROOT --> CONC
+
+    subgraph ZERO["مقادیر صفر — تضمین عدم وجود متغیر بدون مقدار"]
+        direction TB
+        Z1["int → 0 | float64 → 0.0 | bool → false | string → &#34;&#34;"]
+        Z2["pointer → nil | slice → nil | map → nil | chan → nil"]
+        Z3["struct → هر فیلد مقدار صفر خود را می‌گیرد"]
+    end
+
+    ROOT --> ZERO
+
+    classDef rootBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:2px,color:#1f2937;
+    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
+    classDef bothBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
+    classDef neutralBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
+    class ROOT rootBox;
+    class PRIM,COMP,REF,CONC goBox;
+    class P1,P2,P3,P4,C1,C2,C3,C4,R1,N1,N2,N3 neutralBox;
+    class ZERO,Z1,Z2,Z3 bothBox;</pre>
 <figcaption>شکل ۶-۲: سلسله‌مراتب سیستم نوع در <bdi dir="ltr">Go</bdi> و مقادیر صفر</figcaption>
 </figure>
 <h3 id="memory-layout-comparison">مقایسه‌ی ساختار حافظه: <bdi dir="ltr">PHP zval</bdi> در برابر <bdi dir="ltr">Go Typed Values</bdi></h3>
 <p>یکی از تفاوت‌های بنیادین <bdi dir="ltr">PHP</bdi> و <bdi dir="ltr">Go</bdi> در نحوه‌ی ذخیره‌سازی مقادیر در حافظه نهفته است. در <bdi dir="ltr">PHP</bdi> هر متغیر فارغ از نوع داده‌ی آن در یک ساختار یکسان به نام <bdi dir="ltr">zval</bdi> نگهداری می‌شود که شامل برچسب نوع، مقدار واقعی، شمارنده‌ی ارجاع و پرچم ارجاع است. این طراحی یکنواخت انعطاف‌پذیری بالایی در زمان اجرا فراهم می‌کند اما هزینه‌ی حافظه‌ی قابل‌توجهی دارد. در مقابل <bdi dir="ltr">Go</bdi> هر مقدار دقیقاً به اندازه‌ی نوع واقعی خود فضا اشغال می‌کند بدون هیچ سربار اضافی برای مدیریت نوع در زمان اجرا.</p>
 <p>این تفاوت ساختاری پیامدهای عملی مهمی دارد: برنامه‌های <bdi dir="ltr">Go</bdi> معمولاً حافظه‌ی بسیار کمتری نسبت به معادل <bdi dir="ltr">PHP</bdi> خود مصرف می‌کنند. به‌عنوان مثال ذخیره‌ی هزار عدد صحیح در <bdi dir="ltr">PHP</bdi> حدود ۱۶ کیلوبایت فقط برای ساختارهای <bdi dir="ltr">zval</bdi> نیاز دارد اما در <bdi dir="ltr">Go</bdi> فقط ۸ کیلوبایت. این بهره‌وری حافظه مستقیماً بر کارایی کش پردازنده و سرعت اجرای برنامه تأثیر می‌گذارد و یکی از دلایل اصلی برتری عملکرد <bdi dir="ltr">Go</bdi> در کارهای محاسباتی است.</p>
 <figure class="diagram" dir="ltr">
-<svg height="560" viewBox="0 0 780 560" width="780" xmlns="http://www.w3.org/2000/svg"><defs><filter id="sh31" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter></defs>
-<rect fill="#fafafa" height="540" rx="12" stroke="#00ADD8" stroke-width="2" width="760" x="10" y="10"></rect>
-<text fill="#333" font-size="16" font-weight="bold" text-anchor="middle" x="390" y="35" direction="rtl" unicode-bidi="embed">مقایسه‌ی ساختار حافظه: <tspan direction="ltr" unicode-bidi="embed">PHP zval</tspan> در برابر <tspan direction="ltr" unicode-bidi="embed">Go Typed Values</tspan></text>
+<pre class="mermaid">flowchart TB
+    TITLE["مقایسه‌ی ساختار حافظه: PHP zval در برابر Go Typed Values"]
 
-<!-- PHP Side Header -->
-<rect fill="#777BB4" height="30" rx="6" width="340" x="30" y="50"></rect>
-<text fill="#fff" font-size="13" font-weight="bold" text-anchor="middle" x="200" y="70" direction="ltr" unicode-bidi="embed">PHP — zval structure (runtime overhead)</text>
+    subgraph PHP["PHP — zval structure (runtime overhead)"]
+        direction TB
+        PI["zval for $x = 10 (integer)<br/>type_tag = IS_LONG (4B)<br/>value.lval = 10 (8B)<br/>refcount = 1 (4B)<br/>is_ref = false (1B)<br/><b>Total: 16 bytes overhead per integer!</b>"]
+        PS["zval for $s = &#34;hello&#34; (string)<br/>type_tag = IS_STRING (4B)<br/>ptr → zend_string*<br/>zend_string: gc(8B) + hash(8B) + len(8B) + val(5B) + \0<br/><b>Total: 16B zval + 30B zend_string = 46 bytes</b>"]
+        PA["zval for $arr = &#91;1,2,3&#93; (array)<br/>type_tag = IS_ARRAY (4B)<br/>ptr → HashTable*<br/><b>Total: 16B zval + HashTable + Buckets = ~300+ bytes</b>"]
+        PI --- PS --- PA
+    end
 
-<!-- PHP zval for int -->
-<rect fill="#f3e5f5" height="110" rx="8" stroke="#777BB4" stroke-width="1.5" width="340" x="30" y="90"></rect>
-<text fill="#777BB4" font-size="12" font-weight="bold" x="45" y="110" direction="ltr" unicode-bidi="embed">zval for $x = 10 (integer)</text>
-<rect fill="#fff" height="22" rx="3" stroke="#777BB4" stroke-width="1" width="155" x="45" y="118"></rect>
-<text fill="#333" font-size="10" x="50" y="133" direction="ltr" unicode-bidi="embed">type_tag = IS_LONG (4B)</text>
-<rect fill="#fff" height="22" rx="3" stroke="#777BB4" stroke-width="1" width="155" x="210" y="118"></rect>
-<text fill="#333" font-size="10" x="215" y="133" direction="ltr" unicode-bidi="embed">value.lval = 10 (8B)</text>
-<rect fill="#fff" height="22" rx="3" stroke="#777BB4" stroke-width="1" width="155" x="45" y="148"></rect>
-<text fill="#333" font-size="10" x="50" y="163" direction="ltr" unicode-bidi="embed">refcount = 1 (4B)</text>
-<rect fill="#fff" height="22" rx="3" stroke="#777BB4" stroke-width="1" width="155" x="210" y="148"></rect>
-<text fill="#333" font-size="10" x="215" y="163" direction="ltr" unicode-bidi="embed">is_ref = false (1B)</text>
-<text fill="#777BB4" font-size="11" font-weight="bold" x="45" y="192" direction="ltr" unicode-bidi="embed">Total: 16 bytes overhead per integer!</text>
+    subgraph GO["Go — Typed Values (zero overhead)"]
+        direction TB
+        GI["var x int = 10<br/>10 — 8 bytes (64-bit system) — just the raw value<br/>✓ 50% less memory than PHP zval"]
+        GS["var s string = &#34;hello&#34;<br/>Data ptr → &#34;hello&#34; (5B readonly)<br/>Len = 5 (8B)<br/>stringHeader = &#123;ptr, len&#125; = 16 bytes header<br/>✓ No refcount, no hash, no gc overhead"]
+        GA["var arr = &#91;&#93;int&#123;1, 2, 3&#125;<br/>Data ptr<br/>Len=3 (8B)<br/>Cap=3 (8B)<br/>sliceHeader = 24B + underlying array = 24 + 24 = 48 bytes"]
+        GI --- GS --- GA
+    end
 
-<!-- PHP zval for string -->
-<rect fill="#f3e5f5" height="100" rx="8" stroke="#777BB4" stroke-width="1.5" width="340" x="30" y="205"></rect>
-<text fill="#777BB4" font-size="12" font-weight="bold" x="45" y="225" direction="ltr" unicode-bidi="embed">zval for $s = "hello" (string)</text>
-<rect fill="#fff" height="22" rx="3" stroke="#777BB4" stroke-width="1" width="155" x="45" y="235"></rect>
-<text fill="#333" font-size="10" x="50" y="250" direction="ltr" unicode-bidi="embed">type_tag = IS_STRING (4B)</text>
-<rect fill="#fff" height="22" rx="3" stroke="#777BB4" stroke-width="1" width="155" x="210" y="235"></rect>
-<text fill="#333" font-size="10" x="215" y="250" direction="ltr" unicode-bidi="embed">ptr → zend_string*</text>
-<text fill="#999" font-size="9" x="45" y="275" direction="ltr" unicode-bidi="embed">zend_string: gc(8B) + hash(8B) + len(8B) + val(5B) + \0</text>
-<text fill="#777BB4" font-size="11" font-weight="bold" x="45" y="298" direction="ltr" unicode-bidi="embed">Total: 16B zval + 30B zend_string = 46 bytes</text>
+    subgraph INIT["مقادیر اولیه"]
+        direction TB
+        PHPI["مقدار اولیه‌ی PHP<br/>Uninitialized → null (zval with IS_NULL type)<br/>Every variable starts as null until assigned"]
+        GOI["مقدار صفر Go — همیشه مقدار معتبر<br/>int→0 | float64→0.0 | bool→false | string→&#34;&#34;<br/>No null, no undefined — every type has a safe zero value"]
+    end
 
-<!-- PHP zval for array -->
-<rect fill="#f3e5f5" height="75" rx="8" stroke="#777BB4" stroke-width="1.5" width="340" x="30" y="315"></rect>
-<text fill="#777BB4" font-size="12" font-weight="bold" x="45" y="335" direction="ltr" unicode-bidi="embed">zval for $arr = [1,2,3] (array)</text>
-<rect fill="#fff" height="22" rx="3" stroke="#777BB4" stroke-width="1" width="155" x="45" y="345"></rect>
-<text fill="#333" font-size="10" x="50" y="360" direction="ltr" unicode-bidi="embed">type_tag = IS_ARRAY (4B)</text>
-<rect fill="#fff" height="22" rx="3" stroke="#777BB4" stroke-width="1" width="155" x="210" y="345"></rect>
-<text fill="#333" font-size="10" x="215" y="360" direction="ltr" unicode-bidi="embed">ptr → HashTable*</text>
-<text fill="#777BB4" font-size="11" font-weight="bold" x="45" y="382" direction="ltr" unicode-bidi="embed">Total: 16B zval + HashTable + Buckets = ~300+ bytes</text>
+    subgraph SUM["خلاصه‌ی بهره‌وری حافظه"]
+        direction TB
+        S1["Go بدون سربار runtime type حافظه تخصیص می‌دهد<br/>CPU cache مؤثرتر به‌دلیل تراکم بالاتر داده"]
+        S2["بدون refcounting و GC overhead در هر متغیر<br/>zero value = مقدار امن پیش‌فرض به‌جای null"]
+    end
 
-<!-- Go Side Header -->
-<rect fill="#00ADD8" height="30" rx="6" width="370" x="390" y="50"></rect>
-<text fill="#fff" font-size="13" font-weight="bold" text-anchor="middle" x="575" y="70" direction="ltr" unicode-bidi="embed">Go — Typed Values (zero overhead)</text>
+    TITLE --> PHP
+    TITLE --> GO
+    PHP --> INIT
+    GO --> INIT
+    INIT --> SUM
 
-<!-- Go int -->
-<rect fill="#e0f7fa" height="110" rx="8" stroke="#00ADD8" stroke-width="1.5" width="370" x="390" y="90"></rect>
-<text fill="#00ADD8" font-size="12" font-weight="bold" x="405" y="110" direction="ltr" unicode-bidi="embed">var x int = 10</text>
-<rect fill="#fff" height="35" rx="4" stroke="#00ADD8" stroke-width="1.5" width="340" x="405" y="120"></rect>
-<text fill="#333" font-size="14" font-weight="bold" text-anchor="middle" x="575" y="143" direction="ltr" unicode-bidi="embed">10</text>
-<text fill="#00ADD8" font-size="10" x="405" y="168" direction="ltr" unicode-bidi="embed">8 bytes (64-bit system) — just the raw value</text>
-<text fill="#4CAF50" font-size="11" font-weight="bold" x="405" y="192" direction="ltr" unicode-bidi="embed">✓ 50% less memory than PHP zval</text>
-
-<!-- Go string -->
-<rect fill="#e0f7fa" height="100" rx="8" stroke="#00ADD8" stroke-width="1.5" width="370" x="390" y="205"></rect>
-<text fill="#00ADD8" font-size="12" font-weight="bold" x="405" y="225" direction="ltr" unicode-bidi="embed">var s string = "hello"</text>
-<rect fill="#fff" height="22" rx="3" stroke="#00ADD8" stroke-width="1" width="160" x="405" y="235"></rect>
-<text fill="#333" font-size="10" x="410" y="250" direction="ltr" unicode-bidi="embed">Data ptr → "hello" (5B readonly)</text>
-<rect fill="#fff" height="22" rx="3" stroke="#00ADD8" stroke-width="1" width="160" x="575" y="235"></rect>
-<text fill="#333" font-size="10" x="580" y="250" direction="ltr" unicode-bidi="embed">Len = 5 (8B)</text>
-<text fill="#00ADD8" font-size="10" x="405" y="275" direction="ltr" unicode-bidi="embed">stringHeader = {ptr, len} = 16 bytes header</text>
-<text fill="#4CAF50" font-size="11" font-weight="bold" x="405" y="298" direction="ltr" unicode-bidi="embed">✓ No refcount, no hash, no gc overhead</text>
-
-<!-- Go slice -->
-<rect fill="#e0f7fa" height="75" rx="8" stroke="#00ADD8" stroke-width="1.5" width="370" x="390" y="315"></rect>
-<text fill="#00ADD8" font-size="12" font-weight="bold" x="405" y="335" direction="ltr" unicode-bidi="embed">var arr = []int{1, 2, 3}</text>
-<rect fill="#fff" height="22" rx="3" stroke="#00ADD8" stroke-width="1" width="105" x="405" y="345"></rect>
-<text fill="#333" font-size="10" x="410" y="360" direction="ltr" unicode-bidi="embed">Data ptr</text>
-<rect fill="#fff" height="22" rx="3" stroke="#00ADD8" stroke-width="1" width="105" x="520" y="345"></rect>
-<text fill="#333" font-size="10" x="525" y="360" direction="ltr" unicode-bidi="embed">Len=3 (8B)</text>
-<rect fill="#fff" height="22" rx="3" stroke="#00ADD8" stroke-width="1" width="105" x="635" y="345"></rect>
-<text fill="#333" font-size="10" x="640" y="360" direction="ltr" unicode-bidi="embed">Cap=3 (8B)</text>
-<text fill="#00ADD8" font-size="10" x="405" y="380" direction="ltr" unicode-bidi="embed">sliceHeader = 24B + underlying array = 24 + 24 = 48 bytes</text>
-
-<!-- Zero Value Comparison -->
-<rect fill="#fff9c4" height="55" rx="6" stroke="#f9a825" stroke-width="1.5" width="340" x="30" y="400"></rect>
-<text fill="#f57f17" font-size="12" font-weight="bold" x="45" y="420" direction="rtl" unicode-bidi="embed">مقدار اولیه‌ی <tspan direction="ltr" unicode-bidi="embed">PHP</tspan></text>
-<text fill="#333" font-size="10" x="45" y="440" direction="ltr" unicode-bidi="embed">Uninitialized → null (zval with IS_NULL type)</text>
-<text fill="#333" font-size="10" x="45" y="445" direction="ltr" unicode-bidi="embed">Every variable starts as null until assigned</text>
-
-<rect fill="#e8f5e9" height="55" rx="6" stroke="#4CAF50" stroke-width="1.5" width="370" x="390" y="400"></rect>
-<text fill="#2e7d32" font-size="12" font-weight="bold" x="405" y="420" direction="rtl" unicode-bidi="embed">مقدار صفر <tspan direction="ltr" unicode-bidi="embed">Go</tspan> — همیشه مقدار معتبر</text>
-<text fill="#333" font-size="10" x="405" y="440" direction="ltr" unicode-bidi="embed">int→0 | float64→0.0 | bool→false | string→""</text>
-<text fill="#333" font-size="10" x="405" y="445" direction="ltr" unicode-bidi="embed">No null, no undefined — every type has a safe zero value</text>
-
-<!-- Efficiency Summary -->
-<rect fill="#e8f5e9" height="70" rx="8" stroke="#4CAF50" stroke-width="2" width="730" x="20" y="470"></rect>
-<text fill="#2e7d32" font-size="13" font-weight="bold" text-anchor="middle" x="390" y="492" direction="rtl" unicode-bidi="embed">خلاصه‌ی بهره‌وری حافظه</text>
-<text fill="#333" font-size="11" text-anchor="middle" x="390" y="512" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">Go</tspan> بدون سربار <tspan direction="ltr" unicode-bidi="embed">runtime type</tspan> حافظه تخصیص می‌دهد • <tspan direction="ltr" unicode-bidi="embed">CPU cache</tspan> مؤثرتر به‌دلیل تراکم بالاتر داده</text>
-<text fill="#333" font-size="11" text-anchor="middle" x="390" y="530" direction="rtl" unicode-bidi="embed">بدون <tspan direction="ltr" unicode-bidi="embed">refcounting</tspan> و <tspan direction="ltr" unicode-bidi="embed">GC overhead</tspan> در هر متغیر • <tspan direction="ltr" unicode-bidi="embed">zero value</tspan> = مقدار امن پیش‌فرض به‌جای <tspan direction="ltr" unicode-bidi="embed">null</tspan></text>
-</svg>
+    classDef titleBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
+    classDef phpBox fill:#f5f0fb,stroke:#777BB4,stroke-width:1.5px,color:#1f2937;
+    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
+    classDef neutralBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
+    classDef bothBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
+    class TITLE titleBox;
+    class PHP,PI,PS,PA,PHPI phpBox;
+    class GO,GI,GS,GA,GOI goBox;
+    class INIT neutralBox;
+    class SUM,S1,S2 bothBox;</pre>
 <figcaption>شکل ۷-۲: مقایسه‌ی ساختار حافظه‌ی <bdi dir="ltr">PHP zval</bdi> در برابر <bdi dir="ltr">Go Typed Values</bdi> — بهره‌وری حافظه و عملکرد</figcaption>
 </figure>
 <h3 id="سناریوهای-عملیاتی-انواع-داده">سناریوهای عملیاتی</h3>

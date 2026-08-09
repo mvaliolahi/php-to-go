@@ -374,158 +374,158 @@ func init() {
 <h3 id="defer-lifo-نمودار">defer: نمودار ترتیب اجرای LIFO</h3>
 <p><bdi dir="ltr">defer</bdi> توابع را به‌صورت <bdi dir="ltr">LIFO</bdi> (آخرین ورود، اولین خروج) اجرا می‌کند. نمودار زیر ترتیب اجرا را نشان می‌دهد:</p>
 <figure class="diagram" dir="ltr">
-<svg height="320" viewBox="0 0 550 320" width="550" xmlns="http://www.w3.org/2000/svg"><defs><filter id="sh38" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter></defs>
-<rect fill="#fafafa" height="300" rx="8" width="550" x="0" y="0"></rect>
-<text fill="#00ADD8" font-size="15" font-weight="bold" text-anchor="middle" x="275" y="25" direction="rtl" unicode-bidi="embed">ترتیب اجرای <tspan direction="ltr" unicode-bidi="embed">defer</tspan> (<tspan direction="ltr" unicode-bidi="embed">LIFO</tspan>)</text>
-<!-- Registration order -->
-<text fill="#333" font-size="12" font-weight="bold" x="30" y="55" direction="rtl" unicode-bidi="embed">ثبت:</text>
-<rect fill="#e3f2fd" height="30" rx="5" stroke="#2196f3" stroke-width="1.5" width="200" x="80" y="40"></rect>
-<text fill="#1565c0" font-size="11" text-anchor="middle" x="180" y="60" direction="ltr" unicode-bidi="embed">defer f.Close() ← اول</text>
-<rect fill="#e3f2fd" height="30" rx="5" stroke="#2196f3" stroke-width="1.5" width="200" x="80" y="80"></rect>
-<text fill="#1565c0" font-size="11" text-anchor="middle" x="180" y="100" direction="ltr" unicode-bidi="embed">defer rows.Close() ← دوم</text>
-<rect fill="#e3f2fd" height="30" rx="5" stroke="#2196f3" stroke-width="1.5" width="200" x="80" y="120"></rect>
-<text fill="#1565c0" font-size="11" text-anchor="middle" x="180" y="140" direction="ltr" unicode-bidi="embed">defer mu.Unlock() ← سوم</text>
-<!-- Execution order -->
-<text fill="#333" font-size="12" font-weight="bold" x="320" y="55" direction="rtl" unicode-bidi="embed">اجرا:</text>
-<rect fill="#e8f5e9" height="30" rx="5" stroke="#27ae60" stroke-width="2" width="200" x="340" y="40"></rect>
-<text fill="#1b5e20" font-size="11" text-anchor="middle" x="440" y="60" direction="ltr" unicode-bidi="embed">1. mu.Unlock()</text>
-<rect fill="#e8f5e9" height="30" rx="5" stroke="#27ae60" stroke-width="2" width="200" x="340" y="80"></rect>
-<text fill="#1b5e20" font-size="11" text-anchor="middle" x="440" y="100" direction="ltr" unicode-bidi="embed">2. rows.Close()</text>
-<rect fill="#e8f5e9" height="30" rx="5" stroke="#27ae60" stroke-width="2" width="200" x="340" y="120"></rect>
-<text fill="#1b5e20" font-size="11" text-anchor="middle" x="440" y="140" direction="ltr" unicode-bidi="embed">3. f.Close()</text>
-<!-- Arrows -->
-<line stroke="#666" stroke-dasharray="4,3" stroke-width="1.5" x1="280" x2="340" y1="55" y2="130"></line>
-<line stroke="#666" stroke-dasharray="4,3" stroke-width="1.5" x1="280" x2="340" y1="95" y2="95"></line>
-<line stroke="#666" stroke-dasharray="4,3" stroke-width="1.5" x1="280" x2="340" y1="135" y2="55"></line>
-<!-- Explanation -->
-<rect fill="#fff3e0" height="55" rx="6" stroke="#f39c12" stroke-width="1.5" width="500" x="25" y="170"></rect>
-<text fill="#e65100" font-size="12" text-anchor="middle" x="275" y="192" direction="rtl" unicode-bidi="embed">ترتیب اجرا برعکس ثبت است — آخرین <tspan direction="ltr" unicode-bidi="embed">defer</tspan> اول اجرا می‌شود</text>
-<text fill="#e65100" font-size="11" text-anchor="middle" x="275" y="212" direction="rtl" unicode-bidi="embed">این رفتار تضمین می‌کند منابع به ترتیب صحیح آزاد شوند</text>
-<!-- Stack visualization -->
-<rect fill="#f3e5f5" height="70" rx="6" stroke="#777BB4" stroke-width="1.5" width="500" x="25" y="235"></rect>
-<text fill="#777BB4" font-size="12" font-weight="bold" text-anchor="middle" x="275" y="255" direction="rtl" unicode-bidi="embed">نمای داخلی: <tspan direction="ltr" unicode-bidi="embed">Linked</tspan> <tspan direction="ltr" unicode-bidi="embed">List</tspan> در <tspan direction="ltr" unicode-bidi="embed">runtime</tspan></text>
-<text fill="#333" font-size="11" text-anchor="middle" x="275" y="275" direction="ltr" unicode-bidi="embed">_defer(Unlock) → _defer(rows.Close) → _defer(f.Close) → nil</text>
-<text fill="#333" font-size="11" text-anchor="middle" x="275" y="295" direction="ltr" unicode-bidi="embed">پیمایش از سر list = LIFO execution</text>
-</svg>
+<pre class="mermaid">flowchart TB
+    TITLE["ترتیب اجرای defer (LIFO)"]
+
+    subgraph REG["ثبت"]
+        direction TB
+        R1["defer f.Close() ← اول"]
+        R2["defer rows.Close() ← دوم"]
+        R3["defer mu.Unlock() ← سوم"]
+        R1 --- R2 --- R3
+    end
+
+    subgraph RUN["اجرا"]
+        direction TB
+        E1["1. mu.Unlock()"]
+        E2["2. rows.Close()"]
+        E3["3. f.Close()"]
+        E1 --> E2 --> E3
+    end
+
+    subgraph INTERNAL["نمای داخلی: Linked List در runtime"]
+        direction LR
+        L1["_defer(Unlock)"]
+        L2["_defer(rows.Close)"]
+        L3["_defer(f.Close)"]
+        L4["nil"]
+        L1 --> L2 --> L3 --> L4
+    end
+
+    NOTE["ترتیب اجرا برعکس ثبت است — آخرین defer اول اجرا می‌شود<br/>این رفتار تضمین می‌کند منابع به ترتیب صحیح آزاد شوند<br/>پیمایش از سر list = LIFO execution"]
+
+    TITLE --> REG
+    TITLE --> RUN
+    REG -.->|LIFO| RUN
+    TITLE --> INTERNAL
+    TITLE --> NOTE
+
+    classDef titleBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:2px,color:#1f2937;
+    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
+    classDef bothBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
+    classDef neutralBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
+    class TITLE titleBox;
+    class REG,R1,R2,R3,RUN,E1,E2,E3,INTERNAL,L1,L2,L3,L4 goBox;
+    class NOTE bothBox;</pre>
 <figcaption>شکل ۲-۴-الف: ترتیب اجرای <bdi dir="ltr">defer</bdi> به‌صورت <bdi dir="ltr">LIFO</bdi></figcaption>
 </figure>
 <figure class="diagram" dir="ltr">
-<svg height="320" viewBox="0 0 600 320" width="600" xmlns="http://www.w3.org/2000/svg">
-<rect fill="#fafafa" height="300" rx="12" stroke="#00ADD8" stroke-width="2" width="580" x="10" y="10"></rect>
-<text fill="#00ADD8" font-size="15" font-weight="bold" text-anchor="middle" x="300" y="35" direction="rtl" unicode-bidi="embed">قواعد <tspan direction="ltr" unicode-bidi="embed">Method</tspan> <tspan direction="ltr" unicode-bidi="embed">Set</tspan>: T در برابر *T</text>
-<!-- T box -->
-<rect fill="#e3f2fd" height="120" rx="8" stroke="#2196f3" stroke-width="2" width="250" x="20" y="55"></rect>
-<text fill="#1565c0" font-size="14" font-weight="bold" text-anchor="middle" x="145" y="78" direction="ltr" unicode-bidi="embed">type User struct{...}</text>
-<text fill="#333" font-size="12" text-anchor="middle" x="145" y="100" direction="ltr" unicode-bidi="embed">Value: u := User{}</text>
-<text fill="#27ae60" font-size="12" font-weight="bold" text-anchor="middle" x="145" y="125" direction="ltr" unicode-bidi="embed">(u User) Greet()</text>
-<text fill="#e74c3c" font-size="12" font-weight="bold" text-anchor="middle" x="145" y="148" direction="ltr" unicode-bidi="embed">(u *User) Update()</text>
-<text fill="#888" font-size="10" text-anchor="middle" x="145" y="168" direction="rtl" unicode-bidi="embed">فقط <tspan direction="ltr" unicode-bidi="embed">value</tspan> <tspan direction="ltr" unicode-bidi="embed">receiver</tspan>‌ها در <tspan direction="ltr" unicode-bidi="embed">method</tspan> <tspan direction="ltr" unicode-bidi="embed">set</tspan></text>
-<!-- *T box -->
-<rect fill="#e8f5e9" height="120" rx="8" stroke="#4caf50" stroke-width="2" width="250" x="330" y="55"></rect>
-<text fill="#2e7d32" font-size="14" font-weight="bold" text-anchor="middle" x="455" y="78" direction="ltr" unicode-bidi="embed">type *User</text>
-<text fill="#333" font-size="12" text-anchor="middle" x="455" y="100" direction="ltr" unicode-bidi="embed">Pointer: p := &amp;User{}</text>
-<text fill="#27ae60" font-size="12" font-weight="bold" text-anchor="middle" x="455" y="125" direction="ltr" unicode-bidi="embed">(u User) Greet()</text>
-<text fill="#27ae60" font-size="12" font-weight="bold" text-anchor="middle" x="455" y="148" direction="ltr" unicode-bidi="embed">(u *User) Update()</text>
-<text fill="#888" font-size="10" text-anchor="middle" x="455" y="168" direction="rtl" unicode-bidi="embed">همه‌ی <tspan direction="ltr" unicode-bidi="embed">receiver</tspan>‌ها در <tspan direction="ltr" unicode-bidi="embed">method</tspan> <tspan direction="ltr" unicode-bidi="embed">set</tspan></text>
-<!-- Arrow -->
-<defs><filter id="sh39" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter><marker id="arrm" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#333" points="0 0, 10 3.5, 0 7"></polygon></marker></defs>
-<line marker-end="url(#arrm)" stroke="#333" stroke-width="2" x1="270" x2="330" y1="115" y2="115"></line>
-<text fill="#333" font-size="10" text-anchor="middle" x="300" y="108" direction="rtl" unicode-bidi="embed">&amp;u</text>
-<!-- Interface box -->
-<rect fill="#fff3e0" height="80" rx="8" stroke="#ff9800" stroke-width="1.5" width="560" x="20" y="200"></rect>
-<text fill="#e65100" font-size="13" font-weight="bold" text-anchor="middle" x="300" y="222" direction="rtl" unicode-bidi="embed">توجه: تله‌ی مهم با <tspan direction="ltr" unicode-bidi="embed">Interface</tspan></text>
-<text fill="#333" font-size="11" text-anchor="middle" x="300" y="245" direction="ltr" unicode-bidi="embed">var g Greeter = User{} // صحیح — فقط اگر Greet() value receiver باشد</text>
-<text fill="#333" font-size="11" text-anchor="middle" x="300" y="265" direction="ltr" unicode-bidi="embed">var g Greeter = &amp;User{} // صحیح — همیشه کار می‌کند</text>
-<!-- Tip box -->
-<rect fill="#e8f5e9" height="25" rx="4" stroke="#27ae60" stroke-width="1" width="560" x="20" y="285"></rect>
-<text fill="#27ae60" font-size="11" font-weight="bold" text-anchor="middle" x="300" y="302" direction="rtl" unicode-bidi="embed">قانون طلایی: اگر یک متد <tspan direction="ltr" unicode-bidi="embed">pointer</tspan> <tspan direction="ltr" unicode-bidi="embed">receiver</tspan> دارد، همه <tspan direction="ltr" unicode-bidi="embed">pointer</tspan> <tspan direction="ltr" unicode-bidi="embed">receiver</tspan> باشند</text>
-</svg>
+<pre class="mermaid">flowchart TB
+    TITLE["قواعد Method Set: T در برابر *T"]
+
+    subgraph TYPEDEF["type User struct&#123;...&#125;"]
+        direction TB
+    end
+
+    subgraph VALUE["Value: u := User&#123;&#125;"]
+        direction TB
+        V1["(u User) Greet()"]
+        V2["(u *User) Update()"]
+        VNOTE["فقط value receiver‌ها در method set"]
+        V1 --- V2 --- VNOTE
+    end
+
+    subgraph PTR["Pointer: p := &User&#123;&#125;"]
+        direction TB
+        P1["(u User) Greet()"]
+        P2["(u *User) Update()"]
+        PNOTE["همه‌ی receiver‌ها در method set"]
+        P1 --- P2 --- PNOTE
+    end
+
+    PTR_TO["&u<br/>type *User"]
+
+    subgraph TRAP["توجه: تله‌ی مهم با Interface"]
+        direction TB
+        T1["var g Greeter = User&#123;&#125; // صحیح — فقط اگر Greet() value receiver باشد"]
+        T2["var g Greeter = &User&#123;&#125; // صحیح — همیشه کار می‌کند"]
+        T1 --- T2
+    end
+
+    GOLD["قانون طلایی: اگر یک متد pointer receiver دارد، همه pointer receiver باشند"]
+
+    TITLE --> TYPEDEF
+    TYPEDEF --> VALUE
+    TYPEDEF --> PTR
+    VALUE --> PTR_TO
+    PTR --> PTR_TO
+    TITLE --> TRAP
+    TITLE --> GOLD
+
+    classDef titleBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:2px,color:#1f2937;
+    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
+    classDef bothBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
+    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
+    classDef neutralBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
+    class TITLE titleBox;
+    class TYPEDEF neutralBox;
+    class VALUE,V1,V2,PTR,P1,P2,PTR_TO goBox;
+    class VNOTE,PNOTE bothBox;
+    class TRAP,T1,T2 warnBox;
+    class GOLD warnBox;</pre>
 <figcaption>شکل ۲-۴-ب: قواعد <bdi dir="ltr">Method</bdi> <bdi dir="ltr">Set</bdi> — تفاوت T و *T</figcaption>
 </figure>
 <h3 id="value-vs-pointer-receiver">دیاگرام مقایسه‌ی <bdi dir="ltr">Value Receiver</bdi> در برابر <bdi dir="ltr">Pointer Receiver</bdi></h3>
 <p>انتخاب بین <bdi dir="ltr">value receiver</bdi> و <bdi dir="ltr">pointer receiver</bdi> یکی از مهم‌ترین تصمیمات طراحی در <bdi dir="ltr">Go</bdi> است. در <bdi dir="ltr">PHP</bdi> همه‌ی متدها درون کلاس تعریف می‌شوند و <code>$this</code> همیشه به شیء فعلی اشاره می‌کند اما در <bdi dir="ltr">Go</bdi> این انتخاب صریح است و پیامدهای مستقیمی بر رفتار متد، کارایی و رضایت <bdi dir="ltr">interface</bdi> دارد. شکل زیر دو رویکرد را به‌صورت بصری مقایسه می‌کند و قواعد <bdi dir="ltr">method set</bdi> و تله‌های رایج را نشان می‌دهد.</p>
 <figure class="diagram" dir="ltr">
-<svg height="580" viewBox="0 0 780 580" width="780" xmlns="http://www.w3.org/2000/svg"><defs><filter id="sh40" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter></defs>
-<rect fill="#fafafa" height="560" rx="12" stroke="#00ADD8" stroke-width="2" width="760" x="10" y="10"></rect>
-<text fill="#333" font-size="16" font-weight="bold" text-anchor="middle" x="390" y="35" direction="rtl" unicode-bidi="embed">مقایسه‌ی <tspan direction="ltr" unicode-bidi="embed">Value Receiver</tspan> در برابر <tspan direction="ltr" unicode-bidi="embed">Pointer Receiver</tspan></text>
+<pre class="mermaid">flowchart TB
+    TITLE["مقایسه‌ی Value Receiver در برابر Pointer Receiver"]
 
-<!-- Value Receiver Side -->
-<rect fill="#00ADD8" height="28" rx="6" width="355" x="20" y="48"></rect>
-<text fill="#fff" font-size="13" font-weight="bold" text-anchor="middle" x="197" y="67" direction="ltr" unicode-bidi="embed">Value Receiver: func (s T) Method()</text>
+    subgraph VR["Value Receiver: func (s T) Method()"]
+        direction TB
+        V1["func (u User) Greet() string &#123;<br/>    return &#34;Hello, &#34; + u.Name<br/>&#125;<br/>u is a COPY of the original User"]
+        V2["Characteristics:<br/>✓ Operates on a copy — original unchanged<br/>✓ Safe for concurrent access (no shared state)<br/>✓ Works with both T and *T callers<br/>✗ Cannot modify receiver's state"]
+        V3["Memory: copies entire struct on each call<br/>Small structs (≤ few fields) → OK<br/>Large structs → expensive copy!"]
+        V1 --- V2 --- V3
+    end
 
-<!-- Value receiver box -->
-<rect fill="#e0f7fa" height="80" rx="8" stroke="#00ADD8" stroke-width="1.5" width="355" x="20" y="85"></rect>
-<text fill="#00ADD8" font-size="12" font-weight="bold" x="35" y="105" direction="ltr" unicode-bidi="embed">func (u User) Greet() string {</text>
-<text fill="#00ADD8" font-size="12" font-weight="bold" x="50" y="122" direction="ltr" unicode-bidi="embed">return "Hello, " + u.Name</text>
-<text fill="#00ADD8" font-size="12" font-weight="bold" x="35" y="139" direction="ltr" unicode-bidi="embed">}</text>
-<text fill="#555" font-size="10" x="35" y="158" direction="ltr" unicode-bidi="embed">u is a COPY of the original User</text>
+    subgraph PR["Pointer Receiver: func (s *T) Method()"]
+        direction TB
+        P1["func (u *User) UpdateEmail(email string) &#123;<br/>    u.Email = email // modifies original!<br/>&#125;<br/>u is a POINTER to the original User"]
+        P2["Characteristics:<br/>✓ Operates on original — can modify state<br/>✓ Efficient for large structs (8-byte pointer)<br/>✓ Enables method chaining: obj.Set().Save()<br/>✗ Not safe for concurrent access without sync"]
+        P3["Memory: only 8-byte pointer copied<br/>Any size struct → same cost (8 bytes)<br/>Preferred for most real-world structs"]
+        P1 --- P2 --- P3
+    end
 
-<!-- Value receiver characteristics -->
-<rect fill="#e0f7fa" height="100" rx="6" stroke="#00ADD8" stroke-width="1" width="355" x="20" y="175"></rect>
-<text fill="#00ADD8" font-size="11" font-weight="bold" x="35" y="195" direction="ltr" unicode-bidi="embed">Characteristics:</text>
-<text fill="#333" font-size="10" x="35" y="212" direction="ltr" unicode-bidi="embed">✓ Operates on a copy — original unchanged</text>
-<text fill="#333" font-size="10" x="35" y="228" direction="ltr" unicode-bidi="embed">✓ Safe for concurrent access (no shared state)</text>
-<text fill="#333" font-size="10" x="35" y="244" direction="ltr" unicode-bidi="embed">✓ Works with both T and *T callers</text>
-<text fill="#333" font-size="10" x="35" y="260" direction="ltr" unicode-bidi="embed">✗ Cannot modify receiver's state</text>
+    subgraph MS["قواعد Method Set و رضایت Interface"]
+        direction TB
+        M1["Type T: method set = only value receiver methods<br/>var u User → can call Greet() only"]
+        M2["Type *T: method set = ALL methods (value + pointer)<br/>var p *User → can call both Greet() and UpdateEmail()"]
+        M3["Interface satisfaction: *T implements interface I ↔ T has only value receivers"]
+    end
 
-<!-- Value receiver memory -->
-<rect fill="#e0f7fa" height="55" rx="6" stroke="#00ADD8" stroke-width="1" width="355" x="20" y="285"></rect>
-<text fill="#00ADD8" font-size="11" font-weight="bold" x="35" y="305" direction="ltr" unicode-bidi="embed">Memory: copies entire struct on each call</text>
-<text fill="#555" font-size="10" x="35" y="322" direction="ltr" unicode-bidi="embed">Small structs (≤ few fields) → OK</text>
-<text fill="#e91e63" font-size="10" font-weight="bold" x="35" y="336" direction="ltr" unicode-bidi="embed">Large structs → expensive copy!</text>
+    subgraph TRAP["تله‌ی مهم با Interface"]
+        direction TB
+        T1["// If Greet() is value receiver AND UpdateEmail() is pointer receiver:<br/>var g Greeter = User&#123;&#125;       // ✓ Greet() is in T's method set<br/>var g Greeter = &User&#123;&#125;     // ✓ *T has both methods"]
+        T2["// But if interface requires UpdateEmail() (pointer receiver):<br/>// var g Greeter = User&#123;&#125;  // ✗ COMPILE ERROR! T lacks pointer receiver methods"]
+    end
 
-<!-- Pointer Receiver Side -->
-<rect fill="#FF9800" height="28" rx="6" width="375" x="395" y="48"></rect>
-<text fill="#fff" font-size="13" font-weight="bold" text-anchor="middle" x="582" y="67" direction="ltr" unicode-bidi="embed">Pointer Receiver: func (s *T) Method()</text>
+    TITLE --> VR
+    TITLE --> PR
+    TITLE --> MS
+    TITLE --> TRAP
 
-<!-- Pointer receiver box -->
-<rect fill="#fff3e0" height="80" rx="8" stroke="#FF9800" stroke-width="1.5" width="375" x="395" y="85"></rect>
-<text fill="#FF9800" font-size="12" font-weight="bold" x="410" y="105" direction="ltr" unicode-bidi="embed">func (u *User) UpdateEmail(email string) {</text>
-<text fill="#FF9800" font-size="12" font-weight="bold" x="425" y="122" direction="ltr" unicode-bidi="embed">u.Email = email // modifies original!</text>
-<text fill="#FF9800" font-size="12" font-weight="bold" x="410" y="139" direction="ltr" unicode-bidi="embed">}</text>
-<text fill="#555" font-size="10" x="410" y="158" direction="ltr" unicode-bidi="embed">u is a POINTER to the original User</text>
-
-<!-- Pointer receiver characteristics -->
-<rect fill="#fff3e0" height="100" rx="6" stroke="#FF9800" stroke-width="1" width="375" x="395" y="175"></rect>
-<text fill="#FF9800" font-size="11" font-weight="bold" x="410" y="195" direction="ltr" unicode-bidi="embed">Characteristics:</text>
-<text fill="#333" font-size="10" x="410" y="212" direction="ltr" unicode-bidi="embed">✓ Operates on original — can modify state</text>
-<text fill="#333" font-size="10" x="410" y="228" direction="ltr" unicode-bidi="embed">✓ Efficient for large structs (8-byte pointer)</text>
-<text fill="#333" font-size="10" x="410" y="244" direction="ltr" unicode-bidi="embed">✓ Enables method chaining: obj.Set().Save()</text>
-<text fill="#e91e63" font-size="10" font-weight="bold" x="410" y="260" direction="ltr" unicode-bidi="embed">✗ Not safe for concurrent access without sync</text>
-
-<!-- Pointer receiver memory -->
-<rect fill="#fff3e0" height="55" rx="6" stroke="#FF9800" stroke-width="1" width="375" x="395" y="285"></rect>
-<text fill="#FF9800" font-size="11" font-weight="bold" x="410" y="305" direction="ltr" unicode-bidi="embed">Memory: only 8-byte pointer copied</text>
-<text fill="#555" font-size="10" x="410" y="322" direction="ltr" unicode-bidi="embed">Any size struct → same cost (8 bytes)</text>
-<text fill="#4CAF50" font-size="10" font-weight="bold" x="410" y="336" direction="ltr" unicode-bidi="embed">Preferred for most real-world structs</text>
-
-<!-- Method Set Rules -->
-<rect fill="#e8f5e9" height="100" rx="8" stroke="#4CAF50" stroke-width="2" width="730" x="20" y="355"></rect>
-<text fill="#2e7d32" font-size="13" font-weight="bold" text-anchor="middle" x="390" y="378" direction="rtl" unicode-bidi="embed">قواعد <tspan direction="ltr" unicode-bidi="embed">Method Set</tspan> و رضایت <tspan direction="ltr" unicode-bidi="embed">Interface</tspan></text>
-
-<!-- T method set -->
-<rect fill="#fff" height="30" rx="4" stroke="#4CAF50" stroke-width="1" width="350" x="35" y="390"></rect>
-<text fill="#333" font-size="10" x="45" y="410" direction="ltr" unicode-bidi="embed">Type T: method set = only value receiver methods</text>
-<text fill="#555" font-size="9" x="45" y="420" direction="ltr" unicode-bidi="embed">var u User → can call Greet() only</text>
-
-<!-- *T method set -->
-<rect fill="#fff" height="30" rx="4" stroke="#4CAF50" stroke-width="1" width="350" x="395" y="390"></rect>
-<text fill="#333" font-size="10" x="405" y="410" direction="ltr" unicode-bidi="embed">Type *T: method set = ALL methods (value + pointer)</text>
-<text fill="#555" font-size="9" x="405" y="420" direction="ltr" unicode-bidi="embed">var p *User → can call both Greet() and UpdateEmail()</text>
-
-<!-- Interface gotcha -->
-<rect fill="#fff" height="30" rx="4" stroke="#4CAF50" stroke-width="1" width="710" x="35" y="425"></rect>
-<text fill="#4CAF50" font-size="10" font-weight="bold" x="45" y="445" direction="ltr" unicode-bidi="embed">Interface satisfaction: *T implements interface I ↔ T has only value receivers</text>
-
-<!-- Interface examples -->
-<rect fill="#fce4ec" height="85" rx="6" stroke="#e91e63" stroke-width="1.5" width="730" x="20" y="465"></rect>
-<text fill="#e91e63" font-size="12" font-weight="bold" text-anchor="middle" x="390" y="485" direction="rtl" unicode-bidi="embed">تله‌ی مهم با <tspan direction="ltr" unicode-bidi="embed">Interface</tspan></text>
-<text fill="#333" font-size="10" x="35" y="505" direction="ltr" unicode-bidi="embed">// If Greet() is value receiver AND UpdateEmail() is pointer receiver:</text>
-<text fill="#333" font-size="10" x="35" y="520" direction="ltr" unicode-bidi="embed">var g Greeter = User{}       // ✓ Greet() is in T's method set</text>
-<text fill="#e91e63" font-size="10" font-weight="bold" x="35" y="535" direction="ltr" unicode-bidi="embed">var g Greeter = &amp;User{}     // ✓ *T has both methods</text>
-<text fill="#333" font-size="10" x="35" y="550" direction="ltr" unicode-bidi="embed">// But if interface requires UpdateEmail() (pointer receiver):</text>
-<text fill="#e91e63" font-size="10" font-weight="bold" x="35" y="563" direction="ltr" unicode-bidi="embed">// var g Greeter = User{}  // ✗ COMPILE ERROR! T lacks pointer receiver methods</text>
-</svg>
+    classDef titleBox fill:#ecfdf5,stroke:#10b981,stroke-width:2px,color:#1f2937;
+    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
+    classDef bothBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
+    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
+    classDef errBox fill:#fef2f2,stroke:#ef4444,stroke-width:1.5px,color:#1f2937;
+    class TITLE titleBox;
+    class VR,V1,V2,V3 goBox;
+    class PR,P1,P2,P3 goBox;
+    class MS,M1,M2,M3 bothBox;
+    class TRAP,T1 warnBox;
+    class T2 errBox;</pre>
 <figcaption>شکل ۳-۴: مقایسه‌ی <bdi dir="ltr">Value Receiver</bdi> در برابر <bdi dir="ltr">Pointer Receiver</bdi> — شامل قواعد <bdi dir="ltr">Method Set</bdi> و تله‌های <bdi dir="ltr">Interface</bdi></figcaption>
 </figure>
 <h3 id="سناریوهای-عملیاتی-متدها">سناریوهای عملیاتی متدها و <bdi dir="ltr">Receiver</bdi></h3>

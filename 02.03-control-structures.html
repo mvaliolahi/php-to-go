@@ -165,51 +165,57 @@
 <p>Go فقط یک ساختار for دارد اما به‌قدری قدرتمند است که جایگزین for, while, و foreach در زبان‌های دیگر می‌شود.</p>
 
 <figure class="diagram" dir="ltr">
-<svg height="280" viewBox="0 0 700 280" width="700" xmlns="http://www.w3.org/2000/svg">
-<defs><filter id="sh35" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter><marker id="arrLoop" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#00ADD8" points="0 0, 10 3.5, 0 7"></polygon></marker></defs>
-<rect fill="#fafafa" height="280" rx="8" width="700" x="0" y="0"></rect>
-<text fill="#00ADD8" font-size="15" font-weight="bold" text-anchor="middle" x="350" y="25" direction="rtl" unicode-bidi="embed">انواع <tspan direction="ltr" unicode-bidi="embed">for</tspan> در <tspan direction="ltr" unicode-bidi="embed">Go</tspan> — فقط یک کلمه‌ی کلیدی</text>
-<!-- Classic for -->
-<rect fill="#e0f7fa" height="90" rx="8" stroke="#00ADD8" stroke-width="2" width="155" x="15" y="50"></rect>
-<text fill="#00ADD8" font-size="12" font-weight="bold" text-anchor="middle" x="92" y="72" direction="rtl" unicode-bidi="embed">کلاسیک</text>
-<text fill="#333" font-size="10" text-anchor="middle" x="92" y="92" direction="ltr" unicode-bidi="embed">for i:=0; i&lt;n; i++ { }</text>
-<text fill="#999" font-size="9" text-anchor="middle" x="92" y="108" direction="ltr" unicode-bidi="embed">PHP: for ($i=0; ...)</text>
-<text fill="#666" font-size="9" text-anchor="middle" x="92" y="125" direction="rtl" unicode-bidi="embed">شمارنده + شرط + گام</text>
-<!-- While-style -->
-<rect fill="#e8f5e9" height="90" rx="8" stroke="#27ae60" stroke-width="2" width="155" x="185" y="50"></rect>
-<text fill="#27ae60" font-size="12" font-weight="bold" text-anchor="middle" x="262" y="72" direction="rtl" unicode-bidi="embed">سبک <tspan direction="ltr" unicode-bidi="embed">while</tspan></text>
-<text fill="#333" font-size="10" text-anchor="middle" x="262" y="92" direction="ltr" unicode-bidi="embed">for cond { }</text>
-<text fill="#999" font-size="9" text-anchor="middle" x="262" y="108" direction="ltr" unicode-bidi="embed">PHP: while ($cond) { }</text>
-<text fill="#666" font-size="9" text-anchor="middle" x="262" y="125" direction="rtl" unicode-bidi="embed">فقط شرط — بدون شمارنده</text>
-<!-- Range -->
-<rect fill="#fff3e0" height="90" rx="8" stroke="#f39c12" stroke-width="2" width="155" x="355" y="50"></rect>
-<text fill="#e65100" font-size="12" font-weight="bold" text-anchor="middle" x="432" y="72" direction="rtl" unicode-bidi="embed">پیمایش <tspan direction="ltr" unicode-bidi="embed">range</tspan></text>
-<text fill="#333" font-size="10" text-anchor="middle" x="432" y="92" direction="ltr" unicode-bidi="embed">for i, v := range coll { }</text>
-<text fill="#999" font-size="9" text-anchor="middle" x="432" y="108" direction="ltr" unicode-bidi="embed">PHP: foreach ($arr as $v)</text>
-<text fill="#666" font-size="9" text-anchor="middle" x="432" y="125" direction="rtl" unicode-bidi="embed">slice, map, string, chan</text>
-<!-- Infinite -->
-<rect fill="#fce4ec" height="90" rx="8" stroke="#e74c3c" stroke-width="2" width="155" x="525" y="50"></rect>
-<text fill="#e74c3c" font-size="12" font-weight="bold" text-anchor="middle" x="602" y="72" direction="rtl" unicode-bidi="embed">بی‌نهایت</text>
-<text fill="#333" font-size="10" text-anchor="middle" x="602" y="92" direction="ltr" unicode-bidi="embed">for { }</text>
-<text fill="#999" font-size="9" text-anchor="middle" x="602" y="108" direction="ltr" unicode-bidi="embed">PHP: while (true) { }</text>
-<text fill="#666" font-size="9" text-anchor="middle" x="602" y="125" direction="rtl" unicode-bidi="embed">خروج فقط با <tspan direction="ltr" unicode-bidi="embed">break</tspan></text>
-<!-- Flow diagram below -->
-<rect fill="#fff" height="55" rx="6" stroke="#00ADD8" stroke-width="1.5" width="155" x="15" y="165"></rect>
-<text fill="#333" font-size="10" text-anchor="middle" x="92" y="185" direction="ltr" unicode-bidi="embed">init → condition → body → post</text>
-<text fill="#00ADD8" font-size="9" text-anchor="middle" x="92" y="205" direction="ltr" unicode-bidi="embed">↻ repeat</text>
-<rect fill="#fff" height="55" rx="6" stroke="#27ae60" stroke-width="1.5" width="155" x="185" y="165"></rect>
-<text fill="#333" font-size="10" text-anchor="middle" x="262" y="185" direction="ltr" unicode-bidi="embed">condition → body</text>
-<text fill="#27ae60" font-size="9" text-anchor="middle" x="262" y="205" direction="ltr" unicode-bidi="embed">↻ repeat while true</text>
-<rect fill="#fff" height="55" rx="6" stroke="#f39c12" stroke-width="1.5" width="155" x="355" y="165"></rect>
-<text fill="#333" font-size="10" text-anchor="middle" x="432" y="185" direction="ltr" unicode-bidi="embed">next element → body</text>
-<text fill="#f39c12" font-size="9" text-anchor="middle" x="432" y="205" direction="ltr" unicode-bidi="embed">↻ until exhausted</text>
-<rect fill="#fff" height="55" rx="6" stroke="#e74c3c" stroke-width="1.5" width="155" x="525" y="165"></rect>
-<text fill="#333" font-size="10" text-anchor="middle" x="602" y="185" direction="ltr" unicode-bidi="embed">body → body → ...</text>
-<text fill="#e74c3c" font-size="9" text-anchor="middle" x="602" y="205" direction="ltr" unicode-bidi="embed">↻ forever (until break)</text>
-<!-- Bottom note -->
-<rect fill="#e3f2fd" height="35" rx="6" stroke="#2196f3" stroke-width="1" width="660" x="20" y="235"></rect>
-<text fill="#1565c0" font-size="11" text-anchor="middle" x="350" y="257" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">Go</tspan> فقط یک حلقه دارد: <tspan direction="ltr" unicode-bidi="embed">for</tspan> — ساده‌تر، خواناتر، کمتر سردرگم‌کننده</text>
-</svg>
+<pre class="mermaid">flowchart TB
+    TITLE["انواع for در Go — فقط یک کلمه‌ی کلیدی"]
+
+    subgraph CLASSIC["کلاسیک"]
+        direction TB
+        C1["for i:=0; i&lt;n; i++ &#123; &#125;<br/>PHP: for ($i=0; ...)"]
+        C2["شمارنده + شرط + گام"]
+        C3["init → condition → body → post<br/>↻ repeat"]
+        C1 --- C2 --- C3
+    end
+
+    subgraph WHILE["سبک while"]
+        direction TB
+        W1["for cond &#123; &#125;<br/>PHP: while ($cond) &#123; &#125;"]
+        W2["فقط شرط — بدون شمارنده"]
+        W3["condition → body<br/>↻ repeat while true"]
+        W1 --- W2 --- W3
+    end
+
+    subgraph RANGE["پیمایش range"]
+        direction TB
+        R1["for i, v := range coll &#123; &#125;<br/>PHP: foreach ($arr as $v)"]
+        R2["slice, map, string, chan"]
+        R3["next element → body<br/>↻ until exhausted"]
+        R1 --- R2 --- R3
+    end
+
+    subgraph INFINITE["بی‌نهایت"]
+        direction TB
+        I1["for &#123; &#125;<br/>PHP: while (true) &#123; &#125;"]
+        I2["خروج فقط با break"]
+        I3["body → body → ...<br/>↻ forever (until break)"]
+        I1 --- I2 --- I3
+    end
+
+    NOTE["Go فقط یک حلقه دارد: for — ساده‌تر، خواناتر، کمتر سردرگم‌کننده"]
+
+    TITLE --> CLASSIC
+    TITLE --> WHILE
+    TITLE --> RANGE
+    TITLE --> INFINITE
+    TITLE --> NOTE
+
+    classDef titleBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:2px,color:#1f2937;
+    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
+    classDef neutralBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
+    classDef bothBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
+    class TITLE titleBox;
+    class CLASSIC,WHILE,RANGE,INFINITE,C1,W1,R1,I1 goBox;
+    class C2,C3,W2,W3,R2,R3,I2,I3 neutralBox;
+    class NOTE bothBox;</pre>
 <figcaption dir="rtl">شکل ۲-۳-الف: انواع حلقه‌ی <bdi dir="ltr">for</bdi> در <bdi dir="ltr">Go</bdi> — جایگزین <bdi dir="ltr">for</bdi> ، <bdi dir="ltr">while</bdi> و <bdi dir="ltr">foreach</bdi> در <bdi dir="ltr">PHP</bdi></figcaption>
 </figure>
 
@@ -453,141 +459,132 @@ for i := range 3 {
 </code></pre>
 </figure>
 <figure class="diagram" dir="ltr">
-<svg height="400" viewBox="0 0 600 400" width="600" xmlns="http://www.w3.org/2000/svg"><defs><filter id="sh36" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter></defs>
-<rect fill="#fafafa" height="380" rx="12" stroke="#00ADD8" stroke-width="2" width="580" x="10" y="10"></rect>
-<text fill="#00ADD8" font-size="15" font-weight="bold" text-anchor="middle" x="300" y="35" direction="rtl" unicode-bidi="embed">مقایسه‌ی ساختارهای کنترلی: <tspan direction="ltr" unicode-bidi="embed">PHP</tspan> در برابر <tspan direction="ltr" unicode-bidi="embed">Go</tspan></text>
-<!-- if -->
-<rect fill="#e3f2fd" height="55" rx="6" stroke="#2196f3" stroke-width="1.5" width="270" x="20" y="55"></rect>
-<text fill="#1565c0" font-size="12" font-weight="bold" text-anchor="middle" x="155" y="73" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">if</tspan> در <tspan direction="ltr" unicode-bidi="embed">Go</tspan></text>
-<text fill="#333" font-size="10" text-anchor="middle" x="155" y="90" direction="rtl" unicode-bidi="embed">بدون پرانتز • آکولاد اجباری • <tspan direction="ltr" unicode-bidi="embed">if-init</tspan></text>
-<text fill="#333" font-size="10" text-anchor="middle" x="155" y="103" direction="rtl" unicode-bidi="embed">حوزه‌ی متغیر محدود به بلوک</text>
-<rect fill="#f3e5f5" height="55" rx="6" stroke="#777BB4" stroke-width="1.5" width="270" x="310" y="55"></rect>
-<text fill="#777BB4" font-size="12" font-weight="bold" text-anchor="middle" x="445" y="73" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">if</tspan> در <tspan direction="ltr" unicode-bidi="embed">PHP</tspan></text>
-<text fill="#333" font-size="10" text-anchor="middle" x="445" y="90" direction="rtl" unicode-bidi="embed">پرانتز اجباری • آکولاد اختیاری</text>
-<text fill="#333" font-size="10" text-anchor="middle" x="445" y="103" direction="rtl" unicode-bidi="embed">بدون <tspan direction="ltr" unicode-bidi="embed">if-init</tspan> • حوزه‌ی تابع</text>
-<!-- switch -->
-<rect fill="#e8f5e9" height="55" rx="6" stroke="#4caf50" stroke-width="1.5" width="270" x="20" y="125"></rect>
-<text fill="#2e7d32" font-size="12" font-weight="bold" text-anchor="middle" x="155" y="143" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">switch</tspan> در <tspan direction="ltr" unicode-bidi="embed">Go</tspan></text>
-<text fill="#333" font-size="10" text-anchor="middle" x="155" y="160" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">break</tspan> خودکار • <tspan direction="ltr" unicode-bidi="embed">fallthrough</tspan> صریح</text>
-<text fill="#333" font-size="10" text-anchor="middle" x="155" y="173" direction="rtl" unicode="embed"><tspan direction="ltr" unicode-bidi="embed">switch</tspan> بدون عبارت = <tspan direction="ltr" unicode-bidi="embed">if-else</tspan> تمیز</text>
-<rect fill="#fff3e0" height="55" rx="6" stroke="#ff9800" stroke-width="1.5" width="270" x="310" y="125"></rect>
-<text fill="#e65100" font-size="12" font-weight="bold" text-anchor="middle" x="445" y="143" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">switch</tspan> در <tspan direction="ltr" unicode-bidi="embed">PHP</tspan></text>
-<text fill="#333" font-size="10" text-anchor="middle" x="445" y="160" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">break</tspan> لازم • <tspan direction="ltr" unicode-bidi="embed">fall-through</tspan> پیش‌فرض</text>
-<text fill="#333" font-size="10" text-anchor="middle" x="445" y="173" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">match</tspan> در <tspan direction="ltr" unicode-bidi="embed">PHP</tspan> 8 (شبیه‌تر به <tspan direction="ltr" unicode-bidi="embed">Go</tspan>)</text>
-<!-- for/range -->
-<rect fill="#e0f7fa" height="70" rx="6" stroke="#00ADD8" stroke-width="1.5" width="270" x="20" y="200"></rect>
-<text fill="#00838f" font-size="12" font-weight="bold" text-anchor="middle" x="155" y="218" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">for/range</tspan> در <tspan direction="ltr" unicode-bidi="embed">Go</tspan></text>
-<text fill="#333" font-size="10" text-anchor="middle" x="155" y="235" direction="rtl" unicode-bidi="embed">فقط <tspan direction="ltr" unicode-bidi="embed">for</tspan> — جایگزین <tspan direction="ltr" unicode-bidi="embed">while</tspan> و <tspan direction="ltr" unicode-bidi="embed">foreach</tspan></text>
-<text fill="#333" font-size="10" text-anchor="middle" x="155" y="248" direction="rtl" unicode-bidi="embed">range: slice, map, string, chan, int</text>
-<text fill="#333" font-size="10" text-anchor="middle" x="155" y="261" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">for</tspan> { } = حلقه‌ی بی‌نهایت</text>
-<rect fill="#fce4ec" height="70" rx="6" stroke="#e74c3c" stroke-width="1.5" width="270" x="310" y="200"></rect>
-<text fill="#c62828" font-size="12" font-weight="bold" text-anchor="middle" x="445" y="218" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">for/while/foreach</tspan> در <tspan direction="ltr" unicode-bidi="embed">PHP</tspan></text>
-<text fill="#333" font-size="10" text-anchor="middle" x="445" y="235" direction="rtl" unicode-bidi="embed">سه ساختار جداگانه</text>
-<text fill="#333" font-size="10" text-anchor="middle" x="445" y="248" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">foreach</tspan>: فقط <tspan direction="ltr" unicode-bidi="embed">array/object</tspan></text>
-<text fill="#333" font-size="10" text-anchor="middle" x="445" y="261" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">while</tspan>(<tspan direction="ltr" unicode-bidi="embed">true</tspan>) = حلقه‌ی بی‌نهایت</text>
-<!-- Labels/goto -->
-<rect fill="#fff9c4" height="100" rx="6" stroke="#f9a825" stroke-width="1.5" width="560" x="20" y="290"></rect>
-<text fill="#f57f17" font-size="12" font-weight="bold" text-anchor="middle" x="300" y="312" direction="rtl" unicode-bidi="embed">ویژگی‌های منحصربه‌فرد <tspan direction="ltr" unicode-bidi="embed">Go</tspan></text>
-<text fill="#333" font-size="10" x="40" y="332" direction="rtl" unicode-bidi="embed">• <tspan direction="ltr" unicode-bidi="embed">if-init</tspan>: محدود کردن حوزه‌ی متغیر به بلوک شرطی (ندارد در <tspan direction="ltr" unicode-bidi="embed">PHP</tspan>)</text>
-<text fill="#333" font-size="10" x="40" y="350" direction="rtl" unicode-bidi="embed">• <tspan direction="ltr" unicode-bidi="embed">Labels</tspan>: <tspan direction="ltr" unicode-bidi="embed">break/continue</tspan> هدفمند به حلقه‌ی بیرونی (معادل <tspan direction="ltr" unicode-bidi="embed">break</tspan> N در <tspan direction="ltr" unicode-bidi="embed">PHP</tspan>)</text>
-<text fill="#333" font-size="10" x="40" y="368" direction="rtl" unicode-bidi="embed">• <tspan direction="ltr" unicode-bidi="embed">range</tspan> روی اعداد صحیح (<tspan direction="ltr" unicode-bidi="embed">Go</tspan> 1.22+) — جایگزین <tspan direction="ltr" unicode-bidi="embed">for</tspan> ساده</text>
-<text fill="#333" font-size="10" x="40" y="386" direction="rtl" unicode-bidi="embed">• <tspan direction="ltr" unicode-bidi="embed">goto</tspan> با محدودیت‌های ایمنی (نمی‌تواند از تعریف متغیر پرش کند)</text>
-</svg>
+<pre class="mermaid">flowchart TB
+    TITLE["مقایسه‌ی ساختارهای کنترلی: PHP در برابر Go"]
+
+    subgraph IFGO["if در Go"]
+        direction TB
+        IG1["بدون پرانتز • آکولاد اجباری • if-init"]
+        IG2["حوزه‌ی متغیر محدود به بلوک"]
+    end
+
+    subgraph IFPHP["if در PHP"]
+        direction TB
+        IP1["پرانتز اجباری • آکولاد اختیاری"]
+        IP2["بدون if-init • حوزه‌ی تابع"]
+    end
+
+    subgraph SWGO["switch در Go"]
+        direction TB
+        SG1["break خودکار • fallthrough صریح"]
+        SG2["switch بدون عبارت = if-else تمیز"]
+    end
+
+    subgraph SWPHP["switch در PHP"]
+        direction TB
+        SP1["break لازم • fall-through پیش‌فرض"]
+        SP2["match در PHP 8 (شبیه‌تر به Go)"]
+    end
+
+    subgraph FORGO["for/range در Go"]
+        direction TB
+        FG1["فقط for — جایگزین while و foreach"]
+        FG2["range: slice, map, string, chan, int"]
+        FG3["for &#123; &#125; = حلقه‌ی بی‌نهایت"]
+    end
+
+    subgraph FORPHP["for/while/foreach در PHP"]
+        direction TB
+        FP1["سه ساختار جداگانه"]
+        FP2["foreach: فقط array/object"]
+        FP3["while(true) = حلقه‌ی بی‌نهایت"]
+    end
+
+    subgraph UNIQUE["ویژگی‌های منحصربه‌فرد Go"]
+        direction TB
+        U1["• if-init: محدود کردن حوزه‌ی متغیر به بلوک شرطی (ندارد در PHP)"]
+        U2["• Labels: break/continue هدفمند به حلقه‌ی بیرونی (معادل break N در PHP)"]
+        U3["• range روی اعداد صحیح (Go 1.22+) — جایگزین for ساده"]
+        U4["• goto با محدودیت‌های ایمنی (نمی‌تواند از تعریف متغیر پرش کند)"]
+    end
+
+    TITLE --> IFGO
+    TITLE --> IFPHP
+    TITLE --> SWGO
+    TITLE --> SWPHP
+    TITLE --> FORGO
+    TITLE --> FORPHP
+    TITLE --> UNIQUE
+
+    classDef titleBox fill:#ecfdf5,stroke:#10b981,stroke-width:2px,color:#1f2937;
+    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
+    classDef phpBox fill:#f5f0fb,stroke:#777BB4,stroke-width:1.5px,color:#1f2937;
+    classDef neutralBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
+    classDef bothBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
+    class TITLE titleBox;
+    class IFGO,IG1,IG2,SWGO,SG1,SG2,FORGO,FG1,FG2,FG3 goBox;
+    class IFPHP,IP1,IP2,SWPHP,SP1,SP2,FORPHP,FP1,FP2,FP3 phpBox;
+    class UNIQUE,U1,U2,U3,U4 bothBox;</pre>
 <figcaption>شکل ۹-۲: مقایسه‌ی ساختارهای کنترلی <bdi dir="ltr">PHP</bdi> و <bdi dir="ltr">Go</bdi></figcaption>
 </figure>
 <h3 id="foreach-range-comparison">مقایسه‌ی بصری <bdi dir="ltr">PHP foreach</bdi> در برابر <bdi dir="ltr">Go range</bdi></h3>
 <p>پیمایش مجموعه‌ها یکی از پرکاربردترین عملیات در برنامه‌نویسی است. در <bdi dir="ltr">PHP</bdi> دستور <bdi dir="ltr">foreach</bdi> ابزار اصلی برای پیمایش آرایه‌ها و اشیاء است و مقادیر را به‌صورت ارجاع یا کپی در اختیار بدنه‌ی حلقه قرار می‌دهد. در <bdi dir="ltr">Go</bdi> دستور <bdi dir="ltr">range</bdi> با برگرداندن کپی مقادیر رویکرد متفاوتی دارد و قابلیت‌های منحصربه‌فردی مانند پیمایش <bdi dir="ltr">rune</bdi> رشته و دریافت از <bdi dir="ltr">channel</bdi> فراهم می‌کند. شکل زیر تفاوت‌های کلیدی این دو رویکرد را در کنار هم نمایش می‌دهد.</p>
 <figure class="diagram" dir="ltr">
-<svg height="620" viewBox="0 0 780 620" width="780" xmlns="http://www.w3.org/2000/svg"><defs><filter id="sh37" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter></defs>
-<rect fill="#fafafa" height="600" rx="12" stroke="#00ADD8" stroke-width="2" width="760" x="10" y="10"></rect>
-<text fill="#333" font-size="16" font-weight="bold" text-anchor="middle" x="390" y="35" direction="rtl" unicode-bidi="embed">مقایسه‌ی <tspan direction="ltr" unicode-bidi="embed">PHP foreach</tspan> در برابر <tspan direction="ltr" unicode-bidi="embed">Go range</tspan></text>
+<pre class="mermaid">flowchart TB
+    TITLE["مقایسه‌ی PHP foreach در برابر Go range"]
 
-<!-- PHP Side -->
-<rect fill="#777BB4" height="28" rx="6" width="355" x="20" y="48"></rect>
-<text fill="#fff" font-size="13" font-weight="bold" text-anchor="middle" x="197" y="67" direction="ltr" unicode-bidi="embed">PHP foreach</text>
+    subgraph PHP["PHP foreach"]
+        direction TB
+        P1["foreach ($array as $key =&gt; $value)<br/>کلید و مقدار • مقدار کپی است مگر با &amp;<br/>Works on: array | object | Traversable"]
+        P2["foreach ($array as $value)<br/>Value only — key is discarded"]
+        P3["foreach ($array as &amp;$value)<br/>Reference — can modify original array elements"]
+        PB["PHP behaviors:<br/>• Array order is preserved (ordered hash table)<br/>• break N; exits N levels of nesting<br/>• continue skips to next iteration<br/>• Modification during iteration is undefined behavior"]
+        P1 --- P2 --- P3 --- PB
+    end
 
-<!-- PHP foreach with key => value -->
-<rect fill="#f3e5f5" height="55" rx="6" stroke="#777BB4" stroke-width="1.5" width="355" x="20" y="85"></rect>
-<text fill="#777BB4" font-size="11" font-weight="bold" x="35" y="103" direction="ltr" unicode-bidi="embed">foreach ($array as $key =&gt; $value)</text>
-<text fill="#555" font-size="10" x="35" y="118" direction="rtl" unicode-bidi="embed">کلید و مقدار • مقدار کپی است مگر با <tspan direction="ltr" unicode-bidi="embed">&amp;</tspan></text>
-<text fill="#555" font-size="10" x="35" y="133" direction="ltr" unicode-bidi="embed">Works on: array | object | Traversable</text>
+    subgraph GO["Go range"]
+        direction TB
+        G1["for i, v := range slice<br/>ایندکس و مقدار • مقدار همیشه کپی است<br/>Works on: slice | array | map | string | chan"]
+        G2["for _, v := range slice<br/>Value only — discard index with _"]
+        G3["for i := range slice<br/>Index only — no value copy (efficient for large structs)"]
+        GB["Go behaviors:<br/>• Map order is random (by design)<br/>• break + label exits specific outer loop<br/>• continue + label continues specific outer loop<br/>• Range expression is evaluated once before loop"]
+        G1 --- G2 --- G3 --- GB
+    end
 
-<!-- PHP foreach value only -->
-<rect fill="#f3e5f5" height="40" rx="6" stroke="#777BB4" stroke-width="1.5" width="355" x="20" y="148"></rect>
-<text fill="#777BB4" font-size="11" font-weight="bold" x="35" y="166" direction="ltr" unicode-bidi="embed">foreach ($array as $value)</text>
-<text fill="#555" font-size="10" x="35" y="182" direction="ltr" unicode-bidi="embed">Value only — key is discarded</text>
+    subgraph UNIQUE["ویژگی‌های منحصربه‌فرد Go range"]
+        direction TB
+        U1["range over string → yields runes (not bytes!)<br/>for i, r := range &#34;سلام&#34; → i=0,r=س | i=2,r=ل | i=4,r=ا | i=6,r=م"]
+        U2["range over channel → receives until closed<br/>for msg := range ch &#123; &#125; // blocks until ch is closed"]
+        U3["range over int (Go 1.22+) → 0, 1, 2, ..., n-1<br/>for i := range 5 &#123; &#125; // 0, 1, 2, 3, 4"]
+    end
 
-<!-- PHP foreach by reference -->
-<rect fill="#f3e5f5" height="40" rx="6" stroke="#777BB4" stroke-width="1.5" width="355" x="20" y="198"></rect>
-<text fill="#777BB4" font-size="11" font-weight="bold" x="35" y="216" direction="ltr" unicode-bidi="embed">foreach ($array as &amp;$value)</text>
-<text fill="#555" font-size="10" x="35" y="232" direction="ltr" unicode-bidi="embed">Reference — can modify original array elements</text>
+    WARN["⚠ هشدار: range کپی برمی‌گرداند نه ارجاع — تغییر مقدار v روی داده‌ی اصلی بی‌تأثیر است"]
 
-<!-- PHP behaviors -->
-<rect fill="#f3e5f5" height="90" rx="6" stroke="#777BB4" stroke-width="1" width="355" x="20" y="248"></rect>
-<text fill="#777BB4" font-size="11" font-weight="bold" x="35" y="268" direction="ltr" unicode-bidi="embed">PHP behaviors:</text>
-<text fill="#555" font-size="10" x="35" y="285" direction="ltr" unicode-bidi="embed">• Array order is preserved (ordered hash table)</text>
-<text fill="#555" font-size="10" x="35" y="300" direction="ltr" unicode-bidi="embed">• break N; exits N levels of nesting</text>
-<text fill="#555" font-size="10" x="35" y="315" direction="ltr" unicode-bidi="embed">• continue skips to next iteration</text>
-<text fill="#555" font-size="10" x="35" y="330" direction="ltr" unicode-bidi="embed">• Modification during iteration is undefined behavior</text>
+    subgraph LABEL["خروج از حلقه‌های تودرتو با برچسب"]
+        direction TB
+        L1["PHP: break 2;   vs   Go: break outer;"]
+        L2["در Go برچسب‌ها صریح و خوانا هستند • continue outer نیز موجود است"]
+        L3["در PHP break N عددی مستعد خطاست و توصیه نمی‌شود"]
+    end
 
-<!-- Go Side -->
-<rect fill="#00ADD8" height="28" rx="6" width="375" x="395" y="48"></rect>
-<text fill="#fff" font-size="13" font-weight="bold" text-anchor="middle" x="582" y="67" direction="ltr" unicode-bidi="embed">Go range</text>
+    TITLE --> PHP
+    TITLE --> GO
+    TITLE --> UNIQUE
+    TITLE --> WARN
+    TITLE --> LABEL
 
-<!-- Go range with index and value -->
-<rect fill="#e0f7fa" height="55" rx="6" stroke="#00ADD8" stroke-width="1.5" width="375" x="395" y="85"></rect>
-<text fill="#00ADD8" font-size="11" font-weight="bold" x="410" y="103" direction="ltr" unicode-bidi="embed">for i, v := range slice</text>
-<text fill="#555" font-size="10" x="410" y="118" direction="rtl" unicode-bidi="embed">ایندکس و مقدار • مقدار همیشه کپی است</text>
-<text fill="#555" font-size="10" x="410" y="133" direction="ltr" unicode-bidi="embed">Works on: slice | array | map | string | chan</text>
-
-<!-- Go range value only -->
-<rect fill="#e0f7fa" height="40" rx="6" stroke="#00ADD8" stroke-width="1.5" width="375" x="395" y="148"></rect>
-<text fill="#00ADD8" font-size="11" font-weight="bold" x="410" y="166" direction="ltr" unicode-bidi="embed">for _, v := range slice</text>
-<text fill="#555" font-size="10" x="410" y="182" direction="ltr" unicode-bidi="embed">Value only — discard index with _</text>
-
-<!-- Go range index only -->
-<rect fill="#e0f7fa" height="40" rx="6" stroke="#00ADD8" stroke-width="1.5" width="375" x="395" y="198"></rect>
-<text fill="#00ADD8" font-size="11" font-weight="bold" x="410" y="216" direction="ltr" unicode-bidi="embed">for i := range slice</text>
-<text fill="#555" font-size="10" x="410" y="232" direction="ltr" unicode-bidi="embed">Index only — no value copy (efficient for large structs)</text>
-
-<!-- Go behaviors -->
-<rect fill="#e0f7fa" height="90" rx="6" stroke="#00ADD8" stroke-width="1" width="375" x="395" y="248"></rect>
-<text fill="#00ADD8" font-size="11" font-weight="bold" x="410" y="268" direction="ltr" unicode-bidi="embed">Go behaviors:</text>
-<text fill="#555" font-size="10" x="410" y="285" direction="ltr" unicode-bidi="embed">• Map order is random (by design)</text>
-<text fill="#555" font-size="10" x="410" y="300" direction="ltr" unicode-bidi="embed">• break + label exits specific outer loop</text>
-<text fill="#555" font-size="10" x="410" y="315" direction="ltr" unicode-bidi="embed">• continue + label continues specific outer loop</text>
-<text fill="#555" font-size="10" x="410" y="330" direction="ltr" unicode-bidi="embed">• Range expression is evaluated once before loop</text>
-
-<!-- Go-specific features -->
-<rect fill="#e8f5e9" height="120" rx="8" stroke="#4CAF50" stroke-width="2" width="730" x="20" y="350"></rect>
-<text fill="#2e7d32" font-size="13" font-weight="bold" text-anchor="middle" x="390" y="375" direction="rtl" unicode-bidi="embed">ویژگی‌های منحصربه‌فرد <tspan direction="ltr" unicode-bidi="embed">Go range</tspan></text>
-
-<!-- range over string -->
-<rect fill="#fff" height="30" rx="4" stroke="#4CAF50" stroke-width="1" width="350" x="35" y="388"></rect>
-<text fill="#4CAF50" font-size="11" font-weight="bold" x="45" y="408" direction="ltr" unicode-bidi="embed">range over string → yields runes (not bytes!)</text>
-<text fill="#555" font-size="9" x="45" y="418" direction="ltr" unicode-bidi="embed">for i, r := range "سلام" → i=0,r=س | i=2,r=ل | i=4,r=ا | i=6,r=م</text>
-
-<!-- range over channel -->
-<rect fill="#fff" height="30" rx="4" stroke="#4CAF50" stroke-width="1" width="350" x="395" y="388"></rect>
-<text fill="#4CAF50" font-size="11" font-weight="bold" x="405" y="408" direction="ltr" unicode-bidi="embed">range over channel → receives until closed</text>
-<text fill="#555" font-size="9" x="405" y="418" direction="ltr" unicode-bidi="embed">for msg := range ch { } // blocks until ch is closed</text>
-
-<!-- range over int -->
-<rect fill="#fff" height="30" rx="4" stroke="#4CAF50" stroke-width="1" width="350" x="35" y="425"></rect>
-<text fill="#4CAF50" font-size="11" font-weight="bold" x="45" y="445" direction="ltr" unicode-bidi="embed">range over int (Go 1.22+) → 0, 1, 2, ..., n-1</text>
-<text fill="#555" font-size="9" x="45" y="455" direction="ltr" unicode-bidi="embed">for i := range 5 { } // 0, 1, 2, 3, 4</text>
-
-<!-- range returns copies -->
-<rect fill="#fff" height="30" rx="4" stroke="#e91e63" stroke-width="1.5" width="710" x="35" y="462"></rect>
-<text fill="#e91e63" font-size="11" font-weight="bold" x="45" y="482" direction="rtl" unicode-bidi="embed">هشدار: <tspan direction="ltr" unicode-bidi="embed">range</tspan> کپی برمی‌گرداند نه ارجاع — تغییر مقدار <tspan direction="ltr" unicode-bidi="embed">v</tspan> روی داده‌ی اصلی بی‌تأثیر است</text>
-
-<!-- Labeled breaks -->
-<rect fill="#fff3e0" height="80" rx="6" stroke="#ff9800" stroke-width="1.5" width="730" x="20" y="505"></rect>
-<text fill="#e65100" font-size="12" font-weight="bold" text-anchor="middle" x="390" y="525" direction="rtl" unicode-bidi="embed">خروج از حلقه‌های تودرتو با برچسب</text>
-<text fill="#333" font-size="10" font-family="monospace" text-anchor="middle" x="390" y="548" direction="ltr" unicode-bidi="embed">PHP: break 2;   vs   Go: break outer;</text>
-<text fill="#555" font-size="10" text-anchor="middle" x="390" y="568" direction="rtl" unicode-bidi="embed">در <tspan direction="ltr" unicode-bidi="embed">Go</tspan> برچسب‌ها صریح و خوانا هستند • <tspan direction="ltr" unicode-bidi="embed">continue outer</tspan> نیز موجود است</text>
-<text fill="#555" font-size="10" text-anchor="middle" x="390" y="585" direction="rtl" unicode-bidi="embed">در <tspan direction="ltr" unicode-bidi="embed">PHP</tspan> <tspan direction="ltr" unicode-bidi="embed">break N</tspan> عددی مستعد خطاست و توصیه نمی‌شود</text>
-</svg>
+    classDef titleBox fill:#ecfdf5,stroke:#10b981,stroke-width:2px,color:#1f2937;
+    classDef phpBox fill:#f5f0fb,stroke:#777BB4,stroke-width:1.5px,color:#1f2937;
+    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
+    classDef bothBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
+    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
+    classDef neutralBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
+    class TITLE titleBox;
+    class PHP,P1,P2,P3,PB phpBox;
+    class GO,G1,G2,G3,GB goBox;
+    class UNIQUE,U1,U2,U3 bothBox;
+    class WARN warnBox;
+    class LABEL,L1,L2,L3 neutralBox;</pre>
 <figcaption>شکل ۱۰-۲: مقایسه‌ی بصری <bdi dir="ltr">PHP foreach</bdi> در برابر <bdi dir="ltr">Go range</bdi> — شامل ویژگی‌های منحصربه‌فرد <bdi dir="ltr">Go</bdi></figcaption>
 </figure>
 <h3 id="سناریوهای-عملیاتی-پیمایش">سناریوهای عملیاتی پیمایش</h3>

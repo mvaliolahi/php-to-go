@@ -95,18 +95,31 @@
 </ul>
 
 <figure class="diagram" dir="ltr">
-<svg height="200" viewBox="0 0 500 200" width="500" xmlns="http://www.w3.org/2000/svg">
-<text class="title" text-anchor="middle" x="250" y="25" direction="rtl" unicode-bidi="embed">مدیریت خطا: <tspan direction="ltr" unicode-bidi="embed">PHP</tspan> <tspan direction="ltr" unicode-bidi="embed">vs</tspan> <tspan direction="ltr" unicode-bidi="embed">Go</tspan></text>
-<rect class="box-php" height="50" width="200" x="20" y="50"></rect>
-<text font-weight="bold" text-anchor="middle" x="120" y="72" direction="ltr" unicode-bidi="embed">PHP: try/catch</text>
-<text fill="#666" font-size="11" text-anchor="middle" x="120" y="90" direction="ltr" unicode-bidi="embed">Exception handling</text>
-<rect class="box-go" height="50" width="200" x="280" y="50"></rect>
-<text font-weight="bold" text-anchor="middle" x="380" y="72" direction="ltr" unicode-bidi="embed">Go: if err != nil</text>
-<text fill="#666" font-size="11" text-anchor="middle" x="380" y="90" direction="ltr" unicode-bidi="embed">Explicit error handling</text>
-<rect fill="#fff3e0" height="50" rx="8" stroke="#ff9800" stroke-width="1.5" width="260" x="120" y="130"></rect>
-<text text-anchor="middle" x="250" y="152" direction="ltr" unicode-bidi="embed">panic/recover ≈ throw/catch</text>
-<text fill="#666" font-size="11" text-anchor="middle" x="250" y="168" direction="rtl" unicode-bidi="embed">فقط برای شرایط بحرانی</text>
-</svg>
+<pre class="mermaid">flowchart TB
+    TITLE["مدیریت خطا: PHP vs Go"]
+
+    subgraph PHP["PHP: try/catch"]
+        direction TB
+        P1["Exception handling"]
+    end
+
+    subgraph GO["Go: if err != nil"]
+        direction TB
+        G1["Explicit error handling"]
+        G2["panic/recover ≈ throw/catch<br/>فقط برای شرایط بحرانی"]
+    end
+
+    TITLE --> PHP
+    TITLE --> GO
+
+    classDef titleBox fill:#ecfdf5,stroke:#10b981,stroke-width:2px,color:#1f2937;
+    classDef phpBox fill:#f5f0fb,stroke:#777BB4,stroke-width:1.5px,color:#1f2937;
+    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
+    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
+    class TITLE titleBox;
+    class PHP,P1 phpBox;
+    class GO,G1 goBox;
+    class G2 warnBox;</pre>
 <figcaption>مقایسه مدیریت خطا در <bdi dir="ltr">PHP</bdi> و <bdi dir="ltr">Go</bdi></figcaption>
 </figure>
 

@@ -71,42 +71,37 @@
 <h2 id="ساخت-خطاهای-سفارشی">ساخت خطاهای سفارشی</h2>
 <p>برای کنترل دقیق‌تر و ارائه‌ی اطلاعات کامل‌تر می‌توان خطاهای سفارشی ساخت. در PHP معمولاً با ایجاد کلاس سفارشی از <code>Exception</code> این کار را انجام می‌دهید. در Go نیز می‌توانید با تعریف یک <code>struct</code> و پیاده‌سازی متد <code>Error() string</code> خطای سفارشی بسازید.</p>
 <figure class="diagram" dir="ltr">
-<svg height="340" viewBox="0 0 700 340" width="700" xmlns="http://www.w3.org/2000/svg">
-<rect fill="#fafafa" height="340" rx="8" width="700" x="0" y="0"></rect>
-<defs><filter id="sh79" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
-<marker id="arrB" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#00ADD8" points="0 0,10 3.5,0 7"></polygon></marker>
-<marker id="arrP" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#777BB4" points="0 0,10 3.5,0 7"></polygon></marker>
-<marker id="arrG" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#27ae60" points="0 0,10 3.5,0 7"></polygon></marker>
-</defs>
-<!-- PHP side -->
-<text fill="#777BB4" font-size="15" font-weight="bold" text-anchor="middle" x="160" y="28" direction="ltr" unicode-bidi="embed">PHP: Custom Exception</text>
-<rect fill="#777BB4" height="60" opacity="0.12" rx="8" stroke="#777BB4" stroke-width="2" width="220" x="50" y="45"></rect>
-<text fill="#333" font-family="monospace" font-size="12" text-anchor="middle" x="160" y="68" direction="ltr" unicode-bidi="embed">class MyEx extends Exception</text>
-<text fill="#666" font-family="monospace" font-size="11" text-anchor="middle" x="160" y="86" direction="ltr" unicode-bidi="embed">{ protected $message; }</text>
-<rect fill="#777BB4" height="40" opacity="0.12" rx="8" stroke="#777BB4" stroke-width="2" width="220" x="50" y="125"></rect>
-<text fill="#333" font-family="monospace" font-size="12" text-anchor="middle" x="160" y="150" direction="ltr" unicode-bidi="embed">throw new MyEx("msg")</text>
-<line marker-end="url(#arrP)" stroke="#777BB4" stroke-width="2" x1="160" x2="160" y1="105" y2="125"></line>
-<rect fill="#e74c3c" height="40" opacity="0.12" rx="8" stroke="#e74c3c" stroke-width="2" width="220" x="50" y="190"></rect>
-<text fill="#333" font-family="monospace" font-size="12" text-anchor="middle" x="160" y="215" direction="ltr" unicode-bidi="embed">catch (MyEx $e) { ... }</text>
-<line stroke="#e74c3c" stroke-dasharray="6,3" stroke-width="2" x1="160" x2="160" y1="165" y2="190"></line>
-<!-- Go side -->
-<text fill="#00ADD8" font-size="15" font-weight="bold" text-anchor="middle" x="510" y="28" direction="ltr" unicode-bidi="embed">Go: Custom Error</text>
-<rect fill="#00ADD8" height="60" opacity="0.12" rx="8" stroke="#00ADD8" stroke-width="2" width="240" x="390" y="45"></rect>
-<text fill="#333" font-family="monospace" font-size="12" text-anchor="middle" x="510" y="68" direction="ltr" unicode-bidi="embed">type MyError struct { ... }</text>
-<text fill="#666" font-family="monospace" font-size="11" text-anchor="middle" x="510" y="86" direction="ltr" unicode-bidi="embed">func (e *MyError) Error() string</text>
-<rect fill="#00ADD8" height="40" opacity="0.12" rx="8" stroke="#00ADD8" stroke-width="2" width="240" x="390" y="125"></rect>
-<text fill="#333" font-family="monospace" font-size="12" text-anchor="middle" x="510" y="150" direction="ltr" unicode-bidi="embed">return &amp;MyError{...}</text>
-<line marker-end="url(#arrB)" stroke="#00ADD8" stroke-width="2" x1="510" x2="510" y1="105" y2="125"></line>
-<rect fill="#27ae60" height="40" opacity="0.12" rx="8" stroke="#27ae60" stroke-width="2" width="240" x="390" y="190"></rect>
-<text fill="#333" font-family="monospace" font-size="12" text-anchor="middle" x="510" y="215" direction="ltr" unicode-bidi="embed">if err != nil { ... }</text>
-<line marker-end="url(#arrG)" stroke="#27ae60" stroke-width="2" x1="510" x2="510" y1="165" y2="190"></line>
-<!-- Interface box -->
-<rect fill="#f39c12" height="55" opacity="0.12" rx="8" stroke="#f39c12" stroke-width="2" width="240" x="390" y="260"></rect>
-<text fill="#333" font-family="monospace" font-size="12" text-anchor="middle" x="510" y="283" direction="ltr" unicode-bidi="embed">error interface</text>
-<text fill="#666" font-family="monospace" font-size="11" text-anchor="middle" x="510" y="300" direction="ltr" unicode-bidi="embed">Error() string</text>
-<line stroke="#f39c12" stroke-dasharray="6,3" stroke-width="2" x1="510" x2="510" y1="230" y2="260"></line>
-<text fill="#f39c12" font-size="10" x="530" y="250" direction="ltr" unicode-bidi="embed">satisfies</text>
-</svg>
+<pre class="mermaid">flowchart TB
+    subgraph PHP["PHP: Custom Exception"]
+        direction TB
+        P1["class MyEx extends Exception<br/>&#123; protected $message; &#125;"]
+        P2["throw new MyEx(&#34;msg&#34;)"]
+        P3["catch (MyEx $e) &#123; ... &#125;"]
+        P1 --> P2 --> P3
+    end
+
+    subgraph GO["Go: Custom Error"]
+        direction TB
+        G1["type MyError struct &#123; ... &#125;"]
+        G2["func (e *MyError) Error() string"]
+        G3["return &MyError&#123;...&#125;"]
+        G4["if err != nil &#123; ... &#125;"]
+        G1 --> G2 --> G3 --> G4
+    end
+
+    subgraph IFACE["error interface"]
+        direction TB
+        I1["Error() string"]
+        I2["satisfies"]
+        G2 -.->|"satisfies"| I1
+    end
+
+    classDef phpBox fill:#f5f0fb,stroke:#777BB4,stroke-width:1.5px,color:#1f2937;
+    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
+    classDef neutralBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
+    class PHP,P1,P2,P3 phpBox;
+    class GO,G1,G2,G3,G4 goBox;
+    class IFACE,I1,I2 neutralBox;</pre>
 <figcaption>شکل ۴-۲: مقایسه ساخت خطای سفارشی در <bdi dir="ltr">PHP</bdi> و <bdi dir="ltr">Go</bdi></figcaption>
 </figure>
 <figure class="code go" dir="ltr">
@@ -139,39 +134,48 @@ if err != nil {
 <p>یکی از ویژگی‌های قدرتمند Go در مدیریت خطا مفهوم <strong dir="ltr">Error Wrapping</strong> است. با استفاده از <code dir="ltr">fmt.Errorf</code> و فعل قالب <code>%w</code> می‌توان خطاها را در هم پیچید و زنجیره‌ی خطا ساخت. این قابلیت مشابه زنجیره‌ی Exceptions در PHP با <code dir="ltr">getPrevious()</code> است اما بسیار سبک‌تر و صریح‌تر عمل می‌کند.</p>
 
 <figure class="diagram" dir="ltr">
-<svg height="240" viewBox="0 0 700 240" width="700" xmlns="http://www.w3.org/2000/svg">
-<defs><filter id="sh80" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter><marker id="arrIsAs" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#00ADD8" points="0 0, 10 3.5, 0 7"></polygon></marker></defs>
-<rect fill="#fafafa" height="240" rx="8" width="700" x="0" y="0"></rect>
-<text fill="#00ADD8" font-size="15" font-weight="bold" text-anchor="middle" x="350" y="25" direction="rtl" unicode-bidi="embed">جستجو در زنجیره‌ی خطا: <tspan direction="ltr" unicode-bidi="embed">errors.Is</tspan> در برابر <tspan direction="ltr" unicode-bidi="embed">errors.As</tspan></text>
-<!-- errors.Is -->
-<rect fill="#e0f7fa" height="160" rx="8" stroke="#00ADD8" stroke-width="2" width="320" x="15" y="50"></rect>
-<text fill="#00ADD8" font-size="13" font-weight="bold" text-anchor="middle" x="175" y="72" direction="ltr" unicode-bidi="embed">errors.Is(err, target)</text>
-<text fill="#666" font-size="10" text-anchor="middle" x="175" y="90" direction="rtl" unicode-bidi="embed">مقایسه‌ی مقدار خطا (==)</text>
-<rect fill="#fff" height="25" rx="4" stroke="#00ADD8" stroke-width="1" width="200" x="75" y="100"></rect>
-<text fill="#333" font-size="9" text-anchor="middle" x="175" y="117" direction="ltr" unicode-bidi="embed">apiErr → Unwrap()</text>
-<rect fill="#fff" height="25" rx="4" stroke="#00ADD8" stroke-width="1" width="200" x="75" y="130"></rect>
-<text fill="#333" font-size="9" text-anchor="middle" x="175" y="147" direction="ltr" unicode-bidi="embed">svcErr → Unwrap()</text>
-<rect fill="#e8f5e9" height="25" rx="4" stroke="#27ae60" stroke-width="2" width="200" x="75" y="160"></rect>
-<text fill="#27ae60" font-size="9" font-weight="bold" text-anchor="middle" x="175" y="177" direction="ltr" unicode-bidi="embed">sql.ErrNoRows == target (بله)</text>
-<line marker-end="url(#arrIsAs)" stroke="#00ADD8" stroke-width="1" x1="175" x2="175" y1="125" y2="130"></line>
-<line marker-end="url(#arrIsAs)" stroke="#00ADD8" stroke-width="1" x1="175" x2="175" y1="155" y2="160"></line>
-<text fill="#00ADD8" font-size="9" text-anchor="middle" x="175" y="200" direction="rtl" unicode-bidi="embed">آیا این مقدار خطا، هدف است؟</text>
-<text fill="#666" font-size="8" text-anchor="middle" x="175" y="215" direction="ltr" unicode-bidi="embed">errors.Is(err, os.ErrNotExist) → bool</text>
-<!-- errors.As -->
-<rect fill="#e8f5e9" height="160" rx="8" stroke="#27ae60" stroke-width="2" width="320" x="365" y="50"></rect>
-<text fill="#27ae60" font-size="13" font-weight="bold" text-anchor="middle" x="525" y="72" direction="ltr" unicode-bidi="embed">errors.As(err, &amp;target)</text>
-<text fill="#666" font-size="10" text-anchor="middle" x="525" y="90" direction="rtl" unicode-bidi="embed">instanceof</text>
-<rect fill="#fff" height="25" rx="4" stroke="#27ae60" stroke-width="1" width="200" x="425" y="100"></rect>
-<text fill="#333" font-size="9" text-anchor="middle" x="525" y="117" direction="ltr" unicode-bidi="embed">apiErr → Unwrap()</text>
-<rect fill="#fff" height="25" rx="4" stroke="#27ae60" stroke-width="1" width="200" x="425" y="130"></rect>
-<text fill="#333" font-size="9" text-anchor="middle" x="525" y="147" direction="ltr" unicode-bidi="embed">svcErr → Unwrap()</text>
-<rect fill="#fff3e0" height="25" rx="4" stroke="#f39c12" stroke-width="2" width="200" x="425" y="160"></rect>
-<text fill="#e65100" font-size="9" font-weight="bold" text-anchor="middle" x="525" y="177" direction="ltr" unicode-bidi="embed">*DBError matches target (بله)</text>
-<line marker-end="url(#arrIsAs)" stroke="#27ae60" stroke-width="1" x1="525" x2="525" y1="125" y2="130"></line>
-<line marker-end="url(#arrIsAs)" stroke="#27ae60" stroke-width="1" x1="525" x2="525" y1="155" y2="160"></line>
-<text fill="#27ae60" font-size="9" text-anchor="middle" x="525" y="200" direction="rtl" unicode-bidi="embed">آیا این نوع، در زنجیره وجود دارد؟</text>
-<text fill="#666" font-size="8" text-anchor="middle" x="525" y="215" direction="ltr" unicode-bidi="embed">var db *DBError; errors.As(err, &amp;db) → bool</text>
-</svg>
+<pre class="mermaid">flowchart TB
+    TITLE["جستجو در زنجیره‌ی خطا: errors.Is در برابر errors.As"]
+
+    subgraph IS["errors.Is(err, target)"]
+        direction TB
+        I1["مقایسه‌ی مقدار خطا (==)"]
+        I2["apiErr → Unwrap()"]
+        I3["svcErr → Unwrap()"]
+        I4["sql.ErrNoRows == target (بله)"]
+        I5["آیا این مقدار خطا، هدف است؟"]
+        I6["errors.Is(err, os.ErrNotExist) → bool"]
+        I2 -- "Unwrap()" --> I3
+        I3 -- "Unwrap()" --> I4
+        I1 --> I2
+        I4 --> I5
+        I5 --> I6
+    end
+
+    subgraph AS["errors.As(err, &target)"]
+        direction TB
+        A1["instanceof"]
+        A2["apiErr → Unwrap()"]
+        A3["svcErr → Unwrap()"]
+        A4["*DBError matches target (بله)"]
+        A5["آیا این نوع، در زنجیره وجود دارد؟"]
+        A6["var db *DBError; errors.As(err, &db) → bool"]
+        A2 -- "Unwrap()" --> A3
+        A3 -- "Unwrap()" --> A4
+        A1 --> A2
+        A4 --> A5
+        A5 --> A6
+    end
+
+    TITLE --> IS
+    TITLE --> AS
+
+    classDef titleBox fill:#ecfdf5,stroke:#10b981,stroke-width:2px,color:#1f2937;
+    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
+    classDef bothBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
+    class TITLE titleBox;
+    class IS,I1,I2,I3,I4,I5,I6 goBox;
+    class AS,A1,A2,A3,A4,A5,A6 goBox;</pre>
 <figcaption dir="rtl">شکل ۲-۴-ب: مقایسه‌ی <bdi dir="ltr">errors.Is</bdi> (بررسی مقدار) و <bdi dir="ltr">errors.As</bdi> (بررسی نوع) در زنجیره‌ی خطا</figcaption>
 </figure>
 
@@ -416,33 +420,33 @@ func GetUser(id int) (*User, error) {
 </figure>
 
 <figure class="diagram" dir="ltr">
-<svg height="250" viewBox="0 0 600 250" width="600" xmlns="http://www.w3.org/2000/svg">
-<rect fill="#fafafa" height="250" rx="8" width="600" x="0" y="0"></rect>
-<defs><filter id="sh81" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter><marker id="arrErr" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#00ADD8" points="0 0, 10 3.5, 0 7"></polygon></marker></defs>
-<text fill="#00ADD8" font-size="15" font-weight="bold" text-anchor="middle" x="300" y="25" direction="rtl" unicode-bidi="embed">سلسله‌مراتب خطاهای سفارشی</text>
-<!-- error interface -->
-<rect fill="#e0f7fa" height="40" rx="8" stroke="#00ADD8" stroke-width="2" width="180" x="210" y="50"></rect>
-<text fill="#00ADD8" font-size="13" font-weight="bold" text-anchor="middle" x="300" y="75" direction="ltr" unicode-bidi="embed">error interface</text>
-<!-- Concrete types -->
-<rect fill="#e8f5e9" height="40" rx="8" stroke="#27ae60" stroke-width="1.5" width="150" x="20" y="130"></rect>
-<text fill="#27ae60" font-size="11" font-weight="bold" text-anchor="middle" x="95" y="148" direction="ltr" unicode-bidi="embed">*errorString</text>
-<text fill="#666" font-size="9" text-anchor="middle" x="95" y="163" direction="ltr" unicode-bidi="embed">errors.New()</text>
-<rect fill="#e8f5e9" height="40" rx="8" stroke="#27ae60" stroke-width="1.5" width="150" x="190" y="130"></rect>
-<text fill="#27ae60" font-size="11" font-weight="bold" text-anchor="middle" x="265" y="148" direction="ltr" unicode-bidi="embed">*wrapError</text>
-<text fill="#666" font-size="9" text-anchor="middle" x="265" y="163" direction="ltr" unicode-bidi="embed">fmt.Errorf("%w")</text>
-<rect fill="#fff3e0" height="40" rx="8" stroke="#f39c12" stroke-width="1.5" width="150" x="360" y="130"></rect>
-<text fill="#e65100" font-size="11" font-weight="bold" text-anchor="middle" x="435" y="148" direction="ltr" unicode-bidi="embed">*joinError</text>
-<text fill="#666" font-size="9" text-anchor="middle" x="435" y="163" direction="ltr" unicode-bidi="embed">errors.Join()</text>
-<!-- Custom -->
-<rect fill="#fce4ec" height="55" rx="8" stroke="#e74c3c" stroke-width="2" width="220" x="190" y="190"></rect>
-<text fill="#e74c3c" font-size="11" font-weight="bold" text-anchor="middle" x="300" y="210" direction="rtl" unicode-bidi="embed">خطاهای سفارشی شما</text>
-<text fill="#666" font-size="10" text-anchor="middle" x="300" y="228" direction="ltr" unicode-bidi="embed">*DBError, *APIError, *ValidError...</text>
-<!-- Arrows -->
-<line stroke="#27ae60" stroke-width="1.5" x1="95" x2="255" y1="130" y2="90"></line>
-<line stroke="#27ae60" stroke-width="1.5" x1="265" x2="300" y1="130" y2="90"></line>
-<line stroke="#f39c12" stroke-width="1.5" x1="435" x2="345" y1="130" y2="90"></line>
-<line stroke="#e74c3c" stroke-width="1.5" x1="300" x2="300" y1="190" y2="170"></line>
-</svg>
+<pre class="mermaid">flowchart TB
+    TITLE["سلسله‌مراتب خطاهای سفارشی"]
+
+    IFACE["error interface"]
+
+    subgraph STD["خطاهای استاندارد کتابخانه"]
+        direction TB
+        E1["*errorString<br/>errors.New()"]
+        E2["*wrapError<br/>fmt.Errorf(&#34;%w&#34;)"]
+        E3["*joinError<br/>errors.Join()"]
+    end
+
+    CUST["خطاهای سفارشی شما<br/>*DBError, *APIError, *ValidError..."]
+
+    IFACE --> E1
+    IFACE --> E2
+    IFACE --> E3
+    IFACE --> CUST
+
+    classDef titleBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
+    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
+    classDef neutralBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
+    classDef bothBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
+    class TITLE titleBox;
+    class IFACE bothBox;
+    class STD,E1,E2,E3 neutralBox;
+    class CUST goBox;</pre>
 <figcaption>شکل ۲-۴: سلسله‌مراتب خطاهای سفارشی در <bdi dir="ltr">Go</bdi></figcaption>
 </figure>
 
@@ -450,117 +454,76 @@ func GetUser(id int) (*User, error) {
 <p>در بخش «<a href="#خطای-پیچیده-تر-با-wrapping">خطای پیچیده‌تر با Wrapping</a>» دیدیم که <code dir="ltr">fmt.Errorf</code> با فعل <code dir="ltr">%w</code> چگونه زنجیره‌ی خطا می‌سازد و متد <code dir="ltr">Unwrap()</code> را به‌صورت خودکار پیاده‌سازی می‌کند. در این بخش روی نکته‌ی حیاتی‌ای تمرکز می‌کنیم که منبع رایج باگ‌های پنهان در پروژه‌های <bdi dir="ltr">Go</bdi> است: تفاوت <code dir="ltr">%w</code> با <code dir="ltr">%v</code>. <code dir="ltr">%v</code> فقط پیغام خطا را قالب‌بندی می‌کند و زنجیره را می‌شکند — فراخوانی‌کننده دیگر نمی‌تواند خطای اصلی را با <code dir="ltr">errors.Is()</code> یا <code dir="ltr">errors.As()</code> بررسی کند. نمودار زیر این تفاوت را در کنار مکانیزم <code dir="ltr">Unwrap()</code> سفارشی و ساخت درخت خطا نشان می‌دهد.</p>
 
 <figure class="diagram" dir="ltr">
-<svg font-family="sans-serif" viewBox="0 0 820 680" xmlns="http://www.w3.org/2000/svg" width="820" height="680">
-<defs><filter id="sh82" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
-<marker id="arrChain" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#00ADD8" points="0 0, 10 3.5, 0 7"></polygon></marker>
-<marker id="arrWrap" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#FF9800" points="0 0, 10 3.5, 0 7"></polygon></marker>
-<marker id="arrIsAs" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#4CAF50" points="0 0, 10 3.5, 0 7"></polygon></marker>
-<marker id="arrPit" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#e91e63" points="0 0, 10 3.5, 0 7"></polygon></marker>
-</defs>
-<rect fill="#fafafa" height="680" rx="8" width="820" x="0" y="0"></rect>
+<pre class="mermaid">flowchart TB
+    TITLE["زنجیره‌ی پیچیدن خطا: fmt.Errorf %w"]
 
-<!-- Title -->
-<text fill="#333" font-size="16" font-weight="bold" text-anchor="middle" x="410" y="28" direction="rtl" unicode-bidi="embed">زنجیره‌ی پیچیدن خطا: <tspan direction="ltr" unicode-bidi="embed">fmt.Errorf %w</tspan></text>
+    subgraph CHAIN["زنجیره‌ی خطا"]
+        direction TB
+        H["handleErr<br/>fmt.Errorf(&#34;handle request: %w&#34;, svcErr)"]
+        S["svcErr<br/>fmt.Errorf(&#34;get user: %w&#34;, dbErr)"]
+        D["sql.ErrNoRows<br/>original error (sentinel)"]
+        H -- "Unwrap()" --> S
+        S -- "Unwrap()" --> D
+    end
 
-<!-- Legend -->
-<rect fill="#00ADD8" height="12" rx="3" width="12" x="420" y="10"></rect>
-<text fill="#00ADD8" font-size="9" text-anchor="start" x="437" y="20" direction="rtl" unicode-bidi="embed">زنجیره‌ی خطا</text>
-<rect fill="#FF9800" height="12" rx="3" width="12" x="520" y="10"></rect>
-<text fill="#FF9800" font-size="9" text-anchor="start" x="537" y="20" direction="rtl" unicode-bidi="embed">پیچیدن</text>
-<rect fill="#4CAF50" height="12" rx="3" width="12" x="600" y="10"></rect>
-<text fill="#4CAF50" font-size="9" text-anchor="start" x="617" y="20" direction="rtl" unicode-bidi="embed">بررسی</text>
-<rect fill="#e91e63" height="12" rx="3" width="12" x="680" y="10"></rect>
-<text fill="#e91e63" font-size="9" text-anchor="start" x="697" y="20" direction="rtl" unicode-bidi="embed">خطر</text>
+    subgraph IS["errors.Is(handleErr, sql.ErrNoRows) → true ✓"]
+        direction TB
+        I1["پیمایش زنجیره: handleErr → svcErr → sql.ErrNoRows"]
+        I2["هر مقدار در زنجیره با هدف مقایسه می‌شود"]
+        I3["مشابه instanceof در PHP اما برای مقایسه‌ی مقدار"]
+    end
 
-<!-- ===== ERROR CHAIN (Left side) ===== -->
+    subgraph AS["errors.As(handleErr, &pqErr) → true ✓"]
+        direction TB
+        A1["جستجوی نوع در زنجیره: استخراج *pq.Error"]
+        A2["دسترسی به فیلدها: pqErr.Code، pqErr.Message"]
+        A3["مشابه catch (DBError $e) در PHP"]
+    end
 
-<!-- Top: handleErr -->
-<rect fill="#00ADD8" height="50" rx="8" stroke="#00ADD8" stroke-width="2" width="340" x="30" y="50"></rect>
-<text fill="#fff" font-size="12" font-weight="bold" text-anchor="middle" x="200" y="72" direction="ltr" unicode-bidi="embed">handleErr</text>
-<text fill="#e0f7fa" font-size="10" text-anchor="middle" x="200" y="90" direction="ltr" unicode-bidi="embed">fmt.Errorf("handle request: %w", svcErr)</text>
+    subgraph COMPARE["تفاوت حیاتی: %w در برابر %v"]
+        direction LR
+        subgraph W["fmt.Errorf(&#34;...: %w&#34;, err)"]
+            direction TB
+            W1["✓ زنجیره حفظ می‌شود"]
+            W2["errors.Is و errors.As کار می‌کنند"]
+        end
+        subgraph V["fmt.Errorf(&#34;...: %v&#34;, err)"]
+            direction TB
+            V1["✗ زنجیره شکسته می‌شود!"]
+            V2["errors.Is و errors.As کار نمی‌کنند"]
+        end
+    end
 
-<!-- Arrow: wrapping -->
-<line marker-end="url(#arrWrap)" stroke="#FF9800" stroke-width="2" x1="200" x2="200" y1="100" y2="130"></line>
-<text fill="#FF9800" font-size="9" font-weight="bold" text-anchor="middle" x="245" y="120" direction="ltr" unicode-bidi="embed">Unwrap()</text>
+    DANGER["⚠ خطر!"]
 
-<!-- Middle: svcErr -->
-<rect fill="#00ADD8" height="50" rx="8" stroke="#00ADD8" stroke-width="2" width="340" x="30" y="130" opacity="0.85"></rect>
-<text fill="#fff" font-size="12" font-weight="bold" text-anchor="middle" x="200" y="152" direction="ltr" unicode-bidi="embed">svcErr</text>
-<text fill="#e0f7fa" font-size="10" text-anchor="middle" x="200" y="170" direction="ltr" unicode-bidi="embed">fmt.Errorf("get user: %w", dbErr)</text>
+    subgraph CUSTOM["پیاده‌سازی Unwrap() سفارشی — درخت خطا"]
+        direction TB
+        CU1["type DBError struct &#123;<br/>    Query string<br/>    Err   error  // wrapped error<br/>&#125;<br/>func (e *DBError) Error() string &#123; return e.Query + &#34;: &#34; + e.Err.Error() &#125;<br/>func (e *DBError) Unwrap() error &#123; return e.Err &#125;"]
+        CU2["نکته: errors.Join (Go 1.20+) زنجیره‌ی چندشاخه می‌سازد<br/>متد Unwrap() &#91;&#93;error برگشتانی از error واحد پشتیبانی می‌کند<br/>با Unwrap سفارشی می‌توان درخت خطا ساخت نه فقط زنجیره‌ی خطی"]
+    end
 
-<!-- Arrow: wrapping -->
-<line marker-end="url(#arrWrap)" stroke="#FF9800" stroke-width="2" x1="200" x2="200" y1="180" y2="210"></line>
-<text fill="#FF9800" font-size="9" font-weight="bold" text-anchor="middle" x="245" y="200" direction="ltr" unicode-bidi="embed">Unwrap()</text>
+    TITLE --> CHAIN
+    CHAIN --> IS
+    CHAIN --> AS
+    TITLE --> COMPARE
+    COMPARE --> DANGER
+    TITLE --> CUSTOM
 
-<!-- Bottom: dbErr (original) -->
-<rect fill="#e91e63" height="50" rx="8" stroke="#e91e63" stroke-width="2" width="340" x="30" y="210"></rect>
-<text fill="#fff" font-size="12" font-weight="bold" text-anchor="middle" x="200" y="232" direction="ltr" unicode-bidi="embed">sql.ErrNoRows</text>
-<text fill="#fce4ec" font-size="10" text-anchor="middle" x="200" y="250" direction="ltr" unicode-bidi="embed">original error (sentinel)</text>
-
-<!-- ===== errors.Is (Right side top) ===== -->
-<rect fill="#e8f5e9" height="130" rx="8" stroke="#4CAF50" stroke-width="2" width="370" x="420" y="50"></rect>
-<text fill="#4CAF50" font-size="13" font-weight="bold" text-anchor="middle" x="605" y="72" direction="ltr" unicode-bidi="embed">errors.Is(handleErr, sql.ErrNoRows)</text>
-<text fill="#4CAF50" font-size="14" font-weight="bold" text-anchor="middle" x="605" y="95" direction="ltr" unicode-bidi="embed">→ true ✓</text>
-<text fill="#666" font-size="10" text-anchor="middle" x="605" y="118" direction="rtl" unicode-bidi="embed">پیمایش زنجیره: <tspan direction="ltr" unicode-bidi="embed">handleErr</tspan> → <tspan direction="ltr" unicode-bidi="embed">svcErr</tspan> → <tspan direction="ltr" unicode-bidi="embed">sql.ErrNoRows</tspan></text>
-<text fill="#666" font-size="10" text-anchor="middle" x="605" y="138" direction="rtl" unicode-bidi="embed">هر مقدار در زنجیره با هدف مقایسه می‌شود</text>
-<text fill="#666" font-size="10" text-anchor="middle" x="605" y="155" direction="rtl" unicode-bidi="embed">مشابه <tspan direction="ltr" unicode-bidi="embed">instanceof</tspan> در <tspan direction="ltr" unicode-bidi="embed">PHP</tspan> اما برای مقایسه‌ی مقدار</text>
-
-<!-- Arrow from chain to Is -->
-<line marker-end="url(#arrIsAs)" stroke="#4CAF50" stroke-width="1.5" x1="370" x2="420" y1="150" y2="110"></line>
-
-<!-- ===== errors.As (Right side bottom) ===== -->
-<rect fill="#e8f5e9" height="130" rx="8" stroke="#4CAF50" stroke-width="2" width="370" x="420" y="195"></rect>
-<text fill="#4CAF50" font-size="13" font-weight="bold" text-anchor="middle" x="605" y="217" direction="ltr" unicode-bidi="embed">errors.As(handleErr, &amp;pqErr)</text>
-<text fill="#4CAF50" font-size="14" font-weight="bold" text-anchor="middle" x="605" y="240" direction="ltr" unicode-bidi="embed">→ true ✓</text>
-<text fill="#666" font-size="10" text-anchor="middle" x="605" y="263" direction="rtl" unicode-bidi="embed">جستجوی نوع در زنجیره: استخراج <tspan direction="ltr" unicode-bidi="embed">*pq.Error</tspan></text>
-<text fill="#666" font-size="10" text-anchor="middle" x="605" y="283" direction="rtl" unicode-bidi="embed">دسترسی به فیلدها: <tspan direction="ltr" unicode-bidi="embed">pqErr.Code</tspan>، <tspan direction="ltr" unicode-bidi="embed">pqErr.Message</tspan></text>
-<text fill="#666" font-size="10" text-anchor="middle" x="605" y="300" direction="rtl" unicode-bidi="embed">مشابه <tspan direction="ltr" unicode-bidi="embed">catch (DBError $e)</tspan> در <tspan direction="ltr" unicode-bidi="embed">PHP</tspan></text>
-
-<!-- Arrow from chain to As -->
-<line marker-end="url(#arrIsAs)" stroke="#4CAF50" stroke-width="1.5" x1="370" x2="420" y1="230" y2="255"></line>
-
-<!-- ===== %w vs %v Section ===== -->
-<rect fill="#fff3e0" height="30" rx="6" width="760" x="30" y="345"></rect>
-<text fill="#e65100" font-size="13" font-weight="bold" text-anchor="middle" x="410" y="365" direction="rtl" unicode-bidi="embed">تفاوت حیاتی: <tspan direction="ltr" unicode-bidi="embed">%w</tspan> در برابر <tspan direction="ltr" unicode-bidi="embed">%v</tspan></text>
-
-<!-- %w box -->
-<rect fill="#e8f5e9" height="70" rx="6" stroke="#4CAF50" stroke-width="2" width="370" x="30" y="385"></rect>
-<text fill="#4CAF50" font-size="12" font-weight="bold" text-anchor="middle" x="215" y="407" direction="ltr" unicode-bidi="embed">fmt.Errorf("...: %w", err)</text>
-<text fill="#4CAF50" font-size="11" text-anchor="middle" x="215" y="427" direction="rtl" unicode-bidi="embed">✓ زنجیره حفظ می‌شود</text>
-<text fill="#666" font-size="10" text-anchor="middle" x="215" y="447" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">errors.Is</tspan> و <tspan direction="ltr" unicode-bidi="embed">errors.As</tspan> کار می‌کنند</text>
-
-<!-- %v box -->
-<rect fill="#fce4ec" height="70" rx="6" stroke="#e91e63" stroke-width="2" width="370" x="420" y="385"></rect>
-<text fill="#e91e63" font-size="12" font-weight="bold" text-anchor="middle" x="605" y="407" direction="ltr" unicode-bidi="embed">fmt.Errorf("...: %v", err)</text>
-<text fill="#e91e63" font-size="11" text-anchor="middle" x="605" y="427" direction="rtl" unicode-bidi="embed">✗ زنجیره شکسته می‌شود!</text>
-<text fill="#666" font-size="10" text-anchor="middle" x="605" y="447" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">errors.Is</tspan> و <tspan direction="ltr" unicode-bidi="embed">errors.As</tspan> کار نمی‌کنند</text>
-
-<!-- Arrow between %w and %v -->
-<line stroke="#e91e63" stroke-dasharray="4,3" stroke-width="2" x1="400" x2="420" y1="420" y2="420"></line>
-<text fill="#e91e63" font-size="9" text-anchor="middle" x="410" y="412" direction="rtl" unicode-bidi="embed">خطر!</text>
-
-<!-- ===== Custom Unwrap Section ===== -->
-<rect fill="#e0f7fa" height="30" rx="6" width="760" x="30" y="470"></rect>
-<text fill="#00ADD8" font-size="13" font-weight="bold" text-anchor="middle" x="410" y="490" direction="rtl" unicode-bidi="embed">پیاده‌سازی <tspan direction="ltr" unicode-bidi="embed">Unwrap()</tspan> سفارشی — درخت خطا</text>
-
-<!-- Custom type example -->
-<rect fill="#fff" height="105" rx="6" stroke="#00ADD8" stroke-width="1.5" width="760" x="30" y="510"></rect>
-<text fill="#333" font-size="11" font-family="monospace" text-anchor="start" x="45" y="530" direction="ltr" unicode-bidi="embed">type DBError struct {</text>
-<text fill="#333" font-size="11" font-family="monospace" text-anchor="start" x="45" y="548" direction="ltr" unicode-bidi="embed">    Query string</text>
-<text fill="#333" font-size="11" font-family="monospace" text-anchor="start" x="45" y="566" direction="ltr" unicode-bidi="embed">    Err   error  // wrapped error</text>
-<text fill="#333" font-size="11" font-family="monospace" text-anchor="start" x="45" y="584" direction="ltr" unicode-bidi="embed">}</text>
-<text fill="#333" font-size="11" font-family="monospace" text-anchor="start" x="45" y="602" direction="ltr" unicode-bidi="embed">func (e *DBError) Error() string { return e.Query + ": " + e.Err.Error() }</text>
-<text fill="#00ADD8" font-size="11" font-family="monospace" font-weight="bold" text-anchor="start" x="45" y="610" direction="ltr" unicode-bidi="embed"> </text>
-
-<!-- Unwrap highlight -->
-<rect fill="#e0f7fa" height="22" rx="4" stroke="#00ADD8" stroke-width="1.5" width="440" x="310" y="596"></rect>
-<text fill="#00ADD8" font-size="11" font-family="monospace" font-weight="bold" text-anchor="start" x="320" y="612" direction="ltr" unicode-bidi="embed">func (e *DBError) Unwrap() error { return e.Err }</text>
-
-<!-- Info box -->
-<rect fill="#f3e5f5" height="40" rx="6" stroke="#9C27B0" stroke-width="1" width="760" x="30" y="628"></rect>
-<text fill="#7b1fa2" font-size="10" text-anchor="middle" x="410" y="648" direction="rtl" unicode-bidi="embed">نکته: <tspan direction="ltr" unicode-bidi="embed">errors.Join</tspan> (Go 1.20+) زنجیره‌ی چندشاخه می‌سازد — متد <tspan direction="ltr" unicode-bidi="embed">Unwrap() []error</tspan> برگشتانی از <tspan direction="ltr" unicode-bidi="embed">error</tspan> واحد پشتیبانی می‌کند</text>
-<text fill="#7b1fa2" font-size="10" text-anchor="middle" x="410" y="663" direction="rtl" unicode-bidi="embed">با <tspan direction="ltr" unicode-bidi="embed">Unwrap</tspan> سفارشی می‌توان درخت خطا ساخت نه فقط زنجیره‌ی خطی</text>
-</svg>
+    classDef titleBox fill:#ecfdf5,stroke:#10b981,stroke-width:2px,color:#1f2937;
+    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
+    classDef bothBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
+    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
+    classDef errBox fill:#fef2f2,stroke:#ef4444,stroke-width:1.5px,color:#1f2937;
+    classDef neutralBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
+    class TITLE titleBox;
+    class CHAIN,H,S goBox;
+    class D errBox;
+    class IS,I1,I2,I3 bothBox;
+    class AS,A1,A2,A3 bothBox;
+    class W,W1,W2 goBox;
+    class V,V1,V2 errBox;
+    class DANGER errBox;
+    class CUSTOM,CU1,CU2 neutralBox;</pre>
 <figcaption>شکل ۴-۲-ب — زنجیره‌ی پیچیدن خطا با <bdi dir="ltr">fmt.Errorf %w</bdi>: <bdi dir="ltr">errors.Is</bdi> و <bdi dir="ltr">errors.As</bdi> در برابر خطر <bdi dir="ltr">%v</bdi></figcaption>
 </figure>
 

@@ -73,64 +73,36 @@
 <p>این فصل قلب عملی کتاب شماست. در اینجا همه‌ی ابزارهای بنیادین که روزانه در توسعه‌ی نرم‌افزار با <bdi dir="ltr">Go</bdi> به‌کار می‌برید را از پایه و با مقایسه‌ی مداوم با تجربه‌ی <bdi dir="ltr">PHP</bdi> شما می‌آموزید. هر بخش با مثال‌های عملی، هشدارهای مربوط به تله‌های رایج، و نگاهی به درون‌ساخت‌های پیاده‌سازی همراه است تا هم بفهمید «چگونه» و هم «چرا» را درک کنید.</p>
 
 <figure class="diagram" dir="ltr">
-<svg height="480" viewBox="0 0 650 480" width="650" xmlns="http://www.w3.org/2000/svg">
-<rect fill="#fafafa" height="460" rx="12" stroke="#00ADD8" stroke-width="2" width="630" x="10" y="10"></rect>
-<text fill="#00ADD8" font-size="17" font-weight="bold" text-anchor="middle" x="325" y="40" direction="rtl" unicode-bidi="embed">نقشه‌ی فصل دوم: انواع داده و ساختارهای کنترلی</text>
+<pre class="mermaid">flowchart TB
+    subgraph MAP["نقشه‌ی فصل دوم: انواع داده و ساختارهای کنترلی"]
+        direction TB
+        MIG["PHP: Dynamic Typing<br/>⇒ مهاجرت ⇒<br/>Go: Static Typing"]
+        S1["۲.۱ آشنایی با انواع داده<br/><i>Primitive • Composite • Zero Values<br/>iota • String Internals</i>"]
+        S2["۲.۲ تبدیل نوع (Type Conversion)<br/><i>strconv • Type Assertion<br/>unsafe.Pointer • Custom Converters</i>"]
+        S3["۲.۳ ساختارهای کنترلی<br/><i>if-init • switch/fallthrough • range<br/>Labels • goto</i>"]
+        S4["۲.۴ توابع و متدها<br/><i>Value/Pointer Receiver • Method Sets<br/>defer • Variadic • init()</i>"]
+        S5["۲.۵ اشاره‌گرها<br/><i>Escape Analysis • Value vs Reference<br/>Pointer to Pointer • Benchmarks</i>"]
+        S6["۲.۶ جنریک‌ها<br/><i>Type Constraints • comparable<br/>Generic Types • When NOT to use</i>"]
+        S1 --> S2 --> S3 --> S4 --> S5 --> S6
+    end
 
-<!-- Section boxes -->
-<rect fill="#e3f2fd" height="55" rx="8" stroke="#2196f3" stroke-width="2" width="270" x="30" y="60"></rect>
-<text fill="#1565c0" font-size="13" font-weight="bold" text-anchor="middle" x="165" y="82" direction="rtl" unicode-bidi="embed">۲.۱ آشنایی با انواع داده</text>
-<text fill="#333" font-size="10" text-anchor="middle" x="165" y="102" direction="rtl" unicode-bidi="embed">Primitive • Composite • Zero Values • iota • String Internals</text>
+    subgraph KEY["مفاهیم کلیدی فصل دوم"]
+        direction TB
+        K1["هر متغیر در Go از ابتدا نوع مشخصی دارد — کامپایلر اجازه‌ی حدس زدن نمی‌دهد"]
+        K2["مقادیر صفر (Zero Values) تضمین می‌کنند هیچ متغیری مقدار تعریف‌نشده ندارد"]
+        K3["تبدیل نوع صریح است: هیچ Type Juggling یا تبدیل ضمنی وجود ندارد"]
+        K4["فقط یک حلقه وجود دارد (for) اما به اندازه‌ی کافی قدرتمند است"]
+        K5["متدها روی struct تعریف می‌شوند نه درون کلاس — Receiver این نقش را ایفا می‌کند"]
+    end
 
-<rect fill="#e8f5e9" height="55" rx="8" stroke="#4caf50" stroke-width="2" width="270" x="350" y="60"></rect>
-<text fill="#2e7d32" font-size="13" font-weight="bold" text-anchor="middle" x="485" y="82" direction="rtl" unicode-bidi="embed">۲.۲ تبدیل نوع (<tspan direction="ltr" unicode-bidi="embed">Type</tspan> <tspan direction="ltr" unicode-bidi="embed">Conversion</tspan>)</text>
-<text fill="#333" font-size="10" text-anchor="middle" x="485" y="102" direction="rtl" unicode-bidi="embed">strconv • Type Assertion • unsafe.Pointer • Custom Converters</text>
+    MAP --> KEY
 
-<rect fill="#fff3e0" height="55" rx="8" stroke="#ff9800" stroke-width="2" width="270" x="30" y="135"></rect>
-<text fill="#e65100" font-size="13" font-weight="bold" text-anchor="middle" x="165" y="157" direction="rtl" unicode-bidi="embed">۲.۳ ساختارهای کنترلی</text>
-<text fill="#333" font-size="10" text-anchor="middle" x="165" y="177" direction="rtl" unicode-bidi="embed">if-init • switch/fallthrough • range • Labels • goto</text>
-
-<rect fill="#f3e5f5" height="55" rx="8" stroke="#777BB4" stroke-width="2" width="270" x="350" y="135"></rect>
-<text fill="#777BB4" font-size="13" font-weight="bold" text-anchor="middle" x="485" y="157" direction="rtl" unicode-bidi="embed">۲.۴ توابع و متدها</text>
-<text fill="#333" font-size="10" text-anchor="middle" x="485" y="177" direction="rtl" unicode-bidi="embed">Value/Pointer Receiver • Method Sets • defer • Variadic • init()</text>
-
-<rect fill="#e0f7fa" height="55" rx="8" stroke="#00ADD8" stroke-width="2" width="270" x="30" y="210"></rect>
-<text fill="#00838f" font-size="13" font-weight="bold" text-anchor="middle" x="165" y="232" direction="rtl" unicode-bidi="embed">۲.۵ اشاره‌گرها</text>
-<text fill="#333" font-size="10" text-anchor="middle" x="165" y="252" direction="rtl" unicode-bidi="embed">Escape Analysis • Value vs Reference • Pointer to Pointer • Benchmarks</text>
-
-<rect fill="#fce4ec" height="55" rx="8" stroke="#e74c3c" stroke-width="2" width="270" x="350" y="210"></rect>
-<text fill="#c62828" font-size="13" font-weight="bold" text-anchor="middle" x="485" y="232" direction="rtl" unicode-bidi="embed">۲.۶ جنریک‌ها</text>
-<text fill="#333" font-size="10" text-anchor="middle" x="485" y="252" direction="rtl" unicode-bidi="embed">Type Constraints • comparable • Generic Types • When NOT to use</text>
-
-<!-- Connecting arrows -->
-<line stroke="#2196f3" stroke-width="1.5" x1="165" y1="115" x2="165" y2="135"></line>
-<line stroke="#4caf50" stroke-width="1.5" x1="485" y1="115" x2="485" y2="135"></line>
-<line stroke="#ff9800" stroke-width="1.5" x1="165" y1="190" x2="165" y2="210"></line>
-<line stroke="#777BB4" stroke-width="1.5" x1="485" y1="190" x2="485" y2="210"></line>
-<line stroke="#00ADD8" stroke-width="1.5" x1="165" y1="265" x2="165" y2="285"></line>
-<line stroke="#e74c3c" stroke-width="1.5" x1="485" y1="265" x2="485" y2="285"></line>
-
-<!-- PHP vs Go comparison -->
-<rect fill="#777BB4" height="40" rx="8" stroke="#777BB4" stroke-width="2" width="270" x="30" y="285"></rect>
-<text fill="#fff" font-size="14" font-weight="bold" text-anchor="middle" x="165" y="311" direction="rtl" unicode-bidi="embed">PHP: Dynamic Typing</text>
-
-<rect fill="#00ADD8" height="40" rx="8" stroke="#00ADD8" stroke-width="2" width="270" x="350" y="285"></rect>
-<text fill="#fff" font-size="14" font-weight="bold" text-anchor="middle" x="485" y="311" direction="ltr" unicode-bidi="embed">Go: Static Typing</text>
-
-<!-- Arrow between them -->
-<defs><filter id="sh23" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter><marker id="arrch2" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#333" points="0 0, 10 3.5, 0 7"></polygon></marker></defs>
-<line marker-end="url(#arrch2)" stroke="#333" stroke-width="2" x1="300" x2="350" y1="305" y2="305"></line>
-<text fill="#333" font-size="11" text-anchor="middle" x="325" y="298" direction="rtl" unicode-bidi="embed">مهاجرت</text>
-
-<!-- Key concepts box -->
-<rect fill="#fff9c4" height="130" rx="8" stroke="#f9a825" stroke-width="1.5" width="590" x="30" y="345"></rect>
-<text fill="#f57f17" font-size="13" font-weight="bold" text-anchor="middle" x="325" y="370" direction="rtl" unicode-bidi="embed">مفاهیم کلیدی فصل دوم</text>
-<text fill="#333" font-size="11" x="50" y="395" direction="rtl" unicode-bidi="embed">• هر متغیر در <tspan direction="ltr" unicode-bidi="embed">Go</tspan> از ابتدا نوع مشخصی دارد — کامپایلر اجازه‌ی حدس زدن نمی‌دهد</text>
-<text fill="#333" font-size="11" x="50" y="415" direction="rtl" unicode-bidi="embed">• مقادیر صفر (<tspan direction="ltr" unicode-bidi="embed">Zero</tspan> <tspan direction="ltr" unicode-bidi="embed">Values</tspan>) تضمین می‌کنند هیچ متغیری مقدار تعریف‌نشده ندارد</text>
-<text fill="#333" font-size="11" x="50" y="435" direction="rtl" unicode-bidi="embed">• تبدیل نوع صریح است: هیچ <tspan direction="ltr" unicode-bidi="embed">Type</tspan> <tspan direction="ltr" unicode-bidi="embed">Juggling</tspan> یا تبدیل ضمنی وجود ندارد</text>
-<text fill="#333" font-size="11" x="50" y="455" direction="rtl" unicode-bidi="embed">• فقط یک حلقه وجود دارد (<tspan direction="ltr" unicode-bidi="embed">for</tspan>) اما به اندازه‌ی کافی قدرتمند است</text>
-<text fill="#333" font-size="11" x="50" y="475" direction="rtl" unicode-bidi="embed">• متدها روی <tspan direction="ltr" unicode-bidi="embed">struct</tspan> تعریف می‌شوند نه درون کلاس — <tspan direction="ltr" unicode-bidi="embed">Receiver</tspan> این نقش را ایفا می‌کند</text>
-</svg>
+    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
+    classDef bothBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
+    classDef neutralBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
+    class S1,S2,S3,S4,S5,S6 goBox;
+    class MIG bothBox;
+    class KEY,K1,K2,K3,K4,K5 neutralBox;</pre>
 <figcaption dir="rtl">شکل ۰-۲: نقشه‌ی فصل دوم</figcaption>
 </figure>
 
