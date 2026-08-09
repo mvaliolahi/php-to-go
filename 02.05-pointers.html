@@ -397,6 +397,56 @@ person := Person{
 <p>
  نکته‌ی مهم دیگر این است که <bdi dir="ltr">slice</bdi>‌ها در <bdi dir="ltr">Go</bdi> یک ساختار دو بخشی دارند: <bdi dir="ltr">header</bdi> شامل اشاره‌گر، طول و ظرفیت روی <bdi dir="ltr">Stack</bdi> قرار می‌گیرد، اما <bdi dir="ltr">backing array</bdi> همیشه روی <bdi dir="ltr">Heap</bdi> تخصیص می‌یابد. </p><p>این طراحی هوشمندانه باعث می‌شود انتقال <bdi dir="ltr">slice</bdi> به توابع بسیار سبک باشد (فقط ۲۴ بایت کپی می‌شود) اما داده‌های واقعی مشترک بمانند.
  </p>
+<figure class="diagram" dir="ltr">
+<svg viewBox="0 0 720 380" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+<path d="M0,0 L10,5 L0,10 z" fill="#64748b"/>
+</marker>
+</defs>
+<text x="360" y="28" text-anchor="middle" class="title rtl">آناتومی Stack و Heap با اشاره‌گرها</text>
+<!-- Stack frame -->
+<rect x="40" y="60" width="300" height="290" class="box-go"/>
+<text x="190" y="85" text-anchor="middle" class="title rtl">Stack — خودکار و سریع</text>
+<text x="190" y="105" text-anchor="middle" class="small rtl">متغیرهای محلی تابع</text>
+<line x1="60" y1="115" x2="320" y2="115" stroke="#cbd5e1" stroke-width="1"/>
+<text x="60" y="138" text-anchor="start" class="small">main()</text>
+<rect x="60" y="145" width="100" height="35" class="box-go"/>
+<text x="110" y="167" text-anchor="middle" class="small">x = 42</text>
+<rect x="60" y="190" width="100" height="35" class="box-go"/>
+<text x="110" y="212" text-anchor="middle" class="small">p = &amp;x</text>
+<text x="60" y="245" text-anchor="start" class="small">createPtr()</text>
+<rect x="60" y="252" width="100" height="35" class="box-go"/>
+<text x="110" y="274" text-anchor="middle" class="small">slice header</text>
+<text x="60" y="300" text-anchor="start" class="small rtl">ptr + len + cap (24 B)</text>
+<text x="60" y="318" text-anchor="start" class="small rtl">روی stack</text>
+<text x="60" y="340" text-anchor="start" class="small rtl">پاکسازی خودکار با خروج</text>
+<!-- Heap frame -->
+<rect x="380" y="60" width="300" height="290" class="box-action"/>
+<text x="530" y="85" text-anchor="middle" class="title rtl">Heap — مدیریت GC</text>
+<text x="530" y="105" text-anchor="middle" class="small rtl">مقادیر فرارکرده از تابع</text>
+<line x1="400" y1="115" x2="660" y2="115" stroke="#cbd5e1" stroke-width="1"/>
+<text x="400" y="138" text-anchor="start" class="small rtl">Escape Analysis تصمیم گرفت:</text>
+<rect x="400" y="145" width="120" height="35" class="box-action"/>
+<text x="460" y="167" text-anchor="middle" class="small">c = 99</text>
+<text x="540" y="167" text-anchor="start" class="small rtl">آدرس فرار کرد</text>
+<rect x="400" y="200" width="220" height="40" class="box-action"/>
+<text x="510" y="216" text-anchor="middle" class="small">backing array</text>
+<text x="510" y="232" text-anchor="middle" class="small rtl">داده‌ی واقعی slice</text>
+<text x="400" y="270" text-anchor="start" class="small rtl">Garbage Collector</text>
+<text x="400" y="290" text-anchor="start" class="small rtl">زمانی که ارجاعی نباشد</text>
+<text x="400" y="310" text-anchor="start" class="small rtl">پاکسازی می‌کند</text>
+<text x="400" y="340" text-anchor="start" class="small rtl">کندتر از stack است</text>
+<!-- Pointer arrows -->
+<path d="M 160 207 Q 250 207 460 165" fill="none" stroke="#777BB4" stroke-width="2" marker-end="url(#arrow)"/>
+<text x="250" y="200" text-anchor="middle" class="small rtl">اشاره‌گر به x</text>
+<path d="M 160 207 Q 250 250 400 167" fill="none" stroke="#ef4444" stroke-width="2" stroke-dasharray="5 3" marker-end="url(#arrow)"/>
+<text x="260" y="245" text-anchor="middle" class="small rtl">p به stack اشاره می‌کند</text>
+<path d="M 160 270 Q 280 290 400 220" fill="none" stroke="#ef4444" stroke-width="2" stroke-dasharray="5 3" marker-end="url(#arrow)"/>
+<text x="280" y="305" text-anchor="middle" class="small rtl">header به heap اشاره می‌کند</text>
+</svg>
+<figcaption>شکل ۲-۷: متغیرهای محلی روی Stack قرار می‌گیرند؛ اگر آدرس آن‌ها از تابع خارج شود، Escape Analysis آن‌ها را به Heap منتقل می‌کند — slice فقط header را روی Stack و backing array را روی Heap نگه می‌دارد</figcaption>
+</figure>
 <h3 id="pointer-practical-scenarios">2.5.12 سناریوهای عملیاتی اشاره‌گرها</h3>
 <ul>
 <li><strong>ارسال <bdi dir="ltr">struct</bdi> بزرگ با اشاره‌گر در برابر مقدار:</strong> وقتی <bdi dir="ltr">struct</bdi> شما بزرگ است (مثلاً بیش از ۶۴ بایت یا شامل آرایه‌های طولانی)، ارسال با اشاره‌گر فقط ۸ بایت کپی می‌کند اما ارسال مقداری کل ساختار را کپی می‌کند. برای <bdi dir="ltr">struct</bdi>‌های کوچک مثل <code>Point{X, Y float64}</code> ارسال مقداری سریع‌تر یا هم‌سرعت است چون داده‌ی کمتری از <bdi dir="ltr">cache</bdi> نشت می‌کند. همیشه با <bdi dir="ltr">benchmark</bdi> تصمیم نهایی را بگیرید.</li>

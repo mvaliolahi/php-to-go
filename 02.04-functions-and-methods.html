@@ -372,8 +372,88 @@ func init() {
 </div>
 <h3 id="defer-lifo-نمودار">2.4.13 defer: نمودار ترتیب اجرای LIFO</h3>
 <p><bdi dir="ltr">defer</bdi> توابع را به‌صورت <bdi dir="ltr">LIFO</bdi> (آخرین ورود، اولین خروج) اجرا می‌کند. نمودار زیر ترتیب اجرا را نشان می‌دهد:</p>
+<figure class="diagram" dir="ltr">
+<svg viewBox="0 0 720 320" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+<path d="M0,0 L10,5 L0,10 z" fill="#64748b"/>
+</marker>
+</defs>
+<text x="360" y="28" text-anchor="middle" class="title rtl">ترتیب اجرای defer به‌صورت LIFO</text>
+<!-- Source code -->
+<text x="140" y="65" text-anchor="middle" class="title">کد منبع</text>
+<rect x="40" y="75" width="200" height="170" class="box"/>
+<text x="55" y="100" text-anchor="start" class="small">defer fmt.Println("A")</text>
+<text x="55" y="125" text-anchor="start" class="small">defer fmt.Println("B")</text>
+<text x="55" y="150" text-anchor="start" class="small">defer fmt.Println("C")</text>
+<text x="55" y="180" text-anchor="start" class="small rtl">— پایان تابع —</text>
+<text x="55" y="210" text-anchor="start" class="small rtl">سه defer ثبت شد</text>
+<text x="55" y="230" text-anchor="start" class="small rtl">به ترتیب روی پشته می‌روند</text>
+<!-- Stack visualization -->
+<text x="360" y="65" text-anchor="middle" class="title rtl">پشته‌ی defer</text>
+<rect x="290" y="180" width="140" height="30" class="box-php"/>
+<text x="360" y="200" text-anchor="middle" class="small">A (ابتدا)</text>
+<rect x="290" y="145" width="140" height="30" class="box-php"/>
+<text x="360" y="165" text-anchor="middle" class="small">B</text>
+<rect x="290" y="110" width="140" height="30" class="box-action"/>
+<text x="360" y="130" text-anchor="middle" class="small">C (انتها) ← روی پشته</text>
+<text x="360" y="240" text-anchor="middle" class="small rtl">pop از بالا (آخرین ورود اولین خروج)</text>
+<!-- Output -->
+<text x="580" y="65" text-anchor="middle" class="title rtl">خروجی</text>
+<rect x="480" y="75" width="200" height="170" class="box-result"/>
+<text x="495" y="100" text-anchor="start" class="small">C</text>
+<text x="495" y="125" text-anchor="start" class="small">B</text>
+<text x="495" y="150" text-anchor="start" class="small">A</text>
+<text x="495" y="180" text-anchor="start" class="small rtl">— پایان —</text>
+<text x="495" y="210" text-anchor="start" class="small rtl">C اول اجرا شد</text>
+<text x="495" y="230" text-anchor="start" class="small rtl">A آخر اجرا شد</text>
+<!-- Arrows -->
+<line x1="240" y1="160" x2="290" y2="160" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+<line x1="430" y1="160" x2="480" y2="160" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+<text x="360" y="295" text-anchor="middle" class="small rtl">قانون ساده: آخرین defer در کد = اولین اجرا در زمان خروج</text>
+</svg>
+<figcaption>شکل ۲-۵: defer توابع را روی پشته می‌گذارد و هنگام خروج از تابع به‌ترتیب LIFO (آخرین ورود، اولین خروج) اجرا می‌کند</figcaption>
+</figure>
 <h3 id="value-vs-pointer-receiver">2.4.14 دیاگرام مقایسه‌یValue Receiverدر برابرPointer Receiver</h3>
 <p>انتخاب بین <bdi dir="ltr">value receiver</bdi> و <bdi dir="ltr">pointer receiver</bdi> یکی از مهم‌ترین تصمیمات طراحی در <bdi dir="ltr">Go</bdi> است. در <bdi dir="ltr">PHP</bdi> همه‌ی متدها درون کلاس تعریف می‌شوند و <code>$this</code> همیشه به شیء فعلی اشاره می‌کند اما در <bdi dir="ltr">Go</bdi> این انتخاب صریح است و پیامدهای مستقیمی بر رفتار متد، کارایی و رضایت <bdi dir="ltr">interface</bdi> دارد. شکل زیر دو رویکرد را به‌صورت بصری مقایسه می‌کند و قواعد <bdi dir="ltr">method set</bdi> و تله‌های رایج را نشان می‌دهد.</p>
+<figure class="diagram" dir="ltr">
+<svg viewBox="0 0 720 380" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+<path d="M0,0 L10,5 L0,10 z" fill="#64748b"/>
+</marker>
+</defs>
+<text x="360" y="28" text-anchor="middle" class="title rtl">Value Receiver در برابر Pointer Receiver</text>
+<!-- Value Receiver side -->
+<text x="180" y="68" text-anchor="middle" class="title">Value Receiver: func (t T)</text>
+<rect x="60" y="85" width="240" height="60" class="box-go"/>
+<text x="180" y="108" text-anchor="middle" class="small rtl">کپی کامل struct</text>
+<text x="180" y="128" text-anchor="middle" class="small rtl">تغییرات روی اصل اعمال نمی‌شود</text>
+<rect x="60" y="160" width="240" height="60" class="box-go"/>
+<text x="180" y="183" text-anchor="middle" class="small rtl">ایمن برای همزمانی</text>
+<text x="180" y="203" text-anchor="middle" class="small rtl">مناسب struct کوچک</text>
+<rect x="60" y="235" width="240" height="60" class="box-result"/>
+<text x="180" y="258" text-anchor="middle" class="small rtl">T خودش interface را ارضا می‌کند</text>
+<text x="180" y="278" text-anchor="middle" class="small">var g Greeter = T{}</text>
+<text x="180" y="325" text-anchor="middle" class="small rtl">مثال: time.Time، Point</text>
+<!-- Pointer Receiver side -->
+<text x="540" y="68" text-anchor="middle" class="title">Pointer Receiver: func (t *T)</text>
+<rect x="420" y="85" width="240" height="60" class="box-action"/>
+<text x="540" y="108" text-anchor="middle" class="small rtl">فقط ۸ بایت کپی (آدرس)</text>
+<text x="540" y="128" text-anchor="middle" class="small rtl">تغییرات روی اصل اعمال می‌شوند</text>
+<rect x="420" y="160" width="240" height="60" class="box-action"/>
+<text x="540" y="183" text-anchor="middle" class="small rtl">نیاز به هماهنگی همزمانی</text>
+<text x="540" y="203" text-anchor="middle" class="small rtl">مناسب struct بزرگ</text>
+<rect x="420" y="235" width="240" height="60" class="warn-box"/>
+<text x="540" y="258" text-anchor="middle" class="small rtl">فقط *T interface را ارضا می‌کند</text>
+<text x="540" y="278" text-anchor="middle" class="small">var g Greeter = &amp;T{}</text>
+<text x="540" y="325" text-anchor="middle" class="small rtl">مثال: sync.Mutex، bytes.Buffer</text>
+<!-- center tip -->
+<rect x="270" y="340" width="180" height="30" class="tip-box"/>
+<text x="360" y="360" text-anchor="middle" class="small rtl">قانون طلایی: در یک نوع سازگار باشید</text>
+</svg>
+<figcaption>شکل ۲-۶: Value Receiver روی کپی کار می‌کند و T interface را ارضا می‌کند؛ Pointer Receiver روی اصل و فقط *T interface را ارضا می‌کند — ترجیحاً همه‌ی متدهای یک نوع را هم‌نوع کنید</figcaption>
+</figure>
 <h3 id="سناریوهای-عملیاتی-متدها">2.4.15 سناریوهای عملیاتی متدها وReceiver</h3>
 <p>انتخاب نوع <bdi dir="ltr">receiver</bdi> تنها یک مسئله‌ی فنی نیست بلکه تصمیم طراحی است که بر کل معماری نوع تأثیر می‌گذارد. در <bdi dir="ltr">PHP</bdi> همه‌ی متدها به‌طور ضمنی از طریق <code>$this</code> به شیء اصلی دسترسی دارند اما در <bdi dir="ltr">Go</bdi> این انتخاب باید صریح و سازگار باشد. در ادامه سناریوهای عملیاتی رایج را بررسی می‌کنیم و بهترین روش‌ها را برای هر مورد ارائه می‌دهیم.</p>
 <ul>

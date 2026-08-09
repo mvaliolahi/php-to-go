@@ -151,6 +151,59 @@ github.com/B v1.0.0 // requires X &gt;= 1.5.0
 </code></pre>
 </figure>
 <div class="comparison"><strong>مقایسه با Composer:</strong> در PHP با Composer، <code>composer update</code> همیشه جدیدترین نسخه‌های سازگار را نصب می‌کند. این یعنی دو توسعه‌دهنده ممکن است با اجرای <code>composer update</code> در زمان‌های مختلف نسخه‌های متفاوتی دریافت کنند. اما در Go، <code>go get</code> با MVS همیشه حداقل نسخه را انتخاب می‌کند و نتایج قطعی و تکرارپذیر هستند. فایل <code dir="ltr">go.sum</code> نیز یک لایه‌ی اطمینان اضافه فراهم می‌کند.</div>
+<figure class="diagram" dir="ltr">
+<svg viewBox="0 0 720 340" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+<path d="M0,0 L10,5 L0,10 z" fill="#64748b"/>
+</marker>
+</defs>
+<text x="360" y="28" text-anchor="middle" class="title rtl">انتخاب نسخه: MVS (Go) در برابر بالاترین نسخه (Composer)</text>
+<!-- Left side: PHP Composer -->
+<rect x="20" y="60" width="330" height="260" class="box-php"/>
+<text x="185" y="85" text-anchor="middle" class="title rtl">PHP — Composer</text>
+<text x="185" y="105" text-anchor="middle" class="small rtl">بالاترین نسخه‌ی سازگار</text>
+<line x1="40" y1="118" x2="330" y2="118" stroke="#cbd5e1" stroke-width="1"/>
+<text x="40" y="140" text-anchor="start" class="small rtl">پکیج A نیاز دارد:</text>
+<rect x="220" y="128" width="100" height="22" class="box-php"/>
+<text x="270" y="144" text-anchor="middle" class="small">X &gt;= 1.2.0</text>
+<text x="40" y="172" text-anchor="start" class="small rtl">پکیج B نیاز دارد:</text>
+<rect x="220" y="160" width="100" height="22" class="box-php"/>
+<text x="270" y="176" text-anchor="middle" class="small">X &gt;= 1.5.0</text>
+<text x="40" y="210" text-anchor="start" class="small rtl">نسخه‌های موجود:</text>
+<rect x="40" y="220" width="60" height="22" class="box-php"/>
+<text x="70" y="236" text-anchor="middle" class="small">1.2.0</text>
+<rect x="105" y="220" width="60" height="22" class="box-php"/>
+<text x="135" y="236" text-anchor="middle" class="small">1.5.0</text>
+<rect x="170" y="220" width="60" height="22" class="box-php"/>
+<text x="200" y="236" text-anchor="middle" class="small">1.8.0</text>
+<text x="40" y="275" text-anchor="start" class="small rtl">انتخاب Composer:</text>
+<rect x="170" y="285" width="100" height="30" class="box-php" stroke-width="2.5"/>
+<text x="220" y="305" text-anchor="middle" class="title">X = 1.8.0</text>
+<!-- Right side: Go MVS -->
+<rect x="370" y="60" width="330" height="260" class="box-go"/>
+<text x="535" y="85" text-anchor="middle" class="title rtl">Go — MVS</text>
+<text x="535" y="105" text-anchor="middle" class="small rtl">حداقل نسخه‌ی لازم</text>
+<line x1="390" y1="118" x2="680" y2="118" stroke="#cbd5e1" stroke-width="1"/>
+<text x="390" y="140" text-anchor="start" class="small rtl">پکیج A نیاز دارد:</text>
+<rect x="570" y="128" width="100" height="22" class="box-go"/>
+<text x="620" y="144" text-anchor="middle" class="small">X &gt;= 1.2.0</text>
+<text x="390" y="172" text-anchor="start" class="small rtl">پکیج B نیاز دارد:</text>
+<rect x="570" y="160" width="100" height="22" class="box-go"/>
+<text x="620" y="176" text-anchor="middle" class="small">X &gt;= 1.5.0</text>
+<text x="390" y="210" text-anchor="start" class="small rtl">نسخه‌های موجود:</text>
+<rect x="390" y="220" width="60" height="22" class="box-go"/>
+<text x="420" y="236" text-anchor="middle" class="small">1.2.0</text>
+<rect x="455" y="220" width="60" height="22" class="box-go" stroke-width="2.5"/>
+<text x="485" y="236" text-anchor="middle" class="small">1.5.0</text>
+<rect x="520" y="220" width="60" height="22" class="box-go"/>
+<text x="550" y="236" text-anchor="middle" class="small">1.8.0</text>
+<text x="390" y="275" text-anchor="start" class="small rtl">انتخاب MVS:</text>
+<rect x="455" y="285" width="100" height="30" class="box-go" stroke-width="2.5"/>
+<text x="505" y="305" text-anchor="middle" class="title">X = 1.5.0</text>
+</svg>
+<figcaption>شکل ۳-۳: الگوریتم MVS در Go نسخه‌ی <code dir="ltr">1.5.0</code> (حداقل لازم) را انتخاب می‌کند، در حالی که Composer نسخه‌ی <code dir="ltr">1.8.0</code> (بالاترین سازگار) را نصب می‌کند — این تفاوت باعث قطعیت و تکرارپذیری build در Go می‌شود</figcaption>
+</figure>
 <h3 id="ساختار-داخلی-gosum">3.2.8 ساختار داخلی go.sum</h3>
 <p>هر خط در فایل <code dir="ltr">go.sum</code> از سه بخش تشکیل شده:</p>
 <figure class="code go" dir="ltr">
@@ -354,6 +407,56 @@ ignore (
 </div>
 <h3 id="go-sum-checksum-verification">3.2.17 جریان تأیید Checksum در go.sum</h3>
 <p>یکی از مهم‌ترین مکانیزم‌های امنیتی در <bdi dir="ltr">Go Modules</bdi> سیستم تأیید <bdi dir="ltr">checksum</bdi> است که یکپارچگی وابستگی‌ها را تضمین می‌کند. وقتی دستور <code>go get</code> اجرا می‌شود، Go نه‌تنها وابستگی را دانلود می‌کند، بلکه هش <bdi dir="ltr">SHA-256</bdi> آن را محاسبه کرده و با مقدار ثبت‌شده در <code>go.sum</code> مقایسه می‌کند. </p><p>اگر هش‌ها مطابقت نداشته باشند، Go از ادامه‌ی build جلوگیری می‌کند و خطای امنیتی صادر می‌شود. این مکانیزم از حمله‌ی <bdi dir="ltr">supply chain</bdi> جلوگیری می‌کند — سناریویی که در آن یک وابستگی مخرب جایگزین نسخه‌ی اصلی شود. </p><p>در PHP مشابه این مکانیزم وجود دارد (<code>composer.lock</code>) اما <bdi dir="ltr">checksum database</bdi> متمرکزی برای تأیید یکپارچگی وجود ندارد. نمودار زیر این جریان را به‌صورت گام‌به‌گام نشان می‌دهد.</p>
+<figure class="diagram" dir="ltr">
+<svg viewBox="0 0 720 340" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+<path d="M0,0 L10,5 L0,10 z" fill="#64748b"/>
+</marker>
+</defs>
+<text x="360" y="28" text-anchor="middle" class="title rtl">جریان تأیید Checksum در Go Modules</text>
+<!-- Step 1: go get -->
+<rect x="20" y="70" width="130" height="60" class="box-action"/>
+<text x="85" y="92" text-anchor="middle" class="title">۱. go get</text>
+<text x="85" y="112" text-anchor="middle" class="small rtl">درخواست دانلود</text>
+<!-- Step 2: Module Proxy -->
+<rect x="180" y="70" width="150" height="60" class="box-go"/>
+<text x="255" y="92" text-anchor="middle" class="title">۲. GOPROXY</text>
+<text x="255" y="112" text-anchor="middle" class="small rtl">proxy.golang.org</text>
+<!-- Step 3: go.sum check -->
+<rect x="360" y="70" width="150" height="60" class="box-join"/>
+<text x="435" y="92" text-anchor="middle" class="title">۳. go.sum</text>
+<text x="435" y="112" text-anchor="middle" class="small rtl">هش SHA-256 ثبت‌شده</text>
+<!-- Step 4: checksum DB -->
+<rect x="540" y="70" width="160" height="60" class="box-go"/>
+<text x="620" y="92" text-anchor="middle" class="title">۴. Checksum DB</text>
+<text x="620" y="112" text-anchor="middle" class="small rtl">sum.golang.org</text>
+<!-- Arrows top row -->
+<line x1="150" y1="100" x2="180" y2="100" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+<line x1="330" y1="100" x2="360" y2="100" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+<line x1="510" y1="100" x2="540" y2="100" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+<!-- Step 5: compare -->
+<rect x="200" y="190" width="320" height="60" class="box-result"/>
+<text x="360" y="212" text-anchor="middle" class="title">۵. مقایسه‌ی هش‌ها</text>
+<text x="360" y="232" text-anchor="middle" class="small rtl">هش محاسبه‌شده در برابر go.sum + Checksum DB</text>
+<!-- Down arrow from step 4 to step 5 -->
+<path d="M 620 130 Q 620 160 460 190" fill="none" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+<!-- Down arrow from step 3 to step 5 -->
+<line x1="435" y1="130" x2="380" y2="190" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+<!-- Branch 6a: match -->
+<rect x="40" y="280" width="280" height="50" class="box-result"/>
+<text x="180" y="300" text-anchor="middle" class="title rtl">۶a. هش مطابقت دارد ✓</text>
+<text x="180" y="318" text-anchor="middle" class="small rtl">ماژول در cache ذخیره و build ادامه می‌یابد</text>
+<!-- Branch 6b: mismatch -->
+<rect x="400" y="280" width="280" height="50" class="warn-box"/>
+<text x="540" y="300" text-anchor="middle" class="title rtl">۶b. هش مطابقت ندارد ✗</text>
+<text x="540" y="318" text-anchor="middle" class="small rtl">build متوقف می‌شود — خطای امنیتی supply chain</text>
+<!-- Branch arrows -->
+<line x1="280" y1="250" x2="180" y2="280" stroke="#4caf50" stroke-width="2" marker-end="url(#arrow)"/>
+<line x1="440" y1="250" x2="540" y2="280" stroke="#ef4444" stroke-width="2" marker-end="url(#arrow)"/>
+</svg>
+<figcaption>شکل ۳-۴: جریان تأیید checksum — Go هش ماژول دانلودشده را با <code dir="ltr">go.sum</code> محلی و <code dir="ltr">Checksum DB</code> متمرکز مقایسه می‌کند. عدم تطابق از حمله‌ی supply chain جلوگیری می‌کند</figcaption>
+</figure>
 <h3 id="سناریوهای-عملیاتی-ماژولها">3.2.18 سناریوهای عملیاتی</h3>
 <p>مدیریت وابستگی‌ها یکی از حساس‌ترین بخش‌های هر پروژه‌ی نرم‌افزاری است و اشتباه در آن می‌تواند به مشکلات جدی در محیط تولید منجر شود. در ادامه پنج سناریوی عملیاتی رایج را بررسی می‌کنیم که هر توسعه‌دهنده‌ای که از PHP به Go مهاجرت می‌کند باید با آن‌ها آشنا باشد. </p><p>این سناریوها شامل افزودن وابستگی جدید، به‌روزرسانی ایمن وابستگی‌ها، استفاده از <bdi dir="ltr">replace</bdi> برای توسعه‌ی محلی، درک تفاوت <bdi dir="ltr">MVS</bdi> با <bdi dir="ltr">Composer</bdi> و تنظیم <bdi dir="ltr">proxy</bdi> خصوصی برای سازمان‌هاست. تسلط بر این سناریوها به شما کمک می‌کند پروژه‌های Go خود را با اطمینان و ایمنی مدیریت کنید.</p>
 <ul>

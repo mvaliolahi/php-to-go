@@ -256,6 +256,65 @@ func Greet() string { return "Hello" }
 </table>
 <h3 id="گراف-واردات-پکیج-و-قوانین-دیدپذیری">3.1.14 گراف وابستگی پکیج و قوانین دیدپذیری</h3>
 <p>یکی از مهم‌ترین مفاهیمی که برنامه‌نویسان PHP باید درک کنند، نحوه‌ی سازمان‌دهی وابستگی‌ها بین پکیج‌ها در Go است. در PHP هر فایل مستقل است و با دستورات <bdi dir="ltr">use</bdi> و <bdi dir="ltr">require</bdi> به سایر بخش‌ها وصل می‌شود، اما در Go پکیج‌ها یک گراف جهت‌دار بدون دور (<bdi dir="ltr">DAG</bdi>) تشکیل می‌دهند که کامپایلر آن را بررسی و اعتبارسنجی می‌کند. </p><p>درک این گراف به شما کمک می‌کند تا پروژه‌هایی با ساختار ماژولار و قابل نگهداری بسازید. هر پکیج فقط به پکیج‌هایی وابسته است که صراحتاً آن‌ها را <bdi dir="ltr">import</bdi> کرده و هیچ‌گونه وابستگی دوری مجاز نیست. این محدودیت عمدی است و باعث می‌شود وابستگی‌ها همیشه قابل ردیابی و قابل فهم باشند.</p>
+<figure class="diagram" dir="ltr">
+<svg viewBox="0 0 720 380" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+<path d="M0,0 L10,5 L0,10 z" fill="#64748b"/>
+</marker>
+<marker id="arrow-dash" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+<path d="M0,0 L10,5 L0,10 z" fill="#ff9800"/>
+</marker>
+</defs>
+<text x="360" y="28" text-anchor="middle" class="title rtl">گراف وابستگی پکیج‌ها در Go (DAG)</text>
+<!-- Standard library (left, blue) -->
+<rect x="20" y="70" width="140" height="50" class="box-go"/>
+<text x="90" y="92" text-anchor="middle" class="title">fmt</text>
+<text x="90" y="110" text-anchor="middle" class="small rtl">کتابخانه‌ی استاندارد</text>
+<rect x="20" y="140" width="140" height="50" class="box-go"/>
+<text x="90" y="162" text-anchor="middle" class="title">net/http</text>
+<text x="90" y="180" text-anchor="middle" class="small rtl">کتابخانه‌ی استاندارد</text>
+<!-- main (center, green) -->
+<rect x="290" y="100" width="140" height="60" class="box-result"/>
+<text x="360" y="125" text-anchor="middle" class="title">main</text>
+<text x="360" y="145" text-anchor="middle" class="small rtl">نقطه‌ی ورود برنامه</text>
+<!-- internal (right, orange) -->
+<rect x="560" y="70" width="140" height="50" class="box-join"/>
+<text x="630" y="92" text-anchor="middle" class="title">internal/config</text>
+<text x="630" y="110" text-anchor="middle" class="small rtl">فقط داخل myapp/</text>
+<rect x="560" y="140" width="140" height="50" class="box-join"/>
+<text x="630" y="162" text-anchor="middle" class="title">internal/secrets</text>
+<text x="630" y="180" text-anchor="middle" class="small rtl">محدود به والد internal</text>
+<!-- Sub-packages (bottom row) -->
+<rect x="130" y="250" width="140" height="50" class="box"/>
+<text x="200" y="272" text-anchor="middle" class="title">handler</text>
+<text x="200" y="290" text-anchor="middle" class="small rtl">لایه‌ی HTTP</text>
+<rect x="290" y="250" width="140" height="50" class="box"/>
+<text x="360" y="272" text-anchor="middle" class="title">service</text>
+<text x="360" y="290" text-anchor="middle" class="small rtl">منطق کسب‌وکار</text>
+<rect x="450" y="250" width="140" height="50" class="box"/>
+<text x="520" y="272" text-anchor="middle" class="title">repository</text>
+<text x="520" y="290" text-anchor="middle" class="small rtl">دسترسی داده</text>
+<!-- pkg/validator (bottom center) -->
+<rect x="290" y="320" width="140" height="50" class="box-result"/>
+<text x="360" y="342" text-anchor="middle" class="title">pkg/validator</text>
+<text x="360" y="360" text-anchor="middle" class="small rtl">API عمومی</text>
+<!-- Arrows: main → std lib (solid) -->
+<line x1="290" y1="115" x2="160" y2="95" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+<line x1="290" y1="135" x2="160" y2="165" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+<!-- Arrows: main → internal (solid) -->
+<line x1="430" y1="115" x2="560" y2="95" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+<line x1="430" y1="135" x2="560" y2="165" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+<!-- Arrows: main → handler (solid) -->
+<line x1="345" y1="160" x2="220" y2="250" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+<!-- Dashed arrows: handler → service → repository (orange, sub-dependencies) -->
+<line x1="270" y1="275" x2="290" y2="275" stroke="#ff9800" stroke-width="2" stroke-dasharray="5 3" marker-end="url(#arrow-dash)"/>
+<line x1="430" y1="275" x2="450" y2="275" stroke="#ff9800" stroke-width="2" stroke-dasharray="5 3" marker-end="url(#arrow-dash)"/>
+<!-- Arrow: service → pkg/validator (dashed) -->
+<line x1="360" y1="300" x2="360" y2="320" stroke="#ff9800" stroke-width="2" stroke-dasharray="5 3" marker-end="url(#arrow-dash)"/>
+</svg>
+<figcaption>شکل ۳-۲: گراف وابستگی پکیج‌ها در Go — پیکان‌های خاکستری وابستگی main را به کتابخانه‌ی استاندارد و پکیج‌های internal نشان می‌دهند؛ پیکان‌های نارنجی خط‌چین وابستگی‌های داخلی زیرپکیج‌ها را نمایش می‌دهند. این گراف باید همیشه بدون دور (DAG) بماند</figcaption>
+</figure>
 <p>در نمودار بالا پکیج <bdi dir="ltr">main</bdi> به‌عنوان مرکز گراف نمایش داده شده و پیکان‌ها جهت وابستگی را نشان می‌دهند. پکیج‌های استاندارد مانند <bdi dir="ltr">fmt</bdi> و <bdi dir="ltr">net/http</bdi> در سمت چپ با رنگ آبی مشخص شده‌اند. </p><p>پکیج‌های <bdi dir="ltr">internal</bdi> که فقط درون پروژه قابل دسترسی هستند با رنگ نارنجی نمایش داده شده‌اند و پکیج <bdi dir="ltr">pkg/validator</bdi> به‌عنوان یک <bdi dir="ltr">API</bdi> عمومی که هر مصرف‌کننده‌ی خارجی می‌تواند از آن استفاده کند در پایین قرار گرفته است. </p><p>خط‌چین‌ها وابستگی‌های بین پکیج‌های فرعی را نشان می‌دهند، مثلاً <bdi dir="ltr">handler</bdi> به <bdi dir="ltr">service</bdi> و <bdi dir="ltr">validator</bdi> وابسته است.</p>
 <h3 id="سناریوهای-عملیاتی-پکیجها">3.1.15 سناریوهای عملیاتی</h3>
 <ul>

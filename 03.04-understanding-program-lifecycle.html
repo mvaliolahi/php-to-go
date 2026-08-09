@@ -79,6 +79,55 @@
 <p>در PHP شما نیازی به graceful shutdown کردن ندارید چون به‌صورت خودکار shutdown پس از هر درخواست اتفاق می‌افتد. اما در Go برنامه شما <strong>زنده است</strong> و ممکن است هزاران اتصال باز HTTP, DB, GRPC... </p><p>وجود داشته باشد یا حتی صدها goroutine در حال انجام کار باشند و هر خطای ناگهانی یا shutdown بدون مدیریت می‌تواند باعث از بین رفتن اطلاعات، نیمه‌کاره ماندن درخواست‌ها یا خراب شدن داده شود.</p>
 <p><strong>چرخه‌ی حیات برنامه در</strong> <strong dir="ltr">Go شامل چه مراحلی است ؟</strong></p>
 <p>مانند هر سیستم نرم‌افزاری مدرن هر برنامه‌ی Go نیز یک چرخه‌ی حیات مشخص دارد که شامل سه مرحله‌ی اصلی Startup، Running و Shutdown است درک این مراحل به توسعه‌دهندگان کمک می‌کند تا برنامه‌های پایدار، بهینه و قابل نگهداری بسازند.</p>
+<figure class="diagram" dir="ltr">
+<svg viewBox="0 0 720 320" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+<path d="M0,0 L10,5 L0,10 z" fill="#64748b"/>
+</marker>
+</defs>
+<text x="360" y="28" text-anchor="middle" class="title rtl">چرخه‌ی حیات برنامه: Go در برابر PHP-FPM</text>
+<!-- Go row -->
+<rect x="20" y="60" width="680" height="100" class="box-go"/>
+<text x="50" y="85" text-anchor="start" class="title">Go</text>
+<text x="50" y="105" text-anchor="start" class="small rtl">پروسۀ طولانی‌مدت</text>
+<!-- Go: 3 phases -->
+<rect x="120" y="75" width="170" height="50" fill="rgba(0,173,216,0.20)" stroke="#00ADD8" stroke-width="1.5" rx="8"/>
+<text x="205" y="98" text-anchor="middle" class="title rtl">Startup</text>
+<text x="205" y="116" text-anchor="middle" class="small rtl">init، اتصال به DB</text>
+<rect x="310" y="75" width="170" height="50" fill="rgba(0,173,216,0.20)" stroke="#00ADD8" stroke-width="1.5" rx="8"/>
+<text x="395" y="98" text-anchor="middle" class="title rtl">Running</text>
+<text x="395" y="116" text-anchor="middle" class="small rtl">سرور فعال، goroutineها</text>
+<rect x="500" y="75" width="170" height="50" fill="rgba(0,173,216,0.20)" stroke="#00ADD8" stroke-width="1.5" rx="8"/>
+<text x="585" y="98" text-anchor="middle" class="title rtl">Shutdown</text>
+<text x="585" y="116" text-anchor="middle" class="small rtl">graceful، SIGTERM</text>
+<!-- Arrows Go -->
+<line x1="290" y1="100" x2="310" y2="100" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+<line x1="480" y1="100" x2="500" y2="100" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+<text x="300" y="143" text-anchor="middle" class="small rtl">یک پروسه برای هزاران درخواست</text>
+<!-- PHP row -->
+<rect x="20" y="190" width="680" height="100" class="box-php"/>
+<text x="50" y="215" text-anchor="start" class="title">PHP-FPM</text>
+<text x="50" y="235" text-anchor="start" class="small rtl">request-per-process</text>
+<!-- PHP: 3 phases per request -->
+<rect x="120" y="205" width="170" height="50" fill="rgba(119,123,180,0.20)" stroke="#777BB4" stroke-width="1.5" rx="8"/>
+<text x="205" y="228" text-anchor="middle" class="title rtl">Startup</text>
+<text x="205" y="246" text-anchor="middle" class="small rtl">بارگذاری فایل + autoload</text>
+<rect x="310" y="205" width="170" height="50" fill="rgba(119,123,180,0.20)" stroke="#777BB4" stroke-width="1.5" rx="8"/>
+<text x="395" y="228" text-anchor="middle" class="title rtl">Running</text>
+<text x="395" y="246" text-anchor="middle" class="small rtl">یک درخواست HTTP</text>
+<rect x="500" y="205" width="170" height="50" fill="rgba(119,123,180,0.20)" stroke="#777BB4" stroke-width="1.5" rx="8"/>
+<text x="585" y="228" text-anchor="middle" class="title rtl">Shutdown</text>
+<text x="585" y="246" text-anchor="middle" class="small rtl">پاکسازی حافظه، پایان</text>
+<!-- Arrows PHP -->
+<line x1="290" y1="230" x2="310" y2="230" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+<line x1="480" y1="230" x2="500" y2="230" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+<!-- Loop arrow back -->
+<path d="M 585 255 Q 585 280 205 280 Q 120 280 120 255" fill="none" stroke="#777BB4" stroke-width="2" stroke-dasharray="4 3" marker-end="url(#arrow)"/>
+<text x="360" y="298" text-anchor="middle" class="small rtl">هر درخواست چرخه‌ی کامل را از نو طی می‌کند</text>
+</svg>
+<figcaption>شکل ۳-۶: تفاوت چرخه‌ی حیات Go و PHP-FPM — Go یک پروسۀ طولانی‌مدت با سه فاز است؛ PHP-FPM برای هر درخواست یک چرخه‌ی کامل Startup→Running→Shutdown را تکرار می‌کند</figcaption>
+</figure>
 <h3 id="startup">3.4.1 Startup</h3>
 <p>در این مرحله تمام منابع مورد نیاز برنامه آماده و پیکربندی می‌شوند. این کار شامل موارد زیر است:</p>
 <p><strong>راه‌اندازی سرورها</strong> : سرورهای HTTP یا gRPC آماده پاسخگویی به درخواست‌ها می‌شوند.</p>
@@ -353,6 +402,49 @@ log.Fatalf("failed to start: %v", err)
 <div class="important"><strong>نکته‌ی حیاتی برای برنامه‌های وب:</strong> در <bdi dir="ltr">net/http</bdi> تابع <code>Shutdown</code> ابتدا شنونده‌ی جدید (<bdi dir="ltr">listener</bdi>) را می‌بندد (جلوگیری از درخواست جدید) سپس منتظر اتمام درخواست‌های فعال می‌ماند. اما اگر از <code>Close()</code> استفاده کنید، تمام اتصال‌ها فوراً قطع می‌شوند. <strong>همیشه از <code>Shutdown</code> استفاده کنید نه <code>Close</code>.</strong></div>
 <h3 id="ترتیب-اجرای-init-در-گراف-پکیجها">3.4.12 ترتیب اجرایinit()در گراف پکیج‌ها</h3>
 <p>همان‌طور که در بخش ۳.۱ توضیح داده شد، ترتیب اجرای توابع <bdi dir="ltr">init()</bdi> بین پکیج‌های مختلف توسط <bdi dir="ltr">runtime</bdi> Go و بر اساس گراف وابستگی پکیج‌ها تعیین می‌شود. در این بخش نمودار کاملی از این ترتیب را در بستر چرخه‌ی حیات برنامه می‌بینیم. </p><p>در PHP هیچ معادل مستقیمی برای این مکانیزم وجود ندارد و ترتیب اجرای کد کاملاً به ترتیب <bdi dir="ltr">require</bdi>/<bdi dir="ltr">include</bdi> بستگی دارد، اما در Go کامپایلر گراف وابستگی‌ها را تحلیل کرده و ترتیب مقداردهی را خودکار تعیین می‌کند.</p>
+<figure class="diagram" dir="ltr">
+<svg viewBox="0 0 720 340" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+<path d="M0,0 L10,5 L0,10 z" fill="#64748b"/>
+</marker>
+</defs>
+<text x="360" y="28" text-anchor="middle" class="title rtl">ترتیب اجرای init() بر اساس گراف وابستگی پکیج‌ها</text>
+<!-- Layer 1: leaf packages (no deps) -->
+<text x="40" y="80" text-anchor="start" class="title rtl">لایه‌ی ۱ — برگ</text>
+<rect x="180" y="65" width="130" height="50" class="box-go"/>
+<text x="245" y="85" text-anchor="middle" class="title">fmt</text>
+<text x="245" y="105" text-anchor="middle" class="small rtl">بدون وابستگی</text>
+<rect x="410" y="65" width="130" height="50" class="box-go"/>
+<text x="475" y="85" text-anchor="middle" class="title">config</text>
+<text x="475" y="105" text-anchor="middle" class="small rtl">بدون وابستگی</text>
+<!-- Layer 2: depends on layer 1 -->
+<text x="40" y="170" text-anchor="start" class="title rtl">لایه‌ی ۲ — میانی</text>
+<rect x="410" y="155" width="130" height="50" class="box-action"/>
+<text x="475" y="175" text-anchor="middle" class="title">database</text>
+<text x="475" y="195" text-anchor="middle" class="small rtl">وابسته به config</text>
+<!-- Layer 3: main -->
+<text x="40" y="260" text-anchor="start" class="title rtl">لایه‌ی ۳ — ورودی</text>
+<rect x="290" y="245" width="140" height="55" class="box-result"/>
+<text x="360" y="268" text-anchor="middle" class="title">main</text>
+<text x="360" y="287" text-anchor="middle" class="small rtl">وابسته به database، config</text>
+<!-- Final: main() runs -->
+<rect x="290" y="305" width="140" height="0" fill="none" stroke="none"/>
+<text x="360" y="320" text-anchor="middle" class="title rtl">main.main() اجرا می‌شود</text>
+<!-- Dependency arrows (top to bottom) -->
+<line x1="475" y1="115" x2="475" y2="155" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+<line x1="475" y1="205" x2="395" y2="245" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+<line x1="245" y1="115" x2="335" y2="245" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+<line x1="475" y1="115" x2="380" y2="245" stroke="#64748b" stroke-width="1.5" stroke-dasharray="3 3" marker-end="url(#arrow)"/>
+<!-- Order annotations on the right -->
+<text x="595" y="90" text-anchor="start" class="small" fill="#2e7d32">①init() fmt</text>
+<text x="595" y="105" text-anchor="start" class="small" fill="#2e7d32">②init() config</text>
+<text x="595" y="180" text-anchor="start" class="small" fill="#1565c0">③init() database</text>
+<text x="595" y="270" text-anchor="start" class="small" fill="#e65100">④init() main</text>
+<text x="595" y="285" text-anchor="start" class="small" fill="#e65100">⑤main.main()</text>
+</svg>
+<figcaption>شکل ۳-۷: ترتیب اجرای init() در Go — runtime ابتدا پکیج‌های برگ (fmt و config) را مقداردهی می‌کند، سپس پکیج‌های وابسته (database) و در نهایت پکیج main. ترتیب نهایی اجرای main.main() تضمین می‌کند که تمام وابستگی‌ها آماده باشند</figcaption>
+</figure>
 <p>نمودار بالا نشان می‌دهد که چگونه <bdi dir="ltr">runtime</bdi>Go ترتیب اجرای توابع <bdi dir="ltr">init()</bdi> را تعیین می‌کند. ابتدا پکیج‌های برگ (<bdi dir="ltr">leaf packages</bdi>) که هیچ وابستگی‌ای ندارند مانند <bdi dir="ltr">fmt</bdi> و <bdi dir="ltr">config</bdi> مقداردهی می‌شوند. سپس پکیج‌هایی که به آن‌ها وابسته‌اند مانند <bdi dir="ltr">database</bdi> (که به <bdi dir="ltr">config</bdi> وابسته است) مقداردهی می‌شوند. </p><p>این روند به‌صورت عمق‌اول (<bdi dir="ltr">depth-first</bdi>) ادامه می‌یابد تا تمام وابستگی‌ها مقداردهی شوند. در نهایت پکیج <bdi dir="ltr">main</bdi> مقداردهی شده و تابع <bdi dir="ltr">main.main()</bdi> اجرا می‌گردد. این ترتیب تضمین می‌کند که هر پکیج قبل از استفاده، وابستگی‌هایش آماده شده باشند.</p>
 <h3 id="سناریوهای-عملیاتی-چرخه-حیات">3.4.13 سناریوهای عملیاتی</h3>
 <ul>

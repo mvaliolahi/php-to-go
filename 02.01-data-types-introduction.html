@@ -713,6 +713,40 @@ func processRunes(data string) {
 <h3 id="memory-layout-comparison">2.1.9 مقایسه‌ی ساختار حافظه:PHP zvalدر برابرGo Typed Values</h3>
 <p>یکی از تفاوت‌های بنیادین <bdi dir="ltr">PHP</bdi> و <bdi dir="ltr">Go</bdi> در نحوه‌ی ذخیره‌سازی مقادیر در حافظه نهفته است. در <bdi dir="ltr">PHP</bdi> هر متغیر فارغ از نوع داده‌ی آن در یک ساختار یکسان به نام <bdi dir="ltr">zval</bdi> نگهداری می‌شود که شامل برچسب نوع، مقدار واقعی، شمارنده‌ی ارجاع و پرچم ارجاع است. </p><p>این طراحی یکنواخت انعطاف‌پذیری بالایی در زمان اجرا فراهم می‌کند اما هزینه‌ی حافظه‌ی قابل‌توجهی دارد. </p><p>در مقابل <bdi dir="ltr">Go</bdi> هر مقدار دقیقاً به اندازه‌ی نوع واقعی خود فضا اشغال می‌کند بدون هیچ سربار اضافی برای مدیریت نوع در زمان اجرا.</p>
 <p>این تفاوت ساختاری پیامدهای عملی مهمی دارد: برنامه‌های <bdi dir="ltr">Go</bdi> معمولاً حافظه‌ی بسیار کمتری نسبت به معادل <bdi dir="ltr">PHP</bdi> خود مصرف می‌کنند. برای نمونه، ذخیره‌ی هزار عدد صحیح در <bdi dir="ltr">PHP</bdi> حدود ۱۶ کیلوبایت فقط برای ساختارهای <bdi dir="ltr">zval</bdi> نیاز دارد اما در <bdi dir="ltr">Go</bdi> فقط ۸ کیلوبایت. </p><p>این بهره‌وری حافظه مستقیماً بر کارایی کش پردازنده و سرعت اجرای برنامه تأثیر می‌گذارد و یکی از دلایل اصلی برتری عملکرد <bdi dir="ltr">Go</bdi> در کارهای محاسباتی است.</p>
+<figure class="diagram" dir="ltr">
+<svg viewBox="0 0 720 320" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+<path d="M0,0 L10,5 L0,10 z" fill="#64748b"/>
+</marker>
+</defs>
+<text x="360" y="28" text-anchor="middle" class="title rtl">ساختار حافظه: PHP zval در برابر Go Typed Value</text>
+<!-- PHP side -->
+<text x="180" y="70" text-anchor="middle" class="title">PHP zval (16 bytes)</text>
+<rect x="60" y="85" width="240" height="50" class="box-php"/>
+<text x="180" y="108" text-anchor="middle" class="small">type_info (4 B)</text>
+<text x="180" y="125" text-anchor="middle" class="small rtl">برچسب نوع + پرچم‌ها</text>
+<rect x="60" y="140" width="240" height="50" class="box-php"/>
+<text x="180" y="163" text-anchor="middle" class="small">value (8 B union)</text>
+<text x="180" y="180" text-anchor="middle" class="small rtl">مقدار واقعی</text>
+<rect x="60" y="195" width="240" height="50" class="box-php"/>
+<text x="180" y="218" text-anchor="middle" class="small">gc_info + refcount (4 B)</text>
+<text x="180" y="235" text-anchor="middle" class="small rtl">سربار GC و شمارنده ارجاع</text>
+<text x="180" y="275" text-anchor="middle" class="small rtl">۱۰۰۰ عدد ⇒ ~۱۶ کیلوبایت</text>
+<!-- Go side -->
+<text x="540" y="70" text-anchor="middle" class="title">Go int64 (8 bytes)</text>
+<rect x="420" y="85" width="240" height="200" class="box-go"/>
+<text x="540" y="170" text-anchor="middle" class="title">value</text>
+<text x="540" y="195" text-anchor="middle" class="small">8 bytes</text>
+<text x="540" y="220" text-anchor="middle" class="small rtl">بدون سربار</text>
+<text x="540" y="275" text-anchor="middle" class="small rtl">۱۰۰۰ عدد ⇒ ~۸ کیلوبایت</text>
+<!-- Comparison arrow -->
+<text x="360" y="170" text-anchor="middle" class="small rtl">دو برابر</text>
+<text x="360" y="190" text-anchor="middle" class="small rtl">بازدهی</text>
+<path d="M 305 180 L 415 180" fill="none" stroke="#4caf50" stroke-width="2.5" marker-end="url(#arrow)"/>
+</svg>
+<figcaption>شکل ۲-۲: مقایسه‌ی ساختار حافظه‌ی zval در PHP با typed value در Go — Go بدون سربار مدیریت نوع، نصف حافظه مصرف می‌کند</figcaption>
+</figure>
 <h3 id="سناریوهای-عملیاتی-انواع-داده">2.1.10 سناریوهای عملیاتی</h3>
 <p>انتخاب نوع داده‌ی مناسب در <bdi dir="ltr">Go</bdi> تأثیر مستقیمی بر کارایی، خوانایی و ایمنی کد دارد. برخلاف <bdi dir="ltr">PHP</bdi> که نوع متغیرها به‌طور خودکار تعیین می‌شود در <bdi dir="ltr">Go</bdi> هر تصمیم‌گیری درباره‌ی نوع داده باید آگاهانه و عمدی باشد. </p><p>در ادامه سناریوهای عملیاتی رایج را بررسی می‌کنیم که برنامه‌نویسان <bdi dir="ltr">PHP</bdi> هنگام انتقال به <bdi dir="ltr">Go</bdi> با آن‌ها مواجه می‌شوند و راه‌حل‌های <bdi dir="ltr">idiomatic</bdi> برای هر مورد ارائه می‌دهیم.</p>
 <ul>

@@ -79,6 +79,51 @@
 <p>تعریف و استفاده از توابع و متدها شامل بازگشت چند مقدار، توابع ناشناس و <bdi dir="ltr">closure</bdi>، کلیدواژه <bdi dir="ltr">defer</bdi> و ترتیب اجرای <bdi dir="ltr">LIFO</bdi> آن، متدها با <bdi dir="ltr">value receiver</bdi> و <bdi dir="ltr">pointer receiver</bdi>، قواعد <bdi dir="ltr">method set</bdi>، توابع <bdi dir="ltr">variadic</bdi>، و تابع <bdi dir="ltr">init()</bdi></p>
 <p>اشاره‌گرها و مدیریت حافظه — از ارسال مرجع و اشاره‌گر به اشاره‌گر تا <bdi dir="ltr">escape analysis</bdi> و تفاوت رفتار انواع مقداری و مرجع‌دار، با بررسی ریزش حافظه و مقایسه‌ی کارایی ارسال مقداری در برابر اشاره‌گری</p>
 <p>جنریک‌ها و مقایسه با <bdi dir="ltr">Type Hinting</bdi> در <bdi dir="ltr">PHP</bdi> — از <bdi dir="ltr">type constraint</bdi> و <bdi dir="ltr">comparable</bdi> تا تصمیم‌گیری درباره‌ی زمان استفاده از جنریک در برابر interface، و محدودیت‌های فعلی جنریک‌ها در <bdi dir="ltr">Go</bdi></p>
+<figure class="diagram" dir="ltr">
+<svg viewBox="0 0 720 300" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+<path d="M0,0 L10,5 L0,10 z" fill="#64748b"/>
+</marker>
+</defs>
+<text x="360" y="28" text-anchor="middle" class="title rtl">نقشه‌ی راه فصل دوم: شش گام تا مهاجرت عملی</text>
+<!-- Row 1 -->
+<rect x="20" y="60" width="210" height="80" class="box-php"/>
+<text x="125" y="90" text-anchor="middle" class="title">۲.۱</text>
+<text x="125" y="112" text-anchor="middle" class="small rtl">انواع داده</text>
+<text x="125" y="128" text-anchor="middle" class="small rtl">int, string, struct, slice</text>
+<rect x="255" y="60" width="210" height="80" class="box-php"/>
+<text x="360" y="90" text-anchor="middle" class="title">۲.۲</text>
+<text x="360" y="112" text-anchor="middle" class="small rtl">تبدیل نوع</text>
+<text x="360" y="128" text-anchor="middle" class="small rtl">T(v) در برابر juggling</text>
+<rect x="490" y="60" width="210" height="80" class="box-go"/>
+<text x="595" y="90" text-anchor="middle" class="title">۲.۳</text>
+<text x="595" y="112" text-anchor="middle" class="small rtl">ساختارهای کنترلی</text>
+<text x="595" y="128" text-anchor="middle" class="small rtl">if, for, switch</text>
+<!-- Row 2 -->
+<rect x="20" y="200" width="210" height="80" class="box-go"/>
+<text x="125" y="230" text-anchor="middle" class="title">۲.۴</text>
+<text x="125" y="252" text-anchor="middle" class="small rtl">توابع و متدها</text>
+<text x="125" y="268" text-anchor="middle" class="small rtl">defer, receiver, closure</text>
+<rect x="255" y="200" width="210" height="80" class="box-action"/>
+<text x="360" y="230" text-anchor="middle" class="title">۲.۵</text>
+<text x="360" y="252" text-anchor="middle" class="small rtl">اشاره‌گرها</text>
+<text x="360" y="268" text-anchor="middle" class="small rtl">stack/heap, escape analysis</text>
+<rect x="490" y="200" width="210" height="80" class="box-result"/>
+<text x="595" y="230" text-anchor="middle" class="title">۲.۶</text>
+<text x="595" y="252" text-anchor="middle" class="small rtl">جنریک‌ها</text>
+<text x="595" y="268" text-anchor="middle" class="small rtl">[T any], type constraints</text>
+<!-- Arrows row 1 -->
+<line x1="230" y1="100" x2="255" y2="100" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+<line x1="465" y1="100" x2="490" y2="100" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+<!-- Curved arrow from 2.3 down to 2.4 -->
+<path d="M 595 140 Q 595 170 540 170 Q 125 170 125 200" fill="none" stroke="#64748b" stroke-width="2" stroke-dasharray="4 3" marker-end="url(#arrow)"/>
+<!-- Arrows row 2 -->
+<line x1="230" y1="240" x2="255" y2="240" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+<line x1="465" y1="240" x2="490" y2="240" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+</svg>
+<figcaption>شکل ۲-۱: نقشه‌ی راه فصل دوم — از انواع داده تا جنریک‌ها</figcaption>
+</figure>
 <div class="tip"><strong>نگاهی به درون‌ساخت Go:</strong> در این فصل علاوه بر مقایسه‌ی سطحی <bdi dir="ltr">PHP</bdi> و <bdi dir="ltr">Go</bdi>، به بررسی نحوه‌ی پیاده‌سازی داخلی انواع داده در <bdi dir="ltr">Go</bdi> نیز می‌پردازیم. درک ساختار حافظه‌ی انواع داده‌ای، نحوه‌ی رشد اسلایس‌ها، عملکرد داخلی مپ‌ها، مکانیزم <bdi dir="ltr">Escape Analysis</bdi> کامپایلر و نحوه‌ی پیاده‌سازی جنریک‌ها به شما کمک می‌کند کدی کارآمدتر بنویسید و خطاهای ظریف حافظه را پیش‌گیری کنید. این دانش تفاوت آگاهی بین «فقط کار کردن کد» و «فهمیدن چرایی کار کردن کد» را ایجاد می‌کند.</div>
 <div class="important"><strong>پیش‌نیاز:</strong> پیش از مطالعه‌ی این فصل، مطمئن شوید فصل اول را خوانده‌اید. مفاهیمی مانند تفاوت <bdi dir="ltr">stack</bdi> و <bdi dir="ltr">heap</bdi>، حافظه‌ی ایستا و پویا، و فلسفه‌ی کلی <bdi dir="ltr">Go</bdi> که در فصل اول بررسی شد، در این فصل به‌طور مستمر به‌کار می‌روند. همچنین داشتن تجربه‌ی عملی با <bdi dir="ltr">PHP</bdi> به شما کمک می‌کند تفاوت‌ها را بهتر درک کنید.</div>
 <div class="summary">

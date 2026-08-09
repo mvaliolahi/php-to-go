@@ -88,6 +88,49 @@
 </p>
 </div>
 <p>همانطور که گفته شد در Go خبری از کلاس نیست و به جای آن نوع داده‌ای به نام struct وجود دارد که مجموعه‌ای از فیلدهای داده‌ای را کنار هم قرار می‌دهد. می‌توان struct را مشابه کلاس‌های ساده در PHP دانست. برای درک این مفهوم به شکل ۴-۳ توجه کنید.</p>
+<figure class="diagram" dir="ltr">
+<svg viewBox="0 0 720 340" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+<path d="M0,0 L10,5 L0,10 z" fill="#64748b"/>
+</marker>
+</defs>
+<text x="360" y="28" text-anchor="middle" class="title rtl">ساختار کلاس PHP در برابر struct در Go</text>
+<!-- PHP class -->
+<rect x="20" y="60" width="330" height="260" class="box-php"/>
+<text x="185" y="85" text-anchor="middle" class="title">PHP — class</text>
+<text x="185" y="105" text-anchor="middle" class="small rtl">فایل Person.php با namespace</text>
+<line x1="40" y1="118" x2="330" y2="118" stroke="#cbd5e1" stroke-width="1"/>
+<text x="40" y="138" text-anchor="start" class="small">class Person {</text>
+<text x="60" y="156" text-anchor="start" class="small">public string $name;</text>
+<text x="60" y="174" text-anchor="start" class="small">private int $age;</text>
+<text x="40" y="192" text-anchor="start" class="small"></text>
+<text x="60" y="208" text-anchor="start" class="small">public function __construct(</text>
+<text x="80" y="226" text-anchor="start" class="small">string $name, int $age</text>
+<text x="60" y="244" text-anchor="start" class="small">) { ... }</text>
+<text x="60" y="262" text-anchor="start" class="small">public function greet(): string {</text>
+<text x="80" y="280" text-anchor="start" class="small">return "Hi, " . $this-&gt;name;</text>
+<text x="60" y="298" text-anchor="start" class="small">}</text>
+<text x="40" y="316" text-anchor="start" class="small">}</text>
+<!-- Go struct -->
+<rect x="370" y="60" width="330" height="260" class="box-go"/>
+<text x="535" y="85" text-anchor="middle" class="title">Go — struct</text>
+<text x="535" y="105" text-anchor="middle" class="small rtl">فایل person.go با package</text>
+<line x1="390" y1="118" x2="680" y2="118" stroke="#cbd5e1" stroke-width="1"/>
+<text x="390" y="138" text-anchor="start" class="small">package models</text>
+<text x="390" y="156" text-anchor="start" class="small"></text>
+<text x="390" y="174" text-anchor="start" class="small">type Person struct {</text>
+<text x="410" y="192" text-anchor="start" class="small">Name string  // public</text>
+<text x="410" y="210" text-anchor="start" class="small">age  int     // private</text>
+<text x="390" y="228" text-anchor="start" class="small">}</text>
+<text x="390" y="246" text-anchor="start" class="small"></text>
+<text x="390" y="264" text-anchor="start" class="small">func (p Person) Greet() string {</text>
+<text x="410" y="282" text-anchor="start" class="small">return "Hi, " + p.Name</text>
+<text x="390" y="300" text-anchor="start" class="small">}</text>
+<text x="390" y="318" text-anchor="start" class="small rtl">// constructor با NewPerson() جدا</text>
+</svg>
+<figcaption>شکل ۳-۸: کلاس PHP در برابر struct در Go — کلاس PHP داده و متد و سازنده را در یک بلوک دارد؛ Go این‌ها را تفکیک می‌کند: struct فقط داده، متدها به‌صورت جداگانه با receiver تعریف می‌شوند و سازنده با تابع <code dir="ltr">NewPerson()</code> مستقل پیاده می‌شود</figcaption>
+</figure>
 <p>حال به پیاده سازی این struct دقت کنید:</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">package main
@@ -465,6 +508,49 @@ MakeThemSpeak(animals)
 </table>
 <h3 id="embedding-method-promotion-chain">3.5.5 زنجیره‌ی ارتقای متد در Embedding</h3>
 <p>یکی از مهم‌ترین مفاهیمی که برنامه‌نویسان PHP باید درباره‌ی <bdi dir="ltr">embedding</bdi> در Go درک کنند، نحوه‌ی عملکرد <bdi dir="ltr">method promotion chain</bdi> است. وقتی یک <bdi dir="ltr">struct</bdi> را در <bdi dir="ltr">struct</bdi> دیگری تعبیه می‌کنید، کامپایلر Go یک مسیر جستجوی مشخص برای متدها ایجاد می‌کند که کاملاً با زنجیره‌ی وراثت PHP متفاوت است. </p><p>در PHP وقتی متدی روی یک شیء فراخوانی می‌شود، موتور زبان از کلاس فرزند به سمت والد حرکت می‌کند تا متد مناسب را بیابد و با <code dir="ltr">parent::method()</code> می‌توان متد والد را صریحاً فراخوانی کرد. </p><p>اما در Go مکانیزم method promotion صرفاً یک <bdi dir="ltr">syntactic sugar</bdi> است که فراخوانی متد struct تعبیه‌شده را ساده‌تر می‌کند و هیچ زنجیره‌ی واقعی وجود ندارد.</p>
+<figure class="diagram" dir="ltr">
+<svg viewBox="0 0 720 340" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+<path d="M0,0 L10,5 L0,10 z" fill="#64748b"/>
+</marker>
+</defs>
+<text x="360" y="28" text-anchor="middle" class="title rtl">وراثت PHP (is-a) در برابر Embedding Go (has-a)</text>
+<!-- PHP side -->
+<rect x="20" y="60" width="330" height="260" class="box-php"/>
+<text x="185" y="85" text-anchor="middle" class="title rtl">PHP — وراثت (is-a)</text>
+<line x1="40" y1="98" x2="330" y2="98" stroke="#cbd5e1" stroke-width="1"/>
+<!-- Animal parent -->
+<rect x="100" y="110" width="170" height="60" class="box-php"/>
+<text x="185" y="135" text-anchor="middle" class="title">class Animal</text>
+<text x="185" y="155" text-anchor="middle" class="small rtl">speak()، move()</text>
+<!-- Dog extends -->
+<rect x="100" y="220" width="170" height="60" class="box-php"/>
+<text x="185" y="245" text-anchor="middle" class="title">class Dog extends Animal</text>
+<text x="185" y="265" text-anchor="middle" class="small rtl">speak() override + parent::speak()</text>
+<!-- Inheritance arrow (open triangle) -->
+<line x1="185" y1="220" x2="185" y2="170" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+<text x="200" y="200" text-anchor="start" class="small">extends ↑</text>
+<!-- Go side -->
+<rect x="370" y="60" width="330" height="260" class="box-go"/>
+<text x="535" y="85" text-anchor="middle" class="title rtl">Go — embedding (has-a)</text>
+<line x1="390" y1="98" x2="680" y2="98" stroke="#cbd5e1" stroke-width="1"/>
+<!-- Animal struct -->
+<rect x="450" y="110" width="170" height="60" class="box-go"/>
+<text x="535" y="135" text-anchor="middle" class="title">type Animal struct</text>
+<text x="535" y="155" text-anchor="middle" class="small rtl">Speak()، Move()</text>
+<!-- Dog embeds Animal -->
+<rect x="450" y="220" width="170" height="60" class="box-go"/>
+<text x="535" y="245" text-anchor="middle" class="title">type Dog struct</text>
+<text x="535" y="265" text-anchor="middle" class="small rtl">{ Animal; Speak() shadow }</text>
+<!-- Composition arrow (filled diamond) -->
+<line x1="535" y1="220" x2="535" y2="170" stroke="#64748b" stroke-width="2" stroke-dasharray="4 3" marker-end="url(#arrow)"/>
+<text x="550" y="200" text-anchor="start" class="small rtl">embeds ↑</text>
+<text x="185" y="305" text-anchor="middle" class="small rtl">زنجیره‌ی واقعی — parent:: قابل فراخوانی</text>
+<text x="535" y="305" text-anchor="middle" class="small rtl">شکربندی نحوی — d.Animal.Speak()</text>
+</svg>
+<figcaption>شکل ۳-۹: وراثت PHP یک رابطه‌ی is-a واقعی با زنجیره‌ی parent:: ایجاد می‌کند؛ embedding در Go یک رابطه‌ی has-a است که در آن متدها فقط «ارتقا» می‌یابند و receiver همیشه struct داخلی (Animal) است نه بیرونی (Dog)</figcaption>
+</figure>
 <p>در نمودار بالا می‌بینید که در سمت <bdi dir="ltr">PHP</bdi> رابطه‌ی <code dir="ltr">class Dog extends Animal</code> یک رابطه‌ی <strong>is-a</strong> واقعی است: <bdi dir="ltr">Dog</bdi> واقعاً یک <bdi dir="ltr">Animal</bdi> است و با <code dir="ltr">parent::speak()</code> می‌تواند به متد والد دسترسی پیدا کند. </p><p>اما در سمت <bdi dir="ltr">Go</bdi> رابطه‌ی <code dir="ltr">type Dog struct { Animal }</code> یک رابطه‌ی <strong>has-a</strong> است: <bdi dir="ltr">Dog</bdi> یک <bdi dir="ltr">Animal</bdi> را در خود جای داده و متدهای آن به‌صورت خودکار «ارتقا» یافته‌اند. </p><p>این ارتقا فقط یک میانبر نحوی است و هیچ زنجیره‌ی وراثت واقعی ایجاد نمی‌کند. تفاوت کلیدی این است که وقتی <bdi dir="ltr">Dog.Speak()</bdi> تعریف می‌شود متد <bdi dir="ltr">Animal.Speak()</bdi> را <bdi dir="ltr">shadow</bdi> می‌کند نه <bdi dir="ltr">override</bdi>. </p><p>در نتیجه هرگز <bdi dir="ltr">parent</bdi> وجود ندارد که بخواهید از آن فراخوانی کنید — فقط <code dir="ltr">d.Animal.Speak()</code> دارید که صریحاً متد struct تعبیه‌شده را فراخوانی می‌کند و receiver همیشه <bdi dir="ltr">Animal</bdi> است نه <bdi dir="ltr">Dog</bdi>.</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">type Animal struct {

@@ -77,6 +77,51 @@
 <p><strong>۱.۴ ابزارها</strong> — ابزارهای تولیدی <bdi dir="ltr">Go</bdi> را با اکوسیستم <bdi dir="ltr">PHP</bdi> مقایسه می‌کنیم: <bdi dir="ltr">go mod</bdi> و الگوریتم <bdi dir="ltr">MVS</bdi> در برابر <bdi dir="ltr">Composer</bdi>، <bdi dir="ltr">module proxy</bdi> و <bdi dir="ltr">checksum database</bdi> برای امنیت زنجیره‌ی تأمین، <bdi dir="ltr">golangci-lint</bdi> به‌عنوان ابزار یکپارچه‌ی لینت، تنظیم <bdi dir="ltr">CI/CD pipeline</bdi> کامل، و <bdi dir="ltr">cross-compilation</bdi> که در <bdi dir="ltr">PHP</bdi> معادلی ندارد.</p>
 <p><strong>۱.۵ ساختار پروژه‌ها</strong> — ساختار استاندارد پروژه‌های <bdi dir="ltr">Go</bdi> و مفهوم <code>internal/</code>، <code>pkg/</code> و <code>cmd/</code> را بررسی می‌کنیم. معماری <bdi dir="ltr">DDD</bdi> در <bdi dir="ltr">Go</bdi>، قواعد <bdi dir="ltr">visibility</bdi> مبتنی بر حروف بزرگ‌و‌کوچک، مقایسه‌ی <bdi dir="ltr">monorepo</bdi> با <bdi dir="ltr">polyrepo</bdi>، و نحوه‌ی اعمال محدودیت <code>internal/</code> توسط کامپایلر را از درون می‌بینیم.</p>
 <p><strong>۱.۶ نگاهی به اجرای برنامه‌ها</strong> — از باینری تا <bdi dir="ltr">main()</bdi>: مقداردهی <bdi dir="ltr">runtime</bdi> شامل <bdi dir="ltr">rt0</bdi> و <bdi dir="ltr">runtime.main</bdi>، ترتیب اجرای <bdi dir="ltr">init()</bdi> و بهترین روش‌ها، مدل زمان‌بندی <bdi dir="ltr">GMP</bdi>، <bdi dir="ltr">garbage collector</bdi> سه‌رنگی، <bdi dir="ltr">stack</bdi> دینامیک، مسیرهای خروج از برنامه و مدیریت سیگنال‌های سیستم‌عامل. تفاوت بنیادین با مدل اجرایی <bdi dir="ltr">PHP-FPM</bdi> را در هر مرحله مشخص می‌کنیم.</p>
+<figure class="diagram" dir="ltr">
+<svg viewBox="0 0 720 300" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+<path d="M0,0 L10,5 L0,10 z" fill="#64748b"/>
+</marker>
+</defs>
+<text x="360" y="28" text-anchor="middle" class="title rtl">نقشه‌ی راه فصل اول: شش گام تا درک Go</text>
+<!-- Row 1 -->
+<rect x="20" y="60" width="210" height="80" class="box-php"/>
+<text x="125" y="90" text-anchor="middle" class="title">۱.۱</text>
+<text x="125" y="112" text-anchor="middle" class="small rtl">تقابل فلسفی</text>
+<text x="125" y="128" text-anchor="middle" class="small rtl">PHP در برابر Go</text>
+<rect x="255" y="60" width="210" height="80" class="box-php"/>
+<text x="360" y="90" text-anchor="middle" class="title">۱.۲</text>
+<text x="360" y="112" text-anchor="middle" class="small rtl">فلسفه‌ی ساختاری</text>
+<text x="360" y="128" text-anchor="middle" class="small rtl">سادگی و صراحت</text>
+<rect x="490" y="60" width="210" height="80" class="box-go"/>
+<text x="595" y="90" text-anchor="middle" class="title">۱.۳</text>
+<text x="595" y="112" text-anchor="middle" class="small rtl">Idiomatic Go</text>
+<text x="595" y="128" text-anchor="middle" class="small rtl">سبک اصیل کدنویسی</text>
+<!-- Row 2 -->
+<rect x="20" y="200" width="210" height="80" class="box-go"/>
+<text x="125" y="230" text-anchor="middle" class="title">۱.۴</text>
+<text x="125" y="252" text-anchor="middle" class="small rtl">ابزارها</text>
+<text x="125" y="268" text-anchor="middle" class="small rtl">go mod، go fmt، vet</text>
+<rect x="255" y="200" width="210" height="80" class="box-action"/>
+<text x="360" y="230" text-anchor="middle" class="title">۱.۵</text>
+<text x="360" y="252" text-anchor="middle" class="small rtl">ساختار پروژه</text>
+<text x="360" y="268" text-anchor="middle" class="small rtl">cmd، internal، pkg</text>
+<rect x="490" y="200" width="210" height="80" class="box-result"/>
+<text x="595" y="230" text-anchor="middle" class="title">۱.۶</text>
+<text x="595" y="252" text-anchor="middle" class="small rtl">اجرای برنامه</text>
+<text x="595" y="268" text-anchor="middle" class="small rtl">GMP، GC، runtime</text>
+<!-- Arrows row 1 -->
+<line x1="230" y1="100" x2="255" y2="100" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+<line x1="465" y1="100" x2="490" y2="100" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+<!-- Curved arrow from 1.3 down to 1.4 -->
+<path d="M 595 140 Q 595 170 540 170 Q 125 170 125 200" fill="none" stroke="#64748b" stroke-width="2" stroke-dasharray="4 3" marker-end="url(#arrow)"/>
+<!-- Arrows row 2 -->
+<line x1="230" y1="240" x2="255" y2="240" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+<line x1="465" y1="240" x2="490" y2="240" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+</svg>
+<figcaption>شکل ۱-۱: نقشه‌ی راه فصل اول — از فلسفه تا اجرای برنامه</figcaption>
+</figure>
 <div class="tip">
 <strong>نکته‌ی مهم:</strong> این فصل مقدماتی است اما مفاهیم عمیقی را مطرح می‌کند. اگر در نخستین خوانش همه‌چیز را کامل درک نکردید نگران نباشید — در فصل‌های بعدی هر مفهوم با مثال‌های عملی باز خواهد شد. پیشنهاد می‌کنیم این فصل را در دو مرحله بخوانید: نخست یک خوانش سریع برای درک تصویر کلی، و سپس خوانش دقیق‌تر برای فهم عمیق هر بخش. به‌خصوص نمودارها و مقایسه‌ها را با دقت بررسی کنید چون پایه‌ی درک شما از فصل‌های بعد خواهند بود.
 </div>

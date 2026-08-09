@@ -178,6 +178,62 @@ func GetFromCache(key string) (string, bool) {
 </div>
 <h3 id="مقایسه‌ی-زمان-حیات-درخواست">1.1.5 مقایسه‌ی زمان حیات درخواست: PHP-FPM در برابر Go</h3>
 <p>تفاوت عملکرد ریشه در مدل اجرایی دارد. نمودار زیر چرخه‌ی حیات کامل یک درخواست <bdi dir="ltr">HTTP</bdi> را در هر دو زبان نشان می‌دهد:</p>
+<figure class="diagram" dir="ltr">
+<svg viewBox="0 0 760 360" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<marker id="arrow2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+<path d="M0,0 L10,5 L0,10 z" fill="#64748b"/>
+</marker>
+</defs>
+<text x="380" y="28" text-anchor="middle" class="title rtl">چرخه‌ی حیات یک درخواست HTTP</text>
+<!-- PHP lane -->
+<text x="60" y="80" text-anchor="start" class="title">PHP-FPM</text>
+<rect x="60" y="95" width="120" height="55" class="box-php"/>
+<text x="120" y="118" text-anchor="middle" class="small rtl">درخواست ورودی</text>
+<text x="120" y="138" text-anchor="middle" class="small">HTTP request</text>
+<rect x="200" y="95" width="120" height="55" class="box-php"/>
+<text x="260" y="118" text-anchor="middle" class="small rtl">ساخت worker</text>
+<text x="260" y="138" text-anchor="middle" class="small">~50 ms</text>
+<rect x="340" y="95" width="120" height="55" class="box-php"/>
+<text x="400" y="118" text-anchor="middle" class="small rtl">بارگذاری opcode</text>
+<text x="400" y="138" text-anchor="middle" class="small">OPcache</text>
+<rect x="480" y="95" width="120" height="55" class="box-php"/>
+<text x="540" y="118" text-anchor="middle" class="small rtl">اجرا + تخریب state</text>
+<text x="540" y="138" text-anchor="middle" class="small">stateless</text>
+<rect x="620" y="95" width="120" height="55" class="box-php"/>
+<text x="680" y="118" text-anchor="middle" class="small rtl">پاسخ</text>
+<text x="680" y="138" text-anchor="middle" class="small">HTTP response</text>
+<line x1="180" y1="122" x2="200" y2="122" stroke="#64748b" stroke-width="2" marker-end="url(#arrow2)"/>
+<line x1="320" y1="122" x2="340" y2="122" stroke="#64748b" stroke-width="2" marker-end="url(#arrow2)"/>
+<line x1="460" y1="122" x2="480" y2="122" stroke="#64748b" stroke-width="2" marker-end="url(#arrow2)"/>
+<line x1="600" y1="122" x2="620" y2="122" stroke="#64748b" stroke-width="2" marker-end="url(#arrow2)"/>
+<text x="380" y="178" text-anchor="middle" class="small rtl">هر درخواست: فرآیند جداگانه — state از نو ساخته می‌شود</text>
+<!-- Go lane -->
+<text x="60" y="220" text-anchor="start" class="title">Go</text>
+<rect x="60" y="235" width="120" height="55" class="box-go"/>
+<text x="120" y="258" text-anchor="middle" class="small rtl">درخواست ورودی</text>
+<text x="120" y="278" text-anchor="middle" class="small">HTTP request</text>
+<rect x="200" y="235" width="120" height="55" class="box-go"/>
+<text x="260" y="258" text-anchor="middle" class="small rtl">گرفتن goroutine</text>
+<text x="260" y="278" text-anchor="middle" class="small">~2 KB</text>
+<rect x="340" y="235" width="120" height="55" class="box-go"/>
+<text x="400" y="258" text-anchor="middle" class="small rtl">اجرا روی فرآیند دائمی</text>
+<text x="400" y="278" text-anchor="middle" class="small">stateful</text>
+<rect x="480" y="235" width="120" height="55" class="box-go"/>
+<text x="540" y="258" text-anchor="middle" class="small rtl">پاسخ</text>
+<text x="540" y="278" text-anchor="middle" class="small">HTTP response</text>
+<rect x="620" y="235" width="120" height="55" class="box-result"/>
+<text x="680" y="258" text-anchor="middle" class="small rtl">goroutine بازگشت</text>
+<text x="680" y="278" text-anchor="middle" class="small">pool reuse</text>
+<line x1="180" y1="262" x2="200" y2="262" stroke="#64748b" stroke-width="2" marker-end="url(#arrow2)"/>
+<line x1="320" y1="262" x2="340" y2="262" stroke="#64748b" stroke-width="2" marker-end="url(#arrow2)"/>
+<line x1="460" y1="262" x2="480" y2="262" stroke="#64748b" stroke-width="2" marker-end="url(#arrow2)"/>
+<line x1="600" y1="262" x2="620" y2="262" stroke="#64748b" stroke-width="2" marker-end="url(#arrow2)"/>
+<text x="380" y="318" text-anchor="middle" class="small rtl">فرآیند دائمی — state، اتصال دیتابیس و کش بین درخواست‌ها حفظ می‌شود</text>
+<text x="380" y="340" text-anchor="middle" class="small rtl">تعداد goroutine‌ها صفر تا میلیون — بدون overhead فرآیند جدید</text>
+</svg>
+<figcaption>شکل ۱-۲: چرخه‌ی حیات یک درخواست HTTP در PHP-FPM و Go</figcaption>
+</figure>
 <h3 id="مقایسه‌ی-دیکلری-کانتینر">1.1.6 مقایسه‌ی دیپلوی کانتینری: PHP در برابر Go</h3>
 <p>در دنیای <bdi dir="ltr">Docker</bdi> و <bdi dir="ltr">Kubernetes</bdi>، اندازه‌ی <bdi dir="ltr">image</bdi> و زمان شروع کانتینر اهمیت بالایی دارد. تفاوت بین دیپلوی <bdi dir="ltr">PHP</bdi> و <bdi dir="ltr">Go</bdi> در محیط کانتینری قابل‌توجه است:</p>
 <figure class="code dockerfile" dir="ltr">
@@ -240,6 +296,42 @@ ENTRYPOINT ["/server"]
 </div>
 <h3 id="مدل-ذهنی-php-در-برابر-go">1.1.8 مدل ذهنی PHP در برابر Go: نمودار ون</h3>
 <p>یکی از مؤثرترین راه‌ها برای درک تفاوت فلسفی دو زبان، ترسیم مدل ذهنی هرکدام و یافتن نقاط اشتراک و افتراق آن‌هاست. </p><p>نمودار ون زیر دو دایره‌ی ذهنی <bdi dir="ltr">PHP</bdi> و <bdi dir="ltr">Go</bdi> را نشان می‌دهد: دایره‌ی بنفش (<bdi dir="ltr">PHP</bdi>) شامل مفاهیمی است که ریشه در دنیای پویا و مبتنی بر فریم‌ورک دارند و دایره‌ی فیروزه‌ای (<bdi dir="ltr">Go</bdi>) مفاهیمی را در بر می‌گیرد که بر صراحت، هم‌زمانی و کامپایل ایستا استوارند. </p><p>بخش اشتراک — یعنی نقاطی که هر دو زبان در آن‌ها هم‌سو هستند — شامل حوزه‌هایی مانند ساخت سرور وب، مدیریت <bdi dir="ltr">HTTP</bdi>، دسترسی به پایگاه داده، کار با <bdi dir="ltr">JSON</bdi> و تست‌نویسی است. </p><p>اما خارج از این اشتراک، تفاوت‌های بنیادین خود را نشان می‌دهند: <bdi dir="ltr">PHP</bdi> با <bdi dir="ltr">magic methods</bdi>، <bdi dir="ltr">traits</bdi> و <bdi dir="ltr">dynamic dispatch</bdi> کار می‌کند در حالی که <bdi dir="ltr">Go</bdi> با <bdi dir="ltr">channels</bdi>، <bdi dir="ltr">interfaces</bdi>، <bdi dir="ltr">defer</bdi> و بازگرداندن چند مقداری عمل می‌کند. </p><p>درک این تقاطع‌ها و تفاوت‌ها به شما کمک می‌کند تا بدانید کدام مهارت‌های <bdi dir="ltr">PHP</bdi> قابل انتقال هستند و کدام باید از نو آموخته شوند.</p>
+<figure class="diagram" dir="ltr">
+<svg viewBox="0 0 720 340" xmlns="http://www.w3.org/2000/svg">
+<text x="360" y="28" text-anchor="middle" class="title rtl">مدل ذهنی PHP در برابر Go: نمودار ون</text>
+<!-- PHP circle (left) -->
+<circle cx="260" cy="180" r="140" fill="rgba(119,123,180,0.15)" stroke="#777BB4" stroke-width="2"/>
+<!-- Go circle (right) -->
+<circle cx="460" cy="180" r="140" fill="rgba(0,173,216,0.15)" stroke="#00ADD8" stroke-width="2"/>
+<!-- PHP label -->
+<text x="160" y="80" text-anchor="middle" class="title">PHP</text>
+<!-- Go label -->
+<text x="560" y="80" text-anchor="middle" class="title">Go</text>
+<!-- PHP-only items (left side) -->
+<text x="170" y="160" text-anchor="middle" class="small rtl">magic methods</text>
+<text x="170" y="180" text-anchor="middle" class="small rtl">traits</text>
+<text x="170" y="200" text-anchor="middle" class="small rtl">dynamic dispatch</text>
+<text x="170" y="220" text-anchor="middle" class="small rtl">ارث‌بری</text>
+<text x="170" y="240" text-anchor="middle" class="small rtl">service container</text>
+<!-- Intersection items -->
+<text x="360" y="150" text-anchor="middle" class="small rtl">سرور وب</text>
+<text x="360" y="170" text-anchor="middle" class="small rtl">HTTP / JSON</text>
+<text x="360" y="190" text-anchor="middle" class="small rtl">پایگاه داده</text>
+<text x="360" y="210" text-anchor="middle" class="small rtl">تست‌نویسی</text>
+<text x="360" y="230" text-anchor="middle" class="small rtl">API</text>
+<!-- Go-only items (right side) -->
+<text x="550" y="160" text-anchor="middle" class="small rtl">channels</text>
+<text x="550" y="180" text-anchor="middle" class="small rtl">interfaces ضمنی</text>
+<text x="550" y="200" text-anchor="middle" class="small rtl">defer</text>
+<text x="550" y="220" text-anchor="middle" class="small rtl">multi-return</text>
+<text x="550" y="240" text-anchor="middle" class="small rtl">goroutine</text>
+<!-- Bottom legend -->
+<text x="180" y="310" text-anchor="middle" class="small rtl">دنیای پویا و مبتنی بر فریم‌ورک</text>
+<text x="360" y="310" text-anchor="middle" class="small rtl">قابل انتقال</text>
+<text x="540" y="310" text-anchor="middle" class="small rtl">صراحت، هم‌زمانی، کامپایل ایستا</text>
+</svg>
+<figcaption>شکل ۱-۳: نمودار ون مدل ذهنی PHP و Go — مهارت‌های قابل انتقال و تفاوت‌ها</figcaption>
+</figure>
 <h3 id="سناریوهای-عملیاتی-تقابل-فلسفی">1.1.9 سناریوهای عملیاتی: گذر از ذهنیت PHP به Go</h3>
 <p>انتقال از <bdi dir="ltr">PHP</bdi> به <bdi dir="ltr">Go</bdi> فقط یادگیری یک زبان جدید نیست، بلکه دگرگونی بنیادین در نحوه‌ی تفکر درباره‌ی معماری نرم‌افزار، مدیریت خطا و طراحی سیستم است. در ادامه مهم‌ترین سناریوهایی را بررسی می‌کنیم که هر برنامه‌نویس <bdi dir="ltr">PHP</bdi> در مسیر مهاجرت به <bdi dir="ltr">Go</bdi> با آن‌ها مواجه خواهد شد. </p><p>هرکدام از این سناریوها نقطه‌ی عطفی در فرآیند بازآموزی ذهنی هستند و درک عمیق آن‌ها تضمین‌کننده‌ی موفقیت در دنیای <bdi dir="ltr">Go</bdi> خواهد بود.</p>
 <ul>

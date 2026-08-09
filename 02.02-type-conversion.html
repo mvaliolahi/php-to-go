@@ -251,7 +251,45 @@ s = fmt.Sprintf("%d", 42) // Wrong — slower — generic
 </figure>
 <h3 id="php-type-juggling-vs-go-explicit">2.2.7 PHP Type Juggling در برابر تبدیل صریح Go</h3>
 <p>همان‌طور که در ابتدای این بخش دیدید، <bdi dir="ltr">PHP Type Juggling</bdi> منبع بسیاری از باگ‌های ظریف است (مانند <code>"hello" + 1 = 1</code> یا <code>"foo" == 0 → true</code>). نمودار زیر این تفاوت فلسفی را به‌صورت بصری کنار هم قرار می‌دهد و تبدیل‌های ایمن و ناایمن در <bdi dir="ltr">Go</bdi> را فهرست می‌کند.</p>
-
+<figure class="diagram" dir="ltr">
+<svg viewBox="0 0 720 340" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+<path d="M0,0 L10,5 L0,10 z" fill="#64748b"/>
+</marker>
+</defs>
+<text x="360" y="28" text-anchor="middle" class="title rtl">PHP Type Juggling در برابر تبدیل صریح Go</text>
+<!-- PHP lane -->
+<text x="180" y="68" text-anchor="middle" class="title">PHP — Type Juggling</text>
+<rect x="60" y="85" width="240" height="55" class="box-php"/>
+<text x="180" y="108" text-anchor="middle" class="small">"5" + 3</text>
+<text x="180" y="126" text-anchor="middle" class="small rtl">عملیات ترکیبی رشته+عدد</text>
+<rect x="60" y="165" width="240" height="55" class="warn-box"/>
+<text x="180" y="188" text-anchor="middle" class="small rtl">تبدیل خودکار و خاموش</text>
+<text x="180" y="206" text-anchor="middle" class="small rtl">"5" → int(5)</text>
+<rect x="60" y="245" width="240" height="55" class="box-result"/>
+<text x="180" y="268" text-anchor="middle" class="small">8</text>
+<text x="180" y="286" text-anchor="middle" class="small rtl">نتیجه درست — اما با تله</text>
+<line x1="180" y1="140" x2="180" y2="165" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+<line x1="180" y1="220" x2="180" y2="245" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+<text x="180" y="320" text-anchor="middle" class="small rtl">"foo" + 3 ⇒ 3 — باگ خاموش</text>
+<!-- Go lane -->
+<text x="540" y="68" text-anchor="middle" class="title">Go — Explicit Conversion</text>
+<rect x="420" y="85" width="240" height="55" class="box-go"/>
+<text x="540" y="108" text-anchor="middle" class="small">"5" + 3</text>
+<text x="540" y="126" text-anchor="middle" class="small rtl">نوع‌های ناسازگار</text>
+<rect x="420" y="165" width="240" height="55" class="warn-box"/>
+<text x="540" y="188" text-anchor="middle" class="small">compile error</text>
+<text x="540" y="206" text-anchor="middle" class="small rtl">mismatched types</text>
+<rect x="420" y="245" width="240" height="55" class="box-action"/>
+<text x="540" y="268" text-anchor="middle" class="small">strconv.Atoi("5") + 3</text>
+<text x="540" y="286" text-anchor="middle" class="small rtl">تبدیل صریح با بررسی خطا</text>
+<line x1="540" y1="140" x2="540" y2="165" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+<line x1="540" y1="220" x2="540" y2="245" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+<text x="540" y="320" text-anchor="middle" class="small rtl">خطای Atoi("abc") هرگز خاموش نیست</text>
+</svg>
+<figcaption>شکل ۲-۳: PHP با تبدیل خودکار، باگ خاموش تولید می‌کند؛ Go با خطای کامپایل و تبدیل صریح، خطا را آشکار می‌سازد</figcaption>
+</figure>
 <h3 id="سناریوهای-عملیاتی-تبدیل-نوع">2.2.8 سناریوهای عملیاتی</h3>
 <p>در پروژه‌های واقعی، تبدیل نوع یکی از رایج‌ترین عملیات‌هاست و درک صحیح آن از بروز باگ‌های پنهان جلوگیری می‌کند. در ادامه پنج سناریوی عملیاتی کلیدی را بررسی می‌کنیم که هر برنامه‌نویس Go باید به‌خوبی بشناسد. </p><p>این سناریوها شامل تبدیل رشته به عدد با مدیریت خطا، تبدیل بین انواع عددی، هزینه‌ی تبدیل <bdi dir="ltr">[]byte</bdi> و <bdi dir="ltr">string</bdi>، استفاده از <bdi dir="ltr">type assertion</bdi> با <bdi dir="ltr">interface</bdi> و پیاده‌سازی <bdi dir="ltr">Stringer</bdi> سفارشی است. هر یک از این موارد در عمل با اهمیت بالایی مواجه هستند و تسلط بر آن‌ها کد شما را ایمن‌تر و کارآمدتر می‌کند.</p>
 <ul>

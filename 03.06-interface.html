@@ -420,6 +420,74 @@ func NewMailer(config Config) *smtp.Mailer {
 </figure>
 <h3 id="interface-itab-deep-dive">3.6.14 نمودار عمیق ساختار داخلی itab و iface</h3>
 <p>نمودار زیر جزئیات ساختار <bdi dir="ltr">iface</bdi> و <bdi dir="ltr">itab</bdi> را به‌صورت بصری نشان می‌دهد — شامل روابط بین جدول متدها، اشاره‌گر داده و سه حالت ممکن برای <bdi dir="ltr">nil</bdi> بودن interface:</p>
+<figure class="diagram" dir="ltr">
+<svg viewBox="0 0 760 440" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+<path d="M0,0 L10,5 L0,10 z" fill="#64748b"/>
+</marker>
+</defs>
+<text x="380" y="28" text-anchor="middle" class="title rtl">ساختار داخلی iface و itab با سه حالت nil</text>
+<!-- iface box (top-left) -->
+<rect x="20" y="60" width="220" height="100" class="box-go"/>
+<text x="130" y="82" text-anchor="middle" class="title">iface</text>
+<line x1="30" y1="92" x2="230" y2="92" stroke="#cbd5e1" stroke-width="1"/>
+<text x="35" y="112" text-anchor="start" class="small">tab  *itab</text>
+<text x="35" y="135" text-anchor="start" class="small">data unsafe.Pointer</text>
+<text x="35" y="153" text-anchor="start" class="small rtl">interface غیرخالی</text>
+<!-- itab box (middle, top) -->
+<rect x="280" y="60" width="280" height="160" class="box-action"/>
+<text x="420" y="82" text-anchor="middle" class="title">itab</text>
+<text x="420" y="100" text-anchor="middle" class="small rtl">(کش‌شده برای هر جفت interface/type)</text>
+<line x1="290" y1="110" x2="550" y2="110" stroke="#cbd5e1" stroke-width="1"/>
+<text x="295" y="128" text-anchor="start" class="small">inter  *interfacetype</text>
+<text x="295" y="148" text-anchor="start" class="small">_type  *_type</text>
+<text x="295" y="168" text-anchor="start" class="small">fun  [n]uintptr</text>
+<text x="295" y="188" text-anchor="start" class="small rtl">آرایه‌ی اشاره‌گر به متدها</text>
+<text x="295" y="208" text-anchor="start" class="small rtl">مثلاً: Speak, Notify, Read</text>
+<!-- Pointer from iface.tab to itab -->
+<line x1="240" y1="105" x2="280" y2="105" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+<!-- data box (right) -->
+<rect x="600" y="60" width="140" height="100" class="box-result"/>
+<text x="670" y="82" text-anchor="middle" class="title">data</text>
+<text x="670" y="100" text-anchor="middle" class="small rtl">مقدار واقعی</text>
+<line x1="610" y1="110" x2="730" y2="110" stroke="#cbd5e1" stroke-width="1"/>
+<text x="670" y="130" text-anchor="middle" class="small">User{</text>
+<text x="670" y="148" text-anchor="middle" class="small">  Name: "Ali"</text>
+<!-- Pointer from iface.data to data box -->
+<line x1="240" y1="135" x2="600" y2="110" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+<!-- Three nil states (bottom row) -->
+<text x="380" y="260" text-anchor="middle" class="title rtl">سه حالت nil در interface</text>
+<!-- State 1: truly nil -->
+<rect x="20" y="280" width="230" height="140" class="box-result"/>
+<text x="135" y="305" text-anchor="middle" class="title rtl">حالت ۱ — nil واقعی</text>
+<text x="135" y="328" text-anchor="middle" class="small">tab = nil</text>
+<text x="135" y="348" text-anchor="middle" class="small">data = nil</text>
+<line x1="30" y1="358" x2="240" y2="358" stroke="#cbd5e1" stroke-width="1"/>
+<text x="135" y="380" text-anchor="middle" class="small">n == nil</text>
+<text x="135" y="400" text-anchor="middle" class="small rtl">→ true ✓</text>
+<text x="135" y="418" text-anchor="middle" class="small rtl">var n Notifier</text>
+<!-- State 2: typed nil (the trap) -->
+<rect x="265" y="280" width="230" height="140" class="warn-box"/>
+<text x="380" y="305" text-anchor="middle" class="title rtl">حالت ۲ — nil با نوع (تله!)</text>
+<text x="380" y="328" text-anchor="middle" class="small">tab = &amp;itab{...}</text>
+<text x="380" y="348" text-anchor="middle" class="small">data = nil</text>
+<line x1="275" y1="358" x2="485" y2="358" stroke="#cbd5e1" stroke-width="1"/>
+<text x="380" y="380" text-anchor="middle" class="small">n == nil</text>
+<text x="380" y="400" text-anchor="middle" class="small rtl">→ false ✗ باگ!</text>
+<text x="380" y="418" text-anchor="middle" class="small rtl">var u *User = nil; n = u</text>
+<!-- State 3: normal non-nil -->
+<rect x="510" y="280" width="230" height="140" class="box-go"/>
+<text x="625" y="305" text-anchor="middle" class="title rtl">حالت ۳ — مقدار عادی</text>
+<text x="625" y="328" text-anchor="middle" class="small">tab = &amp;itab{...}</text>
+<text x="625" y="348" text-anchor="middle" class="small">data = &amp;User{...}</text>
+<line x1="520" y1="358" x2="730" y2="358" stroke="#cbd5e1" stroke-width="1"/>
+<text x="625" y="380" text-anchor="middle" class="small">n == nil</text>
+<text x="625" y="400" text-anchor="middle" class="small rtl">→ false ✓</text>
+<text x="625" y="418" text-anchor="middle" class="small rtl">n = User{Name: "Ali"}</text>
+</svg>
+<figcaption>شکل ۳-۱۰: ساختار داخلی iface و itab — هر interface از دو فیلد تشکیل شده: tab (نوع و جدول متدها) و data (مقدار واقعی). حالت ۲ (typed nil) رایج‌ترین باگ Go است: وقتی اشاره‌گر nil از نوع مشخص به interface اختصاص می‌یابد، tab غیر-nil می‌شود و interface دیگر nil نیست</figcaption>
+</figure>
 <p>در نمودار بالا ساختار کامل یک interface غیرخالی (<bdi dir="ltr">iface</bdi>) را مشاهده می‌کنید. بخش <bdi dir="ltr">itab</bdi> حاوی سه بخش حیاتی است: <code dir="ltr">inter</code> که نوع interface را مشخص می‌کند (مثلاً <code dir="ltr">io.Writer</code>)، <code dir="ltr">_type</code> که نوع واقعی داده را نشان می‌دهد (مثلاً <code dir="ltr">*bufio.Writer</code>) و آرایه‌ی <code dir="ltr">fun</code> که اشاره‌گر به توابع پیاده‌سازی‌شده را نگه می‌دارد. </p><p>وقتی متدی مانند <code dir="ltr">w.Write(p)</code> فراخوانی می‌شود Go از <code dir="ltr">itab.fun[0]</code> برای یافتن آدرس تابع واقعی استفاده می‌کند و <code dir="ltr">data</code> را به‌عنوان receiver ارسال می‌کند. </p><p>این مکانیزم فقط یک سطح <bdi dir="ltr">indirection</bdi> اضافی نسبت به فراخوانی مستقیم متد دارد و به‌لطف کش <bdi dir="ltr">itab</bdi> عملاً هیچ هزینه‌ی عملکردی قابل‌توجهی ایجاد نمی‌کند.</p>
 <p>سه حالت <bdi dir="ltr">nil</bdi> که در پایین نمودار نمایش داده شده‌اند از مهم‌ترین مفاهیم برای برنامه‌نویسان PHP هستند. حالت اول یک interface واقعاً nil است که هر دو فیلد آن nil هستند. </p><p>حالت دوم یعنی «nil با نوع مشخص» (<bdi dir="ltr">typed nil</bdi>) یکی از رایج‌ترین باگ‌های Go است: وقتی یک اشاره‌گر nil از نوع مشخص به interface اختصاص می‌یابد فیلد <code dir="ltr">tab/itab</code> مقدار غیر-nil می‌گیرد و بنابراین interface دیگر nil نیست حتی اگر مقدار داده‌ی آن nil باشد. </p><p>حالت سوم هم یک interface عادی با مقدار غیر-nil است. درک این سه حالت برای جلوگیری از باگ‌های ظریف در کد Go ضروری است.</p>
 <h4 id="interface-سناریوهای-عملیاتی">سناریوهای عملیاتی Interface</h4>
