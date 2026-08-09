@@ -68,35 +68,6 @@
 <h2 id="کار-با-json-array-و-timestamp">کار با JSON، Array و Timestamp</h2><div class="abstract">
 <strong>چکیده:</strong> این بخش کار با JSON array و timestamp در Go را پوشش می‌دهد: json.Marshal، time.Time و timezone. الگوی custom type و scanner بررسی می‌شود. تفاوت با Carbon در PHP مشخص می‌گردد.
 </div>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-    Title["نگاشت JSON، Array و Timestamp بین Go و PostgreSQL"]
-
-    subgraph MAPPINGS["انواع نگاشت"]
-        direction TB
-        M1["JSONB → json.Marshal/Unmarshal<br/>sql.Scanner / Valuer"]
-        M2["Array (text[]) → pq.Array() / pq.StringArray<br/>pq.Int64Array"]
-        M3["Timestamp → time.Time<br/>UTC + timezone"]
-    end
-
-    Struct["Go Struct with db + json tags<br/>json:"..." db:"...""]
-    Laravel["در Laravel: $casts = ['settings' =&gt;'json', 'tags' =&gt;'array']"]
-
-    Title --&gt; MAPPINGS
-    MAPPINGS --&gt; Struct
-    Struct --&gt; Laravel
-
-    classDef titleBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:2px,color:#1f2937,font-weight:bold;
-    classDef goBox   fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef phpBox  fill:#f5f0fb,stroke:#777BB4,stroke-width:1.5px,color:#1f2937;
-    classDef bothBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
-    classDef neuBox  fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
-    class Title titleBox;
-    class M1,M2,M3 goBox;
-    class Struct goBox;
-    class Laravel phpBox;</pre>
-<figcaption>شکل ۸-۷: نگاشت <bdi dir="ltr">JSON</bdi>، <bdi dir="ltr">Array</bdi> و <bdi dir="ltr">Timestamp</bdi> بین <bdi dir="ltr">Go</bdi> و <bdi dir="ltr">PostgreSQL</bdi></figcaption>
-</figure>
 <p>در کاربرد واقعی داده‌های ذخیره شده در دیتابیس‌ها فقط محدود به انواع ساده مثل اعداد و رشته‌ها نیستند. معمولاً نیاز داریم با داده‌های پیچیده‌تری مثل ساختارهای <bdi dir="ltr">JSON</bdi>، آرایه‌ها یا تایم‌استمپ‌ها کار کنیم.</p>
 <h3 id="jsonb">8.7.1 کار با JSONB در PostgreSQL</h3>
 <p><bdi dir="ltr">PostgreSQL</bdi> از نوع <bdi dir="ltr">JSONB</bdi> پشتیبانی می‌کند که امکان ذخیره‌سازی و کوئری‌های کارآمد روی داده‌های ساختاریافته را فراهم می‌کند:</p>
@@ -193,63 +164,6 @@ type Product struct {
 <div class="comparison"><strong>مقایسه با Laravel/Eloquent:</strong> در <bdi dir="ltr">Laravel</bdi> ستون‌های <code>timestamp</code> به‌صورت خودکار به <code>Carbon</code> تبدیل می‌شوند و <code>$casts</code> امکان تبدیل سفارشی را فراهم می‌کند (<code>'settings' =&gt; 'json'</code>، <code>'tags' =&gt; 'array'</code>). در <bdi dir="ltr">Go</bdi> باید تبدیل را دستی انجام دهید: <bdi dir="ltr">JSONB</bdi> با <code>json.Marshal/Unmarshal</code>، آرایه‌ها با <code>pq.Array()</code> و زمان با <code>time.Time</code>. اگرچه کد بیشتری نیاز است اما شفافیت و کنترل کاملی روی نحوه‌ی تبدیل داده‌ها دارید و رفتار غیرمنتظره‌ای در تولید <bdi dir="ltr">JSON</bdi> یا مدیریت مقادیر <bdi dir="ltr">NULL</bdi> مشاهده نخواهید کرد.</div>
 <h3 id="ماتریس-تبدیل-نوع-sql-به-go">8.7.5 ماتریس تبدیل نوع SQL به Go</h3>
 <p>یکی از چالش‌های اصلی در کار با دیتابیس در <bdi dir="ltr">Go</bdi> نگاشت صحیح انواع داده‌ای <bdi dir="ltr">SQL</bdi> به انواع <bdi dir="ltr">Go</bdi> است. برخلاف <bdi dir="ltr">PHP</bdi> که نوع‌گذاری پویا دارد و تبدیل‌ها عموماً خودکار هستند، در <bdi dir="ltr">Go</bdi> باید دقیقاً بدانید هر نوع <bdi dir="ltr">SQL</bdi> به کدام نوع <bdi dir="ltr">Go</bdi> نگاشت می‌شود. شکل زیر ماتریس کامل این نگاشت‌ها را نشان می‌دهد. </p><p>رنگ سبز نشان‌دهنده‌ی نگاشت مستقیم و بی‌خطر، رنگ نارنجی نشان‌دهنده‌ی تبدیل با احتمال از دست رفتن دقت و رنگ قرمز نشان‌دهنده‌ی مواردی است که نیاز به توجه ویژه دارند.</p>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-    Title["ماتریس تبدیل نوع SQL به Go"]
-
-    subgraph MATRIX["ماتریس تبدیل"]
-        direction TB
-        H1["SQL Type | Go Type | توضیحات"]
-        R1["VARCHAR / TEXT → string — نگاشت مستقیم — NULL → sql.NullString"]
-        R2["INTEGER / INT → int32 / int — نگاشت مستقیم — NULL → sql.NullInt32"]
-        R3["BIGINT / INT8 → int64 — نگاشت مستقیم — NULL → sql.NullInt64"]
-        R4["BOOLEAN / BOOL → bool — نگاشت مستقیم — NULL → sql.NullBool"]
-        R5["TIMESTAMP / TIMESTAMPTZ → time.Time — همیشه UTC ذخیره کنید — NULL → sql.NullTime"]
-        R6[JSON / JSONB → []byte / json.RawMessage — custom Scanner/Valuer — نیاز به...]
-        R7["BYTEA / BLOB → []byte — داده‌های باینری — فایل‌ها، تصاویر، هش‌ها"]
-        R8[DECIMAL / NUMERIC → float64 ⚠ or shopspring/decimal — خطر از دست رفت دقت! —...]
-    end
-
-    subgraph NULLMGMT["مدیریت مقادیر NULL در Go"]
-        direction TB
-        N1["sql.NullString{String: "value", Valid: true}"]
-        N2["sql.NullInt64{Int64: 42, Valid: true}"]
-        N3["sql.NullTime{Time: time.Now(), Valid: true}"]
-        N4["یا از اشاره‌گر استفاده کنید:*string, *int64, *time.Timenil = NULL در دیتابیس"]
-    end
-
-    subgraph LEGEND["راهنما"]
-        direction TB
-        L1["سبز: نگاشت مستقیم"]
-        L2["نارنجی: نیاز به تبدیل سفارشی"]
-        L3["قرمز: خطر از دست رفت دقت"]
-    end
-
-    Golden[قانون طلایی: برای داده‌های مالی هرگز از float64 استفاده نکنید — از...]
-
-    Title --&gt; MATRIX
-    MATRIX --&gt; NULLMGMT
-    NULLMGMT --&gt; LEGEND
-    LEGEND --&gt; Golden
-
-    classDef titleBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:2px,color:#1f2937,font-weight:bold;
-    classDef goBox   fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef bothBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
-    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
-    classDef errBox  fill:#fef2f2,stroke:#ef4444,stroke-width:1.5px,color:#1f2937;
-    classDef neuBox  fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
-    class Title,H1 titleBox;
-    class R1,R2,R3,R4,R5,R7 bothBox;
-    class R6 warnBox;
-    class R8 errBox;
-    class N1,N2,N3 goBox;
-    class N4 warnBox;
-    class L1 bothBox;
-    class L2 warnBox;
-    class L3 errBox;
-    class Golden warnBox;</pre>
-<figcaption dir="rtl">شکل ۸-۷-ب: ماتریس تبدیل انواع <bdi dir="ltr">SQL</bdi> به <bdi dir="ltr">Go</bdi> — سبز: مستقیم، نارنجی: سفارشی، قرمز: خطرناک</figcaption>
-</figure>
 <p>همان‌طور که در ماتریس بالا مشاهده می‌کنید، بیشتر انواع پایه‌ای <bdi dir="ltr">SQL</bdi> نگاشت مستقیمی به انواع <bdi dir="ltr">Go</bdi> دارند. </p><p>اما سه مورد نیاز به توجه ویژه دارند: نوع <bdi dir="ltr">JSON/JSONB</bdi> که نیاز به <bdi dir="ltr">json.RawMessage</bdi> یا پیاده‌سازی <code>sql.Scanner</code> دارد، نوع <bdi dir="ltr">DECIMAL/NUMERIC</bdi> که تبدیل آن به <code>float64</code> با خطر از دست رفتن دقت همراه است، و مقادیر <bdi dir="ltr">NULL</bdi> که باید با انواع <code>sql.Null*</code> یا اشاره‌گرها مدیریت شوند. درک این تفاوت‌ها برای جلوگیری از باگ‌های پنهان در اپلیکیشن‌های واقعی بسیار مهم است.</p>
 <div class="note"><strong>چرا <bdi dir="ltr">Go</bdi> خطاهای نوع را زودتر از <bdi dir="ltr">PHP</bdi> نشان می‌دهد:</strong> در <bdi dir="ltr">PHP</bdi> تبدیل <code>string</code> به <code>int</code> یا <code>float</code> به‌صورت ضمنی انجام می‌شود و حتی اگر ستون <bdi dir="ltr">SQL</bdi> از نوع <bdi dir="ltr">NUMERIC</bdi> باشد، مقدار بدون خطا در متغیر عددی قرار می‌گیرد — البته با احتمال از دست رفتن دقت. در <bdi dir="ltr">Go</bdi> این خطا در زمان <code>Scan()</code> فوراً اعلام می‌شود. برای داده‌های مالی به‌جای مبارزه با <code>float64</code>، یا مقدار را به‌صورت <code>int64</code> در کوچک‌ترین واحد (ریال/سنت) ذخیره کنید یا از <code>github.com/shopspring/decimal</code> با پیاده‌سازی <code>sql.Scanner</code> استفاده کنید. این سخت‌گیری در نگاه اول آزاردهنده است اما جلوی باگ‌های مالی خاموش را می‌گیرد.</div>
 <h3 id="سناریوهای-عملیاتی-تبدیل-نوع">8.7.6 سناریوهای عملیاتی تبدیل نوع</h3>
@@ -304,7 +218,6 @@ type Product struct {
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/xml.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/ini.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/plaintext.min.js"></script>
-<script src="assets/js/diagrams.js"></script>
 <script src="assets/js/main.js"></script>
 </body>
 </html>

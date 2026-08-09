@@ -247,62 +247,8 @@ if err != nil {
 </div>
 <h3 id="escape-analysis-نمودار-جریان">1.3.2 Escape Analysis: نمودار جریان تصمیم‌گیری کامپایلر</h3>
 <p>یکی از مفاهیم مهمی که در idiomatic Go تأثیر مستقیم بر عملکرد دارد <bdi dir="ltr">escape analysis</bdi> است. کامپایلر Go تحلیل می‌کند که آیا یک مقدار می‌تواند روی <bdi dir="ltr">stack</bdi> تخصیص یابد یا باید به <bdi dir="ltr">heap</bdi> فرار کند. نمودار زیر فرآیند تصمیم‌گیری کامپایلر را نشان می‌دهد:</p>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-    Start(["متغیر محلی تعریف شد"])
-    Q1{"آیا آدرس متغیر از تابع خارج می‌شود؟<br/>return &amp;x, closure, interface{}"}
-    Q2{"آیا در closure استفاده شده و فرار می‌کند؟<br/>goroutine capture, defer in loop"}
-    Q3{"آیا به interface{} ارسال می‌شود؟<br/>fmt.Println(x), any(x)"}
-    Heap[/"فرار به Heap"/]
-    Stack[/"بماند روی Stack<br/>سریع — بدون GC — بدون overhead"/]
-
-    Start --&gt; Q1
-    Q1 -- "بله" --&gt; Heap
-    Q1 -- "خیر" --&gt; Q2
-    Q2 -- "بله" --&gt; Heap
-    Q2 -- "خیر" --&gt; Q3
-    Q3 -- "بله" --&gt; Heap
-    Q3 -- "خیر" --&gt; Stack
-
-    classDef startBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
-    classDef questBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
-    classDef heapBox  fill:#fef2f2,stroke:#ef4444,stroke-width:1.5px,color:#1f2937;
-    classDef stackBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    class Start startBox;
-    class Q1,Q2,Q3 questBox;
-    class Heap heapBox;
-    class Stack stackBox;</pre>
-<figcaption>شکل ۱-۳-الف: فرآیند تصمیم‌گیری <bdi dir="ltr">Escape</bdi> <bdi dir="ltr">Analysis</bdi> در کامپایلر <bdi dir="ltr">Go</bdi></figcaption>
-</figure>
 <h3 id="before-after-رفکتورینگ">1.3.3 قبل و بعد: از کد PHP-ستایل به Idiomatic Go</h3>
 <p>یکی از رایج‌ترین اشتباهات برنامه‌نویسان <bdi dir="ltr">PHP</bdi> هنگام شروع کار با <bdi dir="ltr">Go</bdi>، نوشتن کد <bdi dir="ltr">Go</bdi> به سبک <bdi dir="ltr">PHP</bdi> است. در ادامه یک مثال عملی بررسی می‌کنیم:</p>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart LR
-    subgraph BAD["سبک PHP در Go (خیر)"]
-        direction TB
-        B1["map[string]interface{}<br/>// بدون نوع"]
-        B2["row.Scan(&amp;id)<br/>// خطا نادیده"]
-        B3["type UserService struct { db *sql.DB }<br/>// بدون context, بدون error wrapping"]
-        B1 --&gt; B2 --&gt; B3
-    end
-    ARROW["→"]
-    subgraph GOOD["سبک Idiomatic Go (بله)"]
-        direction TB
-        G1["type User struct { ID, Name, Email }<br/>// صریح و نوع‌دار"]
-        G2["if err := row.Scan(...); err != nil { ... }<br/>// بررسی صریح خطا"]
-        G3["type UserRepo struct { db *sql.DB }<br/>// ctx, fmt.Errorf("...: %w", err)"]
-        G1 --&gt; G2 --&gt; G3
-    end
-    BAD --&gt; ARROW --&gt; GOOD
-
-    classDef badBox  fill:#fef2f2,stroke:#ef4444,stroke-width:1.5px,color:#1f2937;
-    classDef goodBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
-    classDef arrBox  fill:#fffbeb,stroke:#f59e0b,stroke-width:2px,color:#1f2937,font-weight:bold;
-    class BAD badBox;
-    class GOOD goodBox;
-    class ARROW arrBox;</pre>
-<figcaption dir="rtl">شکل ۱-۳-ب: مقایسه‌ی کد <bdi dir="ltr">Non-Idiomatic</bdi> (سبک <bdi dir="ltr">PHP</bdi>) با <bdi dir="ltr">Idiomatic Go</bdi></figcaption>
-</figure>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">// Wrong — Go like PHP — non-idiomatic
 type UserService struct {
@@ -486,55 +432,6 @@ func newUser() *User {
 </div>
 <h3 id="مراحل-رفکتورینگ-از-php-style-به-idiomatic-go">1.3.10 مراحل ریفکتورینگ: از کدPHP-ستایل بهIdiomatic Go</h3>
 <p>وقتی برنامه‌نویس <bdi dir="ltr">PHP</bdi> شروع به نوشتن کد <bdi dir="ltr">Go</bdi> می‌کند، غالباً الگوهای فکری <bdi dir="ltr">PHP</bdi> را با خود می‌آورد. این الگوها در <bdi dir="ltr">Go</bdi> نه‌تنها غیرضروری‌اند بلکه باعث کد شکننده و ناخوانا می‌شوند. در ادامه یک نمودار گام‌به‌گام از تبدیل کد <bdi dir="ltr">PHP</bdi>-ستایل به <bdi dir="ltr">Idiomatic Go</bdi> را بررسی می‌کنیم. </p><p>هر مرحله نشان‌دهنده‌ی یک تغییر بنیادین در نحوه‌ی تفکر است نه فقط یک تغییر نحوی. </p><p>این مراحل باید به‌ترتیب اجرا شوند چون هرکدام بر پایه‌ی قبلی ساخته می‌شود و بدون انجام مرحله‌ی قبل ممکن است مفهوم پیدا نکند.</p>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-    subgraph S0["مرحله‌ی ۰: کد Go به سبک PHP — اشتباهات رایج"]
-        direction LR
-        S0A["panic() for errors"] ~~~ S0B["GetX() / SetX() methods"] ~~~ S0C["class extends Base"] ~~~ S0D["single return value"]
-    end
-
-    subgraph S1["رفکتور ۱: مدیریت خطا — panic → error return"]
-        direction LR
-        S1A[// PHP-style: panic on errorfunc GetUser(id int) *User {  if err != nil {...]
-        S1B[// Idiomatic: return errorfunc FindUser(id int) (*User, error) {  if err !=...]
-        S1A --&gt; S1B
-    end
-
-    subgraph S2["رفکتور ۲: دسترسی مستقیم — GetX()/SetX() → field access"]
-        direction LR
-        S2A[// PHP-style: getter/setterfunc (u *User) GetName() stringfunc (u *User)...]
-        S2B["// Idiomatic: direct field accessu.Name = "Ali"fmt.Println(u.Name)"]
-        S2A --&gt; S2B
-    end
-
-    subgraph S3["رفکتور ۳: ترکیب به‌جای ارث‌بری — extends → embedding"]
-        direction LR
-        S3A[// PHP-style: inheritancetype Admin struct { User }// Admin inherits all...]
-        S3B[// Idiomatic: compositiontype Admin struct { BaseModel }// Pick only what...]
-        S3A --&gt; S3B
-    end
-
-    subgraph S4["رفکتور ۴: interface در سمت مصرف‌کننده"]
-        direction LR
-        S4A[// PHP-style: switch on typeswitch v := data.(type) { ... }// producer...]
-        S4B[// Idiomatic: consumer interfacetype UserFinder interface { ... }// consumer...]
-        S4A --&gt; S4B
-    end
-
-    S0 --&gt; S1 --&gt; S2 --&gt; S3 --&gt; S4
-
-    principle([اصل Go: واضح بودن به‌تر از هوشمندانه بودن — با هم ارتباط برقرار نکنید، از...])
-
-    classDef stageBox fill:#f8fafc,stroke:#cbd5e1,stroke-width:1.5px,color:#1f2937;
-    classDef oldBox    fill:#fef2f2,stroke:#ef4444,stroke-width:1px,color:#1f2937;
-    classDef newBox    fill:#ecfdf5,stroke:#10b981,stroke-width:1px,color:#1f2937;
-    classDef principleBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937,font-weight:bold;
-    class S0,S1,S2,S3,S4 stageBox;
-    class S0A,S1A,S2A,S3A,S4A oldBox;
-    class S0B,S1B,S2B,S3B,S4B newBox;
-    class principle principleBox;</pre>
-<figcaption>شکل ۱-۳-ج: مراحل ریفکتورینگ گام‌به‌گام از کد <bdi dir="ltr">PHP</bdi>-ستایل به <bdi dir="ltr">Idiomatic Go</bdi></figcaption>
-</figure>
 <p>هر یک از این مراحل بازتابی از یک اصل بنیادین <bdi dir="ltr">Go</bdi> است. مرحله‌ی اول (مدیریت خطا) اصل صراحت را نشان می‌دهد — خطاها باید بخشی از نوع بازگشتی باشند نه مکانیزمی پنهان. مرحله‌ی دوم (دسترسی مستقیم به فیلدها) اصل سادگی را نشان می‌دهد — وقتی <bdi dir="ltr">getter/setter</bdi> منطق اضافه‌ای ندارد مستقیماً از فیلد استفاده کنید. </p><p>مرحله‌ی سوم (ترکیب به‌جای ارث‌بری) اصل استقلال را نشان می‌دهد — هر <bdi dir="ltr">struct</bdi> فقط آنچه نیاز دارد را ترکیب می‌کند. </p><p>و مرحله‌ی چهارم (<bdi dir="ltr">interface</bdi> در سمت مصرف‌کننده) اصل وارونگی وابستگی را نشان می‌دهد — مصرف‌کننده تصمیم می‌گیرد چه <bdi dir="ltr">interface</bdi>‌ای لازم دارد نه تولیدکننده.</p>
 <h3 id="سناریوهای-عملیاتی-idiomatic-go">1.3.11 سناریوهای عملیاتی: مسیر عملی به‌سوی کدIdiomatic Go</h3>
 <ul>

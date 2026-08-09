@@ -68,10 +68,6 @@
 <h2 id="اتصال-به-دیتابیس-با-databasesql">اتصال به دیتابیس با database/sql</h2><div class="abstract">
 <strong>چکیده:</strong> این بخش اتصال به پایگاه داده با database/sql را پوشش می‌دهد: sql.Open، driver و connection pool. تفاوت با PDO در PHP و الگوی Go بررسی می‌شود. تنظیم pool و timeout پوشش داده می‌گردد.
 </div>
-<figure class="diagram d2-diagram" dir="ltr">
-<img alt="نمودار" loading="lazy" src="assets/diagrams/ch08_02_connection_pool.svg"/>
-<figcaption>شکل ۸-۲: ماشین حالت <bdi dir="ltr">Connection</bdi> <bdi dir="ltr">Pool</bdi> — رفتار اتصال‌ها در <bdi dir="ltr">Pool</bdi></figcaption>
-</figure>
 <div class="comparison"><strong>مقایسه با PHP:</strong> در Laravel اتصال به دیتابیس از طریق Eloquent ORM و Query Builder به‌صورت خودکار مدیریت می‌شود. اما در Go پکیج <code>database/sql</code> یک رابط سطح پایین‌تر ارائه می‌دهد که کنترل بیشتری بر عملکرد و مدیریت منابع به شما می‌دهد. اگر تجربه‌ی کار با PDO در PHP را دارید، <code>database/sql</code> بسیار شبیه به آن عمل می‌کند.</div>
 <figure class="code bash" dir="ltr"><pre><code class="language-bash">go get github.com/lib/pq</code></pre></figure>
 <figure class="code go" dir="ltr">
@@ -100,58 +96,6 @@ func main() {
 <div class="note"><strong>چرا <code dir="ltr">database/sql</code> به‌جای <bdi dir="ltr">ORM</bdi>؟</strong> مهاجران <bdi dir="ltr">Laravel/Eloquent</bdi> غالباً انتظار دارند <code>User::find($id)</code> یا <code>$model-&gt;save()</code> را در <bdi dir="ltr">Go</bdi> هم پیدا کنند. پکیج <code dir="ltr">database/sql</code> عمداً این انتزاع را ارائه نمی‌دهد تا کنترل دقیق کوئری، اتصال و خطا را در دست توسعه‌دهنده نگه دارد. اگر پروژه‌ی شما <bdi dir="ltr">CRUD</bdi> غالب و ساده دارد، کتابخانه‌هایی مثل <bdi dir="ltr">sqlc</bdi> (تولید کد از <bdi dir="ltr">SQL</bdi>) یا <bdi dir="ltr">GORM</bdi> (<bdi dir="ltr">ORM</bdi> کامل) گزینه‌های معقول‌اند؛ اما برای کوئری‌های پیچیده، گزارش‌گیری و عملیات حساس، همان <code dir="ltr">database/sql</code> + <code dir="ltr">sqlx</code> شفاف‌ترین و کارآمدترین انتخاب است.</div>
 <h3 id="مدیریت-اتصالها-و-منابع">8.2.1 مدیریت اتصال‌ها و منابع</h3>
 <p>در <bdi dir="ltr">Laravel</bdi> نیازی به بستن اتصال یا کنترل <bdi dir="ltr">connection pool</bdi> ندارید. اما در <bdi dir="ltr">Go</bdi> شما مسئول مدیریت دقیق منابع هستید. اگر یک <bdi dir="ltr">Query</bdi> انجام دهید و <span dir="ltr">rows.Close()</span> را فراخوانی نکنید برنامه ممکن است با مشکلات جدی در مصرف منابع مواجه شود.</p>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-    Title["استخر اتصال database/sql"]
-
-    Pool["Connection Pool (*sql.DB)"]
-
-    subgraph IDLE["Idle"]
-        direction LR
-        I1["Idle"]
-        I2["Idle"]
-    end
-
-    subgraph INUSE["InUse"]
-        direction LR
-        U1["Goroutine"]
-        U2["Goroutine"]
-    end
-
-    subgraph WAIT["Wait Queue — صف انتظار"]
-        direction LR
-        W1["query"]
-    end
-
-    DB["PostgreSQL<br/>سرور دیتابیس"]
-
-    Settings["MaxOpenConns=25 | MaxIdleConns=10 | ConnMaxLifetime=5min | ConnMaxIdleTime=2min"]
-    Note["اتصال‌ها بین درخواست‌ها به اشتراک گذاشته می‌شوند — برخلاف PHP/PDO"]
-
-    Title --&gt; Pool
-    Pool --&gt; IDLE
-    Pool --&gt; INUSE
-    INUSE --&gt; Wait_Q[WaitQueue]
-    Pool --&gt; Wait_Q
-    INUSE --&gt; DB
-    Pool ~~~ Settings
-    Settings ~~~ Note
-
-    classDef titleBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:2px,color:#1f2937,font-weight:bold;
-    classDef goBox   fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef bothBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
-    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
-    classDef errBox  fill:#fef2f2,stroke:#ef4444,stroke-width:1.5px,color:#1f2937;
-    classDef neuBox  fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
-    class Title titleBox;
-    class Pool goBox;
-    class I1,I2 bothBox;
-    class U1,U2 warnBox;
-    class Wait_Q,W1 errBox;
-    class DB neuBox;
-    class Settings,Note neuBox;</pre>
-<figcaption dir="rtl">شکل ۸-۲-ب: استخر اتصال <bdi dir="ltr">database/sql</bdi> — مدیریت اتصال‌ها بین <bdi dir="ltr">Goroutine</bdi>‌ها</figcaption>
-</figure>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">rows, err := db.Query("SELECT id, name FROM users")
 if err != nil {
@@ -309,90 +253,6 @@ stats.WaitDuration,
 <div class="tip"><strong>نکته‌ی پیشرفته:</strong> وقتی <code>SetMaxOpenConns</code> روی مقدار مثبت تنظیم شود حداکثر اتصال <bdi dir="ltr">idle</bdi> پیش‌فرض برابر با <code>MaxOpenConns</code> خواهد بود (از Go 1.14).</div>
 <div class="comparison"><strong>مقایسه با PDO در PHP:</strong> مقایسه‌ی کامل تفاوت‌های <bdi dir="ltr">PDO</bdi> (بدون <bdi dir="ltr">Connection Pool</bdi> داخلی، باز و بسته شدن اتصال در هر درخواست) با <code>*sql.DB</code> در <bdi dir="ltr">Go</bdi> را در <a href="08.00-chapter-8.html">مقدمه‌ی فصل ۸</a> بررسی کردیم — در اینجا فقط یادآوری می‌کنیم که در <bdi dir="ltr">Go</bdi> اتصال‌ها بین درخواست‌ها به اشتراک گذاشته می‌شوند و به همین دلیل تنظیم دقیق پارامترهای بالا اهمیت دارد.</div>
 <h3 id="ساختار-داخلی-connection-pool-بصری">8.2.8 ساختار داخلی Connection Pool (بصری)</h3>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-    Title["ساختار داخلی Connection Pool در database/sql"]
-
-    subgraph APP["اپلیکیشن — Goroutine‌ها درخواست کوئری می‌دهند"]
-        direction LR
-        Q1["Query()"]
-        Q2["Query()"]
-        Q3["Query()"]
-    end
-
-    Pool["Connection Pool (*sql.DB)"]
-
-    subgraph IDLEP["Idle Pool"]
-        direction LR
-        C1["conn-1"]
-        C2["conn-2"]
-        C3["conn-3"]
-    end
-
-    subgraph INUSEP["In-Use"]
-        direction LR
-        C4["conn-4"]
-        C5["conn-5"]
-        C6["conn-6"]
-    end
-
-    subgraph WQ["Wait Queue"]
-        direction LR
-        WA["query-A"]
-        WB["query-B"]
-        WC["query-C"]
-    end
-
-    subgraph SETTINGS["تنظیمات Pool"]
-        direction TB
-        S1["MaxOpenConns = 25 — حداکثر اتصال همزمان"]
-        S2["MaxIdleConns = 10 — حداکثر اتصال بیکار"]
-        S3["ConnMaxLifetime = 5min — حداکثر عمر اتصال"]
-        S4["ConnMaxIdleTime = 2min — حداکثر زمان بیکاری اتصال"]
-    end
-
-    subgraph FLOW["جریان اختصاص اتصال به کوئری"]
-        direction TB
-        F1["1. Check idle pool"]
-        F2["2. Reuse idle conn? Yes ✓ / No ✗"]
-        F3["3. Under MaxOpen? Create new conn — Yes ✓ / No ✗"]
-        F4["4. Wait for conn until release"]
-        F5["→ Execute query / → Execute query / → Blocked ⏳"]
-        F1 --&gt; F2 --&gt; F3 --&gt; F4 --&gt; F5
-    end
-
-    Health["بررسی سلامت: db.Ping()"]
-    Recycle["بازیافت: اتصال‌های منقضی‌شده بسته و جایگزین می‌شوند"]
-    Opener["openerCh → connectionOpener goroutine"]
-    Golden[قانون طلایی: MaxOpenConns پیش‌فرض نامحدود است — حتماً در production مقدار...]
-
-    Title --&gt; APP
-    APP --&gt; Pool
-    Pool --&gt; IDLEP
-    Pool --&gt; INUSEP
-    Pool --&gt; WQ
-    Pool ~~~ SETTINGS
-    SETTINGS ~~~ FLOW
-    FLOW ~~~ Health
-    Health --&gt; Recycle
-    Recycle --&gt; Opener
-    Opener --&gt; Golden
-
-    classDef titleBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:2px,color:#1f2937,font-weight:bold;
-    classDef goBox   fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef bothBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
-    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
-    classDef errBox  fill:#fef2f2,stroke:#ef4444,stroke-width:1.5px,color:#1f2937;
-    classDef neuBox  fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
-    class Title titleBox;
-    class Q1,Q2,Q3,Pool goBox;
-    class C1,C2,C3 bothBox;
-    class C4,C5,C6 warnBox;
-    class WA,WB,WC errBox;
-    class S1,S2,S3,S4,F1,F2,F3,F4,F5,Health,Recycle,Opener neuBox;
-    class Golden warnBox;</pre>
-<figcaption dir="rtl">شکل ۸-۲-ج: ساختار داخلی <bdi dir="ltr">Connection Pool</bdi> — اتصال‌های بیکار (سبز)، در حال استفاده (نارنجی)، صف انتظار (قرمز)</figcaption>
-</figure>
 <p>این نمودار ساختار داخلی <bdi dir="ltr">Connection Pool</bdi> در <bdi dir="ltr">database/sql</bdi> را به صورت بصری نشان می‌دهد. وقتی یک <bdi dir="ltr">Goroutine</bdi> کوئری اجرا می‌کند، ابتدا <bdi dir="ltr">Pool</bdi> اتصال‌های بیکار را بررسی می‌کند. اگر اتصال بیکاری موجود باشد مستقیماً استفاده می‌شود و نیازی به باز کردن اتصال جدید نیست. </p><p>اگر اتصال بیکاری نباشد ولی تعداد کل اتصال‌ها کمتر از <bdi dir="ltr">MaxOpenConns</bdi> باشد، یک اتصال جدید ایجاد می‌شود. اما اگر تعداد اتصال‌ها به حداکثر رسیده باشد، کوئری وارد صف انتظار می‌شود تا یکی از اتصال‌ها آزاد شود.</p>
 <p>تنظیمات <bdi dir="ltr">ConnMaxLifetime</bdi> و <bdi dir="ltr">ConnMaxIdleTime</bdi> مکانیزم بازیافت اتصال‌ها را کنترل می‌کنند. اتصال‌هایی که عمرشان از <bdi dir="ltr">ConnMaxLifetime</bdi> بیشتر شود بسته می‌شوند و در فرصت مناسب جایگزین می‌شوند. </p><p>این مکانیزم از بروز مشکل اتصال‌های <bdi dir="ltr">stale</bdi> (اتصال‌هایی که سرور دیتابیس قطع کرده ولی کلاینت هنوز نمی‌داند) جلوگیری می‌کند. </p><p>همچنین <bdi dir="ltr">openerCh</bdi> یک کانال داخلی است که <bdi dir="ltr">goroutine</bdi> اختصاصی <code dir="ltr">connectionOpener</code> از آن برای ایجاد اتصال‌های جدید استفاده می‌کند.</p>
 <h3 id="سناریوهای-عملیاتی-connection-pool">8.2.9 سناریوهای عملیاتی</h3>
@@ -446,7 +306,6 @@ stats.WaitDuration,
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/xml.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/ini.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/plaintext.min.js"></script>
-<script src="assets/js/diagrams.js"></script>
 <script src="assets/js/main.js"></script>
 </body>
 </html>

@@ -68,50 +68,6 @@
 <h2 id="کاربردهای-عملی-concurrency">کاربردهای عملی Concurrency</h2><div class="abstract">
 <strong>چکیده:</strong> این بخش کاربردهای عملی هم‌روندی Go در سناریوهای واقعی را پوشش می‌دهد: HTTP handler، batch processing و background worker. الگوهای انتخاب بین goroutine، pool و channel بررسی می‌شود. هشدار درباره‌ی over-concurrency ارائه می‌شود.
 </div>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid"><code>flowchart LR
-    subgraph PHP["PHP: ترتیبی (Sequential)"]
-        direction TB
-        E1["Email 1"]
-        E2["Email 2"]
-        E3["Email 3"]
-        E4["Email 4"]
-        PN["زمان کل = مجموع همه = ~4s"]
-        E1 --&gt; E2 --&gt; E3 --&gt; E4 --&gt; PN
-    end
-    subgraph GO["Go: همزمان (Concurrent)"]
-        direction TB
-        G1["E1"]
-        G2["E2"]
-        G3["E3"]
-        G4["E4"]
-        GN["همه همزمانزمان کل = max = ~1s"]
-        G1 --&gt; GN
-        G2 --&gt; GN
-        G3 --&gt; GN
-        G4 --&gt; GN
-    end
-
-    subgraph USES["کاربردهای عملی هم‌روندی در Go"]
-        direction TB
-        U1["ارسال موازی ایمیل — goroutine + WaitGroup"]
-        U2["Crawl موازی API — goroutine + channel"]
-        U3["کوئری موازی DB — goroutine + channel + WaitGroup"]
-        U1 --&gt; U2 --&gt; U3
-    end
-
-    Note["PHP: Queue + Worker خارجی |Go: همه درون یک Process با هزینه کم"]
-
-    classDef phpBox fill:#f5f0fb,stroke:#777BB4,stroke-width:1.5px,color:#1f2937;
-    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef bothBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
-    classDef neuBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
-    class PHP,E1,E2,E3,E4,PN phpBox;
-    class GO,G1,G2,G3,G4,GN goBox;
-    class USES,U1,U2,U3 bothBox;
-    class Note neuBox;</code></pre>
-<figcaption>شکل ۵-۱۵: مقایسه پردازش ترتیبی <bdi dir="ltr">PHP</bdi> با پردازش همزمان <bdi dir="ltr">Go</bdi></figcaption>
-</figure>
 <h3 id="ارسال-موازی-ایمیل-یا-نوتیفیکیشن">5.8.1 ارسال موازی ایمیل‌ یا نوتیفیکیشن‌</h3>
 <p>در Laravel وقتی می‌خواهید چند ایمیل یا نوتیفیکیشن را بفرستید معمولا این کارها را به Queue می‌فرستید و Workerها به ترتیب آن‌ها را پردازش می‌کنند. این کار باعث می‌شود ارسال ایمیل‌ها async شود و کاربر سریع پاسخ بگیرد.</p><p>اما اگر بخواهید مثلا در یک فرآیند واحد چند ایمیل را همزمان و سریع ارسال کنید باید منتظر تکمیل هر ایمیل بمانید یا پیچیدگی بیشتری به صف اضافه کنید.</p>
 <p><strong>راه حل در</strong> <strong dir="ltr">Go با goroutine و channel</strong></p>
@@ -147,51 +103,6 @@ func main() {
 <p>مزیت اصلی سرعت بالاتر و پیچیدگی کمتر در توسعه.
 </p>
 <h3 id="crawl-داده-از-چند-api-به-طور-همزمان">5.8.2 Crawl داده از چند API به طور همزمان</h3>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-    Src["Source<br/>منبع داده / تولیدکننده"]
-    FO["▼ Fan-Out"]
-    W1["Worker 1<br/>fetch(url1)"]
-    W2["Worker 2<br/>fetch(url2)"]
-    W3["Worker 3<br/>fetch(url3)"]
-    Res["chan result<br/>تجمیع"]
-    FI["▼ Fan-In"]
-    Coll["Collector<br/>جمع‌آوری نتایج"]
-
-    Src --&gt; FO
-    FO --&gt; W1
-    FO --&gt; W2
-    FO --&gt; W3
-    W1 --&gt; Res
-    W2 --&gt; Res
-    W3 --&gt; Res
-    Res --&gt; FI
-    FI --&gt; Coll
-
-    subgraph PHP["معادل در PHP"]
-        direction TB
-        P1["Queue + Multiple Workers"]
-        P2["نیاز به Redis / RabbitMQ"]
-        P3["پیچیدگی بیشتر و هزینه بیشتر"]
-        P1 --&gt; P2 --&gt; P3
-    end
-
-    subgraph GO["در Go"]
-        direction TB
-        G1["همه درون یک Process"]
-        G2["goroutine + channel"]
-        G1 --&gt; G2
-    end
-
-    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef bothBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
-    classDef phpBox fill:#f5f0fb,stroke:#777BB4,stroke-width:1.5px,color:#1f2937;
-    classDef neuBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
-    class Src,FO,W1,W2,W3,Res,FI,Coll goBox;
-    class GO,G1,G2 bothBox;
-    class PHP,P1,P2,P3 phpBox;</pre>
-<figcaption dir="rtl">شکل ۵-۱۶: الگوی Fan-Out/Fan-In — توزیع موازی کار بین Workerها و تجمیع نتایج</figcaption>
-</figure>
 <p>با goroutine و channel می‌توانید درخواست‌ها را به صورت همزمان بفرستید و نتایج را تجمیع کنید:</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">package main
@@ -482,86 +393,6 @@ func (h *Hub) Run(ctx context.Context) {
 <div class="tip"><strong>نکته عملی:</strong> در سیستم‌های واقعی باید محدودیت تعداد اتصالات، <bdi dir="ltr">Rate Limiting</bdi> پیام‌ها، <bdi dir="ltr">Ping/Pong</bdi> برای تشخیص اتصالات قطع‌شده، و <bdi dir="ltr">Graceful Shutdown</bdi> را نیز پیاده‌سازی کنید. هر یک از این موارد با ترکیب الگوهایی که در این فصل آموختید قابل پیاده‌سازی است.</div>
 <h3 id="معماری-worker-pool-با-اتصال-کانال‌ها">5.8.7 معماریWorker Poolبا اتصال کانال‌ها</h3>
 <p>یکی از مهم‌ترین الگوهای هم‌روندی در <bdi dir="ltr">Go</bdi>، الگوی <bdi dir="ltr">Worker Pool</bdi> است. این الگو به شما اجازه می‌دهد تعداد مشخصی <bdi dir="ltr">goroutine</bdi> برای پردازش موازی کارها ایجاد کنید و از طریق <bdi dir="ltr">channel</bdi>‌ها ورودی و خروجی آن‌ها را مدیریت کنید. </p><p>برخلاف <bdi dir="ltr">PHP</bdi> که برای هر <bdi dir="ltr">Worker</bdi> نیاز به <bdi dir="ltr">Process</bdi> جداگانه دارید، در <bdi dir="ltr">Go</bdi> تمام <bdi dir="ltr">Worker</bdi>ها درون یک <bdi dir="ltr">Process</bdi> با حافظه مشترک اجرا می‌شوند. </p><p>ترکیب <bdi dir="ltr">Worker Pool</bdi> با <bdi dir="ltr">Context</bdi> برای لغو عملیات و <bdi dir="ltr">WaitGroup</bdi> برای انتظار روی اتمام تمام <bdi dir="ltr">Worker</bdi>ها، یک سیستم مقیاس‌پذیر و امن ایجاد می‌کند.</p>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-    Prod["Job Producerتولیدکننده کارهاjobs &lt;- Job{}"]
-    JobsC["jobs chan Jobcap: 100"]
-
-    W1["Worker 1 (goroutine)&lt;-jobs → process(job) → resultwg.Done()"]
-    W2["Worker 2 (goroutine)&lt;-jobs → process(job) → resultwg.Done()"]
-    W3["Worker 3 (goroutine)&lt;-jobs → process(job) → resultwg.Done()"]
-
-    ResC["results chan Resultcap: 100"]
-    Coll["Result Collectorجمع‌آوری نتایج&lt;-results"]
-
-    Prod -- "jobs &lt;- Job{}" --&gt; JobsC
-    JobsC -- "&lt;-jobs" --&gt; W1
-    JobsC -- "&lt;-jobs" --&gt; W2
-    JobsC -- "&lt;-jobs" --&gt; W3
-    W1 -- "results &lt;- res" --&gt; ResC
-    W2 -- "results &lt;- res" --&gt; ResC
-    W3 -- "results &lt;- res" --&gt; ResC
-    ResC -- "&lt;-results" --&gt; Coll
-
-    subgraph CTX["Context"]
-        direction TB
-        CTX1["ctx.Done() — لغو عملیات"]
-        CTX2["cancel()"]
-        CTX3["context.WithCancel(bg)"]
-        CTX1 --&gt; CTX2 --&gt; CTX3
-    end
-
-    subgraph WG["WaitGroup (sync.WaitGroup)"]
-        direction TB
-        WG1["wg.Add(3)"]
-        WG2["wg.Wait()"]
-        WG3["wg.Done()"]
-        WG1 --&gt; WG2 --&gt; WG3
-    end
-
-    CTX -. "ctx به Worker‌ها" .-&gt; W1
-    WG -. "wg به Worker‌ها" .-&gt; W2
-
-    subgraph CODE["کد نمونه Worker Pool"]
-        direction TB
-        C1["for i := 0; i &lt; numWorkers; i++ {"]
-        C2["    wg.Add(1)"]
-        C3["    go worker(ctx, jobs, results, &amp;wg)"]
-        C4["}"]
-        C5["wg.Wait()  // wait for all workers"]
-        C1 --&gt; C2 --&gt; C3 --&gt; C4 --&gt; C5
-    end
-
-    subgraph CHAN["اتصال کانال‌ها"]
-        direction TB
-        CH1["jobs: chan&lt;- Job (send-only)"]
-        CH2["results: &lt;-chan Result (recv)"]
-        CH1 --&gt; CH2
-    end
-
-    subgraph SEL["الگوی select در Worker"]
-        direction TB
-        SL1["select {"]
-        SL2["case &lt;-ctx.Done(): return"]
-        SL1 --&gt; SL2
-    end
-
-    GOLD[قانون طلایی: همیشه Worker Pool + Context + WaitGroup را با هم استفاده کنید...]
-
-    LEG["تولیدکننده/جمع‌آوری · Worker · Channel · Context / WaitGroup"]
-
-    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef bothBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
-    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
-    classDef neuBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
-    class Prod,Coll goBox;
-    class JobsC,ResC,W1,W2,W3 bothBox;
-    class CTX,CTX1,CTX2,CTX3,WG,WG1,WG2,WG3 bothBox;
-    class CODE,C1,C2,C3,C4,C5,CHAN,CH1,CH2,SEL,SL1,SL2 neuBox;
-    class GOLD warnBox;
-    class LEG neuBox;</pre>
-<figcaption>شکل ۵-۱۷: معماری کامل <bdi dir="ltr">Worker Pool</bdi> با اتصال <bdi dir="ltr">Channel</bdi>، <bdi dir="ltr">Context</bdi> برای لغو و <bdi dir="ltr">WaitGroup</bdi> برای همگام‌سازی</figcaption>
-</figure>
 <p>در این معماری، <bdi dir="ltr">Job Producer</bdi> کارها را در <bdi dir="ltr">jobs</bdi> کانال قرار می‌دهد و هر <bdi dir="ltr">Worker</bdi> از کانال می‌خواند، پردازش می‌کند و نتیجه را در <bdi dir="ltr">results</bdi> کانال می‌نویسد. <bdi dir="ltr">Result Collector</bdi> نتایج را جمع‌آوری می‌کند. <bdi dir="ltr">Context</bdi> مسیر لغو فراهم می‌کند و <bdi dir="ltr">WaitGroup</bdi> تضمین می‌کند که تمام <bdi dir="ltr">Worker</bdi>ها قبل از بسته شدن برنامه به پایان برسند. </p><p>این الگو شبیه به سیستم <bdi dir="ltr">Queue</bdi> در <bdi dir="ltr">Laravel</bdi> است اما بدون نیاز به <bdi dir="ltr">Redis</bdi> یا <bdi dir="ltr">RabbitMQ</bdi> و با هزینه بسیار کمتر.</p>
 <h3 id="سناریوهای-عملیاتی-concurrency">5.8.8 سناریوهای عملیاتی</h3>
 <p>در پروژه‌های واقعی، الگوهای هم‌روندی در سناریوهای متنوعی کاربرد دارند. هر سناریو نیازمند ترکیب متفاوتی از الگوهای <bdi dir="ltr">Worker Pool</bdi>، <bdi dir="ltr">Rate Limiting</bdi>، <bdi dir="ltr">Context</bdi> و <bdi dir="ltr">Channel</bdi> است. در ادامه رایج‌ترین سناریوهای عملیاتی را بررسی می‌کنیم که هر توسعه‌دهنده‌ای در پروژه‌های واقعی با آن‌ها روبه‌رو خواهد شد. این سناریوها نشان می‌دهند که چگونه مفاهیم تئوری این فصل در عمل پیاده‌سازی می‌شوند.</p>
@@ -617,7 +448,6 @@ func (h *Hub) Run(ctx context.Context) {
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/xml.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/ini.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/plaintext.min.js"></script>
-<script src="assets/js/diagrams.js"></script>
 <script src="assets/js/main.js"></script>
 </body>
 </html>

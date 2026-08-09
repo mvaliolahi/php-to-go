@@ -162,54 +162,6 @@
 </figure>
 <h3 id="for">2.3.3 for</h3>
 <p>Go فقط یک ساختار for دارد اما به‌قدری قدرتمند است که جایگزین for, while, و foreach در زبان‌های دیگر می‌شود.</p>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-
-    subgraph CLASSIC["کلاسیک"]
-        direction TB
-        C1["for i:=0; i&lt;n; i++ { }PHP: for ($i=0; ...)"]
-        C2["شمارنده + شرط + گام"]
-        C3["init → condition → body → post↻ repeat"]
-        C1 --- C2 --- C3
-    end
-
-    subgraph WHILE["سبک while"]
-        direction TB
-        W1["for cond { }PHP: while ($cond) { }"]
-        W2["فقط شرط — بدون شمارنده"]
-        W3["condition → body↻ repeat while true"]
-        W1 --- W2 --- W3
-    end
-
-    subgraph RANGE["پیمایش range"]
-        direction TB
-        R1["for i, v := range coll { }PHP: foreach ($arr as $v)"]
-        R2["slice, map, string, chan"]
-        R3["next element → body↻ until exhausted"]
-        R1 --- R2 --- R3
-    end
-
-    subgraph INFINITE["بی‌نهایت"]
-        direction TB
-        I1["for { }PHP: while (true) { }"]
-        I2["خروج فقط با break"]
-        I3["body → body → ...↻ forever (until break)"]
-        I1 --- I2 --- I3
-    end
-
-    NOTE["Go فقط یک حلقه دارد: for — ساده‌تر، خواناتر، کمتر سردرگم‌کننده"]
-
-                    
-    classDef titleBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:2px,color:#1f2937;
-    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef neutralBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
-    classDef bothBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
-    class TITLE titleBox;
-    class CLASSIC,WHILE,RANGE,INFINITE,C1,W1,R1,I1 goBox;
-    class C2,C3,W2,W3,R2,R3,I2,I3 neutralBox;
-    class NOTE bothBox;</pre>
-<figcaption dir="rtl">شکل ۲-۳-الف: انواع حلقه‌ی <bdi dir="ltr">for</bdi> در <bdi dir="ltr">Go</bdi> — جایگزین <bdi dir="ltr">for</bdi>، <bdi dir="ltr">while</bdi> و <bdi dir="ltr">foreach</bdi> در <bdi dir="ltr">PHP</bdi></figcaption>
-</figure>
 <p><strong>ساختار کلاسیک</strong> :</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">for i := 0; i &lt; 10; i++ {
@@ -448,121 +400,8 @@ for i := range 3 {
 }
 </code></pre>
 </figure>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-
-    subgraph IFGO["if در Go"]
-        direction TB
-        IG1["بدون پرانتز • آکولاد اجباری • if-init"]
-        IG2["حوزه‌ی متغیر محدود به بلوک"]
-    end
-
-    subgraph IFPHP["if در PHP"]
-        direction TB
-        IP1["پرانتز اجباری • آکولاد اختیاری"]
-        IP2["بدون if-init • حوزه‌ی تابع"]
-    end
-
-    subgraph SWGO["switch در Go"]
-        direction TB
-        SG1["break خودکار • fallthrough صریح"]
-        SG2["switch بدون عبارت = if-else تمیز"]
-    end
-
-    subgraph SWPHP["switch در PHP"]
-        direction TB
-        SP1["break لازم • fall-through پیش‌فرض"]
-        SP2["match در PHP 8 (شبیه‌تر به Go)"]
-    end
-
-    subgraph FORGO["for/range در Go"]
-        direction TB
-        FG1["فقط for — جایگزین while و foreach"]
-        FG2["range: slice, map, string, chan, int"]
-        FG3["for { } = حلقه‌ی بی‌نهایت"]
-    end
-
-    subgraph FORPHP["for/while/foreach در PHP"]
-        direction TB
-        FP1["سه ساختار جداگانه"]
-        FP2["foreach: فقط array/object"]
-        FP3["while(true) = حلقه‌ی بی‌نهایت"]
-    end
-
-    subgraph UNIQUE["ویژگی‌های منحصربه‌فرد Go"]
-        direction TB
-        U1["• if-init: محدود کردن حوزه‌ی متغیر به بلوک شرطی (ندارد در PHP)"]
-        U2["• Labels: break/continue هدفمند به حلقه‌ی بیرونی (معادل break N در PHP)"]
-        U3["• range روی اعداد صحیح (Go 1.22+) — جایگزین for ساده"]
-        U4["• goto با محدودیت‌های ایمنی (نمی‌تواند از تعریف متغیر پرش کند)"]
-    end
-
-                            
-    classDef titleBox fill:#ecfdf5,stroke:#10b981,stroke-width:2px,color:#1f2937;
-    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef phpBox fill:#f5f0fb,stroke:#777BB4,stroke-width:1.5px,color:#1f2937;
-    classDef neutralBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
-    classDef bothBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
-    class TITLE titleBox;
-    class IFGO,IG1,IG2,SWGO,SG1,SG2,FORGO,FG1,FG2,FG3 goBox;
-    class IFPHP,IP1,IP2,SWPHP,SP1,SP2,FORPHP,FP1,FP2,FP3 phpBox;
-    class UNIQUE,U1,U2,U3,U4 bothBox;</pre>
-<figcaption>شکل ۹-۲: مقایسه‌ی ساختارهای کنترلی <bdi dir="ltr">PHP</bdi> و <bdi dir="ltr">Go</bdi></figcaption>
-</figure>
 <h3 id="foreach-range-comparison">2.3.13 مقایسه‌ی بصریPHP foreachدر برابرGo range</h3>
 <p>پیمایش مجموعه‌ها یکی از پرکاربردترین عملیات در برنامه‌نویسی است. در <bdi dir="ltr">PHP</bdi> دستور <bdi dir="ltr">foreach</bdi> ابزار اصلی برای پیمایش آرایه‌ها و اشیاء است و مقادیر را به‌صورت ارجاع یا کپی در اختیار بدنه‌ی حلقه قرار می‌دهد. </p><p>در <bdi dir="ltr">Go</bdi> دستور <bdi dir="ltr">range</bdi> با برگرداندن کپی مقادیر رویکرد متفاوتی دارد و قابلیت‌های منحصربه‌فردی مانند پیمایش <bdi dir="ltr">rune</bdi> رشته و دریافت از <bdi dir="ltr">channel</bdi> فراهم می‌کند. شکل زیر تفاوت‌های کلیدی این دو رویکرد را در کنار هم نمایش می‌دهد.</p>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-
-    subgraph PHP["PHP foreach"]
-        direction TB
-        P1[foreach ($array as $key =&gt; $value)کلید و مقدار • مقدار کپی است مگر با &amp;Works...]
-        P2["foreach ($array as $value)Value only — key is discarded"]
-        P3["foreach ($array as &amp;$value)Reference — can modify original array elements"]
-        PB[PHP behaviors:• Array order is preserved (ordered hash table)• break N;...]
-        P1 --- P2 --- P3 --- PB
-    end
-
-    subgraph GO["Go range"]
-        direction TB
-        G1[for i, v := range sliceایندکس و مقدار • مقدار همیشه کپی استWorks on: slice |...]
-        G2["for _, v := range sliceValue only — discard index with _"]
-        G3["for i := range sliceIndex only — no value copy (efficient for large structs)"]
-        GB[Go behaviors:• Map order is random (by design)• break + label exits specific...]
-        G1 --- G2 --- G3 --- GB
-    end
-
-    subgraph UNIQUE["ویژگی‌های منحصربه‌فرد Go range"]
-        direction TB
-        U1["range over string → yields runes (not bytes!)for i, r := range "سلام" → i=0,r=س | i=2,r=ل | i=4,r=ا | i=6,r=م"]
-        U2[range over channel → receives until closedfor msg := range ch { } // blocks...]
-        U3[range over int (Go 1.22+) → 0, 1, 2, ..., n-1for i := range 5 { } // 0, 1,...]
-    end
-
-    WARN[⚠ هشدار: range کپی برمی‌گرداند نه ارجاع — تغییر مقدار v روی داده‌ی اصلی...]
-
-    subgraph LABEL["خروج از حلقه‌های تودرتو با برچسب"]
-        direction TB
-        L1["PHP: break 2;   vs   Go: break outer;"]
-        L2["در Go برچسب‌ها صریح و خوانا هستند • continue outer نیز موجود است"]
-        L3["در PHP break N عددی مستعد خطاست و توصیه نمی‌شود"]
-    end
-
-                    
-    classDef titleBox fill:#ecfdf5,stroke:#10b981,stroke-width:2px,color:#1f2937;
-    classDef phpBox fill:#f5f0fb,stroke:#777BB4,stroke-width:1.5px,color:#1f2937;
-    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef bothBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
-    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
-    classDef neutralBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
-    class TITLE titleBox;
-    class PHP,P1,P2,P3,PB phpBox;
-    class GO,G1,G2,G3,GB goBox;
-    class UNIQUE,U1,U2,U3 bothBox;
-    class WARN warnBox;
-    class LABEL,L1,L2,L3 neutralBox;</pre>
-<figcaption>شکل ۱۰-۲: مقایسه‌ی بصری <bdi dir="ltr">PHP foreach</bdi> در برابر <bdi dir="ltr">Go range</bdi> — شامل ویژگی‌های منحصربه‌فرد <bdi dir="ltr">Go</bdi></figcaption>
-</figure>
 <h3 id="سناریوهای-عملیاتی-پیمایش">2.3.14 سناریوهای عملیاتی پیمایش</h3>
 <p>پیمایش مجموعه‌ها یکی از پرتکرارترین الگوهای برنامه‌نویسی است و درک تفاوت‌های ظریف بین <bdi dir="ltr">PHP foreach</bdi> و <bdi dir="ltr">Go range</bdi> برای نوشتن کد صحیح و کارآمد ضروری است. هرکدام از این سناریوها نکته‌ی مهمی دارند که نادیده‌گرفتن آن‌ها می‌تواند منجر به باگ‌های پنهان و رفتارهای غیرمنتظره شود. در ادامه رایج‌ترین سناریوهای عملیاتی و تله‌های احتمالی را بررسی می‌کنیم.</p>
 <ul>
@@ -617,7 +456,6 @@ for i := range 3 {
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/xml.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/ini.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/plaintext.min.js"></script>
-<script src="assets/js/diagrams.js"></script>
 <script src="assets/js/main.js"></script>
 </body>
 </html>

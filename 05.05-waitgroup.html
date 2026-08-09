@@ -72,44 +72,6 @@
 <p>اگر با PHP کار کرده باشید حتماً تجربه اجرای موازی را با چندین Process یا Worker داشته‌اید اما مدیریت همگام‌سازی دقیق بین آنها دشوار و اغلب وابسته به روش‌هایی مثل polling ذخیره وضعیت در دیتابیس یا صف‌ها است.</p>
 <p>اما در Go با وجود سبک‌وزنی goroutine‌ها و ابزارهای قدرتمندی مثل sync.WaitGroup می‌توانید به شکلی ساده و موثر منتظر پایان اجرای گروهی از goroutine‌ها بمانید.
 </p>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-    Add["wg.Add(3)<br/>شمارنده = 3"]
-    G1["Goroutine 1<br/>wg.Done() → 2"]
-    G2["Goroutine 2<br/>wg.Done() → 1"]
-    G3["Goroutine 3<br/>wg.Done() → 0"]
-    Wait["wg.Wait()<br/>تا صفر شدن منتظر می‌ماند"]
-    Cont["ادامه"]
-
-    Add --&gt; G1
-    Add --&gt; G2
-    Add --&gt; G3
-    G1 --&gt; Wait
-    G2 --&gt; Wait
-    G3 --&gt; Wait
-    Wait --&gt; Cont
-
-    subgraph CNT["جریان شمارنده"]
-        direction LR
-        C3["counter=3"]
-        C2["counter=2"]
-        C1["counter=1"]
-        C0["counter=0"]
-        CW["Wait پایان"]
-        C3 --&gt; C2 --&gt; C1 --&gt; C0 --&gt; CW
-    end
-
-    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef bothBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
-    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
-    classDef neuBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
-    class Add goBox;
-    class G1,G2,G3 bothBox;
-    class Wait warnBox;
-    class Cont neuBox;
-    class CNT,C3,C2,C1,C0,CW neuBox;</pre>
-<figcaption>شکل ۵-۱۱: جریان <bdi dir="ltr">WaitGroup</bdi> - <bdi dir="ltr">Add</bdi>، <bdi dir="ltr">Done</bdi> و <bdi dir="ltr">Wait</bdi></figcaption>
-</figure>
 <p>sync.WaitGroup یک ساختار داده است که شمارنده‌ای داخلی دارد. این شمارنده نشان می‌دهد که چند goroutine هنوز کارشان تمام نشده است. شما با افزودن تعداد goroutine‌ها به شمارنده، و هر goroutine با فراخوانی <span dir="ltr">Done()</span> شمارنده را کم می‌کند. وقتی شمارنده به صفر رسید، تابع <span dir="ltr">Wait()</span> پایان می‌یابد و برنامه می‌تواند ادامه دهد.</p>
 <div class="tip"><strong>جزئیات داخلی — ساختار WaitGroup:</strong> در سورس‌کد runtime زبان Go، ساختار <code dir="ltr">sync.WaitGroup</code> شامل یک فیلد به نام <code>state1</code> از نوع <code>[3]uint32</code> (در معماری 64-bit) است. این فیلد سه مقدار 32 بیتی را در خود ذخیره می‌کند:
 <ul>
@@ -176,28 +138,6 @@ for i := 0; i &lt; 5; i++ {
 <p>این نکته بسیار مهم است تا از خطاهای هم‌روندی جلوگیری شود.</p>
 <h3 id="ترکیب-waitgroup-با-channel">5.5.1 ترکیب WaitGroup با Channel</h3>
 <p>گاهی لازم است نتایج کار goroutine‌ها را جمع‌آوری کنیم و سپس منتظر شویم همه تمام شوند:</p>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart LR
-    A["Add(3)<br/>شمارنده = ۳<br/>3"]
-    D1["Done()<br/>شمارنده = ۲<br/>2"]
-    D2["Done()<br/>شمارنده = ۱<br/>1"]
-    D3["Done()<br/>شمارنده = ۰<br/>0"]
-    W["Wait() — بلاک شده<br/>آزاد شد! ادامه برنامه"]
-
-    A --&gt; D1 --&gt; D2 --&gt; D3 --&gt; W
-
-    Note["شمارنده منفی → panic |<br/>شمارنده صفر → Wait آزاد می‌شود"]
-
-    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef bothBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
-    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
-    classDef neuBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
-    class A goBox;
-    class D1,D2,D3 bothBox;
-    class W warnBox;
-    class Note neuBox;</pre>
-<figcaption dir="rtl">شکل ۵-۱۱-ب: خط زمانی <bdi dir="ltr">WaitGroup</bdi> — تغییرات شمارنده از <bdi dir="ltr">Add</bdi> تا آزاد شدن <bdi dir="ltr">Wait</bdi></figcaption>
-</figure>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">results := make(chan int, 5)
 for i := 0; i &lt; 5; i++ {
@@ -290,72 +230,6 @@ go func() {
 <div class="warning"><strong>نکته درباره Race Detection در WaitGroup:</strong> اگر برنامه را با فلگ <code>-race</code> اجرا کنید، WaitGroup به‌طور خودکار عملیات <code>Add</code> و <code>Done</code> را ردیابی می‌کند. فراخوانی <code>Add</code> باید قبل از راه‌اندازی Goroutine (قبل از <code>go</code>) انجام شود — این قانون طلایی در «اشتباه ۱» همین بخش و در نکته‌ی پایانی فصل توضیح داده شده است.</div>
 <h3 id="waitgroup-چرخه-حیات-شمارنده">5.5.5 چرخه حیات شمارندهWaitGroup— نمودار وضعیت</h3>
 <p>یکی از مهم‌ترین مفاهیم در کار با <bdi dir="ltr">WaitGroup</bdi> درک چرخه حیات شمارنده داخلی آن است. شمارنده <bdi dir="ltr">WaitGroup</bdi> از صفر شروع می‌شود، با هر فراخوانی <bdi dir="ltr">Add(delta)</bdi> به اندازه <bdi dir="ltr">delta</bdi> افزایش می‌یابد و با هر <bdi dir="ltr">Done()</bdi> یک واحد کاهش پیدا می‌کند. وقتی شمارنده به صفر برسد تمام <bdi dir="ltr">goroutine</bdi>هایی که در <bdi dir="ltr">Wait()</bdi> بلاک شده‌اند آزاد می‌شوند. </p><p>اما اگر شمارنده منفی شود، برنامه بلافاصله <bdi dir="ltr">panic</bdi> می‌کند. این یعنی تعداد فراخوانی‌های <bdi dir="ltr">Done()</bdi> هرگز نباید از تعداد <bdi dir="ltr">Add()</bdi> بیشتر شود. همچنین اگر <bdi dir="ltr">Add()</bdi> با مقدار منفی فراخوانی شود که شمارنده را منفی کند، باز هم <bdi dir="ltr">panic</bdi> رخ می‌دهد. درک این چرخه برای جلوگیری از <bdi dir="ltr">deadlock</bdi> و <bdi dir="ltr">panic</bdi> در برنامه‌های واقعی حیاتی است.</p>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-    subgraph OK["مسیر موفق — ماشین وضعیت شمارنده"]
-        direction TB
-        S0["counter=0وضعیت اولیه"]
-        SA["Add(3)counter=3"]
-        S1["G1: Done()counter=2"]
-        S2["G2: Done()counter=1"]
-        S3["G3: Done()counter=0"]
-        SW["Wait()آزاد شد! ✓"]
-        SWB["Wait() در حال بلاک —منتظر صفر شدن شمارنده"]
-        S0 -- "Add(3)" --&gt; SA
-        SA -- "G1: Done()" --&gt; S1
-        S1 -- "G2: Done()" --&gt; S2
-        S2 -- "G3: Done()" --&gt; S3
-        S3 -- "Wait()" --&gt; SW
-        SWB -. "منتظر" .-&gt; SW
-    end
-
-    subgraph BAR["نمودار میله‌ای شمارنده"]
-        direction TB
-        B3["counter = 3  —  Add(3)"]
-        B2["counter = 2  —  G1: Done()"]
-        B1["counter = 1  —  G2: Done()"]
-        B0["counter = 0  —  G3: Done() → Wait آزاد!"]
-        B3 --&gt; B2 --&gt; B1 --&gt; B0
-    end
-
-    subgraph ERR["حالت خطا: عدم تطابق Add و Done"]
-        direction TB
-        E1["Add(2) → Done() → Done() → Done()counter: 2 → 1 → 0 → -1 = PANIC!"]
-        E2["wg.Add(2)       // counter = 2"]
-        E3["wg.Done()       // counter = 1"]
-        E4["wg.Done()       // counter = 0"]
-        E5["wg.Done()       // counter = -1 → panic!"]
-        E1 --&gt; E2 --&gt; E3 --&gt; E4 --&gt; E5
-    end
-
-    subgraph RULES["قواعد استفاده"]
-        direction TB
-        R1["Add() شمارنده را افزایش می‌دهد — قبل از go فراخوانی شود"]
-        R2["Done() شمارنده را کاهش می‌دهد — با defer فراخوانی شود"]
-        R3["Wait() تا صفر شدن بلاک می‌شود — صفر شد → آزاد می‌شود"]
-        R4["شمارنده منفی → panic:sync: WaitGroup is reused before previous Wait has returned"]
-        R5["همیشه تعداد Add و Done باید برابر باشند — از defer wg.Done() استفاده کنید"]
-        R1 --&gt; R2 --&gt; R3 --&gt; R4 --&gt; R5
-    end
-
-    GOLD[قانون طلایی: Add() قبل از go، defer Done() داخل goroutine،و هرگز شمارنده...]
-    NT[نکته: Add(delta) با delta مثبت → افزایش |Done() = Add(-1) → کاهش | شمارنده...]
-
-    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef bothBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
-    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
-    classDef errBox fill:#fef2f2,stroke:#ef4444,stroke-width:1.5px,color:#1f2937;
-    classDef neuBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
-    class OK,S0,SA,S1,S2,S3 goBox;
-    class SW bothBox;
-    class SWB warnBox;
-    class BAR,B3,B2,B1,B0 neuBox;
-    class ERR,E1,E2,E3,E4,E5 errBox;
-    class RULES,R1,R2,R3,R4,R5 neuBox;
-    class GOLD warnBox;
-    class NT neuBox;</pre>
-<figcaption dir="rtl">شکل ۵-۱۱-ج: چرخه حیات شمارنده <bdi dir="ltr">WaitGroup</bdi> — ماشین وضعیت از <bdi dir="ltr">Add</bdi> تا آزاد شدن <bdi dir="ltr">Wait</bdi> و حالت <bdi dir="ltr">panic</bdi></figcaption>
-</figure>
 <p>نمودار بالا چرخه کامل حیات شمارنده <bdi dir="ltr">WaitGroup</bdi> را نشان می‌دهد: خط زمانی تغییرات شمارنده از <bdi dir="ltr">Add(3)</bdi> تا آخرین <bdi dir="ltr">Done()</bdi>، و حالت خطا در صورتی که تعداد <bdi dir="ltr">Done()</bdi> از <bdi dir="ltr">Add()</bdi> بیشتر شود (<bdi dir="ltr">panic</bdi>).</p>
 <h4 id="سناریوهای-عملیاتی-waitgroup">سناریوهای عملیاتی <bdi dir="ltr">WaitGroup</bdi></h4>
 <ul>
@@ -441,7 +315,6 @@ func fetchAll(urls []string) ([]string, error) {
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/xml.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/ini.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/plaintext.min.js"></script>
-<script src="assets/js/diagrams.js"></script>
 <script src="assets/js/main.js"></script>
 </body>
 </html>

@@ -68,18 +68,6 @@
 <h2 id="استفاده-از-فایلها-در-قالب-html">استفاده از فایل‌ها در قالب HTML</h2><div class="abstract">
 <strong>چکیده:</strong> این بخش استفاده از فایل در template را پوشش می‌دهد: include، partial و embed. الگوی base + content و block override بررسی می‌شود. کاربردهای ساختار پروژه پوشش داده می‌گردد.
 </div>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart LR
-    T["HTML Template"] --&gt; A["/static/css/style.css"]
-    A --&gt; L["&lt;link href="/static/css"&gt;"]
-    A --&gt; S["&lt;script src="/static/js"&gt;"]
-
-    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef neuBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
-    class T goBox;
-    class A,L,S neuBox;</pre>
-<figcaption>شکل ۷-۱۳: ارجاع به فایل‌های استاتیک <bdi dir="ltr">CSS</bdi> و <bdi dir="ltr">JS</bdi> در قالب‌های <bdi dir="ltr">HTML</bdi></figcaption>
-</figure>
 <p>در فایل HTML جاسازی‌شده یا تولیدی، به فایل‌های استاتیک ارجاع می‌دهیم:</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">&lt;link rel="stylesheet" href="/static/css/style.css"&gt;
@@ -171,37 +159,6 @@ var funcs = template.FuncMap{
 </figure>
 <h3 id="درخت-شمول-فایلهای-قالب">7.13.6 درخت شمول فایل‌های قالب</h3>
 <p>هر صفحه‌ی <bdi dir="ltr">HTML</bdi> در <bdi dir="ltr">Go</bdi> از ترکیب چندین فایل قالب ساخته می‌شود. قالب پایه (<code dir="ltr">base.html</code>) بلوک‌های اصلی را تعریف و قالب‌های جزئی را با <code dir="ltr">{{ template }}</code> فراخوانی می‌کند. هر قالب جزئی ممکن است خود قالب‌های دیگری را فراخوانی کند و یک درخت شمول (<bdi dir="ltr">inclusion tree</bdi>) تشکیل شود. </p><p>درک این درخت برای دیباگ و سازمان‌دهی قالب‌ها ضروری است. مهم‌ترین نکته این است که تمام فایل‌های قالب باید با هم بارگذاری شوند — مثلاً با <code dir="ltr">ParseGlob</code> یا <code dir="ltr">ParseFS</code> — تا تعاریف <code dir="ltr">{{ define }}</code> همه فایل‌ها در دسترس باشد. </p><p>ترتیب بارگذاری فایل‌ها مهم نیست، اما ترتیب رندر مهم است: همیشه باید <code dir="ltr">ExecuteTemplate</code> با نام قالب پایه فراخوانی شود.</p>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-    subgraph LOAD["ParseGlob / ParseFS — Load All Dependencies"]
-        direction TB
-        L1["template.Must(template.ParseGlob("templates/*.html"))"]
-        L2["template.Must(template.ParseFS(embedFS, "templates/*.html", "templates/**/*.html"))"]
-    end
-
-    BASE["base.html{{ template "header" }} {{ block "content" }} {{ template "footer" }}"]
-    BASE --&gt; H["header.html"]
-    BASE --&gt; C["content (varies)"]
-    BASE --&gt; F["footer.html"]
-    H --&gt; N["nav.html"]
-    C --&gt; P1["home.html"]
-    C --&gt; P2["about.html"]
-    C --&gt; P3["contact.html"]
-
-    LOAD -.-&gt; BASE
-
-    NOTE1(["ترتیب بارگذاری مهم نیست — ParseGlob همه {{ define }}ها را جمع‌آوری می‌کند"])
-    NOTE2(["اما ترتیب رندر مهم است: ExecuteTemplate(w, "base.html", data) — نه نام قالب محتوا"])
-    GOLD([قاعده‌ی طلایی: همه قالب‌ها را یکجا Parse کنید و هرگز قالب تکی را در هر...])
-
-    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef neuBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
-    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
-    class BASE,H,C,F,N,P1,P2,P3 goBox;
-    class L1,L2 neuBox;
-    class NOTE1,NOTE2,GOLD warnBox;</pre>
-<figcaption>درخت شمول فایل‌های قالب: نحوه‌ی ارجاع قالب‌ها به یکدیگر</figcaption>
-</figure>
 <h3 id="سناریوهای-عملیاتی-قالبهای-فایل">7.13.7 سناریوهای عملیاتی</h3>
 <ul>
 <li><strong>سازمان‌دهی ساختار صفحات پیچیده:</strong> در پروژه‌های بزرگ، هر صفحه ممکن است ده‌ها قالب جزئی داشته باشد. قالب‌ها را بر اساس عملکرد تفکیک کنید: <code dir="ltr">layouts/</code> برای قالب‌های پایه، <code dir="ltr">pages/</code> برای محتوای صفحات، <code dir="ltr">partials/</code> برای اجزای مشترک و <code dir="ltr">components/</code> برای ویجت‌های قابل استفاده مجدد. با <code dir="ltr">ParseFS</code> تمام فایل‌ها یکجا بارگذاری می‌شوند.</li>
@@ -255,7 +212,6 @@ var funcs = template.FuncMap{
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/xml.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/ini.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/plaintext.min.js"></script>
-<script src="assets/js/diagrams.js"></script>
 <script src="assets/js/main.js"></script>
 </body>
 </html>

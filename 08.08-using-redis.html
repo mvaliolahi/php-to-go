@@ -68,93 +68,6 @@
 <h2 id="استفاده-از-redis">استفاده از Redis</h2><div class="abstract">
 <strong>چکیده:</strong> این بخش کار با Redis در Go را پوشش می‌دهد: go-redis، connection و الگوهای رایج. تفاوت با predis در PHP و الگوی Go بررسی می‌شود. کاربردهای cache، pub/sub و rate limit پوشش داده می‌گردد.
 </div>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-    Title["الگوهای کشینگ و معماری Redis در Go"]
-
-    subgraph PATTERNS["الگوها"]
-        direction TB
-        P1["Cache-Aside<br/>App → Cache → DB<br/>ساده‌ترین الگو"]
-        P2["Write-Through<br/>Write → Cache + DB<br/>سازگاری تضمین‌شده"]
-        P3["Distributed Lock<br/>SetNX + TTL<br/>Redlock algorithm"]
-        P4["Pipeline: batch operations<br/>ارسال چند دستور در یک درخواست شبکه"]
-    end
-
-    subgraph FLOW["Cache-Aside Flow"]
-        direction TB
-        F1["1. Get(key) → hit? return : miss"]
-        F2["2. Query DB → Set(key, value, TTL)"]
-        F3["3. Return value"]
-        F1 --&gt; F2 --&gt; F3
-    end
-
-    Title --&gt; PATTERNS
-    PATTERNS --&gt; FLOW
-
-    classDef titleBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:2px,color:#1f2937,font-weight:bold;
-    classDef goBox   fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef bothBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
-    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
-    classDef errBox  fill:#fef2f2,stroke:#ef4444,stroke-width:1.5px,color:#1f2937;
-    classDef neuBox  fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
-    class Title titleBox;
-    class P1,P2,P3 goBox;
-    class P4 bothBox;
-    class F1,F2,F3 goBox;</pre>
-<figcaption>شکل ۸-۸: الگوهای کشینگ و معماری <bdi dir="ltr">Redis</bdi> در <bdi dir="ltr">Go</bdi></figcaption>
-</figure>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-    Title["معماری سه‌لایه: Go ← Redis ← Database"]
-
-    subgraph STACK["سه لایه"]
-        direction TB
-        Go["Go Appgo-redis client"]
-        Redis["RedisIn-Memory Cache"]
-        DB["DatabasePostgreSQL / MySQL"]
-        Go -- "rdb.Get()" --&gt; Redis
-        Redis -- "MISS → Query" --&gt; DB
-    end
-
-    subgraph HIT["جریان Cache HIT ✓"]
-        direction TB
-        H1["1. App → Redis: Get(key)"]
-        H2["2. Redis → App: value (fast! ~1ms)"]
-        H1 --&gt; H2
-    end
-
-    subgraph MISS["جریان Cache MISS"]
-        direction TB
-        M1["1. App → Redis: Get(key) → nil"]
-        M2["2. App → DB: Query → Set(key, val, TTL)"]
-        M1 --&gt; M2
-    end
-
-    Compare["مقایسه سرعت: Redis ~۱میلی‌ثانیه • DB ~۱۰-۱۰۰میلی‌ثانیه — کشینگ تا ۱۰۰× سریع‌تر"]
-    Note[الگوی Cache-Aside: ابتدا کش بررسی شود، در صورت نبود از دیتابیس خوانده و در...]
-
-    Title --&gt; STACK
-    STACK --&gt; HIT
-    STACK --&gt; MISS
-    HIT --&gt; Compare
-    MISS --&gt; Compare
-    Compare --&gt; Note
-
-    classDef titleBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:2px,color:#1f2937,font-weight:bold;
-    classDef goBox   fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef bothBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
-    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
-    classDef errBox  fill:#fef2f2,stroke:#ef4444,stroke-width:1.5px,color:#1f2937;
-    classDef neuBox  fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
-    class Title titleBox;
-    class Go goBox;
-    class Redis errBox;
-    class DB neuBox;
-    class H1,H2 bothBox;
-    class M1,M2 warnBox;
-    class Compare,Note neuBox;</pre>
-<figcaption dir="rtl">شکل ۸-۹: معماری سه‌لایه کشینگ — جریان <bdi dir="ltr">Cache Hit</bdi> و <bdi dir="ltr">Cache Miss</bdi></figcaption>
-</figure>
 <p><bdi dir="ltr">Redis</bdi> یک <bdi dir="ltr">data structure key-value</bdi> سریع و درون حافظه‌ای است که در کشینگ، صف‌بندی پیام‌ها و ذخیره‌سازی داده‌های موقتی کاربرد دارد. در <bdi dir="ltr">Go</bdi> کتابخانه <bdi dir="ltr">go-redis</bdi> یکی از پرکاربردترین کلاینت‌های <bdi dir="ltr">Redis</bdi> است.</p>
 <h3 id="نصب-و-اتصال">8.8.1 نصب و اتصال</h3>
 <figure class="code go" dir="ltr">
@@ -277,96 +190,6 @@ go func() {
 <div class="comparison"><strong>مقایسه با PHP:</strong> در <bdi dir="ltr">Laravel</bdi> از <bdi dir="ltr">Redis Facade</bdi> یا <code>Cache</code> استفاده می‌شود. <bdi dir="ltr">phpredis</bdi> <bdi dir="ltr">Connection Pool</bdi> ندارد اما <bdi dir="ltr">go-redis</bdi> به صورت <bdi dir="ltr">built-in</bdi> <bdi dir="ltr">Connection Pool</bdi> و <bdi dir="ltr">Pipeline</bdi> دارد. <bdi dir="ltr">Pub/Sub</bdi> در <bdi dir="ltr">Go</bdi> به دلیل مدل <bdi dir="ltr">concurrency</bdi> بهتر بسیار ساده‌تر مدیریت می‌شود.</div>
 <h3 id="redis-connection-pipeline-architecture">8.8.7 معماری اتصال و خط لوله دستوراتRedis</h3>
 <p>درک معماری اتصال <bdi dir="ltr">Redis</bdi> در <bdi dir="ltr">Go</bdi> برای نوشتن برنامه‌های کارآمد و مقیاس‌پذیر ضروری است. کلاینت <bdi dir="ltr">go-redis</bdi> از یک <bdi dir="ltr">Connection Pool</bdi> داخلی استفاده می‌کند که چندین اتصال همزمان به سرور <bdi dir="ltr">Redis</bdi> برقرار می‌کند. هر درخواست از یک اتصال آزاد در استخر استفاده می‌کند و پس از اتمام آن را برمی‌گرداند. </p><p>این مکانیزم در محیط‌های با بار بالا بسیار مهم است زیرا ایجاد و تخریب مکرر اتصال‌ها هزینه‌ی شبکه‌ی بالایی دارد. </p><p>علاوه بر دستورات تک‌تکی، <bdi dir="ltr">Pipeline</bdi> امکان ارسال دسته‌ای چندین دستور در یک درخواست شبکه‌ای را فراهم می‌کند که تأخیر را به‌شدت کاهش می‌دهد.</p>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-    Title["معماری اتصال و خط لوله دستورات Redis در Go"]
-
-    subgraph CLIENT["کلاینت Go"]
-        direction TB
-        GA["Go Application<br/>github.com/redis/go-redis/v9"]
-        CMDS["rdb.Set(ctx, k, v, TTL)<br/>rdb.Get(ctx, k)<br/>rdb.Del(ctx, k)<br/>rdb.Incr(ctx, k)"]
-        GA --&gt; CMDS
-    end
-
-    subgraph POOL["Connection Pool — dial"]
-        direction TB
-        PS["PoolSize: 10 | MinIdle: 3"]
-        P1["conn 1 → 6379 (idle)"]
-        P2["conn 2 → 6379 (active)"]
-        P3["conn 3 → 6379 (active)"]
-        PN["... conn N"]
-    end
-
-    subgraph SERVER["سرور Redis — TCP"]
-        direction TB
-        RS["Redis Server<br/>localhost:6379"]
-        DT1["String: key → value"]
-        DT2["Hash: key → {field: val}"]
-        DT3["List: key → [v1, v2, ...]"]
-        DT4["Set / Sorted Set"]
-    end
-
-    subgraph PIPELINE["Pipeline: batch commands — reduce RTT"]
-        direction TB
-        PL1["pipe.Set(k1,v1,0)"]
-        PL2["pipe.Get(k2)"]
-        PL3["pipe.Incr(k3)"]
-        PL4["pipe.Exec(ctx)"]
-        PLN["یک درخواست شبکه به جای N درخواست — سرعت تا ۱۰× بیشتر"]
-        PL1 --&gt; PL2 --&gt; PL3 --&gt; PL4 --&gt; PLN
-    end
-
-    subgraph PUBSUB["Pub/Sub: real-time messaging"]
-        direction TB
-        PS1["rdb.Publish(ctx, "ch", msg)"]
-        PS2["Redis"]
-        PS3["pubsub.Channel() ← msg"]
-        PS1 --&gt; PS2 --&gt; PS3
-    end
-
-    subgraph PATTERNS["الگوهای عملیاتی Redis"]
-        direction TB
-        PT1["Cache-Aside<br/>Get → Miss → DB → Set+TTL"]
-        PT2["Session Storage<br/>SETEX session:id 3600 data"]
-        PT3["Rate Limiter<br/>INCR key + EXPIRE key 60"]
-        PT4["Distributed Lock<br/>SET lock:id val NX EX 30"]
-    end
-
-    subgraph CODE["کد نمونه"]
-        direction TB
-        C1["// Rate Limiter: INCR + EXPIRE (atomic)"]
-        C2["count, _ := rdb.Incr(ctx, "rate:"+ip).Result()"]
-        C3["if count == 1 { rdb.Expire(ctx, "rate:"+ip, time.Minute) }"]
-        C4["// Distributed Lock: SET NX EX (atomic)"]
-        C5["ok, _ := rdb.SetNX(ctx, "lock:"+id, uid, 30*time.Second).Result()"]
-        C1 --&gt; C2 --&gt; C3 --&gt; C4 --&gt; C5
-    end
-
-    Title --&gt; CLIENT
-    CLIENT --&gt; POOL
-    POOL --&gt; SERVER
-    SERVER --&gt; PIPELINE
-    SERVER --&gt; PUBSUB
-    SERVER --&gt; PATTERNS
-    PATTERNS --&gt; CODE
-
-    classDef titleBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:2px,color:#1f2937,font-weight:bold;
-    classDef goBox   fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef bothBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
-    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
-    classDef errBox  fill:#fef2f2,stroke:#ef4444,stroke-width:1.5px,color:#1f2937;
-    classDef neuBox  fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
-    class Title titleBox;
-    class GA,CMDS goBox;
-    class PS,P1,P2,P3,PN goBox;
-    class RS,DT1,DT2,DT3,DT4 errBox;
-    class PL1,PL2,PL3,PL4 bothBox;
-    class PLN warnBox;
-    class PS1,PS2,PS3 goBox;
-    class PT1,PT2,PT3,PT4 goBox;
-    class C1,C2,C3,C4,C5 goBox;</pre>
-<figcaption>شکل ۸-۸-ب — معماری اتصال <bdi dir="ltr">Redis</bdi>: کلاینت <bdi dir="ltr">Go</bdi>، استخر اتصال، خط لوله، <bdi dir="ltr">Pub/Sub</bdi> و الگوهای عملیاتی</figcaption>
-</figure>
 <h3 id="redis-سناریوهای-عملیاتی">8.8.8 سناریوهای عملیاتی</h3>
 <p>در سیستم‌های واقعی، <bdi dir="ltr">Redis</bdi> فراتر از یک کش ساده عمل می‌کند و نقش‌های متعددی در معماری نرم‌افزار ایفا می‌کند. شناخت الگوهای مختلف استفاده از <bdi dir="ltr">Redis</bdi> به شما کمک می‌کند راه‌حل‌های مقیاس‌پذیر و کارآمد طراحی کنید. </p><p>هر الگوی استفاده مزایا و محدودیت‌های خاص خود را دارد و انتخاب الگوی مناسب به نیازهای عملیاتی و مشخصات بار سیستم بستگی دارد. </p><p>در ادامه پنج سناریوی عملیاتی کلیدی بررسی می‌شوند که هر مهندس نرم‌افزار باید در ابزار خود داشته باشد.</p>
 <ul>
@@ -425,7 +248,6 @@ go func() {
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/xml.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/ini.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/plaintext.min.js"></script>
-<script src="assets/js/diagrams.js"></script>
 <script src="assets/js/main.js"></script>
 </body>
 </html>

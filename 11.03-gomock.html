@@ -68,10 +68,6 @@
 <h2 id="gomock">gomock</h2><div class="abstract">
 <strong>چکیده:</strong> این بخش gomock را پوشش می‌دهد: mock generation، expectation و verification. الگوی mock interface و dependency injection بررسی می‌شود. تفاوت با Mockery در PHP مشخص می‌گردد.
 </div>
-<figure class="diagram d2-diagram" dir="ltr">
-<img alt="نمودار" loading="lazy" src="assets/diagrams/ch11_03_gomock_workflow.svg"/>
-<figcaption>شکل ۱۱-۳: فرآیندMockکردن باgomock</figcaption>
-</figure>
 <p>پیش در در مورد mock کردن توضیحاتی داده شد ولی در پروژه‌های واقعی اغلب نیاز داریم در هنگام تست، dependency های خارجی مثل دیتابیس، سرویس‌های دیگر یا APIها را <strong dir="ltr">mock</strong> کنیم تا side affect ها را کنترل کنیم. </p><p>یعنی به‌جای اجرای واقعی آن‌ها یک نسخه‌ی شبیه‌سازی‌شده ایجاد می‌کنیم که رفتار مورد انتظار را تقلید می‌کند. این کار:</p>
 <p>تست‌ها را سریع‌تر و قابل پیش‌بینی‌تر می‌کند</p>
 <p>از وابستگی به منابع بیرونی مثل پایگاه‌داده یا سرویس های شخص ثالث جلوگیری می‌کند</p>
@@ -458,40 +454,6 @@ $ mockgen -destination=mocks/io_mock.go \
 }
 </code></pre>
 </figure>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart LR
-    subgraph HEADER["جریان تعامل Mock در تست"]
-        direction LR
-        TEST["تست<br/>TestXxx"] --&gt; EXP["EXPECT().Return()<br/>تعریف رفتار مورد انتظار"]
-        EXP --&gt; MOCK["Mock Object<br/>شبیه‌سازی وابستگی"]
-        MOCK --&gt; SUT["کد واقعی<br/>SUT"]
-    end
-
-    subgraph VERIFY["تأیید رفتار Mock (Verification)"]
-        direction TB
-        V1["ctrl.Finish()"]
-        V2["EXPECT().Times(n)"]
-        V3["gomock.InOrder()"]
-        V4["gomock.Any()"]
-        V5["EXPECT().Do(func)"]
-    end
-
-    note(["توجه: هر EXPECT که فراخوانی نشود = شکست تست | هر فراخوانی بدون EXPECT = شکست تست"])
-
-    classDef testBox  fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937,font-weight:bold;
-    classDef expBox   fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
-    classDef mockBox  fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
-    classDef sutBox   fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937,font-weight:bold;
-    classDef verBox   fill:#e6f9fc,stroke:#00ADD8,stroke-width:1px,color:#1f2937;
-    classDef noteBox  fill:#fef2f2,stroke:#ef4444,stroke-width:1px,color:#1f2937,font-style:italic;
-    class TEST testBox;
-    class EXP expBox;
-    class MOCK mockBox;
-    class SUT sutBox;
-    class V1,V2,V3,V4,V5 verBox;
-    class note noteBox;</pre>
-<figcaption>شکل ۱۱-۴: جریان تعامل <bdi dir="ltr">Mock</bdi> و تأیید رفتار در تست</figcaption>
-</figure>
 <h3 id="چه-زمان-mock-و-چه-زمان-fake">11.3.9 چه زمان Mock و چه زمان Fake؟</h3>
 <p>از تصمیمات کلیدی در تست‌نویسی، انتخاب بین Mock و Fake است. هر دو روش برای ایزوله کردن تست‌ها از وابستگی‌های خارجی استفاده می‌شوند، اما رویکرد و فلسفه متفاوتی دارند. درک تفاوت این دو به شما کمک می‌کند تست‌های بهتری بنویسید.</p>
 <p><strong>Mock</strong> یک شیء است که رفتار آن را به‌صورت دقیق و از قبل تعریف می‌کنید. هر فراخوانی متد و مقدار بازگشتی آن باید صریحاً مشخص شود. اگر فراخوانی‌ای انجام شود که تعریف نشده، تست شکست می‌خورد. </p><p>Mockها برای behavior testing مناسب هستند — یعنی بررسی اینکه آیا کد شما متدهای درست را با پارامترهای درست فراخوانی کرده یا نه.</p>
@@ -616,10 +578,6 @@ func TestCreateArticle(t *testing.T) {
 <h3 id="خط-لوله-تولید-و-تزریق-mock">11.3.11 خط لوله تولید و تزریق Mock</h3>
 <p>یکی از مهم‌ترین مفاهیم در کار با <bdi dir="ltr">gomock</bdi> درک خط لوله کامل تولید و تزریق mock است. این خط لوله از تعریف <bdi dir="ltr">interface</bdi> شروع می‌شود، با ابزار <bdi dir="ltr">mockgen</bdi> فایل mock تولید می‌شود، و در نهایت mock در تست استفاده می‌شود. هر مرحله از این خط لوله نقش حیاتی دارد: اگر <bdi dir="ltr">interface</bdi> بیش از حد بزرگ باشد، mock کردن سخت می‌شود. </p><p>اگر mock به‌درستی تولید نشود، رفتار تست اشتباه خواهد بود. و اگر تزریق mock به‌درستی انجام نشود، کد واقعی به‌جای mock اجرا می‌شود.</p>
 <p>در <bdi dir="ltr">PHP</bdi> با <bdi dir="ltr">PHPUnit</bdi> این خط لوله ساده‌تر است: با <bdi dir="ltr">$this-&gt;createMock()</bdi> یک mock می‌سازید و با <bdi dir="ltr">$mock-&gt;method()-&gt;willReturn()</bdi> رفتار آن را تعریف می‌کنید. اما در Go این فرآیند ساختاریافته‌تر و type-safe است. </p><p>تولید خودکار mock از interface تضمین می‌کند که اگر interface تغییر کند، mock باید دوباره تولید شود و کامپایلر خطا را نشان می‌دهد. این مکانیزم ایمنی بزرگی است که در <bdi dir="ltr">PHPUnit</bdi> وجود ندارد.</p>
-<figure class="diagram d2-diagram" dir="ltr">
-<img alt="نمودار" loading="lazy" src="assets/diagrams/ch11_03_gomock_workflow.svg"/>
-<figcaption>شکل ۱۱-۵: خط لوله تولید و تزریقMock— ازInterfaceتاVerify</figcaption>
-</figure>
 <h3 id="سناریوهای-عملیاتی-gomock">11.3.12 سناریوهای عملیاتی gomock</h3>
 <p>در پروژه‌های واقعی، کار با mock فراتر از مثال‌های ساده است. هر سناریو عملیاتی زیر یک چالش رایج در تست‌نویسی را پوشش می‌دهد که توسعه‌دهندگان مهاجر از <bdi dir="ltr">PHP</bdi> احتمالاً با آن مواجه خواهند شد. </p><p>این الگوها به شما کمک می‌کنند تست‌های قابل اعتماد و قابل نگهداری بنویسید که در برابر تغییرات کد مقاوم هستند و رفتار واقعی سیستم را به‌درستی تأیید می‌کنند.</p>
 <ul>
@@ -674,7 +632,6 @@ func TestCreateArticle(t *testing.T) {
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/xml.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/ini.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/plaintext.min.js"></script>
-<script src="assets/js/diagrams.js"></script>
 <script src="assets/js/main.js"></script>
 </body>
 </html>

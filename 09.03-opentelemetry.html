@@ -68,10 +68,6 @@
 <h2 id="opentelemetry">OpenTelemetry</h2><div class="abstract">
 <strong>چکیده:</strong> این بخش OpenTelemetry را پوشش می‌دهد: trace، span و context propagation. الگوی instrument و distributed tracing بررسی می‌شود. تفاوت با Zipkin/Jaeger و کاربردهای microservice پوشش داده می‌گردد.
 </div>
-<figure class="diagram d2-diagram" dir="ltr">
-<img alt="نمودار" loading="lazy" src="assets/diagrams/ch09_03_observability_pipeline.svg"/>
-<figcaption>شکل ۹-۳: جریان <bdi dir="ltr">Trace</bdi> توزیع‌شده و معماری <bdi dir="ltr">OpenTelemetry</bdi></figcaption>
-</figure>
 <p><bdi dir="ltr">OpenTelemetry</bdi> یک پروژه متن‌باز تحت نظر بنیاد <bdi dir="ltr">CNCF</bdi> است که ابزارها و استانداردهایی را برای جمع‌آوری پردازش و ارسال داده‌های <bdi dir="ltr">Observability</bdi> ارائه می‌دهد. این پروژه سه نوع داده اصلی را مدیریت می‌کند:</p>
 <p><strong dir="ltr">Metrics</strong> : داده‌های عددی که وضعیت سیستم را نشان می‌دهند (<bdi dir="ltr">Counter</bdi>، <bdi dir="ltr">Histogram</bdi>، <bdi dir="ltr">Gauge</bdi>).</p>
 <p><strong dir="ltr">Traces</strong> : ردیابی مسیر یک درخواست در سیستم از لحظه ورود تا خروج.</p>
@@ -103,68 +99,6 @@
 </p>
 </div>
 <p><strong dir="ltr">SDK</strong> : کتابخانه‌ای که در برنامه برای جمع‌آوری داده‌ها استفاده می‌شود.</p>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart LR
-    title(["معماری OpenTelemetry: سه رکن داده ← Exporter ← مقصد"])
-
-    subgraph SIGNALS["سه رکن داده"]
-        direction TB
-        TR["Traces<br/>ردیابی مسیر درخواست"]
-        ME["Metrics<br/>اندازه‌گیری کمی عملکرد"]
-        LO["Logs<br/>ثبت وقایع و خطاها"]
-    end
-
-    subgraph SDK["OTel SDK"]
-        direction TB
-        TP["TracerProvider"]
-        MP["MeterProvider"]
-        LP["LoggerProvider"]
-    end
-
-    COL["OTel Collector<br/>Batch + Route<br/>Process + Export"]
-
-    subgraph BACKENDS["مقاصد ذخیره‌سازی"]
-        direction TB
-        TEMPO["Tempo<br/>ذخیره Trace"]
-        PROM["Prometheus<br/>ذخیره Metric"]
-        LOKI["Loki<br/>ذخیره Log"]
-    end
-
-    GRAF(["Grafana — Traces + Metrics + Logs"])
-
-    TR --&gt; SDK
-    ME --&gt; SDK
-    LO --&gt; SDK
-    SDK -- "OTLP" --&gt; COL
-    COL --&gt; TEMPO
-    COL --&gt; PROM
-    COL --&gt; LOKI
-    TEMPO -.-&gt; GRAF
-    PROM -.-&gt; GRAF
-    LOKI -.-&gt; GRAF
-
-    title ~~~ SIGNALS
-
-    classDef titleBox fill:#f8fafc,stroke:#475569,stroke-width:1px,color:#1f2937,font-weight:bold;
-    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef okBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
-    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
-    classDef traceBox fill:#f5f0fb,stroke:#9C27B0,stroke-width:1.5px,color:#1f2937;
-    classDef phpBox fill:#f5f0fb,stroke:#777BB4,stroke-width:1.5px,color:#1f2937;
-    classDef vizBox fill:#fffbeb,stroke:#F46800,stroke-width:2px,color:#1f2937,font-weight:bold;
-    classDef noteBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1px,color:#1f2937,font-style:italic;
-    class title titleBox;
-    class TR okBox;
-    class ME warnBox;
-    class LO phpBox;
-    class TP,MP,LP,SDK goBox;
-    class COL traceBox;
-    class TEMPO okBox;
-    class PROM warnBox;
-    class LOKI phpBox;
-    class GRAF vizBox;</pre>
-<figcaption>شکل ۹-۴: معماری <bdi dir="ltr">OpenTelemetry</bdi> — جریان سه رکن داده از <bdi dir="ltr">SDK</bdi> به <bdi dir="ltr">Collector</bdi> و مقاصد ذخیره‌سازی</figcaption>
-</figure>
 <p><strong dir="ltr">Collector</strong> : سرور مرکزی که داده‌ها را دریافت پردازش و به ابزارهای مقصد منتقل می‌کند.</p>
 <p><strong dir="ltr">Exporter</strong> : ماژولی که داده‌ها را به ابزارهای دیگر می‌فرستد.</p>
 <p><strong dir="ltr">Instrumentation</strong> : کدی که داده‌های <bdi dir="ltr">Observability</bdi> تولید می‌کند.</p>
@@ -479,46 +413,6 @@ func main() {
 <div class="note"><strong>راهنمای انتخاب:</strong> ابتدا از <bdi dir="ltr">Auto-Instrumentation</bdi> استفاده کنید تا بدون تلاش اضافی <bdi dir="ltr">Trace</bdi> پایه دریافت کنید. سپس در نقاط بحرانی برنامه (مثل توابع کسب‌وکار پیچیده) <bdi dir="ltr">Span</bdi> دستی اضافه کنید. ترکیب این دو رویکرد بهترین نتیجه را می‌دهد.</div>
 <h3 id="خواندن-trace">9.3.11 راهنمای خواندن Trace در Grafana</h3>
 <p>وقتی <bdi dir="ltr">Trace</bdi>‌ها در <bdi dir="ltr">Grafana Tempo</bdi> ذخیره شدند، می‌توانید آن‌ها را در <bdi dir="ltr">Grafana</bdi> مشاهده و تحلیل کنید. درک ساختار یک <bdi dir="ltr">Trace</bdi> برای عیب‌یابی مؤثر ضروری است:</p>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-    title(["ساختار یک Trace — خواندن و تحلیل"])
-
-    HEADER[Trace ID: abc123def456 | Duration: 420ms | Service: user-apiRoot Span: GET...]
-
-    subgraph WATERFALL["Waterfall — طول نوار = زمان اجرا"]
-        direction TB
-        S1["GET /api/users/42 (420ms) — http.request"]
-        S2["user.GetUser (350ms) — service.logic"]
-        S3A["SELECT users (80ms) — db.query"]
-        S3B["Redis (30ms)"]
-        S4["EnrichUserData (170ms) — service"]
-        S5["HTTP to orders (120ms)"]
-        S1 --&gt; S2 --&gt; S3A
-        S2 --&gt; S3B
-        S2 --&gt; S4 --&gt; S5
-    end
-
-    NOTES([نکات تحلیل:۱. هر نوار یک Span است — طول نوار = زمان اجرا۲. نوارهای تو در تو...])
-
-    title ~~~ HEADER
-    HEADER ~~~ WATERFALL
-    WATERFALL ~~~ NOTES
-
-    classDef titleBox fill:#f8fafc,stroke:#475569,stroke-width:1px,color:#1f2937,font-weight:bold;
-    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef okBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
-    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
-    classDef traceBox fill:#f5f0fb,stroke:#9C27B0,stroke-width:1.5px,color:#1f2937;
-    classDef noteBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1px,color:#1f2937,font-style:italic;
-    class title titleBox;
-    class HEADER goBox;
-    class S1 okBox;
-    class S2 goBox;
-    class S3A,S3B,S5 warnBox;
-    class S4 traceBox;
-    class NOTES noteBox;</pre>
-<figcaption>شکل ۹-۳-الف: ساختار یک <bdi dir="ltr">Trace</bdi> نمونه — هر نوار یک <bdi dir="ltr">Span</bdi> و طول آن نشان‌دهنده زمان اجرا</figcaption>
-</figure>
 <p>برای عیب‌یابی مؤثر روی این نکات تمرکز کنید:</p>
 <ul>
 <li><strong>شناسایی گلوگاه:</strong> بلندترین <bdi dir="ltr">Span</bdi> معمولاً گلوگاه است. در مثال بالا <code>EnrichUserData</code> با ۱۷۰ میلی‌ثانیه.</li>
@@ -598,61 +492,6 @@ func main() {
 </figure>
 <h3 id="درخت-اسپن-و-انتشار-کانتکست">9.3.14 درختSpanو انتشارContext</h3>
 <p>درک ساختار درختی <bdi dir="ltr">Span</bdi>‌ها و <bdi dir="ltr">context propagation</bdi> برای عیب‌یابی مؤثر در سیستم‌های توزیع‌شده حیاتی است. هر <bdi dir="ltr">trace</bdi> یک درخت از <bdi dir="ltr">Span</bdi>‌هاست که ریشه آن <bdi dir="ltr">root span</bdi> (معمولاً درخواست ورودی <bdi dir="ltr">HTTP</bdi>) و شاخه‌های آن عملیات فرعی در سرویس‌های مختلف هستند. </p><p>هر <bdi dir="ltr">Span</bdi> شامل شناسه یکتای خود (<bdi dir="ltr">span ID</bdi>)، شناسه والد (<bdi dir="ltr">parent span ID</bdi>) و شناسه کل <bdi dir="ltr">trace</bdi> (<bdi dir="ltr">trace ID</bdi>) است. </p><p>انتشار <bdi dir="ltr">Context</bdi> از طریق هدرهای <bdi dir="ltr">HTTP</bdi> (مثل <bdi dir="ltr">traceparent</bdi> و <bdi dir="ltr">tracestate</bdi>) طبق استاندارد <bdi dir="ltr">W3C Trace Context</bdi> انجام می‌شود و تضمین می‌کند که تمام سرویس‌های درگیر در یک درخواست، بخشی از همان <bdi dir="ltr">trace</bdi> باشند. بدون این انتشار خودکار، هر سرویس <bdi dir="ltr">trace</bdi> مستقلی ایجاد می‌کند و ردیابی مسیر کامل درخواست غیرممکن می‌شود.</p>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-    title(["درخت Span و انتشار Context در سیستم توزیع‌شده"])
-
-    HEADER["Trace ID: a1b2c3d4e5f6 | Root Span: HTTP GET /api/order"]
-
-    subgraph TREE["درخت Span"]
-        direction TB
-        ROOT["Gateway: HTTP GET /api/orderspan_id=abc123 | parent_id=none | duration=320ms"]
-        S1["auth.CheckTokenspan=d1e2 | parent=abc | 25ms— Auth Service"]
-        S2["db.QueryOrderspan=f3g4 | parent=abc | 85ms— Order Service"]
-        S3["cache.Getspan=h5i6 | parent=abc | 12ms— Cache Service"]
-        S4["api.GetUserInfospan=j7k8 | parent=abc | 180ms— User Service"]
-        ROOT --&gt; S1
-        ROOT --&gt; S2
-        ROOT --&gt; S3
-        ROOT --&gt; S4
-    end
-
-    subgraph CTX["انتشار Context بین سرویس‌ها — HTTP Headers (W3C Trace Context)"]
-        direction TB
-        CTXH[traceparent: 00-a1b2c3d4e5f67890-abc123def456-01tracestate:...]
-        CTXFLOW["Gateway -- Inject --&gt; Auth Svc --&gt; Order Svc --&gt; Cache Svc --&gt; User Svc"]
-    end
-
-    subgraph PILLARS["سه رکن Observability"]
-        direction LR
-        TR["Tracingمسیر درخواست بین سرویس‌ها"]
-        ME["Metricsاعداد تجمیعی عملکرد"]
-        LO["Loggingجزئیات رویدادها و خطاها"]
-    end
-
-    RULE([قانون طلایی: Tracing = «چرا این درخواست کند است؟» | Metrics = «چند خطا در...])
-
-    title ~~~ HEADER
-    HEADER ~~~ TREE
-    TREE ~~~ CTX
-    CTX ~~~ PILLARS
-    PILLARS ~~~ RULE
-
-    classDef titleBox fill:#f8fafc,stroke:#475569,stroke-width:1px,color:#1f2937,font-weight:bold;
-    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef okBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
-    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
-    classDef traceBox fill:#f5f0fb,stroke:#9C27B0,stroke-width:1.5px,color:#1f2937;
-    classDef noteBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1px,color:#1f2937,font-style:italic;
-    class title titleBox;
-    class HEADER,ROOT,S1,S2,S3,S4 goBox;
-    class CTXH,CTXFLOW okBox;
-    class TR goBox;
-    class ME warnBox;
-    class LO traceBox;
-    class RULE noteBox;</pre>
-<figcaption>شکل ۹-۵: درخت <bdi dir="ltr">Span</bdi> در یک <bdi dir="ltr">trace</bdi> توزیع‌شده، انتشار <bdi dir="ltr">Context</bdi> و سه رکن <bdi dir="ltr">Observability</bdi></figcaption>
-</figure>
 <p>در نمودار بالا ریشه درخت <bdi dir="ltr">Span</bdi> درخواست <bdi dir="ltr">HTTP GET /api/order</bdi> در سرویس <bdi dir="ltr">gateway</bdi> است. این <bdi dir="ltr">root span</bdi> چهار <bdi dir="ltr">child span</bdi> دارد که هر کدام در یک سرویس متفاوت اجرا می‌شوند. </p><p>خطوط نقطه‌چین نارنجی مرزهای سرویسی را نشان می‌دهند — هر بار که درخواست از یک سرویس به سرویس دیگر عبور می‌کند، <bdi dir="ltr">trace context</bdi> از طریق هدرهای <bdi dir="ltr">HTTP</bdi> (<bdi dir="ltr">traceparent</bdi> و <bdi dir="ltr">tracestate</bdi>) منتقل می‌شود. </p><p>این انتشار تضمین می‌کند که تمام <bdi dir="ltr">Span</bdi>‌ها دارای یک <bdi dir="ltr">trace ID</bdi> یکسان هستند و در <bdi dir="ltr">Grafana Tempo</bdi> به‌صورت یک <bdi dir="ltr">trace</bdi> واحد نمایش داده می‌شوند. بدون این مکانیزم هر سرویس <bdi dir="ltr">trace</bdi> مستقلی ایجاد می‌کرد و ردیابی مسیر کامل درخواست از <bdi dir="ltr">gateway</bdi> تا <bdi dir="ltr">user service</bdi> غیرممکن بود. </p><p>بخش پایینی نمودار سه رکن <bdi dir="ltr">observability</bdi> و نقش هر یک را نشان می‌دهد: <bdi dir="ltr">tracing</bdi> برای مسیریابی بین سرویس‌ها، <bdi dir="ltr">metrics</bdi> برای اعداد تجمیعی و <bdi dir="ltr">logging</bdi> برای جزئیات رویدادها.</p>
 <h3 id="سناریوهای-عملیاتی-تلهمتری">9.3.15 سناریوهای عملیاتی</h3>
 <ul>
@@ -706,7 +545,6 @@ func main() {
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/xml.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/ini.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/plaintext.min.js"></script>
-<script src="assets/js/diagrams.js"></script>
 <script src="assets/js/main.js"></script>
 </body>
 </html>

@@ -68,22 +68,6 @@
 <h2 id="خواندن-دادههای-ورودی-از-request">خواندن داده‌های ورودی از request</h2><div class="abstract">
 <strong>چکیده:</strong> این بخش خواندن ورودی درخواست HTTP را پوشش می‌دهد: query، form، JSON و file upload. الگوی validation و bind to struct بررسی می‌شود. تفاوت با $_GET، $_POST و Request در PHP مشخص می‌گردد.
 </div>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-    REQ["http.Request"] --&gt; Q["Query Parameters<br/>?key=value<br/>r.URL.Query().Get()"]
-    REQ --&gt; P["Path Parameters<br/>/user/123<br/>r.URL.Path parsing"]
-    REQ --&gt; B["Request Body<br/>JSON / Form Data<br/>json.NewDecoder()"]
-    NOTE(["اعتبارسنجی + MaxBytesReader"])
-    REQ ~~~ NOTE
-
-    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef neuBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
-    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
-    class REQ goBox;
-    class Q,P,B neuBox;
-    class NOTE warnBox;</pre>
-<figcaption>شکل ۷-۳: جریان خواندن داده‌های ورودی از درخواست <bdi dir="ltr">HTTP</bdi></figcaption>
-</figure>
 <p>در برنامه‌های وب دریافت و پردازش داده‌های ارسالی توسط کلاینت نقش بسیار مهمی دارد. این داده‌ها ممکن است به شکل Path params، Query params یا Request Body باشند. در این بخش نحوه خواندن و مدیریت هرکدام را به صورت دقیق و کاربردی توضیح می‌دهیم.</p>
 <h3 id="خواندن-query-parameters">7.3.1 خواندن Query Parameters</h3>
 <p>پارامترهای کوئری در URL بعد از علامت ? قرار می‌گیرند و معمولا برای فیلتر، صفحه‌بندی، یا جستجو استفاده می‌شوند.</p>
@@ -134,28 +118,6 @@ mux.HandleFunc("GET /user/{id}", func(w http.ResponseWriter, r *http.Request) {
 <h3 id="خواندن-دادههای-request-body">7.3.3 خواندن داده‌های Request Body</h3>
 <p>داده‌هایی که در درخواست POST، PUT، PATCH ارسال می‌شوند معمولا در بخش Body قرار دارند. این داده‌ها می‌توانند فرمت‌های مختلفی مثل JSON، فرم‌های HTML (urlencoded) یا فایل باشند.</p>
 <p>برای خواندن JSON ابتدا باید Body را بخوانید و سپس آن را به ساختار Go دیکد کنید.</p>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-    REQ["http.Request"] --&gt; U["URL Params<br/>/user/:id<br/>r.URL.Path"]
-    REQ --&gt; Q["Query Params<br/>?page=2&amp;q=go<br/>r.URL.Query()"]
-    REQ --&gt; F["Form Data<br/>application/x-www...<br/>r.FormValue()"]
-    REQ --&gt; J["JSON Body<br/>application/json<br/>json.NewDecoder()"]
-    REQ --&gt; H["Headers<br/>Authorization<br/>r.Header.Get()"]
-    NOTE(["همه منابع داده باید اعتبارسنجی شوند + محدودیت حجم با MaxBytesReader"])
-    WARN(["هرگز به داده ورودی اعتماد نکنید — خطر SQL Injection و XSS"])
-    REQ ~~~ NOTE
-    NOTE ~~~ WARN
-
-    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef neuBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
-    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
-    classDef errBox fill:#fef2f2,stroke:#ef4444,stroke-width:1.5px,color:#1f2937;
-    class REQ goBox;
-    class U,Q,F,J,H neuBox;
-    class NOTE warnBox;
-    class WARN errBox;</pre>
-<figcaption dir="rtl">شکل ۷-۳-ب: منابع داده درخواست <bdi dir="ltr">HTTP</bdi> — پنج منبع اصلی ورودی</figcaption>
-</figure>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">import (
 "encoding/json"
@@ -378,75 +340,6 @@ func createArticleHandler(w http.ResponseWriter, r *http.Request) {
 </table>
 <h3 id="مقایسه-روشهای-پارس-ورودی-درخواست">7.3.9 مقایسه روش‌های پارس ورودی درخواست</h3>
 <p>یکی از مهم‌ترین تفاوت‌های بنیادین بین <bdi dir="ltr">PHP</bdi> و <bdi dir="ltr">Go</bdi> در نحوه دسترسی به داده‌های ورودی درخواست است. در <bdi dir="ltr">PHP</bdi> سوپرگلوبال‌هایی مثل <code dir="ltr">$_GET</code> و <code dir="ltr">$_POST</code> به صورت خودکار توسط موتور <bdi dir="ltr">PHP</bdi> پر می‌شوند و توسعه‌دهنده نیازی به فراخوانی صریح ندارد. </p><p>اما در <bdi dir="ltr">Go</bdi> هر نوع داده ورودی با متد و رویکرد متفاوتی استخراج می‌شود و توسعه‌دهنده باید بداند کدام متد را برای کدام هدف استفاده کند. </p><p>این تفاوت در عمل مزیت محسوب می‌شود زیرا کنترل دقیق‌تری روی منبع داده و نحوه پردازش آن به شما می‌دهد، اما نیازمند آشنایی کامل با هر متد و رفتار آن است. در نمودار زیر می‌توانید شش روش اصلی استخراج داده از درخواست <bdi dir="ltr">HTTP</bdi> در <bdi dir="ltr">Go</bdi> را همراه با معادل <bdi dir="ltr">PHP</bdi> آن‌ها مشاهده کنید:</p>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-    HTTP(["HTTP Request"]) --&gt; METHODS
-
-    subgraph METHODS["منبع داده"]
-        direction TB
-        M1["کوئری + فرم (urlencoded)"]
-        M2["فقط پارامترهای کوئری"]
-        M3["آپلود فایل (multipart)"]
-        M4["بدنه JSON درخواست"]
-        M5["هدرهای HTTP درخواست"]
-        M6["Go 1.22+ پارامتر مسیر"]
-    end
-
-    subgraph GO["Go Method"]
-        direction TB
-        G1["r.FormValue("key")ابتدا کوئری، سپس body"]
-        G2["r.URL.Query().Get("key")بدون فراخوانی ParseForm"]
-        G3["r.FormFile("file")بررسی نوع واقعی فایل"]
-        G4["json.NewDecoder(r.Body)استریم + اعتبارسنجی ساختار"]
-        G5["r.Header.Get("Key")"]
-        G6["r.PathValue("id")mux.HandleFunc pattern"]
-    end
-
-    subgraph PHP["PHP Equivalent"]
-        direction TB
-        P1["$_GET['key'] · $_POST['key']تفکیک‌شده بر متد"]
-        P2["$_GET['key']معادل دقیق"]
-        P3["$_FILES['file']شامل tmp_name, name, size"]
-        P4["json_decode(file_get_contents('php://input'))"]
-        P5["$_SERVER['HTTP_*']پیشوند HTTP_ اضافه می‌شود"]
-        P6["$_GET['id']توسط .htaccess بازنویسی"]
-    end
-
-    subgraph SRC["نمونه‌ی منبع"]
-        direction TB
-        S1["?key=value · form-urlencoded body"]
-        S2["?page=2&amp;q=go"]
-        S3["multipart/form-data · &lt;input type="file"&gt;"]
-        S4["application/json · {"name": "Ali"}"]
-        S5["Authorization · Content-Type"]
-        S6["/user/{id}"]
-    end
-
-    G1 -.- P1
-    G2 -.- P2
-    G3 -.- P3
-    G4 -.- P4
-    G5 -.- P5
-    G6 -.- P6
-    G1 -.- S1
-    G2 -.- S2
-    G3 -.- S3
-    G4 -.- S4
-    G5 -.- S5
-    G6 -.- S6
-
-    GOLD([قانون طلایی: همیشه Content-Type هدر را قبل از پارس بررسی کنید — هرگز سعی...])
-
-    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef phpBox fill:#f5f0fb,stroke:#777BB4,stroke-width:1.5px,color:#1f2937;
-    classDef neuBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
-    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
-    class HTTP,G1,G2,G3,G4,G5,G6 goBox;
-    class P1,P2,P3,P4,P5,P6 phpBox;
-    class M1,M2,M3,M4,M5,M6,S1,S2,S3,S4,S5,S6 neuBox;
-    class GOLD warnBox;</pre>
-<figcaption dir="rtl">شکل ۷-۳-ج: مقایسه روش‌های پارس ورودی درخواست در <bdi dir="ltr">Go</bdi> و <bdi dir="ltr">PHP</bdi> — شش روش اصلی استخراج داده</figcaption>
-</figure>
 <p>در جدول بالا شش روش اصلی استخراج داده از درخواست <bdi dir="ltr">HTTP</bdi> نمایش داده شده است. هر روش منبع داده خاص خود را دارد و رفتار متفاوتی از خود نشان می‌دهد. برای مثال <code dir="ltr">r.FormValue()</code> برخلاف <code dir="ltr">$_POST</code> در <bdi dir="ltr">PHP</bdi> ابتدا در پارامترهای کوئری جستجو می‌کند و سپس در بدنه درخواست، که می‌تواند رفتار غیرمنتظره‌ای ایجاد کند. </p><p>همچنین <code dir="ltr">r.PathValue()</code> که در <bdi dir="ltr">Go 1.22</bdi> اضافه شده، امکان تعریف پارامترهای مسیر را بدون نیاز به فریم‌ورک خارجی فراهم می‌کند. درک این تفاوت‌ها برای مهاجرت صحیح از <bdi dir="ltr">PHP</bdi> به <bdi dir="ltr">Go</bdi> حیاتی است و از باگ‌های امنیتی جلوگیری می‌کند.</p>
 <h3 id="سناریوهای-عملیاتی-خواندن-ورودی">7.3.10 سناریوهای عملیاتی خواندن ورودی درخواست</h3>
 <p>در پروژه‌های واقعی با انواع مختلفی از درخواست‌ها روبرو می‌شوید که هر کدام نیازمند رویکرد متفاوتی برای خواندن و اعتبارسنجی داده‌ها هستند. شناخت مناسب سناریوهای عملیاتی به شما کمک می‌کند تا برای هر موقعیت بهترین روش پارس را انتخاب کنید و از خطاهای رایج جلوگیری کنید. در ادامه پنج سناریوی عملیاتی پرتکرار را بررسی می‌کنیم:</p>
@@ -502,7 +395,6 @@ func createArticleHandler(w http.ResponseWriter, r *http.Request) {
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/xml.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/ini.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/plaintext.min.js"></script>
-<script src="assets/js/diagrams.js"></script>
 <script src="assets/js/main.js"></script>
 </body>
 </html>

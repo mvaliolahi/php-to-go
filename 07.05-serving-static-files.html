@@ -68,28 +68,6 @@
 <h2 id="سرو-کردن-فایلهای-استاتیک">سرو کردن فایل‌های استاتیک</h2><div class="abstract">
 <strong>چکیده:</strong> این بخش سرو فایل‌های استاتیک با net/http را پوشش می‌دهد: FileServer، ServeFile و embed.FS. الگوی caching و ETag بررسی می‌شود. تفاوت با Nginx static serving و کاربردهای عملی پوشش داده می‌گردد.
 </div>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart LR
-    B["Browser"] --&gt;|"/static/"| SP["StripPrefix<br/>+ FileServer"]
-    SP --&gt; DIR["./static/"]
-    DIR --&gt; FILES["CSS, JS, Images"]
-
-    subgraph SEC["نکات امنیتی"]
-        direction TB
-        S1["• محدود کردن دایرکتوری‌ها"]
-        S2["• Cache-Control Headers"]
-        S3["• جلوگیری از Directory Listing"]
-    end
-    SP ~~~ SEC
-
-    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef neuBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
-    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
-    class SP,DIR goBox;
-    class B,FILES neuBox;
-    class S1,S2,S3 warnBox;</pre>
-<figcaption>شکل ۷-۵: جریان سرو فایل‌های استاتیک در <bdi dir="ltr">Go</bdi></figcaption>
-</figure>
 <p>سرو کردن فایل‌های استاتیک (CSS، JavaScript، تصاویر) یکی از ملزومات هر وب‌سروری است. Go به سادگی این کار را انجام می‌دهد اما در محیط production باید موارد امنیتی و بهینه‌سازی را رعایت کرد.</p>
 <div class="note"><strong>داخلی‌های http.FileServer:</strong> <code dir="ltr">http.FileServer</code> یک <code dir="ltr">http.Handler</code> است که از رابط <code dir="ltr">fs.FS</code> فایل‌ها را می‌خواند. این هندلر به صورت خودکار Content-Type را بر اساس پسوند فایل تنظیم می‌کند، از هدرهای <code>Last-Modified</code> و <code>If-Modified-Since</code> برای کش شرطی پشتیبانی می‌کند، و درخواست‌های دایرکتوری را به <code dir="ltr">index.html</code> هدایت می‌کند. اگر <code dir="ltr">index.html</code> وجود نداشته باشد، لیست فایل‌ها نمایش داده می‌شود که باید غیرفعال شود.</div>
 <figure class="code go" dir="ltr">
@@ -191,96 +169,6 @@ func smartCacheMiddleware(next http.Handler) http.Handler {
 <div class="tip"><strong>نکته:</strong> برای فایل‌های استاتیک که نام آن‌ها شامل هش محتوا است (مثل <code>style.a1b2c3.css</code>)، می‌توانید از <code>immutable</code> در هدر <code>Cache-Control</code> استفاده کنید. این به مرورگر می‌گوید که هرگز نسخه جدیدی را بررسی نکند. برای فایل‌های بدون هش، از <code>max-age</code> کوتاه‌تر استفاده کنید.</div>
 <h3 id="نگاشت-سیستم-فایل-به-mechanisms-http">7.5.5 نگاشت سیستم فایل به مسیرهایHTTP</h3>
 <p>یکی از مفاهیم کلیدی در سرو فایل‌های استاتیک، درک نحوه تبدیل ساختار دایرکتوری فایل‌ها به مسیرهای <bdi dir="ltr">HTTP</bdi> است. در <bdi dir="ltr">PHP</bdi> این کار معمولاً توسط وب‌سرور <bdi dir="ltr">Nginx</bdi> یا <bdi dir="ltr">Apache</bdi> انجام می‌شود و فایل‌ها مستقیماً از دیسک خوانده می‌شوند. </p><p>اما در <bdi dir="ltr">Go</bdi> فرآیند متفاوت است: <code dir="ltr">http.FileServer</code> از رابط <code dir="ltr">fs.FS</code> برای خواندن فایل‌ها استفاده می‌کند و هدرهای <bdi dir="ltr">HTTP</bdi> مناسب را به صورت خودکار تنظیم می‌نماید. </p><p>در نمودار زیر می‌توانید جریان کامل نگاشت از سیستم فایل تا پاسخ <bdi dir="ltr">HTTP</bdi> را مشاهده کنید، از جمله عملکرد <code dir="ltr">http.StripPrefix</code> برای حذف پیشوند مسیر، تشخیص خودکار <code dir="ltr">Content-Type</code>، و هدرهای کش:</p>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-    subgraph FS["Filesystem: ./static/"]
-        direction TB
-        F1["📁 static/"]
-        F2["├── 📁 css/ └── style.css"]
-        F3["├── 📁 js/ └── app.js"]
-        F4["├── 📁 img/ └── logo.png"]
-        F5["└── index.html"]
-    end
-
-    FS --&gt; HD["http.Dir("./static") → fs.FS"]
-    HD --&gt; FSR["http.FileServer(http.Dir("static"))"]
-    FSR --&gt; SP["StripPrefix("/static/")<br/>/static/css/style.css → css/style.css"]
-
-    subgraph FEAT["ویژگی‌های کش و امنیت خودکار"]
-        direction TB
-        FE1["mime.TypeByExtension() → Content-Type"]
-        FE2["Last-Modified / If-Modified-Since → 304"]
-        FE3["Range / Content-Range → partial content"]
-        FE4["ETag / If-None-Match → 304"]
-        FE5["X-Content-Type-Options: nosniff"]
-    end
-    SP --&gt; FEAT
-    FEAT --&gt; HS["http.Handler → ServeHTTP(w, r)"]
-    HS --&gt; R["HTTP Response"]
-
-    subgraph CACHE["Cache Headers"]
-        direction TB
-        CA1["Cache-Control: max-age=3600"]
-        CA2["ETag: "hash-of-content""]
-        CA3["Last-Modified: timestamp"]
-        CA4["→ 304 Not Modified ✓ · Bandwidth saved ✓"]
-    end
-
-    subgraph CT["Content-Type Detection"]
-        direction TB
-        CT1["mime.TypeByExtension()"]
-        CT2[".css → text/css"]
-        CT3[".js → application/javascript"]
-        CT4["X-Content-Type-Options: nosniff → Prevents MIME sniffing ✓"]
-    end
-
-    subgraph RR["Range Requests"]
-        direction TB
-        RR1["Range: bytes=0-1023 → 206 Partial Content"]
-        RR2["Content-Range: bytes 0-1023/... → Video streaming · Resume downloads ✓"]
-    end
-
-    subgraph RESP["HTTP Responses"]
-        direction TB
-        RE1["GET /static/css/style.css → Content-Type: text/css"]
-        RE2["GET /static/js/app.js → Content-Type: application/javascript"]
-        RE3["GET /static/img/logo.png → Content-Type: image/png"]
-        RE4["Cache-Control, ETag, Last-Modified"]
-    end
-
-    subgraph CMP["embed.FS vs http.Dir — When to Use Which?"]
-        direction LR
-        subgraph EMB["embed.FS"]
-            direction TB
-            EM1["فایل‌ها در باینری کامپایل شده (single binary deployment)"]
-            EM2["مناسب برای اپلیکیشن‌های SPA و Docker containers"]
-            EM3["//go:embed static/*<br/>var staticFS embed.FS"]
-            EM4["✓ No external file dependencies"]
-        end
-        subgraph DISK["http.Dir (Filesystem)"]
-            direction TB
-            DI1["فایل‌ها از دیسک خوانده می‌شوند — بروزرسانی بدون ری‌استارت"]
-            DI2["مناسب برای فایل‌های آپلودشده و محتوای دینامیک"]
-            DI3["http.FileServer(http.Dir("./uploads"))"]
-            DI4["✓ Can update files without redeployment"]
-        end
-    end
-
-    CODE1["//go:embed static/*<br/>var staticFS embed.FS<br/>http.FileServer(http.FS(staticFS))"]
-    CODE2["// embed.FS implements fs.FS interface"]
-
-    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef neuBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
-    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
-    classDef bothBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
-    class F1,F2,F3,F4,F5,HD,FSR,SP,HS neuBox;
-    class FE1,FE2,FE3,FE4,FE5,CA1,CA2,CA3,CA4,CT1,CT2,CT3,CT4,RR1,RR2,RE1,RE2,RE3,RE4 goBox;
-    class EM1,EM2,EM3,EM4 goBox;
-    class DI1,DI2,DI3,DI4 warnBox;
-    class CODE1,CODE2 neuBox;
-    class R neuBox;</pre>
-<figcaption dir="rtl">شکل ۷-۵-ب: نگاشت سیستم فایل به مسیرهای <bdi dir="ltr">HTTP</bdi> — مقایسه <code dir="ltr">embed.FS</code> و <code dir="ltr">http.Dir</code> با ویژگی‌های کش و امنیت</figcaption>
-</figure>
 <p>در نمودار بالا جریان کامل سرو فایل‌های استاتیک نمایش داده شده است. سمت چپ ساختار دایرکتوری فایل‌ها، وسط عملکرد <code dir="ltr">http.FileServer</code> به عنوان آداپتور، و سمت راست پاسخ‌های <bdi dir="ltr">HTTP</bdi> نهایی قابل مشاهده است. </p><p>نکته مهم این است که <code dir="ltr">http.StripPrefix</code> پیشوند <code>/static/</code> را از مسیر حذف می‌کند تا <code dir="ltr">FileServer</code> بتواند فایل صحیح را در دایرکتوری پیدا کند. </p><p>همچنین <code dir="ltr">embed.FS</code> برای اپلیکیشن‌هایی مناسب است که می‌خواهند همه فایل‌ها در باینری کامپایل شوند، در حالی که <code dir="ltr">http.Dir</code> برای فایل‌هایی که نیاز به بروزرسانی بدون ری‌استارت دارند مناسب‌تر است.</p>
 <h3 id="سناریوهای-عملیاتی-فایل-استاتیک">7.5.6 سناریوهای عملیاتی سرو فایل‌های استاتیک</h3>
 <p>در محیط‌های عملیاتی مختلف، سرو فایل‌های استاتیک نیازمند استراتژی‌های متفاوتی است. از اپلیکیشن‌های تک‌صفحه‌ای تا سیستم‌های مدیریت محتوا، هر سناریو چالش‌ها و راه‌حل‌های خاص خود را دارد. درک این سناریوها به شما کمک می‌کند تا بهترین تصمیم معماری را برای پروژه خود بگیرید. در ادامه پنج سناریوی عملیاتی رایج را بررسی می‌کنیم:</p>
@@ -365,7 +253,6 @@ func smartCacheMiddleware(next http.Handler) http.Handler {
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/xml.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/ini.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/plaintext.min.js"></script>
-<script src="assets/js/diagrams.js"></script>
 <script src="assets/js/main.js"></script>
 </body>
 </html>

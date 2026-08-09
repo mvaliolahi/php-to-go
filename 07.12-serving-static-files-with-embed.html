@@ -68,62 +68,8 @@
 <h2 id="server-فایلهای-استاتیک-با-استفاده-از-embed">Server فایل‌های استاتیک با استفاده از embed</h2><div class="abstract">
 <strong>چکیده:</strong> این بخش سرو static file با embed.FS را پوشش می‌دهد: FileServer از embed و کاربردهای عملی. الگوی deployment تک‌فایلی برای SPA و asset بررسی می‌شود. تفاوت با Nginx مشخص می‌گردد.
 </div>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart LR
-    SRC["static/├── css/├── js/└── images/"]
-    EMB["//go:embedembed.FS"]
-    SUB["fs.Sub()subtree"]
-    HFS["http.FS()http.FileSystem"]
-    FS["http.FileServer()handler"]
-    SP["http.StripPrefix()route"]
-    OUT["HTTP Response/static/css/style.css"]
-
-    SRC --&gt; EMB --&gt; SUB --&gt; HFS --&gt; FS --&gt; SP --&gt; OUT
-
-    note([مزایای embed برای فایل‌های استاتیک:• استقرار با یک فایل باینری — بدون...])
-    OUT ~~~ note
-
-    classDef srcBox  fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
-    classDef goBox   fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef outBox  fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
-    classDef noteBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1px,color:#1f2937,font-style:italic;
-    class SRC srcBox;
-    class EMB,SUB,HFS,FS,SP goBox;
-    class OUT outBox;
-    class note noteBox;</pre>
-<figcaption>شکل ۷-۱۲: جریان سرو فایل‌های استاتیک با پکیج <bdi dir="ltr">embed</bdi></figcaption>
-</figure>
 <p>این روش نه‌تنها باعث ساده‌تر شدن Deployment می‌شود بلکه به امنیت و پایداری بیشتر پروژه در محیط production کمک می‌کند.</p>
 <p><strong>ساختار پیشنهادی پروژه</strong></p>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-    Root["project/"]
-    Main["main.go"]
-    Static["static/"]
-    Tmpl["templates/"]
-    CSS["css/"]
-    JS["js/"]
-    Layout["layout.html"]
-    Style["style.css"]
-    AppJs["app.js"]
-
-    Root --&gt; Main
-    Root --&gt; Static
-    Root --&gt; Tmpl
-    Static --&gt; CSS
-    Static --&gt; JS
-    Tmpl --&gt; Layout
-    CSS --&gt; Style
-    JS --&gt; AppJs
-
-    classDef rootBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937,font-weight:bold;
-    classDef fileBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1px,color:#1f2937;
-    classDef dirBox  fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
-    class Root rootBox;
-    class Main,Layout,Style,AppJs fileBox;
-    class Static,Tmpl,CSS,JS dirBox;</pre>
-<figcaption dir="rtl">ساختار پیشنهادی پروژه با فایل‌های استاتیک</figcaption>
-</figure>
 <p><strong>جاسازی فایل‌های استاتیک</strong></p>
 <p>برای این‌که http.FileServer بتواند از فایل‌های جاسازی‌شده استفاده کند، باید زیردایرکتوری موردنظر را استخراج کنیم:</p>
 <h3 id="نقش-fssub-و-httpfs">7.12.1 نقش fs.Sub و http.FS</h3>
@@ -205,45 +151,6 @@ func embeddedCacheMiddleware(next http.Handler) http.Handler {
 <div class="tip"><strong>نکته:</strong> برای تنظیم نسخه برنامه در زمان بیلد، از <bdi dir="ltr">ldflags</bdi> استفاده کنید: <code dir="ltr">go build -ldflags "-X main.appVersion=1.2.3"</code>. این روش امکان تغییر نسخه بدون تغییر سورس کد را فراهم می‌کند و هنگام استقرار نسخه جدید، مرورگرها فایل‌های جدید را بارگذاری خواهند کرد.</div>
 <h3 id="زنجیره-embedfs-و-httpfs-و-fileserver">7.12.3 زنجیره‌یembed.FSوhttp.FSوFileServer</h3>
 <p>سرو کردن فایل‌های استاتیک در <bdi dir="ltr">Go</bdi> با <code dir="ltr">embed</code> شامل یک زنجیره‌ی تبدیل مشخص است که هر حلقه‌ی آن وظیفه‌ی خاصی دارد. دستور <code dir="ltr">//go:embed</code> فایل‌ها را در زمان کامپایل به باینری جاسازی می‌کند و یک <code dir="ltr">embed.FS</code> تولید می‌کند که رابط <code dir="ltr">fs.FS</code> را پیاده‌سازی می‌کند. </p><p>تابع <code dir="ltr">http.FS()</code> این رابط عمومی را به <code dir="ltr">http.FileSystem</code> تبدیل می‌کند و <code dir="ltr">http.FileServer</code> آن را به یک <code dir="ltr">http.Handler</code> تبدیل می‌کند. </p><p>مسیرهای <code dir="ltr">embed.FS</code> نسبت به فایل منبع تعیین می‌شوند و مزیت اصلی این روش، تولید باینری واحد با تمام فایل‌های استاتیک است.</p>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-    subgraph CHAIN["زنجیره‌ی embed.FS → http.FS → FileServer"]
-        direction LR
-        E1["//go:embedembed.FS"]
-        F1["fs.Sub()fs.FS"]
-        H1["http.FS()http.FS"]
-        S1["http.FileServer()http.FileServer"]
-        END["HTTP Handler"]
-        E1 --&gt; F1 --&gt; H1 --&gt; S1 --&gt; END
-    end
-
-    subgraph IFACES["روابط (Interfaces)"]
-        direction TB
-        I1["embed.FS → fs.FS interface { Open(name) }"]
-        I2["http.FS → http.FileSystem { Open(name) }"]
-        I1 --&gt; I2
-    end
-
-    subgraph PATHS["نگاشت مسیرها"]
-        direction TB
-        P1["embed.FS paths ≡ source tree pathsstatic/css/style.css → /static/css/style.css"]
-        P2[PHP: public/ → Apache/Nginx serves filesدر PHP فایل‌ها روی دیسک و توسط...]
-    end
-
-    note([مزیت: باینری واحد با تمام فایل‌های استاتیک — بدون وابستگی خارجیقاعده‌ی...])
-
-    CHAIN ~~~ IFACES ~~~ PATHS ~~~ note
-
-    classDef chainBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef ifaceBox fill:#f5f0fb,stroke:#777BB4,stroke-width:1.5px,color:#1f2937;
-    classDef pathBox  fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
-    classDef noteBox  fill:#ecfdf5,stroke:#10b981,stroke-width:1px,color:#1f2937,font-style:italic;
-    class E1,F1,H1,S1,END chainBox;
-    class I1,I2 ifaceBox;
-    class P1,P2 pathBox;
-    class note noteBox;</pre>
-<figcaption>زنجیره‌ی <bdi dir="ltr">embed.FS → http.FS → FileServer</bdi>: تبدیل فایل‌های جاسازی‌شده به <bdi dir="ltr">HTTP Handler</bdi></figcaption>
-</figure>
 <h3 id="سناریوهای-عملیاتی-embed-fs">7.12.4 سناریوهای عملیاتی</h3>
 <ul>
 <li><strong>جاسازی یک <bdi dir="ltr">SPA</bdi> (<bdi dir="ltr">React/Vue</bdi>):</strong> فایل‌های بیلد <bdi dir="ltr">React</bdi> یا <bdi dir="ltr">Vue</bdi> را با <code dir="ltr">//go:embed dist/*</code> در باینری جاسازی کنید و با <code dir="ltr">http.FileServer</code> سرو کنید. یک باینری واحد شامل اپلیکیشن کامل <bdi dir="ltr">frontend</bdi> و <bdi dir="ltr">backend</bdi> خواهد بود. مسیرهای <bdi dir="ltr">SPA</bdi> را با <code dir="ltr">http.HandleFunc</code> به <code dir="ltr">index.html</code> هدایت کنید.</li>
@@ -297,7 +204,6 @@ func embeddedCacheMiddleware(next http.Handler) http.Handler {
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/xml.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/ini.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/plaintext.min.js"></script>
-<script src="assets/js/diagrams.js"></script>
 <script src="assets/js/main.js"></script>
 </body>
 </html>

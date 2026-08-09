@@ -281,42 +281,6 @@ jobs:
     - run: go build -o /dev/null ./cmd/...
 </code></pre>
 </figure>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart LR
-        subgraph DEV["توسعه"]
-            D1["go run, goimports"]
-        end
-        subgraph FMT["فرمت و لینت"]
-            F1["gofmt, golangci-lint"]
-        end
-        subgraph TST["تست"]
-            T1["go test -race -cover"]
-        end
-        subgraph BLD["ساخت"]
-            B1["go build, go mod"]
-        end
-        subgraph MOD["ماژول"]
-            M1["GOPROXY, go.sum"]
-        end
-        subgraph XCOMP["کامپایل متقابل"]
-            X1["GOOS/GOARCH"]
-        end
-        subgraph DOCK["بسته‌بندی Docker"]
-            K1["FROM scratch, ~5MB"]
-        end
-        subgraph CI["CI/CD Pipeline"]
-            C1["GitHub Actions, GitLab CI"]
-        end
-        subgraph PROD["تولید"]
-            P1["K8s, systemd, scalar"]
-        end
-
-        DEV --&gt; FMT --&gt; TST --&gt; BLD --&gt; MOD --&gt; XCOMP --&gt; DOCK --&gt; CI --&gt; PROD
-
-        classDef stageBox fill:#f8fafc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-        class DEV,FMT,TST,BLD,MOD,XCOMP,DOCK,CI,PROD stageBox;</pre>
-<figcaption>شکل ۱-۴-الف: جریان ابزار <bdi dir="ltr">Go</bdi> — از نوشتن تا دیپلوی</figcaption>
-</figure>
 <h3 id="go-fix-modernizers">1.4.9 دستور go fix و مدرنایزرها — Go 1.26</h3>
 <p>
  دستور قدیمی <code>go fix</code> در Go 1.26 به‌طور کامل بازنویسی شده و اکنون میزبان مدرنایزرهای Go
@@ -354,54 +318,6 @@ go fix -fix buildtag ./...</code></pre>
 </div>
 <h3 id="نمای-کلی-ابزار-go">1.4.10 نمای کلی ابزار Go: مقایسه با PHP</h3>
 <p>یکی از بزرگ‌ترین تفاوت‌های بین اکوسیستم Go و PHP در ابزارهای داخلی نهفته است. در PHP برای هر تسکی ابزار جداگانه‌ای نیاز است: <bdi dir="ltr">Composer</bdi> برای مدیریت وابستگی، <bdi dir="ltr">PHPUnit</bdi> برای تست، <bdi dir="ltr">PHPStan</bdi> برای تحلیل ایستا و <bdi dir="ltr">php-cs-fixer</bdi> برای فرمت کد. اما Go تمام این ابزارها را در خود زبان تعبیه کرده است. </p><p>این یکپارچگی نه‌تنها فرآیند توسعه را ساده‌تر می‌کند، بلکه تضمین می‌کند که هر پروژه‌ی Go از همان ابزارهای استاندارد استفاده می‌کند و نیازی به تنظیمات پیچیده ندارد. در نمودار زیر می‌توانید ببینید که هر ابزار Go چه خروجی‌ای تولید می‌کند و معادل آن در PHP چیست.</p>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-    SRC["سورس‌کد (.go files)<br/>main.go, handler.go, model.go<br/>*_test.go, go.mod"]
-    SUM["وابستگی‌ها<br/>go.sum — هش‌های تأیید"]
-
-    subgraph TOOLS["ابزارهای Go — همگی داخل خود زبان"]
-        direction TB
-        T1["go build — کامپایل ← لینک ← باینری<br/>معادل: ندارد"]
-        T2["go test — کامپایل تست ← اجرا ← گزارش<br/>≈ PHPUnit"]
-        T3["go vet — تحلیل ایستا — اشکالات رایج<br/>≈ PHPStan"]
-        T4["go fmt — فرمت خودکار کد<br/>≈ php-cs-fixer"]
-        T5["go mod — مدیریت وابستگی‌ها<br/>≈ Composer"]
-        T6["go run — کامپایل + اجرا<br/>≈ php file.php"]
-    end
-
-    OUT1["Binary Executable<br/>فایل اجرایی مستقل — بدون وابستگی"]
-    OUT2["Test Report<br/>گزارش تست + پوشش کد"]
-    OUT3["Warnings<br/>هشدارهای تحلیل ایستا"]
-    OUT4["Formatted Code<br/>کد فرمت‌شده با استاندارد Go"]
-    OUT5["go.mod + go.sum<br/>فایل‌های وابستگی به‌روزشده"]
-    OUT6["خروجی برنامه<br/>اجرا مستقیم بدون فایل واسطه"]
-
-    SRC --&gt; T1 --&gt; OUT1
-    SRC --&gt; T2 --&gt; OUT2
-    SRC --&gt; T3 --&gt; OUT3
-    SRC --&gt; T4 --&gt; OUT4
-    SRC --&gt; T5 --&gt; OUT5
-    SRC --&gt; T6 --&gt; OUT6
-
-    subgraph CMP["مقایسه‌ی ابزارهای PHP با Go"]
-        direction LR
-        C1["Composer ≈ go mod — مدیریت وابستگی و نسخه‌بندی"]
-        C2["PHPUnit ≈ go test — اجرا و گزارش تست واحد"]
-        C3["PHPStan ≈ go vet — تحلیل ایستا و تشخیص اشکال"]
-        C4["php-cs-fixer ≈ go fmt — فرمت خودکار با استاندارد یکسان"]
-        C5["php file.php ≈ go run — اجرا بدون ساخت باینری"]
-    end
-
-    classDef srcBox    fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
-    classDef toolBox   fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef outBox    fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
-    classDef cmpBox    fill:#fffbeb,stroke:#f59e0b,stroke-width:1px,color:#1f2937;
-    class SRC,SUM srcBox;
-    class T1,T2,T3,T4,T5,T6 toolBox;
-    class OUT1,OUT2,OUT3,OUT4,OUT5,OUT6 outBox;
-    class C1,C2,C3,C4,C5 cmpBox;</pre>
-<figcaption>شکل ۱-۴-ب: نمای کلی <bdi dir="ltr">Go Toolchain</bdi> — از سورس‌کد تا خروجی با مقایسه‌ی ابزارهای <bdi dir="ltr">PHP</bdi></figcaption>
-</figure>
 <h3 id="سناریوهای-عملیاتی-ابزارها">1.4.11 سناریوهای عملیاتی</h3>
 <p>در پروژه‌های واقعی، ابزارهای Go نقش حیاتی در حفظ کیفیت و امنیت کد ایفا می‌کنند. در ادامه پنج سناریوی عملیاتی رایج را بررسی می‌کنیم که هر توسعه‌دهنده‌ی Go باید با آن‌ها آشنا باشد. </p><p>این سناریوها شامل تشخیص اشکالات پنهان با <bdi dir="ltr">go vet</bdi>، راه‌اندازی <bdi dir="ltr">CI</bdi> با <bdi dir="ltr">go test</bdi>، پاکسازی وابستگی‌ها با <bdi dir="ltr">go mod tidy</bdi>، تولید کد خودکار با <bdi dir="ltr">go generate</bdi> و پروفایلینگ عملکرد با <bdi dir="ltr">pprof</bdi> است. </p><p>هر یک از این سناریوها در عمل روزمره به‌طور مکرر استفاده می‌شوند و درک عمیق آن‌ها برای موفقیت در پروژه‌های حرفه‌ای ضروری است.</p>
 <ul>
@@ -458,7 +374,6 @@ go fix -fix buildtag ./...</code></pre>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/xml.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/ini.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/plaintext.min.js"></script>
-<script src="assets/js/diagrams.js"></script>
 <script src="assets/js/main.js"></script>
 </body>
 </html>

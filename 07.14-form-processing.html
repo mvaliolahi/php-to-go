@@ -69,45 +69,8 @@
 <h2 id="پردازش-فرمها">پردازش فرم‌ها</h2><div class="abstract">
 <strong>چکیده:</strong> این بخش پردازش form در Go را پوشش می‌دهد: parse، validate و file upload. الگوی bind to struct و validation library بررسی می‌شود. تفاوت با Laravel FormRequest و الگوی Go مشخص می‌گردد.
 </div>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-    F["ارسال فرم<br/>&lt;form POST&gt;"] --&gt; PF["ParseForm()<br/>r.Form / r.PostForm"]
-    PF --&gt; V["اعتبارسنجی<br/>Validator struct"]
-    V --&gt;|"معتبر"| PROC["پردازش<br/>ذخیره در DB"]
-    PROC --&gt; R["Redirect<br/>+ Flash Message"]
-    V --&gt;|"نامعتبر"| ERR["نمایش خطاها<br/>+ پر کردن مجدد فیلدها"]
-
-    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef neuBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
-    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
-    classDef errBox fill:#fef2f2,stroke:#ef4444,stroke-width:1.5px,color:#1f2937;
-    classDef bothBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
-    class F,PF,V,PROC,R goBox;
-    class ERR errBox;</pre>
-<figcaption dir="rtl">شکل ۷-۱۴: جریان پردازش فرم — از ارسال تا اعتبارسنجی و نمایش خطا</figcaption>
-</figure>
 <h3 id="تنظیم-فرم-html">7.14.1 تنظیم فرم HTML</h3>
 <p>در Go برخلاف Laravel، هیچ helper خودکاری برای تولید فرم وجود ندارد. فرم‌ها به صورت دستی در HTML نوشته می‌شوند:</p>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-    F["ارسال فرم"] --&gt; PF["ParseForm()"]
-    PF --&gt; V["اعتبارسنجی<br/>Validator struct"]
-    V --&gt;|"نامعتبر"| ERR["نمایش خطا + پر کردن مجدد"]
-    V --&gt;|"معتبر"| PROC["پردازش"]
-    PROC --&gt; R["Redirect 303<br/>+ Flash Message"]
-
-    NOTE(["الگوی POST-Redirect-GET: جلوگیری از ارسال مجدد فرم + CSRF محافظت ضروری"])
-    V ~~~ NOTE
-
-    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef neuBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
-    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
-    classDef errBox fill:#fef2f2,stroke:#ef4444,stroke-width:1.5px,color:#1f2937;
-    class F,PF,V,PROC,R goBox;
-    class ERR errBox;
-    class NOTE warnBox;</pre>
-<figcaption dir="rtl">شکل ۷-۱۴-ب: جریان اعتبارسنجی فرم — از ارسال تا نتیجه</figcaption>
-</figure>
 <figure class="code html" dir="ltr">
 <pre><code class="language-xml">&lt;!-- templates/contact.html --&gt;
 {{template "layout.html" .}}
@@ -568,66 +531,6 @@ func contactHandler(w http.ResponseWriter, r *http.Request) {
 </code></pre>
 </figure>
 <div class="warning"><strong>هشدار:</strong> هرگز نام فایل اصلی را مستقیماً برای ذخیره استفاده نکنید. مهاجم می‌تواند نام فایل مخرب (مثل <code>../../../etc/passwd</code>) ارسال کند. همیشه نام فایل را با <code dir="ltr">filepath.Base()</code> پاک‌سازی کنید یا یک نام تصادفی جدید تولید کنید. همچنین حتماً MIME type واقعی فایل را با <code dir="ltr">http.DetectContentType()</code> بررسی کنید، نه پسوند فایل.</div>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-    B["مرورگر<br/>POST /submit"] --&gt; PF["ParseForm()<br/>r.FormValue("field")"]
-    PF --&gt; V["اعتبارسنجی<br/>required / format / length"]
-    V --&gt; D{"تصمیم‌گیری: معتبر یا نامعتبر؟"}
-    D --&gt;|"معتبر"| OK["پردازش<br/>ذخیره در DB، ارسال ایمیل"]
-    D --&gt;|"نامعتبر"| RER["رندر مجدد فرم<br/>+ خطاها + مقادیر قبلی<br/>نمایش خطا"]
-    OK --&gt; R303["Redirect 303<br/>See Other + Flash"]
-
-    subgraph PRG["الگوی POST-Redirect-GET (PRG) — جلوگیری از ارسال مجدد فرم"]
-        direction TB
-        P1["POST /submit"]
-        P2["Redirect 303 → /success"]
-        P3["GET /success<br/>Refresh بی‌خطر ← ارسال مجدد نمی‌شود"]
-        P4["بدون PRG: Refresh ← ارسال مجدد!"]
-        P1 --&gt; P2 --&gt; P3
-        P1 -.-&gt; P4
-    end
-
-    subgraph CSRF["تایید توکن CSRF — محافظت در برابر جعل درخواست"]
-        direction TB
-        C1["csrf.Token(r) → hidden input"]
-        C2["Form Submission — token sent with POST"]
-        C3["Middleware Verify — compare token → 403 if invalid"]
-        C4["توکن معتبر ← ادامه"]
-        C5["توکن نامعتبر ← 403"]
-        C1 --&gt; C2 --&gt; C3
-        C3 --&gt; C4
-        C3 --&gt; C5
-    end
-
-    subgraph CMP["مقایسه اعتبارسنجی فرم: PHP $_POST در مقابل Go دستی"]
-        direction TB
-        subgraph LAR["Laravel — Automatic"]
-            direction TB
-            L1["$request-&gt;validate(['name' =&gt; 'required'])"]
-            L2["@csrf → auto token | @error → auto display"]
-        end
-        subgraph GOM["Go — Manual + Explicit"]
-            direction TB
-            G1["validator.NotBlank(form.Name)"]
-            G2["gorilla/csrf → {{.CSRFField}} | {{with .FormErrors.name}}"]
-        end
-    end
-
-    R303 --&gt; PRG
-
-    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef phpBox fill:#f5f0fb,stroke:#777BB4,stroke-width:1.5px,color:#1f2937;
-    classDef neuBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
-    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
-    classDef errBox fill:#fef2f2,stroke:#ef4444,stroke-width:1.5px,color:#1f2937;
-    classDef bothBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
-    class B,PF,V,OK,R303,P1,P2,P3,C1,C2,C3,C4,G1,G2 goBox;
-    class D,RER,C5 errBox
-    class P4 warnBox
-    class L1,L2 phpBox
-    class C5 errBox</pre>
-<figcaption>شکل ۷-۱۴-ج: خط لوله کامل پردازش فرم — از ارسال تا اعتبارسنجی، الگوی <bdi dir="ltr">PRG</bdi> و محافظت <bdi dir="ltr">CSRF</bdi></figcaption>
-</figure>
 <h3 id="سناریوهای-عملیاتی-فرم">7.14.8 سناریوهای عملیاتی فرم</h3>
 <p>پردازش فرم‌ها در پروژه‌های واقعی بسیار فراتر از دریافت چند فیلد ساده است. شما با سناریوهای پیچیده‌ای مواجه خواهید شد که نیاز به طراحی دقیق و درک عمیق از مکانیزم‌های وب دارند. در این بخش مهم‌ترین سناریوهای عملیاتی پردازش فرم را که هر توسعه‌دهنده <bdi dir="ltr">Go</bdi> باید بشناسد بررسی می‌کنیم. </p><p>این سناریوها شامل فرم‌های چندمرحله‌ای، آپلود فایل، الگوهای اعتبارسنجی، ارسال <bdi dir="ltr">AJAX</bdi> و محافظت <bdi dir="ltr">CSRF</bdi> هستند. </p><p>بدون تسلط بر این الگوها، نوشتن برنامه‌های وب امن و کاربردی عملاً امکان‌پذیر نیست و هر یک از این موارد در موقعیت‌های خاص خود چالش‌های منحصربه‌فردی ایجاد می‌کنند.</p>
 <ul>
@@ -682,7 +585,6 @@ func contactHandler(w http.ResponseWriter, r *http.Request) {
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/xml.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/ini.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/plaintext.min.js"></script>
-<script src="assets/js/diagrams.js"></script>
 <script src="assets/js/main.js"></script>
 </body>
 </html>

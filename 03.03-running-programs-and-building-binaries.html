@@ -68,36 +68,6 @@
 <h2 id="اجرای-برنامه-و--ساخت-فایل-خروجی">اجرای برنامه و ساخت فایل خروجی</h2><div class="abstract">
 <strong>چکیده:</strong> این بخش چرخه‌ی کامل build و run در Go را باز می‌کند: از go run تا go build با cross-compilation. تفاوت با PHP که مستقیماً از سورس اجرا می‌شود بررسی می‌شود. build flags، ldflags و تولید باینری بهینه پوشش داده می‌شود.
 </div>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-    title(["فرآیند ساخت و اجرا در Go"])
-    SRC["کد .go"]
-    BUILD["go build"]
-    BIN["باینری مستقل"]
-    RUN["./myapp → اجرا"]
-    SRC --&gt; BUILD --&gt; BIN --&gt; RUN
-
-    GORUN["go run<br/>کامپایل موقت + اجرای فوری (بدون فایل باینری)"]
-    BUILD -.-&gt; GORUN
-
-    note(["go build → خروجی قابل دیپلوی | go run → مناسب توسعه"])
-    RUN ~~~ note
-
-    classDef titleBox fill:#f8fafc,stroke:#475569,stroke-width:1px,color:#1f2937,font-weight:bold;
-    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef okBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
-    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
-    classDef errBox fill:#fef2f2,stroke:#ef4444,stroke-width:1.5px,color:#1f2937;
-    classDef noteBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1px,color:#1f2937,font-style:italic;
-    class title titleBox;
-    class SRC goBox;
-    class BUILD goBox;
-    class BIN okBox;
-    class RUN warnBox;
-    class GORUN errBox;
-    class note noteBox;</pre>
-<figcaption>فرآیند ساخت و اجرای برنامه در <bdi dir="ltr">Go</bdi></figcaption>
-</figure>
 <p>همانطور که تا اینجا گفته شد در Go برخلاف PHP که فایل‌ها را مستقیماً روی سرور تفسیر می‌کنید برنامه‌ها معمولاً کامپایل می‌شوند. با این حال ابزارهای مختلفی برای توسعه و اجرا در اختیار دارید:</p>
 <h3 id="go-run">3.3.1 go run</h3>
 <figure class="code go" dir="ltr">
@@ -316,87 +286,8 @@ upx --best myapp
 </code></pre>
 </figure>
 <div class="comparison"><strong>مقایسه با PHP:</strong> در PHP فایل‌های منبع مستقیماً روی سرور اجرا می‌شوند و نیازی به باینری نیست. اما برای دیپلوی باید مفسر PHP، تمام extensionها و فایل‌های پروژه را نصب کنید. در Go فقط یک فایل باینری کافی است — بدون نیاز به runtime، dependency یا حتى سیستم‌عامل (در صورت کامپایل استاتیک).</div>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-    title(["خط لوله‌ی ساخت (Build Pipeline)"])
-    SRC[".go files<br/>کد منبع"]
-    BTAGS["Build Tags<br/>فیلتر فایل‌ها"]
-    COMP["Compiler<br/>AST → SSA → Machine"]
-    LD["ldflags<br/>نسخه، strip"]
-    LINK["Linker<br/>runtime + binary"]
-    SRC --&gt; BTAGS --&gt; COMP --&gt; LD --&gt; LINK
-
-    subgraph NOTES["ابزارهای جانبی"]
-        direction LR
-        CROSS["Cross-Compilation<br/>GOOS=linux GOARCH=arm64<br/>بدون نیاز به کامپایلر متقاطع!"]
-        RACE["Race Detector<br/>go build -race<br/>شناسایی مسابقه داده در تست"]
-    end
-    LINK ~~~ NOTES
-
-    classDef titleBox fill:#f8fafc,stroke:#475569,stroke-width:1px,color:#1f2937,font-weight:bold;
-    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef okBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
-    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
-    classDef errBox fill:#fef2f2,stroke:#ef4444,stroke-width:1.5px,color:#1f2937;
-    classDef phpBox fill:#f5f0fb,stroke:#777BB4,stroke-width:1.5px,color:#1f2937;
-    class title titleBox;
-    class SRC goBox;
-    class BTAGS warnBox;
-    class COMP goBox;
-    class LD errBox;
-    class LINK okBox;
-    class CROSS phpBox;
-    class RACE warnBox;</pre>
-<figcaption>شکل ۳-۳: خط لوله‌ی ساخت باینری در <bdi dir="ltr">Go</bdi></figcaption>
-</figure>
 <h3 id="خط-لوله-کامپایل-go-از-منبع-تا-باینری">3.3.10 خط لوله‌ی کامپایلGo: از منبع تا باینری</h3>
 <p>همان‌طور که در بخش «مراحل کامپایل در Go» دیدید، کامپایلر <bdi dir="ltr">Go</bdi> کد منبع را طی چندین مرحله‌ی پیوسته (Parsing → Type Checking → SSA → Optimization → Code Generation → Linking) به فایل باینری اجرایی تبدیل می‌کند. </p><p>نمودار زیر این خط لوله را به‌صورت بصری به همراه مقایسه‌ی سه دستور <code dir="ltr">go build</code>، <code dir="ltr">go run</code> و <code dir="ltr">go install</code> نشان می‌دهد.</p>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-    title(["خط لوله‌ی کامپایل Go: Source → AST → SSA → Machine Code"])
-    SRC[".go Source<br/>کد منبع"]
-    LEX["Lexer/Parser<br/>تجزیه‌ی token"]
-    AST["AST<br/>درخت نحوی انتزاعی"]
-    TC["Type Checker<br/>بررسی انواع"]
-    SSA["SSA<br/>بهینه‌سازی میانی"]
-    MC["Machine Code<br/>کد ماشین هدف"]
-    BIN["Binary<br/>فایل اجرایی مستقل"]
-
-    SRC --&gt; LEX --&gt; AST --&gt; TC --&gt; SSA --&gt; MC --&gt; BIN
-
-    subgraph CMP["go build vs go run vs go install"]
-        direction TB
-        GB["go build<br/>باینری تولید می‌کند، اجرا نمی‌کند"]
-        GR["go run<br/>کامپایل موقت + اجرا، باینری باقی نمی‌ماند"]
-        GI["go install<br/>باینری در GOPATH/bin نصب می‌شود"]
-    end
-
-    CROSS(["GOOS=linux GOARCH=amd64 go build"])
-    RULE(["قاعده‌ی طلایی: در تولید همیشه -ldflags="-s -w" و -trimpath را استفاده کنید"])
-
-    title ~~~ SRC
-    CMP ~~~ BIN
-    CROSS ~~~ CMP
-    RULE ~~~ CROSS
-
-    classDef titleBox fill:#f8fafc,stroke:#475569,stroke-width:1px,color:#1f2937,font-weight:bold;
-    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef okBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
-    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
-    classDef errBox fill:#fef2f2,stroke:#ef4444,stroke-width:1.5px,color:#1f2937;
-    classDef phpBox fill:#f5f0fb,stroke:#777BB4,stroke-width:1.5px,color:#1f2937;
-    classDef noteBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1px,color:#1f2937,font-style:italic;
-    class title titleBox;
-    class SRC,AST,SSA goBox;
-    class LEX,TC warnBox;
-    class MC,BIN okBox;
-    class GB goBox;
-    class GR errBox;
-    class GI okBox;
-    class CROSS phpBox;
-    class RULE noteBox;</pre>
-<figcaption>خط لوله‌ی کامل کامپایل <bdi dir="ltr">Go</bdi>: از کد منبع تا فایل باینری اجرایی</figcaption>
-</figure>
 <h3 id="سناریوهای-عملیاتی-ساخت-باینری">3.3.11 سناریوهای عملیاتی</h3>
 <ul>
 <li><strong>ساخت برای پلتفرم‌های مختلف:</strong> با تنظیم <bdi dir="ltr">GOOS</bdi> و <bdi dir="ltr">GOARCH</bdi> می‌توانید باینری مخصوص هر سیستم‌عامل و معماری را تولید کنید. مثلاً <code dir="ltr">GOOS=linux GOARCH=amd64 go build -o app-linux</code> یک باینری لینوکس تولید می‌کند و <code dir="ltr">GOOS=windows GOARCH=amd64 go build -o app.exe</code> باینری ویندوز می‌سازد. این امکان بدون هیچ ابزار اضافی در دسترس است.</li>
@@ -451,7 +342,6 @@ upx --best myapp
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/xml.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/ini.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/plaintext.min.js"></script>
-<script src="assets/js/diagrams.js"></script>
 <script src="assets/js/main.js"></script>
 </body>
 </html>

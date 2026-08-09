@@ -68,41 +68,6 @@
 <h2 id="مدیریت-خطاهای-دیتابیس">مدیریت خطاهای دیتابیس</h2><div class="abstract">
 <strong>چکیده:</strong> این بخش مدیریت خطای پایگاه داده در Go را پوشش می‌دهد: sql.ErrNoRows، driver error و retry. الگوی error wrapping و sentinel error بررسی می‌شود. کاربردهای production پوشش داده می‌گردد.
 </div>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-    Title["سلسله‌مراتب خطاهای دیتابیس"]
-
-    Err["err returned"]
-
-    Err --&gt; CV["Constraint Violation"]
-    CV --&gt; CV1["unique_violation"]
-    CV --&gt; CV2["foreign_key_violation"]
-
-    Err --&gt; CE["Connection Error"]
-    CE --&gt; CE1["Retry with backoff"]
-
-    Err --&gt; DL["deadlock_detected"]
-
-    Err --&gt; NF["sql.ErrNoRows"]
-    NF --&gt; NF1["Not found → 404"]
-
-    Err --&gt; Ctx["context.DeadlineExceeded → Timeout"]
-    Ctx --&gt; Retry["Retry: exponential backoff<br/>1s → 2s → 4s → 8s → max 5 retries"]
-
-    classDef titleBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:2px,color:#1f2937,font-weight:bold;
-    classDef goBox   fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef bothBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
-    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
-    classDef errBox  fill:#fef2f2,stroke:#ef4444,stroke-width:1.5px,color:#1f2937;
-    classDef neuBox  fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
-    class Title titleBox;
-    class Err neuBox;
-    class CV,CV1,CV2 errBox;
-    class CE,CE1,DL,Ctx warnBox;
-    class NF,NF1 bothBox;
-    class Retry goBox;</pre>
-<figcaption dir="rtl">شکل ۸-۶: سلسله‌مراتب تشخیص و مدیریت خطاهای دیتابیس</figcaption>
-</figure>
 <p>برای ساخت اپلیکیشن‌های پایدار آشنایی کامل با نحوه مدیریت خطاهای دیتابیس، تشخیص نوع خطا و واکنش مناسب به آن امری ضروری است. در <bdi dir="ltr">Go</bdi> هیچ <bdi dir="ltr">Exception</bdi> واقعی وجود ندارد و همه توابع مقدار <bdi dir="ltr">error</bdi> برمی‌گردانند.</p>
 <div class="quote-box">
 <p class="quote-text">هر پیام خطا باید دقیقاً بگوید چه چیزی اشتباه پیش رفته و کاربر چه کاری می‌تواند برای رفع آن انجام دهد. پیام‌های خطای مبهم بدتر از نداشتن پیام خطا هستند.</p>
@@ -201,97 +166,6 @@ func isRetryable(err error) bool {
 <div class="note"><strong>درخت تصمیم خطای دیتابیس برای مهاجران <bdi dir="ltr">PHP</bdi>:</strong> در <bdi dir="ltr">Laravel</bdi> معمولاً <code>QueryException</code> را به‌صورت یک‌جا <code>catch</code> می‌کنیم و تصمیم نمی‌گیریم که آیا خطا موقتی است یا دائمی. در <bdi dir="ltr">Go</bdi> این تمایز حیاتی است: قبل از پیاده‌سازی <bdi dir="ltr">retry</bdi> از خود بپرسید «آیا داده‌ها مشکل دارند یا زیرساخت؟». خطاهای <code>unique_violation</code>، <code>foreign_key_violation</code>، <code>not_null_violation</code> و <code>syntax_error</code> دائمی‌اند و با <bdi dir="ltr">retry</bdi> فقط منابع هدر می‌رود؛ در مقابل <code>deadlock_detected</code>، <code>connection_exception</code>، <code>context.DeadlineExceeded</code> و <code>context.Canceled</code> موقتی‌اند و <bdi dir="ltr">retry</bdi> با <bdi dir="ltr">exponential backoff</bdi> تنها راه درست پاسخ است. درخت کامل این طبقه‌بندی را در شکل ۸-۶-ب می‌بینید.</div>
 <h3 id="درخت-طبقهبندی-خطاهای-دیتابیس">8.6.4 درخت طبقه‌بندی خطاهای دیتابیس</h3>
 <p>برای مدیریت مؤثر خطاهای دیتابیس ابتدا باید بدانیم هر خطا متعلق به کدام دسته است. شکل زیر درخت کامل طبقه‌بندی خطاهای دیتابیس را نشان می‌دهد. هر دسته رنگ متمایزی دارد و زیرمجموعه‌های آن به همراه کد خطای <bdi dir="ltr">PostgreSQL</bdi> و راه‌حل پیشنهادی مشخص شده‌اند. </p><p>این طبقه‌بندی به شما کمک می‌کند تا در زمان بروز خطا، سریعاً نوع آن را تشخیص داده و واکنش مناسب نشان دهید.</p>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-    Title["درخت طبقه‌بندی خطاهای دیتابیس"]
-
-    Root["Database Errors"]
-
-    subgraph CONN["Connection Errors"]
-        direction TB
-        CT["Timeoutcontext.DeadlineExceeded"]
-        CM["Max Connsconnection_exception"]
-        CD["DNS Failurelookup / dial error"]
-    end
-
-    subgraph QUERY["Query Errors"]
-        direction TB
-        QS["Syntax Errsyntax_error 42601"]
-        QT["Table Missingundefined_table 42P01"]
-        QP["Permissioninsufficient_privilege 42501"]
-    end
-
-    subgraph CONS["Constraint Errors"]
-        direction TB
-        CU["Uniqueunique_violation 23505"]
-        CF["Foreign Keyfk_violation 23503"]
-        CN["Not Nullnot_null_violation 23502"]
-    end
-
-    subgraph TX["Transaction Errors"]
-        direction TB
-        TD["Deadlockdeadlock_detected 40P01"]
-        TS["Serializ. Failserialization_failure 40001"]
-    end
-
-    Root --&gt; CONN
-    Root --&gt; QUERY
-    Root --&gt; CONS
-    Root --&gt; TX
-
-    subgraph STRATEGY["استراتژی واکنش به هر دسته خطا"]
-        direction TB
-        ST1["Connection: Retry با exponential backoff + افزایش max_open_conns"]
-        ST2["Query: اصلاح SQL، بررسی نام جدول/ستون، بررسی دسترسی‌های کاربر دیتابیس"]
-        ST3["Constraint: Retry نکنید! پیام کاربرپسند نمایش دهید و log ثبت کنید"]
-        ST4["Deadlock: Retry با backoff تصادفی (حداکثر ۳-۵ بار)"]
-        ST5["Serialization: مشابه deadlock، retry با تأخیر تصادفی"]
-    end
-
-    subgraph CODE["کد نمونه"]
-        direction TB
-        C1["var pqErr *pq.Error"]
-        C2["if errors.As(err, &amp;pqErr) {"]
-        C3["switch pqErr.Code.Name() { ... }"]
-        C4["}"]
-        C1 --&gt; C2 --&gt; C3 --&gt; C4
-    end
-
-    subgraph TRANS["Transient در مقابل Permanent"]
-        direction TB
-        TR1["✓ Transient: timeout, deadlock, connection_lost → Retry"]
-        TR2["✗ Permanent: unique_violation, syntax_error, fk_violation → No Retry"]
-        TR3["خطاهای دائمی با retry برطرف نمی‌شوند و فقط منابع را هدر می‌دهند"]
-    end
-
-    Golden[قانون طلایی: فقط خطاهای موقتی را Retry کنید — خطاهای Constraint هرگز با تلاش...]
-
-    Title --&gt; Root
-    Root --&gt; STRATEGY
-    STRATEGY --&gt; CODE
-    CODE --&gt; TRANS
-    TRANS --&gt; Golden
-
-    classDef titleBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:2px,color:#1f2937,font-weight:bold;
-    classDef goBox   fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef bothBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
-    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
-    classDef errBox  fill:#fef2f2,stroke:#ef4444,stroke-width:1.5px,color:#1f2937;
-    classDef neuBox  fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
-    class Title,Root titleBox;
-    class CT,CM,CD warnBox;
-    class QS,QT,QP errBox;
-    class CU,CF,CN errBox;
-    class TD,TS warnBox;
-    class ST1,ST4,ST5 goBox;
-    class ST2 neuBox;
-    class ST3 errBox;
-    class C1,C2,C3,C4 goBox;
-    class TR1 bothBox;
-    class TR2,TR3 errBox;
-    class Golden warnBox;</pre>
-<figcaption dir="rtl">شکل ۸-۶-ب: درخت طبقه‌بندی خطاهای دیتابیس — چهار دسته اصلی با زیرمجموعه‌ها و استراتژی واکنش</figcaption>
-</figure>
 <p>هر دسته از خطاهای دیتابیس رفتار متفاوتی دارد و نیاز به واکنش متفاوتی است. خطاهای اتصال معمولاً موقتی هستند و با <bdi dir="ltr">retry</bdi> برطرف می‌شوند، اما خطاهای محدودیت (<bdi dir="ltr">Constraint</bdi>) نشان‌دهنده‌ی مشکل در داده‌های ورودی هستند و هرگز با تلاش مجدد حل نمی‌شوند. </p><p>شناخت این تفاوت‌ها برای ساخت سیستم‌های پایدار حیاتی است و به شما کمک می‌کند تا منطق <bdi dir="ltr">retry</bdi> مناسبی پیاده‌سازی کنید.</p>
 <h3 id="سناریوهای-عملیاتی-مدیریت-خطا">8.6.5 سناریوهای عملیاتی مدیریت خطا</h3>
 <p>در محیط‌های عملیاتی واقعی خطاهای دیتابیس به صورت‌های مختلفی بروز می‌کنند و هر کدام نیاز به رویکرد متفاوتی دارند. در ادامه چهار سناریوی عملیاتی رایج را بررسی می‌کنیم که هر برنامه‌نویس <bdi dir="ltr">Go</bdi> که با دیتابیس کار می‌کند باید با آن‌ها آشنا باشد. </p><p>این سناریوها از تجربه‌ی واقعی سیستم‌های <bdi dir="ltr">production</bdi> استخراج شده‌اند و راه‌حل‌های عملی برای هر کدام ارائه می‌دهند.</p>
@@ -345,7 +219,6 @@ func isRetryable(err error) bool {
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/xml.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/ini.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/plaintext.min.js"></script>
-<script src="assets/js/diagrams.js"></script>
 <script src="assets/js/main.js"></script>
 </body>
 </html>

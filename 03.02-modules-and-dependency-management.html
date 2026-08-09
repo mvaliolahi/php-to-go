@@ -126,40 +126,6 @@ golang.org/x/text v0.12.0
 <p>با اجرای go mod verify، Go بررسی می‌کند که فایل‌های دانلود شده با مقادیر موجود در go.sum مطابقت دارند یا خیر. این فرآیند امنیت و یکپارچگی پروژه را تضمین می‌کند و از مشکلات ناشی از تغییرات ناخواسته در بسته‌های خارجی جلوگیری می‌کند.</p>
 <p dir="ltr">4. go get </p>
 <p>دستور go get برای افزودن یا به‌روزرسانی یک بسته یا ماژول استفاده می‌شود. این دستور نسخه مناسب بسته را دانلود می‌کند و در فایل go.mod ثبت می‌کند، به طوری که پروژه همیشه بتواند نسخه مشخصی از هر dependency را بازتولید کند.</p>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart LR
-    title(["Go Modules vs Composer"])
-    subgraph GO["Go Modules"]
-        direction TB
-        GMOD["go.mod (module + requires)"]
-        GSUM["go.sum (هش‌های رمزنگاری)"]
-        GINIT["go mod init → ایجاد ماژول"]
-        GGET["go get → نصب پکیج"]
-        GTIDY["go mod tidy → پاکسازی"]
-        GVERIFY["go mod verify → بررسی یکپارچگی"]
-        GCACHE["Module Cache: ~/go/pkg/mod/"]
-    end
-    subgraph PHP["Composer"]
-        direction TB
-        CJSON["composer.json (requires)"]
-        CLOCK["composer.lock (نسخه‌های قفل)"]
-        CINIT["composer init → ایجاد پروژه"]
-        CREQ["composer require → نصب پکیج"]
-        CINST["composer install → نصب از lock"]
-        CUPD["composer update → به‌روزرسانی"]
-        CVEND["vendor/ در خود پروژه"]
-    end
-    title ~~~ GO
-    title ~~~ PHP
-
-    classDef titleBox fill:#f8fafc,stroke:#475569,stroke-width:1px,color:#1f2937,font-weight:bold;
-    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef phpBox fill:#f5f0fb,stroke:#777BB4,stroke-width:1.5px,color:#1f2937;
-    class title titleBox;
-    class GMOD,GSUM,GINIT,GGET,GTIDY,GVERIFY,GCACHE goBox;
-    class CJSON,CLOCK,CINIT,CREQ,CINST,CUPD,CVEND phpBox;</pre>
-<figcaption>مقایسه‌ی <bdi dir="ltr">Go</bdi> <bdi dir="ltr">Modules</bdi> با <bdi dir="ltr">Composer</bdi> در <bdi dir="ltr">PHP</bdi></figcaption>
-</figure>
 <h3 id="استفاده-از-ماژولهای-لوکال">3.2.6 استفاده از ماژول‌های لوکال</h3>
 <p>در پروژه‌های بزرگ یا هنگامی که چند ماژول Go به صورت هم‌زمان در حال توسعه هستند ممکن است نیاز داشته باشید تغییرات یک ماژول را بدون انتشار نسخه جدید روی پروژه‌های دیگر تست کنید. برای این منظور Go امکان استفاده از ماژول‌های محلی را فراهم می‌کند.</p>
 <p>با استفاده از دستور replace در فایل go.mod می‌توانید به Go بگویید که به جای دریافت ماژول از remote repository از یک مسیر محلی مشخص‌شده استفاده کند:</p>
@@ -271,33 +237,6 @@ use (
 </figure>
 <p>بدون <code>go.work</code> برای کار همزمان روی چند ماژول باید از <code>replace</code> در <code>go.mod</code> استفاده می‌کردید. اما <code>go.work</code> این کار را متمرکز و موقت می‌کند — فایل <code>go.work</code> نباید در repository کامیت شود و فقط برای توسعه‌ی محلی است.</p>
 <div class="note"><strong>نکته‌ی حرفه‌ای — راهنمای انتخاب بین <code dir="ltr">replace</code>، <code dir="ltr">vendor</code> و <code dir="ltr">go.work</code>:</strong> این سه ابزار برای سه سناریوی متفاوت طراحی شده‌اند و اشتباه گرفتن آن‌ها عامل رایج دردسر در تیم‌هاست. از <code>replace</code> فقط برای رفع موقت یک باگ در وابستگی خارجی استفاده کنید و حتماً قبل از <code>commit</code> آن را حذف کنید. از <code>vendor</code> برای تضمین تکرارپذیری <code>build</code> در محیط‌های ایزوله‌ی CI/CD بدون دسترسی اینترنت استفاده کنید. از <code>go.work</code> (Go 1.18+) برای توسعه‌ی هم‌زمان روی چند ماژول وابسته در همان ماشین استفاده کنید و هرگز آن را در <code>repository</code> قرار ندهید. این طبقه‌بندی ساده از ترکیب شدن این ابزارها و ایجاد وضعیت غیرقابل تکرار در <code>build</code> جلوگیری می‌کند.</div>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-    title(["چرخه‌ی حیات ماژول Go"])
-    INIT["go mod init"] --&gt; GET["go get"] --&gt; TIDY["go mod tidy"] --&gt; BUILD["go build"]
-    subgraph INFO["فایل‌ها و ابزارها"]
-        direction TB
-        MOD["go.mod: module + go version + require/replace/exclude"]
-        SUM["go.sum: h1: hash + /go.mod hash (immutability)"]
-        CACHE["Module Cache: ~/go/pkg/mod/ (read-only, shared across projects)"]
-        PROXY["GOPROXY: proxy.golang.org → CDN → download → cache"]
-    end
-    title ~~~ INIT
-    BUILD ~~~ INFO
-
-    classDef titleBox fill:#f8fafc,stroke:#475569,stroke-width:1px,color:#1f2937,font-weight:bold;
-    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef okBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
-    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
-    classDef neutralBox fill:#f8fafc,stroke:#475569,stroke-width:1px,color:#1f2937;
-    class title titleBox;
-    class INIT neutralBox;
-    class GET goBox;
-    class TIDY okBox;
-    class BUILD warnBox;
-    class MOD,SUM,CACHE,PROXY neutralBox;</pre>
-<figcaption>شکل ۲-۳: چرخه‌ی حیات ماژول <bdi dir="ltr">Go</bdi> و ابزارهای مدیریت وابستگی</figcaption>
-</figure>
 <h3 id="مهاجرت-از-composer-به-go-modules">3.2.13 مهاجرت از Composer به Go Modules</h3>
 <p>برای توسعه‌دهندگانی که از PHP می‌آیند، درک تفاوت‌های بین <bdi dir="ltr">Composer</bdi> و <bdi dir="ltr">Go Modules</bdi> حیاتی است. هرچند هر دو ابزار مدیریت وابستگی هستند، فلسفه و مکانیزم آن‌ها کاملاً متفاوت است:</p>
 <table class="comparison-table" dir="rtl">
@@ -415,72 +354,6 @@ ignore (
 </div>
 <h3 id="go-sum-checksum-verification">3.2.17 جریان تأیید Checksum در go.sum</h3>
 <p>یکی از مهم‌ترین مکانیزم‌های امنیتی در <bdi dir="ltr">Go Modules</bdi> سیستم تأیید <bdi dir="ltr">checksum</bdi> است که یکپارچگی وابستگی‌ها را تضمین می‌کند. وقتی دستور <code>go get</code> اجرا می‌شود، Go نه‌تنها وابستگی را دانلود می‌کند، بلکه هش <bdi dir="ltr">SHA-256</bdi> آن را محاسبه کرده و با مقدار ثبت‌شده در <code>go.sum</code> مقایسه می‌کند. </p><p>اگر هش‌ها مطابقت نداشته باشند، Go از ادامه‌ی build جلوگیری می‌کند و خطای امنیتی صادر می‌شود. این مکانیزم از حمله‌ی <bdi dir="ltr">supply chain</bdi> جلوگیری می‌کند — سناریویی که در آن یک وابستگی مخرب جایگزین نسخه‌ی اصلی شود. </p><p>در PHP مشابه این مکانیزم وجود دارد (<code>composer.lock</code>) اما <bdi dir="ltr">checksum database</bdi> متمرکزی برای تأیید یکپارچگی وجود ندارد. نمودار زیر این جریان را به‌صورت گام‌به‌گام نشان می‌دهد.</p>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-    title(["جریان تأیید Checksum در go.sum — امنیت زنجیره‌ی تأمین"])
-    S1["① go get github.com/foo/bar@v1.2.3دستور افزودن وابستگی اجرا می‌شود"]
-    S2["② Download Moduleدانلود از GOPROXY"]
-    S3["③ Compute SHA-256 Hashمحاسبه‌ی هش محلی"]
-    S4{"④ Compare with go.sum entryمقایسه‌ی هش محلی با هش ثبت‌شده"}
-    S5A["⑤الف: استفاده از ماژولواکایی تأیید شد — build ادامه می‌یابد"]
-    S5B["⑤ب: SECURITY ERRORbuild متوقف می‌شود — ماژول مخرب嫌疑"]
-
-    S1 --&gt; S2 --&gt; S3 --&gt; S4
-    S4 -- "تطابق ✓" --&gt; S5A
-    S4 -- "عدم تطابق ✗" --&gt; S5B
-
-    subgraph SUMFMT["go.sum format"]
-        direction TB
-        L1[github.com/google/uuid v1.3.0 h1:ey4XPjaR/KGfH2S7Nj2M7Cdyh5m9M6Q6v9...  ← هش...]
-        L2["github.com/google/uuid v1.3.0/go.mod h1:K1S5d0E5bBPU7...  ← هش فایل go.mod ماژول"]
-    end
-    subgraph MODFMT["go.mod directives"]
-        direction TB
-        M1["module github.com/username/myapp  // نام ماژول"]
-        M2["go 1.24  // نسخه Go"]
-        M3["require / replace / exclude  // دستورالعمل‌ها"]
-    end
-    subgraph MVS["MVS — Minimal Version Selection"]
-        direction TB
-        MV1["ماژول A نیاز دارد: log &gt;= 1.2"]
-        MV2["ماژول B نیاز دارد: log &gt;= 1.5"]
-        MV3["نتایج MVS: log v1.5 انتخاب می‌شود (نه v1.8!)"]
-        MV4["تکرارپذیر و قطعی ✓"]
-    end
-    subgraph CMP["Composer — Highest Compatible"]
-        direction TB
-        CM1["پکیج A نیاز دارد: log ^1.2"]
-        CM2["پکیج B نیاز دارد: log ^1.5"]
-        CM3["نتیجه Composer: log v1.8 (بالاترین نسخه سازگار)"]
-        CM4["نیاز به lock file دارد ✗"]
-    end
-
-    title ~~~ S1
-    S5A ~~~ SUMFMT
-    S5B ~~~ SUMFMT
-    SUMFMT ~~~ MODFMT
-    MODFMT ~~~ MVS
-    MODFMT ~~~ CMP
-
-    classDef titleBox fill:#f8fafc,stroke:#475569,stroke-width:1px,color:#1f2937,font-weight:bold;
-    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
-    classDef okBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
-    classDef errBox fill:#fef2f2,stroke:#ef4444,stroke-width:1.5px,color:#1f2937;
-    classDef phpBox fill:#f5f0fb,stroke:#777BB4,stroke-width:1.5px,color:#1f2937;
-    classDef neutralBox fill:#f8fafc,stroke:#475569,stroke-width:1px,color:#1f2937;
-    class title titleBox;
-    class S1,S2,S3 goBox;
-    class S4 warnBox;
-    class S5A okBox;
-    class S5B errBox;
-    class L1,L2,M1,M2,M3 neutralBox;
-    class MV1,MV2 warnBox;
-    class MV3,MV4 okBox;
-    class CM1,CM2 phpBox;
-    class CM3,CM4 errBox;</pre>
-<figcaption>شکل ۳-۳: جریان تأیید <bdi dir="ltr">Checksum</bdi> در <bdi dir="ltr">go.sum</bdi> و مقایسه‌ی الگوریتم <bdi dir="ltr">MVS</bdi> با <bdi dir="ltr">Composer</bdi></figcaption>
-</figure>
 <h3 id="سناریوهای-عملیاتی-ماژولها">3.2.18 سناریوهای عملیاتی</h3>
 <p>مدیریت وابستگی‌ها یکی از حساس‌ترین بخش‌های هر پروژه‌ی نرم‌افزاری است و اشتباه در آن می‌تواند به مشکلات جدی در محیط تولید منجر شود. در ادامه پنج سناریوی عملیاتی رایج را بررسی می‌کنیم که هر توسعه‌دهنده‌ای که از PHP به Go مهاجرت می‌کند باید با آن‌ها آشنا باشد. </p><p>این سناریوها شامل افزودن وابستگی جدید، به‌روزرسانی ایمن وابستگی‌ها، استفاده از <bdi dir="ltr">replace</bdi> برای توسعه‌ی محلی، درک تفاوت <bdi dir="ltr">MVS</bdi> با <bdi dir="ltr">Composer</bdi> و تنظیم <bdi dir="ltr">proxy</bdi> خصوصی برای سازمان‌هاست. تسلط بر این سناریوها به شما کمک می‌کند پروژه‌های Go خود را با اطمینان و ایمنی مدیریت کنید.</p>
 <ul>
@@ -537,7 +410,6 @@ ignore (
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/xml.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/ini.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/plaintext.min.js"></script>
-<script src="assets/js/diagrams.js"></script>
 <script src="assets/js/main.js"></script>
 </body>
 </html>

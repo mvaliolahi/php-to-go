@@ -77,123 +77,26 @@
 ۳. وقتی شما یک <bdi dir="ltr">Goroutine</bdi> ایجاد می‌کنید زمان‌بند <bdi dir="ltr">Go</bdi> آن را در صف اجرای داخلی قرار می‌دهد.
 </p><p>۴. </p><p>زمان‌بند <bdi dir="ltr">Go</bdi> بر اساس نیاز آن‌ها را بین <bdi dir="ltr">thread</bdi> های واقعی توزیع می‌کند.
 </p><p>۵. </p><p>در طول اجرا <bdi dir="ltr">process</bdi> ممکن است از چند هسته‌ی <bdi dir="ltr">CPU</bdi> استفاده کند و با سیستم‌عامل تعامل داشته باشد مثلاً فایل بخواند، شبکه برقرار کند یا سیگنال بگیرد.</p>
-<figure class="diagram d2-diagram" dir="ltr">
-<img alt="نمودار" loading="lazy" src="assets/diagrams/ch01_06_gmp_scheduler.svg"/>
-<figcaption>شکل ۳-۱: نحوه‌ی ارتباط <bdi dir="ltr">PHP</bdi> و <bdi dir="ltr">Go</bdi> با سیستم‌عامل</figcaption>
-</figure>
 <p><strong dir="ltr">Process</strong></p>
 <p>در سطح سیستم‌عامل یک <strong dir="ltr">Process</strong> یا فرآیند به‌معنای یک نمونه‌ی فعال از یک برنامه‌ی در حال اجرا است. هر فرآیند توسط سیستم‌عامل مدیریت می‌شود و دارای ویژگی‌های مشخصی است:</p>
 <p>یک فضای حافظه‌ی اختصاصی.</p>
 <p>مجموعه‌ای از متغیرهای محیطی.</p>
 <p>دسترسی اختصاصی به منابع سیستم مانند فایل‌ها، شبکه و دستگاه‌ها.</p>
 <p>یک یا چند Thread اجرایی که عملیات برنامه را انجام می‌دهند.</p>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-    P["Process (فرآیند)"]
-    M["فضای حافظه اختصاصی"]
-    E["متغیرهای محیطی"]
-    R["دسترسی به منابع"]
-    T["Threadهای اجرایی<br/>هر Process حداقل یک Main Thread دارد"]
-
-    P --&gt; M
-    P --&gt; E
-    P --&gt; R
-    P --&gt; T
-
-    classDef rootBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937,font-weight:bold;
-    classDef subBox  fill:#e6f9fc,stroke:#00ADD8,stroke-width:1px,color:#1f2937;
-    class P rootBox;
-    class M,E,R,T subBox;</pre>
-<figcaption>شکل ۴-۱: ساختار یک <bdi dir="ltr">Process</bdi> فعال</figcaption>
-</figure>
 <p>به بیان ساده‌تر وقتی یک فایل اجرایی توسط سیستم‌عامل راه‌اندازی می‌شود به یک "فرآیند زنده" در حافظه تبدیل می‌گردد که تا پایان اجرای برنامه به حیات خود ادامه می‌دهد.</p>
 <p>در محیط PHP این مفهوم معمولاً برای برنامه‌نویس پنهان می‌ماند. به‌طور مثال در معماری مبتنی بر PHP-FPM برای هر درخواست HTTP یکی از دو حالت رخ می‌دهد:</p>
 <p>یک فرآیند جدید ایجاد می‌شود.</p>
 <p>یا یکی از فرآیندهای موجود از یک pool انتخاب و بازیافت می‌شود.
 </p>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart LR
-    N["Nginx / Apache"]
-    subgraph POOL["Pool از فرآیندها"]
-        direction TB
-        F1["PHP-FPM"]
-        F2["PHP-FPM"]
-        F3["PHP-FPM"]
-    end
-    END["پایان درخواست<br/>= آزادسازی حافظه<br/>هر درخواست → یک process موقت"]
-
-    N --&gt; F1
-    N --&gt; F2
-    N --&gt; F3
-    F1 --&gt; END
-    F2 --&gt; END
-    F3 --&gt; END
-
-    classDef webBox  fill:#f5f0fb,stroke:#777BB4,stroke-width:1.5px,color:#1f2937;
-    classDef poolBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
-    classDef endBox  fill:#fef2f2,stroke:#ef4444,stroke-width:1px,color:#1f2937;
-    class N webBox;
-    class F1,F2,F3 poolBox;
-    class END endBox;</pre>
-<figcaption>شکل ۵-۱: نمایی از یک <bdi dir="ltr">process</bdi> در <bdi dir="ltr">PHP</bdi></figcaption>
-</figure>
 <p>این فرآیندها معمولاً بعد از پاسخ به درخواست خاتمه می‌یابند یا برای استفاده‌ی بعدی در دسترس قرار می‌گیرند. برنامه‌نویس PHP عموماً با خود فرآیند سر و کار ندارد و با منطق درون آن سروکار دارد.</p>
 <p>در Go اما ماجرا متفاوت است. وقتی برنامه‌ای با Go می‌نویسید و آن را کامپایل می‌کنید خروجی شما یک فایل اجرایی مستقل است. وقتی این فایل اجرا می‌شود بدون نیاز به واسطه‌ای مانند وب‌سرور یا مفسر مستقیماً به یک process کامل در سیستم‌عامل تبدیل می‌شود.</p>
 <p>در این مدل شما عملاً مالک فرآیند هستید شما تصمیم می‌گیرید چه منابعی باز یا بسته شوند یا چه زمانی برنامه اجرا یا خاتمه یابد و چگونه با سیستم‌عامل تعامل داشته باشد.</p>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-    P["Go Binary Process<br/>فرآیند مستقل و دائمی — کنترل کامل"]
-    M["main() → Main Thread"]
-    H["HTTP Server"]
-    G1["Goroutine 1"]
-    G2["Goroutine 2"]
-    GN["Goroutine N"]
-
-    P --&gt; M
-    M --&gt; H
-    H --&gt; G1
-    H --&gt; G2
-    H --&gt; GN
-
-    classDef rootBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937,font-weight:bold;
-    classDef mainBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
-    classDef subBox  fill:#f8fafc,stroke:#475569,stroke-width:1px,color:#1f2937;
-    class P rootBox;
-    class M,H mainBox;
-    class G1,G2,GN subBox;</pre>
-<figcaption>شکل ۶-۱: نمایی از یک برنامه نوشته شده در <bdi dir="ltr">Go</bdi></figcaption>
-</figure>
 <p>این کنترل مستقیم یکی از تفاوت‌های بنیادین بین PHP و Go است و همین کنترل پایه‌ی بسیاری از قابلیت‌های Go در نوشتن سرورهای مقیاس‌پذیر، ابزارهای CLI و اپلیکیشن‌های native سیستم‌عامل است.</p>
 <p><strong dir="ltr">Thread</strong></p>
 <p>Thread واحد اجرای درون یک process است. هر process حداقل یک Thread دارد که به آن main thread گفته می‌شود اما می‌تواند چندین Thread برای اجرای هم‌زمان چند task هم ایجاد کند.</p>
 <p>تمام Thread های یک process به یک فضای حافظه‌ی مشترک دسترسی دارند. یعنی می‌توانند هم‌زمان به داده‌ها و متغیرهای یکدیگر دسترسی داشته باشند.</p>
 <p>اجرای هم‌زمان واقعی روی سیستم چندهسته‌ای ممکن است.</p>
 <p>هر Thread به‌طور جداگانه توسط سیستم‌عامل زمان‌بندی می‌شود.</p>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-    P["Process"]
-    SHM["فضای حافظه مشترک"]
-    T1["Main Thread"]
-    T2["Thread 2"]
-    TN["Thread N"]
-
-    P --&gt; SHM
-    P --&gt; T1
-    P --&gt; T2
-    P --&gt; TN
-
-    note(["همه‌ی Threadها به حافظه مشترک دسترسی دارند"])
-
-    classDef rootBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937,font-weight:bold;
-    classDef memBox  fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
-    classDef thBox   fill:#e6f9fc,stroke:#00ADD8,stroke-width:1px,color:#1f2937;
-    classDef noteBox fill:#ecfdf5,stroke:#10b981,stroke-width:1px,color:#1f2937,font-style:italic;
-    class P rootBox;
-    class SHM memBox;
-    class T1,T2,TN thBox;
-    class note noteBox;</pre>
-<figcaption>شکل ۷-۱: ساختار <bdi dir="ltr">Thread</bdi> درون یک <bdi dir="ltr">Process</bdi></figcaption>
-</figure>
 <p>در PHP کنترل Thread ها عملاً در اختیار شما نیست. اما در Go شما می‌توانید به‌صورت مستقیم یا غیرمستقیم با Thread ها کار کنید.</p>
 <p><strong>هم‌زمانی</strong></p>
 <p>در فصل چهارم این مفهوم به تفصیل توضیح داده خواهد شد ولی در ادامه توضیحات مختصری در این باره داده خواهد شد. در Go اجرای هم‌زمان با استفاده از مفهومی به‌نام <strong dir="ltr">Goroutine</strong> انجام می‌شود. </p><p>یک Goroutine واحدی سبک‌وزن از اجراست که به‌صورت هم‌زمان با سایر بخش‌های برنامه اجرا می‌شود اما برخلاف thread های سیستم‌عامل به‌صورت مستقیم توسط <strong dir="ltr">scheduler</strong> <strong>داخلی Go</strong> مدیریت می‌شود نه توسط سیستم‌عامل.</p>
@@ -417,57 +320,8 @@ func run() error {
 </code></pre>
 </figure>
 <h3 id="نمودار-شروع-برنامه">1.6.8 نمودار توالی شروع برنامه Go</h3>
-<figure class="diagram d2-diagram" dir="ltr">
-<img alt="نمودار" loading="lazy" src="assets/diagrams/ch01_06_compilation_pipeline.svg"/>
-<figcaption>شکل ۱-۶-الف: توالی کامل شروع و خروج برنامهGo</figcaption>
-</figure>
 <h3 id="نمودار-gmp-جزئیات">1.6.9 نمودار تفصیلی مدل GMP: زمان‌بند Go در عمل</h3>
 <p>مدل <bdi dir="ltr">GMP</bdi> قلب تپنده‌ی هم‌زمانی <bdi dir="ltr">Go</bdi> است و درک بصری آن به شما کمک می‌کند تا رفتار برنامه‌های <bdi dir="ltr">Go</bdi> را در شرایط مختلف پیش‌بینی کنید. </p><p>در نمودار زیر سه مؤلفه‌ی اصلی مدل را مشاهده می‌کنید: <bdi dir="ltr">G</bdi> (رنگ فیروزه‌ای #00ADD8) نشان‌دهنده‌ی <bdi dir="ltr">goroutine</bdi> ‌هاست که واحدهای سبک‌وزن اجرا هستند و تعدادشان می‌تواند به میلیون‌ها برسد. <bdi dir="ltr">M</bdi> (رنگ سبز #4CAF50) نماینده‌ی <bdi dir="ltr">thread</bdi> ‌های واقعی سیستم‌عامل است که تعدادشان توسط <bdi dir="ltr">OS</bdi> محدود می‌شود. <bdi dir="ltr">P</bdi> (رنگ نارنجی #FF9800) نشان‌دهنده‌ی پردازنده‌های منطقی است که تعدادشان برابر با <code dir="ltr">GOMAXPROCS</code> تنظیم می‌شود. هر <bdi dir="ltr">P</bdi> یک صف محلی از <bdi dir="ltr">goroutine</bdi> ‌ها دارد و <bdi dir="ltr">M</bdi> با گرفتن یک <bdi dir="ltr">P</bdi> می‌تواند <bdi dir="ltr">goroutine</bdi> ‌ها را اجرا کند. </p><p>مکانیزم <bdi dir="ltr">work-stealing</bdi> تضمین می‌کند که هیچ <bdi dir="ltr">P</bdi> بیکاری وجود نداشته باشد و وقتی <bdi dir="ltr">goroutine</bdi> ‌ای در <bdi dir="ltr">syscall</bdi> مسدود شود، <bdi dir="ltr">P</bdi> از <bdi dir="ltr">M</bdi> جدا شده و به <bdi dir="ltr">M</bdi> دیگری اختصاص می‌یابد تا سایر <bdi dir="ltr">goroutine</bdi> ‌ها بتوانند ادامه دهند.</p>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-    subgraph P1["P1 (GOMAXPROCS=1)"]
-        direction TB
-        Q1["Local Run Queue:G1 → G2 → G3 → G4 → G5"]
-        M1["M1 → running G1G1*"]
-    end
-    subgraph P2["P2 (GOMAXPROCS=2)"]
-        direction TB
-        Q2["Local Run Queue:G6 → G7 → G8"]
-        M2["M2 → running G6G6*"]
-    end
-
-    GRQ["Global Run Queue(اشتراکی بین همه Pها)"]
-    SYS["sysmonwatchdog"]
-
-    P1 -.-&gt; GRQ
-    P2 -.-&gt; GRQ
-    SYS -.-&gt; P1
-    SYS -.-&gt; P2
-
-    STEAL["Work Stealingاگر صف محلی P1 خالی شود،نیمی از صف P2 را می‌دزدد"]
-    P2 ==o STEAL
-    STEAL ==&gt; P1
-
-    BLOCK[هنگام مسدودسازی M (syscall/blocking):• P از M جدا می‌شود• M دیگری به P متصل...]
-
-    legend(["G = Goroutine · M = Machine (OS Thread) · P = Processor (Logical Core)"])
-
-    classDef pBox    fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef queueBox fill:#f8fafc,stroke:#475569,stroke-width:1px,color:#1f2937;
-    classDef mBox    fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
-    classDef globBox fill:#fef2f2,stroke:#ef4444,stroke-width:1.5px,color:#1f2937;
-    classDef sysBox  fill:#f5f0fb,stroke:#777BB4,stroke-width:1.5px,color:#1f2937;
-    classDef stealBox fill:#ecfdf5,stroke:#10b981,stroke-width:2px,color:#1f2937,font-weight:bold;
-    classDef noteBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1px,color:#1f2937,font-style:italic;
-    class P1,P2 pBox;
-    class Q1,Q2 queueBox;
-    class M1,M2 mBox;
-    class GRQ globBox;
-    class SYS sysBox;
-    class STEAL stealBox;
-    class BLOCK,legend noteBox;</pre>
-<figcaption>شکل ۱-۶-ب: نمودار تفصیلی مدل <bdi dir="ltr">GMP</bdi> — زمان‌بند <bdi dir="ltr">Go</bdi> شامل صف‌های محلی، صف سراسری، سرقت کار و رفتار در زمان مسدودسازی</figcaption>
-</figure>
 <h3 id="سناریوهای-عملیاتی-gmp">1.6.10 سناریوهای عملیاتی: تنظیم و عیب‌یابی زمان‌بند Go</h3>
 <p>درک تئوریک مدل <bdi dir="ltr">GMP</bdi> ارزشمند است اما در عمل با سناریوهایی مواجه می‌شوید که نیاز به تصمیم‌گیری آگاهانه درباره‌ی پارامترهای زمان‌بند دارید. برنامه‌نویسان <bdi dir="ltr">PHP</bdi> معمولاً هیچ کنترلی روی زمان‌بند ندارند — <bdi dir="ltr">PHP-FPM</bdi> تعداد <bdi dir="ltr">worker</bdi> ‌ها را مدیریت می‌کند و سیستم‌عامل زمان‌بندی را انجام می‌دهد. </p><p>اما در <bdi dir="ltr">Go</bdi> شما مسئول درک و تنظیم رفتار زمان‌بند هستید. </p><p>در ادامه مهم‌ترین سناریوهای عملیاتی را بررسی می‌کنیم که هرکدام مستقیماً بر عملکرد و پایداری برنامه‌ی شما تأثیر می‌گذارند و بدون توجه به آن‌ها ممکن است با مشکلات عجیب و غیرمنتظره مواجه شوید.</p>
 <ul>
@@ -523,7 +377,6 @@ func run() error {
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/xml.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/ini.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/plaintext.min.js"></script>
-<script src="assets/js/diagrams.js"></script>
 <script src="assets/js/main.js"></script>
 </body>
 </html>

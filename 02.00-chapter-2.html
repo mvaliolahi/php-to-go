@@ -70,39 +70,6 @@
 </div>
 <p>اگر فصل اول ذهنیت شما را از «توسعه‌ی سریع <bdi dir="ltr">PHP</bdi>» به «توسعه‌ی پایدار <bdi dir="ltr">Go</bdi>» تغییر داد، این فصل ابزارهای عملی آن تغییر ذهنیت را در اختیارتان می‌گذارد. در اینجا با تیپ‌ها، ساختارهای کنترلی، توابع و اشاره‌گرها کار می‌کنید — عناصری که هرکدام بازتابی از همان فلسفه‌ی صراحت و سادگی هستند که در فصل قبل آموختید. </p><p>در <bdi dir="ltr">PHP</bdi> متغیرها بدون نوع تعریف می‌شوند و سیستم خودش حدس می‌زند؛ در <bdi dir="ltr">Go</bdi> هر مقدار از ابتدا نوع مشخصی دارد و کامپایلر اجازه‌ی حدس زدن را نمی‌دهد.</p>
 <p>این فصل قلب عملی کتاب شماست. در اینجا همه‌ی ابزارهای بنیادین که روزانه در توسعه‌ی نرم‌افزار با <bdi dir="ltr">Go</bdi> به‌کار می‌برید را از پایه و با مقایسه‌ی مداوم با تجربه‌ی <bdi dir="ltr">PHP</bdi> شما می‌آموزید. </p><p>هر بخش با مثال‌های عملی، هشدارهای مربوط به تله‌های رایج، و نگاهی به درون‌ساخت‌های پیاده‌سازی همراه است تا هم بفهمید «چگونه» و هم «چرا» را درک کنید.</p>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-    subgraph MAP["نقشه‌ی فصل دوم: انواع داده و ساختارهای کنترلی"]
-        direction TB
-        MIG["PHP: Dynamic Typing⇒ مهاجرت ⇒Go: Static Typing"]
-        S1[۲.۱ آشنایی با انواع دادهPrimitive • Composite • Zero Valuesiota • String...]
-        S2[۲.۲ تبدیل نوع (Type Conversion)strconv • Type Assertionunsafe.Pointer •...]
-        S3["۲.۳ ساختارهای کنترلیif-init • switch/fallthrough • rangeLabels • goto"]
-        S4["۲.۴ توابع و متدهاValue/Pointer Receiver • Method Setsdefer • Variadic • init()"]
-        S5[۲.۵ اشاره‌گرهاEscape Analysis • Value vs ReferencePointer to Pointer •...]
-        S6["۲.۶ جنریک‌هاType Constraints • comparableGeneric Types • When NOT to use"]
-        S1 --&gt; S2 --&gt; S3 --&gt; S4 --&gt; S5 --&gt; S6
-    end
-
-    subgraph KEY["مفاهیم کلیدی فصل دوم"]
-        direction TB
-        K1["هر متغیر در Go از ابتدا نوع مشخصی دارد — کامپایلر اجازه‌ی حدس زدن نمی‌دهد"]
-        K2["مقادیر صفر (Zero Values) تضمین می‌کنند هیچ متغیری مقدار تعریف‌نشده ندارد"]
-        K3["تبدیل نوع صریح است: هیچ Type Juggling یا تبدیل ضمنی وجود ندارد"]
-        K4["فقط یک حلقه وجود دارد (for) اما به اندازه‌ی کافی قدرتمند است"]
-        K5["متدها روی struct تعریف می‌شوند نه درون کلاس — Receiver این نقش را ایفا می‌کند"]
-    end
-
-    MAP --&gt; KEY
-
-    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef bothBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
-    classDef neutralBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
-    class S1,S2,S3,S4,S5,S6 goBox;
-    class MIG bothBox;
-    class KEY,K1,K2,K3,K4,K5 neutralBox;</pre>
-<figcaption dir="rtl">شکل ۰-۲: نقشه‌ی فصل دوم</figcaption>
-</figure>
 <p><strong>در این فصل خواننده با مفاهیم زیر آشنا خواهد شد:</strong></p>
 <p>سیستم <bdi dir="ltr">static type</bdi> در <bdi dir="ltr">Go</bdi> و مقایسه آن با <bdi dir="ltr">dynamic type</bdi> در <bdi dir="ltr">PHP</bdi> — از <bdi dir="ltr">zero values</bdi> و تأثیر فلسفی آن‌ها بر طراحی ایمن نرم‌افزار، تا نوع‌دهی صریح و تأثیر آن بر ایمنی کد و کاهش خطاهای زمان‌اجرای. درک این تفاوت بنیادین اولین قدم برای مهاجرت موفق از <bdi dir="ltr">PHP</bdi> به <bdi dir="ltr">Go</bdi> است.</p>
 <p>انواع داده‌های پایه در <bdi dir="ltr">Go</bdi> مانند <bdi dir="ltr">int</bdi>، <bdi dir="ltr">float</bdi>، <bdi dir="ltr">bool</bdi>، <bdi dir="ltr">string</bdi>، <bdi dir="ltr">byte</bdi> و <bdi dir="ltr">rune</bdi> و تفاوت‌های آن‌ها با معادل‌های <bdi dir="ltr">PHP</bdi> — شامل ساختار داخلی رشته‌ها (string header و immutable بودن)، رفتار <bdi dir="ltr">overflow</bdi> عددی، و تفاوت <bdi dir="ltr">type alias</bdi> با <bdi dir="ltr">type definition</bdi></p>
@@ -158,7 +125,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/xml.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/ini.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/plaintext.min.js"></script>
-<script src="assets/js/diagrams.js"></script>
 <script src="assets/js/main.js"></script>
 </body>
 </html>

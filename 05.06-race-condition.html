@@ -83,38 +83,6 @@
 <p><strong dir="ltr">Channel</strong></p>
 <p><strong dir="ltr">Atomic operations</strong></p>
 <p>است که توسط پکیج sync ارائه می‌شود.</p>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-    Shared["counter = 0<br/>حافظه مشترک"]
-    G1["Goroutine 1:<br/>counter++"]
-    G2["Goroutine 2:<br/>counter++"]
-
-    Shared --&gt; G1
-    Shared --&gt; G2
-    G1 -. "هر دو همزمان مقدار 0 را می‌خوانند" .-&gt; G2
-    Conflict["هر دو 1 را می‌نویسند<br/>→ یک افزایش از بین می‌رود!"]
-    G1 --&gt; Conflict
-    G2 --&gt; Conflict
-
-    subgraph SOL["راه‌حل‌ها"]
-        direction LR
-        S1["sync.Mutex"]
-        S2["Channel"]
-        S3["sync/atomic"]
-        S4["go run -race"]
-    end
-
-    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
-    classDef errBox fill:#fef2f2,stroke:#ef4444,stroke-width:1.5px,color:#1f2937;
-    classDef bothBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
-    classDef neuBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
-    class Shared warnBox;
-    class G1,G2 goBox;
-    class Conflict errBox;
-    class SOL,S1,S2,S3,S4 bothBox;</pre>
-<figcaption>شکل ۵-۱۲: <bdi dir="ltr">Race</bdi> <bdi dir="ltr">Condition</bdi> - تداخل دسترسی همزمان و راه‌حل‌ها</figcaption>
-</figure>
 <p><strong>مثال ساده از Race Condition:</strong></p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">package main
@@ -170,33 +138,6 @@ func main() {
 </div>
 <h3 id="mutex">5.6.1 Mutex</h3>
 <p>یکی دیگر از روش های جلوگیری از Race Condition استفاده از mutex است یعنی اجازه می‌دهد فقط یک Goroutine در هر لحظه به بخش محافظت شده از کد یا داده دسترسی داشته باشد. وقتی یک Goroutine قفل mutex را می‌گیرد سایر Goroutineها باید تا آزاد شدن قفل منتظر بمانند.</p><p>به این ترتیب از تداخل همزمان جلوگیری شده و داده‌ها در وضعیت پایدار باقی می‌مانند.</p>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-    Data["counter++<br/>داده مشترک"]
-    Lock["mu.Lock() / mu.Unlock()"]
-    A["Goroutine A<br/>قفل را دارد (خیر)"]
-    B["Goroutine B<br/>منتظر قفل..."]
-    C["Goroutine C<br/>منتظر قفل..."]
-
-    Lock --&gt; A
-    Lock --&gt; B
-    Lock --&gt; C
-    A -- "Unlock()" --&gt; B
-    B -- "Unlock()" --&gt; C
-
-    Note["Unlock() → گوریوتین بعدی قفل را می‌گیرد<br/>→ فقط یکی در هر لحظه دسترسی دارد"]
-
-    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef bothBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
-    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
-    classDef neuBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
-    class Data warnBox;
-    class Lock bothBox;
-    class A goBox;
-    class B,C neuBox;
-    class Note neuBox;</pre>
-<figcaption dir="rtl">شکل ۵-۱۲-ب: جریان <bdi dir="ltr">Mutex</bdi> — فقط یک <bdi dir="ltr">Goroutine</bdi> در هر لحظه به داده مشترک دسترسی دارد</figcaption>
-</figure>
 <p><strong>تعریف و استفاده اولیه</strong></p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">package main
@@ -403,68 +344,6 @@ addr := net.JoinHostPort(host, strconv.Itoa(port))</code></pre>
 </figure>
 <h3 id="data-race-خط-زمانی-داخل‌درج">5.6.5 خط زمانی داخل‌درجData Race— تجزیه گام‌به‌گام</h3>
 <p>برای درک عمیق‌تر <bdi dir="ltr">Data Race</bdi> باید ببینیم دقیقاً چه اتفاقی در سطح دستورات ماشین افتاده است. عملیات <bdi dir="ltr">counter++</bdi> در ظاهر یک دستور است اما در واقع سه مرحله مجزا دارد: خواندن مقدار فعلی از حافظه، افزایش مقدار در ثبات پردازنده، و نوشتن مقدار جدید در حافظه. </p><p>وقتی دو <bdi dir="ltr">goroutine</bdi> این سه مرحله را به صورت درهم‌آمیخته اجرا کنند، ممکن است هر دو مقدار یکسانی را بخوانند و سپس هر دو مقدار یکسانی را بنویسند که نتیجه‌ی آن از بین رفتن یکی از افزایش‌هاست. </p><p>این مشکل به نام <bdi dir="ltr">lost update</bdi> شناخته می‌شود و در سیستم‌های پایگاه داده نیز وقتی رخ می‌دهد که دو تراکنش همزمان روی یک رکورد تغییر ایجاد کنند بدون اینکه از قفل استفاده کنند.</p>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-    subgraph RACE["مسیر مسابقه — دسترسی همزمان بدون همگام‌سازی"]
-        direction TB
-        subgraph G1L["Goroutine G1"]
-            direction TB
-            G1A["t₁: READ counter → 00 + 1 = 1"]
-            G1B["t₃: WRITE counter = 1done — thinks counter = 1"]
-            G1A --&gt; G1B
-        end
-        SH["Shared: countercounter = 0 → 0 → 1 → 1 ✗"]
-        subgraph G2L["Goroutine G2"]
-            direction TB
-            G2A["t₂: waiting..."]
-            G2B["t₄: READ counter → 0 ✗0 + 1 = 1"]
-            G2C["t₅: WRITE counter = 1 ✗done — thinks counter = 1"]
-            G2A --&gt; G2B --&gt; G2C
-        end
-        G1A -.-&gt; SH
-        G2B -.-&gt; SH
-        RL["یک افزایش از بین رفت!نتیجه: 1 (نه 2!)"]
-        RR["Expected: counter=2Actual: counter=1 ✗Lost Update!"]
-        SH --&gt; RL --&gt; RR
-    end
-
-    subgraph SAFE["راه‌حل: بخش بحرانی با Mutex Lock/Unlock"]
-        direction TB
-        subgraph S1L["Goroutine G1"]
-            direction TB
-            S1A["mu.Lock()READ 0 → +1 → WRITE 1✓ Critical Section (G1)mu.Unlock()"]
-            S1B["🔒 counter protectedcounter = 1"]
-            S1A --&gt; S1B
-        end
-        subgraph S2L["Goroutine G2"]
-            direction TB
-            S2A["mu.Lock() → waiting...READ 1 → +1 → WRITE 2✓ Critical Section (G2)mu.Unlock()"]
-            S2B["counter = 2 ✓"]
-            S2A --&gt; S2B
-        end
-        SR["نتیجه صحیح: counter = 2 ✓"]
-        S1B --&gt; SR
-        S2B --&gt; SR
-    end
-
-    N1["بدون mutex: counter++ سه مرحله‌امد و درهم‌آمیخته"]
-    N2["با mutex: بخش بحرانی ایمن"]
-    GOLD[قانون طلایی: به حافظه مشترک فقط در بخش بحرانی mutex دسترسی دهید— یا از...]
-
-    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
-    classDef errBox fill:#fef2f2,stroke:#ef4444,stroke-width:1.5px,color:#1f2937;
-    classDef bothBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
-    classDef neuBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
-    class RACE,G1L,G1A,G1B,SH,G2L,G2A,G2B,G2C errBox;
-    class RL,RR errBox;
-    class SAFE,S1L,S1A,S1B,S2L,S2A,S2B bothBox;
-    class SR bothBox;
-    class N1 errBox;
-    class N2 bothBox;
-    class GOLD warnBox;</pre>
-<figcaption dir="rtl">شکل ۵-۱۲-ج: خط زمانی <bdi dir="ltr">Data Race</bdi> — درهم‌آمیختگی دسترسی همزمان و راه‌حل <bdi dir="ltr">Mutex</bdi></figcaption>
-</figure>
 <p>نمودار بالا به وضوح نشان می‌دهد که چرا <bdi dir="ltr">counter++</bdi> در محیط همزمان مشکل‌ساز است. در مسیر مسابقه، <bdi dir="ltr">G1</bdi> مقدار <bdi dir="ltr">0</bdi> را می‌خواند و قبل از اینکه بنویسد، <bdi dir="ltr">G2</bdi> هم مقدار <bdi dir="ltr">0</bdi> را می‌خواند. سپس هر دو مقدار <bdi dir="ltr">1</bdi> را می‌نویسند و نتیجه نهایی <bdi dir="ltr">1</bdi> می‌شود به جای <bdi dir="ltr">2</bdi>. این همان <bdi dir="ltr">lost update</bdi> است. </p><p>در بخش پایینی نمودار می‌بینید که <bdi dir="ltr">Mutex</bdi> با ایجاد بخش بحرانی این مشکل را حل می‌کند: وقتی <bdi dir="ltr">G1</bdi> قفل را می‌گیرد، <bdi dir="ltr">G2</bdi> باید صبر کند تا <bdi dir="ltr">G1</bdi> کارش تمام شود و قفل را آزاد کند. سپس <bdi dir="ltr">G2</bdi> مقدار صحیح <bdi dir="ltr">1</bdi> را می‌خواند و <bdi dir="ltr">2</bdi> را می‌نویسد. نتیجه نهایی صحیح خواهد بود.</p>
 <h4 id="سناریوهای-عملیاتی-race">سناریوهای عملیاتی <bdi dir="ltr">Race Condition</bdi></h4>
 <ul>
@@ -554,7 +433,6 @@ func (m *SafeMap) Set(key, value string) {
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/xml.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/ini.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/plaintext.min.js"></script>
-<script src="assets/js/diagrams.js"></script>
 <script src="assets/js/main.js"></script>
 </body>
 </html>

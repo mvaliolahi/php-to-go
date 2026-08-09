@@ -68,57 +68,6 @@
 <h2 id="ساختار-پیشنهادی-برای-قالبها">ساختار پیشنهادی برای قالب‌ها</h2><div class="abstract">
 <strong>چکیده:</strong> این بخش ساختار توصیه‌شده‌ی template‌ها در پروژه‌ی Go را پوشش می‌دهد: layout، partial و سازمان‌دهی فایل. الگوی base template و block override بررسی می‌شود. کاربردهای عملی در پروژه‌های متوسط و بزرگ پوشش داده می‌گردد.
 </div>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-    subgraph TREE["templates/"]
-        direction TB
-        T1["layout.html (اسکلت)"]
-        T2["home.html (محتوا)"]
-        T3["header.html (partial)"]
-        T4["footer.html (partial)"]
-    end
-
-    subgraph PAGE["pages/*.html → layout.html"]
-        direction TB
-        L1["layout.html"]
-        L2["header"]
-        L3["content"]
-        L4["footer"]
-        L1 --&gt; L2
-        L1 --&gt; L3
-        L1 --&gt; L4
-    end
-
-    PAGE --&gt; EX["ExecuteTemplate()"]
-    TREE --&gt; EX
-
-    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef neuBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
-    class T1,T2,T3,T4,L1,L2,L3,L4,EX goBox;</pre>
-<figcaption dir="rtl">شکل ۷-۹: ساختار پیشنهادی پوشه قالب‌ها و نحوه رندر شدن آن‌ها</figcaption>
-</figure>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-    subgraph TREE["project/"]
-        direction TB
-        F1["main.go"]
-        F2["templates/"]
-        F2A["layout.html"]
-        F2B["home.html"]
-        F2C["header.html"]
-        F2D["footer.html"]
-        F2 --&gt; F2A
-        F2 --&gt; F2B
-        F2 --&gt; F2C
-        F2 --&gt; F2D
-    end
-
-    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef neuBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
-    class F1 goBox;
-    class F2,F2A,F2B,F2C,F2D neuBox;</pre>
-<figcaption dir="rtl">ساختار پروژه با پوشه قالب‌ها</figcaption>
-</figure>
 <p>در این ساختار فایل layout.html نقش اسکلت اصلی صفحه را دارد و فایل‌های دیگر مانند home.html بخش محتوای متغیر را تعریف می‌کنند.</p>
 <h3 id="نقش-block-و-define-در-وراثت-قالب">7.9.1 نقش block و define در وراثت قالب</h3>
 <p>سیستم وراثت قالب در Go بر اساس سه دستور کار می‌کند:</p>
@@ -211,69 +160,8 @@ err = tmpl.ExecuteTemplate(w, "base.layout.html", data)
 {{ template "partial.pagination.html" .Pagination }}
 </code></pre>
 </figure>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-    BASE["base.layout.html<br/>{{ block "title" }} {{ block "content" }}"]
-    BASE --&gt; P1["home.html"]
-    BASE --&gt; P2["about.html"]
-    BASE --&gt; P3["contact.html"]
-    BASE --&gt; P4["login.html"]
-
-    BASE --&gt; PH1["partial.header.html"]
-    BASE --&gt; PH2["partial.footer.html"]
-    BASE --&gt; PH3["partial.pagination.html"]
-
-    NOTE1(["صفحات بلوک‌ها را بازنویسی می‌کنند · Partials محتوای ثابت دارند"])
-    BASE ~~~ NOTE1
-
-    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef neuBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
-    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
-    class BASE goBox;
-    class P1,P2,P3,P4,PH1,PH2,PH3 neuBox;
-    class NOTE1 warnBox;</pre>
-<figcaption dir="rtl">شکل ۷-۹-ب: وراثت قالب و قالب‌های جزئی</figcaption>
-</figure>
 <h3 id="ترکیب-وراثت-قالب-و-جزئیات-رندر">7.9.5 ترکیب وراثت قالب و جزئیات رندر</h3>
 <p>سیستم قالب‌بندی <bdi dir="ltr">Go</bdi> بر اساس ترکیب قالب‌ها کار می‌کند، نه وراثت کلاسیک مثل <bdi dir="ltr">Laravel Blade</bdi>. قالب پایه (<code dir="ltr">base.html</code>) بلوک‌هایی با محتوای پیش‌فرض تعریف می‌کند و قالب‌های محتوا (<code dir="ltr">home.html</code> و <code dir="ltr">about.html</code>) آن‌ها را بازنویسی می‌کنند. کلید درک این سیستم، فهمیدن نحوه‌ی ترکیب <code dir="ltr">{{ define }}</code> و <code dir="ltr">{{ block }}</code> و <code dir="ltr">{{ template }}</code> است. </p><p>قالب پایه با <code dir="ltr">{{ block "content" . }}...{{ end }}</code> یک بلوک با پیش‌فرض تعریف می‌کند و قالب محتوا با <code dir="ltr">{{ define "content" . }}...{{ end }}</code> آن را جایگزین می‌کند. رندر نهایی همیشه با <code dir="ltr">ExecuteTemplate(w, "base.html", data)</code> انجام می‌شود، نه با نام قالب محتوا.</p>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-    subgraph GO["وراثت قالب و ترکیب Layout در Go"]
-        direction TB
-        G_BASE["base.html{{ template "header" . }}{{ block "content" . }}{{ end }}{{ template "footer" . }}"]
-        G_HOME["home.html{{ define "content" . }}صفحه اصلی..."]
-        G_ABOUT["about.html{{ define "content" . }}درباره ما..."]
-        G_BASE --&gt; G_HOME
-        G_BASE --&gt; G_ABOUT
-    end
-
-    subgraph FLOW["Rendering Flow"]
-        direction TB
-        F1["template.Must(template.ParseGlob("templates/*.html"))"]
-        F2["→ tmpl.ExecuteTemplate(w, "base.html", data)"]
-        F1 --&gt; F2
-    end
-
-    NOTE1(["همیشه نام قالب پایه را به ExecuteTemplate بدهید!"])
-
-    subgraph CMP["PHP Blade vs Go Templates"]
-        direction TB
-        C1["Blade: @extends('layout') @section('content') ... @endsection"]
-        C2["Go: {{ define "content" }} ... {{ end }} + ExecuteTemplate("base")"]
-    end
-
-    GOLD([قاعده‌ی طلایی: همیشه ExecuteTemplate را با نام قالب پایه فراخوانی کنید، نه...])
-
-    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef phpBox fill:#f5f0fb,stroke:#777BB4,stroke-width:1.5px,color:#1f2937;
-    classDef neuBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
-    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
-    class G_BASE,G_HOME,G_ABOUT,F1,F2 goBox;
-    class C1 phpBox;
-    class C2 goBox;
-    class NOTE1,GOLD warnBox;</pre>
-<figcaption>وراثت قالب و ترکیب <bdi dir="ltr">Layout</bdi>: مقایسه‌ی <bdi dir="ltr">Go</bdi> و <bdi dir="ltr">PHP Blade</bdi></figcaption>
-</figure>
 <h3 id="سناریوهای-عملیاتی-ساختار-قالب">7.9.6 سناریوهای عملیاتی</h3>
 <ul>
 <li><strong>ایجاد قالب پایه (<code dir="ltr">base layout</code>):</strong> یک فایل <code dir="ltr">base.html</code> با بلوک‌های <code dir="ltr">{{ block "title" . }}</code> و <code dir="ltr">{{ block "content" . }}</code> و <code dir="ltr">{{ block "scripts" . }}</code> بسازید. تمام صفحات از این قالب پایه ارث‌بری می‌کنند و فقط بلوک‌های موردنیاز را بازنویسی می‌کنند. این الگو از تکرار کد <bdi dir="ltr">HTML</bdi> در هر صفحه جلوگیری می‌کند.</li>
@@ -327,7 +215,6 @@ err = tmpl.ExecuteTemplate(w, "base.layout.html", data)
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/xml.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/ini.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/plaintext.min.js"></script>
-<script src="assets/js/diagrams.js"></script>
 <script src="assets/js/main.js"></script>
 </body>
 </html>

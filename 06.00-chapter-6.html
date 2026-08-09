@@ -74,32 +74,6 @@
 <strong>رابط‌های بنیادین io.Reader و io.Writer:</strong> قلب تپنده‌ی تمام عملیات I/O در Go دو interface ساده اما قدرتمند هستند: <code dir="ltr">io.Reader</code> با متد <code dir="ltr">Read(p []byte) (n int, err error)</code> و <code dir="ltr">io.Writer</code> با متد <code dir="ltr">Write(p []byte) (n int, err error)</code>. هر نوعی که این متدها را پیاده‌سازی کند — فایل، اتصال شبکه، بافر، بدنه‌ی HTTP response، hash بررسی‌کننده،.compress/gzip — می‌تواند جایگزین دیگری استفاده شود. این composability یکی از مزیت‌های اصلی Go نسبت به PHP است که در آن هر تابع I/O امضای متفاوتی دارد. وقتی یک تابع <code dir="ltr">io.Reader</code> می‌پذیرد، شما می‌توانید فایل، اتصال TLS، بافر رمزنگاری‌شده یا حتی خروجی یک فرآیند فرزند را به آن بدهید — بدون تغییر یک خط کد.
 </div>
 <p>در PHP تعامل با دنیای بیرون عمدتاً از طریق توابع ساده‌ای مانند <code dir="ltr">file_get_contents()</code>، <code dir="ltr">json_encode()</code> و <code dir="ltr">curl_exec()</code> انجام می‌شود. هر کدام از این توابع امضای مخصوص به خود را دارند: یکی رشته برمی‌گرداند، دیگری <code>false</code> در صورت خطا، و سومی resource باز می‌کند. </p><p>هیچ قرارداد یکتایی وجود ندارد. اما Go با یک مدل متفاوت و ساخت‌یافته‌تر این امکانات را ارائه می‌دهد: رابط‌های <code dir="ltr">io.Reader</code> و <code dir="ltr">io.Writer</code> به عنوان قراردادهای یکتای ورودی/خروجی، پکیج <code>embed</code> برای جاسازی فایل‌ها در باینری، و <code>os/signal</code> برای مدیریت خاموشی ایمن. این تفاوت‌ها هم در سطح سینتکس و هم در فلسفه‌ی طراحی ریشه دارند.</p>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-    subgraph TOPIC["موضوعات فصل ۶: تعامل با دنیای بیرون"]
-        direction TB
-        F["فایل‌هاos, bufio, embed"] --&gt; IO
-        J["JSON / YAMLencoding/json"] --&gt; IO
-        S["سیگنال‌هاos/signal"] --&gt; IO
-    end
-    IO["io.Reader / io.Writerقلب تپنده‌ی تمام عملیات I/O در Go"]
-    IO --&gt; O1["خواندن خط‌به‌خط//go:embed"]
-    IO --&gt; O2["نوشتن اتمیکGraceful Shutdown"]
-    note1(["PHP: file_get_contents, json_encode → Go: io.Reader, json.Marshal, embed.FS"])
-    note2([ذهنیت کلیدی: هر منبع I/O در Go فقط یک Reader یا Writer است — فایل، شبکه،...])
-    TOPIC ~~~ note1
-    TOPIC ~~~ note2
-
-    classDef topicBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef ioBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937,font-weight:bold;
-    classDef outBox fill:#f8fafc,stroke:#475569,stroke-width:1px,color:#1f2937;
-    classDef noteBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1px,color:#1f2937,font-style:italic;
-    class F,J,S topicBox;
-    class IO ioBox;
-    class O1,O2 outBox;
-    class note1,note2 noteBox;</pre>
-<figcaption dir="rtl">شکل ۶-۰: نقشه‌ی موضوعات فصل ششم — تعامل با دنیای بیرون</figcaption>
-</figure>
 <p>در این فصل خواننده با مفاهیم زیر آشنا خواهد شد:</p>
 <ul>
 <li><strong>رابط‌های بنیادین I/O:</strong> <code dir="ltr">io.Reader</code> و <code dir="ltr">io.Writer</code> به عنوان قراردادهای یکتای ورودی/خروجی، دکوراتورهایی مانند <code dir="ltr">io.TeeReader</code>، <code dir="ltr">io.MultiWriter</code> و <code dir="ltr">io.LimitReader</code>، و توابع کاربردی مانند <code dir="ltr">io.Copy</code> و <code dir="ltr">io.ReadAll</code></li>
@@ -160,7 +134,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/xml.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/ini.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/plaintext.min.js"></script>
-<script src="assets/js/diagrams.js"></script>
 <script src="assets/js/main.js"></script>
 </body>
 </html>

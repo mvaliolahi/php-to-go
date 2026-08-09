@@ -68,36 +68,6 @@
 <h2 id="کار-با-cookie-ها">کار با Cookie ها</h2><div class="abstract">
 <strong>چکیده:</strong> این بخش مدیریت cookie در Go را پوشش می‌دهد: set، get، secure flag و signing. تفاوت با setcookie در PHP و الگوهای امن بررسی می‌شود. کاربردهای session و tracking پوشش داده می‌گردد.
 </div>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart LR
-    S["Server"] --&gt;|"Set-Cookie"| B["Browser"]
-    B --&gt;|"Cookie Header"| R["r.Cookie()"]
-    R --&gt; CS["Cookie Store"]
-
-    subgraph SEC["امنیت"]
-        direction TB
-        SE1["HttpOnly"]
-        SE2["Secure"]
-        SE3["SameSite"]
-        SE4["MaxAge"]
-        SE5["Path"]
-        SE6["Domain"]
-    end
-
-    CODE1["http.SetCookie(w, &amp;http.Cookie{...})"]
-    CODE2["cookie, err := r.Cookie("name")"]
-    S ~~~ CODE1
-    B ~~~ CODE2
-    S ~~~ SEC
-
-    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef neuBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
-    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
-    class S,R,CS goBox;
-    class B neuBox;
-    class SE1,SE2,SE3,SE4,SE5,SE6,CODE1,CODE2 warnBox;</pre>
-<figcaption>شکل ۷-۶: جریان تنظیم و خواندن <bdi dir="ltr">Cookie</bdi> بین سرور و مرورگر</figcaption>
-</figure>
 <p>کوکی‌ها ابزار اصلی ذخیره داده کوتاه‌مدت در مرورگر کاربر هستند. در محیط حرفه‌ای باید نکات امنیتی کوکی مثل HttpOnly و Secure را رعایت کنید.</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">func setCookieHandler(w http.ResponseWriter, r *http.Request) {
@@ -205,42 +175,6 @@ func readSignedCookie(w http.ResponseWriter, r *http.Request) {
 </figure>
 <div class="important"><strong>مهم:</strong> کلیدهای امضا و رمزنگاری باید مخفی بمانند و هرگز در سورس کد عمومی قرار نگیرند. از متغیرهای محیطی یا سرویس‌های مدیریت راز (مثل <bdi dir="ltr">Vault</bdi>) برای ذخیره کلیدها استفاده کنید. اگر کلید افشا شود، مهاجم می‌تواند کوکی‌ها را جعل کند.</div>
 <h3 id="محافظت-csrf-با-کوکیها">7.6.5 محافظت CSRF با کوکی‌ها</h3>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-    subgraph S1["Step 1: GET /form"]
-        direction LR
-        B1["Browser"] --&gt;|"GET /form"| SV1["Server"]
-        SV1 --&gt;|"Set-Cookie + HTML"| B1B["BrowserCookie: csrf_token=abc+ Hidden field: abc"]
-    end
-
-    subgraph S2["Step 2: POST /form (submit)"]
-        direction LR
-        B2["BrowserCookie: csrf_token=abcHeader: X-CSRF-Token: abc"] --&gt;|"POST"| SV2["Server"]
-        SV2 --&gt; CMP["مقایسه: کوکی == هدر؟"]
-        CMP --&gt;|"برابر"| OK["درخواست معتبر ✓"]
-    end
-
-    subgraph S3["Step 3: Attack — malicious site sends POST"]
-        direction LR
-        EV["Evil Site"] --&gt;|"POST"| B3["BrowserCookie: csrf_token=abcNO X-CSRF-Token header!"]
-        B3 --&gt; SV3["Server"]
-        SV3 --&gt; REJ["هدر موجود نیست → رد شد ✗"]
-    end
-
-    NOTE([نکته: کوکی CSRF نباید HttpOnly باشد — جاوااسکریپت باید بتواند آن را بخواند و...])
-
-    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef neuBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
-    classDef bothBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
-    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
-    classDef errBox fill:#fef2f2,stroke:#ef4444,stroke-width:1.5px,color:#1f2937;
-    class SV1,SV2,SV3 goBox;
-    class B1,B1B,B2,B3,EV neuBox;
-    class CMP,OK bothBox;
-    class REJ errBox;
-    class NOTE warnBox;</pre>
-<figcaption dir="rtl">شکل ۷-۷: الگوی <bdi dir="ltr">Double Submit Cookie</bdi> برای محافظت <bdi dir="ltr">CSRF</bdi> — مقایسه توکن کوکی و هدر</figcaption>
-</figure>
 <p>حمله <bdi dir="ltr">CSRF</bdi> (<bdi dir="ltr">Cross-Site Request Forgery</bdi>) زمانی رخ می‌دهد که سایت مخرب، مرورگر کاربر را مجبور به ارسال درخواست به سایت شما می‌کند. کوکی‌ها نقش مهمی در این حمله دارند زیرا به صورت خودکار با هر درخوست ارسال می‌شوند. </p><p>تنظیم <code dir="ltr">SameSite</code> روی <code dir="ltr">Lax</code> یا <code dir="ltr">Strict</code> اولین لایه دفاع است، اما برای حصول اطمینان کامل باید از توکن <bdi dir="ltr">CSRF</bdi> استفاده کنید. الگوی <bdi dir="ltr">Double Submit Cookie</bdi> ساده‌ترین روش پیاده‌سازی است:</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">import "crypto/rand"
@@ -299,81 +233,6 @@ func csrfMiddleware(next http.Handler) http.Handler {
 <div class="warning"><strong>هشدار:</strong> در الگوی <bdi dir="ltr">Double Submit Cookie</bdi>، کوکی <bdi dir="ltr">CSRF</bdi> نباید <code dir="ltr">HttpOnly</code> باشد زیرا جاوااسکریپت باید بتواند آن را بخواند و در هدر <code dir="ltr">X-CSRF-Token</code> ارسال کند. با این حال کوکی باید <code dir="ltr">Secure</code> و <code dir="ltr">SameSite=Strict</code> باشد تا از رهگیری جلوگیری شود.</div>
 <h3 id="چرخه-حیات-کوکی-از-تنظیم-تا-خواندن">7.6.6 چرخه حیات کوکی: از تنظیم تا خواندن</h3>
 <p>درک کامل چرخه حیات کوکی برای ساخت اپلیکیشن‌های وب امن ضروری است. کوکی‌ها در یک چرخه دو مرحله‌ای عمل می‌کنند: در درخواست اول سرور کوکی را با هدر <code dir="ltr">Set-Cookie</code> در پاسخ تنظیم می‌کند، و در درخواست‌های بعدی مرورگر کوکی را با هدر <code dir="ltr">Cookie</code> ارسال می‌نماید. </p><p>هر مرحله از این چرخه دارای نکات امنیتی و فنی مهمی است. ساختار <code dir="ltr">http.Cookie</code> در <bdi dir="ltr">Go</bdi> فیلدهای متعددی دارد که هر کدام نقش مشخصی در امنیت و رفتار کوکی ایفا می‌کنند. در نمودار زیر چرخه کامل کوکی به همراه فیلدهای ساختار <code dir="ltr">http.Cookie</code> و ویژگی‌های امنیتی نمایش داده شده است:</p>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-    subgraph REQ1["درخواست ۱: تنظیم کوکی (اولین)"]
-        direction LR
-        A1["Browser(no cookie)"] --&gt;|"GET /login"| A2["Serverhttp.SetCookie()"]
-        A2 --&gt;|"Set-Cookie:session=abc123;Secure; HttpOnly; SameSite=Lax"| A3["Browserstores cookie ✓"]
-    end
-
-    CODE1["http.SetCookie(w, &amp;http.Cookie{Name: "session", Value: "abc123",Secure: true, HttpOnly: true, SameSite: http.SameSiteLaxMode})"]
-
-    subgraph REQ2["درخواست ۲: خواندن کوکی (بعدی)"]
-        direction LR
-        B1["BrowserCookie: session=abc123"] --&gt;|"GET /dashboard"| B2["Serverr.Cookie("session")"]
-        B2 --&gt;|"200 OK"| B3["Dashboardcontent shown ✓"]
-        B2 -.-&gt;|"(optionally update cookie)"| B1
-    end
-
-    CODE2["cookie, err := r.Cookie("session") → cookie.Value == "abc123" → process request"]
-
-    subgraph FIELDS["http.Cookie Struct Fields"]
-        direction TB
-        subgraph FR["Required Fields"]
-            direction TB
-            FR1["Name string — Cookie name (required)"]
-            FR2["Value string — Cookie value (required)"]
-        end
-        subgraph FS["Scope Fields"]
-            direction TB
-            FS1["Path string — Scope path (default: /)"]
-            FS2["Domain string — Scope domain"]
-        end
-        subgraph FL["Lifetime Fields"]
-            direction TB
-            FL1["Expires time.Time — Absolute expiry"]
-            FL2["MaxAge int — Seconds (overrides Expires)"]
-        end
-        subgraph FSEC["Security Fields"]
-            direction TB
-            FSEC1["Secure bool — HTTPS only ✓"]
-            FSEC2["HttpOnly bool — No JS access ✓"]
-            FSEC3["SameSite SameSite — CSRF protection ✓"]
-            FSEC4["Partitioned bool — CHIPS (future)"]
-        end
-    end
-
-    subgraph SAFE["ویژگی‌های امنیتی کوکی — مقایسه امن و ناامن"]
-        direction TB
-        subgraph GOOD["امن"]
-            direction TB
-            G1["Secure = true ✓ — فقط روی HTTPS ارسال می‌شود → Prevents MITM attacks"]
-            G2["HttpOnly = true ✓ — جاوااسکریپت دسترسی ندارد → Prevents XSS cookie theft"]
-            G3["SameSite = Lax/Strict ✓ — کنترل ارسال بین‌سایتی → Prevents CSRF attacks"]
-        end
-        subgraph BAD["ناامن: بدون Secure + HttpOnly + SameSite"]
-            direction TB
-            BA1[کوکی روی HTTP ارسال می‌شود + document.cookie قابل دسترسی است + درخواست‌های...]
-            BA2["→ XSS + CSRF + MITM ✗"]
-        end
-    end
-
-    GOLD([قانون طلایی: همیشه Secure=true + HttpOnly=true + SameSite=Lax/Strict برای...])
-
-    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef neuBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
-    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
-    classDef errBox fill:#fef2f2,stroke:#ef4444,stroke-width:1.5px,color:#1f2937;
-    classDef bothBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
-    class A2,B2 goBox;
-    class A1,A3,B1,B3,CODE1,CODE2 neuBox;
-    class FR1,FR2,FS1,FS2,FL1,FL2,FSEC1,FSEC2,FSEC3,FSEC4 neuBox;
-    class G1,G2,G3 bothBox;
-    class BA1,BA2 errBox;
-    class GOLD warnBox;</pre>
-<figcaption dir="rtl">شکل ۷-۶-ب: چرخه حیات کوکی — تنظیم و خواندن با ساختار <bdi dir="ltr">http.Cookie</bdi> و ویژگی‌های امنیتی</figcaption>
-</figure>
 <p>در نمودار بالا چرخه کامل کوکی از تنظیم تا خواندن نمایش داده شده است. در درخواست اول مرورگر بدون کوکی درخواست می‌فرستد و سرور با هدر <code dir="ltr">Set-Cookie</code> کوکی را تنظیم می‌کند. در درخواست‌های بعدی مرورگر کوکی را با هدر <code dir="ltr">Cookie</code> ارسال می‌کند و سرور با <code dir="ltr">r.Cookie()</code> آن را می‌خواند.</p>
 <h3 id="سناریوهای-عملیاتی-کوکی">7.6.7 سناریوهای عملیاتی کار با کوکی‌ها</h3>
 <p>کوکی‌ها در اپلیکیشن‌های وب کاربردهای متنوعی دارند، از احراز هویت تا ذخیره ترجیحات کاربر. هر سناریو نیازمند تنظیمات امنیتی متفاوتی است و درک این تفاوت‌ها برای ساخت اپلیکیشن امن حیاتی است. </p><p>برای نمونه، کوکی نشست باید بالاترین سطح امنیت را داشته باشد، اما کوکی ترجیحات کاربر ممکن است نیازی به <code dir="ltr">HttpOnly</code> نداشته باشد زیرا جاوااسکریپت باید بتواند آن را بخواند. در ادامه پنج سناریوی عملیاتی رایج را بررسی می‌کنیم:</p>
@@ -429,7 +288,6 @@ func csrfMiddleware(next http.Handler) http.Handler {
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/xml.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/ini.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/plaintext.min.js"></script>
-<script src="assets/js/diagrams.js"></script>
 <script src="assets/js/main.js"></script>
 </body>
 </html>

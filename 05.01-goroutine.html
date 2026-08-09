@@ -88,10 +88,6 @@ go func() { // run anonymous function in goroutine
 </p>
 </div>
 <div class="tip"><strong>نکته‌ی حرفه‌ای:</strong> مدیریت چرخه‌ی حیات <bdi dir="ltr">Goroutine</bdi> حیاتی است — هر <bdi dir="ltr">Goroutine</bdi> که شروع می‌کنید باید شرط خروج مشخصی داشته باشد، در غیر این صورت نشت <bdi dir="ltr">Goroutine</bdi> رخ می‌دهد (مبحث فصل ۵.۹). قاعده‌ی ساده: اگر <code>go func()</code> می‌نویسید، بلافاصله از خود بپرسید «این چه زمانی تمام می‌شود؟».</div>
-<figure class="diagram d2-diagram" dir="ltr">
-<img alt="نمودار" loading="lazy" src="assets/diagrams/ch05_01_goroutine_vs_thread.svg"/>
-<figcaption>شکل ۵-۱: مدل پردازشی <bdi dir="ltr">PHP</bdi> - هر درخواست در یک <bdi dir="ltr">Process</bdi> مستقل اجرا می‌شود</figcaption>
-</figure>
 <h3 id="مقایسه-goroutine-و-thread-و-process">5.1.1 مقایسهGoroutineوThreadو فرآیند PHP</h3>
 <div class="case-study">
 <div class="case-study-header">
@@ -125,24 +121,6 @@ go func() { // run anonymous function in goroutine
 <h3 id="stack-management">5.1.2 مدیریتStackو رشد پویا</h3>
 <p>مدیریت <bdi dir="ltr">Stack</bdi> در Go دو مرحله تکاملی داشته است. در نسخه‌های ابتدایی Go (تا قبل از Go 1.3) از مکانیزم <strong dir="ltr">Split Stacks</strong> استفاده می‌شد. در این روش وقتی <bdi dir="ltr">Stack</bdi> فعلی پر می‌شد یک بخش جدید <bdi dir="ltr">Stack</bdi> تخصیص داده می‌شد و به بخش قبلی متصل می‌گردید. </p><p>اما این روش مشکلی داشت: فراخوانی‌های متوالی که در مرز بین دو بخش <bdi dir="ltr">Stack</bdi> قرار می‌گرفتند باعث <strong dir="ltr">Stack Thrashing</strong> می‌شدند یعنی تخصیص و آزادسازی مکرر بخش‌های <bdi dir="ltr">Stack</bdi> که به شدت کارایی را کاهش می‌داد.</p>
 <p>از Go 1.3 به بعد مکانیزم <strong dir="ltr">Contiguous Stacks</strong> جایگزین شد. در این روش وقتی <bdi dir="ltr">Stack</bdi> فعلی پر می‌شود یک <bdi dir="ltr">Block</bdi> جدید حافظه با اندازه‌ی دو برابر تخصیص داده می‌شود، محتویات <bdi dir="ltr">Stack</bdi> قدیمی به جای جدید کپی می‌شود و <bdi dir="ltr">Stack</bdi> قدیمی آزاد می‌شود. این کار توسط تابع <code dir="ltr">runtime.newstack</code> انجام می‌شود. </p><p>مزیت اصلی این روش حذف مشکل <bdi dir="ltr">Thrashing</bdi> و سادگی پیاده‌سازی است. </p><p>همچنین کوچک‌سازی <bdi dir="ltr">Stack</bdi> (<bdi dir="ltr">Shrinking</bdi>) در زمان <bdi dir="ltr">Garbage Collection</bdi> انجام می‌شود: اگر کمتر از یک‌چهارم <bdi dir="ltr">Stack</bdi> استفاده شده باشد، اندازه‌ی آن به نصف کاهش می‌یابد.</p>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart LR
-    S1["شروع2 KB"]
-    S2["پر شد4 KB×2 رشد"]
-    S3["پر شد8 KB×2 رشد"]
-    S4["GC4 KBکوچک‌سازی"]
-    S1 --&gt; S2 --&gt; S3 --&gt; S4
-    S4 -. "بازگشت به رشد" .-&gt; S2
-
-    Note1[مکانیزم Contiguous Stack (از Go 1.3):۱. وقتی Stack پر می‌شود → حافظه‌ی دو...]
-
-    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef bothBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
-    classDef neuBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
-    class S1,S2,S3,S4 goBox;
-    class Note1 bothBox;</pre>
-<figcaption>شکل ۵-۲: رشد و کوچک‌سازی پویای <bdi dir="ltr">Stack</bdi> در <bdi dir="ltr">Goroutine</bdi></figcaption>
-</figure>
 <div class="note"><strong>مقایسه هزینه <bdi dir="ltr">Context Switch</bdi>:</strong> تعویض زمینه بین دو <bdi dir="ltr">Goroutine</bdi> در Go بسیار سبک‌تر از تعویض بین دو <bdi dir="ltr">Thread</bdi> سیستم‌عامل است. در یک <bdi dir="ltr">Thread Switch</bdi>، OS باید وضعیت تمام ثبت‌کننده‌ها (شامل ثبت‌کننده‌های <bdi dir="ltr">SIMD</bdi>)، <bdi dir="ltr">TLB</bdi> (<bdi dir="ltr">Translation Lookaside Buffer</bdi>) و <bdi dir="ltr">Cache</bdi> لایه‌های CPU را احتمالاً <bdi dir="ltr">Invalidate</bdi> کند. اما در <bdi dir="ltr">Goroutine Switch</bdi> فقط چندین ثبت‌کننده (حدود ۱۶ عدد شامل <bdi dir="ltr">SP</bdi>، <bdi dir="ltr">PC</bdi>، <bdi dir="ltr">BP</bdi> و غیره) ذخیره و بازیابی می‌شوند. هزینه‌ی تقریبی <bdi dir="ltr">Goroutine Switch</bdi> حدود ۱۰۰-۲۰۰ نانوثانیه است در حالی که <bdi dir="ltr">Thread Switch</bdi> سیستم‌عامل معمولاً ۱-۲ میکروثانیه طول می‌کشد (یعنی ۵ تا ۱۰ برابر بیشتر).</div>
 <h3 id="scheduler">5.1.3 مدلGMP Scheduler</h3>
 <p>یکی از ویژگی‌های کلیدی زبان Go سیستم <bdi dir="ltr">Scheduler</bdi> آن است که تحت عنوان <bdi dir="ltr">M:N Scheduler</bdi> شناخته می‌شود. در این مدل <bdi dir="ltr">M</bdi> = تعداد <bdi dir="ltr">Thread</bdi>‌های سیستم‌عامل و <bdi dir="ltr">N</bdi> = تعداد <bdi dir="ltr">Goroutine</bdi>‌های فعال در برنامه است. <bdi dir="ltr">Scheduler</bdi> به گونه‌ای طراحی شده که بتواند بدون اینکه توسعه‌دهنده مجبور باشد مستقیماً با مفاهیم پیچیده‌ی مدیریت <bdi dir="ltr">Thread</bdi> سر و کار داشته باشد، تعداد بسیار زیادی <bdi dir="ltr">N</bdi> را به صورت بهینه و هوشمند روی تعداد محدودی <bdi dir="ltr">M</bdi> نگاشت کند.</p>
@@ -150,47 +128,6 @@ go func() { // run anonymous function in goroutine
 <p><strong><bdi dir="ltr">G (Goroutine)</bdi>:</strong> هر <bdi dir="ltr">Goroutine</bdi> توسط ساختار <code dir="ltr">runtime.g</code> نمایش داده می‌شود. شامل <bdi dir="ltr">Stack</bdi>، شمارنده برنامه، وضعیت و غیره است. هر <bdi dir="ltr">G</bdi> در یکی از وضعیت‌های <code>_Gidle</code>، <code>_Grunnable</code>، <code>_Grunning</code>، <code>_Gsyscall</code>، <code>_Gwaiting</code> یا <code>_Gdead</code> قرار دارد.</p>
 <p><strong><bdi dir="ltr">M (Machine)</bdi>:</strong> هر <bdi dir="ltr">M</bdi> نماینده‌ی یک <bdi dir="ltr">Thread</bdi> واقعی سیستم‌عامل است (<code dir="ltr">runtime.m</code>). تعداد <bdi dir="ltr">M</bdi>‌ها می‌تواند بیشتر از <bdi dir="ltr">P</bdi>‌ها باشد (مثلاً وقتی <bdi dir="ltr">Goroutine</bdi> در <bdi dir="ltr">Syscall</bdi> مسدود شده باشد). هر <bdi dir="ltr">M</bdi> بدون <bdi dir="ltr">P</bdi> نمی‌تواند <bdi dir="ltr">G</bdi> اجرا کند.</p>
 <p><strong><bdi dir="ltr">P (Processor)</bdi>:</strong> هر <bdi dir="ltr">P</bdi> نماینده‌ی یک منبع مجازی اجرایی است (<code dir="ltr">runtime.p</code>). تعداد <bdi dir="ltr">P</bdi>‌ها برابر با <code>GOMAXPROCS</code> (پیش‌فرض: تعداد هسته‌های <bdi dir="ltr">CPU</bdi>) است. هر <bdi dir="ltr">P</bdi> یک <bdi dir="ltr">Local Run Queue</bdi> با ظرفیت ۲۵۶ <bdi dir="ltr">Goroutine</bdi> دارد.</p>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-    GRQ["Global Run Queueصف سراسری — همه Pها به آن دسترسی دارند"]
-
-    subgraph P1G["P1 (Processor)"]
-        direction TB
-        LQ1["صف محلی (ظرفیت ۲۵۶)"]
-        G1["G1"]
-        G2["G2"]
-        G3["G3"]
-        LQ1 --&gt; G1
-        LQ1 --&gt; G2
-        LQ1 --&gt; G3
-    end
-    M1["M1 (Thread)G (running)"]
-
-    subgraph P2G["P2 (Processor)"]
-        direction TB
-        LQ2["صف محلی (ظرفیت ۲۵۶)"]
-        G4["G4"]
-        G5["G5"]
-        LQ2 --&gt; G4
-        LQ2 --&gt; G5
-    end
-    M2["M2 (Thread)G (running)"]
-
-    GRQ --&gt; P1G
-    GRQ --&gt; P2G
-    P1G --&gt; M1
-    P2G --&gt; M2
-    M1 -. "Work Stealing" .-&gt; M2
-
-    Note1[مکانیزم Hand-off و Work-Stealing:Hand-off: وقتی G وارد Syscall مسدودکننده...]
-
-    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef bothBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
-    classDef neuBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
-    class GRQ,P1G,P2G,LQ1,LQ2,G1,G2,G3,G4,G5,M1,M2 goBox;
-    class Note1 bothBox;</pre>
-<figcaption>شکل ۵-۳: مدل <bdi dir="ltr">GMP</bdi> <bdi dir="ltr">Scheduler</bdi> — G (<bdi dir="ltr">Goroutine</bdi>) و M (<bdi dir="ltr">Thread</bdi>) و P (<bdi dir="ltr">Processor</bdi>)</figcaption>
-</figure>
 <h4 id="work-stealing">الگوریتم <bdi dir="ltr">Work-Stealing</bdi></h4>
 <p>وقتی یک <bdi dir="ltr">P</bdi> صف محلی خود را خالی می‌یابد، به ترتیب زیر عمل می‌کند:</p>
 <p>۱. ابتدا صف محلی خود را بررسی می‌کند — اگر خالی بود، به مرحله بعد.</p>
@@ -469,47 +406,6 @@ fmt.Println("GOMAXPROCS:", runtime.GOMAXPROCS(0))
 </div>
 <h3 id="goroutine-lifecycle-diagram">5.1.7 نمودار وضعیت‌های چرخه‌ی حیاتGoroutine</h3>
 <p>همان‌طور که در بخش قبل دیدیم، هر <bdi dir="ltr">Goroutine</bdi> در طول اجرای خود از وضعیت‌های مختلفی عبور می‌کند. این <bdi dir="ltr">State Machine</bdi> به‌صورت بصری نشان می‌دهد که یک <bdi dir="ltr">Goroutine</bdi> چگونه از وضعیت ایجاد تا مرگ طی می‌کند و چه عواملی باعث انتقال بین وضعیت‌ها می‌شوند. درک این چرخه برای دیباگ مشکلاتی مثل نشت <bdi dir="ltr">Goroutine</bdi> و <bdi dir="ltr">Deadlock</bdi> بسیار حیاتی است. </p><p>هر فلش در نمودار نشان‌دهنده‌ی یک رویداد یا عملیاتی است که باعث تغییر وضعیت می‌شود و هر جعبه رنگی نمایانگر یک وضعیت مشخص در <bdi dir="ltr">Runtime</bdi> Go است.</p>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-    Created["Created_Gidle"]
-    Runnable["Runnable_Grunnable"]
-    Running["Running_Grunning"]
-    Blocked["Blocked_Gwaiting"]
-    Syscall["Syscall_Gsyscall"]
-    Dead["Dead_Gdead"]
-
-    Created -- "go f()" --&gt; Runnable
-    Runnable -- "انتخاب توسط Scheduler" --&gt; Running
-    Running -- "return" --&gt; Dead
-    Running -- "ارسال روی Channelدریافت از Channel خالیI/O wait / select / Timer" --&gt; Blocked
-    Blocked -- "بیدار شدن:داده رسید / I/O تمام شد / Timer سر رسید" --&gt; Runnable
-    Running -- "Preemption / Gosched" --&gt; Runnable
-    Running -- "blocking syscall" --&gt; Syscall
-    Syscall -- "syscall returns" --&gt; Runnable
-
-    subgraph INFO["اطلاعات هر وضعیت — چه اتفاقی می‌افتد؟"]
-        direction TB
-        I1["Created (_Gidle): ساختار runtime.g تخصیص داده شده، هنوز در صف نیست"]
-        I2["Runnable (_Grunnable): در صف محلی P یا صف سراسری — آماده اجرا"]
-        I3["Running (_Grunning): در حال اجرا روی M/P — کد واقعی اجرا می‌شود"]
-        I4["Blocked (_Gwaiting): منتظر Channel، I/O، Select، Timer یا GC"]
-        I5["Syscall (_Gsyscall): فراخوانی سیستم‌عامل مسدودکننده — P جدا می‌شود"]
-        I6["Dead (_Gdead): تابع برگشت — ساختار بازیافت و دوباره استفاده می‌شود"]
-        I7[نمونه مسیر اجرا: go f() → Created → Runnable → Running → ch&lt;-v → Blocked →...]
-        I8[قانون طلایی: هر Goroutine باید شرط خروج مشخصی داشته باشد — Goroutine یتیم =...]
-        I1 --&gt; I2 --&gt; I3 --&gt; I4 --&gt; I5 --&gt; I6 --&gt; I7 --&gt; I8
-    end
-
-    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
-    classDef errBox fill:#fef2f2,stroke:#ef4444,stroke-width:1.5px,color:#1f2937;
-    classDef neuBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
-    class Created,Runnable,Running,Blocked,Syscall goBox;
-    class Dead errBox;
-    class INFO,I1,I2,I3,I4,I5,I6,I7 neuBox;
-    class I8 warnBox;</pre>
-<figcaption>شکل ۵-۴: نمودار وضعیت چرخه‌ی حیات <bdi dir="ltr">Goroutine</bdi> — انتقال بین وضعیت‌های <code>_Gidle</code> تا <code>_Gdead</code></figcaption>
-</figure>
 <h3 id="سناریوهای-عملیاتی-goroutine">5.1.8 سناریوهای عملیاتیGoroutine</h3>
 <p>در پروژه‌های واقعی، <bdi dir="ltr">Goroutine</bdi>‌ها نقش‌های متنوعی ایفا می‌کنند. شناخت این الگوهای عملیاتی به شما کمک می‌کند در هر موقعیت تصمیم درستی درباره نحوه استفاده از هم‌روندی بگیرید. هر الگو مزایا و معایب خاص خود را دارد و انتخاب صحیح بین آن‌ها می‌تواند تفاوت بین یک سیستم مقیاس‌پذیر و یک سیستم شکننده باشد. در ادامه رایج‌ترین سناریوهای عملیاتی آشنا می‌شویم.</p>
 <ul>
@@ -563,7 +459,6 @@ fmt.Println("GOMAXPROCS:", runtime.GOMAXPROCS(0))
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/xml.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/ini.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/plaintext.min.js"></script>
-<script src="assets/js/diagrams.js"></script>
 <script src="assets/js/main.js"></script>
 </body>
 </html>

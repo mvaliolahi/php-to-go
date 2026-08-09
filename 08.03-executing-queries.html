@@ -68,30 +68,6 @@
 <h2 id="اجرای-query">اجرای Query</h2><div class="abstract">
 <strong>چکیده:</strong> این بخش اجرای query در Go را پوشش می‌دهد: Query، Exec و prepared statement. الگوی placeholder و SQL injection prevention بررسی می‌شود. تفاوت با PDO::query در PHP مشخص می‌گردد.
 </div>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-    Title["انواع کوئری و جریان اجرا در database/sql"]
-
-    Q1["db.Query()<br/>چند سطر + rows.Next()"]
-    Q2["db.QueryRow()<br/>یک سطر + .Scan()"]
-    Q3["db.Exec()<br/>INSERT/UPDATE/DELETE"]
-    Q4["db.Prepare() → stmt.Exec()<br/>کوئری‌های تکراری + امنیت"]
-    Q5["QueryContext / ExecContext<br/>کنترل Timeout"]
-    Q6["sqlx: Named Query + Struct Scan"]
-
-    Title --&gt; Q1
-    Title --&gt; Q2
-    Title --&gt; Q3
-    Title --&gt; Q4
-    Title --&gt; Q5
-    Title --&gt; Q6
-
-    classDef titleBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:2px,color:#1f2937,font-weight:bold;
-    classDef goBox   fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    class Title titleBox;
-    class Q1,Q2,Q3,Q4,Q5,Q6 goBox;</pre>
-<figcaption dir="rtl">شکل ۸-۳: انواع متدهای اجرای کوئری و جریان اجرا</figcaption>
-</figure>
 <p>پس از اتصال موفق به پایگاه‌داده قدم بعدی اجرای کوئری‌ها و تعامل با داده‌هاست. برخلاف <bdi dir="ltr">Laravel</bdi> که با <bdi dir="ltr">Query Builder</bdi> یا <bdi dir="ltr">Eloquent</bdi> عملیات را ساده می‌کند در <bdi dir="ltr">Go</bdi> مستقیماً با <bdi dir="ltr">SQL</bdi> خام کار می‌کنید.</p>
 <h3 id="انواع-متدهای-اجرا">8.3.1 انواع متدهای اجرا</h3>
 <p>پکیج <bdi dir="ltr">database/sql</bdi> سه متد اصلی برای اجرای کوئری ارائه می‌دهد:</p>
@@ -129,79 +105,6 @@ if err := rows.Err(); err != nil {
 }</code></pre>
 </figure>
 <p><strong>نکات:</strong> <bdi dir="ltr">rows.Close()</bdi> را فراموش نکنید. بررسی خطا بعد از <bdi dir="ltr">rows.Next()</bdi> با <bdi dir="ltr">rows.Err()</bdi> ضروری است.</p>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-    Title["خط لوله اجرای Query در database/sql"]
-
-    subgraph PIPE["خط لوله اجرا"]
-        direction TB
-        P1["db.Prepare()اتصال پارامترها"]
-        P2["stmt.Query()ایجاد cursor"]
-        P3["rows.Next()پیمایش سطرها"]
-        P4["rows.Scan()تبدیل نوع"]
-        P5["rows.Close()آزادسازی منابع"]
-        P1 -- "کوئری فقط ۱ بار پارس می‌شود" --&gt; P2
-        P2 -- "مقادیر جایگزین پارامترهاایجاد cursor" --&gt; P3
-        P3 -- "loop: true → سطر بعدیحلقه تکرار برای هر سطر" --&gt; P4
-        P4 -- "SQL → Go typesتبدیل نوع‌ها در Scan" --&gt; P5
-        P5 -- "بستن اتصال cursor" --&gt; END_P[" "]
-    end
-
-    subgraph TYPES["تبدیل نوع‌ها"]
-        direction TB
-        T1["INT → int"]
-        T2["VARCHAR → string"]
-        T3["TIMESTAMP → time.Time"]
-        T4["NULL ← نیاز به sql.Null*"]
-    end
-
-    subgraph GO_CODE["Go Code Pattern"]
-        direction TB
-        G1["stmt, _ := db.Prepare("SELECT ... WHERE id=$1")"]
-        G2["defer stmt.Close()"]
-        G3["rows, _ := stmt.Query(42)"]
-        G4["defer rows.Close()"]
-        G5["for rows.Next() { rows.Scan(&amp;id, &amp;name) }"]
-        G1 --&gt; G2 --&gt; G3 --&gt; G4 --&gt; G5
-    end
-
-    subgraph ERRORS["خطاهای رایج"]
-        direction TB
-        E1["فراموش کردن rows.Close() → نشت اتصال"]
-        E2["عدم بررسی rows.Err() → از دست رفتن خطا"]
-    end
-
-    subgraph PHP_CODE["PHP PDO Equivalent"]
-        direction TB
-        PH1["$stmt = $pdo-&gt;prepare(); $stmt-&gt;execute();"]
-    end
-
-    Golden[قانون طلایی: همیشه rows.Close() را با defer فراخوانی کنید و بعد از حلقه...]
-
-    Title --&gt; PIPE
-    PIPE --&gt; TYPES
-    PIPE --&gt; GO_CODE
-    PIPE --&gt; ERRORS
-    PIPE --&gt; PHP_CODE
-    ERRORS --&gt; Golden
-
-    classDef titleBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:2px,color:#1f2937,font-weight:bold;
-    classDef goBox   fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef phpBox  fill:#f5f0fb,stroke:#777BB4,stroke-width:1.5px,color:#1f2937;
-    classDef bothBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
-    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
-    classDef errBox  fill:#fef2f2,stroke:#ef4444,stroke-width:1.5px,color:#1f2937;
-    classDef neuBox  fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
-    class Title titleBox;
-    class P1,P2,P3,P4,P5 goBox;
-    class T1,T2,T3 bothBox;
-    class T4 warnBox;
-    class G1,G2,G3,G4,G5 goBox;
-    class E1,E2 errBox;
-    class PH1 phpBox;
-    class Golden warnBox;</pre>
-<figcaption dir="rtl">شکل ۸-۳-ب: خط لوله اجرای <bdi dir="ltr">Query</bdi> — از <bdi dir="ltr">Prepare</bdi> تا <bdi dir="ltr">Close</bdi></figcaption>
-</figure>
 <p>در این خط لوله هر مرحله وظیفه مشخصی دارد. مرحله‌ی <bdi dir="ltr">Prepare</bdi> کوئری <bdi dir="ltr">SQL</bdi> را فقط یک‌بار پارس و کامپایل می‌کند و شیء <bdi dir="ltr">Statement</bdi> را برمی‌گرداند. مرحله‌ی <bdi dir="ltr">Query</bdi> مقادیر پارامترها را جایگزین کرده و <bdi dir="ltr">cursor</bdi> نتایج را ایجاد می‌کند. حلقه‌ی <bdi dir="ltr">Next/Scan</bdi> سطر به سطر داده‌ها را می‌خواند و نوع‌های <bdi dir="ltr">SQL</bdi> را به نوع‌های <bdi dir="ltr">Go</bdi> تبدیل می‌کند. </p><p>در نهایت <bdi dir="ltr">Close</bdi> منابع اتصال و <bdi dir="ltr">cursor</bdi> را آزاد می‌کند. فراموش کردن هر کدام از این مراحل می‌تواند منجر به نشت اتصال، خطاهای پنهان یا کاهش عملکرد شود.</p>
 <p><strong>سناریوهای عملیاتی اجرای <bdi dir="ltr">Query</bdi>:</strong></p>
 <ul>
@@ -359,7 +262,6 @@ func (r *UserRepository) Create(name, email string) (int64, error) {
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/xml.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/ini.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/plaintext.min.js"></script>
-<script src="assets/js/diagrams.js"></script>
 <script src="assets/js/main.js"></script>
 </body>
 </html>

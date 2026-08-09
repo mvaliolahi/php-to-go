@@ -82,10 +82,6 @@
 <tr><td>قبل و بعد</td><td>قبل: $<span dir="ltr">next($request)</span> / بعد: تغییر response</td><td>قبل: <span dir="ltr">next.ServeHTTP()</span> / بعد: تغییر response</td></tr>
 </tbody>
 </table>
-<figure class="diagram d2-diagram" dir="ltr">
-<img alt="نمودار" loading="lazy" src="assets/diagrams/ch07_04_middleware_chain.svg"/>
-<figcaption>شکل ۷-۴: زنجیره <bdi dir="ltr">Middleware</bdi> — درخواست از چپ به راست و پاسخ از راست به چپ</figcaption>
-</figure>
 <p>در ساختار یک وب‌سرور، معمولاً نیازمند اضافه کردن قابلیت‌های جانبی مانند Logging، کنترل دسترسی، مدیریت خطا، افزودن هدرهای امنیتی و بسیاری موارد دیگر هستیم که نباید در تک‌تک Handler برنامه تکرار شوند. اینجا نقش <strong dir="ltr">Middleware</strong> مطرح می‌شود.</p>
 <p>Middleware در Go به قطعات کدی گفته می‌شود که بین دریافت Request و اجرای هندلر اصلی قرار می‌گیرند و قابلیت‌های کمکی را به شکل متمرکز و سازمان‌دهی شده فراهم می‌کنند. استفاده از Middleware ضمن افزایش قابلیت نگهداری کد، امنیت و قابلیت توسعه پروژه را به شکل قابل‌توجهی افزایش می‌دهد.</p>
 <h3 id="تعریف-middleware-در-go">7.4.1 تعریف Middleware در Go</h3>
@@ -355,40 +351,6 @@ mux.HandleFunc("/public", publicHandler) // without auth
 server := &amp;http.Server{Handler: handler}
 </code></pre>
 </figure>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-    subgraph M1["روش ۱: Middleware سراسری (قبل از mux)"]
-        direction LR
-        R1["Request"] --&gt; CH1["commonHeaders"]
-        CH1 --&gt; RL["requestLogger"]
-        RL --&gt; SM1["ServeMux"]
-        SM1 --&gt; P1A["/"]
-        SM1 --&gt; P1B["/admin"]
-        SM1 --&gt; P1C["/public"]
-        N1(["همه مسیرها هدر امنیتی و لاگ دارند"])
-        SM1 ~~~ N1
-    end
-
-    subgraph M2["روش ۲: Middleware روی مسیر خاص (بعد از mux)"]
-        direction LR
-        R2["Request"] --&gt; SM2["ServeMux"]
-        SM2 --&gt; AM["authMiddleware"]
-        SM2 --&gt; P2B["/public"]
-        AM --&gt; P2A["/admin"]
-        N2(["فقط /admin از auth می‌گذرد · /public بدون authMiddleware"])
-        SM2 ~~~ N2
-    end
-
-    GOLD(["قبل از mux = سراسری · بعد از mux روی هندلر = فقط همان مسیر"])
-
-    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef neuBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
-    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
-    class CH1,RL,SM1,SM2,AM goBox;
-    class R1,P1A,P1B,P1C,R2,P2A,P2B neuBox;
-    class N1,N2,GOLD warnBox;</pre>
-<figcaption>شکل ۷-۴-ب: تفاوت قرارگیری <bdi dir="ltr">middleware</bdi> قبل و بعد از <bdi dir="ltr">ServeMux</bdi></figcaption>
-</figure>
 <div class="important">
 <strong>مهم:</strong> ترتیب اعمال middleware اهمیت بالایی دارد. در زنجیره سراسری، اولین اولین middleware اول اجرا می‌شود. مثلاً <code>recoverPanic</code> باید بیرونی‌ترین باشد تا بتواند panic‌های middleware‌های داخلی را هم شکار کند.
 </div>
@@ -514,83 +476,6 @@ $userID = app('userID');
 <tr><td>مهلت زمانی</td><td dir="ltr">set_time_limit()</td><td dir="ltr">context.WithTimeout()</td></tr>
 </tbody>
 </table>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-    subgraph ONION["مدل لایه‌ای حلقه پیاز"]
-        direction TB
-        O1["Logging Middleware"]
-        O2["Auth Middleware"]
-        O3["Rate Limit Middleware"]
-        O4["HandlerBusiness LogicProcess Request → Return Response"]
-        O1 --&gt; O2 --&gt; O3 --&gt; O4
-    end
-
-    subgraph BEFORE["before next()"]
-        direction TB
-        B1["→ log start · start timer"]
-        B2["→ check JWT · validate session"]
-        B3["→ check rate · increment counter"]
-    end
-
-    subgraph AFTER["after next()"]
-        direction TB
-        A1["← log end + duration · record status code"]
-        A2["← add user to ctx"]
-        A3["← set X-RateLimit headers"]
-    end
-
-    O1 -.-&gt; B1
-    O2 -.-&gt; B2
-    O3 -.-&gt; B3
-    O4 -.-&gt; A3
-    O3 -.-&gt; A3
-    O2 -.-&gt; A2
-    O1 -.-&gt; A1
-
-    REQ(["Request ↓"]) --&gt; O1
-    O4 --&gt; RESP(["Response ↑"])
-
-    subgraph SC["خط لوله عمودی با Short-Circuit"]
-        direction TB
-        SC1["Request"]
-        SC2["Logging Middleware — before: log"]
-        SC3["Auth Middleware — 401 Unauthorized · next() NOT called · chain stops here!"]
-        SC4["⚡ Short-Circuit!"]
-        SC5["Response 401"]
-        SC1 --&gt; SC2 --&gt; SC3 --&gt; SC4 --&gt; SC5
-    end
-
-    subgraph SCWHY["چرا Short-Circuit مهم است؟"]
-        direction TB
-        SW1["وقتی Auth بدون next() پاسخ دهد، بقیه زنجیره اجرا نمی‌شود"]
-        SW2["اما Logging (لایه بیرونی) هنوز بخش after next() را اجرا می‌کند"]
-    end
-
-    subgraph CODE["// Short-circuit in Auth Middleware"]
-        direction TB
-        C1["func authMiddleware(next http.Handler) http.Handler {"]
-        C2["if !isAuthenticated(r) {"]
-        C3["http.Error(w, "401", 401)"]
-        C4["return // ← chain stops!"]
-        C5["}"]
-        C6["next.ServeHTTP(w, r) // continue"]
-        C7["}"]
-    end
-
-    GOLD([قانون طلایی: Recover بیرونی‌ترین ← Logging بعد از آن ← Rate Limit قبل از...])
-
-    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef neuBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
-    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
-    classDef errBox fill:#fef2f2,stroke:#ef4444,stroke-width:1.5px,color:#1f2937;
-    class O1,O2,O3,O4 goBox;
-    class B1,B2,B3,A1,A2,A3 neuBox;
-    class SC1,SC2,SC5,REQ,RESP neuBox;
-    class SC3,SC4 errBox;
-    class SW1,SW2,C1,C2,C3,C4,C5,C6,C7 neuBox;
-    class GOLD warnBox;</pre>
-<figcaption>شکل ۷-۴-ج: مدل حلقه‌ای <bdi dir="ltr">Middleware</bdi> — لایه‌های تودرتو، ترتیب اجرای <bdi dir="ltr">before/after next()</bdi> و مسیر <bdi dir="ltr">Short-Circuit</bdi></figcaption>
-</figure>
 <h3 id="سناریوهای-عملیاتی-middleware">7.4.10 سناریوهای عملیاتی Middleware</h3>
 <p>در پروژه‌های واقعی، <bdi dir="ltr">Middleware</bdi> نقش حیاتی در مدیریت مسائل عرضی (<bdi dir="ltr">cross-cutting concerns</bdi>) ایفا می‌کند. هر سناریوی زیر نیازمند تنظیمات خاص و درک دقیق نحوه تعامل لایه‌ها با یکدیگر است. بدون <bdi dir="ltr">Middleware</bdi>، این منطق‌ها در تک‌تک هندلرها تکرار می‌شدند و نگهداری کد عملاً غیرممکن می‌گردید. در ادامه شش سناریوی عملیاتی رایج را بررسی می‌کنیم که هر توسعه‌دهنده <bdi dir="ltr">Go</bdi> باید با آن‌ها آشنا باشد.</p>
 <ul>
@@ -648,7 +533,6 @@ $userID = app('userID');
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/xml.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/ini.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/plaintext.min.js"></script>
-<script src="assets/js/diagrams.js"></script>
 <script src="assets/js/main.js"></script>
 </body>
 </html>

@@ -77,28 +77,6 @@ var p *int = &amp;a // p is a pointer to a
 fmt.Println(*p) // Output: 10
 </code></pre>
 </figure>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart LR
-
-    subgraph VAR["a (int)"]
-        direction TB
-        A1["10"]
-        A2["آدرس: 0xC0001"]
-    end
-
-    P["p (*int)0xC0001"]
-
-    P -- "p = &amp;a" --&gt; A1
-    A1 -- "*p = 20مقدار a از طریق اشاره‌گر تغییر می‌کند" --&gt; P
-
-    classDef titleBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
-    classDef varBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef ptrBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
-    class TITLE titleBox;
-    class VAR,A1,A2 varBox;
-    class P ptrBox;</pre>
-<figcaption dir="rtl">شکل ۸-۲: نمودار وضعیت اشاره‌گر</figcaption>
-</figure>
 <p>a&amp; آدرس حافظه‌ی متغیر a را بازمی‌گرداند. p* مقدار موجود در آدرس ذخیره‌شده در p را می‌خواند یا تغییر می‌دهد.</p>
 <p>می‌توان بدون کپی کردن مقادیر بزرگ به‌سادگی آدرس آن‌ها را به توابع فرستاد.</p>
 <p> برخلاف PHP که پارامترها به صورت پیش‌فرض by-value هستند در Go برای تأثیر گذاشتن بر مقدار اصلی باید از اشاره‌گر استفاده شود.</p>
@@ -131,47 +109,6 @@ if p != nil {
 <strong>Reference Types:</strong> هنگام انتساب، همان داده زیرین به‌اشتراک گذاشته می‌شود. تغییر یکی، دیگری را هم تغییر می‌دهد.
 <br/>• <code>slice</code>, <code>map</code>, <code>channel</code>, <code>pointer</code>, <code>function</code>, <code>interface</code>
 </div>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-
-    subgraph VALUE["انواع مقداری (Value Types)"]
-        direction TB
-        V1["c1 (Config)Timeout: 30Retries: 3addr: 0xA001"]
-        V2["c2 (Config)Timeout: 30Retries: 3addr: 0xA050"]
-        V3["کپی"]
-        V4["c2.Timeout = 60فقط c2 تغییر می‌کند، c1 دست‌نخورده می‌ماند"]
-        V5["c1.Timeout = 30 ✓c2.Timeout = 60"]
-        VNOTE["مستقل — هر کپی حافظه مجزا دارد"]
-        V1 -- "copy" --&gt; V2
-        V2 --&gt; V3 --&gt; V4 --&gt; V5 --&gt; VNOTE
-    end
-
-    subgraph REF["انواع مرجع‌دار (Reference Types)"]
-        direction TB
-        R1["s1 (slice)ptr → 0xB100"]
-        R2["s2 (slice)ptr → 0xB100"]
-        R3["آرایه زیرین مشترک (0xB100)[1, 2, 3]"]
-        R4["s2[0] = 99هر دو متغیر تغییر را می‌بینند!"]
-        RNOTE["مشترک — هر دو به همان داده اشاره می‌کنند"]
-        R1 --&gt; R3
-        R2 --&gt; R3
-        R3 --&gt; R4 --&gt; RNOTE
-    end
-
-        
-    classDef titleBox fill:#ecfdf5,stroke:#10b981,stroke-width:2px,color:#1f2937;
-    classDef valueBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef refBox fill:#f5f0fb,stroke:#777BB4,stroke-width:1.5px,color:#1f2937;
-    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
-    classDef bothBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
-    class TITLE titleBox;
-    class VALUE,V1,V2,V3,V4,V5 valueBox;
-    class VNOTE bothBox;
-    class REF,R1,R2,R3 refBox;
-    class R4 warnBox;
-    class RNOTE warnBox;</pre>
-<figcaption dir="rtl">شکل ۹-۲: تفاوت حافظه‌ی انواع مقداری و مرجع‌دار — کپی مستقل در برابر اشتراک داده</figcaption>
-</figure>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">// Wrong — struct value is copied
 type Config struct { Timeout int }
@@ -359,49 +296,6 @@ func (b *BigData) Process() { // only 8 bytes copy
 }
 </code></pre>
 </figure>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid"><code>flowchart TB
-
-    subgraph BYVAL["ارسال مقداری (by value)"]
-        direction TB
-        V1["User{Name, Email, Age, ...} ← کپی کامل"]
-        V2["فراخوانی: data copy O(n)"]
-        V3["✓ امن: تغییر تأثیر روی اصلی ندارد"]
-        V4["✓ هم‌روندی: بدون data race"]
-        V5["✗ پرهزینه برای struct بزرگ"]
-        V6["✗ نمی‌تواند اصلی را تغییر دهد"]
-        V1 --&gt; V2 --&gt; V3 --&gt; V4 --&gt; V5 --&gt; V6
-    end
-
-    subgraph BYPTR["ارسال اشاره‌گری (by pointer)"]
-        direction TB
-        P1["*User → آدرس 0xC0001 ← فقط ۸ بایت"]
-        P2["فراخوانی: فقط کپی ۸ بایت"]
-        P3["✓ سریع برای struct بزرگ"]
-        P4["✓ می‌تواند اصلی را تغییر دهد"]
-        P5["✗ خطر data race در هم‌روندی"]
-        P6["✗ ممکن است GC فشار بیشتری داشته باشد"]
-        P1 --&gt; P2 --&gt; P3 --&gt; P4 --&gt; P5 --&gt; P6
-    end
-
-    RULE["قانون تجربی: struct زیر ۶۴ بایت → valueبالای ۶۴ بایت یا نیاز به تغییر → pointer"]
-
-            
-    classDef titleBox fill:#ecfdf5,stroke:#10b981,stroke-width:2px,color:#1f2937;
-    classDef valueBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef ptrBox fill:#f5f0fb,stroke:#777BB4,stroke-width:1.5px,color:#1f2937;
-    classDef bothBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
-    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
-    class TITLE titleBox;
-    class BYVAL,V1,V2 valueBox;
-    class V3,V4 bothBox;
-    class V5,V6 warnBox;
-    class BYPTR,P1,P2 ptrBox;
-    class P3,P4 bothBox;
-    class P5,P6 warnBox;
-    class RULE bothBox;</code></pre>
-<figcaption dir="rtl">شکل ۱۰-۲: مقایسه‌ی ارسال مقداری و اشاره‌گری</figcaption>
-</figure>
 <h3 id="pointer-mistakes">2.5.9 اشتباهات رایج با اشاره‌گرها</h3>
 <p>برنامه‌نویسان <bdi dir="ltr">PHP</bdi> که تازه با اشاره‌گرها آشنا شده‌اند مرتکب اشتباهات رایجی می‌شوند. آگاهی از این اشتباهات به شما کمک می‌کند از آن‌ها اجتناب کنید.</p>
 <figure class="code go" dir="ltr">
@@ -497,85 +391,6 @@ person := Person{
 <p>
  برای درک کامل اشاره‌گرها در <bdi dir="ltr">Go</bdi>، شناخت ساختار حافظه‌ی برنامه ضروری است. همان‌طور که در بخش <a href="#escape-analysis">Escape Analysis</a> دیدید، کامپایلر <bdi dir="ltr">Go</bdi> هوشمندانه تصمیم می‌گیرد هر متغیر در <bdi dir="ltr">Stack</bdi> یا <bdi dir="ltr">Heap</bdi> قرار گیرد. </p><p>نمودار زیر این تصمیم‌گیری و آناتومی اشاره‌گرها را به‌صورت یکپارچه نمایش می‌دهد — ناحیه‌ی <bdi dir="ltr">Stack</bdi> برای متغیرهای محلی (سریع و خودکار) و ناحیه‌ی <bdi dir="ltr">Heap</bdi> برای تخصیص‌های دینامیک با مدیریت <bdi dir="ltr">Garbage Collector</bdi>.
  </p>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-
-    subgraph STACK["ناحیه‌ی Stack — تخصیص سریع و خودکار"]
-        direction TB
-        subgraph MAIN["func main()"]
-            direction TB
-            M1["x int = 42addr: 0xA001"]
-            M2["p *int = &amp;x→ آدرس x"]
-            M3["s []int = {1,2,3}سرآیند روی stack"]
-        end
-        subgraph PROC["func process(data *BigStruct)"]
-            direction TB
-            PR1["data *BigStruct← اشاره به heap"]
-            PR2["local int = 7فقط stack ✓"]
-        end
-        subgraph CREAT["func createPtr() *Config"]
-            direction TB
-            CR1["c Config{...}فرار به heap!"]
-            CR2["return &amp;cescapes to heap!"]
-        end
-        STACKNOTE["تخصیص: O(1) فقط حرکت pointerآزادسازی: خودکار با خروج از تابع"]
-    end
-
-    subgraph HEAP["ناحیه‌ی Heap — تخصیص دینامیک و GC"]
-        direction TB
-        H1[BigStruct @ 0xD001Records [10000]Record | Meta Metadata≈ 1 MB allocation —...]
-        H2["Config @ 0xD200 (escaped!)Timeout: 30 | Retries: 3دلیل فرار: return &amp;c"]
-        H3["[]int backing array @ 0xD300[1, 2, 3]سرآیند روی stack، داده روی heap"]
-        H4[int @ 0xD400 (fmt.Println escape)value: 42 — escaped via interface{}دلیل...]
-        H5[counter int @ 0xD500 (closure escape)captured by func() int { counter++;...]
-        HEAPNOTE["تخصیص: پرهزینهآزادسازی: GC mark &amp; sweep • خطر pause"]
-    end
-
-    subgraph PTR["آناتومی اشاره‌گر: آدرس حافظه → مقدار"]
-        direction LR
-        P1["p *int = &amp;x"]
-        P2["→ p stores: 0xA001آدرس حافظه"]
-        P3["→ *pvalue: 42مقدار واقعی"]
-        P1 --&gt; P2 --&gt; P3
-        PTRNOTE["&amp;x → address | *p → deref"]
-    end
-
-    subgraph ESCAPE["شرایط فرار به Heap (Escape Analysis)"]
-        direction TB
-        E1["① return &amp;localVar"]
-        E2["② interface{} conversion"]
-        E3["③ closure capture"]
-        E4["④ too large for stack"]
-        ECHECK["بررسی: go build -gcflags="-m" ./..."]
-    end
-
-    subgraph CMP["مقایسه با PHP"]
-        direction TB
-        PH[PHP: همه‌چیز روی Heap • Reference Counting • Copy-on-Writeهر zval شمارنده‌ی...]
-        GO[Go: اولویت Stack • Escape Analysis خودکار • GC بدون شمارشمتغیرهای محلی...]
-    end
-
-    GOLD["قانون طلایی: متغیرها پیش‌فرض روی Stack هستندفقط وقتی ضروری است به Heap فرار می‌کنندبا go build -gcflags="-m" بررسی کنید"]
-
-            STACK -- "*BigStruct ptrescape: return &amp;c" --&gt; HEAP
-                
-    classDef titleBox fill:#ecfdf5,stroke:#10b981,stroke-width:2px,color:#1f2937;
-    classDef stackBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef heapBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
-    classDef ptrBox fill:#f5f0fb,stroke:#777BB4,stroke-width:1.5px,color:#1f2937;
-    classDef bothBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
-    classDef neutralBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
-    class TITLE titleBox;
-    class STACK,MAIN,M1,M2,M3,PROC,PR1,PR2,CREAT,CR1,CR2 stackBox;
-    class STACKNOTE bothBox;
-    class HEAP,H1,H2,H3,H4,H5 heapBox;
-    class HEAPNOTE heapBox;
-    class PTR,P1,P2,P3,PTRNOTE ptrBox;
-    class ESCAPE,E1,E2,E3,E4,ECHECK neutralBox;
-    class CMP,PH,GO bothBox;
-    class GOLD bothBox;</pre>
-<figcaption dir="rtl">شکل ۱۱-۲: آناتومی حافظه <bdi dir="ltr">Stack</bdi> در برابر <bdi dir="ltr">Heap</bdi> — اشاره‌گرها، تحلیل فرار و مقایسه با <bdi dir="ltr">PHP</bdi></figcaption>
-</figure>
 <p>
  همان‌طور که در نمودار می‌بینید، متغیر <code>x</code> در تابع <code>main</code> روی <bdi dir="ltr">Stack</bdi> قرار می‌گیرد و اشاره‌گر <code>p</code> مستقیماً به همان آدرس اشاره می‌کند. اما وقتی تابع <code>createPtr</code> آدرس متغیر محلی <code>c</code> را برمی‌گرداند، <bdi dir="ltr">Escape Analysis</bdi> آن متغیر را به <bdi dir="ltr">Heap</bdi> منتقل می‌کند تا پس از پایان تابع معتبر بماند.
  </p>
@@ -635,7 +450,6 @@ person := Person{
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/xml.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/ini.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/plaintext.min.js"></script>
-<script src="assets/js/diagrams.js"></script>
 <script src="assets/js/main.js"></script>
 </body>
 </html>

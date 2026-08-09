@@ -81,47 +81,6 @@
 <tr><td>Isolation Level</td><td>محدود</td><td dir="ltr">sql.TxOptions{Isolation}</td></tr>
 </tbody>
 </table>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-    Title["جریان تراکنش و سطوح ایزولاسیون"]
-
-    Begin["db.Begin() → tx"]
-    E1["tx.Exec() #1"]
-    E2["tx.Exec() #2"]
-    Q1["tx.Query()"]
-    Decision{"تصمیم"}
-    Commit["tx.Commit()<br/>موفق"]
-    Rollback["tx.Rollback()<br/>خطا"]
-
-    Begin --&gt; E1 --&gt; E2 --&gt; Q1 --&gt; Decision
-    Decision -- "موفق" --&gt; Commit
-    Decision -- "خطا" --&gt; Rollback
-
-    subgraph ISO["سطوح ایزولاسیون"]
-        direction TB
-        L1["Read Uncommitted"]
-        L2["Read Committed<br/>پیش‌فرض PostgreSQL"]
-        L3["Serializable"]
-        L1 --&gt; L2 --&gt; L3
-    end
-
-    Title --&gt; Begin
-    Title ~~~ ISO
-
-    classDef titleBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:2px,color:#1f2937,font-weight:bold;
-    classDef goBox   fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef bothBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
-    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
-    classDef errBox  fill:#fef2f2,stroke:#ef4444,stroke-width:1.5px,color:#1f2937;
-    classDef neuBox  fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
-    class Title titleBox;
-    class Begin,E1,E2,Q1 goBox;
-    class Commit bothBox;
-    class Rollback errBox;
-    class L1 warnBox;
-    class L2,L3 goBox;</pre>
-<figcaption dir="rtl">شکل ۸-۵: جریان تراکنش و سطوح ایزولاسیون</figcaption>
-</figure>
 <p>تراکنش‌ها از اصول کلیدی مدیریت پایگاه داده‌ها هستند که تضمین می‌کنند یک سری عملیات به صورت اتمیک اجرا شوند. خصوصیات <bdi dir="ltr">ACID</bdi> شامل <bdi dir="ltr">Atomicity</bdi> (همه یا هیچ)، <bdi dir="ltr">Consistency</bdi> (سازگاری)، <bdi dir="ltr">Isolation</bdi> (ایزولاسیون) و <bdi dir="ltr">Durability</bdi> (ماندگاری) هستند.</p>
 <h3 id="مثال-کامل-تراکنش">8.5.1 مثال کامل تراکنش: انتقال وجه</h3>
 <div class="quote-box">
@@ -183,50 +142,6 @@ if affected == 0 {
     return fmt.Errorf("تغییر توسط کاربر دیگری انجام شده — دوباره تلاش کنید")
 }</code></pre></figure>
 <h3 id="saga-pattern">8.5.4 الگوی Saga برای تراکنش‌های توزیع‌شده</h3>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-    Title["الگوی Saga — تراکنش‌های توزیع‌شده با عملیات جبرانی"]
-
-    subgraph HAPPY["مسیر موفق (Happy Path)"]
-        direction LR
-        H1["1. Create Ordertx: Order Service"]
-        H2["2. Deduct Stocktx: Inventory Svc"]
-        H3["3. Paymenttx: Payment Svc"]
-        H4["✓"]
-        H1 --&gt; H2 --&gt; H3 --&gt; H4
-    end
-
-    subgraph FAIL["مسیر خطا — عملیات جبرانی (Compensating Actions)"]
-        direction TB
-        F1["3. Payment ✗ — خطا!"]
-        F2["↩ Restore Stock"]
-        F3["↩ Cancel Order"]
-        F4["Rollback Complete"]
-        F1 --&gt; F2 --&gt; F3 --&gt; F4
-    end
-
-    Note[هر مرحله یک تراکنش محلی است — در صورت خطا، مراحل قبلی به ترتیب معکوس جبران...]
-
-    Title --&gt; HAPPY
-    Title --&gt; FAIL
-    HAPPY ~~~ FAIL
-    FAIL --&gt; Note
-
-    classDef titleBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:2px,color:#1f2937,font-weight:bold;
-    classDef goBox   fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef bothBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
-    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
-    classDef errBox  fill:#fef2f2,stroke:#ef4444,stroke-width:1.5px,color:#1f2937;
-    classDef neuBox  fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
-    class Title titleBox;
-    class H1,H2,H3 bothBox;
-    class H4 goBox;
-    class F1 errBox;
-    class F2,F3 warnBox;
-    class F4 bothBox;
-    class Note warnBox;</pre>
-<figcaption dir="rtl">شکل ۸-۶: الگوی Saga — تراکنش توزیع‌شده با عملیات جبرانی در صورت خطا</figcaption>
-</figure>
 <p>در سیستم‌های میکروسرویس تراکنش‌های <bdi dir="ltr">ACID</bdi> بین چند دیتابیس امکان‌پذیر نیست. الگوی <bdi dir="ltr">Saga</bdi> راه‌حلی است که در آن هر سرویس تراکنش محلی خود را دارد و در صورت خطا عملیات جبرانی (<bdi dir="ltr">compensating action</bdi>) اجرا می‌شود:</p>
 <figure class="code go" dir="ltr"><pre><code class="language-go">// Saga: online order placement
 // 1. Create order (local tx)
@@ -237,10 +152,6 @@ if affected == 0 {
 // → Compensate step 1: cancel order</code></pre></figure>
 <div class="comparison"><strong>مقایسه با Laravel:</strong> متد <code>DB::transaction()</code> در <bdi dir="ltr">Laravel</bdi> به صورت خودکار در صورت <bdi dir="ltr">Exception</bdi> تراکنش را <bdi dir="ltr">rollback</bdi> می‌کند. اما در <bdi dir="ltr">Go</bdi> باید صراحتاً مدیریت کنید. مزیت <bdi dir="ltr">Go</bdi> کنترل دقیق‌تر روی سطح ایزولاسیون و <bdi dir="ltr">timeout</bdi> است.</div>
 <h3 id="چرخه-حیات-تراکنش-و-ویژگیهای-acid">8.5.5 چرخه‌ی حیات تراکنش و ویژگی‌های ACID</h3>
-<figure class="diagram d2-diagram" dir="ltr">
-<img alt="نمودار" loading="lazy" src="assets/diagrams/ch08_05_transaction.svg"/>
-<figcaption>شکل ۸-۵-ب: چرخه‌ی حیات تراکنش —Begin → Commit/Rollback، ویژگی‌هایACIDو سطوح ایزولاسیون</figcaption>
-</figure>
 <p>این نمودار چرخه‌ی کامل حیات یک تراکنش را از نقطه‌ی شروع تا نتیجه‌ی نهایی نشان می‌دهد. تراکنش با فراخوانی <code dir="ltr">db.Begin()</code> آغاز می‌شود و یک شیء <code dir="ltr">*sql.Tx</code> برگردانده می‌شود که تمام عملیات بعدی باید از طریق آن انجام شوند. </p><p>پس از اجرای عملیات‌های مختلف (<code dir="ltr">INSERT</code>، <code dir="ltr">UPDATE</code>، <code dir="ltr">SELECT</code>، <code dir="ltr">DELETE</code>) یک نقطه‌ی تصمیم وجود دارد: اگر همه عملیات‌ها موفق بوده‌اند <code dir="ltr">tx.Commit()</code> تغییرات را به‌طور دائم ذخیره می‌کند و اگر هرکدام با خطا مواجه شده‌اند <code dir="ltr">tx.Rollback()</code> تمام تغییرات را لغو می‌کند.</p>
 <p>ویژگی‌های <bdi dir="ltr">ACID</bdi> تضمین‌های بنیادی تراکنش‌ها هستند. <bdi dir="ltr">Atomicity</bdi> (اتمی بودن) تضمین می‌کند که یا تمام عملیات‌ها اعمال می‌شوند یا هیچ‌کدام. <bdi dir="ltr">Consistency</bdi> (سازگاری) تضمین می‌کند دیتابیس همیشه از یک حالت معتبر به حالت معتبر دیگر گذار می‌کند و قیدها و محدودیت‌ها نقض نمی‌شوند. <bdi dir="ltr">Isolation</bdi> (ایزولاسیون) تضمین می‌کند تراکنش‌های همزمان روی یکدیگر تأثیر ناخواسته ندارند. <bdi dir="ltr">Durability</bdi> (ماندگاری) تضمین می‌کند داده‌هایی که <code dir="ltr">commit</code> شده‌اند حتی در صورت خرابی سیستم از بین نمی‌روند.</p>
 <p>سطوح ایزولاسیون کنترل می‌کنند که تراکنش‌های همزمان چقدر از یکدیگر ایزوله هستند. <code dir="ltr">Read Uncommitted</code> کمترین ایزولاسیون را دارد و ممکن است داده‌های هنوز <code dir="ltr">commit</code> نشده را بخوانید (<bdi dir="ltr">Dirty Read</bdi>). <code dir="ltr">Read Committed</code> پیش‌فرض <bdi dir="ltr">PostgreSQL</bdi> است و فقط داده‌های <code dir="ltr">commit</code> شده را می‌خواند. <code dir="ltr">Repeatable Read</code> تضمین می‌کند خواندن مجدد همان داده مقدار یکسان برگرداند. <code dir="ltr">Serializable</code> سخت‌گیرانه‌ترین سطح است و تضمین می‌کند نتیجه‌ی اجرای همزمان تراکنش‌ها معادل اجرای ترتیبی آنها باشد اما هزینه‌ی عملکرد بالاتری دارد.</p>
@@ -304,7 +215,6 @@ if affected == 0 {
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/xml.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/ini.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/plaintext.min.js"></script>
-<script src="assets/js/diagrams.js"></script>
 <script src="assets/js/main.js"></script>
 </body>
 </html>

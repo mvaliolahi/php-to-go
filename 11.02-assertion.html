@@ -68,56 +68,11 @@
 <h2 id="assertion">Assertion</h2><div class="abstract">
 <strong>چکیده:</strong> این بخش assertion در Go را پوشش می‌دهد: testify، require و custom assertion. الگوی table-driven با assertion بررسی می‌شود. تفاوت با assert در PHPUnit مشخص می‌گردد.
 </div>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart LR
-    subgraph HEADER["الگوهای Assertion در Go"]
-        direction LR
-        subgraph NATIVE["testing.T — پکیج استاندارد"]
-            direction TB
-            N1["if + t.Errorf<br/>روش بومی Go"]
-            N2["if result != expected {<br/>t.Errorf("got %d", result)<br/>}"]
-        end
-        subgraph TESTIFY["testify/assert — کتابخانه جانبی"]
-            direction TB
-            T1["assert.Equal(t, 5, result)<br/>assert.NotNil, assert.True"]
-            T2["require.*<br/>توقف فوری"]
-        end
-    end
-
-    classDef nativeBox  fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef testifyBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
-    class NATIVE nativeBox;
-    class TESTIFY testifyBox;</pre>
-<figcaption>شکل ۱۱-۲: الگوهای <bdi dir="ltr">Assertion</bdi> در <bdi dir="ltr">Go</bdi> - مقایسه روش بومی و <bdi dir="ltr">testify</bdi></figcaption>
-</figure>
 <p>در زبان‌هایی مثل PHP یا JavaScript استفاده از ابزارهای تست مانند PHPUnit یا Jest وابسته به مجموعه‌ای از assertion‌هاست یعنی عباراتی که انتظار داریم در طول اجرای تست درست باشند. در Go پکیج رسمی testing هیچ assertion آماده‌ای ندارد و هدف آن ارائه‌ی یک محیط بسیار ساده برای نوشتن تست‌ها است.</p>
 <p>اما این به این معنی نیست که استفاده از assertion غیرممکن یا غیررایج است. در واقع توسعه‌دهندگان Go با دو رویکرد کلی کار می‌کنند:</p>
 <h3 id="استفاده-از-مقایسه-ساده-با-if">11.2.1 استفاده از مقایسه ساده با if</h3>
 <p>در این روش، بدون هیچ کتابخانه‌ی جانبی، از مقایسه مستقیم و t.Errorf برای گزارش شکست استفاده می‌شود:
 </p>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-    subgraph HEADER["جریان Assertion: مقایسه مقدار مورد انتظار و واقعی"]
-        direction TB
-        INP["ورودی تست<br/>Test Input"] --&gt; CMP{"Comparison<br/>expected == actual ?<br/>assert.Equal(t, exp, got)"}
-        CMP -- "match (بله)" --&gt; PASS["PASS (بله)<br/>ادامه تست"]
-        CMP -- "mismatch (خیر)" --&gt; BR{"روش Assertion?"}
-        BR -- "assert.*" --&gt; A1["گزارش خطا + ادامه<br/>ادامه بررسی سایر assertionها"]
-        BR -- "require.*" --&gt; A2["توقف فوری t.FailNow()<br/>FAIL — t.FailNow()"]
-    end
-
-    classDef inBox   fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
-    classDef decBox  fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937,font-weight:bold;
-    classDef passBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
-    classDef resBox  fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef failBox fill:#fef2f2,stroke:#ef4444,stroke-width:1.5px,color:#1f2937;
-    class INP inBox;
-    class CMP,BR decBox;
-    class PASS passBox;
-    class A1 resBox;
-    class A2 failBox;</pre>
-<figcaption>شکل ۱۱-۳: جریان <bdi dir="ltr">Assertion</bdi> — مقایسه مقدار مورد انتظار و واقعی و تفاوت رفتار <bdi dir="ltr">assert</bdi> و <bdi dir="ltr">require</bdi></figcaption>
-</figure>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">func TestMultiply(t *testing.T) {
     result := Multiply(3, 4)
@@ -475,62 +430,6 @@ func NoError(t *testing.T, err error) {
 <p>خروجی testify بسیار خواناتر و برای دیباگ مؤثرتر است. به همین دلیل اکثر پروژه‌های Go حرفه‌ای از testify استفاده می‌کنند، حتی اگر فلسفه‌ی Go بر سادگی تأکید دارد.</p>
 <h3 id="جریان-کامل-assertion-از-مقدار-مورد-انتظار-تا-نتیجه">11.2.11 جریان کامل Assertion: از مقدار مورد انتظار تا نتیجه</h3>
 <p>برای درک عمیق‌تر نحوه کار assertion‌ها، بیایید کل جریان را از ورودی مقادیر مورد انتظار و واقعی تا نتیجه نهایی بررسی کنیم. هر assertion سه بخش اصلی دارد: مقدار مورد انتظار (<bdi dir="ltr">Expected</bdi>)، عمل مقایسه (<bdi dir="ltr">Comparison</bdi>) و نتیجه (<bdi dir="ltr">Result</bdi>). </p><p>نوع مقایسه تعیین می‌کند که کدام روش بررسی استفاده شود: مقایسه ساده با <bdi dir="ltr">==</bdi>، مقایسه عمیق با <bdi dir="ltr">reflect.DeepEqual</bdi>، بررسی وجود با <bdi dir="ltr">Contains</bdi> یا مقایسه تفاضلی با <bdi dir="ltr">cmp.Diff</bdi>. </p><p>وقتی assertion موفق می‌شود، تست ادامه می‌یابد اما وقتی شکست می‌خورد، خروجی تفاضلی (<bdi dir="ltr">diff</bdi>) نشان داده می‌شود که دقیقاً مشخص می‌کند تفاوت کجاست. </p><p>این خروجی تفاضلی در تست‌های table-driven که چندین مورد بررسی می‌شوند، اهمیت ویژه‌ای دارد زیرا به شما کمک می‌کند سریعاً مورد شکست‌خورده را شناسایی کنید.</p>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-    subgraph HEADER["جریان Assertion: مقدار مورد انتظار ← مقایسه ← نتیجه"]
-        direction TB
-        EXP["مقدار مورد انتظارExpectedUser{Name: "Ali"}Age: 30, Active: true"]
-        ACT["مقدار واقعیActualUser{Name: "Sara"}Age: 25, Active: false"]
-        CMP["عمل مقایسهComparison== (simple equal)reflect.DeepEqualcmp.Diff / assert.Equal"]
-        EXP --&gt; CMP
-        ACT --&gt; CMP
-        CMP --&gt; Q{"نتیجه؟"}
-        Q -- "match ✓" --&gt; PASS["PASS ✓تست ادامه می‌یابد"]
-        Q -- "mismatch ✗" --&gt; FAIL["FAIL ✗گزارش خطا + diff"]
-        FAIL --&gt; DIFF["Diff OutputName: "Ali" → "Sara"- Age: 30+ Age: 25- Active: true+ Active: false"]
-    end
-
-    subgraph CMP3["مقایسه رویکردهای Assertion"]
-        direction LR
-        subgraph A["if + t.Errorf"]
-            direction TB
-            A1["if result != expected {t.Errorf("got %v, want %v",result, expected)}"]
-            A2["بدون diff قابل خواندنبدون trace فراخوانی"]
-        end
-        subgraph B["testify/assert"]
-            direction TB
-            B1["assert.Equal(t, expected,result, "should match")"]
-            B2["diff خودکارtrace کامل فراخوانیپیام سفارشیانواع assertion آماده"]
-        end
-        subgraph C["google/go-cmp"]
-            direction TB
-            C1["if diff := cmp.Diff(expected, result); diff != "" {t.Errorf("diff: %s", diff)}"]
-            C2["diff معنادار و دقیققابل سفارشی‌سازی با cmpopts"]
-        end
-    end
-
-    note([مقایسه با PHP: assertEquals() ≈ assert.Equal | assertSame() ≈ assert.Exactly...])
-
-    classDef expBox   fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef actBox   fill:#f5f0fb,stroke:#777BB4,stroke-width:1.5px,color:#1f2937;
-    classDef cmpBox   fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
-    classDef decBox   fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937,font-weight:bold;
-    classDef passBox  fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
-    classDef failBox  fill:#fef2f2,stroke:#ef4444,stroke-width:1.5px,color:#1f2937;
-    classDef diffBox  fill:#fef2f2,stroke:#ef4444,stroke-width:1px,color:#1f2937;
-    classDef apprBox  fill:#e6f9fc,stroke:#00ADD8,stroke-width:1px,color:#1f2937;
-    classDef noteBox  fill:#ecfdf5,stroke:#10b981,stroke-width:1px,color:#1f2937,font-style:italic;
-    class EXP expBox;
-    class ACT actBox;
-    class CMP cmpBox;
-    class Q decBox;
-    class PASS passBox;
-    class FAIL diffBox;
-    class DIFF diffBox;
-    class A1,A2,B1,B2,C1,C2 apprBox;
-    class note noteBox;</pre>
-<figcaption>شکل ۱۱-۴: جریان کامل <bdi dir="ltr">Assertion</bdi> — از مقایسه مقدار مورد انتظار و واقعی تا نمایش <bdi dir="ltr">diff</bdi> و مقایسه سه رویکرد اصلی</figcaption>
-</figure>
 <p>همان‌طور که در نمودار بالا مشاهده می‌کنید، هر سه رویکرد همان هدف را دنبال می‌کنند اما کیفیت گزارش شکست متفاوتی ارائه می‌دهند. روش بومی <bdi dir="ltr">if + t.Errorf</bdi> ساده‌ترین و سبک‌ترین است اما خروجی مفیدی در صورت شکست ارائه نمی‌دهد و شما باید خودتان پیام خطا را بنویسید. <bdi dir="ltr">testify/assert</bdi> با ارائه <bdi dir="ltr">diff</bdi> خودکار و <bdi dir="ltr">trace</bdi> کامل فراخوانی، دیباگ را بسیار ساده‌تر می‌کند و به همین دلیل در اکثر پروژه‌های Go رایج است. <bdi dir="ltr">google/go-cmp</bdi> تخصصی‌ترین گزینه است و برای مقایسه <bdi dir="ltr">struct</bdi>های پیچیده بهترین خروجی <bdi dir="ltr">diff</bdi> را تولید می‌کند، به‌خصوص وقتی فیلدهایی وجود دارند که باید نادیده گرفته شوند یا مقایسه خاصی داشته باشند.</p>
 <h3 id="مقایسه-struct-های-پیچیده-با-cmpdiff">11.2.12 مقایسه struct‌های پیچیده با cmp.Diff</h3>
 <p>وقتی ساختارهای داده پیچیده‌ای مثل <bdi dir="ltr">struct</bdi>های تو در تو، <bdi dir="ltr">slice</bdi>ها و <bdi dir="ltr">map</bdi>ها را مقایسه می‌کنید، <bdi dir="ltr">reflect.DeepEqual</bdi> فقط یک مقدار بولی برمی‌گرداند و نمی‌گوید تفاوت دقیقاً کجاست. </p><p>در مقابل، <bdi dir="ltr">cmp.Diff</bdi> خروجی تفاضلی خوانایی تولید می‌کند که دقیقاً نشان می‌دهد کدام فیلد متفاوت است و مقدار مورد انتظار و واقعی هر کدام چیست. </p><p>علاوه بر این، با <bdi dir="ltr">cmpopts</bdi> می‌توانید فیلدهایی مثل <bdi dir="ltr">ID</bdi> یا <bdi dir="ltr">CreatedAt</bdi> را از مقایسه حذف کنید یا تحمل خطا برای اعداد اعشاری تعریف کنید. </p><p>این قابلیت‌ها در تست‌های واقعی بسیار ارزشمند هستند و به‌خصوص در تست‌های <bdi dir="ltr">table-driven</bdi> که چندین مورد را همزمان بررسی می‌کنید، زمان دیباگ را به‌شدت کاهش می‌دهند.</p>
@@ -630,7 +529,6 @@ func TestUserWithCmp(t *testing.T) {
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/xml.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/ini.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/plaintext.min.js"></script>
-<script src="assets/js/diagrams.js"></script>
 <script src="assets/js/main.js"></script>
 </body>
 </html>

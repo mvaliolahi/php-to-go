@@ -90,31 +90,6 @@
 <li>تفاوت‌های فلسفی مدیریت خطا در Go در مقایسه با PHP و <bdi dir="ltr">anti-patterns</bdi></li>
 <li>مدیریت چندخطایی با <code dir="ltr">errors.Join</code> (Go 1.20+)</li>
 </ul>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-
-    subgraph PHP["PHP: try/catch"]
-        direction TB
-        P1["Exception handling"]
-    end
-
-    subgraph GO["Go: if err != nil"]
-        direction TB
-        G1["Explicit error handling"]
-        G2["panic/recover ≈ throw/catchفقط برای شرایط بحرانی"]
-    end
-
-        
-    classDef titleBox fill:#ecfdf5,stroke:#10b981,stroke-width:2px,color:#1f2937;
-    classDef phpBox fill:#f5f0fb,stroke:#777BB4,stroke-width:1.5px,color:#1f2937;
-    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
-    class TITLE titleBox;
-    class PHP,P1 phpBox;
-    class GO,G1 goBox;
-    class G2 warnBox;</pre>
-<figcaption>مقایسه مدیریت خطا در <bdi dir="ltr">PHP</bdi> و <bdi dir="ltr">Go</bdi></figcaption>
-</figure>
 <div class="comparison"><strong>تفاوت فلسفی: Exception در برابر Value</strong>
 <p>در PHP خطاها به‌صورت <strong dir="ltr">Exception</strong> مدل شده‌اند: یک شیء ساخته می‌شود، پشته فراخوانی ثبت می‌گردد و جریان اجرا به‌صورت غیرمستقیم به بلوک <code>catch</code> پرش می‌کند. این مدل <em>control flow via exceptions</em> نامیده می‌شود.</p>
 <p>در Go خطاها صرفاً <strong dir="ltr">value</strong> هستند — مانند هر مقدار دیگری در برنامه. تابع خطا را برمی‌گرداند و فراخوانی‌کننده تصمیم می‌گیرد چه‌کار با آن بکند. هیچ پرش خودکار، هیچ پشته فراخوانی پنهان و هیچ سلسله‌مراتب ارث‌بری اجباری وجود ندارد. این مدل <em>control flow via return values</em> نامیده می‌شود.</p>
@@ -165,7 +140,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/xml.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/ini.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/plaintext.min.js"></script>
-<script src="assets/js/diagrams.js"></script>
 <script src="assets/js/main.js"></script>
 </body>
 </html>

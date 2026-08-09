@@ -81,22 +81,6 @@
 <div class="tip">
 <strong>نکته‌ی حرفه‌ای:</strong> در <bdi dir="ltr">Go</bdi> از رابط‌های <code dir="ltr">io.Reader</code> و <code dir="ltr">io.Writer</code> برای جدا کردن منطق کسب‌وکار از سیستم‌فایل، اتصال‌های شبکه و سایر <bdi dir="ltr">I/O</bdi> استفاده کنید. این کار تست‌کردن را ساده می‌کند — کافیست یک <code dir="ltr">bytes.Buffer</code> به‌جای فایل واقعی پاس بدهید.
 </div>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-    G["Go Program"]
-    G --&gt; F["فایل‌سیستم"]
-    G --&gt; N["شبکه / HTTP"]
-    G --&gt; U["ورودی کاربر"]
-    G --&gt; J["JSON / YAML"]
-    G --&gt; S["سیگنال‌های OS"]
-    G --&gt; E["embed"]
-
-    classDef rootBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:2px,color:#1f2937,font-weight:bold;
-    classDef extBox  fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
-    class G rootBox;
-    class F,N,U,J,S,E extBox;</pre>
-<figcaption>شکل ۶-۱ — نمای کلی تعامل یک برنامه <bdi dir="ltr">Go</bdi> با دنیای بیرون</figcaption>
-</figure>
 <p>در PHP ابزارهای ساده‌ای مانند <code dir="ltr">file_get_contents()</code>، <code dir="ltr">fwrite()</code> یا <code dir="ltr">json_decode()</code> به‌راحتی قابل استفاده هستند. اما Go با یک مدل ساخت‌یافته، امن و مقیاس‌پذیر این امکانات را فراهم می‌کند. </p><p>تفاوت بنیادین اینجاست: Go به جای ارائه ده‌ها تابع با امضای متفاوت، دو رابط ساده (<code dir="ltr">io.Reader</code> و <code dir="ltr">io.Writer</code>) تعریف می‌کند که تمام عملیات I/O بر آن‌ها استوار است.</p>
 <h3 id="io-reader-writer">6.1.1 رابط‌های بنیادین: io.Reader و io.Writer</h3>
 <div class="quote-box">
@@ -122,45 +106,6 @@ type Writer interface {
 </code></pre>
 </figure>
 <p>اهمیت این دو رابط در این است که تقریباً هر نوع I/O در Go آن‌ها را پیاده‌سازی می‌کند: <code>*os.File</code>، <code dir="ltr">net.Conn</code>، <code dir="ltr">bytes.Buffer</code>، <code dir="ltr">http.ResponseWriter</code>، <code>compress/gzip.Reader</code> و صدها نوع دیگر. </p><p>به این ترتیب هر تابعی که <code dir="ltr">io.Reader</code> بپذیرد، می‌تواند از هر منبعی بخواند و هر تابعی که <code dir="ltr">io.Writer</code> بپذیرد، می‌تواند در هر مقصدی بنویسد.</p>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-    subgraph ROOT["سلسله‌مراتب رابط‌های io.Reader و io.Writer"]
-        direction TB
-        R["io.Reader"]
-        W["io.Writer"]
-        subgraph RImpl[" "]
-            direction LR
-            RF["*os.File"]
-            RB["bytes.Reader"]
-            RC["net.Conn"]
-            RH["http.Request.Body"]
-        end
-        subgraph WImpl[" "]
-            direction LR
-            WF["*os.File"]
-            WB["bytes.Buffer"]
-            WH["http.ResponseWriter"]
-            WBR["bufio.Writer"]
-        end
-        R --&gt; RImpl
-        W --&gt; WImpl
-    end
-    subgraph DEC["دکوراتورها (Decorator)"]
-        direction TB
-        D1["io.TeeReader(r, w)"]
-        D2["io.MultiWriter(w1, w2, ...)"]
-        D3["io.LimitReader(r, n)"]
-        D4["bufio.NewReader / NewScanner"]
-    end
-
-    classDef ifaceBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937,font-weight:bold;
-    classDef implBox  fill:#f8fafc,stroke:#475569,stroke-width:1px,color:#1f2937;
-    classDef decBox   fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
-    class R,W ifaceBox;
-    class RF,RB,RC,RH,WF,WB,WH,WBR implBox;
-    class D1,D2,D3,D4 decBox;</pre>
-<figcaption>شکل ۶-۱-ب — سلسله‌مراتب رابط‌های <bdi dir="ltr">io.Reader/io.Writer</bdi> و دکوراتورهای آن‌ها</figcaption>
-</figure>
 <div class="comparison">
 <strong>مقایسه با PHP:</strong> در PHP هر تابع I/O امضای متفاوتی دارد: <code dir="ltr">fread()</code> برای فایل، <code dir="ltr">stream_get_contents()</code> برای stream، <code dir="ltr">curl_exec()</code> برای HTTP. هیچ قرارداد یکسان وجود ندارد. اما در Go با پذیرش <code dir="ltr">io.Reader</code> یا <code dir="ltr">io.Writer</code>، یک تابع واحد می‌تواند با فایل، شبکه، بافر یا هر منبع دیگر کار کند. این مفهوم شبیه <code>Stream Wrapper</code> در PHP است اما بسیار قوی‌تر و ساخت‌یافته‌تر.
 </div>
@@ -226,31 +171,6 @@ writer.Flush() // without this, data is lost!
 <div class="note">
 <strong>نکته — انتخاب بین بافرشده و بافرنشده:</strong> قانون کلی این است: برای خواندن/نوشتن‌های کوچک و مکرر (مثل لاگ‌گذاری، پردازش خط‌به‌خط، صدها <code>Write</code> کوچک) همیشه از <code>bufio.Reader</code>/<code>bufio.Writer</code> استفاده کنید تا سربار سیستم‌کال کاهش یابد. برای انتقال داده‌ی حجیم یکباره، <code>io.Copy</code> خودش بافر ۳۲ کیلوبایتی دارد و نسخه‌ی بافرشده‌ی جداگانه لازم نیست. در PHP تفاوت کمتر حس می‌شود زیرا <code>fwrite()</code> به‌طور پیش‌فرض بافرشده است، اما در Go انتخاب صریح به شما سپرده شده است.
 </div>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart LR
-    subgraph PHP["PHP (مدل Request-Response)"]
-        direction TB
-        P1["درخواست HTTP وارد می‌شود"] --&gt; P2["Apache / Nginx + PHP-FPM"]
-        P2 --&gt; P3["اسکریپت اجرا و خروجی تولید می‌کند"]
-        P3 --&gt; P4["file_get_contents / fwrite"]
-        P4 --&gt; P5["پاسخ ارسال و فرآیند تمام می‌شود"]
-        P5 --&gt; P6["حافظه آزاد می‌شود"]
-    end
-    subgraph GO["Go (مدل فرآیند مداوم)"]
-        direction TB
-        G1["برنامه شروع و حافظه تخصیص می‌یابد"] --&gt; G2["Binary مستقل / بدون وابستگی"]
-        G2 --&gt; G3["گوروتین‌ها همزمان کار می‌کنند"]
-        G3 --&gt; G4["os.ReadFile / embed / signal"]
-        G4 --&gt; G5["مدیریت سیگنال و خاموشی ایمن"]
-        G5 --&gt; G6["defer / cleanup قبل از خروج"]
-    end
-
-    classDef phpBox fill:#f5f0fb,stroke:#777BB4,stroke-width:1.5px,color:#1f2937;
-    classDef goBox  fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    class PHP phpBox;
-    class GO goBox;</pre>
-<figcaption>شکل ۶-۱-ج — مقایسه مدل تعامل <bdi dir="ltr">PHP</bdi> و <bdi dir="ltr">Go</bdi> با سیستم‌عامل</figcaption>
-</figure>
 <p>این تفاوت باعث می‌شود Go به ابزارهای قوی‌تری برای مدیریت فایل، سیگنال و منابع نیاز داشته باشد — ابزارهایی که در ادامه این فصل با جزئیات بررسی خواهیم کرد.</p>
 <h3 id="iocopy-در-عمل">6.1.4 io.Copy: ستون فقرات انتقال داده</h3>
 <p>تابع <code dir="ltr">io.Copy()</code> یکی از پرکاربردترین و اصلی‌ترین توابع پکیج <code>io</code> است. این تابع داده‌ها را از یک <code dir="ltr">io.Reader</code> به یک <code dir="ltr">io.Writer</code> کپی می‌کند — اما نه یکجا. بلکه به‌صورت chunked با بافر ۳۲ کیلوبایتی. </p><p>این یعنی می‌توانید یک فایل گیگابایتی را از دیسک به اتصال شبکه کپی کنید بدون اینکه بیشتر از ۳۲ کیلوبایت حافظه مصرف کنید. این الگو پایه و اساس تمام عملیات انتقال داده کارآمد در Go است:</p>
@@ -414,67 +334,6 @@ written, _ := io.CopyN(dst, src, 1024)
 <p>در بخش‌های بعدی این فصل، هر یک از این موضوعات را با جزئیات و مثال‌های عملی بررسی خواهیم کرد. از خواندن و نوشتن فایل‌ها گرفته تا جاسازی منابع در باینری، پردازش فرمت‌های داده‌ای و مدیریت سیگنال‌های سیستم‌عامل.</p>
 <h3 id="سلسله‌مراتب-io-reader-writer">6.1.9 سلسله‌مراتب کامل رابط‌های io.Reader/io.Writer</h3>
 <p>یکی از زیباترین جنبه‌های طراحی کتابخانه استاندارد <bdi dir="ltr">Go</bdi>، نحوه ترکیب رابط‌های <code dir="ltr">io.Reader</code> و <code dir="ltr">io.Writer</code> برای ساخت رابط‌های پیچیده‌تر است. در شکل زیر می‌بینید که چگونه رابط‌های ساده‌ی تک‌متدی، با ترکیب یکدیگر رابط‌های قوی‌تری می‌سازند. </p><p>هر کدام از رابط‌های ترکیبی (مثل <code dir="ltr">io.ReadWriteCloser</code>) دقیقاً متدهای رابط‌های سازنده‌ی خود را به ارث می‌برند. </p><p>این الگوی ترکیب رابط‌ها یکی از اصول بنیادین طراحی <bdi dir="ltr">Go</bdi> است و اجازه می‌دهد بدون ساختار سلسله‌مراتبی پیچیده، رفتارهای جدید را از ترکیب رفتارهای ساده ایجاد کنید.</p>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-    subgraph ROOT["سلسله‌مراتب رابط‌های io.Reader و io.Writer"]
-        direction TB
-        R["io.ReaderRead(p []byte) (n int, err error)"]
-        W["io.WriterWrite(p []byte) (n int, err error)"]
-        C["io.CloserClose() error"]
-    end
-    subgraph COMP["رابط‌های ترکیبی"]
-        direction TB
-        RW["io.ReadWriterReader + Writer"]
-        RC2["io.ReadCloserReader + Closer"]
-        WC["io.WriteCloserWriter + Closer"]
-        RWC["io.ReadWriteCloserReader + Writer + Closer"]
-    end
-    R --&gt; RW
-    W --&gt; RW
-    R --&gt; RC2
-    C --&gt; RC2
-    W --&gt; WC
-    C --&gt; WC
-    R --&gt; RWC
-    W --&gt; RWC
-    C --&gt; RWC
-
-    subgraph CONC["Concrete Types"]
-        direction TB
-        CF["*os.FileReadWriteCloser"]
-        CB["bytes.BufferReadWriter"]
-        CC["net.ConnReadWriteCloser"]
-        CH["http.Response.BodyReadCloser"]
-        CBR["bufio.ReaderReader"]
-        CBW["bufio.WriterWriter"]
-        CRW["http.ResponseWriterWriter + Flusher + Hijacker"]
-        CG["compress/gzipReadCloser"]
-    end
-
-    subgraph IFACE["Interface Composition"]
-        direction TB
-        IC1["type ReadWriter interface {"]
-        IC2["Reader  // embeds io.Reader"]
-        IC3["Writer  // embeds io.Writer"]
-        IC4["}"]
-        IC1 --- IC2 --- IC3 --- IC4
-        ICN1(["ترکیب دو رابط ساده → یک رابط قدرتمند"])
-        ICN2([هر نوعی که هم Read و هم Write را پیاده‌سازی کند، به‌طور خودکار io.ReadWriter...])
-        ICN3(["قانون طلایی: رابط‌های کوچک بسازید و آن‌ها را ترکیب کنید — نه رابط‌های بزرگ"])
-    end
-
-    classDef baseBox  fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937,font-weight:bold;
-    classDef compBox  fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
-    classDef concBox  fill:#f8fafc,stroke:#475569,stroke-width:1px,color:#1f2937;
-    classDef ifaceBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1px,color:#1f2937;
-    classDef noteBox  fill:#fef2f2,stroke:#ef4444,stroke-width:1px,color:#1f2937,font-style:italic;
-    class R,W,C baseBox;
-    class RW,RC2,WC,RWC compBox;
-    class CF,CB,CC,CH,CBR,CBW,CRW,CG concBox;
-    class IC1,IC2,IC3,IC4 ifaceBox;
-    class ICN1,ICN2,ICN3 noteBox;</pre>
-<figcaption>شکل ۶-۱-د — سلسله‌مراتب کامل رابط‌های <bdi dir="ltr">io.Reader/io.Writer</bdi>: از رابط‌های بنیادین تا انواع عینی</figcaption>
-</figure>
 <h3 id="سناریوهای-عملیاتی-io">6.1.10 سناریوهای عملیاتی</h3>
 <p>رابط‌های <code dir="ltr">io.Reader</code> و <code dir="ltr">io.Writer</code> در بسیاری از سناریوهای واقعی عملیاتی نقش کلیدی دارند. درک عمیق این رابط‌ها و دکوراتورهای آن‌ها به شما اجازه می‌دهد راه‌حل‌های تمیز و کارآمد برای مسائل پیچیده‌ی I/O پیدا کنید. </p><p>در ادامه پنج سناریوی عملیاتی مهم را بررسی می‌کنیم که هر یک نشان‌دهنده‌ی قدرت ترکیب‌پذیری این رابط‌ها در محیط‌های تولید واقعی است. </p><p>هر سناریو با یک چالش مشخص شروع می‌شود و نشان می‌دهد که چگونه با ترکیب مناسب رابط‌های <bdi dir="ltr">io</bdi> می‌توان بدون نوشتن کد پیچیده جدید، به راه‌حل‌های زیبا رسید.</p>
 <ul>
@@ -554,7 +413,6 @@ fmt.Println(string(data)) // "HELLO GO WORLD"
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/xml.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/ini.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/plaintext.min.js"></script>
-<script src="assets/js/diagrams.js"></script>
 <script src="assets/js/main.js"></script>
 </body>
 </html>

@@ -69,29 +69,6 @@
 <strong>چکیده:</strong> این بخش روش‌های نوشتن فایل در Go را پوشش می‌دهد: os.WriteFile، bufio.Writer و io.Writer. الگوهای append، write با buffer و flush بررسی می‌شود. تفاوت با file_put_contents در PHP مشخص می‌گردد.
 </div>
 <p>نوشتن در فایل یکی از عملیات اساسی هر برنامه است. از ذخیره Logs و خروجی‌ها تا تولید فایل‌های پیکربندی و گزارش‌ها، همه نیاز به نوشتن داده در فایل دارند. در Go ابزارهای مختلفی برای این کار وجود دارد که هر کدام برای موقعیت خاصی مناسب هستند.</p>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-    D["داده‌ی ورودی<br/>[]byte یا string"] --&gt; B["[]byte(data)"]
-    B --&gt; W["os.WriteFile()<br/>نام فایل + داده + مجوز<br/>مثلاً 0644"]
-    W --&gt; Q{"err != nil?"}
-    Q -- "بله" --&gt; E["خطا!<br/>دسترسی / دیسک پر"]
-    Q -- "خیر" --&gt; OK["نوشتن<br/>فایل ذخیره شد<br/>output.txt"]
-    note(["توجه: مجوز فایل (Permission): 0644 = خواندن/نوشتن مالک + خواندن دیگران"])
-
-    classDef inBox   fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
-    classDef opBox   fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef okBox   fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
-    classDef errBox  fill:#fef2f2,stroke:#ef4444,stroke-width:1.5px,color:#1f2937;
-    classDef decBox  fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
-    classDef noteBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1px,color:#1f2937,font-style:italic;
-    class D inBox;
-    class B,W opBox;
-    class OK okBox;
-    class E errBox;
-    class Q decBox;
-    class note noteBox;</pre>
-<figcaption>شکل ۶-۳ — جریان نوشتن در فایل با <bdi dir="ltr">os.WriteFile</bdi> در <bdi dir="ltr">Go</bdi></figcaption>
-</figure>
 <h3 id="نوشتن-ساده">6.3.1 نوشتن ساده با os.WriteFile</h3>
 <p>ساده‌ترین راه نوشتن داده در فایل، استفاده از <code dir="ltr">os.WriteFile()</code> است. اگر فایل وجود نداشته باشد ایجاد می‌شود و اگر وجود داشته باشد، محتوای قبلی جایگزین می‌شود:</p>
 <figure class="code go" dir="ltr">
@@ -182,29 +159,6 @@ data, _ := io.ReadAll(tee)
 </div>
 <h3 id="نوشتن-اتمیک">6.3.5 Atomic Write: write-to-temp + rename</h3>
 <p>یکی از الگوهای کلیدی تولید در نوشتن فایل، نوشتن اتمیک است. مشکل روش معمولی این است: اگر هنگام نوشتن در فایل، برنامه crash کند یا برق قطع شود، فایل نیمه‌کاره باقی می‌ماند و داده‌های قبلی هم از بین رفته‌اند. راه‌حل این است: ابتدا در یک فایل موقت بنویسید، سپس فایل موقت را به نام نهایی rename کنید.</p><p>عملیات rename در اکثر فایل‌سیستم‌ها اتمیک است — یا کامل انجام می‌شود یا اصلاً انجام نمی‌شود:</p>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart LR
-    subgraph HEADER["الگوی نوشتن اتمیک"]
-        direction LR
-        S1["۱. نوشتن در فایل موقت<br/>data.tmp.random<br/>اگر crash شود: فایل اصلی دست‌نخورده"]
-        S2["۲. Flush به دیسک<br/>Sync + Close<br/>file.Sync()<br/>تضمین نوشته شدن روی دیسک فیزیکی"]
-        S3["۳. Rename اتمیک<br/>os.Rename()<br/>tmp → data.json<br/>یا همه یا هیچ"]
-        S1 --&gt; S2 --&gt; S3
-    end
-
-    subgraph ANALYSIS["تحلیل سناریوهای خرابی"]
-        direction TB
-        A1["Crash در مرحله ۱: فایل موقت ناقص، فایل اصلی سالم"]
-        A2["Crash در مرحله ۲: فایل موقت کامل، فایل اصلی سالم"]
-        A3["Crash در مرحله ۳: rename اتمیک است — یا انجام شده یا نه"]
-    end
-
-    classDef stepBox   fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef analyBox  fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
-    class S1,S2,S3 stepBox;
-    class A1,A2,A3 analyBox;</pre>
-<figcaption>شکل ۶-۳-ب — الگوی نوشتن اتمیک: <bdi dir="ltr">write-to-temp</bdi> + <bdi dir="ltr">sync</bdi> + <bdi dir="ltr">rename</bdi></figcaption>
-</figure>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">func atomicWriteFile(path string, data []byte, perm os.FileMode) error {
     // 1. Create temp file in same directory
@@ -373,61 +327,6 @@ fclose($fp);
 </table>
 <h3 id="فلوچارت-حالتهای-نوشتن">6.3.9 فلوچارت حالت‌های نوشتن فایل: Create/O_TRUNC/O_APPEND</h3>
 <p>یکی از مهم‌ترین تصمیمات هنگام نوشتن در فایل، انتخاب حالت صحیح باز کردن فایل است. Go برخلاف PHP که با پرچم‌های ساده مثل <code dir="ltr">FILE_APPEND</code> کار می‌کند، کنترل بسیار دقیقی روی نحوه باز کردن فایل می‌دهد. هر پرچم رفتار متفاوتی دارد و ترکیب اشتباه آن‌ها می‌تواند منجر به از دست رفتن داده شود. </p><p>در نمودار زیر تمام حالت‌های ممکن را به‌صورت فلوچارت تصمیم‌گیری مشاهده می‌کنید، همراه با مقایسه PHP و توضیح خطرات هر مسیر.</p>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-    subgraph DEC["فلوچارت تصمیم‌گیری: حالت‌های نوشتن فایل در Go"]
-        direction TB
-        Q0{"چه نوع نوشتن نیاز دارید؟یا فایل از قبل وجود دارد؟"}
-        Q0 -- "فایل جدید" --&gt; D1["os.Create()O_RDWR|O_CREATE|O_TRUNCاگر فایل وجود داشته باشد → پاک می‌شود ✓PHP: file_put_contents("f.txt", $data)"]
-        Q0 -- "اضافه‌کردن" --&gt; D2["os.OpenFile(…, O_APPEND)O_APPEND|O_CREATE|O_WRONLYداده به انتهای فایل اضافه می‌شود ✓PHP: file_put_contents("f", $d, FILE_APPEND)"]
-        Q0 -- "بازنویسی ایمن؟" --&gt; Q1{"اهمیت داده چقدر است؟آیا خرابی فایل بحران است؟"}
-        Q1 -- "داده حساس — نیاز به دوام" --&gt; D3["File.Sync() — fsyncتضمین نوشته شدن روی دیسک فیزیکی ✓"]
-        Q1 -- "بسیار حساس — خرابی غیرقابل‌قبول" --&gt; D4["Atomic: Temp + Sync + Renameیا فایل کامل جایگزین می‌شود یا هیچ تغییری ⚠"]
-    end
-
-    subgraph ATOM["Atomic Write Pattern به‌تفصیل"]
-        direction LR
-        AS1["۱. os.CreateTemp()فایل موقت در همان دایرکتوری"]
-        AS2["۲. نوشتن دادهfile.Write(data)"]
-        AS3["۳. file.Sync()دوام داده روی دیسک"]
-        AS4["۴. os.Rename()جایگزینی اتمیک ✓"]
-        AS1 --&gt; AS2 --&gt; AS3 --&gt; AS4
-    end
-
-    subgraph PHPNOTE[مقایسه PHP: file_put_contents() اتمیک نیست — اگر وسط نوشتن crash شود، فایل...]
-    end
-
-    subgraph DANGER["منطقه خطر: اشتباهات رایج"]
-        direction TB
-        X1[✗ خطر: os.Create() فایل موجود را پاک می‌کند!os.Create() همیشه O_TRUNC دارد —...]
-        X2[✗ خطر: بدون Sync() داده ممکن است از دست برودسیستم‌عامل نوشتن را بافر می‌کند...]
-        X3[✗ خطر: فراموش کردن bufio.Writer.Flush()داده‌های بافرنشسته هرگز روی دیسک...]
-        X4[✗ خطر: نوشتن همزمان بدون قفلچند گوروتین همزمان = داده‌ها روی هم نوشته...]
-    end
-
-    subgraph CMP["مقایسه سریع: PHP در مقابل Go"]
-        direction TB
-        C1["Go: os.OpenFile("f", O_APPEND|O_CREATE|O_WRONLY, 0644)→ Explicit flags, full control ✓"]
-        C2["PHP: file_put_contents("f", $data, FILE_APPEND)→ Single flag, simpler but less control"]
-        C3[Go Atomic: CreateTemp → Write → Sync → Rename→ No PHP equivalent — must...]
-    end
-
-    note([قانون طلایی: برای داده حساس همیشه از الگوی اتمیک (فایل موقت + Sync + Rename)...])
-
-    classDef decBox  fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
-    classDef resBox  fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef atomBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
-    classDef dangBox fill:#fef2f2,stroke:#ef4444,stroke-width:1.5px,color:#1f2937;
-    classDef cmpBox  fill:#f8fafc,stroke:#475569,stroke-width:1px,color:#1f2937;
-    classDef noteBox fill:#ecfdf5,stroke:#10b981,stroke-width:1px,color:#1f2937,font-style:italic;
-    class Q0,Q1 decBox;
-    class D1,D2,D3,D4 resBox;
-    class AS1,AS2,AS3,AS4 atomBox;
-    class X1,X2,X3,X4 dangBox;
-    class C1,C2,C3 cmpBox;
-    class note noteBox;</pre>
-<figcaption>شکل ۶-۳-ج — فلوچارت تصمیم‌گیری حالت‌های نوشتن فایل: <bdi dir="ltr">Create/O_TRUNC/O_APPEND</bdi> و الگوی نوشتن اتمیک</figcaption>
-</figure>
 <p>همان‌طور که در نمودار بالا مشاهده می‌کنید، Go کنترل بسیار دقیقی روی نحوه باز کردن فایل برای نوشتن ارائه می‌دهد. <bdi dir="ltr">os.Create</bdi> معادل باز کردن فایل با پرچم‌های <bdi dir="ltr">O_RDWR|O_CREATE|O_TRUNC</bdi> است — یعنی اگر فایل از قبل وجود داشته باشد، محتوای آن پاک می‌شود. </p><p>این رفتار در بسیاری از مواقع مطلوب است (مثل نوشتن خروجی جدید)، اما اگر ناخواسته از آن استفاده کنید، داده از دست می‌رود. <bdi dir="ltr">os.OpenFile</bdi> با پرچم <bdi dir="ltr">O_APPEND</bdi> برای لاگ‌فایل‌ها ایده‌آل است زیرا داده جدید به انتهای فایل اضافه می‌شود بدون اینکه محتوای قبلی دستخوش تغییر شود. برای داده‌های حساس، الگوی نوشتن اتمیک (فایل موقت + <bdi dir="ltr">Sync</bdi> + <bdi dir="ltr">Rename</bdi>) تنها روش قابل‌اطمینان است.</p>
 <h3 id="سناریوهای-عملیاتی-نوشتن">6.3.10 سناریوهای عملیاتی نوشتن در فایل</h3>
 <p>در پروژه‌های واقعی، نوشتن در فایل فقط فراخوانی یک تابع نیست — باید حالت صحیح، مدیریت خطا و ملاحظات ایمنی را هم در نظر بگیرید. هر سناریو زیر چالش‌ها و راه‌حل‌های خاص خود را دارد. درک این سناریوها به شما کمک می‌کند از اشتباهات پرهزینه مانند خرابی فایل پیکربندی یا از دست رفتن لاگ‌ها جلوگیری کنید.</p>
@@ -484,7 +383,6 @@ fclose($fp);
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/xml.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/ini.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/plaintext.min.js"></script>
-<script src="assets/js/diagrams.js"></script>
 <script src="assets/js/main.js"></script>
 </body>
 </html>

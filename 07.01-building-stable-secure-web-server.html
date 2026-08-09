@@ -81,10 +81,6 @@
 <tr><td>استقرار</td><td>نیاز به PHP-FPM + Web Server</td><td>یک فایل باینری مستقل</td></tr>
 </tbody>
 </table>
-<figure class="diagram d2-diagram" dir="ltr">
-<img alt="نمودار" loading="lazy" src="assets/diagrams/ch07_01_server_lifecycle.svg"/>
-<figcaption>شکل ۷-۱: معماری وب‌سرورGoباServeMux،MiddlewareوGracefulShutdown</figcaption>
-</figure>
 <p>پکیج استاندارد net/http مبنای ساخت وب‌سرور در Go است. در محیط production باید علاوه بر پاسخ‌دهی به درخواست‌ها، خطاها را مدیریت، لاگ‌گیری انجام دهید و سرور را به صورت امن راه‌اندازی کنید.</p>
 <div class="quote-box">
 <p class="quote-text">وب یک مکانیزم تحویل است و معماری برنامه‌تان نباید به آن وابسته باشد. وب یک جزئیات است و جزئیات هرگز نباید معماری را هدایت کنند.</p>
@@ -462,43 +458,6 @@ handler := maxBodySizeMiddleware(1 &lt;&lt; 20)(mux)
 </code></pre>
 </figure>
 <p>علاوه بر تنظیمات <code dir="ltr">http.Server</code>، می‌توانید تعداد اتصالات همزمان از هر <bdi dir="ltr">IP</bdi> را نیز محدود کنید. این کار با شمارش اتصالات فعال از هر آدرس و مسدود کردن موقت آدرس‌های مشکوک انجام می‌شود. همچنین استفاده از یک <bdi dir="ltr">proxy</bdi> معکوس (مثل <bdi dir="ltr">Nginx</bdi>) جلوی سرور <bdi dir="ltr">Go</bdi> لایه محافظتی اضافی در برابر این نوع حملات فراهم می‌کند.</p>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-    C["Client"] --&gt;|"TLS/HTTPS"| RL
-    subgraph RL["لایه‌های امنیتی"]
-        direction LR
-        RL1["RateLimit"] --&gt; RL2["Headers"]
-        RL2 --&gt; RL3["CORS"]
-    end
-    RL --&gt; S["net/http Server<br/>Timeouts + MaxHeaderBytes"]
-    S --&gt; GS["Graceful Shutdown<br/>os.Signal + Context + Cleanup"]
-    subgraph SEC["لایه‌های امنیتی — جزئیات"]
-        direction TB
-        SH1["• ReadHeaderTimeout ← ضد Slowloris"]
-        SH2["• MaxBytesReader ← ضد حجم زیاد"]
-        SH3["• Rate Limiting ← ضد DDoS"]
-        SH4["• Security Headers ← ضد XSS/Clickjacking"]
-        SH5["• TLS 1.2+ ← رمزنگاری انتقال"]
-    end
-    subgraph CLEAN["پاکسازی منابع"]
-        direction TB
-        CL1["بستن DB، Flush لاگ، قطع Redis"]
-    end
-    S -.-&gt; SEC
-    GS --&gt; CLEAN
-    CLEAN --&gt; R["Response"]
-
-    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef neuBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
-    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
-    classDef errBox fill:#fef2f2,stroke:#ef4444,stroke-width:1.5px,color:#1f2937;
-    class S,GS goBox;
-    class RL1,RL2,RL3 warnBox;
-    class SH1,SH2,SH3,SH4,SH5 warnBox;
-    class CL1 neuBox;
-    class C,R neuBox;</pre>
-<figcaption>شکل ۷-۱-ب: معماری کامل وب‌سرور امن <bdi dir="ltr">Go</bdi> با لایه‌های امنیتی و خاموش شدن آرام</figcaption>
-</figure>
 <h3 id="graceful-shutdown-با-پاکسازی-منابع">7.1.10 Graceful Shutdown با پاکسازی منابع</h3>
 <p>در محیط <bdi dir="ltr">production</bdi> واقعی، خاموش شدن آرام فقط به معنای صبر برای اتمام درخواست‌ها نیست. باید منابع مختلفی مثل اتصال دیتابیس، <bdi dir="ltr">Redis</bdi>، فایل‌های باز و <bdi dir="ltr">buffer</bdi> های لاگ را نیز به صورت صحیح آزاد کنید. الگوی زیر یک مثال کامل از خاموش شدن آرام با پاکسازی منابع ارائه می‌دهد:</p>
 <figure class="code go" dir="ltr">
@@ -552,10 +511,6 @@ handler := maxBodySizeMiddleware(1 &lt;&lt; 20)(mux)
 <!-- ═══════════════════════════════════════════════════════════════ -->
  ENRICHMENT: SVG — http.Server Internal Connection Handling 
 <!-- ═══════════════════════════════════════════════════════════════ -->
-<figure class="diagram d2-diagram" dir="ltr">
-<img alt="نمودار" loading="lazy" src="assets/diagrams/ch07_01_server_lifecycle.svg"/>
-<figcaption>شکل ۷-۱-ج: چرخه‌ی حیات اتصال درhttp.Server— از پذیرش اتصال تا مدیریت درخواست، زمان‌بندی‌ها و رفتارKeep-Alive</figcaption>
-</figure>
 <h3 id="سناریوهای-عملیاتی-وبسرور">7.1.11 سناریوهای عملیاتی</h3>
 <p>در محیط‌های واقعی <bdi dir="ltr">production</bdi>، تنظیم وب‌سرور <bdi dir="ltr">Go</bdi> فراتر از نوشتن یک <code dir="ltr">ListenAndServe</code> ساده است. هر سناریوی استقرار نیازمند تنظیمات متفاوتی است و بدون توجه به این تفاوت‌ها، سرور شما ممکن است در برابر حملات آسیب‌پذیر شود یا عملکرد مناسبی نداشته باشد. در ادامه مهم‌ترین سناریوهای عملیاتی و راه‌حل‌های مربوط به هر کدام را بررسی می‌کنیم:</p>
 <ul>
@@ -610,7 +565,6 @@ handler := maxBodySizeMiddleware(1 &lt;&lt; 20)(mux)
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/xml.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/ini.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/plaintext.min.js"></script>
-<script src="assets/js/diagrams.js"></script>
 <script src="assets/js/main.js"></script>
 </body>
 </html>

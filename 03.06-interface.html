@@ -69,31 +69,6 @@
 <strong>چکیده:</strong> واسط در Go ضمنی است: نوعی که متدهای لازم را داشته باشد، خودکار واسط را پیاده می‌کند. این بخش تعریف واسط، type assertion، empty interface و کاربردهای عملی را پوشش می‌دهد. تفاوت با interface در PHP و الگوی accept interfaces, return structs بررسی می‌شود.
 </div>
 <div class="tip"><strong>نکته:</strong> یکی از تفاوت‌های بنیادین interface در Go با PHP این است که در Go نیازی به اعلام صریح <code>implements</code> نیست. هر struct که متدهای مورد نیاز یک interface را پیاده‌سازی کند، به‌طور خودکار با آن interface سازگار تلقی می‌شود. این مفهوم را "Duck Typing ساختاریافته" می‌نامند.</div>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-    title(["Interface در Go — پیاده‌سازی ضمنی"])
-    NOTIF["Notifier<br/>Notify() string"]
-    USER["User<br/>Notify() string"]
-    EMAIL["Email<br/>Notify() string"]
-    SMS["SMS<br/>Notify() string"]
-    USER -.-&gt; NOTIF
-    EMAIL -.-&gt; NOTIF
-    SMS -.-&gt; NOTIF
-    note(["بدون implements — هر struct با متد Notify() خودکار سازگار است"])
-    title ~~~ NOTIF
-    NOTIF ~~~ USER
-    SMS ~~~ note
-
-    classDef titleBox fill:#f8fafc,stroke:#475569,stroke-width:1px,color:#1f2937,font-weight:bold;
-    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef okBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
-    classDef noteBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1px,color:#1f2937,font-style:italic;
-    class title titleBox;
-    class NOTIF goBox;
-    class USER,EMAIL,SMS okBox;
-    class note noteBox;</pre>
-<figcaption>مفهوم <bdi dir="ltr">Interface</bdi> در <bdi dir="ltr">Go</bdi> — پیاده‌سازی ضمنی (<bdi dir="ltr">Duck</bdi> <bdi dir="ltr">Typing</bdi>)</figcaption>
-</figure>
 <p>در زبان‌های شی‌گرا مانند PHP مفهوم interface برای تعریف قرارداد رفتاری میان کلاس‌ها کاربرد دارد. Go نیز از این مفهوم پشتیبانی می‌کند اما با رویکردی بسیار ساده‌تر، پویا‌تر و بدون وابستگی مستقیم.</p>
 <p><strong>تعریف</strong> <strong dir="ltr">interface</strong></p>
 <figure class="code go" dir="ltr">
@@ -183,56 +158,6 @@ if ok {
 <div class="comparison"><strong>مقایسه با PHP:</strong> در PHP معادل این کار ترکیب <code>instanceof</code> و <code>switch</code> است. اما Go یک ساختار اختصاصی <code dir="ltr">.(type)</code> دارد که هم نوع را بررسی می‌کند و هم مقدار را در متغیر <code>v</code> با نوع صحیح قرار می‌دهد. این یعنی بدون نیاز به type-casting اضافی مستقیماً به فیلدهای نوع واقعی دسترسی دارید.</div>
 <h3 id="empty-interface">3.6.2 Empty Interface و any</h3>
 <p>Go یک interface خاص به نام <strong dir="ltr">empty interface</strong> دارد که هیچ متدی تعریف نمی‌کند:</p>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-    title(["بررسی nil در Interface: نوع در برابر مقدار"])
-
-    subgraph C1["حالت ۱: nil واقعی"]
-        direction TB
-        C1A["type = nil"]
-        C1B["data = nil"]
-        C1R["n == nil → true (بله)"]
-    end
-
-    subgraph C2["حالت ۲: nil با نوع مشخص"]
-        direction TB
-        C2A["type = *User ← غیر-nil!"]
-        C2B["data = nil"]
-        C2R["n == nil → false (خیر)"]
-    end
-
-    subgraph C3["حالت ۳: غیر-nil"]
-        direction TB
-        C3A["type = *User"]
-        C3B["data = &amp;User{...}"]
-        C3R["n == nil → false"]
-    end
-
-    C1 ~~~ C2 ~~~ C3
-
-    subgraph EX["مثال‌ها"]
-        direction TB
-        E1["var n Notifier → n == nil (بله)"]
-        E2["var u *User = nil; n = u → n != nil (خیر) (type=*User, value=nil)"]
-        E3["n = User{Name: "Ali"} → n != nil (type=*User, value=&amp;User{...})"]
-    end
-
-    title ~~~ C1
-    C3 ~~~ EX
-
-    classDef titleBox fill:#f8fafc,stroke:#475569,stroke-width:1px,color:#1f2937,font-weight:bold;
-    classDef okBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
-    classDef errBox fill:#fef2f2,stroke:#ef4444,stroke-width:1.5px,color:#1f2937;
-    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1px,color:#1f2937;
-    classDef neutralBox fill:#f8fafc,stroke:#475569,stroke-width:1px,color:#1f2937;
-    class title titleBox;
-    class C1A,C1B,C1R okBox;
-    class C2A,C2B,C2R errBox;
-    class C3A,C3B,C3R goBox;
-    class E1,E2,E3 warnBox;</pre>
-<figcaption dir="rtl">شکل ۶-۳-ب: بررسی <bdi dir="ltr">nil</bdi> در <bdi dir="ltr">Interface</bdi> — هر دو فیلد نوع و مقدار باید <bdi dir="ltr">nil</bdi> باشند</figcaption>
-</figure>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">// Both mean the same — any was added in Go 1.18
 var x interface{} = 42
@@ -493,99 +418,8 @@ func NewMailer(config Config) *smtp.Mailer {
 }
 </code></pre>
 </figure>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-    title(["ساختار داخلی Interface: eface و iface"])
-
-    subgraph EFACE["eface (empty interface)"]
-        direction TB
-        EF1["_type * | data unsafe.Pointer"]
-        EF2["any / interface{}"]
-    end
-
-    subgraph IFACE["iface (non-empty interface)"]
-        direction TB
-        IF1["tab *itab | data unsafe.Pointer"]
-        IF2["Notifier, io.Reader, etc."]
-    end
-
-    ITAB[itab (cached per interface+type pair)inter *interfacetype | _type *_type |...]
-    NOTE(["ذخیره‌شده در کش عمومی — فقط یک‌بار ساخته می‌شود"])
-
-    title ~~~ EFACE
-    EFACE ~~~ IFACE
-    IFACE ~~~ ITAB
-    ITAB ~~~ NOTE
-
-    classDef titleBox fill:#f8fafc,stroke:#475569,stroke-width:1px,color:#1f2937,font-weight:bold;
-    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef okBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
-    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
-    classDef noteBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1px,color:#1f2937,font-style:italic;
-    classDef neutralBox fill:#f8fafc,stroke:#475569,stroke-width:1px,color:#1f2937;
-    class title titleBox;
-    class EF1,EF2 goBox;
-    class IF1,IF2 okBox;
-    class ITAB warnBox;
-    class NOTE noteBox;</pre>
-<figcaption>شکل ۶-۳: ساختار داخلی <bdi dir="ltr">eface</bdi> و <bdi dir="ltr">iface</bdi> در <bdi dir="ltr">Go</bdi> <bdi dir="ltr">runtime</bdi></figcaption>
-</figure>
 <h3 id="interface-itab-deep-dive">3.6.14 نمودار عمیق ساختار داخلی itab و iface</h3>
 <p>نمودار زیر جزئیات ساختار <bdi dir="ltr">iface</bdi> و <bdi dir="ltr">itab</bdi> را به‌صورت بصری نشان می‌دهد — شامل روابط بین جدول متدها، اشاره‌گر داده و سه حالت ممکن برای <bdi dir="ltr">nil</bdi> بودن interface:</p>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-    title(["ساختار داخلی Interface: iface و itab"])
-
-    IFACE["iface (non-empty interface value)tab *itab | data unsafe.Pointer"]
-    ITAB[itab (cached per interface+type pair)inter *interfacetype → type of...]
-    FUN["fun[0] = &amp;bufio.Writer.Writefun[1] = &amp;bufio.Writer.Read... (if more methods)"]
-    DATA["data → &amp;bufio.Writer{...}actual value in heap"]
-    IFACE --&gt; ITAB
-    IFACE --&gt; DATA
-    ITAB --&gt; FUN
-
-    EFACE["eface (empty interface / any)_type *_type | data unsafe.Pointer"]
-
-    subgraph NILCASES["سه حالت nil در Interface"]
-        direction LR
-        NC1["Case 1: nil interfacetab/itab = nildata = nilw == nil → true ✓var w io.Writer"]
-        NC2[Case 2: typed nil ← PITFALL!tab/itab = &amp;itab{io.Writer, *User, ...}data =...]
-        NC3["Case 3: non-nil interfacetab/itab = &amp;itab{io.Writer, *User}data = &amp;User{Name: "Ali"}w == nil → falsew = &amp;User{Name: "Ali"}"]
-    end
-
-    subgraph EXAMPLE["Example: var w io.Writer = &amp;bufio.Writer{}"]
-        direction TB
-        EX1[w.tab → itab{ inter: io.Writer, _type: *bufio.Writer, fun[0]:...]
-        EX2["w.data → heap pointer to bufio.Writer instance"]
-        EX3["Calling w.Write(p) → itab.fun[0](w.data, p) → fast indirect call via cached itab"]
-    end
-
-    note([فراخوانی متد از طریق itab.fun[] — فقط یک indirection اضافی نسبت به فراخوانی...])
-
-    title ~~~ IFACE
-    EFACE ~~~ NILCASES
-    NILCASES ~~~ EXAMPLE
-    EXAMPLE ~~~ note
-
-    classDef titleBox fill:#f8fafc,stroke:#475569,stroke-width:1px,color:#1f2937,font-weight:bold;
-    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef okBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
-    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
-    classDef errBox fill:#fef2f2,stroke:#ef4444,stroke-width:1.5px,color:#1f2937;
-    classDef phpBox fill:#f5f0fb,stroke:#777BB4,stroke-width:1.5px,color:#1f2937;
-    classDef noteBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1px,color:#1f2937,font-style:italic;
-    class title titleBox;
-    class IFACE goBox;
-    class ITAB warnBox;
-    class FUN,DATA okBox;
-    class EFACE phpBox;
-    class NC1 okBox;
-    class NC2 errBox;
-    class NC3 goBox;
-    class EX1,EX2,EX3 warnBox;
-    class note noteBox;</pre>
-<figcaption dir="rtl">شکل ۶-۳-ج: ساختار داخلی <bdi dir="ltr">iface</bdi> و <bdi dir="ltr">itab</bdi> — سه حالت <bdi dir="ltr">nil</bdi> و مکانیزم فراخوانی متد</figcaption>
-</figure>
 <p>در نمودار بالا ساختار کامل یک interface غیرخالی (<bdi dir="ltr">iface</bdi>) را مشاهده می‌کنید. بخش <bdi dir="ltr">itab</bdi> حاوی سه بخش حیاتی است: <code dir="ltr">inter</code> که نوع interface را مشخص می‌کند (مثلاً <code dir="ltr">io.Writer</code>)، <code dir="ltr">_type</code> که نوع واقعی داده را نشان می‌دهد (مثلاً <code dir="ltr">*bufio.Writer</code>) و آرایه‌ی <code dir="ltr">fun</code> که اشاره‌گر به توابع پیاده‌سازی‌شده را نگه می‌دارد. </p><p>وقتی متدی مانند <code dir="ltr">w.Write(p)</code> فراخوانی می‌شود Go از <code dir="ltr">itab.fun[0]</code> برای یافتن آدرس تابع واقعی استفاده می‌کند و <code dir="ltr">data</code> را به‌عنوان receiver ارسال می‌کند. </p><p>این مکانیزم فقط یک سطح <bdi dir="ltr">indirection</bdi> اضافی نسبت به فراخوانی مستقیم متد دارد و به‌لطف کش <bdi dir="ltr">itab</bdi> عملاً هیچ هزینه‌ی عملکردی قابل‌توجهی ایجاد نمی‌کند.</p>
 <p>سه حالت <bdi dir="ltr">nil</bdi> که در پایین نمودار نمایش داده شده‌اند از مهم‌ترین مفاهیم برای برنامه‌نویسان PHP هستند. حالت اول یک interface واقعاً nil است که هر دو فیلد آن nil هستند. </p><p>حالت دوم یعنی «nil با نوع مشخص» (<bdi dir="ltr">typed nil</bdi>) یکی از رایج‌ترین باگ‌های Go است: وقتی یک اشاره‌گر nil از نوع مشخص به interface اختصاص می‌یابد فیلد <code dir="ltr">tab/itab</code> مقدار غیر-nil می‌گیرد و بنابراین interface دیگر nil نیست حتی اگر مقدار داده‌ی آن nil باشد. </p><p>حالت سوم هم یک interface عادی با مقدار غیر-nil است. درک این سه حالت برای جلوگیری از باگ‌های ظریف در کد Go ضروری است.</p>
 <h4 id="interface-سناریوهای-عملیاتی">سناریوهای عملیاتی Interface</h4>
@@ -641,7 +475,6 @@ func NewMailer(config Config) *smtp.Mailer {
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/xml.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/ini.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/plaintext.min.js"></script>
-<script src="assets/js/diagrams.js"></script>
 <script src="assets/js/main.js"></script>
 </body>
 </html>

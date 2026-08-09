@@ -372,147 +372,8 @@ func init() {
 </div>
 <h3 id="defer-lifo-نمودار">2.4.13 defer: نمودار ترتیب اجرای LIFO</h3>
 <p><bdi dir="ltr">defer</bdi> توابع را به‌صورت <bdi dir="ltr">LIFO</bdi> (آخرین ورود، اولین خروج) اجرا می‌کند. نمودار زیر ترتیب اجرا را نشان می‌دهد:</p>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-
-    subgraph REG["ثبت"]
-        direction TB
-        R1["defer f.Close() ← اول"]
-        R2["defer rows.Close() ← دوم"]
-        R3["defer mu.Unlock() ← سوم"]
-        R1 --- R2 --- R3
-    end
-
-    subgraph RUN["اجرا"]
-        direction TB
-        E1["1. mu.Unlock()"]
-        E2["2. rows.Close()"]
-        E3["3. f.Close()"]
-        E1 --&gt; E2 --&gt; E3
-    end
-
-    subgraph INTERNAL["نمای داخلی: Linked List در runtime"]
-        direction LR
-        L1["_defer(Unlock)"]
-        L2["_defer(rows.Close)"]
-        L3["_defer(f.Close)"]
-        L4["nil"]
-        L1 --&gt; L2 --&gt; L3 --&gt; L4
-    end
-
-    NOTE[ترتیب اجرا برعکس ثبت است — آخرین defer اول اجرا می‌شوداین رفتار تضمین می‌کند...]
-
-            REG -.-&gt;|LIFO| RUN
-        
-    classDef titleBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:2px,color:#1f2937;
-    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef bothBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
-    classDef neutralBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
-    class TITLE titleBox;
-    class REG,R1,R2,R3,RUN,E1,E2,E3,INTERNAL,L1,L2,L3,L4 goBox;
-    class NOTE bothBox;</pre>
-<figcaption>شکل ۲-۴-الف: ترتیب اجرای <bdi dir="ltr">defer</bdi> به‌صورت <bdi dir="ltr">LIFO</bdi></figcaption>
-</figure>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-
-    subgraph TYPEDEF["type User struct{...}"]
-        direction TB
-    end
-
-    subgraph VALUE["Value: u := User{}"]
-        direction TB
-        V1["(u User) Greet()"]
-        V2["(u *User) Update()"]
-        VNOTE["فقط value receiver‌ها در method set"]
-        V1 --- V2 --- VNOTE
-    end
-
-    subgraph PTR["Pointer: p := &amp;User{}"]
-        direction TB
-        P1["(u User) Greet()"]
-        P2["(u *User) Update()"]
-        PNOTE["همه‌ی receiver‌ها در method set"]
-        P1 --- P2 --- PNOTE
-    end
-
-    PTR_TO["&amp;utype *User"]
-
-    subgraph TRAP["توجه: تله‌ی مهم با Interface"]
-        direction TB
-        T1["var g Greeter = User{} // صحیح — فقط اگر Greet() value receiver باشد"]
-        T2["var g Greeter = &amp;User{} // صحیح — همیشه کار می‌کند"]
-        T1 --- T2
-    end
-
-    GOLD["قانون طلایی: اگر یک متد pointer receiver دارد، همه pointer receiver باشند"]
-
-        TYPEDEF --&gt; VALUE
-    TYPEDEF --&gt; PTR
-    VALUE --&gt; PTR_TO
-    PTR --&gt; PTR_TO
-        
-    classDef titleBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:2px,color:#1f2937;
-    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef bothBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
-    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
-    classDef neutralBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
-    class TITLE titleBox;
-    class TYPEDEF neutralBox;
-    class VALUE,V1,V2,PTR,P1,P2,PTR_TO goBox;
-    class VNOTE,PNOTE bothBox;
-    class TRAP,T1,T2 warnBox;
-    class GOLD warnBox;</pre>
-<figcaption>شکل ۲-۴-ب: قواعد <bdi dir="ltr">Method</bdi> <bdi dir="ltr">Set</bdi> — تفاوت T و *T</figcaption>
-</figure>
 <h3 id="value-vs-pointer-receiver">2.4.14 دیاگرام مقایسه‌یValue Receiverدر برابرPointer Receiver</h3>
 <p>انتخاب بین <bdi dir="ltr">value receiver</bdi> و <bdi dir="ltr">pointer receiver</bdi> یکی از مهم‌ترین تصمیمات طراحی در <bdi dir="ltr">Go</bdi> است. در <bdi dir="ltr">PHP</bdi> همه‌ی متدها درون کلاس تعریف می‌شوند و <code>$this</code> همیشه به شیء فعلی اشاره می‌کند اما در <bdi dir="ltr">Go</bdi> این انتخاب صریح است و پیامدهای مستقیمی بر رفتار متد، کارایی و رضایت <bdi dir="ltr">interface</bdi> دارد. شکل زیر دو رویکرد را به‌صورت بصری مقایسه می‌کند و قواعد <bdi dir="ltr">method set</bdi> و تله‌های رایج را نشان می‌دهد.</p>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-
-    subgraph VR["Value Receiver: func (s T) Method()"]
-        direction TB
-        V1["func (u User) Greet() string {    return "Hello, " + u.Name}u is a COPY of the original User"]
-        V2[Characteristics:✓ Operates on a copy — original unchanged✓ Safe for...]
-        V3[Memory: copies entire struct on each callSmall structs (≤ few fields) →...]
-        V1 --- V2 --- V3
-    end
-
-    subgraph PR["Pointer Receiver: func (s *T) Method()"]
-        direction TB
-        P1[func (u *User) UpdateEmail(email string) {    u.Email = email // modifies...]
-        P2[Characteristics:✓ Operates on original — can modify state✓ Efficient for...]
-        P3[Memory: only 8-byte pointer copiedAny size struct → same cost (8...]
-        P1 --- P2 --- P3
-    end
-
-    subgraph MS["قواعد Method Set و رضایت Interface"]
-        direction TB
-        M1[Type T: method set = only value receiver methodsvar u User → can call...]
-        M2[Type *T: method set = ALL methods (value + pointer)var p *User → can call...]
-        M3["Interface satisfaction: *T implements interface I ↔ T has only value receivers"]
-    end
-
-    subgraph TRAP["تله‌ی مهم با Interface"]
-        direction TB
-        T1[// If Greet() is value receiver AND UpdateEmail() is pointer receiver:var g...]
-        T2[// But if interface requires UpdateEmail() (pointer receiver):// var g...]
-    end
-
-                
-    classDef titleBox fill:#ecfdf5,stroke:#10b981,stroke-width:2px,color:#1f2937;
-    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef bothBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
-    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
-    classDef errBox fill:#fef2f2,stroke:#ef4444,stroke-width:1.5px,color:#1f2937;
-    class TITLE titleBox;
-    class VR,V1,V2,V3 goBox;
-    class PR,P1,P2,P3 goBox;
-    class MS,M1,M2,M3 bothBox;
-    class TRAP,T1 warnBox;
-    class T2 errBox;</pre>
-<figcaption>شکل ۳-۴: مقایسه‌ی <bdi dir="ltr">Value Receiver</bdi> در برابر <bdi dir="ltr">Pointer Receiver</bdi> — شامل قواعد <bdi dir="ltr">Method Set</bdi> و تله‌های <bdi dir="ltr">Interface</bdi></figcaption>
-</figure>
 <h3 id="سناریوهای-عملیاتی-متدها">2.4.15 سناریوهای عملیاتی متدها وReceiver</h3>
 <p>انتخاب نوع <bdi dir="ltr">receiver</bdi> تنها یک مسئله‌ی فنی نیست بلکه تصمیم طراحی است که بر کل معماری نوع تأثیر می‌گذارد. در <bdi dir="ltr">PHP</bdi> همه‌ی متدها به‌طور ضمنی از طریق <code>$this</code> به شیء اصلی دسترسی دارند اما در <bdi dir="ltr">Go</bdi> این انتخاب باید صریح و سازگار باشد. در ادامه سناریوهای عملیاتی رایج را بررسی می‌کنیم و بهترین روش‌ها را برای هر مورد ارائه می‌دهیم.</p>
 <ul>
@@ -567,7 +428,6 @@ func init() {
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/xml.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/ini.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/plaintext.min.js"></script>
-<script src="assets/js/diagrams.js"></script>
 <script src="assets/js/main.js"></script>
 </body>
 </html>

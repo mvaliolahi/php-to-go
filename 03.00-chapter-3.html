@@ -69,46 +69,6 @@
 <strong>چکیده:</strong> این فصل ساختار سازمان‌دهی کد در Go را باز می‌کند: پکیج‌ها، ماژول‌ها و OOP به سبک Go. تفاوت OOP کلاسیک PHP با combination-based Go بررسی می‌شود. مفاهیم واسط، embedding، constructor و factory با مثال‌های عملی پوشش داده می‌شوند.
 </div>
 <p>پکیج‌ها، ماژول‌ها و شی‌گرایی — سه ستون اصلی که کد Go شما را از یک مجموعه‌ی پراکنده‌ی فایل‌ها به یک سیستم منسجم، قابل‌توسعه و قابل‌نگهداری تبدیل می‌کنند. </p><p>اگر از PHP می‌آیید، احتمالاً با <bdi dir="ltr">Namespace</bdi> ها برای سازمان‌دهی کد، <bdi dir="ltr">Composer</bdi> برای مدیریت وابستگی‌ها و کلاس‌ها/واسط‌ها برای پیاده‌سازی الگوهای شی‌گرا آشنا هستید. </p><p>اما در Go هر یک از این مفاهیم با فلسفه‌ای متفاوت و ابزارهایی ساده‌تر اما قدرتمندتر پیاده‌سازی شده‌اند. این فصل شما را از دنیای آشنای PHP به دنیای <bdi dir="ltr">Idiomatic Go</bdi> راهنمایی می‌کند.</p>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-    title(["نقشه‌ی فصل ۳: پکیج‌ها، ماژول‌ها و شی‌گرایی"])
-    subgraph R1["ساختار و ابزار"]
-        direction LR
-        S1["۳.۱ کار با پکیج‌ها<br/>سطح دسترسی، init، وابستگی"]
-        S2["۳.۲ ماژول‌ها و dependency<br/>go.mod، MVS، GOPROXY"]
-        S3["۳.۳ کامپایل و باینری<br/>Cross-compilation، ldflags"]
-        S4["۳.۴ چرخه‌ی حیات<br/>Startup، Graceful Shutdown"]
-        S1 --&gt; S2 --&gt; S3 --&gt; S4
-    end
-    subgraph R2["شی‌گرایی و طراحی"]
-        direction LR
-        S5["۳.۵ شی‌گرایی<br/>struct، embedding، کپسوله‌سازی"]
-        S6["۳.۶ Interface<br/>Duck Typing، iface/eface"]
-        S7["۳.۷ Constructor و Factory<br/>Functional Options، Builder"]
-        S5 --&gt; S6 --&gt; S7
-    end
-    subgraph CMP["مقایسه فلسفی"]
-        direction LR
-        PHP["PHP: Namespace + Composer + Class<br/>سلسله‌مراتب وراثت، coupling بالا"]
-        GO["Go: Package + Module + Struct<br/>ترکیب ساده، coupling پایین"]
-        IDIO["Idiomatic Go<br/>نه ترجمه، بلکه تبدیل ذهنیت"]
-        PHP --&gt; GO --&gt; IDIO
-    end
-    title ~~~ R1
-    R1 --&gt; R2 --&gt; CMP
-
-    classDef titleBox fill:#f8fafc,stroke:#475569,stroke-width:1px,color:#1f2937,font-weight:bold;
-    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef bothBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
-    classDef phpBox fill:#f5f0fb,stroke:#777BB4,stroke-width:1.5px,color:#1f2937;
-    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
-    class title titleBox;
-    class S1,S2,S3,S4,GO goBox;
-    class S5,S6,S7 bothBox;
-    class PHP phpBox;
-    class IDIO warnBox;</pre>
-<figcaption dir="rtl">شکل ۰-۳: نقشه‌ی فصل سوم و مسیر یادگیری</figcaption>
-</figure>
 <p>در این فصل خواننده با مفاهیم زیر آشنا خواهد شد:</p>
 <ul>
 <li>مفهوم پکیج‌ها در Go و نقش آن‌ها در سازمان‌دهی کد — مقایسه با <bdi dir="ltr">Namespace</bdi> ها در PHP و تفاوت‌های بنیادین</li>
@@ -169,7 +129,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/xml.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/ini.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/plaintext.min.js"></script>
-<script src="assets/js/diagrams.js"></script>
 <script src="assets/js/main.js"></script>
 </body>
 </html>

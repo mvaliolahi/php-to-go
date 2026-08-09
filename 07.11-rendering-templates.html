@@ -68,55 +68,8 @@
 <h2 id="رندر-کردن-قالبها">رندر کردن قالب‌ها</h2><div class="abstract">
 <strong>چکیده:</strong> این بخش رندر template در Go را پوشش می‌دهد: execute، context و partial render. الگوی render helper و error handling بررسی می‌شود. کاربردهای SSR و بهینه‌سازی پوشش داده می‌گردد.
 </div>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart LR
-    PD["PageData<br/>struct / map"] --&gt; EX["ExecuteTemplate()<br/>layout + data"]
-    EX --&gt; RW["ResponseWriter<br/>HTML output"]
-
-    subgraph DIR["دستورات قالب"]
-        direction TB
-        D1["{{ range .Items }}"]
-        D2["{{ if .IsAdmin }}"]
-        D3["{{ funcName . }}"]
-    end
-    EX -.-&gt; DIR
-
-    NOTE(["html/template → ایمن‌سازی خودکار در برابر XSS"])
-    EX ~~~ NOTE
-
-    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef neuBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
-    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
-    class PD,EX,D1,D2,D3 goBox;
-    class RW neuBox;
-    class NOTE warnBox;</pre>
-<figcaption>شکل ۷-۱۱: جریان رندر قالب — از داده تا خروجی <bdi dir="ltr">HTML</bdi></figcaption>
-</figure>
 <h3 id="ساختار-داده-و-ارسال-به-قالب">7.11.1 ساختار داده و ارسال به قالب</h3>
 <p>قالب‌ها با استفاده از یک context معمولاً struct یا map داده‌ها را دریافت می‌کنند و بر اساس آن رندر می‌شوند. داده‌ها باید به گونه‌ای طراحی شوند که کاملاً قابل فهم و ساخت‌یافته باشند.</p>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart LR
-    PD["PageData<br/>struct / map"] --&gt; TPL["Template<br/>layout.html"]
-    TPL --&gt; EX["ExecuteTemplate"]
-    EX --&gt; BUF["bytes.Buffer"]
-    BUF --&gt; RW["ResponseWriter"]
-
-    FM["FuncMap"] --&gt; TPL
-    PF["ParseFS"] --&gt; TPL
-
-    NOTE1(["html/template ایمن‌سازی خودکار در برابر XSS"])
-    NOTE2(["buffer از نوشتن جزئی جلوگیری می‌کند"])
-    BUF ~~~ NOTE1
-    BUF ~~~ NOTE2
-
-    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef neuBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
-    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
-    class PD,TPL,EX,BUF,FM,PF goBox;
-    class RW neuBox;
-    class NOTE1,NOTE2 warnBox;</pre>
-<figcaption dir="rtl">شکل ۷-۱۱-ب: خط لوله‌ی رندر قالب — از داده و قالب تا خروجی <bdi dir="ltr">HTML</bdi> ایمن</figcaption>
-</figure>
 <h4 id="نقش-نقطه-در-قالبها">نقش نقطه (.) در قالب‌ها</h4>
 <p>نماد نقطه (<code>.</code>) در قالب‌های Go به داده‌های context فعلی اشاره دارد. وقتی <code dir="ltr">tmpl.ExecuteTemplate(w, "layout.html", data)</code> فراخوانی می‌شود، <code>.</code> به <code>data</code> اشاره دارد. در داخل <code>{{ range .Items }}</code> نقطه به هر عنصر از slice اشاره می‌کند. در داخل <code>{{ with .User }}</code> نقطه به مقدار <code>.User</code> تغییر می‌کند:</p>
 <figure class="code html" dir="ltr">
@@ -316,88 +269,6 @@ func homeHandler(w http.ResponseWriter, r *http.Request) {
 }
 </code></pre>
 </figure>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-    subgraph DATA["ساختار داده Go"]
-        direction TB
-        D1["type PageData struct {"]
-        D2["Title    string"]
-        D3["User     User"]
-        D4["Items    []Item"]
-        D5["IsAdmin  bool"]
-        D6["}"]
-        D7["type User struct { Email string }"]
-    end
-
-    subgraph EXEC["فرایند اتصال داده — Execute(data)"]
-        direction TB
-        E1["{{ .Title }} → "صفحه اصلی""]
-        E2["{{ .User.Email }} → nested field"]
-        E3["{{ range .Items }} → iteration"]
-    end
-
-    subgraph FLOW["ExecuteTemplate() flow"]
-        direction TB
-        F1["tmpl.ExecuteTemplate(w,"]
-        F2[""layout.html", data)"]
-        F1 --&gt; F2
-    end
-
-    subgraph OUT["خروجی HTML رندر شده"]
-        direction TB
-        O1["&lt;html&gt;"]
-        O2["&lt;h1&gt;صفحه اصلی&lt;/h1&gt;"]
-        O3["&lt;p&gt;ali@example.com&lt;/p&gt;"]
-        O4["&lt;ul&gt;"]
-        O5["&lt;li&gt;کتاب Go&lt;/li&gt;"]
-        O6["&lt;li&gt;کیبورد مک&lt;/li&gt;"]
-        O7["&lt;/ul&gt;"]
-        O8["&lt;/html&gt;"]
-    end
-
-    DATA --&gt; EXEC
-    EXEC --&gt; FLOW
-    FLOW --&gt; OUT
-
-    subgraph ERR["مدیریت خطا در هنگام رندر"]
-        direction TB
-        ER1["ErrNoTemplate — قالب یافت نشد<br/>template: "page.html" not defined"]
-        ER2["Type mismatch — نوع داده نادرست<br/>cannot access field .Name on int"]
-        ER3["Partial write — نوشتن جزئی<br/>data sent before error → buffer!"]
-    end
-
-    subgraph PRE["الگوی پیش‌کامپایل: یک بار پارس، بارها اجرا"]
-        direction TB
-        P1["init() / main()"]
-        P2["ParseFS() — یک بار"]
-        P3["*template.Template"]
-        P4["ذخیره در متغیر سراسری"]
-        P5["Request 1: Execute()"]
-        P6["Request 2: Execute()"]
-        P7["Request N: Execute()"]
-        P1 --&gt; P2 --&gt; P3 --&gt; P4
-        P4 --&gt; P5
-        P4 --&gt; P6
-        P4 --&gt; P7
-    end
-
-    NOTE1(["پارس یک بار ← عملکرد بالا"])
-    NOTE2(["پارس هر درخواست ← عملکرد پایین ← خطرناک!"])
-    P4 ~~~ NOTE1
-    P4 ~~~ NOTE2
-
-    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef neuBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
-    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
-    classDef errBox fill:#fef2f2,stroke:#ef4444,stroke-width:1.5px,color:#1f2937;
-    class D1,D2,D3,D4,D5,D6,D7,E1,E2,E3,F1,F2,P1,P2,P3,P4,P5,P6,P7 goBox;
-    class O1,O2,O3,O4,O5,O6,O7,O8 neuBox;
-    class ER1,ER2,ER3 errBox;
-    class NOTE1 bothBox
-    class NOTE2 errBox
-    classDef bothBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;</pre>
-<figcaption>شکل ۷-۱۱-ج: خط لوله اتصال داده و رندر — از ساختار <bdi dir="ltr">Go</bdi> تا خروجی <bdi dir="ltr">HTML</bdi> با مدیریت خطا و الگوی پیش‌کامپایل</figcaption>
-</figure>
 <h3 id="سناریوهای-عملیاتی-رندر-قالب">7.11.8 سناریوهای عملیاتی رندر قالب</h3>
 <p>رندر کردن قالب‌ها در پروژه‌های واقعی بسیار فراتر از فراخوانی ساده <code>ExecuteTemplate</code> است. شما با سناریوهای متنوعی مواجه خواهید شد که نیاز به درک عمیق‌تری از نحوه کار سیستم قالب‌سازی دارند. در این بخش مهم‌ترین سناریوهای عملیاتی را که هر توسعه‌دهنده <bdi dir="ltr">Go</bdi> باید بشناسد بررسی می‌کنیم. </p><p>این سناریوها شامل رندر جداول پویا، رندر شرطی، الگوی لایه‌بندی، ساختارهای داده تودرتو و رفع اشکال خطاهای قالب هستند. </p><p>هر یک از این الگوها در پروژه‌های عملی به کرات استفاده می‌شوند و بدون تسلط بر آن‌ها نوشتن برنامه‌های وب کارآمد امکان‌پذیر نیست.</p>
 <ul>
@@ -452,7 +323,6 @@ func homeHandler(w http.ResponseWriter, r *http.Request) {
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/xml.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/ini.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/plaintext.min.js"></script>
-<script src="assets/js/diagrams.js"></script>
 <script src="assets/js/main.js"></script>
 </body>
 </html>

@@ -74,10 +74,6 @@
 <p>به همین خاطر بسیاری از ویژگی‌های رایج در زبان‌های مدرن مثل <strong>ارث‌بری شیءگرا</strong>، <strong dir="ltr">Overloading</strong> توابع، <strong dir="ltr">Exception</strong> ‌ها و حتی <strong dir="ltr">Generic</strong> ‌ها، در نسخه‌های اولیه Go عمداً کنار گذاشته شدند. </p><p>حذف‌ این امکانات نشانه کمبود یا ضعف نبودند بلکه انتخابی آگاهانه برای رسیدن به سه اصل کلیدی <strong>خوانایی، صراحت، و رفتار قابل پیش‌بینی</strong> بود.</p>
 <p>این رویکرد ممکن است برای یک توسعه‌دهنده PHP غیرمنطقی به نظر برسد " <strong>چطور بدون ارث‌بری</strong> ؟! <strong>بدون</strong> <strong dir="ltr">Exception</strong> ؟!" اما Go با این تصمیم‌ها مسیر دیگری را دنبال می‌کند مسیری که هدفش تولید کدی است که حتی سال‌ها بعد بدون نیاز به تفسیرهای پیچیده همچنان واضح و قابل اعتماد باقی بماند.</p>
 <p>این تفاوت‌ها فقط به فلسفه طراحی محدود نمی‌شود بلکه <strong>مدل اجرایی</strong> این دو زبان هم بازتابی از جهان‌بینی متفاوتشان است. در <strong dir="ltr">PHP</strong> هر بار که یک درخواست به سرور می‌رسد مفسر PHP از ابتدا وارد عمل می‌شود. </p><p>کد را اجرا می‌کند داده‌ها را پردازش می‌کند و در نهایت خروجی را به‌صورت HTML از طریق وب‌سرور برای کاربر می‌فرستد. </p><p>این چرخه کوتاه و مستقل برای اپلیکیشن‌های <strong dir="ltr">Stateless</strong> بسیار ایده‌آل است اما در پردازش‌های طولانی یا سنگین به سرعت به محدودیت‌هایی می‌رسد. </p><p>به همین علت تقریباً در هر پروژه PHP با ابزارهای جانبی مانند <strong dir="ltr">Queue</strong> ‌ها، <strong dir="ltr">Cache Server</strong> ‌ها روبه‌رو هستیم تا فشار را از لایه PHP برداریم.</p>
-<figure class="diagram d2-diagram" dir="ltr">
-<img alt="نمودار" loading="lazy" src="assets/diagrams/ch01_01_php_vs_go_execution.svg"/>
-<figcaption>شکل ۱-۱: نحوه‌ی تعامل کاربر با برنامه <bdi dir="ltr">Go</bdi> و <bdi dir="ltr">PHP</bdi></figcaption>
-</figure>
 <p>خروجی یک برنامه Go یک <strong>فایل باینری مستقل</strong> است که بدون نیاز به وب‌سرور یا لایه‌های واسط مستقیماً اجرا می‌شود. این کار یعنی بدون درگیری با پیچیدگی‌های PHP-FPM یا تنظیمات Nginx به‌طور دقیق همان چیزی را که ساخته‌اید اجرا می‌کنید.</p>
 <p>از همه مهم‌تر پشتیبانی از <strong dir="ltr">Concurrency</strong> بخشی بنیادی از طراحی زبان Go است. در حالی که در PHP هم می‌توان Concurrency را پیاده کرد اما به‌طور پیش‌فرض ساده و یکپارچه نیست و نیازمند استفاده از ابزارها یا قابلیت‌هایی مانند pcntl_fork، کتابخانه parallel یا Fiber‌ در PHP 8.1 به بعد است. در Go تنها با یک دستور ساده</p>
 <figure class="code go" dir="ltr">
@@ -89,24 +85,6 @@
 <p>می‌توانید یک <strong dir="ltr">goroutine</strong> بسازید که مستقل از Threadهای سیستم، عملیات را هم‌زمان انجام دهد. این رویکرد توسعه برنامه‌های <strong dir="ltr">Real-time</strong>، پردازش صف‌ها، سرورهای <strong dir="ltr">Socket</strong> و اپلیکیشن‌های موازی را به شکلی طبیعی و کم‌اصطکاک در دسترس قرار می‌دهد.</p>
 <p>مسئله دیگر ساختار پروژه است که در ادامه مفصل تر به آن خواهیم پرداخت. در PHP ساختار پروژه به شدت به فریم‌ورک انتخابی شما وابسته است. اگر با Laravel کار می‌کنید ساختار شما به سبک این فریم‌ورک خواهد بود در Symfony و فریم ورک های دیگر ساختار متفاوت است.</p><p>این وابستگی باعث می‌شود که درک کد یک پروژه بزرگ PHP اغلب نیازمند دانش از ابزارهای جانبی باشد که البته این موضوع مزایای مربوط به خودش را نیز دارد.</p><p>در مقابل Go ساختار مشخص و یکنواختی دارد.</p><p>پروژه‌ها با استفاده از go mod تعریف می‌شوند پکیج‌ها به وضوح تفکیک شده‌اند و ابزار go fmt تضمین می‌کند که کد همه توسعه‌دهندگان ظاهری یکدست داشته باشد.</p>
 <p>در زمینه‌ی Deployment باز هم نگاه این دو زبان متفاوت است. PHP به یک وب سرور نیاز دارد تنظیمات PHP-FPM و نسخه‌های مختلف ممکن است مشکل‌ساز شود و انتقال از محیط توسعه به پروداکشن ممکن است نیازمند تطبیق نسخه و تنظیمات خاصی باشد. اما در Go شما تنها یک فایل باینری می‌سازید و آن را روی سرور مقصد کپی می‌کنید.</p><p>هیچ dependency‌ای لازم نیست.</p><p>هیچ وب‌سروری نیاز نیست!</p><p>در محيط هایی مانند Docker یا Kubernetes این مزیت به‌شدت خودش را نشان می‌دهد و روند DevOps را ساده‌تر و پایدارتر می‌سازد.</p>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart LR
-    subgraph PHP["دیپلوی PHP — وابسته به محیط"]
-        direction TB
-        P1["کد PHP"] --&gt; P2["Composer"] --&gt; P3["PHP-FPM"] --&gt; P4["Nginx"]
-        P5["تنظیمات php.ini"]
-    end
-    subgraph GO["دیپلوی Go — بدون وابستگی خارجی"]
-        direction TB
-        G1["go build → فایل باینری"] --&gt; G2["scp binary → سرور"] --&gt; G3["Docker<br/>(image ~10MB)"]
-    end
-
-    classDef phpBox fill:#f5f0fb,stroke:#777BB4,stroke-width:1.5px,color:#1f2937;
-    classDef goBox  fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    class PHP phpBox;
-    class GO goBox;</pre>
-<figcaption>شکل ۲-۱: نحوه‌ی دیپلوی <bdi dir="ltr">PHP</bdi> و <bdi dir="ltr">Go</bdi></figcaption>
-</figure>
 <p>با همه این‌ها نباید فراموش کرد که PHP همچنان در قلمرو خود هنوز بی‌رقیب است. فریم ورکی مثل Laravel تجربه‌ای سریع، روان و لذت‌بخش فراهم می‌کند و زمان توسعه‌ی یک‌محصول را به شدت کاهش می‌دهد. </p><p>جامعه عظیم PHP پکیج‌های بی‌شمار، مستندات و اکوسیستم بالغ آن باعث می‌شود این زبان در بسیاری از پروژه‌ها هنوز جزء انتخابهای اول باشد.</p><p>اگرچه Go در زمینه ساخت API و میکروسرویس‌ بی‌نظیر است اما برای توسعه سریع وب اپلیکیشن های full-stack هنوز آن‌طور که باید ابزارهای کاملی ندارد.</p>
 <p>اگر بخواهیم فلسفه این دو زبان را در یک جمله خلاصه کنیم می‌توان گفت:
 PHP برای " <strong>انجام سریع کار</strong> " طراحی شده و Go برای " <strong>ساختن چیزی که پایدار بماند</strong> ".</p>
@@ -200,10 +178,6 @@ func GetFromCache(key string) (string, bool) {
 </div>
 <h3 id="مقایسه‌ی-زمان-حیات-درخواست">1.1.5 مقایسه‌ی زمان حیات درخواست: PHP-FPM در برابر Go</h3>
 <p>تفاوت عملکرد ریشه در مدل اجرایی دارد. نمودار زیر چرخه‌ی حیات کامل یک درخواست <bdi dir="ltr">HTTP</bdi> را در هر دو زبان نشان می‌دهد:</p>
-<figure class="diagram d2-diagram" dir="ltr">
-<img alt="نمودار" loading="lazy" src="assets/diagrams/ch01_01_request_lifecycle.svg"/>
-<figcaption>شکل ۱-۱-الف: چرخه‌ی حیات کامل درخواست درPHP-FPMوGo</figcaption>
-</figure>
 <h3 id="مقایسه‌ی-دیکلری-کانتینر">1.1.6 مقایسه‌ی دیپلوی کانتینری: PHP در برابر Go</h3>
 <p>در دنیای <bdi dir="ltr">Docker</bdi> و <bdi dir="ltr">Kubernetes</bdi>، اندازه‌ی <bdi dir="ltr">image</bdi> و زمان شروع کانتینر اهمیت بالایی دارد. تفاوت بین دیپلوی <bdi dir="ltr">PHP</bdi> و <bdi dir="ltr">Go</bdi> در محیط کانتینری قابل‌توجه است:</p>
 <figure class="code dockerfile" dir="ltr">
@@ -266,51 +240,6 @@ ENTRYPOINT ["/server"]
 </div>
 <h3 id="مدل-ذهنی-php-در-برابر-go">1.1.8 مدل ذهنی PHP در برابر Go: نمودار ون</h3>
 <p>یکی از مؤثرترین راه‌ها برای درک تفاوت فلسفی دو زبان، ترسیم مدل ذهنی هرکدام و یافتن نقاط اشتراک و افتراق آن‌هاست. </p><p>نمودار ون زیر دو دایره‌ی ذهنی <bdi dir="ltr">PHP</bdi> و <bdi dir="ltr">Go</bdi> را نشان می‌دهد: دایره‌ی بنفش (<bdi dir="ltr">PHP</bdi>) شامل مفاهیمی است که ریشه در دنیای پویا و مبتنی بر فریم‌ورک دارند و دایره‌ی فیروزه‌ای (<bdi dir="ltr">Go</bdi>) مفاهیمی را در بر می‌گیرد که بر صراحت، هم‌زمانی و کامپایل ایستا استوارند. </p><p>بخش اشتراک — یعنی نقاطی که هر دو زبان در آن‌ها هم‌سو هستند — شامل حوزه‌هایی مانند ساخت سرور وب، مدیریت <bdi dir="ltr">HTTP</bdi>، دسترسی به پایگاه داده، کار با <bdi dir="ltr">JSON</bdi> و تست‌نویسی است. </p><p>اما خارج از این اشتراک، تفاوت‌های بنیادین خود را نشان می‌دهند: <bdi dir="ltr">PHP</bdi> با <bdi dir="ltr">magic methods</bdi>، <bdi dir="ltr">traits</bdi> و <bdi dir="ltr">dynamic dispatch</bdi> کار می‌کند در حالی که <bdi dir="ltr">Go</bdi> با <bdi dir="ltr">channels</bdi>، <bdi dir="ltr">interfaces</bdi>، <bdi dir="ltr">defer</bdi> و بازگرداندن چند مقداری عمل می‌کند. </p><p>درک این تقاطع‌ها و تفاوت‌ها به شما کمک می‌کند تا بدانید کدام مهارت‌های <bdi dir="ltr">PHP</bdi> قابل انتقال هستند و کدام باید از نو آموخته شوند.</p>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart LR
-    subgraph PHPO["فقط PHP"]
-        direction TB
-        P1["Dynamic Typing"]
-        P2["Inheritance"]
-        P3["Exceptions"]
-        P4["Shared-Nothing"]
-        P5["Request-Scoped"]
-        P6["Magic Methods"]
-        P7["Traits"]
-        P8["Dynamic Dispatch"]
-    end
-    subgraph BOTH["اشتراک"]
-        direction TB
-        C1["Web Servers"]
-        C2["HTTP Handling"]
-        C3["Database Access"]
-        C4["JSON"]
-        C5["Testing"]
-    end
-    subgraph GOO["فقط Go"]
-        direction TB
-        G1["Static Typing"]
-        G2["Composition"]
-        G3["Error Values"]
-        G4["Goroutines"]
-        G5["Compiled Binary"]
-        G6["Channels"]
-        G7["Interfaces (implicit)"]
-        G8["Defer / Multiple Returns"]
-    end
-    PHPO ~~~ BOTH ~~~ GOO
-    note([💡 نکته‌ی کلیدی: مهارت‌های مشترک قابل انتقال هستند — اما مدل ذهنی هر زبان...])
-
-    classDef phpBox fill:#f5f0fb,stroke:#777BB4,stroke-width:1.5px,color:#1f2937;
-    classDef goBox  fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef bothBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
-    classDef noteBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1px,color:#1f2937,font-style:italic;
-    class PHPO phpBox;
-    class GOO goBox;
-    class BOTH bothBox;
-    class note noteBox;</pre>
-<figcaption>شکل ۱-۱-ب: نمودار ون مدل ذهنی <bdi dir="ltr">PHP</bdi> و <bdi dir="ltr">Go</bdi> — نقاط اشتراک و افتراق فلسفی</figcaption>
-</figure>
 <h3 id="سناریوهای-عملیاتی-تقابل-فلسفی">1.1.9 سناریوهای عملیاتی: گذر از ذهنیت PHP به Go</h3>
 <p>انتقال از <bdi dir="ltr">PHP</bdi> به <bdi dir="ltr">Go</bdi> فقط یادگیری یک زبان جدید نیست، بلکه دگرگونی بنیادین در نحوه‌ی تفکر درباره‌ی معماری نرم‌افزار، مدیریت خطا و طراحی سیستم است. در ادامه مهم‌ترین سناریوهایی را بررسی می‌کنیم که هر برنامه‌نویس <bdi dir="ltr">PHP</bdi> در مسیر مهاجرت به <bdi dir="ltr">Go</bdi> با آن‌ها مواجه خواهد شد. </p><p>هرکدام از این سناریوها نقطه‌ی عطفی در فرآیند بازآموزی ذهنی هستند و درک عمیق آن‌ها تضمین‌کننده‌ی موفقیت در دنیای <bdi dir="ltr">Go</bdi> خواهد بود.</p>
 <ul>
@@ -368,7 +297,6 @@ ENTRYPOINT ["/server"]
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/xml.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/ini.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/plaintext.min.js"></script>
-<script src="assets/js/diagrams.js"></script>
 <script src="assets/js/main.js"></script>
 </body>
 </html>

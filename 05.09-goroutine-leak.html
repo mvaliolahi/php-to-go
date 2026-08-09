@@ -79,41 +79,6 @@
 </p>
 </div>
 <div class="tip"><strong>نکته‌ی حرفه‌ای:</strong> برای تشخیص نشت <bdi dir="ltr">Goroutine</bdi> در محیط تولید، از معیارهای <bdi dir="ltr">runtime</bdi> استفاده کنید: مانیتورینگ <bdi dir="ltr"><code>runtime.NumGoroutine()</code></bdi> و تنظیم هشدار برای رشد نامحدود. اگر نمودار تعداد <bdi dir="ltr">Goroutine</bdi>‌ها روند صعودی مداوم دارد و هرگز کاهش نمی‌یابد، نشت رخ داده است. ابزار <bdi dir="ltr"><code>pprof</code></bdi> نیز stack trace دقیق <bdi dir="ltr">Goroutine</bdi>‌های نشتی را ارائه می‌دهد.</div>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart LR
-    subgraph LEAK["نشت (Leak)"]
-        direction TB
-        M1["main()"]
-        L1["go leak()"]
-        L2["&lt;-ch (بلاک برای همیشه)<br/>هیچ‌گاه تمام نمی‌شود!"]
-        M1 --&gt; L1 --&gt; L2
-    end
-
-    subgraph FIXED["اصلاح‌شده (Fixed)"]
-        direction TB
-        M2["main()"]
-        W1["go worker()"]
-        W2["select + ctx.Done()<br/>خروج کنترل‌شده"]
-        M2 --&gt; W1 --&gt; W2
-    end
-
-    subgraph TOOLS["ابزارهای تشخیص"]
-        direction TB
-        T1["runtime.NumGoroutine()"]
-        T2["pprof (net/http/pprof)"]
-        T3["مانیتورینگ + context timeout"]
-        T1 --&gt; T2 --&gt; T3
-    end
-
-    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef errBox fill:#fef2f2,stroke:#ef4444,stroke-width:1.5px,color:#1f2937;
-    classDef bothBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
-    classDef neuBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
-    class LEAK,M1,L1,L2 errBox;
-    class FIXED,M2,W1,W2 bothBox;
-    class TOOLS,T1,T2,T3 neuBox;</pre>
-<figcaption>شکل ۵-۱۶: <bdi dir="ltr">Goroutine</bdi> <bdi dir="ltr">Leak</bdi> - نشت، عواقب و راه‌حل</figcaption>
-</figure>
 <p>اگر Goroutine Leak رخ دهد:</p>
 <p>تعداد goroutineهای اجرا شده روی سرور بالا می‌رود</p>
 <p>مصرف حافظه و CPU افزایش پیدا می‌کند</p>
@@ -135,35 +100,6 @@ func main() {
 <p>چگونه از نشت جلوگیری کنیم؟ پاسخ کوتاه: همیشه <bdi dir="ltr">Goroutine</bdi>‌ها را با <bdi dir="ltr">Context</bdi> یا کانال‌های کنترل مدیریت کنید و <code>runtime.NumGoroutine()</code> را برای نظارت به‌کار ببرید. قوانین طلایی کامل در انتهای این فصل (بخش «خلاصه قوانین طلایی») آمده است.</p>
 <h3 id="علل-رایج-leak">5.9.1 علل رایج نشت Goroutine</h3>
 <p>نشتی Goroutine معمولاً از یکی از دلایل زیر ناشی می‌شود:</p>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart LR
-    subgraph LEAK["نشت: کانال بسته نمی‌شود"]
-        direction TB
-        L1["go worker()"]
-        L2["for val := range ch<br/>بلاک! close(ch) فراموش شده"]
-        L3["نشت حافظه!<br/>گوریوتین تا ابد منتظر می‌ماند"]
-        L1 --&gt; L2 --&gt; L3
-    end
-
-    subgraph FIXED["اصلاح: close(ch) + ctx.Done()"]
-        direction TB
-        F1["go worker()"]
-        F2["select + ctx.Done()<br/>خروج کنترل‌شده + close(ch)"]
-        F3["منابع آزاد شدند"]
-        F1 --&gt; F2 --&gt; F3
-    end
-
-    Note["راه‌حل: همیشه close(ch) فراخوانی کنید<br/>و از context برای لغو استفاده کنید"]
-
-    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef errBox fill:#fef2f2,stroke:#ef4444,stroke-width:1.5px,color:#1f2937;
-    classDef bothBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
-    classDef neuBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
-    class LEAK,L1,L2,L3 errBox;
-    class FIXED,F1,F2,F3 bothBox;
-    class Note neuBox;</pre>
-<figcaption dir="rtl">شکل ۵-۱۶-ب: نشت <bdi dir="ltr">Goroutine</bdi> از کانال بسته‌نشده و راه‌حل</figcaption>
-</figure>
 <p><strong>۱. انتظار روی کانالی که هرگز داده دریافت نمی‌کند:</strong> وقتی Goroutine منتظر دریافت از کانالی است که هیچ‌گاه داده‌ای نمی‌آید یا بسته نمی‌شود.</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">// Leak pattern: forgotten receiver
@@ -417,86 +353,6 @@ go tool pprof leak.prof</code></pre>
 </div>
 <h3 id="فلوچارت-تشخیص-goroutine-leak">5.9.7 فلوچارت تشخیص نشتGoroutine</h3>
 <p>تشخیص نشت <bdi dir="ltr">Goroutine</bdi> نیازمند یک رویکرد سیستماتیک است. فلوچارت زیر یک درخت تصمیم کامل ارائه می‌دهد که به شما کمک می‌کند به صورت مرحله‌ای تشخیص دهید آیا <bdi dir="ltr">goroutine</bdi> شما نشت کرده یا خیر. ابتدا بررسی می‌شود آیا <bdi dir="ltr">goroutine</bdi> مسدود شده است، سپس علت مسدود شدن مشخص می‌شود و در نهایت راه‌حل مناسب پیشنهاد می‌گردد. هر مسیر نشت با رنگ قرمز و هر مسیر صحیح با رنگ سبز نمایش داده شده است.</p>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-    Start(["شروع: بررسی Goroutine"])
-    Q1{"مسدود شده؟(Is it blocked?)"}
-    Q2{"شرط خروج دارد؟(Exit condition?)"}
-    Q3{"روی چه مسدود شده؟(Blocked on what?)"}
-    OK["✓ OK"]
-    Leak1["LEAKFix: add ctx.Done() / break"]
-
-    Start --&gt; Q1
-    Q1 -- "No" --&gt; Q2
-    Q2 -- "Yes" --&gt; OK
-    Q2 -- "No" --&gt; Leak1
-    Q1 -- "Yes" --&gt; Q3
-
-    CS["Channel Sendch &lt;- valگیرنده‌ای نیست"]
-    CSF["LEAK!Fix: buffered chan / close(ch)"]
-    CR["Channel Recv&lt;-chفرستنده‌ای نیست"]
-    CRF["LEAK!Fix: close(ch) / ctx.Done()"]
-    WG["WaitGroupwg.Wait()Done() فراموش شده"]
-    WGF["LEAK!Fix: defer wg.Done() always"]
-    LK["Lockmu.Lock()Unlock هرگز فراخوانی نمی‌شود"]
-    LKF["LEAK!Fix: defer mu.Unlock() always"]
-    HT["HTTP Requesthttp.Get()بدون timeout"]
-    HTF["LEAK!Fix: ctx + http.Client{Timeout}"]
-
-    Q3 -- "Channel Send" --&gt; CS --&gt; CSF
-    Q3 -- "Channel Recv" --&gt; CR --&gt; CRF
-    Q3 -- "WaitGroup" --&gt; WG --&gt; WGF
-    Q3 -- "Lock" --&gt; LK --&gt; LKF
-    Q3 -- "HTTP Request" --&gt; HT --&gt; HTF
-
-    subgraph CORRECT["الگوی صحیح هر Goroutine"]
-        direction TB
-        CO1["select {"]
-        CO2["case &lt;-ctx.Done(): return   // always check cancellation"]
-        CO3["case job := &lt;-jobs: process(job)  // do work"]
-        CO1 --&gt; CO2 --&gt; CO3
-    end
-
-    subgraph TOOLS["ابزارهای تشخیص"]
-        direction TB
-        T1["runtime.NumGoroutine()"]
-        T2["go tool pprof goroutine"]
-        T1 --&gt; T2
-    end
-
-    subgraph PREV["پیشگیری"]
-        direction TB
-        P1["context.WithCancel / WithTimeout"]
-        P2["defer close(ch) / defer wg.Done()"]
-        P1 --&gt; P2
-    end
-
-    subgraph NEW["Go 1.26 New"]
-        direction TB
-        N1["goroutineleak profile"]
-        N2["GOEXPERIMENT=goroutineleakprofile"]
-        N1 --&gt; N2
-    end
-
-    GOLD[قانون طلایی: هر Goroutine باید Context بپذیرد، select با ctx.Done() داشته...]
-
-    LEG1["مسیر نشت"]
-    LEG2["مسیر صحیح:select + ctx.Done() + close(ch)"]
-    LEG3["نشتی رایج:for {} without ctx.Done()"]
-
-    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef bothBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
-    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
-    classDef errBox fill:#fef2f2,stroke:#ef4444,stroke-width:1.5px,color:#1f2937;
-    classDef neuBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
-    class Start,Q1,Q2,Q3 goBox;
-    class OK bothBox;
-    class Leak1,CS,CSF,CR,CRF,WG,WGF,LK,LKF,HT,HTF errBox;
-    class CORRECT,CO1,CO2,CO3 bothBox;
-    class TOOLS,T1,T2,PREV,P1,P2,NEW,N1,N2,LEG1,LEG2,LEG3 neuBox;
-    class GOLD warnBox;</pre>
-<figcaption>شکل ۵-۱۸: فلوچارت تشخیص نشت <bdi dir="ltr">Goroutine</bdi> — درخت تصمیم با راه‌حل‌ها</figcaption>
-</figure>
 <p>این فلوچارت نشان می‌دهد که هر <bdi dir="ltr">goroutine</bdi> مسدود شده معمولاً یکی از پنج علت رایج را دارد: ارسال روی کانال بدون گیرنده، دریافت از کانال بدون فرستنده، انتظار روی <bdi dir="ltr">WaitGroup</bdi> که هرگز <bdi dir="ltr">Done</bdi> نمی‌شود، قفل شدن روی <bdi dir="ltr">Mutex</bdi> که هرگز آزاد نمی‌شود، یا درخواست <bdi dir="ltr">HTTP</bdi> بدون <bdi dir="ltr">timeout</bdi>. </p><p>برای هر یک از این علت‌ها راه‌حل مشخصی وجود دارد که در بخش‌های راهنمایی کنار هر مسیر نشت نمایش داده شده است. </p><p>نکته مهم این است که اگر <bdi dir="ltr">goroutine</bdi> مسدود نشده اما شرط خروج ندارد (مثلاً حلقه بی‌نهایت بدون بررسی <bdi dir="ltr">ctx.Done()</bdi>)، باز هم نشت رخ می‌دهد.</p>
 <h3 id="سناریوهای-عملیاتی-leak">5.9.8 سناریوهای عملیاتی نشتGoroutine</h3>
 <p>در پروژه‌های واقعی، نشت <bdi dir="ltr">Goroutine</bdi> معمولاً در الگوهای خاصی رخ می‌دهد. شناخت این الگوها به شما کمک می‌کند قبل از وقوع نشت از آن جلوگیری کنید. هر یک از سناریوهای زیر بر اساس تجربه توسعه‌دهندگان <bdi dir="ltr">Go</bdi> در سیستم‌های تولیدی بزرگ شناسایی شده‌اند و راه‌حل مشخصی دارند. درک این سناریوها برای هر برنامه‌نویسی که از هم‌روندی استفاده می‌کند ضروری است.</p>
@@ -553,7 +409,6 @@ go tool pprof leak.prof</code></pre>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/xml.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/ini.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/plaintext.min.js"></script>
-<script src="assets/js/diagrams.js"></script>
 <script src="assets/js/main.js"></script>
 </body>
 </html>

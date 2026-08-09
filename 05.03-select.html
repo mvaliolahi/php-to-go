@@ -69,39 +69,6 @@
 <strong>چکیده:</strong> select برای چندگانه‌سازی channel‌ها و مدیریت چند عمل همزمان استفاده می‌شود. این بخش الگوهای select با default، timeout و done را پوشش می‌دهد. کاربردهای عملی برای timeout و cancellation بررسی می‌شود.
 </div>
 <p>دستور select یک ساختار کنترلی ویژه برای مدیریت هم‌زمان چند کانال است. این دستور شبیه حالتی عمل می‌کند که در یک سیستم صف مانند Laravel چندین worker در حال گوش دادن به صف باشند و هر کدام که زودتر آماده شود job را دریافت کند.</p><p>select به شما اجازه می‌دهد عملیات ارسال و دریافت روی کانال‌های مختلف را به صورت هم‌زمان تحت نظر داشته باشید و اولین کانالی که داده‌ای برای پردازش آماده کند انتخاب می‌شود.</p><p>اگر چند کانال به طور هم‌زمان آماده باشند Go یکی از آن‌ها را به صورت تصادفی اجرا می‌کند تا تعادل میان کانال‌ها حفظ شود. در صورتی که هیچ کانالی آماده نباشد اگر بخش default تعریف شده باشد اجرای آن بلاک بلافاصله انجام می‌شود و در غیر این صورت select منتظر می‌ماند تا یکی از کانال‌ها آماده شود.</p><p>این قابلیت امکان پیاده‌سازی الگوهایی مانند multiplexing برای دریافت داده از منابع مختلف، مدیریت زمان‌بندی و اعمال timeout یا cancellation و همچنین طراحی سیستم‌های non locking را فراهم می‌کند.</p>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-    C1["Channel 1"]
-    C2["Channel 2"]
-    TA["time.After"]
-    Sel{"select"}
-    A1["case &lt;-ch1:<br/>اولین آماده اجرا"]
-    A2["case &lt;-ch2:<br/>اولین آماده اجرا"]
-    A3["case &lt;-timeout:<br/>اولین آماده اجرا"]
-    A4["default:<br/>هیچ‌کدام آماده نبود"]
-
-    C1 --&gt; Sel
-    C2 --&gt; Sel
-    TA --&gt; Sel
-    Sel -- "case &lt;-ch1:" --&gt; A1
-    Sel -- "case &lt;-ch2:" --&gt; A2
-    Sel -- "case &lt;-timeout:" --&gt; A3
-    Sel -- "default:" --&gt; A4
-
-    N1["چند case آماده → انتخاب تصادفی |<br/>هیچ case آماده + default → non-blocking"]
-    N2["بدون default → بلاک تا آماده شدن یکی از case‌ها"]
-    N1 --&gt; N2
-
-    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef bothBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
-    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
-    classDef neuBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
-    class C1,C2,TA goBox;
-    class Sel,A1,A2,A3 bothBox;
-    class A4 warnBox;
-    class N1,N2 neuBox;</pre>
-<figcaption>شکل ۵-۹: جریان <bdi dir="ltr">select</bdi> - گوش دادن همزمان به چند کانال</figcaption>
-</figure>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">select {
     case msg1 := &lt;-ch1:
@@ -174,30 +141,6 @@ func main() {
 <p>در این مثال اگر ظرف ۲ ثانیه داده‌ای از کانال ch نرسد case مربوط به time.After اجرا می‌شود. این روش یکی از الگوهای رایج لغو یا کنترل زمان اجرای گوریوتین‌ها است.</p>
 <h3 id="select-برای-تایم‌اوت-و-لغو">5.3.2 Select برای تایم‌اوت و لغو عملیات</h3>
 <p>یکی از کاربردهای کلیدی <code>select</code> ترکیب آن با <code>time.After</code> و <code>context.Done()</code> برای مدیریت زمان و لغو عملیات است. در سیستم‌های واقعی هیچ عملیاتی نباید بی‌نهایت منتظر بماند — همیشه باید مهلت زمانی و مکانیزم لغو وجود داشته باشد.</p>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-    Sel{"select<br/>اولین آماده اجرا می‌شود"}
-    A1["case &lt;-ch:<br/>داده آماده"]
-    A2["case &lt;-time.After:<br/>مهلت تمام شد"]
-    A3["case &lt;-ctx.Done():<br/>لغو شد"]
-    R1["پردازش داده (خیر)"]
-    R2["بازگشت خطای تایم‌اوت"]
-    R3["بازگشت خطای لغو"]
-
-    Sel -- "case &lt;-ch:" --&gt; A1 --&gt; R1
-    Sel -- "case &lt;-time.After:" --&gt; A2 --&gt; R2
-    Sel -- "case &lt;-ctx.Done():" --&gt; A3 --&gt; R3
-
-    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef bothBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
-    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
-    classDef errBox fill:#fef2f2,stroke:#ef4444,stroke-width:1.5px,color:#1f2937;
-    class Sel goBox;
-    class A1,R1 bothBox;
-    class A2,R2 warnBox;
-    class A3,R3 errBox;</pre>
-<figcaption dir="rtl">شکل ۵-۹-ب: جریان <bdi dir="ltr">select</bdi> با تایم‌اوت و لغو — سه حالت رقابتی</figcaption>
-</figure>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">// Timeout with select
 func fetchWithTimeout(ctx context.Context, url string) (string, error) {
@@ -292,62 +235,6 @@ func processWithTimeout(ctx context.Context) {
 </div>
 <h3 id="select-ارزیابی-و-multiplexing-جزئیات">5.3.4 ارزیابی و Multiplexing در Select — جزئیات عملیاتی</h3>
 <p>همان‌طور که در ابتدای این بخش دیدیم، <bdi dir="ltr">select</bdi> تمام <bdi dir="ltr">case</bdi>‌ها را به‌صورت تصادفی بررسی می‌کند و اولین <bdi dir="ltr">case</bdi> آماده را اجرا می‌کند. این رفتار دقیقاً مشابه الگوی <bdi dir="ltr">epoll</bdi> در سیستم‌عامل لینوکس است که در آن چندین <bdi dir="ltr">file descriptor</bdi> به صورت همزمان تحت نظر قرار می‌گیرند و اولین رویداد آماده پردازش می‌شود. </p><p>در نمودار زیر خط زمانی یک <bdi dir="ltr">select</bdi> در حلقه را مشاهده می‌کنید که در هر تکرار <bdi dir="ltr">case</bdi> متفاوتی انتخاب می‌شود.</p>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-    subgraph INP["کانال‌های ورودی"]
-        direction LR
-        C1["ch1"]
-        C2["ch2"]
-        C3["ch3"]
-        TA["time.After"]
-    end
-
-    Sel{"select"}
-    A1["case &lt;-ch1:"]
-    A2["case &lt;-ch2:"]
-    A3["case &lt;-ch3:"]
-    A4["case &lt;-timeout:"]
-    A5["default:"]
-
-    INP --&gt; Sel
-    Sel -- "case &lt;-ch1:" --&gt; A1
-    Sel -- "case &lt;-ch2:" --&gt; A2
-    Sel -- "case &lt;-ch3:" --&gt; A3
-    Sel -- "case &lt;-timeout:" --&gt; A4
-    Sel -- "default:" --&gt; A5
-
-    subgraph RULES["قوانین انتخاب"]
-        direction TB
-        R1["چند case آماده؟ → یکی تصادفی انتخاب"]
-        R2["default غیربلاک‌کننده — هیچ case آماده نبود"]
-        R3["select بلاک تا آماده شدن یک caseبدون default → goroutine منتظر می‌ماند"]
-        R4["چند case آماده → انتخاب تصادفیتضمین عدم starvation"]
-        R5["default → غیربلاک‌کنندههیچ case آماده نبود → default اجرا"]
-        R1 --&gt; R2 --&gt; R3 --&gt; R4 --&gt; R5
-    end
-
-    subgraph TIMELINE["خط زمانی select در حلقه — هر تکرار یک case متفاوت"]
-        direction TB
-        I1["Iter 1 — ch1:—  ch2:✓  ch3:—  tmout:…  → ch2 ✓"]
-        I2["Iter 2 — ch1:✓  ch2:✓  ch3:—  tmout:…  → ch1 ✓ (random)"]
-        I3["Iter 3 — ch1:—  ch2:—  ch3:—  tmout:✓  → timeout ✓"]
-        I4["Iter 4 — ch1:—  ch2:—  ch3:—  tmout:…  → default (non-block)"]
-        I1 --&gt; I2 --&gt; I3 --&gt; I4
-    end
-
-    GOLD[قانون طلایی: select هرگز اولویت نمی‌دهد — تصادفی بودن تضمین‌کننده‌ی عدالت...]
-
-    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef bothBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
-    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
-    classDef neuBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
-    class INP,C1,C2,C3,TA goBox;
-    class Sel,A1,A2,A3,A4 bothBox;
-    class A5 warnBox;
-    class RULES,R1,R2,R3,R4,R5,TIMELINE,I1,I2,I3,I4 neuBox;
-    class GOLD warnBox;</pre>
-<figcaption dir="rtl">شکل ۵-۹-ج: ارزیابی <bdi dir="ltr">select</bdi> و <bdi dir="ltr">Multiplexing</bdi> — خط زمانی انتخاب تصادفی و رفتار <bdi dir="ltr">default</bdi></figcaption>
-</figure>
 <p>در نمودار بالا مشاهده می‌کنید که در هر تکرار حلقه، <bdi dir="ltr">select</bdi> وضعیت آماده بودن تمام کانال‌ها را بررسی می‌کند و بر اساس اولین <bdi dir="ltr">case</bdi> آماده، مسیر اجرا را تعیین می‌کند. در تکرار دوم که هر دو <bdi dir="ltr">ch1</bdi> و <bdi dir="ltr">ch2</bdi> آماده هستند، <bdi dir="ltr">Go</bdi> به صورت تصادفی یکی را انتخاب می‌کند تا از <bdi dir="ltr">starvation</bdi> جلوگیری شود. </p><p>تکرار چهارم نشان می‌دهد که وقتی هیچ کانالی آماده نیست و <bdi dir="ltr">default</bdi> وجود دارد، <bdi dir="ltr">select</bdi> بدون بلاک شدن مسیر <bdi dir="ltr">default</bdi> را طی می‌کند. </p><p>این رفتار برای پیاده‌سازی الگوهای <bdi dir="ltr">non-blocking</bdi> بسیار مفید است زیرا به شما اجازه می‌دهد همزمان با انتظار روی کانال‌ها، کارهای دیگر را نیز انجام دهید.</p>
 <h4 id="سناریوهای-عملیاتی-select">سناریوهای عملیاتی <bdi dir="ltr">select</bdi></h4>
 <ul>
@@ -422,7 +309,6 @@ select {
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/xml.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/ini.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/plaintext.min.js"></script>
-<script src="assets/js/diagrams.js"></script>
 <script src="assets/js/main.js"></script>
 </body>
 </html>

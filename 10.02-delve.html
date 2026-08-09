@@ -70,32 +70,6 @@
 </div>
 <p>Delve یک دیباگر منبع‌باز است که به‌صورت تخصصی برای Go طراحی شده است. </p><p>برخلاف دیباگرهای عمومی مانند GDB که برای زبان‌های C/C++ ساخته شده‌اند، Delve از قابلیت‌های runtime Go و اطلاعات نمادهای کامپایل‌شده استفاده می‌کند تا به شما امکان اجرای دقیق، توقف، بررسی وضعیت متغیرها و تحلیل مسیر اجرای برنامه را بدهد.</p><p>مزیت اصلی Delve نسبت به GDB این است که ساختارهای داخلی Go مانند goroutine‌ها، channel‌ها، interface‌ها و slice‌ها را به‌درستی پشتیبانی می‌کند، در حالی که GDB نمی‌تواند حتی goroutine‌ها را نمایش دهد.</p>
 <p>برای برنامه‌نویسانی که از PHP می‌آیند، Delve معادل Xdebug است اما با تفاوت‌های مهم: Xdebug یک extension بومی PHP است که در همان process اجرا می‌شود، اما Delve یک process جداگانه است که از طریق سیستم‌عامل (ptrace در Linux/Mac) به باینری Go متصل می‌شود.</p><p>این رویکرد مزیت مهمی دارد: Delve هیچ overhead در production ندارد چون فقط زمان دیباگ فعال است، در حالی که Xdebug حتی وقتی استفاده نمی‌شود ۲۰-۴۰٪ عملکرد را کاهش می‌دهد.</p>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-    subgraph HEADER["گردش کار دیباگ با Delve"]
-        direction TB
-        START["dlv debug"] --&gt; BREAK["break / b &lt;func&gt;"]
-        BREAK --&gt; CONT["continue / c"]
-        CONT --&gt; STOP["توقف در Breakpoint<br/>بررسی وضعیت برنامه"]
-        STOP --&gt; INS1["print / p<br/>مشاهده متغیرها"]
-        STOP --&gt; INS2["step / next<br/>گام‌به‌گام در کد"]
-        STOP --&gt; INS3["stack / goroutines<br/>بررسی Call Stack"]
-        INS1 --&gt; LOOP["ادامه دیباگ"]
-        INS2 --&gt; LOOP
-        INS3 --&gt; LOOP
-        LOOP -.-&gt; CONT
-    end
-
-    classDef startBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937,font-weight:bold;
-    classDef cmdBox   fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef stateBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
-    classDef loopBox  fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
-    class START startBox;
-    class BREAK,CONT,INS1,INS2,INS3 cmdBox;
-    class STOP stateBox;
-    class LOOP loopBox;</pre>
-<figcaption>شکل ۱۰-۳: گردش کار دیباگ با <bdi dir="ltr">Delve</bdi></figcaption>
-</figure>
 <h3 id="نصب-delve">10.2.1 نصب Delve</h3>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">go install github.com/go-delve/delve/cmd/dlv@latest
@@ -372,130 +346,12 @@ $ dlv connect localhost:2345
 <p><strong>۴. پروتکل دیباگ:</strong> Delve از پروتکل <bdi dir="ltr">DAP</bdi> (Debug Adapter Protocol) استفاده می‌کند که توسط Microsoft تعریف شده و توسط VS Code و بسیاری IDE‌های دیگر پشتیبانی می‌شود. این پروتکل به IDE امکان ارسال دستورات دیباگ (break, step, continue) و دریافت اطلاعات (متغیرها، stack, goroutine‌ها) را می‌دهد.</p>
 <div class="note"><strong>نکته فنی:</strong> برخلاف GDB که یک دیباگر عمومی است و زبان‌های مختلف را پشتیبانی می‌کند، Delve مخصوص Go طراحی شده و از ساختارهای داخلی Go مانند goroutine‌ها، channel‌ها، interface‌ها و slice‌ها به‌درستی پشتیبانی می‌کند. GDB نمی‌تواند goroutine‌ها را نمایش دهد یا مقادیر interface را به‌درستی تفسیر کند.</div>
 <div class="note"><strong>نکته:</strong> اگر باینری را با <bdi dir="ltr">go build</bdi> دستی می‌سازید و سپس با <bdi dir="ltr">dlv exec</bdi> یا <bdi dir="ltr">dlv attach</bdi> دیباگ می‌کنید، حتماً فلگ <bdi dir="ltr">-gcflags="all=-N -l"</bdi> را اضافه کنید. <bdi dir="ltr">dlv debug</bdi> این فلگ‌ها را خودکار اضافه می‌کند، اما <bdi dir="ltr">dlv exec</bdi> برنامۀ از پیش ساخته‌شده را اجرا می‌کند و کنترلی روی فلگ‌های کامپایل ندارد. بدون این فلگ‌ها، متغیرها ممکن است در register نگه داشته شوند و در <bdi dir="ltr">print</bdi> ظاهر نشوند، یا توابع کوتاه inline شوند و breakpoint روی آن‌ها هرگز فعال نشود. این خطا معمولاً به‌صورت breakpoint‌های خاکستری در VS Code یا پیام <bdi dir="ltr">"could not find function"</bdi> در Delve ظاهر می‌شود.</div>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-    subgraph HEADER["معماری Delve و ارتباط با IDE"]
-        direction TB
-        IDE["VS Code / IDE<br/>DAP Client"] -- "DAP / JSON-RPC" --&gt; DAP["DAP Server<br/>dlv-dap"]
-        DAP --&gt; SERVER["Delve Server<br/>dlv debug / dlv attach<br/>headless mode<br/>:2345"]
-        SERVER -- "ptrace Linux/Mac<br/>DebugActiveProcess Windows" --&gt; BIN["Go Binary<br/>DWARF debug info"]
-    end
-
-    subgraph DWARF["DWARF Info"]
-        direction TB
-        DW1["Source ↔ Address"]
-        DW2["Variable Types"]
-    end
-    BIN -.-&gt; DWARF
-
-    subgraph STEPS["مراحل داخلی Delve هنگام دیباگ"]
-        direction TB
-        ST1["۱. کامپایل با -N -l"]
-        ST2["۲. خواندن اطلاعات DWARF"]
-        ST3["۳. تنظیم breakpoint‌ها"]
-        ST4["۴. ptrace: توقف/ادامه"]
-        ST5["۵. خواندن حافظه process"]
-        ST6["۶. نمایش مقادیر متغیرها"]
-        ST7["۷. ارسال نتایج به IDE از طریق پروتکل DAP"]
-        ST1 --&gt; ST2 --&gt; ST3 --&gt; ST4 --&gt; ST5 --&gt; ST6 --&gt; ST7
-    end
-
-    note1(["دیباگ راه‌دور: IDE ← SSH Tunnel ← Delve Headless ← Container/Remote Server"])
-    note2(["پورت 2345 فقط از طریق SSH یا VPN قابل دسترسی باشد"])
-
-    classDef ideBox   fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef srvBox   fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
-    classDef binBox   fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
-    classDef dwarfBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
-    classDef stepBox  fill:#e6f9fc,stroke:#00ADD8,stroke-width:1px,color:#1f2937;
-    classDef noteBox  fill:#ecfdf5,stroke:#10b981,stroke-width:1px,color:#1f2937,font-style:italic;
-    class IDE,DAP ideBox;
-    class SERVER srvBox;
-    class BIN binBox;
-    class DW1,DW2 dwarfBox;
-    class ST1,ST2,ST3,ST4,ST5,ST6,ST7 stepBox;
-    class note1,note2 noteBox;</pre>
-<figcaption>شکل ۱۰-۴: معماری <bdi dir="ltr">Delve</bdi> و ارتباط با <bdi dir="ltr">IDE</bdi> در حالت محلی و راه‌دور</figcaption>
-</figure>
 <h3 id="runtime-دیباگ-با-godebug-و-pprof">10.2.9 Runtime دیباگ با GODEBUG و pprof</h3>
 <p>علاوه بر Delve، Go ابزارهای دیگری برای دیباگ در زمان اجرا دارد که بدون توقف برنامه قابل استفاده هستند:</p>
 <p><strong dir="ltr">GODEBUG:</strong> متغیر محیطی <bdi dir="ltr">GODEBUG</bdi> به شما امکان می‌دهد رفتار runtime را بدون تغییر کد کنترل کنید. دستورات و فلگ‌های مختلف GODEBUG (مثل <code dir="ltr">schedtrace</code>، <code dir="ltr">gctrace</code> و <code dir="ltr">allocfreetrace</code>) در بخش ۱۰.۱ به‌تفصیل شرح داده شده‌اند.</p>
 <p><strong>pprof برای دیباگ زنده:</strong> وقتی <bdi dir="ltr">net/http/pprof</bdi> فعال باشد، می‌توانید در زمان اجرا وضعیت goroutine‌ها، حافظه، block‌ها و mutex‌ها را بدون توقف برنامه بررسی کنید. endpoint‌های <bdi dir="ltr">/debug/pprof/goroutine</bdi>، <bdi dir="ltr">heap</bdi>، <bdi dir="ltr">block</bdi> و <bdi dir="ltr">mutex</bdi> به‌تفصیل در بخش ۱۰.۱ شرح داده شده‌اند. </p><p>در اینجا صرفاً به یادآوری می‌پردازیم که ترکیب این endpoint‌ها با دستور <bdi dir="ltr">goroutines</bdi> در Delve (که در ادامه می‌آید) مؤثرترین روش ریشه‌یابی مشکلات هم‌روندی است.</p>
 <h3 id="معماری-delve-دیباگر-و-پردازش-هدف">10.2.10 معماری Delve: دیباگر و پردازش هدف</h3>
 <p>همان‌طور که در بخش قبل بررسی کردیم، Delve برخلاف Xdebug یک process جداگانه است که از طریق رابط‌های سیستم‌عامل به باینری Go متصل می‌شود. نمودار زیر جزئیات این معماری و ارتباط بین دیباگر و پردازش هدف را نشان می‌دهد:</p>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-    subgraph HEADER["معماری Delve: دیباگر ↔ پردازش هدف"]
-        direction LR
-        subgraph DLV["Delve Debugger Processپردازش دیباگر"]
-            direction TB
-            CMD1["break"]
-            CMD2["continue"]
-            CMD3["step / next"]
-            CMD4["print"]
-            CMD5["goroutines"]
-            CMD6["stack / frame"]
-            CMD1 --- CMD2 --- CMD3 --- CMD4 --- CMD5 --- CMD6
-        end
-        DWARF["DWARF Reader +Expression Evaluator"]
-        DLV --&gt; DWARF
-        DWARF -- "ptrace Linux / macOSDebugActiveProcess Windows" --&gt; TARGET
-    end
-
-    subgraph TARGET["Target Go Programبرنامه هدف (در حال دیباگ)"]
-        direction TB
-        TB1["Go Binary (compiled with -N -l)"]
-        TB2["DWARF Debug Information"]
-        TB3["Goroutines"]
-        TB4["Channels"]
-        TB5["Memory/Stack"]
-        TB6["Interfaces"]
-    end
-
-    subgraph INTERACT["نحوه تعامل Delve با برنامه هدف"]
-        direction TB
-        I1["شروع یا اتصال به target process"]
-        I2["تنظیم breakpoint با تغییر باینری"]
-        I3["خواندن/نوشتن حافظه process"]
-        I4["رهگیری signalها (SIGTRAP)"]
-        I5["ارزیابی عبارات Go"]
-        I6["سوئیچ بین goroutineها"]
-    end
-
-    subgraph CMP["PHP Xdebug (for comparison)"]
-        direction TB
-        C1["• extension در همان process PHP"]
-        C2["• پروتکل DBGP (نه ptrace)"]
-        C3["• overhead دائمی ۲۰-۴۰٪"]
-    end
-
-    subgraph CMPGO["Go Delve"]
-        direction TB
-        G1["• process جداگانه + ptrace"]
-        G2["• پروتکل DAP + پشتیبانی goroutine"]
-        G3["• overhead صفر در production"]
-    end
-
-    note([قانون طلایی: Delve فقط زمان دیباگ فعال است — برخلاف Xdebug که همیشه overhead...])
-
-    classDef dlvBox   fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937,font-weight:bold;
-    classDef cmdBox   fill:#e6f9fc,stroke:#00ADD8,stroke-width:1px,color:#1f2937;
-    classDef dwarfBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
-    classDef tgtBox   fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
-    classDef interBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
-    classDef phpBox   fill:#f5f0fb,stroke:#777BB4,stroke-width:1.5px,color:#1f2937;
-    classDef goBox    fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef noteBox  fill:#ecfdf5,stroke:#10b981,stroke-width:1px,color:#1f2937,font-style:italic;
-    class DLV dlvBox;
-    class CMD1,CMD2,CMD3,CMD4,CMD5,CMD6 cmdBox;
-    class DWARF dwarfBox;
-    class TB1,TB2,TB3,TB4,TB5,TB6 tgtBox;
-    class I1,I2,I3,I4,I5,I6 interBox;
-    class C1,C2,C3 phpBox;
-    class G1,G2,G3 goBox;
-    class note noteBox;</pre>
-<figcaption>شکل ۱۰-۵: معماری <bdi dir="ltr">Delve</bdi> — ارتباط دیباگر با پردازش هدف از طریق <bdi dir="ltr">ptrace</bdi> و مقایسه با <bdi dir="ltr">PHP Xdebug</bdi></figcaption>
-</figure>
 <p>نمودار بالا نشان می‌دهد که Delve چگونه از طریق <bdi dir="ltr">ptrace</bdi> (در Linux و macOS) یا <bdi dir="ltr">DebugActiveProcess</bdi> (در Windows) با برنامه هدف ارتباط برقرار می‌کند. وقتی شما دستوری مثل <bdi dir="ltr">break main.go:42</bdi> صادر می‌کنید، Delve دستورالعمل ماشین مناسب را در آن آدرس حافظه جایگزین می‌کند تا برنامه در آن نقطه متوقف شود. </p><p>وقتی برنامه به breakpoint می‌رسد، سیستم‌عامل سیگنال <bdi dir="ltr">SIGTRAP</bdi> ارسال می‌کند و Delve کنترل را به دست می‌گیرد. سپس می‌تواند حافظه process را بخواند، مقادیر متغیرها را ارزیابی کند و اطلاعات DWARF را برای نمایش نام متغیرها و انواع آن‌ها به جای آدرس‌های خام استفاده نماید. </p><p>این معماری کاملاً متفاوت از Xdebug است که مستقیماً در همان process اجرا می‌شود و از opcode‌های PHP برای کنترل جریان استفاده می‌کند.</p>
 <h3 id="سناریوهای-عملیاتی-delve">10.2.11 سناریوهای عملیاتی Delve</h3>
 <p>در محیط‌های عملیاتی واقعی، Delve فراتر از دیباگ ساده کاربرد دارد. ترکیب قابلیت‌های breakpoint شرطی، بازرسی goroutine و تحلیل call stack به شما امکان می‌دهد مشکلات پیچیده‌ای را ریشه‌یابی کنید که با log ساده قابل شناسایی نیستند.</p><p>این سناریوها معمولاً در برنامه‌های production-grade با صدها goroutine فعال و منطق پیچیده رخ می‌دهند و بدون ابزار مناسب، پیدا کردن ریشه مشکل ممکن است ساعت‌ها یا حتی روزها طول بکشد.</p><p>در ادامه مهم‌ترین سناریوهای عملیاتی و روش‌های دیباگ آن‌ها را بررسی می‌کنیم:</p>
@@ -551,7 +407,6 @@ $ dlv connect localhost:2345
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/xml.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/ini.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/plaintext.min.js"></script>
-<script src="assets/js/diagrams.js"></script>
 <script src="assets/js/main.js"></script>
 </body>
 </html>

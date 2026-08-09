@@ -111,42 +111,6 @@
 <h3 id="هرم-تست-در-go">11.0.3 هرم تست در Go</h3>
 <p>Testing Pyramid مفهومی است که Mike Cohn در کتاب «Succeeding with Agile» معرفی کرد. اصل هرم تست می‌گوید: Unit Tests تشکیل شود که سریع، ارزان و فراوان هستند. Integration Tests است که چند مؤلفه را با هم بررسی می‌کنند. </p><p>نوک هرم شامل تست‌های End-to-End است که کند، گران و کم‌تعداد هستند اما اطمینان بالاتری ارائه می‌دهند.</p>
 <p>در Go، این هرم شکل خاصی به خود می‌گیرد. به دلیل وجود ابزارهای داخلی قدرتمند، لایه‌ی Unit Test بسیار قوی‌تر از PHP است. ابزارهایی مثل fuzzing و benchmark در هیچ زبان دیگری به‌صورت داخلی وجود ندارند. </p><p>در لایه‌ی یکپارچگی، Go با مفهوم interface و پکیج‌هایی مثل testcontainers امکان تست‌های واقعی اما ایزوله را فراهم می‌کند.</p><p>و در لایه‌ی E2E، ترکیب httptest.Server با httpexpect تجربه‌ای شبیه به Laravel Feature Tests اما با کنترل بیشتر ارائه می‌دهد.</p>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-    subgraph HEADER["نقشه فصل ۱۱: تست‌نویسی در Go"]
-        direction LR
-        S1["۱۱.۱ مقدماتgo test, Table-driven"]
-        S2["۱۱.۲ Assertiontestify, assert, require"]
-        S3["۱۱.۳ gomockMock, EXPECT, Do"]
-        S4["۱۱.۴ httpexpectE2E API Testing"]
-        S5["۱۱.۵ E2E Testhttptest, Testcontainers"]
-        S1 --&gt; S2 --&gt; S3 --&gt; S4 --&gt; S5
-    end
-
-    subgraph PYRAMID["هرم تست در Go"]
-        direction TB
-        E2E["E2Ehttpexpect, httptest"]
-        INT["یکپارچگیgomock, testcontainers"]
-        UNIT["واحد Unitgo test, testing, t.Run"]
-        E2E --&gt; INT --&gt; UNIT
-    end
-
-    note1([معادل‌های PHP: PHPUnit = go test | Data Provider = Table-driven | Mockery =...])
-    note2(["قابلیت‌های بدون معادل در PHP: Fuzzing، Benchmark داخلی، Race Detector"])
-    note3(["مسیر یادگیری: از Unit Test ساده ← Assertion ← Mock ← API Test ← E2E"])
-
-    classDef hdrBox  fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937,font-weight:bold;
-    classDef e2eBox  fill:#fef2f2,stroke:#ef4444,stroke-width:1.5px,color:#1f2937;
-    classDef intBox  fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
-    classDef unitBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
-    classDef noteBox fill:#ecfdf5,stroke:#10b981,stroke-width:1px,color:#1f2937,font-style:italic;
-    class S1,S2,S3,S4,S5 hdrBox;
-    class E2E e2eBox;
-    class INT intBox;
-    class UNIT unitBox;
-    class note1,note2,note3 noteBox;</pre>
-<figcaption>شکل ۱۱-۰: نقشه فصل ۱۱ و هرم تست در <bdi dir="ltr">Go</bdi></figcaption>
-</figure>
 <h3 id="در-این-فصل-چه-خواهید-آموخت">11.0.4 در این فصل چه خواهید آموخت</h3>
 <p>Unit Test ساده شروع می‌شود و تا تست‌های End-to-End پیش می‌رود. هر بخش بر روی یک مفهوم کلیدی تمرکز دارد و مقایسه‌های مستمری با معادل‌های PHP ارائه می‌دهد تا مهاجرت ذهنی شما آسان‌تر شود. در ادامه خلاصه‌ای از مباحث هر بخش آورده شده است:</p>
 <p><strong>بخش ۱۱.۱ — مقدمات تست‌نویسی:</strong> استفاده از پکیج استاندارد <bdi dir="ltr">testing</bdi> برای نوشتن تست‌های ساده و سریع بدون نیاز به فریم‌ورک‌های خارجی، با فایل‌های دارای پسوند <code dir="ltr">_test.go</code> و توابع شروع‌شونده با <code dir="ltr">Test</code>. </p><p>همچنین با قابلیت Fuzzing (از Go 1.18) آشنا می‌شوید که ابزاری خودکار برای یافتن ورودی‌های مشکل‌ساز است و در PHPUnit معادل مستقیمی ندارد. </p><p>الگوهای Table-driven Tests مشابه Data Provider، setup/teardown با <code dir="ltr">t.Cleanup()</code>، helpers با <code dir="ltr">t.Helper()</code> و الگوی Golden File نیز بررسی می‌شوند.</p>
@@ -199,7 +163,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/xml.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/ini.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/plaintext.min.js"></script>
-<script src="assets/js/diagrams.js"></script>
 <script src="assets/js/main.js"></script>
 </body>
 </html>

@@ -81,29 +81,6 @@
 <tr><td>وراثت قالب</td><td dir="ltr">@extends + @yield</td><td dir="ltr">{{ block "name". }}{{ end }}</td></tr>
 </tbody>
 </table>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart LR
-    subgraph GO["Go Templates"]
-        direction TB
-        G1["html/template (auto-escape XSS)"]
-        G2["{{ define }} {{ block }} {{ template }}"]
-        G3["embed.FS → ParseFS()"]
-        G4["FuncMap → توابع سفارشی"]
-    end
-    subgraph PHP["Laravel Blade"]
-        direction TB
-        P1["{{ }} {!! !!} (auto-escape)"]
-        P2["@extends @yield @section"]
-        P3["File-based (resources/views)"]
-        P4["Blade Directives / Components"]
-    end
-
-    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef phpBox fill:#f5f0fb,stroke:#777BB4,stroke-width:1.5px,color:#1f2937;
-    class G1,G2,G3,G4 goBox;
-    class P1,P2,P3,P4 phpBox;</pre>
-<figcaption>شکل ۷-۸: مقایسه سیستم قالب‌سازی <bdi dir="ltr">Go</bdi> با <bdi dir="ltr">Laravel</bdi> <bdi dir="ltr">Blade</bdi></figcaption>
-</figure>
 <p>در توسعه‌ی وب، نمایش صحیح داده‌ها در صفحات HTML اهمیت زیادی دارد.</p><p>در Go برای ایجاد صفحات وب پویا از پکیجی به نام html/template استفاده می‌شود.</p><p>این پکیج امکان جدا کردن منطق برنامه‌نویسی از Presentation را مشابه template engine هایی مثل Laravel Blade فراهم می‌کند, همانطور که در فصل های قبل اشاره شد از Go 1.16 به بعد ابزار جدیدی به نام embed نیز معرفی شد که به شما اجازه می‌دهد فایل‌هایی مانند قالب‌های HTML، CSS یا فایل‌های پیکربندی را مستقیماً درون فایل binary برنامه جاسازی کنید.</p><p>این ویژگی برای توزیع ساده‌تر، امنیت بالاتر، و حذف وابستگی به فایل‌های خارجی بسیار مفید است.</p>
 <p>Go دارای دو پکیج برای قالب‌سازی است:</p>
 <p><strong dir="ltr">text/template</strong> : مخصوص داده‌های متنی مانند ایمیل یا فایل‌های متنی. هیچ ایمن‌سازی‌ای انجام نمی‌دهد.</p>
@@ -195,89 +172,6 @@ func loadTemplates() *template.Template {
 {{ end }}
 </code></pre>
 </figure>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart LR
-    D["Data (.Name)"] --&gt; FM["FuncMap"]
-    FM --&gt; CA["Context-Aware Escaping"]
-
-    subgraph CTX["Context-Aware Escaping"]
-        direction TB
-        C1["HTML&lt;p&gt;{{.Name}}&lt;/p&gt;→ HTML escape"]
-        C2["hrefhref="{{.URL}}"→ URL encode"]
-        C3["JS&lt;script&gt;{{.Data}}&lt;/script&gt;→ JS escape"]
-        C4["CSSstyle="{{.Color}}"→ CSS escape"]
-    end
-    CA --&gt; CTX
-
-    NOTE([html/template به صورت خودکار بر اساس موقعیت، روش ایمن‌سازی مناسب را انتخاب...])
-    CA ~~~ NOTE
-
-    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef neuBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
-    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
-    class D,FM,CA goBox;
-    class C1,C2,C3,C4 neuBox;
-    class NOTE warnBox;</pre>
-<figcaption>شکل ۷-۸-ب: خط لوله رندر قالب با <bdi dir="ltr">FuncMap</bdi> و ایمن‌سازی هوشمند</figcaption>
-</figure>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-    subgraph SRC["فایل‌های قالب .html files"]
-        direction TB
-        L1["layout.html<br/>{{ define "layout" }}<br/>&lt;html&gt;...{{ template "content" . }}...<br/>{{ end }}"]
-        H1["home.html<br/>{{ define "content" }}<br/>&lt;h1&gt;{{ .Title }}&lt;/h1&gt;<br/>{{ end }}"]
-        P1["partials/nav.html<br/>{{ define "nav" }}<br/>&lt;nav&gt;...{{ .User }}...&lt;/nav&gt;<br/>{{ end }}"]
-    end
-
-    SRC --&gt; PF["ParseFiles / ParseGlob<br/>ParseFS (embed.FS)"]
-    PF --&gt; TMPL["*template.Template<br/>Parsed + Compiled"]
-    TMPL --&gt; EX["Execute(w, data)<br/>ExecuteTemplate()"]
-    EX --&gt; HTML["HTML"]
-
-    L1 --&gt;|"calls"| H1
-    H1 --&gt;|"calls"| P1
-
-    NOTE1(["ترکیب قالب‌ها: {{ define "layout" }} + {{ template "content" }}"])
-
-    subgraph DATA["جریان داده: Go struct → Execute → HTML"]
-        direction TB
-        D1["Go Struct<br/>Title: "صفحه اصلی"<br/>User: "علی"<br/>Price: 250000"]
-        D2["data → Execute(w, data)"]
-        D3["{{ .Title }} → صفحه اصلی<br/>{{ .User }} → علی<br/>{{ .Price }} → 250000"]
-        D4["Auto-Escape<br/>&lt; → &amp;lt;<br/>" → &amp;quot;<br/>JS → \uXXXX"]
-        D5["HTML<br/>&lt;h1&gt;صفحه...&lt;/h1&gt;<br/>Safe Output"]
-        D1 --&gt; D2 --&gt; D3 --&gt; D4 --&gt; D5
-    end
-
-    subgraph XSS["مقایسه جلوگیری از XSS: Go در مقابل PHP"]
-        direction TB
-        subgraph GX["Go html/template"]
-            direction TB
-            GX1["{{.Value}} → auto-escapes (XSS blocked ✓)"]
-            GX2["Go: {{.Value}} → &amp;lt;script&amp;gt;alert('xss')&amp;lt;/script&amp;gt; ✗ dangerous"]
-        end
-        subgraph PX["Twig / Blade"]
-            direction TB
-            PX1["{{ var }} → escapes | {!! var !!} → raw (danger!)"]
-            PX2["Blade: {!! $value !!} → &lt;script&gt;alert('xss')&lt;/script&gt; ✓ executed!"]
-        end
-        INP["Input: &lt;script&gt;alert('xss')&lt;/script&gt;"]
-    end
-
-    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef phpBox fill:#f5f0fb,stroke:#777BB4,stroke-width:1.5px,color:#1f2937;
-    classDef neuBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
-    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
-    classDef bothBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
-    class L1,H1,P1,PF,TMPL,EX goBox;
-    class HTML neuBox;
-    class D1,D2,D3,D4,D5 neuBox;
-    class GX1,GX2 goBox;
-    class PX1,PX2 phpBox;
-    class INP warnBox;
-    class NOTE1 warnBox;</pre>
-<figcaption>شکل ۷-۸-ج: خط لوله کامل پارس و اجرای قالب‌ها — از فایل‌های <bdi dir="ltr">HTML</bdi> تا خروجی ایمن</figcaption>
-</figure>
 <h3 id="سناریوهای-عملیاتی-قالبها">7.8.6 سناریوهای عملیاتی قالب‌ها</h3>
 <p>در پروژه‌های واقعی وب، استفاده از سیستم قالب‌سازی <bdi dir="ltr">Go</bdi> فراتر از یک رندر ساده است. شما با سناریوهای متنوعی مواجه خواهید شد که درک عمیق‌تری از ابزارهای موجود نیاز دارند. در ادامه مهم‌ترین سناریوهای عملیاتی که هر برنامه‌نویس <bdi dir="ltr">Go</bdi> باید بشناسد را بررسی می‌کنیم. </p><p>این سناریوها شامل الگوهای وراثت قالب، قالب‌های بخشی قابل استفاده مجدد، توابع سفارشی، کش قالب‌های پارس‌شده و جلوگیری از حملات <bdi dir="ltr">XSS</bdi> هستند. تسلط بر این الگوها به شما کمک می‌کند برنامه‌های وب تمیزتر، امن‌تر و قابل نگهداری‌تری بنویسید.</p>
 <ul>
@@ -332,7 +226,6 @@ func loadTemplates() *template.Template {
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/xml.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/ini.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/plaintext.min.js"></script>
-<script src="assets/js/diagrams.js"></script>
 <script src="assets/js/main.js"></script>
 </body>
 </html>

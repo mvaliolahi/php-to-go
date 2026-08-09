@@ -68,10 +68,6 @@
 <h2 id="logging">Logging</h2><div class="abstract">
 <strong>چکیده:</strong> این بخش structured logging در Go را پوشش می‌دهد: slog، zap و logrus. الگوی log level و context-aware logging بررسی می‌شود. تفاوت با Monolog در PHP و الگوی Go مشخص می‌گردد.
 </div>
-<figure class="diagram d2-diagram" dir="ltr">
-<img alt="نمودار" loading="lazy" src="assets/diagrams/ch09_01_logging_pipeline.svg"/>
-<figcaption>شکل ۹-۱: معماری Logging ساخت‌یافته — منابع، <bdi dir="ltr">Handler</bdi> و مقاصد خروجی</figcaption>
-</figure>
 <p>در طول توسعه‌ی نرم‌افزار ثبت Logs از ابزارهای مهم شما برای ردیابی رفتار برنامه تشخیص خطاها تحلیل عملکرد و پشتیبانی پس از انتشار خواهد بود. <bdi dir="ltr">Go</bdi> از پکیج استاندارد <bdi dir="ltr">log</bdi> برای ثبت Logs پشتیبانی می‌کند اما در پروژه‌های بزرگ‌تر می‌توانید از ابزارهای حرفه‌ای‌تری مانند <bdi dir="ltr">slog</bdi>، <bdi dir="ltr">zap</bdi> یا <bdi dir="ltr">zerolog</bdi> استفاده کنید.</p>
 <div class="quote-box">
 <p class="quote-text">با راحتی فروپاشی کنید. وقتی مشکلی پیش می‌آید، مطمئن شوید اطلاعات کافی برای تشخیص مشکل دارید. لاگ‌گیری خوب درباره حجم نیست — درباره ساختار و زمینه است. چند خط لاگ ساختاریافته و به‌جا، بیشتر از صفحات خروجی بدون ساختار ارزش دارد.</p>
@@ -218,62 +214,6 @@ logger := slog.New(slog.NewJSONHandler(os.Stdout, &amp;slog.HandlerOptions{
 }))</code></pre>
 </figure>
 <h3 id="تجمیع-لاگها">9.1.7 الگوی تجمیع لاگ‌ها</h3>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart LR
-    title(["مدل‌های تجمیع لاگ — Sidecar، Direct و OTel Collector"])
-
-    APP["Go App<br/>slog.Logger"]
-
-    subgraph MODELS["مدل‌ها"]
-        direction TB
-        subgraph SIDECAR["Sidecar"]
-            direction TB
-            S1["Fluentd / Promtail<br/>خواندن از stdout یا فایل لاگ"]
-            S2(["تغییر برنامه لازم نیست"])
-        end
-
-        subgraph DIRECT["Direct"]
-            direction TB
-            D1["slog Custom Handler<br/>HTTP → Loki / ES"]
-            D2(["وابستگی به سرویس خارجی"])
-        end
-
-        subgraph OTEL["OTel Collector — پیشنهادی برای production"]
-            direction TB
-            O1["OpenTelemetry SDK<br/>Receivers → Processors → Exporters"]
-            O2["✓ Logs + Metrics + Traces"]
-            O3["→ Loki / Elasticsearch"]
-            O4["→ Datadog / Sentry"]
-            O5["→ CloudWatch / GCP"]
-        end
-    end
-
-    COMP(["مقایسه:<br/>Sidecar: ساده<br/>Direct: سریع<br/>OTel: کامل"])
-
-    APP --&gt; SIDECAR
-    APP --&gt; DIRECT
-    APP --&gt; OTEL
-
-    title ~~~ APP
-    APP ~~~ MODELS
-    MODELS ~~~ COMP
-
-    classDef titleBox fill:#f8fafc,stroke:#475569,stroke-width:1px,color:#1f2937,font-weight:bold;
-    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef okBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
-    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
-    classDef errBox fill:#fef2f2,stroke:#ef4444,stroke-width:1px,color:#1f2937,font-style:italic;
-    classDef noteBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1px,color:#1f2937,font-style:italic;
-    class title titleBox;
-    class APP goBox;
-    class S1 okBox;
-    class S2 noteBox;
-    class D1 warnBox;
-    class D2 errBox;
-    class O1,O2,O3,O4,O5 goBox;
-    class COMP noteBox;</pre>
-<figcaption dir="rtl">شکل ۹-۲: سه مدل تجمیع لاگ — <bdi dir="ltr">Sidecar</bdi>، <bdi dir="ltr">Direct</bdi> و <bdi dir="ltr">OTel Collector</bdi></figcaption>
-</figure>
 <p>در محیط <bdi dir="ltr">production</bdi> لاگ‌ها نباید فقط در فایل ذخیره شوند. الگوی استاندارد ارسال لاگ‌ها به یک سیستم مرکزی است:</p>
 <p><strong>مدل Sidecar:</strong> یک <bdi dir="ltr">agent</bdi> (مثل <bdi dir="ltr">Fluentd</bdi> یا <bdi dir="ltr">Promtail</bdi>) در کنار برنامه لاگ‌ها را از فایل یا <bdi dir="ltr">stdout</bdi> می‌خواند و به سیستم مرکزی ارسال می‌کند.</p>
 <p><strong>مدل Direct:</strong> برنامه مستقیماً لاگ‌ها را به <bdi dir="ltr">Loki</bdi>، <bdi dir="ltr">Elasticsearch</bdi> یا <bdi dir="ltr">Datadog</bdi> ارسال می‌کند.</p>
@@ -615,72 +555,6 @@ func setupLogging() *slog.Logger {
 </div>
 <h3 id="هرم-سطوح-لاگ-و-خط-لوله-ساختاریافته">9.1.16 هرم سطوح لاگ و خط لوله ساختاریافته</h3>
 <p>درک بصری سطوح لاگ و جریان داده در <bdi dir="ltr">structured logging pipeline</bdi> برای طراحی سیستم لاگ‌گیری مؤثر ضروری است. هر سطح لاگ هدف مشخصی دارد و باید با دقت انتخاب شود. سطح <bdi dir="ltr">DEBUG</bdi> بیشترین حجم خروجی را تولید می‌کند و فقط در محیط توسعه باید فعال باشد. سطح <bdi dir="ltr">FATAL</bdi> کمترین فراوانی را دارد اما بیشترین اهمیت را در <bdi dir="ltr">production</bdi>. </p><p>درخواست‌های <bdi dir="ltr">HTTP</bdi> معمولاً در سطح <bdi dir="ltr">INFO</bdi> لاگ می‌شوند اما جزئیات هدرها و بدنه درخواست در سطح <bdi dir="ltr">DEBUG</bdi>. </p><p>این خط لوله تضمین می‌کند که هر رکورد لاگ از منبع تا مقصد با <bdi dir="ltr">key-value pairs</bdi> ثابت حفظ شود و قابلیت جستجو و فیلترینگ در سیستم‌هایی مثل <bdi dir="ltr">ELK</bdi> یا <bdi dir="ltr">Loki</bdi> را داشته باشد.</p>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-    title(["هرم سطوح لاگ و خط لوله Structured Logging"])
-
-    subgraph PYRAMID["هرم سطوح لاگ (حجم کم ← حجم زیاد)"]
-        direction TB
-        FATAL["FATAL — توقف برنامه ← اتصال DB ناموفق"]
-        ERROR["ERROR — خطای غیرقابل بازیافت ← nil pointer"]
-        WARN["WARN — مشکل مشکوک ← retry زیاد، cache miss"]
-        INFO["INFO — رویداد عادی ← شروع سرور، درخواست HTTP"]
-        DEBUG["DEBUG — جزئیات دیباگ ← محتوای متغیرها، query params"]
-        FATAL --&gt; ERROR --&gt; WARN --&gt; INFO --&gt; DEBUG
-    end
-
-    subgraph PIPELINE["خط لوله Structured Logging"]
-        direction TB
-        ENTRY["Log Entry (Key-Value)<br/>msg="..." port=8080 env="prod""]
-        HANDLER["slog.Handler<br/>TextHandler | JSONHandler | Custom Handler"]
-        MULTI["slog.NewMultiHandler"]
-        OUT1["stdout / File<br/>TextHandler"]
-        OUT2["ELK / Loki<br/>JSONHandler"]
-        OUT3["Datadog / Sentry<br/>Custom Handler"]
-        ENTRY --&gt; HANDLER --&gt; MULTI
-        MULTI --&gt; OUT1
-        MULTI --&gt; OUT2
-        MULTI --&gt; OUT3
-    end
-
-    subgraph CMP["مقایسه PHP Monolog vs Go slog"]
-        direction TB
-        C1["Monolog: pushHandler() ← هر درخواست نمونه جدید"]
-        C2["slog: SetDefault() ← یک‌بار، goroutine-safe"]
-        C3["Monolog: نیازمند Composer"]
-        C4["slog: پکیج استاندارد — بدون وابستگی"]
-        C5["✓ slog برای اکثر پروژه‌ها کافی است"]
-    end
-
-    title ~~~ PYRAMID
-    PYRAMID ~~~ PIPELINE
-    PIPELINE ~~~ CMP
-
-    classDef titleBox fill:#f8fafc,stroke:#475569,stroke-width:1px,color:#1f2937,font-weight:bold;
-    classDef traceBox fill:#f5f0fb,stroke:#9C27B0,stroke-width:1.5px,color:#1f2937;
-    classDef errBox fill:#fef2f2,stroke:#ef4444,stroke-width:1.5px,color:#1f2937;
-    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
-    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef okBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
-    classDef phpBox fill:#f5f0fb,stroke:#777BB4,stroke-width:1.5px,color:#1f2937;
-    classDef noteBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1px,color:#1f2937,font-style:italic;
-    class title titleBox;
-    class FATAL traceBox;
-    class ERROR errBox;
-    class WARN warnBox;
-    class INFO goBox;
-    class DEBUG okBox;
-    class ENTRY okBox;
-    class HANDLER traceBox;
-    class MULTI goBox;
-    class OUT1 phpBox;
-    class OUT2 errBox;
-    class OUT3 okBox;
-    class C1,C3 phpBox;
-    class C2,C4 goBox;
-    class C5 okBox;</pre>
-<figcaption>شکل ۹-۳: هرم سطوح لاگ (چپ) و خط لوله <bdi dir="ltr">Structured Logging</bdi> با <bdi dir="ltr">slog.NewMultiHandler</bdi> (راست) — مقایسه <bdi dir="ltr">PHP Monolog</bdi> با <bdi dir="ltr">Go slog</bdi></figcaption>
-</figure>
 <p>در این خط لوله هر رکورد لاگ با <bdi dir="ltr">key-value fields</bdi> تولید می‌شود و سپس از طریق <bdi dir="ltr">slog.Handler</bdi> به فرمت مورد نظر تبدیل و به مقصد ارسال می‌شود. تابع <bdi dir="ltr">slog.NewMultiHandler</bdi> امکان ارسال همزمان یک رکورد لاگ به چندین <bdi dir="ltr">Handler</bdi> (و در نتیجه چندین مقصد) را بدون نیاز به لاگرهای جداگانه فراهم می‌کند. </p><p>این الگو تضمین می‌کند که تمام مقاصد دقیقاً همان رکورد لاگ را با همان فیلدها و ترتیب دریافت کنند. در مقایسه با <bdi dir="ltr">PHP Monolog</bdi> که در هر درخواست یک نمونه جدید می‌سازد، <bdi dir="ltr">slog</bdi> یک‌بار در شروع برنامه مقداردهی می‌شود و به‌صورت <bdi dir="ltr">goroutine-safe</bdi> بین تمام <bdi dir="ltr">goroutine</bdi>‌ها به اشتراک گذاشته می‌شود. این تفاوت معماری در سیستم‌های با بار بالا اهمیت ویژه‌ای پیدا می‌کند.</p>
 <h3 id="سناریوهای-عملیاتی-لاگ">9.1.17 سناریوهای عملیاتی</h3>
 <ul>
@@ -734,7 +608,6 @@ func setupLogging() *slog.Logger {
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/xml.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/ini.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/plaintext.min.js"></script>
-<script src="assets/js/diagrams.js"></script>
 <script src="assets/js/main.js"></script>
 </body>
 </html>

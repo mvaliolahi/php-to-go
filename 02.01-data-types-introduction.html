@@ -85,50 +85,6 @@
 <div class="tip">
 <strong>نکته‌ی حرفه‌ای:</strong> سیستم نوع‌دهی صریح <bdi dir="ltr">Go</bdi> در کدبیس‌های بزرگ یک مزیت رقابتی است. در <bdi dir="ltr">PHP</bdi> با رشد پروژه، عدم قطعیت نوع متغیرها باعث می‌شود هر فراخوانی تابع نیازمند بررسی مستندات یا کد منبع باشد. اما در <bdi dir="ltr">Go</bdi> امضای تابع <code>func Process(order Order, repo Repository) error</code> فوراً می‌گوید چه ورودی‌هایی لازم است و چه خروجی‌ای ممکن است. همین صراحت، زمان درک کد را کاهش و اطمینان از صحت تغییرات را افزایش می‌دهد — به‌ویژه وقتی ده‌ها توسعه‌دهنده روی یک پروژه کار می‌کنند.
 </div>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-    ROOT["انواع داده در Go"]
-
-    subgraph PRIM["Primitive Types"]
-        direction TB
-        P1["int, int8, int16, int32, int64<br/>uint, uint8, uint16, uint32, uint64"]
-        P2["float32, float64"]
-        P3["bool"]
-        P4["string"]
-        P5["byte (uint8), rune (int32)"]
-        P6["uintptr"]
-    end
-
-    subgraph COMP["Composite Types"]
-        direction TB
-        C1["array — [n]T (طول ثابت)"]
-        C2["slice — []T (دینامیک)"]
-        C3["map — map[K]V"]
-        C4["struct — فیلدهای نام‌دار"]
-        C5["pointer — *T"]
-        C6["function — func(...)"]
-        C7["interface — متدهای انتزاعی"]
-    end
-
-    subgraph CONC["Concepts"]
-        direction TB
-        N1["const — ثابت‌ها (compile-time)"]
-        N2["iota — شمارنده‌ی خودکار"]
-        N3["Custom Types — type Score int"]
-    end
-
-    ROOT --&gt; PRIM
-    ROOT --&gt; COMP
-    ROOT --&gt; CONC
-
-    classDef rootBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:2px,color:#1f2937;
-    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef neutralBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
-    class ROOT rootBox;
-    class PRIM,COMP,CONC goBox;
-    class P1,P2,P3,P4,P5,P6,C1,C2,C3,C4,C5,C6,C7,N1,N2,N3 neutralBox;</pre>
-<figcaption>شکل ۱-۲: انواع داده در <bdi dir="ltr">Go</bdi></figcaption>
-</figure>
 <h3 id="primitive-types">2.1.1 Primitive Types</h3>
 <h4 id="integer">Integer</h4>
 <p>در <strong dir="ltr">PHP</strong> تعریف یک عدد صحیح بسیار ساده است و نوع آن به‌صورت <strong>دینامیک در زمان اجرا</strong> تعیین می‌شود:
@@ -253,27 +209,6 @@ fmt.Println(len(runes)) // 4 — actual number of letters
 فیلد <code>Data</code> اشاره‌گری به آرایه‌ای از بایت‌های فقط‌خواندنی است و <code>Len</code> تعداد بایت‌ها را نگه می‌دارد. به همین دلیل است که رشته‌ها immutable هستند — داده‌ی زیربنایی در حافظه‌ی فقط‌خواندنی قرار دارد و هنگام تغییر، یک آرایه‌ی جدید ساخته می‌شود. انتساب رشته فقط کپی ۱۶ بایتِ header است نه خود داده. این مکانیزم شبیه به Copy-on-Write در PHP است اما تفاوت مهمی دارد: در PHP رشته‌ها هنگام تغییر واقعاً کپی می‌شوند (به‌دلیل reference counting) اما در Go چندین رشته می‌توانند به همان بایت‌های زیربنایی اشاره کنند تا زمانی که تغییری نیاز نباشد.</div>
 <h4 id="pointer">Pointer</h4>
 <p>در PHP هیچ نوع صریحی از اشاره‌گر وجود ندارد. در Go اشاره‌گرها بخشی طبیعی از زبان هستند. در بخش های بعد مفهوم اشاره‌گر و کاربردهای آن به صورت مفصل تشریح خواهد شد.</p>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart LR
-    subgraph VAR["متغیر x"]
-        direction TB
-        X1["10"]
-        X2["آدرس: 0xC0001"]
-    end
-
-    P["اشاره‌گر p<br/>0xC0001"] -- "p = &amp;x" --&gt; X1
-    X1 -- "*p = مقدار در آدرس (10)" --&gt; P
-
-    NOTE["اشاره‌گر آدرس حافظه را ذخیره می‌کند نه مقدار را<br/><b>&amp;x = آدرس حافظه</b><br/><b>*p = مقدار در آدرس</b>"]
-
-    classDef varBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef ptrBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
-    classDef noteBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
-    class VAR,X1,X2 varBox;
-    class P ptrBox;
-    class NOTE noteBox;</pre>
-<figcaption>شکل ۳-۲: مفهوم اشاره‌گر در <bdi dir="ltr">Go</bdi></figcaption>
-</figure>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">x := 10
 p := &amp;x // p is a pointer to x
@@ -286,22 +221,6 @@ p := &amp;x // p is a pointer to x
 <h3 id="composite-types">2.1.2 Composite Types</h3>
 <h4 id="array">Array</h4>
 <p>آرایه‌ها در Go ساختارهایی با اندازه ثابت و نوع مشخص هستند که مجموعه‌ای از مقادیر هم‌نوع را در خود نگه می‌دارند. برخلاف PHP که آرایه‌ها می‌توانند اندازه متغیر و انواع مختلف داده را در خود جای دهند آرایه‌های Go بسیار سخت‌گیرانه‌تر و ایستا هستند.</p>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart LR
-    E0["[0]1"]
-    E1["[1]2"]
-    E2["[2]3"]
-    TITLE --- E0 --- E1 --- E2
-    NOTE["طول ثابت = بخشی از نوعتمام عناصر هم‌نوع"]
-
-    classDef titleBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef elemBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
-    classDef noteBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
-    class TITLE titleBox;
-    class E0,E1,E2 elemBox;
-    class NOTE noteBox;</pre>
-<figcaption dir="rtl">شکل ۳-ب-۲: آرایه با طول ۳ عنصر</figcaption>
-</figure>
 <p>در PHP:</p>
 <figure class="code php" dir="ltr">
 <pre><code class="language-php">$arr = [1, 2, 3];
@@ -428,32 +347,6 @@ copy(copyUsers, users)
 <p>مشابه تابع array_copy در PHP ولی با مدیریت مستقیم حافظه.</p>
 <h4 id="map">Map‌</h4>
 <p>ساختارهای <strong dir="ltr">Key-Value</strong> ابزاری متداول برای نگهداری داده‌های ساخت‌یافته هستند. در PHP این ساختار با آرایه‌های انجمنی پیاده‌سازی می‌شود:</p>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-    subgraph GO["ساختار Map در Go — map[string]int"]
-        direction TB
-        G0[""apple" → 2"]
-        G1[""banana" → 3"]
-        G2[""cherry" → 5"]
-        GN["reference type • unordered"]
-        G0 --- G1 --- G2 --- GN
-    end
-
-    subgraph PHP["PHP Array"]
-        direction TB
-        P0["'apple' =&gt; 2"]
-        P1["'banana' =&gt; 3"]
-        P2["'cherry' =&gt; 5"]
-        PN["copy-on-write • ordered"]
-        P0 --- P1 --- P2 --- PN
-    end
-
-    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef phpBox fill:#f5f0fb,stroke:#777BB4,stroke-width:1.5px,color:#1f2937;
-    class GO,G0,G1,G2,GN goBox;
-    class PHP,P0,P1,P2,PN phpBox;</pre>
-<figcaption>شکل ۵-۲: مقایسه‌ی <bdi dir="ltr">Map</bdi> در <bdi dir="ltr">Go</bdi> و آرایه انجمنی در <bdi dir="ltr">PHP</bdi></figcaption>
-</figure>
 <figure class="code php" dir="ltr">
 <pre><code class="language-php">$user = ['name' =&gt; 'Meysam', 'age' =&gt; 34];
 </code></pre>
@@ -525,38 +418,6 @@ if ok {
 </figure>
 <h4 id="struct">Struct</h4>
 <p>در زبان Go مفهومی به نام <em>کلاس</em> وجود ندارد اما به‌جای آن ساختار داده‌ای به نام <strong dir="ltr">struct</strong> برای تعریف داده‌های ترکیبی و سازمان‌دهی اطلاعات استفاده می‌شود. Structها مانند جعبه‌هایی هستند که می‌توانند چندین مقدار با انواع مختلف را در خود جای دهند. یکی از تفاوت‌های مهم Go با PHP این است که در Go ارث‌بری وجود ندارد. </p><p>به جای آن می‌توان Composition انجام داد یعنی یک struct می‌تواند شامل struct دیگری به صورت embedding باشد که باعث قابلیت استفاده مجدد و سازماندهی بهتر کد می‌شود که این موارد در فصل های بعد در بخش مربوط به شی‌گرایی بیشتر توضیح داده خواهد شد.</p>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-
-    subgraph GO["Go: struct"]
-        direction TB
-        G1["type Product struct {"]
-        G2["    ID int"]
-        G3["    Title string"]
-        G4["    Price float64"]
-        G5["}"]
-        G1 --- G2 --- G3 --- G4 --- G5
-    end
-
-    subgraph PHP["PHP: class"]
-        direction TB
-        P1["class Product {"]
-        P2["    public int $id;"]
-        P3["    public string $title;"]
-        P4["    public float $price;"]
-        P5["}"]
-        P1 --- P2 --- P3 --- P4 --- P5
-    end
-
-        
-    classDef titleBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
-    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef phpBox fill:#f5f0fb,stroke:#777BB4,stroke-width:1.5px,color:#1f2937;
-    class TITLE titleBox;
-    class GO,G1,G2,G3,G4,G5 goBox;
-    class PHP,P1,P2,P3,P4,P5 phpBox;</pre>
-<figcaption>شکل ۶-۲: مقایسه‌ی <bdi dir="ltr">struct</bdi> در <bdi dir="ltr">Go</bdi> با کلاس در <bdi dir="ltr">PHP</bdi></figcaption>
-</figure>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">type Product struct {
     ID int
@@ -849,112 +710,9 @@ func processRunes(data string) {
 </code></pre>
 </figure>
 <div class="tip"><strong>بهینه‌سازی پیشرفته:</strong> در مسیرهای بحرانی کد می‌توانید از <code>unsafe.Pointer</code> برای تبدیل بدون کپی استفاده کنید (که در بخش ۲.۲ توضیح داده شده). اما این روش فقط وقتی امن است که <code>[]byte</code> پس از تبدیل تغییر نکند. اگر داده‌ی بزرگ را فقط می‌خوانید، این بهینه‌سازی می‌تواند تأثیر قابل‌توجهی داشته باشد.</div>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-    ROOT["انواع داده Go"]
-
-    subgraph PRIM["پایه (Primitive)"]
-        direction TB
-        P1["int8..64, uint8..64"]
-        P2["float32, float64"]
-        P3["bool, string"]
-        P4["byte, rune"]
-    end
-
-    subgraph COMP["مرکب (Composite)"]
-        direction TB
-        C1["array — [n]T"]
-        C2["struct — فیلدها"]
-        C3["slice, map, chan"]
-        C4["pointer, func"]
-    end
-
-    subgraph REF["مرجع‌دار (Ref)"]
-        direction TB
-        R1["interface"]
-    end
-
-    subgraph CONC["مفهومی"]
-        direction TB
-        N1["const, iota"]
-        N2["type definition"]
-        N3["type alias"]
-    end
-
-    ROOT --&gt; PRIM
-    ROOT --&gt; COMP
-    ROOT --&gt; REF
-    ROOT --&gt; CONC
-
-    subgraph ZERO["مقادیر صفر — تضمین عدم وجود متغیر بدون مقدار"]
-        direction TB
-        Z1["int → 0 | float64 → 0.0 | bool → false | string → """]
-        Z2["pointer → nil | slice → nil | map → nil | chan → nil"]
-        Z3["struct → هر فیلد مقدار صفر خود را می‌گیرد"]
-    end
-
-    ROOT --&gt; ZERO
-
-    classDef rootBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:2px,color:#1f2937;
-    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef bothBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
-    classDef neutralBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
-    class ROOT rootBox;
-    class PRIM,COMP,REF,CONC goBox;
-    class P1,P2,P3,P4,C1,C2,C3,C4,R1,N1,N2,N3 neutralBox;
-    class ZERO,Z1,Z2,Z3 bothBox;</pre>
-<figcaption>شکل ۶-۲: سلسله‌مراتب سیستم نوع در <bdi dir="ltr">Go</bdi> و مقادیر صفر</figcaption>
-</figure>
 <h3 id="memory-layout-comparison">2.1.9 مقایسه‌ی ساختار حافظه:PHP zvalدر برابرGo Typed Values</h3>
 <p>یکی از تفاوت‌های بنیادین <bdi dir="ltr">PHP</bdi> و <bdi dir="ltr">Go</bdi> در نحوه‌ی ذخیره‌سازی مقادیر در حافظه نهفته است. در <bdi dir="ltr">PHP</bdi> هر متغیر فارغ از نوع داده‌ی آن در یک ساختار یکسان به نام <bdi dir="ltr">zval</bdi> نگهداری می‌شود که شامل برچسب نوع، مقدار واقعی، شمارنده‌ی ارجاع و پرچم ارجاع است. </p><p>این طراحی یکنواخت انعطاف‌پذیری بالایی در زمان اجرا فراهم می‌کند اما هزینه‌ی حافظه‌ی قابل‌توجهی دارد. </p><p>در مقابل <bdi dir="ltr">Go</bdi> هر مقدار دقیقاً به اندازه‌ی نوع واقعی خود فضا اشغال می‌کند بدون هیچ سربار اضافی برای مدیریت نوع در زمان اجرا.</p>
 <p>این تفاوت ساختاری پیامدهای عملی مهمی دارد: برنامه‌های <bdi dir="ltr">Go</bdi> معمولاً حافظه‌ی بسیار کمتری نسبت به معادل <bdi dir="ltr">PHP</bdi> خود مصرف می‌کنند. برای نمونه، ذخیره‌ی هزار عدد صحیح در <bdi dir="ltr">PHP</bdi> حدود ۱۶ کیلوبایت فقط برای ساختارهای <bdi dir="ltr">zval</bdi> نیاز دارد اما در <bdi dir="ltr">Go</bdi> فقط ۸ کیلوبایت. </p><p>این بهره‌وری حافظه مستقیماً بر کارایی کش پردازنده و سرعت اجرای برنامه تأثیر می‌گذارد و یکی از دلایل اصلی برتری عملکرد <bdi dir="ltr">Go</bdi> در کارهای محاسباتی است.</p>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-
-    subgraph PHP["PHP — zval structure (runtime overhead)"]
-        direction TB
-        PI[zval for $x = 10 (integer)type_tag = IS_LONG (4B)value.lval = 10...]
-        PS["zval for $s = "hello" (string)type_tag = IS_STRING (4B)ptr → zend_string*zend_string: gc(8B) + hash(8B) + len(8B) + val(5B) + \0Total: 16B zval + 30B zend_string = 46 bytes"]
-        PA[zval for $arr = [1,2,3] (array)type_tag = IS_ARRAY (4B)ptr →...]
-        PI --- PS --- PA
-    end
-
-    subgraph GO["Go — Typed Values (zero overhead)"]
-        direction TB
-        GI[var x int = 1010 — 8 bytes (64-bit system) — just the raw value✓ 50% less...]
-        GS["var s string = "hello"Data ptr → "hello" (5B readonly)Len = 5 (8B)stringHeader = {ptr, len} = 16 bytes header✓ No refcount, no hash, no gc overhead"]
-        GA[var arr = []int{1, 2, 3}Data ptrLen=3 (8B)Cap=3 (8B)sliceHeader = 24B +...]
-        GI --- GS --- GA
-    end
-
-    subgraph INIT["مقادیر اولیه"]
-        direction TB
-        PHPI[مقدار اولیه‌ی PHPUninitialized → null (zval with IS_NULL type)Every variable...]
-        GOI["مقدار صفر Go — همیشه مقدار معتبرint→0 | float64→0.0 | bool→false | string→""No null, no undefined — every type has a safe zero value"]
-    end
-
-    subgraph SUM["خلاصه‌ی بهره‌وری حافظه"]
-        direction TB
-        S1[Go بدون سربار runtime type حافظه تخصیص می‌دهدCPU cache مؤثرتر به‌دلیل تراکم...]
-        S2[بدون refcounting و GC overhead در هر متغیرzero value = مقدار امن پیش‌فرض...]
-    end
-
-            PHP --&gt; INIT
-    GO --&gt; INIT
-    INIT --&gt; SUM
-
-    classDef titleBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
-    classDef phpBox fill:#f5f0fb,stroke:#777BB4,stroke-width:1.5px,color:#1f2937;
-    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef neutralBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
-    classDef bothBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
-    class TITLE titleBox;
-    class PHP,PI,PS,PA,PHPI phpBox;
-    class GO,GI,GS,GA,GOI goBox;
-    class INIT neutralBox;
-    class SUM,S1,S2 bothBox;</pre>
-<figcaption>شکل ۷-۲: مقایسه‌ی ساختار حافظه‌ی <bdi dir="ltr">PHP zval</bdi> در برابر <bdi dir="ltr">Go Typed Values</bdi> — بهره‌وری حافظه و عملکرد</figcaption>
-</figure>
 <h3 id="سناریوهای-عملیاتی-انواع-داده">2.1.10 سناریوهای عملیاتی</h3>
 <p>انتخاب نوع داده‌ی مناسب در <bdi dir="ltr">Go</bdi> تأثیر مستقیمی بر کارایی، خوانایی و ایمنی کد دارد. برخلاف <bdi dir="ltr">PHP</bdi> که نوع متغیرها به‌طور خودکار تعیین می‌شود در <bdi dir="ltr">Go</bdi> هر تصمیم‌گیری درباره‌ی نوع داده باید آگاهانه و عمدی باشد. </p><p>در ادامه سناریوهای عملیاتی رایج را بررسی می‌کنیم که برنامه‌نویسان <bdi dir="ltr">PHP</bdi> هنگام انتقال به <bdi dir="ltr">Go</bdi> با آن‌ها مواجه می‌شوند و راه‌حل‌های <bdi dir="ltr">idiomatic</bdi> برای هر مورد ارائه می‌دهیم.</p>
 <ul>
@@ -1009,7 +767,6 @@ func processRunes(data string) {
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/xml.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/ini.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/plaintext.min.js"></script>
-<script src="assets/js/diagrams.js"></script>
 <script src="assets/js/main.js"></script>
 </body>
 </html>

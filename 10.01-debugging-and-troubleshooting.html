@@ -83,31 +83,6 @@
 <div class="tip">
 <strong>نکته‌ی حرفه‌ای:</strong> در <bdi dir="ltr">Go</bdi> قبل از بهینه‌سازی از <bdi dir="ltr">pprof</bdi> استفاده کنید. بیشتر مشکلات عملکردی آن‌جایی نیست که فکر می‌کنید. ابزار <bdi dir="ltr">go tool pprof</bdi> پروفایل <bdi dir="ltr">CPU</bdi>، پروفایل حافظه و <bdi dir="ltr">goroutine dump</bdi> را در اختیارتان می‌گذارد — قبل از تغییر هر کدی از آن‌ها استفاده کنید.
 </div>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart LR
-    subgraph HEADER["گردش کار دیباگ: از PHP به Go"]
-        direction LR
-        subgraph PHP["PHP"]
-            direction TB
-            P1["var_dump / dd()<br/>خروجی سریع متغیر"]
-            P2["Xdebug + IDE<br/>دیباگر گرافیکی"]
-            P3["Laravel Telescope<br/>مانیتورینگ اپلیکیشن"]
-        end
-        subgraph GO["Go"]
-            direction TB
-            G1["fmt.Println / log<br/>خروجی سریع متغیر"]
-            G2["Delve Debugger<br/>دیباگر تخصصی Go"]
-            G3["pprof + trace<br/>پروفایلینگ عملکرد"]
-            G4["VS Code + Go Extension<br/>رابط گرافیکی مشترک"]
-        end
-    end
-
-    classDef phpBox fill:#f5f0fb,stroke:#777BB4,stroke-width:1.5px,color:#1f2937;
-    classDef goBox  fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    class PHP phpBox;
-    class GO goBox;</pre>
-<figcaption>شکل ۱۰-۱: مقایسه ابزارهای دیباگ در <bdi dir="ltr">PHP</bdi> و <bdi dir="ltr">Go</bdi></figcaption>
-</figure>
 <table class="comparison-table" dir="rtl">
 <thead>
 <tr><th>ویژگی</th><th>PHP</th><th>Go</th></tr>
@@ -360,22 +335,6 @@ func main() {
 <div class="note"><strong>نکته فنی:</strong> فایل‌های trace می‌توانند بسیار بزرگ شوند (چند صد مگابایت برای برنامه‌های پرترافیک). برای محیط production، فقط بازه‌های کوتاه (۵-۳۰ ثانیه) را trace کنید. همچنین ابزار <code>go tool trace</code> در Go 1.21+ بهبودهای زیادی داشته و فایل‌های بزرگ را بهتر مدیریت می‌کند.</div>
 <h3 id="سناریوهای-رایج-دیباگ">10.1.3 سناریوهای رایج دیباگ در Go</h3>
 <p>برنامه‌نویسان Go معمولاً با دسته‌ای از مشکلات تکراری مواجه می‌شوند. در اینجا سناریوهای رایج و راه‌حل‌های آن‌ها را بررسی می‌کنیم:</p>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart LR
-    subgraph HEADER["چرخه دیباگ در Go: بازتولید ← جداسازی ← تشخیص ← رفع"]
-        direction LR
-        S1["۱. بازتولیدReproduceمشکل را تکرار کنیدgo test -race, curl"]
-        S2["۲. جداسازیIsolateمحدوده مشکل را کوچک کنیدGODEBUG, loggit bisect, Delve"]
-        S3[۳. تشخیصDiagnoseریشه مشکل را بیابیدConditional breakpprof, go tool...]
-        S4["۴. رفعFixتغییر و تأییدgo test -benchgo test -race, CI"]
-        S1 --&gt; S2 --&gt; S3 --&gt; S4
-    end
-    S4 -.-&gt;|اگر مشکل رفع نشد، به مرحله قبل بازگردید| S3
-
-    classDef stepBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    class S1,S2,S3,S4 stepBox;</pre>
-<figcaption>شکل ۱۰-۲: چرخه دیباگ در <bdi dir="ltr">Go</bdi> — از بازتولید مشکل تا رفع نهایی با ابزارهای مناسب هر مرحله</figcaption>
-</figure>
 <p><strong>سناریو ۱: Goroutine Leak</strong></p>
 <p>یکی از مشکلات رایج در برنامه‌های Go، نشت goroutine است. وقتی goroutine‌ای شروع می‌شود اما هرگز تمام نمی‌شود (مثلاً چون روی channel‌ای منتظر می‌ماند که هیچ‌گاه مقدار دریافت نمی‌کند)، حافظه‌ی آن هرگز آزاد نمی‌شود. این مشکل در PHP بی‌معنی است چون هر درخواست PHP پس از اتمام، تمام منابع خود را آزاد می‌کند.</p><p>اما در Go برنامه‌ها طولانی‌مدت هستند و نشت goroutine به‌مرور باعث از کار افتادن سرور می‌شود.</p>
 <figure class="code bash" dir="ltr">
@@ -612,94 +571,8 @@ func monitorMemory(ctx context.Context) {
 </code></pre>
 </figure>
 <div class="tip"><strong>نکته عملی:</strong> تابع <code>runtime.ReadMemStats</code> باعث stop-the-world می‌شود (تمام goroutine‌ها متوقف می‌شوند). در برنامه‌های حساس به تأخیر، از این تابع با احتیاط استفاده کنید. جایگزین سبک‌تر، <code>runtime.NumGoroutine()</code> است که بدون توقف کار می‌کند و برای مانیتورینگ نشت goroutine مناسب است.</div>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid"><code>flowchart TB
-    subgraph HEADER["درخت تصمیم دیباگ: انتخاب ابزار مناسب"]
-        direction TB
-        Q0["مشکل شناسایی شد"]
-        Q0 --&gt; Q1{"کندی عملکرد؟"}
-        Q0 --&gt; Q2{"مشکل هم‌روندی؟"}
-        Q0 --&gt; Q3{"مشکل حافظه؟"}
-        Q0 --&gt; Q4{"خطای منطقی / Runtime؟"}
-
-        Q1 -- "بله" --&gt; A1A["pprof CPUنقاط داغ CPUFlame Graph"]
-        Q1 -- "بله" --&gt; A1B["go tool traceGC pauseScheduler"]
-
-        Q2 -- "بله" --&gt; A2A["go test -raceData raceAtomic issues"]
-        Q2 -- "بله" --&gt; A2B["pprof goroutineGoroutine leakDeadlock"]
-
-        Q3 -- "بله" --&gt; A3A["pprof heapنشت حافظه-base compare"]
-        Q3 -- "بله" --&gt; A3B["-gcflags -mEscape analysisتخصیص heap"]
-
-        Q4 -- "بله" --&gt; A4A["Delve debuggerbreak, step, printConditional BP"]
-        Q4 -- "بله" --&gt; A4B["Stack tracePanic locationrecover()"]
-        Q4 -- "بله" --&gt; A4C["GODEBUGschedtracegctrace"]
-    end
-
-    note([قانون طلایی: ابتدا pprof/trace برای اندازه‌گیری ← سپس Delve برای بررسی عمیق...])
-
-    classDef startBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937,font-weight:bold;
-    classDef decBox  fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
-    classDef toolBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef noteBox fill:#ecfdf5,stroke:#10b981,stroke-width:1px,color:#1f2937,font-style:italic;
-    class Q0 startBox;
-    class Q1,Q2,Q3,Q4 decBox;
-    class A1A,A1B,A2A,A2B,A3A,A3B,A4A,A4B,A4C toolBox;
-    class note noteBox;</code></pre>
-<figcaption dir="rtl">شکل ۱۰-۲: درخت تصمیم دیباگ — انتخاب ابزار مناسب بر اساس نوع مشکل</figcaption>
-</figure>
 <h3 id="گردش-کار-دیباگ-کامپایل-تا-بازرسی">10.1.5 گردش کار دیباگ: از کامپایل تا بازرسی</h3>
 <p>فرآیند دیباگ در Go برخلاف PHP یک فرآیند چندمرحله‌ای است که از نوشتن کد با باگ شروع شده و با رفع مشکل و کامپایل مجدد پایان می‌یابد. در PHP کافیست صفحه را refresh کنید تا تغییرات منعکس شود، اما در Go باید برنامه را مجدداً کامپایل و اجرا نمایید.</p><p>این تفاوت بنیادین به معنای آن است که هر چرخه دیباگ در Go زمان‌برتر است و به همین دلیل انتخاب ابزار و روش مناسب اهمیت بسیار بیشتری دارد.</p><p>درک کامل این گردش کار به شما کمک می‌کند زمان دیباگ را به حداقل برسانید و از ابزار مناسب در هر مرحله استفاده کنید.</p>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid"><code>flowchart TB
-    subgraph HEADER["گردش کار دیباگ در Go: کامپایل ← اتصال ← Breakpoint ← بازرسی"]
-        direction TB
-        S1["۱. نوشتن کد با باگWrite code with bugUnexpected behavior"]
-        S2["۲. کامپایل با دیباگCompile with debug infogo build -gcflags="all=-N -l""]
-        S3["۳. شروع دیباگرStart debuggerdlv debug / dlv attach"]
-        S4["۴. تنظیم BreakpointSet breakpointsbreak main.go:42"]
-        S5["۵. اجرای برنامهRun programcontinue / c"]
-        S6["۶. بازرسی متغیرهاInspect variablesprint, locals, args"]
-        S7["۷. گام‌به‌گام در کدStep through codestep, next, stepout"]
-        S8["۸. رفع و کامپایل مجددFix bug &amp; recompilerestart / r"]
-        S1 --&gt; S2 --&gt; S3 --&gt; S4 --&gt; S5 --&gt; S6 --&gt; S7 --&gt; S8
-        S8 -.-&gt;|اگر مشکل رفع نشد، به مرحله ۲ بازگردید| S2
-    end
-
-    subgraph CMP["مقایسه: PHP Xdebug در برابر Go Delve"]
-        direction LR
-        subgraph PHP["PHP Xdebug"]
-            direction TB
-            P1["• نصب: pecl install xdebug"]
-            P2["• اجرا: extension در همان process"]
-            P3["• پروتکل: DBGP"]
-            P4["• Overhead: ۲۰-۴۰٪ کاهش عملکرد"]
-            P5["• پیکربندی: php.ini + پورت ۹۰۰۳"]
-            P6["• هم‌روندی: تک‌نخی (بدون goroutine)"]
-        end
-        subgraph GO["Go Delve"]
-            direction TB
-            G1["• نصب: go install .../dlv@latest"]
-            G2["• اجرا: process جداگانه + ptrace"]
-            G3["• پروتکل: DAP"]
-            G4["• Overhead: صفر (only when debugging)"]
-            G5["• پیکربندی: launch.json + پورت ۲۳۴۵"]
-            G6["• هم‌روندی: goroutine، channel، mutex"]
-        end
-    end
-
-    note([قانون طلایی: ابتدا ساده‌ترین روش را امتحان کنید (fmt.Println) ← اگر کافی...])
-
-    classDef stepBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef phpBox  fill:#f5f0fb,stroke:#777BB4,stroke-width:1.5px,color:#1f2937;
-    classDef goBox   fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef noteBox fill:#ecfdf5,stroke:#10b981,stroke-width:1px,color:#1f2937,font-style:italic;
-    class S1,S2,S3,S4,S5,S6,S7,S8 stepBox;
-    class P1,P2,P3,P4,P5,P6 phpBox;
-    class G1,G2,G3,G4,G5,G6 goBox;
-    class note noteBox;</code></pre>
-<figcaption>شکل ۱۰-۳: گردش کار دیباگ در <bdi dir="ltr">Go</bdi> — از کشف باگ تا رفع نهایی با مقایسه <bdi dir="ltr">PHP Xdebug</bdi> و <bdi dir="ltr">Go Delve</bdi></figcaption>
-</figure>
 <p>همان‌طور که در نمودار بالا مشاهده می‌کنید، فرآیند دیباگ در Go هشت مرحله مشخص دارد که هر کدام ابزار و دستورات خاص خود را نیاز دارند. </p><p>در PHP با Xdebug فرآیند ساده‌تر است چون extension در همان process اجرا می‌شود و نیازی به کامپایل مجدد ندارید، اما در Go باید هر بار پس از تغییر کد، برنامه را با فلگ‌های دیباگ کامپایل و دیباگر را مجدداً متصل کنید. </p><p>این تفاوت مهمی است که برنامه‌نویسان مهاجر از PHP باید به آن عادت کنند. خوشبختانه دستور <bdi dir="ltr">restart</bdi> در Delve این فرآیند را ساده می‌کند و نیازی به خروج و ورود مجدد به دیباگر نیست.</p>
 <div class="note"><strong>نکته:</strong> در Delve، دستور <bdi dir="ltr">restart</bdi> (یا مخفف <bdi dir="ltr">r</bdi>) باینری را با کد به‌روزشده بازمی‌سازد و بدون خروج از جلسه دیباگ، اجرای جدید را شروع می‌کند. این یعنی breakpoint‌ها، watch variables و سایر تنظیمات جلسه حفظ می‌شوند. اما در <bdi dir="ltr">VS Code</bdi>، کلید <bdi dir="ltr">Ctrl+Shift+F5</bdi> همان کار را انجام می‌دهد. بدون <bdi dir="ltr">restart</bdi>، اگر کد را تغییر دهید و فقط <bdi dir="ltr">continue</bdi> بزنید، روی باینری قدیمی دیباگ می‌کنید و تغییرات شما اثر نخواهند داشت — این یکی از رایج‌ترین سردرگمی‌های مهاجران از PHP است که به refresh مرورگر عادت دارند.</div>
 <h3 id="سناریوهای-عملیاتی-دیباگ">10.1.6 سناریوهای عملیاتی دیباگ</h3>
@@ -756,7 +629,6 @@ func monitorMemory(ctx context.Context) {
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/xml.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/ini.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/plaintext.min.js"></script>
-<script src="assets/js/diagrams.js"></script>
 <script src="assets/js/main.js"></script>
 </body>
 </html>

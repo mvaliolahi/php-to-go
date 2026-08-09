@@ -108,75 +108,6 @@
 <p><strong>ابزارهای تحلیل ایستا:</strong> <bdi dir="ltr">go vet</bdi> برای شناسایی مشکلات رایج کد، <bdi dir="ltr">staticcheck</bdi> برای تحلیل عمیق‌تر ایستا، و <bdi dir="ltr">race detector</bdi> (<bdi dir="ltr">go test -race</bdi>) برای شناسایی race condition‌ها. این ابزارها قبل از اجرای کد مشکلات احتمالی را شناسایی می‌کنند.</p>
 <p><strong>ابزارهای تحلیل در زمان کامپایل:</strong> فلگ <bdi dir="ltr">-gcflags="-m"</bdi> برای مشاهده تصمیمات کامپایلر درباره escape analysis و inlining، و <bdi dir="ltr">-race</bdi> برای فعال‌سازی race detector در زمان کامپایل.</p>
 <div class="note"><strong>نکته:</strong> ابزارهای دیباگ Go به دو دسته اصلی تقسیم می‌شوند: ابزارهای بدون توقف مانند <bdi dir="ltr">pprof</bdi>، <bdi dir="ltr">go tool trace</bdi> و <bdi dir="ltr">GODEBUG</bdi> که حتی در محیط production هم قابل استفاده‌اند، و ابزارهای تعاملی مانند <bdi dir="ltr">Delve</bdi> که مختص توسعه‌اند. در PHP این تفکیک وجود ندارد چون <bdi dir="ltr">Xdebug</bdi> هر دو کار را در یک extension انجام می‌دهد اما به‌سبب overhead دائمی ۲۰-۴۰٪، عملاً در production قابل استفاده نیست. این تفاوت معماری یکی از اولین چیزهایی است که باید هنگام مهاجرت در ذهن نگه دارید.</div>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid"><code>flowchart TB
-    subgraph HEADER["نقشه فصل ۱۰: دیباگ و ریشه‌یابی"]
-        direction LR
-        S1["۱۰.۱ مقدمه دیباگمفاهیم پایه و ابزارهاpprof, trace, race detector"]
-        S2["۱۰.۲ Delveدیباگر تخصصی Gobreak, step, goroutines, remote"]
-        S3["۱۰.۳ VS Codeدیباگ گرافیکیlaunch.json, Docker, tests"]
-        S1 --&gt; S2 --&gt; S3
-    end
-
-    subgraph CATS["دسته‌بندی مشکلات و ابزارهای مربوطه"]
-        direction TB
-        subgraph P1["مشکلات عملکردی"]
-            direction TB
-            PA1["pprof CPU profile"]
-            PA2["go test -bench"]
-            PA3["go tool trace"]
-            PA4["runtime.ReadMemStats"]
-        end
-        subgraph P2["مشکلات هم‌روندی"]
-            direction TB
-            PB1["go test -race"]
-            PB2["pprof goroutine"]
-            PB3["Delve goroutines"]
-            PB4["go tool trace (scheduler)"]
-        end
-        subgraph P3["مشکلات حافظه"]
-            direction TB
-            PC1["pprof heap/allocs"]
-            PC2["go build -gcflags '-m'"]
-            PC3["runtime.ReadMemStats"]
-            PC4["pprof goroutine (leak)"]
-        end
-        subgraph P4["مشکلات منطقی"]
-            direction TB
-            PD1["Delve (break, step, print)"]
-            PD2["VS Code debugger"]
-            PD3["Conditional breakpoints"]
-            PD4["Watch expressions"]
-        end
-        subgraph P5["خطاهای زمان اجرا"]
-            direction TB
-            PE1["Stack trace (panic)"]
-            PE2["Delve (on panic)"]
-            PE3["recover() + logging"]
-            PE4["GODEBUG=schedtrace"]
-        end
-        subgraph P6["دیباگ در پروداکشن"]
-            direction TB
-            PF1["pprof (live profiling)"]
-            PF2["Delve attach (PID)"]
-            PF3["GODEBUG env vars"]
-            PF4["runtime metrics (expvar)"]
-        end
-    end
-
-    note1(["مسیر یادگیری: ابتدا مفاهیم پایه ← سپس ابزار تخصصی ← در نهایت محیط گرافیکی"])
-    note2(["قانون طلایی: هرگز بدون اندازه‌گیری بهینه‌سازی نکنید — ابتدا pprof سپس بهینه‌سازی"])
-
-    classDef hdrBox  fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937,font-weight:bold;
-    classDef catBox  fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937,font-weight:bold;
-    classDef itemBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1px,color:#1f2937;
-    classDef noteBox fill:#ecfdf5,stroke:#10b981,stroke-width:1px,color:#1f2937,font-style:italic;
-    class S1,S2,S3 hdrBox;
-    class P1,P2,P3,P4,P5,P6 catBox;
-    class PA1,PA2,PA3,PA4,PB1,PB2,PB3,PB4,PC1,PC2,PC3,PC4,PD1,PD2,PD3,PD4,PE1,PE2,PE3,PE4,PF1,PF2,PF3,PF4 itemBox;
-    class note1,note2 noteBox;</code></pre>
-<figcaption>شکل ۱۰-۱: نقشه فصل ۱۰ — دسته‌بندی مشکلات و ابزارهای دیباگ <bdi dir="ltr">Go</bdi></figcaption>
-</figure>
 <div class="note"><strong>نکته:</strong> در این فصل فرض بر این است که شما با مفاهیم پایه Go مانند goroutine، channel، interface و error handling آشنا هستید. اگر نیاز به مرور دارید، فصل‌های ۴ (خطایابی) و ۶ (هم‌روندی) را مراجعه کنید.</div>
 <div class="summary">
 <strong>خلاصه‌ی نکات کلیدی:</strong>
@@ -222,7 +153,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/xml.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/ini.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/plaintext.min.js"></script>
-<script src="assets/js/diagrams.js"></script>
 <script src="assets/js/main.js"></script>
 </body>
 </html>

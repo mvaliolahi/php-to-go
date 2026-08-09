@@ -68,67 +68,9 @@
 <h2 id="اصول-بهینهسازی">اصول بهینه‌سازی</h2><div class="abstract">
 <strong>چکیده:</strong> این بخش اصول بهینه‌سازی در Go را پوشش می‌دهد: premature optimization، Amdahl و trade-off. الگوی measure-first و readability بررسی می‌شود. کاربردهای production پوشش داده می‌گردد.
 </div>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-
-    Q1{"آیا عملکرد فعلی مشکل دارد؟"}
-    Q1 -- "خیر" --&gt; N1["تغییری لازم نیست"]
-    Q1 -- "بله" --&gt; M["اندازه‌گیری: Benchmark + pprof"]
-    M --&gt; I["شناسایی گلوگاه: pprof top / web"]
-    I --&gt; Q2{"مشکل الگوریتمیک (O(n²)) یا پیاده‌سازی؟"}
-    Q2 -- "الگوریتم" --&gt; A["تغییر الگوریتم"]
-    Q2 -- "پیاده‌سازی" --&gt; IM["کاهش allocation"]
-    A --&gt; V["تأیید: benchstat قبل/بعد"]
-    IM --&gt; V
-    V -- "تکرار تا رسیدن به هدف عملکرد" --&gt; M
-
-    
-    classDef titleBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
-    classDef decBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
-    classDef stopBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
-    classDef actBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    class TITLE titleBox;
-    class Q1,Q2 decBox;
-    class N1 stopBox;
-    class M,I,A,IM,V actBox;</pre>
-<figcaption dir="rtl">شکل ۱۲-۲: درخت تصمیم بهینه‌سازی — مسیر صحیح از اندازه‌گیری تا تأیید</figcaption>
-</figure>
 <p>قبل از بهینه‌سازی یک نکته مهمی را به خاطر بسپارید: <strong>اول عملکرد را اندازه بگیر، بعد بهینه‌سازی کن.</strong> این اصل به‌ظاهر ساده، درس کلیدی است که هر برنامه‌نویس Go باید بیاموزد. بدون اندازه‌گیری، شما در تاریکی قدم برمی‌دارید و احتمال اینکه به جای بهبود، کد را بدتر کنید بسیار بالاست.</p>
 <h3 id="اصل-اندازهگیری-قبل-از-بهینهسازی">12.2.1 اصل «اندازه‌گیری قبل از بهینه‌سازی»</h3>
 <p>این اصل همیشه صادق است: <strong>هرگز بدون داده بهینه‌سازی نکنید.</strong> برنامه‌نویسان اغلب تصور می‌دانند گلوگاه کجاست، اما در عمل حدس‌هایشان غلط است. به این پدیده wrong guessing می‌گویند. </p><p>ذهن انسان تمایل دارد بخش‌هایی از کد که پیچیده‌تر یا آشناتر هستند را به‌عنوان گلوگاه فرض کند، در حالی که گلوگاه واقعی ممکن است در کد کاملاً متفاوتی باشد.</p>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart LR
-
-    M["Measureاندازه‌گیری عملکرد فعلیgo test -bench -benchmem"]
-    P["Profileشناسایی گلوگاهpprof top, web, list"]
-    O["Optimizeرفع گلوگاه شناسایی‌شدهalgorithm, allocation"]
-    V["Verifyتأیید بهبود عملکردbenchstat before.prof after"]
-    DEC{"بهبود حاصل شد؟"}
-    OK["بهبود تأیید شد (بله)"]
-    NO["بازگشت تغییر (خیر)اگر بهبود معنادار نیست"]
-    LOOP["اگر هنوز مشکل دارید → تکرار چرخه"]
-
-    M --&gt; P --&gt; O --&gt; V --&gt; DEC
-    DEC -- "بله" --&gt; OK
-    DEC -- "خیر" --&gt; NO
-    NO --&gt; LOOP
-    LOOP -- "تکرار" --&gt; M
-
-    
-    classDef titleBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
-    classDef stageBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef decBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
-    classDef okBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
-    classDef noBox fill:#fef2f2,stroke:#ef4444,stroke-width:1.5px,color:#1f2937;
-    classDef loopBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
-    class TITLE titleBox;
-    class M,P,O,V stageBox;
-    class DEC decBox;
-    class OK okBox;
-    class NO noBox;
-    class LOOP loopBox;</pre>
-<figcaption>شکل ۱۲-۳: گردش کار بهینه‌سازی عملکرد — چرخه تکرارشونده اندازه‌گیری تا تأیید نهایی</figcaption>
-</figure>
 <p>مثال واقعی: در یک پروژه، تیم ما مطمئن بود که عملیات رمزنگاری AES گلوگاه اصلی است. بعد از پروفایلینگ با pprof، کشف کردیم که ۶۵٪ وقت CPU در تابع <bdi dir="ltr">time.Format</bdi> صرف می‌شود چون در یک حلقه داخلی تاریخ را فرمت می‌کردیم. با کش کردن نتیجه‌ی فرمت، عملکرد ۳ برابر شد — بدون اینکه رمزنگاری را تغییر دهیم.</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">// Example: wrong guess vs reality with pprof
@@ -248,47 +190,6 @@ $ go tool trace trace.out
 <div class="comparison"><strong>مقایسه با PHP:</strong> در PHP ابزار مشابه Execution Tracer وجود ندارد. نزدیک‌ترین ابزار <code>XHProf</code> یا <code>Tideways</code> است که پروفایلینگ تابع‌محور ارائه می‌دهند اما هیچ اطلاعاتی درباره هم‌روندی و scheduler ندارند چون PHP ذاتاً تک‌نخی است. Tracer در Go مختص سیستم‌های هم‌روندی است و اطلاعاتی ارائه می‌دهد که در PHP قابل دستیابی نیست.</div>
 <h3 id="درخت-تصمیم-کامل-بهینهسازی-اندازهگیری-پروفایل-بهینهسازی">12.2.7 درخت تصمیم کامل بهینه‌سازی: اندازه‌گیری ← پروفایل ← بهینه‌سازی</h3>
 <p>فرآیند بهینه‌سازی یک مسیر تصمیم‌گیری مشخص دارد که از اندازه‌گیری شروع شده و با تأیید بهبود خاتمه می‌یابد. اولین و مهم‌ترین سؤال این است: آیا اصلاً مشکل عملکردی وجود دارد؟ اگر پاسخ منفی است، بهینه‌سازی نکنید — این همان تله بهینه‌سازی زودرس است.</p><p>اگر مشکل وجود دارد، باید با بنچمارک اندازه‌گیری کنید، سپس با pprof پروفایل بگیرید و گلوگاه را شناسایی کنید.</p><p>گلوگاه یا CPU-bound است (نیاز به بهبود الگوریتم) یا Memory-bound (نیاز به کاهش allocation).</p><p>پس از بهینه‌سازی، دوباره بنچمارک بگیرید و اگر بهبود معنادار نبود، رویکرد خود را بازبینی کنید.</p><p>قانون ۸۰/۲۰ را همیشه به خاطر بسپارید: ۸۰٪ زمان اجرا در ۲۰٪ کد صرف می‌شود — فقط همان ۲۰٪ را بهینه کنید.</p>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-
-    Q1{"آیا مشکل عملکردی وجود دارد؟"}
-    Q1 -- "خیر" --&gt; NO["بهینه‌سازی نکن!کد خوانا بنویس"]
-    Q1 -- "بله" --&gt; M["اندازه‌گیری با Benchmarkgo test -bench . -benchmem"]
-    M --&gt; P["پروفایل با pprofgo tool pprof cpu.prof / mem.prof"]
-    P --&gt; I["شناسایی گلوگاهpprof top / web / list funcName"]
-    I --&gt; Q2{"گلوگاه CPU یا حافظه؟"}
-    Q2 -- "CPU" --&gt; C["بهینه‌سازی الگوریتمO(n²) → O(n log n)reduce computation"]
-    Q2 -- "Memory" --&gt; ME["کاهش allocationsync.Pool, preallocatereduce GC pressure"]
-    C --&gt; R["بنچمارک مجدد: قبل / بعدbenchstat before.txt after.txt"]
-    ME --&gt; R
-    R --&gt; Q3{"بهبود حاصل شد؟"}
-    Q3 -- "بله" --&gt; OK["انجام شد! ✓تست و بنچمارک سبز"]
-    Q3 -- "خیر" --&gt; REV["بازبینی رویکردگلوگاه دیگری وجود داردبازگشت به اندازه‌گیری"]
-    REV -- "تکرار" --&gt; M
-
-    subgraph NOTES["قانون ۸۰/۲۰ (پارتو) + تله بهینه‌سازی زودرس"]
-        direction TB
-        P80[قانون ۸۰/۲۰ — ۸۰٪ زمان اجرا در ۲۰٪ کد صرف می‌شود. فقط همان ۲۰٪ را بهینه...]
-        PREM["تله بهینه‌سازی زودرس — "Premature optimization is the root of all evil" — Donald Knuth"]
-        GOLD[قانون طلایی: اندازه بگیر، حدس نزن. اول پروفایل کن، فقط گلوگاه را بهینه کن،...]
-    end
-
-        OK --&gt; NOTES
-
-    classDef titleBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
-    classDef decBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
-    classDef stopBox fill:#fef2f2,stroke:#ef4444,stroke-width:1.5px,color:#1f2937;
-    classDef actBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef okBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
-    classDef noteBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
-    class TITLE titleBox;
-    class Q1,Q2,Q3 decBox;
-    class NO stopBox;
-    class M,P,I,C,ME,R,REV actBox;
-    class OK okBox;
-    class P80,PREM,GOLD noteBox;</pre>
-<figcaption>شکل ۱۲-۴: درخت تصمیم کامل بهینه‌سازی — از تشخیص مشکل تا تأیید بهبود، با قانون ۸۰/۲۰ و هشدار بهینه‌سازی زودرس</figcaption>
-</figure>
 <p>این درخت تصمیم مسیر صحیح بهینه‌سازی را به‌صورت گام‌به‌گام نشان می‌دهد. مهم‌ترین نکته این است که اگر مشکل عملکردی وجود ندارد، بهینه‌سازی نکنید. بسیاری از برنامه‌نویسان بدون اینکه ابتدا اندازه‌گیری کنند، شروع به بهینه‌سازی بخش‌هایی از کد می‌کنند که اصلاً گلوگاه نیستند. </p><p>این کار نه تنها وقت تلف می‌کند، بلکه کد را پیچیده‌تر و ناخواناتر می‌کند. وقتی مشکل عملکردی تأیید شد، ابتدا با بنچمارک خط پایه (<bdi dir="ltr">baseline</bdi>) تعیین کنید، سپس با pprof گلوگاه واقعی را شناسایی کنید. فقط پس از این مراحل مجاز به بهینه‌سازی هستید و حتی آن‌هم باید با بنچمارک قبل و بعد تأیید شود.</p>
 <h3 id="سناریوهای-عملیاتی-بهینهسازی">12.2.8 سناریوهای عملیاتی بهینه‌سازی</h3>
 <p>در پروژه‌های واقعی، بهینه‌سازی فراتر از تئوری است و نیاز به مهارت‌های عملی در استفاده از ابزارهای Go دارد. سناریوهای پایه‌ای مثل نوشتن بنچمارک صحیح، مقایسه قبل/بعد با <bdi dir="ltr">benchstat</bdi> و پروفایلینگ CPU/Heap با <bdi dir="ltr">pprof</bdi> در <a href="12.01-execution-speed-and-optimization.html">بخش ۱۲.۱</a> پوشش داده شده‌اند. در اینجا تنها روی سناریویی تمرکز می‌کنیم که مکمل آن‌هاست و در بخش قبل نیامده:</p>
@@ -340,7 +241,6 @@ $ go tool trace trace.out
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/xml.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/ini.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/plaintext.min.js"></script>
-<script src="assets/js/diagrams.js"></script>
 <script src="assets/js/main.js"></script>
 </body>
 </html>

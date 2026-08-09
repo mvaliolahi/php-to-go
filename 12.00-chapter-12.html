@@ -80,23 +80,6 @@
 <p>بهینه‌سازی عملکرد از موضوعات مهم و در عین حال حساس در مهندسی نرم‌افزار است. وقتی از PHP به Go مهاجرت می‌کنید، از مزیت‌های اصلی که انتظار دارید افزایش سرعت و کاهش مصرف حافظه است. اما صرفاً نوشتن کد به زبان Go تضمین‌کننده‌ی عملکرد بهینه نیست.</p><p>بدون درک عمیق از نحوه‌ی کار کامپایلر، Garbage Collector و مدل حافظه‌ی Go، ممکن است کدی بنویسید که از نظر ظاهری درست باشد اما در عملکرد از PHP کندتر عمل کند.</p>
 <p>در این فصل با یک رویکرد عملی و مبتنی بر اندازه‌گیری، از مفاهیم پایه‌ای سرعت Go شروع می‌کنیم و به تدریج به سمت تکنیک‌های پیشرفته‌ی بهینه‌سازی حرکت می‌کنیم. نکته مهمی که در تمام این فصل آن را تکرار خواهیم کرد این است: <strong>هرگز بدون اندازه‌گیری بهینه‌سازی نکنید</strong>. </p><p>بهینه‌سازی بر اساس حدس و گمان هم وقت تلف کردن است و هم ممکن است کد را پیچیده‌تر و ناخوانا‌تر کند بدون هیچ بهبود واقعی در عملکرد.</p>
 <h3 id="چرا-عملکرد-در-go-اهمیت-بیشتری-دارد">12.0.1 چرا عملکرد در Go اهمیت بیشتری از PHP دارد؟</h3>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart LR
-
-    B["۱. Benchmarkاندازه‌گیری عملکرد فعلیgo test -bench"]
-    P["۲. Profileشناسایی گلوگاه با pprofpprof CPU/Heap"]
-    O["۳. Optimizeرفع گلوگاه شناسایی‌شدهتغییر الگوریتم/کد"]
-    V["۴. Verifyتأیید با benchstatbenchstat before/after"]
-
-    B --&gt; P --&gt; O --&gt; V
-    V -- "تکرار تا رسیدن به هدف" --&gt; B
-
-    classDef titleBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
-    classDef stageBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
-    class TITLE titleBox;
-    class B,P,O,V stageBox;</pre>
-<figcaption>شکل ۱۲-۱: چرخه بهینه‌سازی عملکرد — از اندازه‌گیری تا تأیید، تکرارشونده تا رسیدن به هدف</figcaption>
-</figure>
 <p>مدل اجرایی PHP و Go کاملاً متفاوت است و همین تفاوت باعث می‌شود بهینه‌سازی در Go اهمیت بسیار بیشتری داشته باشد. در PHP هر درخواست HTTP در یک process مجزا پردازش می‌شود و در پایان درخواست، تمام حافظه آزاد می‌شود. این یعنی حتی اگر کد شما نشتی حافظه داشته باشد، آسیب آن محدود به عمر یک درخواست است. </p><p>اما در Go برنامه شما یک <bdi dir="ltr">long-running process</bdi> است که ماه‌ها بدون ری‌استارت اجرا می‌شود. </p><p>یک نشتی حافظه کوچک که در PHP بی‌تأثیر بود، در Go به تدریج منجر به مصرف رم چند گیگابایتی و در نهایت <bdi dir="ltr">OOM Kill</bdi> توسط سیستم‌عامل می‌شود.</p>
 <p>همچنین Go زبانی است که برای ساخت زیرساخت‌های با کارایی بالا طراحی شده — سرورهای HTTP stream processing و سرویس‌های مایکروسرویسی با تأخیر میلی‌ثانیه‌ای. در این سطح از مقیاس، هر میکروثانیه و هر کیلوبایت حافظه اهمیت دارد. برنامه‌نویس Go باید آگاهی عمیق‌تری از رفتار حافظه و CPU نسبت به برنامه‌نویس PHP داشته باشد.</p>
 <p>از سوی دیگر، Go کنترل بسیار بیشتری به شما می‌دهد. در PHP مدیریت حافظه کاملاً خودکار و غیرشفاف است و توسعه‌دهنده ابزار محدودی برای تأثیرگذاری دارد. </p><p>اما در Go شما ابزارهایی مثل <bdi dir="ltr">sync.Pool</bdi> برای بازیافت اشیاء، <bdi dir="ltr">GOGC</bdi> و <bdi dir="ltr">GOMEMLIMIT</bdi> برای تنظیم GC، <bdi dir="ltr">pprof</bdi> برای پروفایلینگ دقیق و <bdi dir="ltr">Escape Analysis</bdi> برای کنترل تخصیص حافظه دارید. این ابزارها قدرتمندند اما فقط در صورتی مؤثرند که بدانید چگونه از آن‌ها استفاده کنید.</p>
@@ -130,47 +113,6 @@
 <p>مدیریت goroutine‌ها با context و sync.WaitGroup برای جلوگیری از نشت حافظه و فشار بر CPU. همچنین بررسی تأثیر defer بر عملکرد در حلقه‌های پرتکرار و انتخاب ساختارهای داده مناسب مانند slice، map و sync.Map.</p>
 <p>درک عمیق رفتار Garbage Collector و تأثیر Stack و Heap در تخصیص حافظه. این بخش یکی از بخش‌های کلیدی فصل است چون رفتار GC در Go مستقیماً بر latency و throughput برنامه‌ی شما تأثیر می‌گذارد. با مفاهیمی مثل Escape Analysis، GOGC، GOMEMLIMIT و sync.Pool آشنا می‌شوید.</p>
 <p>تکنیک‌های کاهش مصرف حافظه شامل استفاده آگاهانه از pointerها، بهره‌گیری از sync.Pool برای اشیاء موقتی، تعیین Capacity در slice، اجتناب از تخصیص‌های غیرضروری در حلقه‌ها و مرتب‌سازی فیلدهای struct برای کاهش padding و تنظیم داده‌های بلااستفاده به nil.</p>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-
-    subgraph MAP["مسیر یادگیری"]
-        direction LR
-        S1["۱۲.۱ سرعتدلایل سرعت Go"]
-        S2["۱۲.۲ اصولpprof, benchmark"]
-        S3["۱۲.۳ نکاتgoroutine, defer"]
-        S4["۱۲.۴ GCStack, Heap, GC"]
-        S5["۱۲.۵ تکنیکsync.Pool, nil"]
-        S1 --&gt; S2 --&gt; S3 --&gt; S4 --&gt; S5
-    end
-
-    MIND["ذهنیت طلایی:اندازه‌گیری ← شناسایی گلوگاه ← بهینه‌سازی ← تأیید → تکرار"]
-
-    subgraph TOOLS["ابزارهای کلیدی فصل ۱۲"]
-        direction TB
-        T1["pprof (CPU/Heap/Block/Goroutine) | go test -bench -benchmem"]
-        T2["go build -gcflags '-m' (Escape Analysis) | go test -race"]
-        T3["sync.Pool | runtime.ReadMemStats | GOGC | GOMEMLIMIT"]
-        T4["benchstat | fieldalignment | go tool trace"]
-    end
-
-    WARN["⚠ توجه: در PHP حافظه هر درخواست آزاد می‌شود — در Go نشتی حافظه انباشته می‌شود!"]
-
-        MAP --&gt; MIND
-    MIND --&gt; TOOLS
-    TOOLS --&gt; WARN
-
-    classDef titleBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
-    classDef stageBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef toolBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
-    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
-    classDef mindBox fill:#f5f0fb,stroke:#777BB4,stroke-width:1.5px,color:#1f2937;
-    class TITLE titleBox;
-    class S1,S2,S3,S4,S5 stageBox;
-    class T1,T2,T3,T4 toolBox;
-    class MIND mindBox;
-    class WARN warnBox;</pre>
-<figcaption dir="rtl">شکل ۱۲-۰: نقشه فصل ۱۲ — بهینه‌سازی عملکرد از درک تا عمل</figcaption>
-</figure>
 <div class="summary">
 <strong>خلاصه‌ی نکات کلیدی:</strong>
 <ul>
@@ -215,7 +157,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/xml.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/ini.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/plaintext.min.js"></script>
-<script src="assets/js/diagrams.js"></script>
 <script src="assets/js/main.js"></script>
 </body>
 </html>

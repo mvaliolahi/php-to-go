@@ -218,37 +218,6 @@ type Admin struct {
 </code></pre>
 </figure>
 <p>تفاوت کلیدی در این است که در <bdi dir="ltr">PHP</bdi> خط‌کشی بین «<bdi dir="ltr">is-a</bdi>» و «<bdi dir="ltr">has-a</bdi>» با ارث‌بری تار می‌شود. <code>Admin</code> یک <code>User</code> است یا یک <code>User</code> با دسترسی‌های اضافه؟ اگر هر دو مدل قابل‌دفاع باشند پس طراحی شکننده است. در <bdi dir="ltr">Go</bdi> این ابهام وجود ندارد: هر <bdi dir="ltr">struct</bdi> دقیق آنچه نیاز دارد را ترکیب می‌کند و نه بیشتر. </p><p>این رویکرد مشکل <bdi dir="ltr">Fragile Base Class</bdi> را از ریشه حل می‌کند — تغییر در <code>BaseModel</code> نمی‌تواند رفتار <code>Admin</code> را به‌صورت غیرمنتظره تغییر دهد چون <code>Admin</code> فقط فیلدهای <code>BaseModel</code> را دارد نه رفتارهای اضافی.</p>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-    subgraph PHP["ارث‌بری (PHP) — is-a relationship"]
-        direction TB
-        BM1["BaseModel"] --&gt; U1["User extends BaseModel"] --&gt; A1["Admin extends User"]
-    end
-    note1(["زنجیره‌ی شکننده — تغییر در بالا همه‌ی زیرکلاس‌ها را می‌شکند"])
-    PHP ~~~ note1
-
-    subgraph GO["ترکیب (Go) — has-a relationship"]
-        direction TB
-        BM2["BaseModel"]
-        L2["Logger"]
-        V2["Validator"]
-        U2["User { BaseModel, Logger, Validator }"]
-        A2["Admin { User, Role, Permissions }"]
-        BM2 --&gt; U2
-        L2 --&gt; U2
-        V2 --&gt; U2
-        U2 --&gt; A2
-    end
-    note2(["ترکیب مستقل — تغییر یک مؤلفه بقیه را تحت تأثیر قرار نمی‌دهد"])
-
-    classDef phpBox fill:#f5f0fb,stroke:#777BB4,stroke-width:1.5px,color:#1f2937;
-    classDef goBox  fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef noteBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1px,color:#1f2937,font-style:italic;
-    class PHP phpBox;
-    class GO goBox;
-    class note1,note2 noteBox;</pre>
-<figcaption>شکل ۱-۲-الف: ارث‌بری شکننده (<bdi dir="ltr">PHP</bdi>) در برابر ترکیب مستقل (<bdi dir="ltr">Go</bdi>)</figcaption>
-</figure>
 <div class="tip">
 <strong>نکته‌ی حرفه‌ای — تله‌ی method promotion برای مهاجران PHP:</strong> در PHP متدهای <code>protected</code> والد می‌توانند متدهای <code>protected</code> بازنویسی‌شده‌ی فرزند را صدا بزنند (late binding). اما در Go، وقتی <code>BaseModel</code> درون <code>User</code> embedding می‌شود و متد <code>Touch()</code> از <code>BaseModel</code> به <code>User</code> promoted می‌شود، بدنه‌ی <code>Touch()</code> همچنان روی گیرنده‌ی <code>*BaseModel</code> اجرا می‌شود نه <code>*User</code>. یعنی اگر <code>BaseModel</code> متدی صدا بزند که <code>User</code> نیز نسخه‌ی خودش را دارد، نسخه‌ی <code>BaseModel</code> اجرا خواهد شد — نه نسخه‌ی <code>User</code>. این دقیقاً نقطه‌ی مقابل رفتار polymorphic در PHP است. راه‌حل idiomatic: به‌جای embedding + override، از interface در سمت مصرف‌کننده استفاده کنید تا رفتار چندریختی واقعی به‌دست آید.
 </div>
@@ -328,46 +297,6 @@ type User struct {
 <h3 id="جریان-مدیریت-خطا-exception-در-برابر-error-value">1.2.7 جریان مدیریت خطا:Exceptionدر برابرError Value</h3>
 <p>یکی از عمیق‌ترین تفاوت‌های ساختاری بین <bdi dir="ltr">PHP</bdi> و <bdi dir="ltr">Go</bdi> در نحوه‌ی جریان مدیریت خطا نهفته است. در <bdi dir="ltr">PHP</bdi> وقتی <bdi dir="ltr">exception</bdi> پرتاب می‌شود، جریان کنترل به‌صورت <strong>نامرئی</strong> از تابع فراخوان‌دهنده خارج شده و در <bdi dir="ltr">call stack</bdi> بالا می‌رود تا اولین بلوک <bdi dir="ltr">catch</bdi> مناسب را بیابد. </p><p>این فرآیند برای برنامه‌نویس پنهان است — از نگاه امضای تابع نمی‌توان فهمید که آیا آن تابع ممکن است <bdi dir="ltr">exception</bdi> پرتاب کند یا خیر. اما در <bdi dir="ltr">Go</bdi> خطاها بخشی از نوع بازگشتی تابع هستند و جریان کنترل هرگز به‌صورت پنهانی تغییر نمی‌کند. </p><p>هر تابعی که ممکن است شکست بخورد، <bdi dir="ltr">error</bdi> را صریحاً برمی‌گرداند و فراخوان‌دهنده موظف است آن را بررسی کند.</p>
 <p>این تفاوت فقط یک مسئله‌ی سبک کدنویسی نیست بلکه تأثیر مستقیم بر <strong>قابلیت پیش‌بینی</strong> و <strong>قابلیت نگهداری</strong> کد دارد. وقتی در <bdi dir="ltr">PHP</bdi> کدی می‌خوانید هرگز مطمئن نیستید که آیا فراخوانی تابعی ممکن است جریان برنامه را به‌صورت ناگهانی تغییر دهد یا خیر. </p><p>اما در <bdi dir="ltr">Go</bdi> با نگاه به امضای تابع فوراً می‌دانید چه خطاهایی ممکن است رخ دهد و می‌توانید برای هرکدام تصمیم‌گیری صریحی داشته باشید.</p>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-    subgraph PHP["مسیر PHP Exception — جریان پنهان"]
-        direction TB
-        P1["function findUser($id)"]
-        P2["throw new UserNotFoundException()① تابع exception پرابت می‌کند"]
-        P3[Call Stack: handler → service → repo② exception از طریق stack بالا...]
-        P4[try { $user = findUser($id); }catch (UserNotFoundException $e) { ... }③ بلوک...]
-        P5[Uncaught Exception → Fatal Error④ اگر catch نباشد → خطای مهلک، کل برنامه...]
-        P1 --&gt; P2 --&gt; P3 --&gt; P4 --&gt; P5
-    end
-    warn1([⚠ مشکل: جریان کنترل پنهان — از امضای تابع مشخص نیست که exception پرتاب...])
-
-    subgraph GO["مسیر Go Error Value — جریان صریح"]
-        direction TB
-        G1[func FindUser(id int) (*User, error)return nil, ErrUserNotFound① تابع error...]
-        G2[user, err := FindUser(id)if err != nil { ... }② فراخوان‌دهنده صریحاً بررسی...]
-        G3["// Handle: log and respond// OR wrap: return fmt.Errorf("...: %w", err)③ مدیریت مستقیم یا بسته‌بندی و بازگشت"]
-        G4[✓ No hidden control flow④ جریان کنترل همیشه محلی و قابل پیش‌بینیخطای...]
-        G1 --&gt; G2 --&gt; G3 --&gt; G4
-    end
-    warn2([✓ مزیت: هر مسیر شکست قابل مشاهده است. امضای تابع دقیقاً نشان می‌دهد چه...])
-
-    PHP ~~~ warn1
-    GO ~~~ warn2
-
-    summary([قانون طلایی: Exception‌ها جریان کنترل پنهان هستند — Error Value‌ها جریان...])
-
-    classDef phpBox fill:#f5f0fb,stroke:#777BB4,stroke-width:1.5px,color:#1f2937;
-    classDef goBox  fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef warnBox fill:#fef2f2,stroke:#ef4444,stroke-width:1px,color:#1f2937,font-style:italic;
-    classDef goodBox fill:#ecfdf5,stroke:#10b981,stroke-width:1px,color:#1f2937,font-style:italic;
-    classDef summaryBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937,font-weight:bold;
-    class PHP phpBox;
-    class GO goBox;
-    class warn1 warnBox;
-    class warn2 goodBox;
-    class summary summaryBox;</pre>
-<figcaption>شکل ۱-۲-ب: مقایسه‌ی جریان مدیریت خطا — <bdi dir="ltr">PHP Exception</bdi> (جریان پنهان) در برابر <bdi dir="ltr">Go Error Value</bdi> (جریان صریح)</figcaption>
-</figure>
 <p>همان‌طور که نمودار بالا نشان می‌دهد، تفاوت بنیادین بین این دو رویکرد در <strong>دیدپذیری جریان کنترل</strong> است. در <bdi dir="ltr">PHP</bdi> وقتی تابعی <bdi dir="ltr">exception</bdi> پرتاب می‌کند، هیچ اثری در امضای تابع باقی نمی‌ماند — نه <bdi dir="ltr">@throws</bdi> در <bdi dir="ltr">PHPDoc</bdi> الزامی است و نه کامپایلر بررسی می‌کند که آیا فراخوان‌دهنده <bdi dir="ltr">exception</bdi> را مدیریت کرده یا خیر. </p><p>این یعنی یک <bdi dir="ltr">exception</bdi> بررسی‌نشده ممکن است تا سطح بالاترین لایه‌ی برنامه بالا برود و بدون هیچ هشداری باعث توقف کل برنامه شود.</p>
 <p>اما در <bdi dir="ltr">Go</bdi> خطاها مقادیر معمولی هستند. وقتی تابعی ممکن است شکست بخورد، نوع بازگشتی آن شامل <bdi dir="ltr">error</bdi> است و فراخوان‌دهنده <strong>ملزم</strong> است آن را بررسی کند. حتی اگر بررسی را فراموش کنید، ابزارهایی مانند <bdi dir="ltr">errcheck</bdi> و <bdi dir="ltr">golangci-lint</bdi> بلافاصله هشدار می‌دهند. </p><p>این رویکرد هرچند در ابتدا پرکاربردتر به‌نظر می‌رسد اما در عمل باعث می‌شود که <strong>هر مسیر شکست در کد صریحاً قابل ردیابی باشد</strong> و هیچ خطایی پنهان نماند.</p>
 <h3 id="سناریوهای-عملیاتی-مدیریت-خطا">1.2.8 سناریوهای عملیاتی: مهاجرت ذهنی ازtry/catchبهif err != nil</h3>

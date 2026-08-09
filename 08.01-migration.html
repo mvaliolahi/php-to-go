@@ -83,43 +83,6 @@
 <tr><td>وضعیت Dirty</td><td>ندارد</td><td>جدول schema_migrations با فیلد dirty</td><td>ندارد (اتمیک)</td></tr>
 </tbody>
 </table>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-    Title["چرخه‌ی حیات Migration"]
-    C["migrate create"]
-    UP1["000001_xxx.up.sql"]
-    DN1["000001_xxx.down.sql"]
-    U["up"]
-    Apply["migrate up → Apply"]
-    State1["schema_migrations: version=1 dirty=false"]
-    D["down"]
-    DN["migrate down N"]
-    Dirty["Dirty State!"]
-    Force["migrate force V"]
-
-    C --&gt; UP1
-    C --&gt; DN1
-    UP1 --&gt; U
-    DN1 --&gt; D
-    U --&gt; Apply --&gt; State1
-    Apply -.خطا.-&gt; Dirty
-    Dirty --&gt; Force
-    State1 --&gt; D
-    D --&gt; DN
-
-    classDef titleBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:2px,color:#1f2937,font-weight:bold;
-    classDef goBox   fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef bothBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
-    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
-    classDef errBox  fill:#fef2f2,stroke:#ef4444,stroke-width:1.5px,color:#1f2937;
-    classDef neuBox  fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
-    class Title titleBox;
-    class C,U,D,Apply,DN,Force goBox;
-    class UP1,DN1 bothBox;
-    class State1 neuBox;
-    class Dirty errBox;</pre>
-<figcaption>شکل ۸-۱: چرخه‌ی حیات <bdi dir="ltr">Migration</bdi> — از ایجاد تا اجرا و بازگشت</figcaption>
-</figure>
 <p>از بخش‌های کلیدی هر پروژه نرم‌افزاری که با دیتابیس کار می‌کند مدیریت ساختار دیتابیس و به‌روزرسانی‌های منظم آن است. اگر شما با <bdi dir="ltr">Laravel</bdi> کار کرده باشید به خوبی با مفهوم <bdi dir="ltr">Migration</bdi> و نسخه‌بندی دیتابیس آشنا هستید ابزاری که تغییرات ساختاری جدول‌ها و داده‌ها را به صورت کد نگهداری و اعمال می‌کند.</p>
 <p>در لاراول <bdi dir="ltr">migration</bdi> ها به صورت کد <bdi dir="ltr">PHP</bdi> با کلاس‌ها و متدهای ساده تعریف می‌شوند و بسیاری از کارها مثل ساخت فیلد، جدول، تغییرات و <bdi dir="ltr">rollback</bdi> به صورت پیش‌فرض به کمک این متدها انجام می‌شود. <bdi dir="ltr">Go</bdi> بیشتر به اجرای مستقیم <bdi dir="ltr">SQL</bdi> و ابزارهای خط فرمان متکی است که انعطاف بیشتر اما نیازمند دقت بالاتر است.</p>
 <p>در <bdi dir="ltr">Go</bdi> شما کنترل بیشتری روی فرآیند <bdi dir="ltr">Migration</bdi> دارید. در این فصل ابتدا به مفهوم <bdi dir="ltr">Migration</bdi> و اهمیت آن می‌پردازیم سپس بهترین روش‌ها و ابزارهای رایج در اکوسیستم <bdi dir="ltr">Go</bdi> را معرفی می‌کنیم و در نهایت با مثال‌های کاربردی نحوه استفاده از ابزار محبوب <strong dir="ltr">golang-migrate</strong> و <strong dir="ltr">goose</strong> را توضیح می‌دهیم.</p>
@@ -137,56 +100,6 @@
 <h3 id="نصب-golang-migrate">8.1.3 نصب golang-migrate</h3>
 <figure class="code bash" dir="ltr"><pre><code class="language-bash">go install -tags 'postgres' github.com/golang-migrate/migrate/v4/cmd/migrate@latest</code></pre></figure>
 <h3 id="ساخت-پوشه-migration-و-تعریف-فایلها">8.1.4 ساخت پوشه Migration و تعریف فایل‌ها</h3>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-    Title["جریان Migration: up (اعمال) و down (بازگشت)"]
-
-    subgraph UP["migrate up (اعمال)"]
-        direction TB
-        U1["001_users.up.sql"]
-        U2["002_posts.up.sql"]
-        U3["003_orders.up.sql"]
-        DBU["Database"]
-        T1["users table"]
-        T2["posts table"]
-        T3["orders table"]
-        SU["version=3 dirty=false"]
-        U1 --&gt; DBU
-        U2 --&gt; DBU
-        U3 --&gt; DBU
-        DBU --&gt; T1
-        DBU --&gt; T2
-        DBU --&gt; T3
-        T3 --&gt; SU
-    end
-
-    subgraph DN["migrate down 2 (بازگشت)"]
-        direction TB
-        D1["migrate down 2"]
-        DBD["Database"]
-        TD1["users table"]
-        SD["version=1 dirty=false"]
-        D1 --&gt; DBD
-        DBD --&gt; TD1
-        TD1 --&gt; SD
-    end
-
-    Note["هر Migration باید فایل .up.sql و .down.sql داشته باشد"]
-
-    UP ~~~ DN
-    DN ~~~ Note
-
-    classDef titleBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:2px,color:#1f2937,font-weight:bold;
-    classDef goBox   fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef bothBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
-    classDef neuBox  fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
-    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
-    class Title titleBox;
-    class U1,U2,U3,D1 goBox;
-    class DBU,DBD,T1,T2,T3,TD1,SU,SD bothBox;
-    class Note warnBox;</pre>
-<figcaption dir="rtl">شکل ۸-۱-ب: جریان <bdi dir="ltr">Migration</bdi> — اعمال (<bdi dir="ltr">up</bdi>) و بازگشت (<bdi dir="ltr">down</bdi>)</figcaption>
-</figure>
 <figure class="code sql" dir="ltr"><pre><code class="language-sql">-- 000001_create_users_table.up.sql
 CREATE TABLE users (
     id SERIAL PRIMARY KEY,
@@ -271,79 +184,6 @@ func Down(tx *sql.Tx) error {
 <strong>نکته‌ی حرفه‌ای:</strong> همیشه مایگریشن‌هایی بنویسید که هم رو به جلو و هم رو به عقب قابل اجرا باشند. در <bdi dir="ltr">Go</bdi> از ابزارهایی مثل <bdi dir="ltr">golang-migrate</bdi> یا <bdi dir="ltr">goose</bdi> استفاده کنید و هرگز فایل مایگریشنی را که قبلاً روی محیط تولید اعمال شده تغییر ندهید — به‌جای آن یک مایگریشن جدید بنویسید.
 </div>
 <h3 id="خط-زمانی-نسخههای-migration">8.1.11 خط زمانی نسخه‌های Migration</h3>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-    Title["خط زمانی نسخه‌های Migration — حرکت رو به جلو (up) و بازگشت (down)"]
-
-    UpArrow["migrate up → (green: forward / apply)"]
-    DownArrow["← migrate down (red: backward / revert)"]
-
-    subgraph TIMELINE["خط زمانی نسخه‌ها"]
-        direction LR
-        V0["v0خالی"]
-        V1["v1جدول users"]
-        V2["v2ستون email"]
-        V3["v3جدول orders"]
-        V4["v4کلید خارجی"]
-        V0 --&gt; V1 --&gt; V2 --&gt; V3 --&gt; V4
-    end
-
-    subgraph FILES["الگوی نام‌گذاری فایل‌ها"]
-        direction TB
-        F1["001_create_users.up.sql / 001_create_users.down.sql"]
-        F2["002_add_email.up.sql / 002_add_email.down.sql"]
-    end
-
-    subgraph CHANGES["تغییرات هر نسخه"]
-        direction TB
-        C1["v1: CREATE TABLE users (id, name, created_at)"]
-        C2["v2: ALTER TABLE users ADD COLUMN email VARCHAR"]
-        C3["v3: CREATE TABLE orders ... v4: ADD FOREIGN KEY"]
-    end
-
-    subgraph CONFLICT["تداخل: وقتی دو توسعه‌دهنده همزمان Migration می‌سازند"]
-        direction TB
-        DA["توسعه‌دهنده‌ی الف004_add_status.up.sql"]
-        DB["توسعه‌دهنده‌ی ب004_add_phone.up.sql"]
-        WARN["⚠ تداخل شماره‌گذاری!"]
-        DA --&gt; WARN
-        DB --&gt; WARN
-    end
-
-    subgraph SOLUTIONS["راه‌حل‌های تداخل"]
-        direction TB
-        S1["۱. قفل Advisory Lock روی دیتابیس"]
-        S2["۲. اجرای Migration فقط در CI/CD"]
-        S3["۳. شماره‌گذاری timestamp به‌جای ترتیبی"]
-    end
-
-    Golden[قانون طلایی: هر Migration باید کاملاً قابل بازگشت باشد — فایل .down.sql را...]
-
-    Title --&gt; UpArrow
-    Title --&gt; DownArrow
-    UpArrow --&gt; TIMELINE
-    DownArrow --&gt; TIMELINE
-    TIMELINE --&gt; FILES
-    TIMELINE --&gt; CHANGES
-    FILES --&gt; CONFLICT
-    CONFLICT --&gt; SOLUTIONS
-    SOLUTIONS --&gt; Golden
-
-    classDef titleBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:2px,color:#1f2937,font-weight:bold;
-    classDef goBox   fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef bothBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
-    classDef neuBox  fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
-    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
-    classDef errBox  fill:#fef2f2,stroke:#ef4444,stroke-width:1.5px,color:#1f2937;
-    class Title,UpArrow goBox;
-    class DownArrow errBox;
-    class V0,V1,V2,V3,V4 bothBox;
-    class F1,F2,C1,C2,C3,DA,DB neuBox;
-    class WARN errBox;
-    class S1,S2,S3 goBox;
-    class Golden warnBox;</pre>
-<figcaption dir="rtl">شکل ۸-۱-ج: خط زمانی نسخه‌های <bdi dir="ltr">Migration</bdi> — حرکت <bdi dir="ltr">up</bdi> (سبز) و <bdi dir="ltr">down</bdi> (قرمز) و تداخل شماره‌گذاری (نارنجی)</figcaption>
-</figure>
 <p>خط زمانی نسخه‌های <bdi dir="ltr">Migration</bdi> نشان می‌دهد که دیتابیس چگونه از یک حالت خالی به ساختار نهایی می‌رسد. هر نسخه یک تغییر مشخص را اعمال می‌کند و فایل‌های <bdi dir="ltr">.up.sql</bdi> و <bdi dir="ltr">.down.sql</bdi> به ترتیب مسئول اعمال و بازگشت آن تغییر هستند. </p><p>وقتی دستور <code dir="ltr">migrate up</code> اجرا می‌شود، تمام نسخه‌هایی که هنوز اعمال نشده‌اند به ترتیب اجرا می‌شوند و شماره نسخه در جدول <code dir="ltr">schema_migrations</code> ثبت می‌گردد. وقتی دستور <code dir="ltr">migrate down N</code> اجرا می‌شود، <bdi dir="ltr">N</bdi> نسخه‌ی آخر به ترتیب معکوس بازگشت می‌خورند.</p>
 <p>یکی از مهم‌ترین چالش‌ها در کار تیمی تداخل شماره‌گذاری است. اگر دو توسعه‌دهنده به‌طور همزمان <bdi dir="ltr">Migration</bdi> جدیدی با شماره‌ی یکسان بسازند، ابزار <bdi dir="ltr">golang-migrate</bdi> نمی‌داند کدام را اول اجرا کند. </p><p>راه‌حل‌های متعددی وجود دارد: استفاده از <bdi dir="ltr">advisory lock</bdi> روی دیتابیس برای جلوگیری از اجرای همزمان، اجرای <bdi dir="ltr">Migration</bdi> فقط در <bdi dir="ltr">CI/CD pipeline</bdi> تا یک نقطه‌ی کنترل واحد وجود داشته باشد، و استفاده از شماره‌گذاری مبتنی بر <bdi dir="ltr">timestamp</bdi> به‌جای شماره‌گذاری ترتیبی که احتمال تداخل را کاهش می‌دهد.</p>
 <h3 id="سناریوهای-عملیاتی-migration">8.1.12 سناریوهای عملیاتی</h3>
@@ -397,7 +237,6 @@ func Down(tx *sql.Tx) error {
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/xml.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/ini.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/plaintext.min.js"></script>
-<script src="assets/js/diagrams.js"></script>
 <script src="assets/js/main.js"></script>
 </body>
 </html>

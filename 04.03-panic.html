@@ -69,36 +69,6 @@
 <strong>چکیده:</strong> panic مکانیزم Go برای خطاهای غیرقابل بازیافت است و نباید جایگزین error شود. این بخش زمان استفاده‌ی صحیح از panic، recover و الگوهای طراحی پوشش می‌دهد. تفاوت با exception در PHP و خطرات misuse بررسی می‌شود.
 </div>
 <p>وقتی شرایطی پیش می‌آید که برنامه باید فوراً متوقف شود مثل خرابی غیرمنتظره سخت‌افزاری violation داخلی یا خطای برنامه‌نویسی از panic استفاده می‌کنیم.</p>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-    subgraph PHP["PHP: throw / catch"]
-        direction TB
-        P1["try { ... }"]
-        P2["throw new Exception()"]
-        P3["catch (Exception $e)<br/>پرش"]
-        P4["finally { ... }"]
-        P1 --&gt; P2 --&gt; P3 --&gt; P4
-    end
-
-    subgraph GO["Go: panic / recover"]
-        direction TB
-        G1["func main()"]
-        G2["func doWork()"]
-        G3["panic("خطا!")<br/>unwind stack"]
-        G4["defer func() {<br/>    if r := recover(); r != nil { ... }<br/>}<br/>defer اجرا می‌شود"]
-        G5["ادامه برنامه"]
-        G1 --&gt; G2 --&gt; G3 --&gt; G4 --&gt; G5
-    end
-
-    classDef phpBox fill:#f5f0fb,stroke:#777BB4,stroke-width:1.5px,color:#1f2937;
-    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
-    class PHP,P1,P2,P3,P4 phpBox;
-    class GO,G1,G2 goBox;
-    class G3 warnBox;
-    class G4,G5 goBox;</pre>
-<figcaption>شکل ۴-۳: مقایسه جریان <bdi dir="ltr">panic/recover</bdi> در <bdi dir="ltr">Go</bdi> با <bdi dir="ltr">throw/catch</bdi> در <bdi dir="ltr">PHP</bdi></figcaption>
-</figure>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">func fail() {
     panic("اتفاق بحرانی رخ داده!")
@@ -121,38 +91,6 @@ func main() {
 </p>
 </div>
 <p>وقتی <code dir="ltr">panic()</code> فراخوانی می‌شود، تابع داخلی <code dir="ltr">runtime.gopanic</code> اجرا می‌شود. این تابع یک ساختار داده‌ی داخلی به نام <code>_panic</code> می‌سازد و آن را به سر goroutine فعلی اضافه می‌کند:</p>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-
-    START(["خطایی رخ داده است"])
-    Q1{"آیا خطا قابل پیش‌بینی است؟"}
-    RERR1["بله → return errorفایل، شبکه، ورودی نامعتبر"]
-    Q2{"آیا در کتابخانه هستید؟"}
-    RERR2["بله → return errorکتابخانه‌ها هرگز panic نمی‌کنند"]
-    Q3{"آیا invariant نقض شده؟"}
-    PANIC["بله → panic()nil pointer, array bounds, logic"]
-    RERR3["خیر → return errorترجیح همیشه error است"]
-
-    START --&gt; Q1
-    Q1 -- "بله" --&gt; Q2
-    Q1 -- "خیر" --&gt; RERR1
-    Q2 -- "خیر" --&gt; Q3
-    Q2 -- "بله" --&gt; RERR2
-    Q3 -- "بله" --&gt; PANIC
-    Q3 -- "خیر" --&gt; RERR3
-
-    classDef titleBox fill:#ecfdf5,stroke:#10b981,stroke-width:2px,color:#1f2937;
-    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
-    classDef errBox fill:#fef2f2,stroke:#ef4444,stroke-width:1.5px,color:#1f2937;
-    classDef neutralBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
-    class TITLE titleBox;
-    class START neutralBox;
-    class Q1,Q2,Q3 warnBox;
-    class RERR1,RERR2,RERR3 goBox;
-    class PANIC errBox;</pre>
-<figcaption dir="rtl">شکل ۳-۴-ب: درخت تصمیم‌گیری برای انتخاب بین <bdi dir="ltr">error</bdi> و <bdi dir="ltr">panic</bdi></figcaption>
-</figure>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">// Internal runtime structure (simplified)
 type _panic struct {
@@ -319,35 +257,6 @@ http.ListenAndServe(":8080", handler)
 </code></pre>
 </figure>
 <div class="important"><strong>قانون حیاتی:</strong> هر goroutine که ممکن است panic کند باید <code>defer/recover</code> مخصوص خودش را داشته باشد. <code>recover</code> فقط می‌تواند panic را در همان goroutine بگیرد — هرگز نمی‌تواند panic یک goroutine دیگر را بگیرد. این از مهم‌ترین دلایل برای اضافه‌کردن recovery middleware به HTTP handlerها و background workerهاست.</div>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-
-    subgraph STACK["پشته‌ی فراخوانی"]
-        direction TB
-        M1["main()"]
-        H["handleRequest()"]
-        P["processData()"]
-        D["panic("error!")"]
-        M1 --&gt; H --&gt; P --&gt; D
-    end
-
-    UNWIND["Unwind: اجرای deferها"]
-    DEFER["defer func() { recover() }← اینجا متوقف می‌شود"]
-
-    D --&gt; UNWIND --&gt; DEFER
-
-    classDef titleBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
-    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
-    classDef errBox fill:#fef2f2,stroke:#ef4444,stroke-width:1.5px,color:#1f2937;
-    classDef neutralBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
-    class TITLE titleBox;
-    class STACK,M1,H,P goBox;
-    class D errBox;
-    class UNWIND warnBox;
-    class DEFER goBox;</pre>
-<figcaption>شکل ۳-۴: مکانیزم <bdi dir="ltr">panic/recover</bdi> در پشته فراخوانی</figcaption>
-</figure>
 <table class="comparison-table" dir="rtl">
 <thead>
 <tr><th>ویژگی</th><th>PHP (Exception)</th><th>Go (panic/recover)</th></tr>
@@ -411,70 +320,6 @@ func main() {
 <h3 id="panic-recover-unwinding-sequence">4.3.9 توالی Unwind پشته در Panic/Recover</h3>
 <p>وقتی <code dir="ltr">panic</code> رخ می‌دهد، اجرای تابع فعلی بلافاصله متوقف شده و runtime شروع به <bdi dir="ltr">unwind</bdi> کردن پشته فراخوانی می‌کند. این فرآیند به‌صورت مرحله‌ای انجام می‌شود: ابتدا تابعی که <code dir="ltr">panic</code> در آن رخ داده متوقف می‌شود، سپس تمام توابع <code dir="ltr">defer</code> آن به ترتیب <bdi dir="ltr">LIFO</bdi> اجرا می‌شوند. </p><p>سپس runtime یک قدم به بالاتر می‌رود و همین فرآیند را تکرار می‌کند. </p><p>اگر در یکی از توابع <code dir="ltr">defer</code> تابع <code dir="ltr">recover()</code> فراخوانی شده باشد، <bdi dir="ltr">unwind</bdi> متوقف شده و برنامه از بعد از تابعی که <code dir="ltr">recover</code> در آن بوده ادامه می‌یابد.</p>
 <p>درک این توالی برای نوشتن کد مقاوم در برابر panic حیاتی است. هر تابع <code dir="ltr">defer</code> در مسیر <bdi dir="ltr">unwind</bdi> فرصتی برای پاکسازی منابع (بستن فایل‌ها، قطع اتصال دیتابیس، آزادسازی قفل‌ها) است. بدون <code dir="ltr">recover</code>، تمام این فرصت‌ها صرف پاکسازی می‌شود و برنامه در نهایت متوقف می‌گردد. </p><p>اما با <code dir="ltr">recover</code> می‌توان این فرآیند را در نقطه‌ی مناسبی متوقف کرد و از کرش کل برنامه جلوگیری نمود. نمودار زیر این توالی را به‌صورت بصری نمایش می‌دهد.</p>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-
-    subgraph STACK["پشته‌ی فراخوانی"]
-        direction TB
-        M["main()نقطه‌ی شروع برنامه"]
-        H["handler()دارای defer + recover ✓"]
-        P["process()دارای defer پاکسازی D"]
-        D["divide()panic("divide by zero") !"]
-        M -- "call ↓" --&gt; H
-        H -- "call ↓" --&gt; P
-        P -- "call ↓" --&gt; D
-    end
-
-    subgraph STEPS["مراحل Unwind"]
-        direction TB
-        S1[① panic رخ می‌دهد — اجرای divide() متوقف می‌شودruntime.gopanic() builds...]
-        S2["② توابع defer در divide() اجرا می‌شوندپاکسازی منابع محلی (بستن فایل و غیره)"]
-        S3[③ Unwind به process() — deferهایش اجرا می‌شوندمثلاً: mutex.Unlock()، بستن DB...]
-        S4["④ Unwind به handler() — recover() اجرا می‌شود!r := recover()  // r = "divide by zero"Unwind متوقف می‌شود — کنترل برمی‌گردد"]
-        S5[⑤ برنامه از بعد از handler() ادامه می‌یابدmain() continues normally after...]
-        S1 -- "panic unwind ↑" --&gt; S2
-        S2 -- "panic unwind ↑" --&gt; S3
-        S3 -- "panic unwind ↑" --&gt; S4
-        S4 --&gt; S5
-    end
-
-    RULES["panic اجرا را متوقف می‌کندتوابع defer اجرا می‌شوندrecover unwind را متوقف می‌کند"]
-
-    subgraph CODE["// handler() — the recovery point"]
-        direction TB
-        C1["func handler() {    defer func() {        if r := recover(); r != nil {            log.Printf("recovered: %v", r)        }  // ← unwind stops here    }()    result := process()}"]
-    end
-
-    subgraph ORDER["ترتیب اجرای defer در حین Unwind (ترتیب LIFO)"]
-        direction TB
-        O1["① divide() defers"]
-        O2["② process() defers"]
-        O3["③ handler() defer → recover"]
-        O4["④ main() continues"]
-        O1 --&gt; O2 --&gt; O3 --&gt; O4
-    end
-
-    GOLD[قانون طلایی: panic فقط برای خطاهای غیرقابل بازیافت برنامه‌نویسو همیشه در...]
-
-            STEPS --&gt; RULES
-            
-    classDef titleBox fill:#ecfdf5,stroke:#10b981,stroke-width:2px,color:#1f2937;
-    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
-    classDef errBox fill:#fef2f2,stroke:#ef4444,stroke-width:1.5px,color:#1f2937;
-    classDef bothBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
-    classDef neutralBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
-    class TITLE titleBox;
-    class STACK,M,H,P goBox;
-    class D errBox;
-    class STEPS,S1,S2,S3,S5 neutralBox;
-    class S4 warnBox;
-    class RULES bothBox;
-    class CODE,C1 neutralBox;
-    class ORDER,O1,O2,O3,O4 neutralBox;
-    class GOLD warnBox;</pre>
-<figcaption>شکل ۴-۳-ب: توالی <bdi dir="ltr">Unwind</bdi> پشته در <bdi dir="ltr">Panic/Recover</bdi> — از وقوع <bdi dir="ltr">panic</bdi> تا بازیابی</figcaption>
-</figure>
 <h3 id="سناریوهای-عملیاتی-panic">4.3.10 سناریوهای عملیاتی panic/recover</h3>
 <p>استفاده از <code dir="ltr">panic</code> و <code dir="ltr">recover</code> در پروژه‌های واقعی باید بسیار محدود و هدفمند باشد. برخلاف PHP که <code>throw</code> و <code>catch</code> بخشی از جریان عادی برنامه هستند، در Go استفاده از <code dir="ltr">panic</code> برای خطاهای معمولی ضدالگوی محسوب می‌شود. با این حال، موقعیت‌هایی وجود دارند که <code dir="ltr">panic</code> بهترین و تنها انتخاب مناسب است. </p><p>همچنین <code dir="ltr">recover</code> در برخی الگوهای معماری نقش حیاتی ایفا می‌کند. در ادامه مهم‌ترین سناریوهای عملیاتی را بررسی می‌کنیم که هر برنامه‌نویس Go باید بشناسد و در جای مناسب به‌کار ببرد.</p>
 <ul>
@@ -529,7 +374,6 @@ func main() {
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/xml.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/ini.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/plaintext.min.js"></script>
-<script src="assets/js/diagrams.js"></script>
 <script src="assets/js/main.js"></script>
 </body>
 </html>

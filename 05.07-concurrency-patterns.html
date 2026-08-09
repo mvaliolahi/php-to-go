@@ -70,33 +70,6 @@
 </div>
 <p>الگوهای هم‌روندی ابزارهای ساختمانی هستند که با ترکیب <bdi dir="ltr">Goroutine</bdi>، <bdi dir="ltr">Channel</bdi>، <bdi dir="ltr">Select</bdi> و <bdi dir="ltr">Context</bdi> مسائل پیچیده‌ی هم‌روندی را به راه‌حل‌های ساده، خوانا و قابل اعتماد تبدیل می‌کنند. این الگوها سنگ‌بنای بسیاری از سرویس‌های مدرن در Go هستند — چه قصد ساخت <bdi dir="ltr">API</bdi> داشته باشید، چه <bdi dir="ltr">Worker</bdi>، چه سیستم‌های پردازش داده. تسلط به این الگوها تفاوت اصلی بین نوشتن کد همزمانِ کارآمد و کد پر از باگ و نشت حافظه است.</p>
 <p>در PHP الگوهای مشابهی وجود دارند اما معمولاً به ابزارهای خارجی وابسته‌اند. مثلاً <bdi dir="ltr">Worker Pool</bdi> در Laravel با <bdi dir="ltr">Queue</bdi> و <bdi dir="ltr">Supervisor</bdi> پیاده‌سازی می‌شود، <bdi dir="ltr">Rate Limiting</bdi> با <bdi dir="ltr">Redis</bdi> و <bdi dir="ltr">Middleware</bdi> انجام می‌شود، و <bdi dir="ltr">Pipeline</bdi> با زنجیره‌ی <bdi dir="ltr">Job</bdi>‌ها ساخته می‌شود. در Go همه‌ی این الگوها با ابزارهای داخلی زبان و تنها با چند خط کد قابل پیاده‌سازی هستند.</p>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid"><code>flowchart TB
-    subgraph PAT["الگوهای هم‌روندی در Go"]
-        direction LR
-        P1["Worker Pool"]
-        P2["Fan-out / Fan-in"]
-        P3["Pipeline"]
-        P4["Rate Limiting"]
-        P5["Semaphore"]
-        P6["Context Cancel"]
-        P7["Graceful Shutdown"]
-        P8["Tee / Split"]
-    end
-
-    BLOCKS["بلوک‌های ساختمانی:Goroutine + Channel + Select + Context + WaitGroup"]
-    NOTE["هر الگو ترکیبی از این بلوک‌هاست —مانند لگوهایی که ساختمان‌های پیچیده می‌سازند"]
-
-    PAT --&gt; BLOCKS --&gt; NOTE
-
-    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef bothBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
-    classDef neuBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
-    class PAT,P1,P2,P3,P4,P5,P6,P7,P8 goBox;
-    class BLOCKS bothBox;
-    class NOTE neuBox;</code></pre>
-<figcaption>شکل ۵-۱۳: الگوهای هم‌روندی <bdi dir="ltr">Go</bdi> و بلوک‌های ساختمانی آن‌ها</figcaption>
-</figure>
 <div class="quote-box">
 <p class="quote-text">از ابتدا برای هم‌روندی طراحی کنید. اضافه کردن هم‌روندی به یک طراحی موجود بسیار سخت‌تر از طراحی برای آن از همان ابتداست.</p>
 <p class="quote-source">
@@ -362,34 +335,6 @@ func main() {
 <p>نکته‌ی مهم در <bdi dir="ltr">Pipeline</bdi> پشتیبانی از لغو است. هر مرحله <code>ctx.Done()</code> را بررسی می‌کند و اگر سیگنال لغو رسید بلافاصله خروج می‌شود. بدون این بررسی، اگر <bdi dir="ltr">Context</bdi> لغو شود مراحل بالادست ممکن است برای همیشه مسدود بمانند و باعث نشت <bdi dir="ltr">Goroutine</bdi> شوند.</p>
 <h3 id="rate-limiting">5.7.4 الگوی Rate Limiting</h3>
 <p>بسیاری از <bdi dir="ltr">API</bdi>‌ها محدودیت نرخ درخواست دارند. مثلاً <bdi dir="ltr">GitHub API</bdi> اجازه می‌دهد ۵۰۰۰ درخواست در ساعت بفرستید. در Laravel این محدودیت معمولاً با <bdi dir="ltr">Redis</bdi> و <bdi dir="ltr">Middleware</bdi> مدیریت می‌شود. در Go دو رویکرد اصلی برای <bdi dir="ltr">Rate Limiting</bdi> وجود دارد: استفاده از <code>time.Ticker</code> (ساده) و <bdi dir="ltr">Token Bucket</bdi> (پیشرفته).</p>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart LR
-    Req["درخواست‌ها"]
-    RL["Rate Limiter"]
-    TB["Token Bucket 🪣 🪣 🪣"]
-    Allow["مجاز<br/>توکن موجود"]
-    Block["مسدود<br/>توکن تمام"]
-
-    Req --&gt; RL
-    RL --&gt; TB
-    TB -- "توکن موجود" --&gt; Allow
-    TB -- "توکن تمام" --&gt; Block
-
-    Note1["time.Ticker: هر N میلی‌ثانیه یک توکن جدید اضافه می‌شود"]
-    Note2["مثال: ۱۰۰ درخواست در ثانیه =<br/>time.NewTicker(10 * time.Millisecond)"]
-    Note1 --&gt; Note2
-
-    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef bothBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
-    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
-    classDef errBox fill:#fef2f2,stroke:#ef4444,stroke-width:1.5px,color:#1f2937;
-    classDef neuBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
-    class Req,RL,TB goBox;
-    class Allow bothBox;
-    class Block errBox;
-    class Note1,Note2 neuBox;</pre>
-<figcaption>شکل ۵-۱۴: الگوی <bdi dir="ltr">Rate</bdi> <bdi dir="ltr">Limiter</bdi> — کنترل نرخ درخواست با <bdi dir="ltr">Token</bdi> <bdi dir="ltr">Bucket</bdi></figcaption>
-</figure>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">package main
 
@@ -659,101 +604,9 @@ func fetchAll(ctx context.Context, urls []string) ([]string, error) {
 </table>
 <h2 id="نمودار-fan-out-fan-in">نمودار الگوی <bdi dir="ltr">Fan-Out / Fan-In</bdi></h2>
 <p>الگوی <bdi dir="ltr">Fan-Out / Fan-In</bdi> که در بخش قبل معرفی شد، شبیه سیستم صف در <bdi dir="ltr">Laravel</bdi> است اما با این تفاوت مهم که در Go همه چیز در داخل یک فرآیند انجام می‌شود و نیاز به سیستم خارجی مثل <bdi dir="ltr">Redis</bdi> یا <bdi dir="ltr">Supervisor</bdi> ندارد. نمودار زیر ساختار این الگو را به همراه واریانت <bdi dir="ltr">Worker Pool</bdi> نشان می‌دهد.</p>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid"><code>flowchart TB
-    In["in chanکانال ورودی"]
-    FO["▼ Fan-Out: توزیع کار"]
-    W1["Worker 1پردازش item 1goroutine"]
-    W2["Worker 2پردازش item 2goroutine"]
-    W3["Worker 3پردازش item 3goroutine"]
-    FI["▼ Fan-In: تجمیع نتایجmerge() — جمع‌آوری نتایج"]
-    Out["out chanکانال خروجی"]
-
-    In --&gt; FO
-    FO --&gt; W1
-    FO --&gt; W2
-    FO --&gt; W3
-    W1 --&gt; FI
-    W2 --&gt; FI
-    W3 --&gt; FI
-    FI --&gt; Out
-
-    subgraph VARIANT["واریانت: Worker Pool — Worker‌های ثابت از یک کانال مشترک می‌خوانند"]
-        direction LR
-        Jobs["jobs chanصف مشترک"]
-        V1["Worker 1"]
-        V2["Worker 2"]
-        V3["Worker 3"]
-        Res["results chanنتایج تجمیعی"]
-        Jobs --&gt; V1
-        Jobs --&gt; V2
-        Jobs --&gt; V3
-        V1 --&gt; Res
-        V2 --&gt; Res
-        V3 --&gt; Res
-    end
-
-    N1["تعداد ثابت Worker — محدودیت هم‌روندی — کنترل منابع"]
-    N2["ترتیب نتایج تضمین نمی‌شود — اول آمده اول پرداخت می‌شود"]
-    N1 --&gt; N2
-    GOLD[قاعده طلایی: Fan-Out = توزیع کار بین Goroutine‌ها |Fan-In = تجمیع نتایج در...]
-
-    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef bothBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
-    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
-    classDef neuBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
-    class In,Out goBox;
-    class FO,FI,W1,W2,W3,VARIANT,Jobs,V1,V2,V3,Res bothBox;
-    class N1,N2 neuBox;
-    class GOLD warnBox;</code></pre>
-<figcaption>شکل ۵-۱۵: الگوی <bdi dir="ltr">Fan-Out / Fan-In</bdi> — توزیع کار بین <bdi dir="ltr">Worker</bdi>‌ها و تجمیع نتایج</figcaption>
-</figure>
 <p>در نمودار بالا دو مدل از توزیع کار را مشاهده می‌کنید. مدل اول <bdi dir="ltr">Fan-Out / Fan-In</bdi> ساده است که هر <bdi dir="ltr">Goroutine</bdi> کانال خروجی مستقل خود را دارد و تابع <bdi dir="ltr">merge()</bdi> نتایج را تجمیع می‌کند. مدل دوم <bdi dir="ltr">Worker Pool</bdi> است که در آن تمام <bdi dir="ltr">Worker</bdi>‌ها از یک کانال ورودی مشترک می‌خوانند و به یک کانال خروجی مشترک می‌نویسند. </p><p>تفاوت اصلی این است که در <bdi dir="ltr">Worker Pool</bdi> تعداد <bdi dir="ltr">Goroutine</bdi>‌ها ثابت و محدود است اما در <bdi dir="ltr">Fan-Out</bdi> ساده ممکن است به تعداد کارها <bdi dir="ltr">Goroutine</bdi> ساخته شود. انتخاب بین این دو مدل به ماهیت کار و محدودیت‌های منابع سیستم بستگی دارد.</p>
 <h2 id="نمودار-pipeline">نمودار الگوی <bdi dir="ltr">Pipeline</bdi></h2>
 <p>الگوی <bdi dir="ltr">Pipeline</bdi> که در بخش قبل معرفی شد، مزیت کلیدی دارد که هر مرحله به صورت مستقل و همزمان با مراحل دیگر اجرا می‌شود. مکانیزم <bdi dir="ltr">Backpressure</bdi> از طریق مسدود شدن کانال‌ها به صورت طبیعی پیاده‌سازی می‌شود — اگر مرحله پایین‌دست کند باشد، مرحله بالادست به صورت خودکند کندتر می‌شود. در نمودار زیر این الگو را به‌تفصیل مشاهده می‌کنید.</p>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart LR
-    Input["Inputداده خام"]
-    Chan1["chan"]
-    S1["Stage 1: Readخواندن دادهgoroutine 1"]
-    Chan2["chan"]
-    S2["Stage 2: Processپردازش و تبدیلgoroutine 2"]
-    Chan3["chan"]
-    S3["Stage 3: Writeنوشتن نتیجهgoroutine 3"]
-    Chan4["chan"]
-    Out["Outنتیجه"]
-
-    Input --&gt; Chan1 --&gt; S1 --&gt; Chan2 --&gt; S2 --&gt; Chan3 --&gt; S3 --&gt; Chan4 --&gt; Out
-
-    subgraph PROS["مزایای الگوی Pipeline"]
-        direction TB
-        P1["اجرای همزمان مراحل — هر مرحله Goroutine مستقل — بدون انتظار"]
-        P2["Backpressure طبیعی — مسدود شدن کانال = خودکندی بالادست"]
-        P3["ترکیب‌پذیری — مراحل مانند لگو قابل اضافه/حذف"]
-        P1 --&gt; P2 --&gt; P3
-    end
-
-    subgraph CODE["کد نمونه"]
-        direction TB
-        C1["nums := generate(ctx, 1,2,3,4,5)"]
-        C2["squares := square(ctx, nums)"]
-        C3["evens := filterEven(ctx, squares)// each stage = 1 goroutine + 1 channel"]
-        C1 --&gt; C2 --&gt; C3
-    end
-
-    GOLD[قاعده طلایی: هر مرحله یک Goroutine + یک کانال ورودی + یک کانال خروجی...]
-
-    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef bothBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
-    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
-    classDef neuBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
-    class Input,Out,S1,S2,S3 goBox;
-    class Chan1,Chan2,Chan3,Chan4 bothBox;
-    class PROS,P1,P2,P3 bothBox;
-    class CODE,C1,C2,C3 neuBox;
-    class GOLD warnBox;</pre>
-<figcaption>شکل ۵-۱۶: الگوی <bdi dir="ltr">Pipeline</bdi> — هر مرحله به صورت همزمان اجرا می‌شود و <bdi dir="ltr">Backpressure</bdi> از طریق کانال‌ها مدیریت می‌شود</figcaption>
-</figure>
 <p>نکته مهم در نمودار بالا این است که هر مرحله به صورت مستقل اجرا می‌شود و فقط از طریق کانال‌ها با مراحل دیگر ارتباط دارد. این یعنی اگر مرحله دوم کند باشد مرحله اول به صورت خودکار کندتر می‌شود چون کانال بین آن‌ها پر می‌شود و ارسال جدید مسدود می‌گردد. </p><p>این رفتار همان <bdi dir="ltr">Backpressure</bdi> است که بدون هیچ کد اضافی فقط با استفاده از کانال‌های بافر‌دار یا بدون بافر پیاده‌سازی می‌شود. همچنین هر مرحله مستقل است و می‌تواند بدون تأثیر روی دیگران تغییر کند یا جایگزین شود.</p>
 <h3 id="سناریوهای-عملیاتی-concurrency-patterns">5.7.10 سناریوهای عملیاتی الگوهای هم‌روندی</h3>
 <p>الگوهای هم‌روندی در موقعیت‌های مختلف عملیاتی کاربرد دارند. در ادامه چهار سناریوی واقعی را بررسی می‌کنیم که هر کدام ترکیبی از چندین الگو را برای حل مسائل پیچیده به کار می‌گیرند. </p><p>این سناریوها نشان می‌دهند که در عمل معمولاً یک الگو به تنهایی کافی نیست و باید الگوها را به صورت خلاقانه ترکیب کرد تا بهترین نتیجه حاصل شود.</p><p>همچنین مقایسه با PHP کمک می‌کند درک بهتری از مزایای این الگوها در Go داشته باشید.</p>
@@ -808,7 +661,6 @@ func fetchAll(ctx context.Context, urls []string) ([]string, error) {
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/xml.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/ini.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/plaintext.min.js"></script>
-<script src="assets/js/diagrams.js"></script>
 <script src="assets/js/main.js"></script>
 </body>
 </html>

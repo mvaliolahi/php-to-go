@@ -68,35 +68,6 @@
 <h2 id="جنریکها">جنریک‌ها</h2><div class="abstract">
 <strong>چکیده:</strong> جنریک‌های Go (از 1.18) تعادل بین انعطاف‌پذیری و سادگی را جستجو می‌کنند. این بخش type constraints، comparable، انواع و توابع جنریک و زمان عدم استفاده را پوشش می‌دهد. تصمیم بین جنریک و واسط با مثال‌های عملی بررسی می‌شود.
 </div>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid"><code>flowchart TB
-
-    subgraph DEF["تعریف تابع جنریک"]
-        direction TB
-        D1["func Map[T any](items []T, f func(T) T) []T"]
-        D2["T = Type Parameter — در زمان کامپایل جایگزین می‌شود"]
-        D1 --- D2
-    end
-
-    subgraph INST["نمونه‌سازی برای انواع مختلف"]
-        direction LR
-        I1["Map[int](...)T = int"]
-        I2["Map[string](...)T = string"]
-        I3["Map[float64](...)T = float64"]
-    end
-
-    CONSTR[Constraints: any | comparable | constraints.Ordered | واسط سفارشیمحدود کردن...]
-
-        DEF --&gt; INST
-    
-    classDef titleBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:2px,color:#1f2937;
-    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef bothBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
-    class TITLE titleBox;
-    class DEF,D1,D2,INST,I1,I2,I3 goBox;
-    class CONSTR bothBox;</code></pre>
-<figcaption>مفهوم جنریک‌ها در <bdi dir="ltr">Go</bdi> — یک تابع، چندین نوع</figcaption>
-</figure>
 <p>از نسخه 1.18 به بعد Go قابلیت تعریف جنریک را دارد که روی انواع مختلف داده قابل استفاده‌اند. این قابلیت اجازه می‌دهد توابع، متدها و ساختارها به‌صورت جنریک نوشته شوند تا روی <strong>انواع مختلف داده</strong> بدون تکرار کد کار کنند.
 </p>
 <figure class="code go" dir="ltr">
@@ -307,35 +278,6 @@ result := Map([]int{1, 2, 3}, func(x int) int { return x * 2 })
 </code></pre>
 </figure>
 <h3 id="generic-constraint-hierarchy">2.6.7 سلسله‌مراتب محدودیت‌های نوع</h3>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-
-    ANY["any (interface{})"]
-    COMP["comparable"]
-    ORD["constraints.Ordered"]
-    CUST["Custom Interface"]
-
-    subgraph TYPES["انواع قابل پذیرش"]
-        direction TB
-        T1["int, int8...float32, float64string"]
-        T2["type Number interface {    int | float32 | float64}"]
-    end
-
-    ANY --&gt; COMP
-    COMP --&gt; ORD
-    ANY --&gt; CUST
-    ANY --&gt; TYPES
-    COMP --&gt; TYPES
-    ORD --&gt; TYPES
-
-    classDef titleBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
-    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef neutralBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
-    class TITLE titleBox;
-    class ANY,COMP,ORD,CUST goBox;
-    class TYPES,T1,T2 neutralBox;</pre>
-<figcaption>شکل ۲-۶-الف: سلسله‌مراتب محدودیت‌های جنریک در <bdi dir="ltr">Go</bdi></figcaption>
-</figure>
 <h3 id="comparable-deep">2.6.8 محدودیت comparable: عمق‌تر ببینیم</h3>
 <p>محدودیت <code>comparable</code> در <bdi dir="ltr">Go</bdi> اجازه‌ی استفاده از عملگرهای <code>==</code> و <code>!=</code> روی نوع پارامتر را می‌دهد. </p><p>این محدودیت به‌طور خودکار توسط کامپایلر برای هر نوعی که قابل مقایسه باشد برآورده می‌شود — شامل اعداد، رشته‌ها، بولی‌ها، اشاره‌گرها، آرایه‌ها با عناصر قابل مقایسه، و <code>struct</code> هایی که همه‌ی فیلدهایشان قابل مقایسه باشند. اما <code>slice</code>، <code>map</code> و <code>function</code> قابل مقایسه نیستند.</p>
 <figure class="code go" dir="ltr">
@@ -457,44 +399,6 @@ result := Map[int, string]([]int{1, 2, 3}, func(n int) string {
 </code></pre>
 </figure>
 <div class="note"><strong>قوانین استنتاج نوع:</strong> کامپایلر <bdi dir="ltr">Go</bdi> از دو مکانیزم برای استنتاج استفاده کند: (۱) <bdi dir="ltr">Type Unification</bdi> — بررسی سازگاری نوع آرگومان با پارامتر، و (۲) <bdi dir="ltr">Constraint Inference</bdi> — استفاده از محدودیت‌ها برای حدس زدن نوع ناشناخته. وقتی هر دو مکانیزم کافی نباشند، باید نوع را صراحتاً تعیین کنید. این برخلاف <bdi dir="ltr">PHP</bdi> است که هیچ نوع‌دهی جنریک واقعی ندارد و همه‌چیز در زمان اجرا تعیین می‌شود.</div>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-
-    ANY["any (interface{})"]
-    COMP["comparable"]
-    ORD["constraints.Ordered"]
-    CUST["Custom Interface"]
-
-    ANY --&gt; COMP
-    ANY --&gt; ORD
-    ANY --&gt; CUST
-
-    subgraph TYPES["انواع قابل پذیرش"]
-        direction TB
-        T1["~int, ~int8...int64~float32, ~float64~string"]
-        T2["comparable== !="]
-        T3["constraints.Ordered== != &lt; &gt; &lt;= &gt;="]
-        T4["Custom ConstraintsMethods + Union"]
-    end
-
-    COMP --&gt; T2
-    ORD --&gt; T3
-    CUST --&gt; T4
-    ANY --&gt; T1
-
-    DEC[تصمیم: آیا جنریک لازم است؟الگوریتم تکراری → جنریکرفتار مشترک → interfaceفقط...]
-
-        
-    classDef titleBox fill:#ecfdf5,stroke:#10b981,stroke-width:2px,color:#1f2937;
-    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef neutralBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
-    classDef bothBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
-    class TITLE titleBox;
-    class ANY,COMP,ORD,CUST goBox;
-    class TYPES,T1,T2,T3,T4 neutralBox;
-    class DEC bothBox;</pre>
-<figcaption dir="rtl">شکل ۲-۶-ب: سلسله‌مراتب و راهنمای تصمیم‌گیری جنریک‌ها</figcaption>
-</figure>
 <h3 id="generic-type-aliases-go-1.24">2.6.12 نام‌های مستعار نوع عمومی — Go 1.24</h3>
 <p>
  از نسخه Go 1.24، Type Aliases نیز می‌توانند پارامتر نوع داشته باشند.
@@ -560,92 +464,6 @@ type NumberLike[T NumberLike[T]] interface {
 <p>
  در نمودار زیر این رابطه‌ی زیرمجموعه‌ای به‌صورت <bdi dir="ltr">Venn diagram</bdi> نمایش داده شده است. هر دایره نشان‌دهنده‌ی یک محدودیت است و دایره‌های درونی زیرمجموعه‌ی دایره‌های بیرونی هستند. </p><p>همچنین <bdi dir="ltr">instantiation</bdi> جنریک‌ها نشان داده شده: وقتی <code>Max[int]</code> را صدا می‌زنید، کامپایلر یک نسخه‌ی اختصاصی از تابع با <code>T=int</code> ایجاد می‌کند. این برخلاف <bdi dir="ltr">PHP</bdi> است که هیچ مکانیزم مشابهی ندارد و همه‌چیز در زمان اجرا با نوع <code>mixed</code> مدیریت می‌شود.
  </p>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-
-    subgraph REL["رابطه: Ordered ⊂ comparable ⊂ any"]
-        direction TB
-        ANY["any (interface{})همه‌ی انواع — بدون محدودیت"]
-        COMP["comparableانواع قابل == و !="]
-        ORD["Orderedانواع قابل &lt; &gt;"]
-        ANY --&gt; COMP --&gt; ORD
-    end
-
-    subgraph OPS["عملگرهای موجود برای هر محدودیت"]
-        direction TB
-        O1["any: هیچکدام"]
-        O2["comparable: == !="]
-        O3["Ordered: == != &lt; &gt; &lt;= &gt;="]
-    end
-
-    subgraph TSET["انواع نمونه‌سازی"]
-        direction TB
-        N1["~int...~float...~boolstruct{}[4]int[]intmap[K]Vfunc()"]
-        N2["Customint | float64+ String()"]
-    end
-
-    subgraph DEF["تعریف تابع جنریک"]
-        direction TB
-        D1["func Max[T constraints.Ordered](a, b T) T"]
-        D2["Max[int]func Max(a, b int) int {    if a &gt; b { return a }}"]
-        D3["Max[float64]func Max(a, b float64) float64 {    if a &gt; b { return a }}"]
-        D4[✗ خطای کامپایل — نوع نامعتبرMax([]int{}, []int{}) // ✗ []int does not...]
-        D1 --&gt; D2
-        D1 --&gt; D3
-        D1 --&gt; D4
-    end
-
-    subgraph CUST["محدودیت سفارشی با union و متد"]
-        direction TB
-        C1["type Stringer interface {    ~int | ~float64 | ~string    String() string}"]
-    end
-
-    subgraph CMP["مقایسه با PHP — بدون جنریک واقعی"]
-        direction TB
-        PH[PHP: function max($a, $b) { ... } // mixed typesبدون بررسی نوع — خطا در زمان...]
-        GO[Go: func Max[T Ordered](a, b T) T { ... }ایمن در زمان کامپایل — بدون هزینه‌ی...]
-    end
-
-    subgraph EX["مثال عملی: محدودیت سفارشی و نمونه‌سازی"]
-        direction TB
-        E1[type Number interface { int | int64 | float64 }func Sum[T Number](nums []T)...]
-        E2["Sum([]int{1,2,3})       // T=int → 6Sum([]float64{1.1,2.2}) // T=float64 → 3.3"]
-    end
-
-    subgraph DEC["راهنمای تصمیم‌گیری: کدام محدودیت را انتخاب کنیم؟"]
-        direction TB
-        D5["هر نوعی → any"]
-        D6["مقایسه با == → comparable"]
-        D7["مرتب‌سازی → Ordered"]
-        D8["نیاز خاص → سفارشی"]
-    end
-
-    GOLD[قانون طلایی: محدودترین constraint را انتخاب کنید که نیازتان را برآورده...]
-    CMPGOLD[PHP: mixed / DocBlock — بررسی فقط در زمان اجراGo: Type Parameter +...]
-
-                                        
-    classDef titleBox fill:#ecfdf5,stroke:#10b981,stroke-width:2px,color:#1f2937;
-    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef phpBox fill:#f5f0fb,stroke:#777BB4,stroke-width:1.5px,color:#1f2937;
-    classDef errBox fill:#fef2f2,stroke:#ef4444,stroke-width:1.5px,color:#1f2937;
-    classDef bothBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
-    classDef neutralBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
-    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
-    class TITLE titleBox;
-    class REL,ANY,COMP,ORD goBox;
-    class OPS,O1,O2,O3 neutralBox;
-    class TSET,N1,N2 neutralBox;
-    class DEF,D1,D2,D3 goBox;
-    class D4 errBox;
-    class CUST,C1 goBox;
-    class CMP,PH phpBox;
-    class GO goBox;
-    class EX,E1,E2 goBox;
-    class DEC,D5,D6,D7,D8 bothBox;
-    class GOLD warnBox;
-    class CMPGOLD bothBox;</pre>
-<figcaption dir="rtl">شکل ۳-۶: نمودار ون مجموعه‌ی محدودیت‌های نوع، نمونه‌سازی جنریک‌ها و مقایسه با <bdi dir="ltr">PHP</bdi></figcaption>
-</figure>
 <p>
  همان‌طور که نمودار ون نشان می‌دهد، محدودیت‌ها لایه‌لایه هستند: هر لایه‌ی درونی زیرمجموعه‌ی لایه‌ی بیرونی است و عملگرهای بیشتری فراهم می‌کند. وقتی تابع جنریک <code>Max[T constraints.Ordered]</code> را با نوع <code>int</code> نمونه‌سازی می‌کنید، کامپایلر بررسی می‌کند که <code>int</code> در مجموعه‌ی <code>Ordered</code> قرار دارد. </p><p>اگر سعی کنید <code>Max[[]int]</code> را صدا بزنید، خطای کامپایل دریافت می‌کنید چون <code>[]int</code> نه در <code>Ordered</code> و نه حتی در <code>comparable</code> قرار دارد. این ایمنی در زمان کامپایل یکی از بزرگ‌ترین مزیت‌های <bdi dir="ltr">Go</bdi> نسبت به <bdi dir="ltr">PHP</bdi> است که هیچ مکانیزم مشابهی ندارد.
  </p>
@@ -705,7 +523,6 @@ type NumberLike[T NumberLike[T]] interface {
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/xml.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/ini.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/plaintext.min.js"></script>
-<script src="assets/js/diagrams.js"></script>
 <script src="assets/js/main.js"></script>
 </body>
 </html>

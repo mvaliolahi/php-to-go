@@ -102,54 +102,6 @@
 <h3 id="تغییر-پارادایم-از-thread-به-goroutine">5.0.3 تغییر پارادایم: ازThreadبهGoroutine</h3>
 <p>در زبان‌هایی مانند Java یا C++، <bdi dir="ltr">Thread</bdi>‌های سیستم‌عامل ابزار اصلی هم‌روندی هستند. هر <bdi dir="ltr">Thread</bdi> حداقل ۱ مگابایت <bdi dir="ltr">Stack</bdi> اختصاصی دارد (در لینوکس پیش‌فرض ۸ مگابایت)، ساخت آن نیازمند <bdi dir="ltr">syscall</bdi> است، و زمان‌بندی آن توسط کرنل سیستم‌عامل انجام می‌شود. این محدودیت‌ها باعث می‌شوند ایجاد ده‌ها هزار <bdi dir="ltr">Thread</bdi> عملاً غیرممکن باشد.</p>
 <p><bdi dir="ltr">Goroutine</bdi>‌ها این محدودیت‌ها را از سه جهت اساسی حل می‌کنند. نخست، <bdi dir="ltr">Stack</bdi> اولیه‌ی بسیار کوچک (۲ کیلوبایت) که به‌صورت پویا رشد می‌کند، اجازه می‌دهد صدها هزار <bdi dir="ltr">Goroutine</bdi> همزمان اجرا شوند. دوم، <bdi dir="ltr">Scheduler</bdi> داخلی Go به‌جای کرنل سیستم‌عامل، زمان‌بندی را در <bdi dir="ltr">User Space</bdi> انجام می‌دهد که بسیار سریع‌تر است. </p><p>سوم، مدل <bdi dir="ltr">M:N Scheduler</bdi> تعداد بسیار زیادی <bdi dir="ltr">Goroutine</bdi> را روی تعداد محدودی <bdi dir="ltr">Thread</bdi> سیستم‌عامل نگاشت می‌کند و بهره‌وری منابع را به حداکثر می‌رساند.</p>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart LR
-    subgraph PHP["مدل PHP: یک فرآیند = یک درخواست"]
-        direction TB
-        P1["Req 1<br/>~8MB"]
-        P2["Req 2<br/>~8MB"]
-        P3["Req 3<br/>~8MB"]
-        PN["...<br/>Process N<br/>~8MB"]
-        Pool["PHP-FPM Worker Pool<br/>(OS Scheduler)"]
-        P1 --&gt; Pool
-        P2 --&gt; Pool
-        P3 --&gt; Pool
-        PN --&gt; Pool
-        PNote["ارتباط فقط از طریق Redis/DB<br/>— بدون حافظه مشترک"]
-    end
-    subgraph GO["مدل Go: یک فرآیند = هزاران Goroutine"]
-        direction TB
-        Gs["G1 · G2 · G3 · G4 · ... · Gn<br/>هر کدام ~2KB — ارتباط از طریق Channel"]
-        Sched["Go Runtime Scheduler<br/>(M:N — User Space)"]
-        T1["Thread 1"]
-        T2["Thread 2"]
-        TN["Thread N"]
-        Gs --&gt; Sched
-        Sched --&gt; T1
-        Sched --&gt; T2
-        Sched --&gt; TN
-        GNote["ارتباط ایمن از طریق Channel<br/>— بدون نیاز به قفل دستی"]
-    end
-    subgraph CMP["مقایسه عملکردی"]
-        direction TB
-        C1["PHP: ۱۰۰۰ درخواست = ~۸ گیگابایت حافظه"]
-        C2["Go: ۱۰۰۰ درخواست = ~۲ مگابایت حافظه"]
-        C3["تفاوت: ۴۰۰۰ برابر کمتر!"]
-        C4["PHP: context switch ~۱μs |<br/>Go: goroutine switch ~۱۰۰ns — ۱۰ برابر سریع‌تر"]
-        C1 --&gt; C2 --&gt; C3 --&gt; C4
-    end
-
-    classDef phpBox fill:#f5f0fb,stroke:#777BB4,stroke-width:1.5px,color:#1f2937;
-    classDef goBox  fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef bothBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
-    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
-    classDef neuBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
-    class PHP,P1,P2,P3,PN,Pool,PNote phpBox;
-    class GO,Gs,Sched,T1,T2,TN,GNote goBox;
-    class CMP,C1,C2,C3 bothBox;
-    class C4 warnBox;</pre>
-<figcaption>شکل ۱-۵: مقایسه مدل پردازشی <bdi dir="ltr">PHP</bdi> و <bdi dir="ltr">Go</bdi> — فرآیندهای سنگین در برابر <bdi dir="ltr">Goroutine</bdi>‌های سبک</figcaption>
-</figure>
 <h3 id="مقدمه‌ای-بر-csp">5.0.4 مقدمه‌ای برCSP</h3>
 <p>مدل <bdi dir="ltr">CSP</bdi> (<bdi dir="ltr">Communicating Sequential Processes</bdi>) یک مدل ریاضی برای توصیف سیستم‌های همزمان است که توسط تونی هور (<bdi dir="ltr">Tony Hoare</bdi>) در سال ۱۹۷۸ ارائه شد. ایده‌ی اصلی <bdi dir="ltr">CSP</bdi> ساده اما قدرتمند است: به‌جای اینکه فرآیندهای همزمان از حافظه‌ی مشترک استفاده کنند، از طریق کانال‌های ارتباطی پیام رد و بدل می‌کنند. </p><p>هر فرآیند به‌صورت <bdi dir="ltr">Sequential</bdi> اجرا می‌شود، اما فرآیندهای مختلف می‌توانند همزمان با یکدیگر ارتباط برقرار کنند.</p>
 <p>Go این مدل را با دو سازوکار بنیادی پیاده‌سازی کرده است: <bdi dir="ltr">Goroutine</bdi>‌ها (فرآیندهای سبک‌وزن) و <bdi dir="ltr">Channel</bdi>‌ها (کانال‌های ارتباطی). شعار معروف Go این است: <bdi dir="ltr">"Share memory by communicating, don't communicate by sharing memory"</bdi> — حافظه را با ارتباط به اشتراک نه با اشتراک حافظه ارتباط برقرار کنید. </p><p>این رویکرد مزایای متعددی دارد: از بین رفتن نیاز به قفل‌های دستی، کاهش خطاهای <bdi dir="ltr">Race Condition</bdi>، و سادگی ذهنی در طراحی سیستم‌های همزمان.</p>
@@ -158,30 +110,6 @@
 <p>یکی از پایه‌ای‌ترین الگوهایی که Go بر آن تکیه دارد الگوی <bdi dir="ltr">Fork-Join</bdi> است. این الگو نقطه‌ی ورود ساده اما قدرتمندی برای درک مدل هم‌روندی در Go است. در نظر بگیرید که با یک <bdi dir="ltr">Task</bdi> بزرگ روبه‌رو هستید — مثلاً پردازش یک فایل عظیم یا ارسال نوتیفیکیشن به هزاران کاربر. </p><p>در مدل <bdi dir="ltr">Fork-Join</bdi> ابتدا این <bdi dir="ltr">Task</bdi> بزرگ را به چند بخش کوچک‌تر تقسیم می‌کنید (<bdi dir="ltr">Fork</bdi>)، سپس هر بخش را به‌طور هم‌زمان اجرا می‌کنید، و در پایان منتظر می‌مانید تا همه‌ی آن‌ها به اتمام برسند (<bdi dir="ltr">Join</bdi>) و نتیجه‌ی نهایی پس از ادغام نتایج آماده می‌شود.</p>
 <p>در زبان PHP به‌خصوص در فریم‌ورک‌هایی مانند Laravel معمولاً اجرای هم‌زمان کارها از طریق <bdi dir="ltr">Queue</bdi> و <bdi dir="ltr">Worker</bdi> انجام می‌شود. مثلاً برای ارسال ایمیل به هزار کاربر شما یک <bdi dir="ltr">Job Queue</bdi> می‌سازید، <bdi dir="ltr">Job</bdi>‌ها را <bdi dir="ltr">dispatch</bdi> می‌کنید و <bdi dir="ltr">Horizon</bdi> یا <bdi dir="ltr">Supervisor</bdi> آن‌ها را مدیریت می‌کنند. </p><p>این مدل برای بسیاری از پروژه‌ها جواب می‌دهد اما نیاز به یک صف خارجی مثل Redis، فرآیندهای مستقل، مدیریت خطاها، اجرای مجدد <bdi dir="ltr">Job</bdi>‌های ناموفق و پیچیدگی‌های دیگری نیز دارد.</p>
 <p>در Go این <bdi dir="ltr">Fork</bdi> یا تقسیم‌بندی با استفاده از <bdi dir="ltr">Goroutine</bdi>‌ها انجام می‌شود — با اضافه کردن تنها یک کلمه‌ی کلیدی <code>go</code>. برای مرحله‌ی <bdi dir="ltr">Join</bdi> ابزارهایی مانند <code>sync.WaitGroup</code> یا <bdi dir="ltr">Channel</bdi> به کار می‌روند. </p><p>نکته‌ی مهم اینجاست که برخلاف PHP، در Go نیازی به پردازش‌های جداگانه یا صف خارجی نیست — همه‌چیز در درون خود برنامه و تنها با چند خط کد انجام می‌شود.</p>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-    Main["Task اصلی"]
-    G1["goroutine 1"]
-    G2["goroutine 2"]
-    G3["goroutine 3"]
-    Join["WaitGroup / Channel Join"]
-    Cont["ادامه برنامه با نتایج"]
-    Main --&gt; G1
-    Main --&gt; G2
-    Main --&gt; G3
-    G1 --&gt; Join
-    G2 --&gt; Join
-    G3 --&gt; Join
-    Join --&gt; Cont
-
-    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef bothBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
-    classDef neuBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
-    class Main,G1,G2,G3 goBox;
-    class Join bothBox;
-    class Cont neuBox;</pre>
-<figcaption>شکل ۲-۵: الگوی <bdi dir="ltr">Fork-Join</bdi> در <bdi dir="ltr">Go</bdi></figcaption>
-</figure>
 <p>به مثال زیر توجه کنید. این مثال الگوی <bdi dir="ltr">Fork-Join</bdi> را با ارسال موازی نوتیفیکیشن به چند کاربر نشان می‌دهد (مفاهیمی مثل <bdi dir="ltr">WaitGroup</bdi> در ادامه توضیح داده خواهد شد):</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">package main
@@ -279,7 +207,6 @@ func main() {
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/xml.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/ini.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/plaintext.min.js"></script>
-<script src="assets/js/diagrams.js"></script>
 <script src="assets/js/main.js"></script>
 </body>
 </html>

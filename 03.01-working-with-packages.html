@@ -68,38 +68,6 @@
 <h2 id="کار-با-پکیجها">کار با پکیج‌ها</h2><div class="abstract">
 <strong>چکیده:</strong> پکیج واحد سازمان‌دهی کد در Go است و قواعد visibility ساده‌ای دارد. این بخش ساختار پکیج، import، visibility مبتنی بر حروف و الگوهای سازمان‌دهی را پوشش می‌دهد. تفاوت با PSR-4 در PHP و بهترین روش‌ها بررسی می‌شود.
 </div>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-    title(["ساختار پکیج‌ها در Go"])
-    subgraph PKGS["پکیج‌ها"]
-        direction LR
-        MAIN["package main<br/>نقطه‌ی ورود برنامه"]
-        UTILS["utils<br/>Add(), Format()"]
-        MODELS["models<br/>User, Product"]
-    end
-    subgraph VIS["قوانین دیدپذیری"]
-        direction LR
-        EXP["Exported (حرف بزرگ): Public<br/>مثل: Add, User, Format"]
-        UEXP["Unexported (حرف کوچک): Private<br/>مثل: subtract, validate"]
-    end
-    note(["import "myapp/utils" → دسترسی فقط به نمادهای Exported"])
-    title ~~~ PKGS
-    PKGS ~~~ VIS
-    VIS ~~~ note
-
-    classDef titleBox fill:#f8fafc,stroke:#475569,stroke-width:1px,color:#1f2937,font-weight:bold;
-    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef okBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
-    classDef errBox fill:#fef2f2,stroke:#ef4444,stroke-width:1.5px,color:#1f2937;
-    classDef noteBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1px,color:#1f2937,font-style:italic;
-    class title titleBox;
-    class MAIN goBox;
-    class UTILS,MODELS okBox;
-    class EXP okBox;
-    class UEXP errBox;
-    class note noteBox;</pre>
-<figcaption>ساختار پکیج‌ها و سطح دسترسی در <bdi dir="ltr">Go</bdi></figcaption>
-</figure>
 <p>پکیج‌ها واحد اصلی سازمان‌دهی کد هستند. هر فایل Go به یک پکیج‌ تعلق دارد و این پکیج‌ها به کمک <strong dir="ltr">import</strong> می‌توانند با یکدیگر تعامل داشته باشند. </p><p>برخلاف PHP که در آن فایل‌ها به‌صورت مستقل بارگذاری می‌شوند و Namespaceها فقط نقش ساختاری دارند در Go پکیج‌ها تأثیر مستقیمی بر ساختار پروژه، سطح دسترسی و مدیریت dependency ها دارند.</p>
 <h3 id="تعریف-package">3.1.1 تعریف Package</h3>
 <p>در ابتدای هر فایل Go باید مشخص کنیم که فایل متعلق به کدام Package است:</p>
@@ -111,31 +79,6 @@
 </p>
 <p><strong>ساختار کلی پروژه‌ها</strong></p>
 <p>در فصل یک ساختار استاندارد پروژه های Go توضیح داده شد. یک پروژه‌ی استاندارد Go ممکن است به‌صورت زیر سازماندهی شود:</p>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-    ROOT["myapp/"]
-    MAIN["main.go<br/><i>// package main</i>"]
-    MOD["go.mod"]
-    UTILS["utils/<br/><i>// package utils</i>"]
-    MATH["mathutils.go"]
-    MODELS["models/<br/><i>// package models</i>"]
-    USER["user.go"]
-
-    ROOT --&gt; MAIN
-    ROOT --&gt; MOD
-    ROOT --&gt; UTILS
-    ROOT --&gt; MODELS
-    UTILS --&gt; MATH
-    MODELS --&gt; USER
-
-    classDef rootBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:2px,color:#1f2937,font-weight:bold;
-    classDef dirBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937,font-weight:bold;
-    classDef fileBox fill:#f8fafc,stroke:#475569,stroke-width:1px,color:#1f2937;
-    class ROOT rootBox;
-    class UTILS,MODELS dirBox;
-    class MAIN,MOD,MATH,USER fileBox;</pre>
-<figcaption>ساختار پروژه <bdi dir="ltr">Go</bdi> با پکیج‌ها</figcaption>
-</figure>
 <p>درون هر دایرکتوری فایل‌های go. باید همان نام Package دایرکتوری را استفاده کنند. به‌طور مثال user.go در پوشه‌ی models باید با package models آغاز شود.</p>
 <h3 id="import-کردن-پکیجها">3.1.2 Import کردن پکیج‌ها</h3>
 <figure class="code go" dir="ltr">
@@ -267,27 +210,6 @@ func main() {
 <div class="tip"><strong>چه زمانی از <code>internal</code> استفاده کنیم؟</strong> هر زمان که پیاده‌سازی داخلی ماژولی را می‌خواهید از مصرف‌کننده‌ی خارجی مخفی کنید — مثلاً ساختارهای داده‌ی داخلی، توابع کمکی که بخشی از API عمومی نیستند، یا منطقی که ممکن است در آینده تغییر کند. این کار encapsulation قوی‌تری نسبت به قرارداد ساده‌ی <bdi dir="ltr">exported/unexported</bdi> فراهم می‌کند.</div>
 <h3 id="جلوگیری-از-وابستگی-دوری">3.1.11 جلوگیری از Circular Dependencies</h3>
 <p>یکی از بزرگترین تفاوت‌های Go با PHP در مدیریت وابستگی‌ها این است که Go <strong>هیچ‌گونه وابستگی دوری را اجازه نمی‌دهد</strong>. اگر پکیج A پکیج B را <bdi dir="ltr">import</bdi> کند و پکیج B نیز پکیج A را <bdi dir="ltr">import</bdi> کند، کامپایلر خطا می‌دهد. </p><p>این محدودیت عمدی است و طراحی خوبی محسوب می‌شود چون ساختار پروژه را همیشه یک گراف بدون دور (<bdi dir="ltr">DAG</bdi>) نگه می‌دارد.</p>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart LR
-    subgraph BAD["وابستگی دوری — غیرمجاز"]
-        direction LR
-        A1["pkg A"] --&gt; B1["pkg B"]
-        B1 --&gt; A1
-    end
-    subgraph GOOD["راه‌حل: پکیج مشترک"]
-        direction TB
-        A2["pkg A"] --&gt; SHARED["shared"]
-        B2["pkg B"] --&gt; SHARED
-    end
-
-    classDef errBox fill:#fef2f2,stroke:#ef4444,stroke-width:1.5px,color:#1f2937;
-    classDef okBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
-    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    class A1,B1 errBox;
-    class A2,B2 okBox;
-    class SHARED goBox;</pre>
-<figcaption dir="rtl">شکل ۱-۳: وابستگی دوری و راه‌حل آن با پکیج مشترک</figcaption>
-</figure>
 <p>در PHP وابستگی دوری بین فایل‌ها با <code>require</code>/<code>include</code> می‌تواند بدون خطا کار کند (هرچند مشکلات ایجاد کند) اما در Go کامپایلر به‌سادگی اجازه‌ی آن را نمی‌دهد. راه‌حل معمول این است که کد مشترک را در یک پکیج سومی قرار دهید که هر دو پکیج به آن وابسته باشند.</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">// Wrong — compile error: import cycle not allowed
@@ -334,84 +256,6 @@ func Greet() string { return "Hello" }
 </table>
 <h3 id="گراف-واردات-پکیج-و-قوانین-دیدپذیری">3.1.14 گراف وابستگی پکیج و قوانین دیدپذیری</h3>
 <p>یکی از مهم‌ترین مفاهیمی که برنامه‌نویسان PHP باید درک کنند، نحوه‌ی سازمان‌دهی وابستگی‌ها بین پکیج‌ها در Go است. در PHP هر فایل مستقل است و با دستورات <bdi dir="ltr">use</bdi> و <bdi dir="ltr">require</bdi> به سایر بخش‌ها وصل می‌شود، اما در Go پکیج‌ها یک گراف جهت‌دار بدون دور (<bdi dir="ltr">DAG</bdi>) تشکیل می‌دهند که کامپایلر آن را بررسی و اعتبارسنجی می‌کند. </p><p>درک این گراف به شما کمک می‌کند تا پروژه‌هایی با ساختار ماژولار و قابل نگهداری بسازید. هر پکیج فقط به پکیج‌هایی وابسته است که صراحتاً آن‌ها را <bdi dir="ltr">import</bdi> کرده و هیچ‌گونه وابستگی دوری مجاز نیست. این محدودیت عمدی است و باعث می‌شود وابستگی‌ها همیشه قابل ردیابی و قابل فهم باشند.</p>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-    title(["گراف وابستگی پکیج‌ها و قوانین دیدپذیری در Go"])
-    MAIN["package mainنقطه‌ی ورود برنامه"]
-    subgraph STD["کتابخانه استاندارد"]
-        direction TB
-        FMT["fmtکتابخانه استاندارد"]
-        HTTP["net/httpکتابخانه استاندارد"]
-    end
-    subgraph INT["پکیج‌های internal — فقط درون myapp"]
-        direction TB
-        HANDLER["myapp/internal/handlerفقط درون myapp قابل دسترسی"]
-        SERVICE["myapp/internal/serviceفقط درون myapp قابل دسترسی"]
-    end
-    VALIDATOR["myapp/pkg/validatorقابل استفاده توسط همه (public API)"]
-
-    MAIN --&gt; FMT
-    MAIN --&gt; HTTP
-    MAIN --&gt; HANDLER
-    MAIN --&gt; SERVICE
-    MAIN --&gt; VALIDATOR
-    HANDLER -.-&gt;|"وابستگی داخلی"| SERVICE
-    HANDLER -.-&gt; VALIDATOR
-
-    subgraph VIS["قوانین دیدپذیری (Visibility Rules)"]
-        direction LR
-        EXP["Exported ✓حرف اول بزرگ: Add()، User، MaxSizeمعادل: public در PHP"]
-        UEXP["Unexported ✗حرف اول کوچک: subtract()، validate()معادل: private در PHP"]
-    end
-
-    subgraph CMP["مقایسه: PHP vs Go"]
-        direction LR
-        subgraph PHPS["PHP"]
-            direction TB
-            P1["namespace + use"]
-            P2["namespace App\\Services;"]
-            P3["use App\\Models\\User;"]
-            P4["public / private / protected"]
-            P1 --- P2 --- P3 --- P4
-        end
-        subgraph GOS["Go"]
-            direction TB
-            G1["package + import"]
-            G2["package service"]
-            G3["import "myapp/models""]
-            G4["Exported / Unexported (حرف بزرگ/کوچک)"]
-            G1 --- G2 --- G3 --- G4
-        end
-    end
-
-    WARN([⚠️ internal/ فقط توسط کدی قابل import است که در زیرشاخه‌ی والد آن قرار دارد...])
-
-    title ~~~ MAIN
-    MAIN ~~~ STD
-    MAIN ~~~ INT
-    MAIN ~~~ VALIDATOR
-    STD ~~~ VIS
-    INT ~~~ VIS
-    VIS ~~~ CMP
-    CMP ~~~ WARN
-
-    classDef titleBox fill:#f8fafc,stroke:#475569,stroke-width:1px,color:#1f2937,font-weight:bold;
-    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
-    classDef okBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
-    classDef errBox fill:#fef2f2,stroke:#ef4444,stroke-width:1.5px,color:#1f2937;
-    classDef phpBox fill:#f5f0fb,stroke:#777BB4,stroke-width:1.5px,color:#1f2937;
-    classDef noteBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1px,color:#1f2937,font-style:italic;
-    class title titleBox;
-    class MAIN,VALIDATOR,FMT,HTTP goBox;
-    class HANDLER,SERVICE warnBox;
-    class EXP okBox;
-    class UEXP errBox;
-    class P1,P2,P3,P4 phpBox;
-    class G1,G2,G3,G4 goBox;
-    class WARN noteBox;</pre>
-<figcaption>گراف وابستگی پکیج‌ها، قوانین دیدپذیری و مقایسه‌ی <bdi dir="ltr">PHP</bdi> و <bdi dir="ltr">Go</bdi></figcaption>
-</figure>
 <p>در نمودار بالا پکیج <bdi dir="ltr">main</bdi> به‌عنوان مرکز گراف نمایش داده شده و پیکان‌ها جهت وابستگی را نشان می‌دهند. پکیج‌های استاندارد مانند <bdi dir="ltr">fmt</bdi> و <bdi dir="ltr">net/http</bdi> در سمت چپ با رنگ آبی مشخص شده‌اند. </p><p>پکیج‌های <bdi dir="ltr">internal</bdi> که فقط درون پروژه قابل دسترسی هستند با رنگ نارنجی نمایش داده شده‌اند و پکیج <bdi dir="ltr">pkg/validator</bdi> به‌عنوان یک <bdi dir="ltr">API</bdi> عمومی که هر مصرف‌کننده‌ی خارجی می‌تواند از آن استفاده کند در پایین قرار گرفته است. </p><p>خط‌چین‌ها وابستگی‌های بین پکیج‌های فرعی را نشان می‌دهند، مثلاً <bdi dir="ltr">handler</bdi> به <bdi dir="ltr">service</bdi> و <bdi dir="ltr">validator</bdi> وابسته است.</p>
 <h3 id="سناریوهای-عملیاتی-پکیجها">3.1.15 سناریوهای عملیاتی</h3>
 <ul>
@@ -467,7 +311,6 @@ func Greet() string { return "Hello" }
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/xml.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/ini.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/plaintext.min.js"></script>
-<script src="assets/js/diagrams.js"></script>
 <script src="assets/js/main.js"></script>
 </body>
 </html>

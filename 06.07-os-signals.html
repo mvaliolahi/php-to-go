@@ -70,33 +70,6 @@
 </div>
 <p>در سیستم‌عامل‌های Unix-like برنامه‌ها می‌توانند سیگنال‌هایی از سیستم‌عامل یا کاربر دریافت کنند. مثال رایج آن فشردن <code dir="ltr">Ctrl+C</code> است که سیگنال <code dir="ltr">SIGINT</code> را ارسال می‌کند. برنامه‌های حرفه‌ای باید این سیگنال‌ها را دریافت و به‌درستی مدیریت کنند تا منابع را آزاد کنند، اتصالات را ببندند و به‌صورت ایمن خارج شوند.</p>
 <p>این موضوع در Go بسیار مهم‌تر از PHP است زیرا برنامه‌های Go معمولاً بلندمدت اجرا می‌شوند (سرورها، سرویس‌ها) و خاموشی ناگهانی می‌تواند باعث از دست رفتن داده یا خرابی منابع شود.</p>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-    subgraph SIGS[" "]
-        direction TB
-        A1["Ctrl+C → SIGINT"]
-        A2["kill command → SIGTERM"]
-        A3["Docker/Systemd → SIGTERM"]
-    end
-    NOTIFY["signal.Notify()<br/>گوش دادن به سیگنال‌ها<br/>chan os.Signal"]
-    SIGS --&gt; NOTIFY
-    NOTIFY --&gt; RECV["&lt;-sigs<br/>سیگنال دریافت شد"]
-    RECV --&gt; START["شروع خاموشی ایمن<br/>(graceful shutdown)"]
-    START --&gt; C1["پاکسازی و خروج ایمن"]
-    C1 --&gt; C2["بستن اتصالات دیتابیس"]
-    C1 --&gt; C3["ذخیره وضعیت"]
-    C1 --&gt; C4["اجرای توابع defer"]
-
-    classDef sigBox   fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
-    classDef opBox    fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef startBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937,font-weight:bold;
-    classDef cleanBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
-    class A1,A2,A3 sigBox;
-    class NOTIFY,RECV opBox;
-    class START startBox;
-    class C1,C2,C3,C4 cleanBox;</pre>
-<figcaption>شکل ۶-۷ — جریان دریافت و مدیریت سیگنال‌های سیستم‌عامل در <bdi dir="ltr">Go</bdi></figcaption>
-</figure>
 <h3 id="گوش-دادن-به-سیگنال">6.7.1 گوش دادن به سیگنال‌ها</h3>
 <p>در Go می‌توان به کمک <code dir="ltr">os/signal</code> به این سیگنال‌ها گوش داد:</p>
 <figure class="code go" dir="ltr">
@@ -356,34 +329,6 @@ func main() {
 <div class="tip">
 <strong>نکته:</strong> <code dir="ltr">http.ErrServerClosed</code> خطایی نیست که نیاز به گزارش دادن داشته باشد. این خطا فقط نشان می‌دهد که <code dir="ltr">Shutdown()</code> فراخوانی شده است. به همین دلیل در شرط <code dir="ltr">if</code> آن را فیلتر می‌کنیم.
 </div>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-    subgraph HEADER["جریان Graceful Shutdown"]
-        direction LR
-        S1["۱. سیگنال دریافت شد<br/>SIGINT / SIGTERM<br/>&lt;-quit"]
-        S2["۲. توقف پذیرش<br/>درخواست‌های جدید رد می‌شوند<br/>srv.Shutdown(ctx)"]
-        S3["⏳ ۳. انتظار<br/>اتمام درخواست‌های فعال<br/>ctx deadline: 30s"]
-        S4["۴. بستن اتصالات<br/>آزادسازی منابع<br/>defer cancel()"]
-        S5["۵. خروج<br/>os.Exit(0)"]
-        S1 --&gt; S2 --&gt; S3 --&gt; S4 --&gt; S5
-    end
-
-    subgraph TIMING["نمونه زمان‌بندی درخواست‌ها"]
-        direction TB
-        T1["درخواست A (کامل ✓)"]
-        T2["درخواست B (کامل ✓)"]
-        T3["درخواست C (تایم‌اوت — بیش از ۳۰ ثانیه)"]
-        T4["سیگنال خاموشی ←"]
-        T5["← انقضای Context"]
-        T1 --- T2 --- T3 --- T4 --- T5
-    end
-
-    classDef stepBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef timeBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
-    class S1,S2,S3,S4,S5 stepBox;
-    class T1,T2,T3,T4,T5 timeBox;</pre>
-<figcaption>شکل ۶-۸ — جریان <bdi dir="ltr">Graceful</bdi> <bdi dir="ltr">Shutdown</bdi>: از دریافت سیگنال تا خروج ایمن</figcaption>
-</figure>
 <h3 id="ترکیب-با-waitgroup">6.7.8 ترکیب با WaitGroup برای مدیریت کارهای پس‌زمینه</h3>
 <p>گاهی اوقات علاوه بر درخواست‌های HTTP، گوروتین‌های دیگری هم دارید که باید منتظر اتمام آن‌ها بمانید. مثلاً یک consumer که از Kafka پیام می‌خواند یا یک worker که کارهای پس‌زمینه انجام می‌دهد. در این حالت باید از <code dir="ltr">sync.WaitGroup</code> برای منتظر ماندن استفاده کنید:</p>
 <figure class="code go" dir="ltr">
@@ -695,41 +640,6 @@ func main() {
 }
 </code></pre>
 </figure>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-    subgraph HEADER["جریان مدیریت سیگنال با Context"]
-        direction TB
-        S1["SIGINT"]
-        S2["SIGTERM"]
-        S3["SIGHUP"]
-        S1 --&gt; NC["signal.NotifyContext<br/>ایجاد Context لغو‌شونده"]
-        S2 --&gt; NC
-        S3 --&gt; NC
-        NC --&gt; DONE["ctx.Done() ← signal<br/>ctx context.Context"]
-        DONE --&gt; H["HTTP Server<br/>srv.Shutdown(ctx)"]
-        DONE --&gt; W["Worker goroutines<br/>&lt;-ctx.Done() → return"]
-        DONE --&gt; DB["DB Consumer<br/>tx.Rollback() → return"]
-    end
-
-    subgraph STEPS["مراحل خاموشی ایمن"]
-        direction TB
-        ST1["۱. سیگنال دریافت → ctx.Done() بسته می‌شود"]
-        ST2["۲. تمام گوروتین‌ها ctx.Done() را می‌بینند و شروع به پاکسازی می‌کنند"]
-        ST3["۳. سرور HTTP پذیرش جدید متوقف + منتظر درخواست‌های فعال"]
-        ST4["۴. WaitGroup منتظر اتمام همه گوروتین‌ها (یا timeout)"]
-        ST1 --&gt; ST2 --&gt; ST3 --&gt; ST4
-    end
-
-    classDef sigBox   fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
-    classDef opBox    fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937,font-weight:bold;
-    classDef compBox  fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
-    classDef stepBox  fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
-    class S1,S2,S3 sigBox;
-    class NC,DONE opBox;
-    class H,W,DB compBox;
-    class ST1,ST2,ST3,ST4 stepBox;</pre>
-<figcaption>شکل ۶-۷-ب — جریان مدیریت سیگنال با <bdi dir="ltr">signal.NotifyContext</bdi> و <bdi dir="ltr">Context</bdi> مشترک</figcaption>
-</figure>
 <h3 id="خلاصه-graceful-shutdown">6.7.12 خلاصه الگوی Graceful Shutdown</h3>
 <table class="comparison-table" dir="rtl">
 <thead>
@@ -746,48 +656,6 @@ func main() {
 </table>
 <h3 id="دنباله-خاموشی-ایمن">6.7.13 دنباله‌ی خاموشی ایمن: از سیگنال تا خروج</h3>
 <p>درک دقیق ترتیب مراحل خاموشی ایمن برای ساخت سرورهای مقاوم در برابر خرابی ضروری است. شکل زیر یک نمای زمان‌بندی‌شده از کل فرآیند خاموشی را نشان می‌دهد: از لحظه‌ی دریافت سیگنال تا خروج نهایی. هر مرحله با رنگ مشخص شده — مراحل سبز نشان‌دهنده‌ی خاموشی ایمن و مراحل قرمز نشان‌دهنده‌ی مسیر اجباری هستند. </p><p>همچنین مسیر انتشار لغو <code dir="ltr">Context</code> از کانال سیگنال به تمام گوروتین‌ها قابل مشاهده است. </p><p>بدون خاموشی ایمن، اتصالات ناگهان قطع می‌شوند، داده‌ها نیمه‌کاره رها می‌شوند و منابع آزاد نمی‌شوند — دقیقاً همان مشکلاتی که در محیط‌های عملیاتی باعث از دست رفتن داده و نارضایتی کاربران می‌شوند.</p>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-    subgraph HEADER["دنباله‌ی خاموشی ایمن: از سیگنال تا خروج"]
-        direction TB
-        NORMAL["عملیات عادی — سرور فعال، درخواست‌ها پردازش می‌شوندTime →"]
-        NORMAL --&gt; SIG["SIGTERM دریافت شدsignal.Notify() → chan os.Signal → ctx.Done()"]
-        SIG --&gt; S1[۱. توقف پذیرش اتصالات جدیدsrv.Shutdown(ctx) → Listener closes → New...]
-        S1 --&gt; S2[۲. انتظار برای اتمام درخواست‌های در حال پردازش (با...]
-        S2 --&gt; S3[۳. بستن اتصالات دیتابیس و صف پیامdb.Close() → mq.Disconnect() →...]
-        S3 --&gt; S4[۴. فلش بافرها و ذخیره وضعیتwriter.Flush() → log.Sync() → saveState() → defer...]
-        S4 --&gt; S5["۵. خروج ایمن — os.Exit(0)"]
-    end
-
-    subgraph DANGER["بدون خاموشی ایمن (خطرناک): اتصالات قطع، داده نیمه‌کاله، منابع آزاد نشده"]
-        direction TB
-        K1["kill -9 → SIGKILL → No cleanup → Data loss → Leaked connections"]
-    end
-
-    subgraph CTX["Context Cancellation"]
-        direction TB
-        C1["ctx.Done() → all goroutines"]
-        C2["signal.NotifyContext"]
-        C3["تایم‌اوت: ۳۰ ثانیه"]
-        C4["Kubernetes: terminationGracePeriodSeconds"]
-    end
-
-    note(["قانون طلایی: خاموشی ایمن = بدون از دست رفتن داده — هرگز kill -9 نکنید"])
-
-    classDef normalBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
-    classDef sigBox   fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937,font-weight:bold;
-    classDef stepBox  fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef dangBox  fill:#fef2f2,stroke:#ef4444,stroke-width:1.5px,color:#1f2937;
-    classDef ctxBox   fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
-    classDef noteBox  fill:#ecfdf5,stroke:#10b981,stroke-width:1px,color:#1f2937,font-style:italic;
-    class NORMAL normalBox;
-    class SIG sigBox;
-    class S1,S2,S3,S4,S5 stepBox;
-    class DANGER,K1 dangBox;
-    class C1,C2,C3,C4 ctxBox;
-    class note noteBox;</pre>
-<figcaption>شکل ۶-۷-ج — دنباله‌ی خاموشی ایمن: مراحل از دریافت <bdi dir="ltr">SIGTERM</bdi> تا خروج، با مسیر تایم‌اوت و خاموشی اجباری</figcaption>
-</figure>
 <h3 id="سناریوهای-عملیاتی-signal">6.7.14 سناریوهای عملیاتی</h3>
 <p>مدیریت سیگنال‌ها در محیط‌های عملیاتی بسیار فراتر از یک مثال ساده‌ی <code dir="ltr">Ctrl+C</code> است. در واقعیت، سرورها و سرویس‌های شما باید با شرایط متنوعی مقابله کنند: از خاموشی ایمن سرور <bdi dir="ltr">HTTP</bdi> گرفته تا تخلیه‌ی <code dir="ltr">worker pool</code> و چرخش فایل‌های لاگ. </p><p>هر سناریو در ادامه یک چالش واقعی را توصیف می‌کند و نشان می‌دهد که چگونه الگوهای مدیریت سیگنال <bdi dir="ltr">Go</bdi> به حل آن‌ها کمک می‌کنند. </p><p>این سناریوها معمولاً در محیط‌های <bdi dir="ltr">Docker</bdi> و <bdi dir="ltr">Kubernetes</bdi> با مکانیزم خاموشی خودکار این سیستم‌ها ترکیب می‌شوند و درک آن‌ها برای ساخت سرویس‌های مقاوم ضروری است.</p>
 <ul>
@@ -900,7 +768,6 @@ func main() {
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/xml.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/ini.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/plaintext.min.js"></script>
-<script src="assets/js/diagrams.js"></script>
 <script src="assets/js/main.js"></script>
 </body>
 </html>

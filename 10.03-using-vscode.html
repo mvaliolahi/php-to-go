@@ -352,50 +352,6 @@ $ docker compose -f docker-compose.debug.yml up
 <p><strong>Debug Console:</strong> در حین دیباگ می‌توانید عبارات Go را مستقیماً در Debug Console ارزیابی کنید. مثلاً تایپ کنید <code>user.Name</code> و Enter بزنید تا مقدار فعلی نمایش داده شود. این قابلیت معادل دستور <code>print</code> در Delve است اما در محیط گرافیکی. شما می‌توانید هر عبارت معتبر Go را ارزیابی کنید، حتی فراخوانی تابع.</p>
 <p><strong>Hit Count Breakpoints:</strong> می‌توانید تعیین کنید breakpoint فقط بار N-ام فعال شود. مثلاً <code>5</code> به‌معنای توقف فقط در فراخوانی پنجم، یا <code>% 10 == 0</code> به‌معنای توقف هر ۱۰ فراخوانی یک‌بار. این قابلیت برای دیباگ مشکلاتی که فقط بعد از چند بار تکرار ظاهر می‌شوند مفید است.</p>
 <p><strong>Data Breakpoints:</strong> می‌توانید روی یک متغیر خاص breakpoint که هر بار مقدار آن تغییر کند، برنامه متوقف شود. این قابلیت در VS Code 1.60+ اضافه شده و برای شناسایی اینکه کجا یک متغیر مقدار غیرمنتظره می‌گیرد بسیار مفید است.</p>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-    subgraph HEADER["جریان دیباگ در VS Code: از کلیک تا باینری"]
-        direction LR
-        VS["VS Code<br/>Go Extension<br/>F5 / Debug Panel"]
-        VS --&gt; LJ["launch.json<br/>mode, program, args<br/>env, buildFlags"]
-        LJ --&gt; DAP["dlv-dap<br/>DAP Server"]
-        DAP --&gt; COMP["Compile + Debug<br/>Go Binary<br/>-N -l no opt<br/>DWARF info"]
-        COMP -- "DAP<br/>ptrace" --&gt; COMP
-    end
-
-    subgraph FEATURES["امکانات دیباگ VS Code"]
-        direction TB
-        F1["Breakpoints"]
-        F2["Conditional BP"]
-        F3["Logpoints"]
-        F4["Watch Expr"]
-        F5["Variables Panel"]
-        F6["Call Stack"]
-        F7["Debug Console"]
-        F8["Goroutines"]
-    end
-
-    subgraph SCENARIOS["سناریوهای دیباگ و تنظیمات مربوطه"]
-        direction TB
-        SC1["دیباگ محلی<br/>mode: "debug""]
-        SC2["دیباگ تست<br/>mode: "test""]
-        SC3["دیباگ Docker<br/>mode: "remote""]
-        SC4["Attach به Process<br/>mode: "local""]
-    end
-
-    note1(["دیباگ راه‌دور: VS Code → SSH Tunnel → Delve (headless) → Container"])
-    note2(["launch.json: { "request": "attach", "mode": "remote", "port": 2345, "remotePath": "/app" }"])
-
-    classDef hdrBox   fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937,font-weight:bold;
-    classDef featBox  fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
-    classDef scenBox  fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
-    classDef noteBox  fill:#ecfdf5,stroke:#10b981,stroke-width:1px,color:#1f2937,font-style:italic;
-    class VS,LJ,DAP,COMP hdrBox;
-    class F1,F2,F3,F4,F5,F6,F7,F8 featBox;
-    class SC1,SC2,SC3,SC4 scenBox;
-    class note1,note2 noteBox;</pre>
-<figcaption>شکل ۱۰-۵: جریان دیباگ در <bdi dir="ltr">VS</bdi> <bdi dir="ltr">Code</bdi> — از کلیک <bdi dir="ltr">F5</bdi> تا باینری <bdi dir="ltr">Go</bdi></figcaption>
-</figure>
 <h3 id="رفع-مشکلات-رایج-دیباگ-vs-code">10.3.6 رفع مشکلات رایج دیباگ در VS Code</h3>
 <p>هنگام دیباگ Go در VS Code ممکن است با مشکلاتی مواجه شوید. در اینجا مشکلات رایج و راه‌حل آن‌ها آورده شده است:</p>
 <p><strong>مشکل: Breakpoint‌ها کار نمی‌کنند (خاکستری هستند)</strong></p>
@@ -445,69 +401,6 @@ $ docker compose -f docker-compose.debug.yml up
 <div class="note"><strong>نکته نهایی:</strong> دیباگ کردن مهارتی است که با تمرین بهبود می‌یابد. در ابتدا شاید تنظیم launch.json و کار با Delve سخت به نظر برسد، اما بعد از چند بار استفاده، این ابزارها به بخش طبیعی گردش کار شما تبدیل می‌شوند. نکته اصلی این است که همیشه ابزار مناسب برای مشکل مناسب را انتخاب کنید: pprof برای مشکلات عملکردی، trace برای مشکلات هم‌روندی، و Delve برای مشکلات منطقی.</div>
 <h3 id="نقشه-ویژگی‌های-افزونه-go-و-جریان-پیکربندی-دیباگ">10.3.8 نقشه ویژگی‌های افزونه Go و جریان پیکربندی دیباگ</h3>
 <p>افزونه رسمی Go در VS Code مجموعه‌ای جامع از ویژگی‌های توسعه را ارائه می‌دهد که تجربه برنامه‌نویسی Go را به سطح بالایی می‌رساند. در PhpStorm این ویژگی‌ها به‌صورت پیش‌فرض و بدون نیاز به پیکربندی اضافی در دسترس هستند، اما در VS Code باید افزونه مناسب را نصب و تنظیم کنید.</p><p>مزیت این رویکرد انعطاف‌پذیری بسیار بیشتر است: می‌توانید هر ویژگی را مستقل تنظیم کنید و ترکیب دلخواه خود را بسازید.</p><p>درک نقشه ویژگی‌ها و نحوه پیکربندی دیباگ به شما کمک می‌کند از حداکثر ظرفیت VS Code برای توسعه Go بهره ببرید و گردش کار خود را بهینه‌سازی کنید.</p>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-    subgraph HEADER["نقشه ویژگی‌های VS Code Go و جریان پیکربندی دیباگ"]
-        direction TB
-        ROOT["VS Code + Go Extensionویرایشگر + افزونه Go"]
-        ROOT --&gt; F1["Go to DefinitionF12"]
-        ROOT --&gt; F2["Find ReferencesShift+F12"]
-        ROOT --&gt; F3["Rename SymbolF2"]
-        ROOT --&gt; F4["Code CompletionIntelliSense"]
-        ROOT --&gt; F5["Diagnosticsخطاهای لحظه‌ای"]
-        ROOT --&gt; F6["Debug (F5)با launch.json"]
-    end
-
-    subgraph FLOW["جریان پیکربندی دیباگ: launch.json ← پیکربندی ← F5 ← Breakpoint ← Debug Toolbar"]
-        direction LR
-        S1["launch.json.vscode/launch.json"]
-        S2["پیکربندیprogram, args, envmode, buildFlags"]
-        S3["F5 → Debugdlv-dap startsCompile -N -l"]
-        S4["Breakpoint Hitمتوقف در خطبازرسی متغیرها"]
-        S1 --&gt; S2 --&gt; S3 --&gt; S4
-    end
-
-    subgraph TOOLBAR[Debug Toolbar: ▶ Continue | ⏭ Step Over | ⬇ Step Into | ⬆ Step Out | ⏹ Stop...]
-        direction TB
-        KB["F9=Continue  F10=Step Over  F11=Step Into  Shift+F11=Step Out  Shift+F5=Stop"]
-        PANELS["پنل‌ها: Variables | Watch | Call Stack | Breakpoints | Goroutines"]
-    end
-
-    subgraph CMP["مقایسه: PhpStorm در برابر VS Code برای توسعه Go"]
-        direction LR
-        subgraph PHP["PhpStorm + Go Plugin"]
-            direction TB
-            P1["• دیباگ: پشتیبانی محدود از Go"]
-            P2["• پیکربندی: خودکار (Zero Config)"]
-            P3["• هزینه: پولی (اشتراک سالانه)"]
-        end
-        subgraph VSC["VS Code + Go Extension"]
-            direction TB
-            V1["• دیباگ: پشتیبانی کامل Delve + goroutine"]
-            V2["• پیکربندی: launch.json (انعطاف‌پذیر)"]
-            V3["• هزینه: رایگان و open-source"]
-        end
-    end
-
-    note1([ℹ️ VS Code برای توسعه Go پیشنهاد رسمی تیم Go است — افزونه golang.go توسط...])
-    note2(["قانون طلایی: launch.json درست پیکربندی کنید — console: "integratedTerminal" برای stdin، remotePath برای Docker"])
-
-    classDef rootBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937,font-weight:bold;
-    classDef featBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
-    classDef flowBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef barBox  fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
-    classDef phpBox  fill:#f5f0fb,stroke:#777BB4,stroke-width:1.5px,color:#1f2937;
-    classDef vscBox  fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef noteBox fill:#ecfdf5,stroke:#10b981,stroke-width:1px,color:#1f2937,font-style:italic;
-    class ROOT rootBox;
-    class F1,F2,F3,F4,F5,F6 featBox;
-    class S1,S2,S3,S4 flowBox;
-    class KB,PANELS barBox;
-    class P1,P2,P3 phpBox;
-    class V1,V2,V3 vscBox;
-    class note1,note2 noteBox;</pre>
-<figcaption>شکل ۱۰-۶: نقشه ویژگی‌های <bdi dir="ltr">VS Code Go</bdi> و جریان پیکربندی دیباگ با مقایسه <bdi dir="ltr">PhpStorm</bdi></figcaption>
-</figure>
 <p>نمودار بالا دو بخش اصلی را نشان می‌دهد: بخش اول نقشه ویژگی‌های افزونه Go است که شامل ابزارهای ناوبری کد (Go to Definition، Find References، Rename Symbol)، IntelliSense، Diagnostics و دیباگ گرافیکی است. </p><p>بخش دوم جریان پیکربندی دیباگ را نشان می‌دهد که از فایل <bdi dir="ltr">launch.json</bdi> شروع شده و با فشردن F5 به دیباگر متصل می‌شود. </p><p>هر مرحله از این جریان پیکربندی مشخص دارد و اگر هر کدام نادرست باشد، دیباگ کار نمی‌کند. به همین دلیل مهم است که هر پارامتر <bdi dir="ltr">launch.json</bdi> را بشناسید و برای سناریوی خود تنظیم کنید.</p>
 <h3 id="سناریوهای-عملیاتی-vscode">10.3.9 سناریوهای عملیاتی VS Code برای توسعه Go</h3>
 <p>در محیط‌های عملیاتی واقعی، پیکربندی دیباگ در VS Code فراتر از یک فایل <bdi dir="ltr">launch.json</bdi> ساده است. هر پروژه نیازمندی‌های خاص خود را دارد: برخی برنامه‌ها باید با آرگومان‌های خط فرمان اجرا شوند، برخی در Docker container دیباگ می‌شوند، و برخی نیاز به build tags خاص دارند. </p><p>همچنین دیباگ تست‌ها و remote debugging سناریوهای متفاوتی را ایجاد می‌کنند. در ادامه مهم‌ترین سناریوهای عملیاتی و روش‌های پیکربندی آن‌ها را بررسی می‌کنیم:</p>
@@ -563,7 +456,6 @@ $ docker compose -f docker-compose.debug.yml up
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/xml.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/ini.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/plaintext.min.js"></script>
-<script src="assets/js/diagrams.js"></script>
 <script src="assets/js/main.js"></script>
 </body>
 </html>

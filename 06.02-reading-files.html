@@ -69,27 +69,6 @@
 <strong>چکیده:</strong> این بخش روش‌های خواندن فایل در Go را پوشش می‌دهد: ioutil، os.ReadFile، bufio.Scanner و io.Reader. الگوهای خواندن کامل، خط‌به‌خط و استریم با مثال توضیح داده می‌شود. مدیریت خطا و منابع بررسی می‌شود.
 </div>
 <p>یکی از عملیات‌های رایج در هر برنامه‌ای خواندن فایل است. چه فایل پیکربندی باشد، چه داده‌های ورودی و چه سیستم Logs، همیشه نیاز به خواندن محتوای فایل دارید. در این بخش با روش‌های مختلف خواندن فایل در Go آشنا می‌شوید و تفاوت‌های آن با PHP را بررسی می‌کنید.</p>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-    D["فایل روی دیسک<br/>notes.txt"] --&gt; RF["os.ReadFile()<br/>خواندن کل محتوا"]
-    RF --&gt; Q{"err != nil?"}
-    Q -- "بله" --&gt; E["خطا!<br/>فایل یافت نشد / دسترسی"]
-    Q -- "خیر" --&gt; B["خروجی: []byte<br/>+ error"]
-    B --&gt; S["string(data)"]
-    S --&gt; U["محتوای فایل به‌صورت رشته<br/>آماده استفاده"]
-
-    classDef fileBox  fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
-    classDef opBox    fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef okBox    fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
-    classDef errBox   fill:#fef2f2,stroke:#ef4444,stroke-width:1.5px,color:#1f2937;
-    classDef decBox   fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
-    class D fileBox;
-    class RF,B opBox;
-    class S,U okBox;
-    class E errBox;
-    class Q decBox;</pre>
-<figcaption>شکل ۶-۲ — جریان خواندن فایل با <bdi dir="ltr">os.ReadFile</bdi> در <bdi dir="ltr">Go</bdi></figcaption>
-</figure>
 <h3 id="خواندن-کل-فایل">6.2.1 خواندن کل محتوای فایل</h3>
 <p>ساده‌ترین راه خواندن کل محتوای یک فایل، استفاده از تابع <code dir="ltr">os.ReadFile()</code> است. این تابع کل فایل را یکجا در حافظه بارگذاری می‌کند:</p>
 <figure class="code go" dir="ltr"><pre><code class="language-go">import (
@@ -231,49 +210,6 @@ func mmapRead(path string) ([]byte, error) {
 <div class="important">
 <strong>ملاحظات mmap:</strong> mmap یک قابلیت سیستم‌عامل است و در ویندوز رفتار متفاوتی دارد. برای استفاده قابل‌حمل‌تر، از کتابخانه‌هایی مانند <code dir="ltr">golang.org/x/exp/mmap</code> استفاده کنید. همچنین mmap برای فایل‌های کوچک به دلیل سربار تنظیمات، کندتر از خواندن معمولی است — فقط برای فایل‌های بزرگ (بالای ۱۰۰ مگابایت) یا دسترسی تصادفی مکرر مناسب است.
 </div>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-    subgraph HEADER["مقایسه استراتژی‌های خواندن فایل"]
-        direction LR
-        A1["os.ReadFile()<br/>فایل‌های کوچک (&lt;10MB)"]
-        A2["io.Reader + bufio<br/>فایل‌های متوسط و بزرگ"]
-        A3["mmap<br/>فایل‌های بسیار بزرگ"]
-    end
-    subgraph SPEED["سرعت:"]
-        direction LR
-        S1["سریع"] -.-&gt; S2["متوسط"] -.-&gt; S3["بسیار سریع"]
-    end
-    subgraph MEM["مصرف حافظه:"]
-        direction LR
-        M1["کل فایل"] -.-&gt; M2["بافر فقط"] -.-&gt; M3["صفحات OS"]
-    end
-    subgraph SIMPLE["سادگی:"]
-        direction LR
-        SI1["بسیار ساده"] -.-&gt; SI2["متوسط"] -.-&gt; SI3["پیچیده"]
-    end
-    subgraph PORT["قابل‌حمل:"]
-        direction LR
-        P1["کاملاً"] -.-&gt; P2["کاملاً"] -.-&gt; P3["وابسته به OS"]
-    end
-    A1 -.- S1
-    A2 -.- S2
-    A3 -.- S3
-    A1 -.- M1
-    A2 -.- M2
-    A3 -.- M3
-    A1 -.- SI1
-    A2 -.- SI2
-    A3 -.- SI3
-    A1 -.- P1
-    A2 -.- P2
-    A3 -.- P3
-
-    classDef hdrBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937,font-weight:bold;
-    classDef attrBox fill:#f8fafc,stroke:#475569,stroke-width:1px,color:#1f2937;
-    class A1,A2,A3 hdrBox;
-    class S1,S2,S3,M1,M2,M3,SI1,SI2,SI3,P1,P2,P3 attrBox;</pre>
-<figcaption>شکل ۶-۲-ب — مقایسه استراتژی‌های خواندن فایل در <bdi dir="ltr">Go</bdi></figcaption>
-</figure>
 <div class="comparison">
 <strong>مقایسه با PHP:</strong> در PHP تابع <code dir="ltr">file_get_contents()</code> هم کل فایل را در حافظه می‌ریزد، اما معمولاً مشکل کمتری ایجاد می‌کند زیرا هر درخواست PHP پس از اتمام، حافظه‌اش آزاد می‌شود. اما در Go که برنامه بلندمدت اجرا می‌شود، بارگذاری فایل‌های بزرگ بدون کنترل می‌تواند به نشت حافظه منجر شود. معادل ایمن در PHP استفاده از <code dir="ltr">fopen()</code> + <code dir="ltr">fread()</code> در حلقه است که مشابه الگوی <code dir="ltr">io.Reader</code> در Go عمل می‌کند.
 </div>
@@ -394,53 +330,6 @@ func readLastNLines(path string, n int) ([]string, error) {
 </div>
 <h3 id="مقایسه-روشهای-خواندن-تصمیم‌گیری">6.2.9 مقایسه سه روش خواندن فایل و فلوچارت تصمیم‌گیری</h3>
 <p>در Go سه رویکرد اصلی برای خواندن فایل وجود دارد که هر کدام برای موقعیت خاصی مناسب هستند. شناخت تفاوت‌های این سه روش و انتخاب درست بین آن‌ها، تأثیر مستقیم بر عملکرد، مصرف حافظه و قابلیت نگهداری برنامه شما دارد.</p><p>در ادامه هر سه روش را به‌صورت تفصیلی مقایسه می‌کنیم و فلوچارتی برای تصمیم‌گیری ارائه می‌دهیم که به شما کمک می‌کند در هر شرایطی بهترین ابزار را انتخاب کنید.</p>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-    subgraph HEADER["مقایسه سه روش خواندن فایل در Go"]
-        direction LR
-        M1[os.ReadFile()خواندن کل فایل یکجا در حافظهساده‌ترین روش — دو خط کد✓ مناسب:...]
-        M2[bufio.Scannerخواندن خط‌به‌خط از فایلبهره‌وری حافظه — فقط یک خط در حافظه✓...]
-        M3[io.Reader + bufio.NewReaderانعطاف‌پذیرترین روش — کنترل دستی بافرقابل ترکیب...]
-    end
-
-    subgraph DEC["فلوچارت تصمیم‌گیری: کدام روش را انتخاب کنم؟"]
-        direction TB
-        Q1{"اندازه فایل چقدر است؟یا چه نوع پردازشی نیاز دارید؟"}
-        Q1 -- "فایل کوچک (&lt; 1MB)یا نیاز به کل محتوا" --&gt; D1["os.ReadFile()ساده و سریع ✓"]
-        Q1 -- "فایل بزرگ" --&gt; Q2{"نوع پردازش؟"}
-        Q2 -- "خط‌به‌خط" --&gt; D2["bufio.Scannerبینه بهینه حافظه ✓"]
-        Q2 -- "Streaming / ترکیب‌پذیری" --&gt; D3["io.Reader + bufioانعطاف‌پذیر ⚠"]
-    end
-
-    subgraph TRAP["⚠ تله‌ها"]
-        direction TB
-        T1[⚠ تله: ReadFile برای فایل بزرگفایل ۲ گیگابایتی = ۲ گیگابایت حافظه!ممکن است...]
-        T2[⚠ تله: حد ۶۴KB Scannerخط بلندتر از ۶۴KB → ErrTooLongراه‌حل:...]
-    end
-
-    subgraph SAMPLE["نمونه کد هر سه روش"]
-        direction TB
-        C1["data, _ := os.ReadFile("config.json")fmt.Println(string(data))// 2 lines — simple!"]
-        C2[s := bufio.NewScanner(file)for s.Scan() { process(s.Text()) }// memory...]
-        C3[r := bufio.NewReader(file)for { n, err := r.Read(buf); ... }// most...]
-    end
-
-    note([قانون طلایی: ساده‌ترین ابزاری که نیاز شما را برآورده می‌کند انتخاب کنید. اگر...])
-
-    classDef hdrBox  fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef decBox  fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
-    classDef resBox  fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
-    classDef trapBox fill:#fef2f2,stroke:#ef4444,stroke-width:1.5px,color:#1f2937;
-    classDef codeBox fill:#f8fafc,stroke:#475569,stroke-width:1px,color:#1f2937;
-    classDef noteBox fill:#ecfdf5,stroke:#10b981,stroke-width:1px,color:#1f2937,font-style:italic;
-    class M1,M2,M3 hdrBox;
-    class Q1,Q2 decBox;
-    class D1,D2,D3 resBox;
-    class T1,T2 trapBox;
-    class C1,C2,C3 codeBox;
-    class note noteBox;</pre>
-<figcaption>شکل ۶-۲-ج — مقایسه سه روش خواندن فایل و فلوچارت تصمیم‌گیری: <bdi dir="ltr">os.ReadFile</bdi> در مقابل <bdi dir="ltr">bufio.Scanner</bdi> در مقابل <bdi dir="ltr">io.Reader</bdi></figcaption>
-</figure>
 <p>هر سه روش مزایا و معایب خاص خود را دارند. <bdi dir="ltr">os.ReadFile</bdi> ساده‌ترین و سریع‌ترین روش برای فایل‌های کوچک است زیرا تنها با دو خط کد کل محتوا را در اختیار شما قرار می‌دهد. </p><p>اما همان‌طور که در نمودار بالا مشاهده می‌کنید، استفاده از آن برای فایل‌های بزرگ می‌تواند فاجعه‌بار باشد زیرا کل فایل در حافظه بارگذاری می‌شود. <bdi dir="ltr">bufio.Scanner</bdi> بهترین تعادل بین سادگی و بهره‌وری حافظه را ارائه می‌دهد و برای اکثر فایل‌های متنی ایده‌آل است. <bdi dir="ltr">io.Reader</bdi> به همراه <bdi dir="ltr">bufio.NewReader</bdi> بیشترین انعطاف‌پذیری را دارد و زمانی ضروری می‌شود که نیاز به ترکیب چندین منبع داده یا کنترل دقیق اندازه بافر دارید.</p>
 <h3 id="سناریوهای-عملیاتی-خواندن">6.2.10 سناریوهای عملیاتی خواندن فایل</h3>
 <p>در پروژه‌های واقعی، انتخاب روش خواندن فایل کمتر به ترجیح شخصی و بیشتر به ماهیت داده و نوع پردازش بستگی دارد. هر سناریو زیر نشان می‌دهد که چرا یک روش خاص بهتر از دیگری عمل می‌کند.</p><p>درک این سناریوها به شما کمک می‌کند در پروژه‌های واقعی تصمیم آگاهانه‌تری بگیرید و از خطاهای رایج مانند پر شدن حافظه یا کندی بیش از حد اجتناب کنید.</p>
@@ -497,7 +386,6 @@ func readLastNLines(path string, n int) ([]string, error) {
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/xml.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/ini.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/plaintext.min.js"></script>
-<script src="assets/js/diagrams.js"></script>
 <script src="assets/js/main.js"></script>
 </body>
 </html>

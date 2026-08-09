@@ -202,32 +202,6 @@ func withStack(err error) error {
 </code></pre>
 </figure>
 <div class="tip"><strong>بهینه‌سازی:</strong> اگر خطای شما پیغام ثابتی دارد، از sentinel error استفاده کنید تا از allocation اضافی جلوگیری شود. <code dir="ltr">errors.New("msg")</code> فقط یک بار تخصیص حافظه می‌دهد و سپس همان اشاره‌گر همیشه بازگردانده می‌شود.</div>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-    subgraph PHP["PHP: Exception"]
-        direction TB
-        P1["تابع اصلی"]
-        P2["تابع میانی"]
-        P3["throw Exception"]
-        P4["پرش خودکار به بالا"]
-        P1 --&gt; P2 --&gt; P3 --&gt; P4
-    end
-
-    subgraph GO["Go: error"]
-        direction TB
-        G1["main()"]
-        G2["someFunc()"]
-        G3["return value, error"]
-        G4["if err != nil<br/>بررسی صریح خطا"]
-        G1 --&gt; G2 --&gt; G3 --&gt; G4
-    end
-
-    classDef phpBox fill:#f5f0fb,stroke:#777BB4,stroke-width:1.5px,color:#1f2937;
-    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    class PHP,P1,P2,P3,P4 phpBox;
-    class GO,G1,G2,G3,G4 goBox;</pre>
-<figcaption>شکل ۴-۱: مقایسه جریان مدیریت خطا در <bdi dir="ltr">PHP</bdi> (<bdi dir="ltr">Exception</bdi>) و <bdi dir="ltr">Go</bdi> (<bdi dir="ltr">error</bdi>)</figcaption>
-</figure>
 <p><strong>مثال تقسیم اعداد با بررسی خطا</strong></p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">import (
@@ -296,28 +270,6 @@ if err != nil {
 </p>
 </div>
 <p>یکی از قدرتمندترین ویژگی‌های مدیریت خطا در Go قابلیت <bdi dir="ltr">Error Wrapping</bdi> است. با استفاده از <code dir="ltr">fmt.Errorf</code> و فعل قالب <code>%w</code> می‌توان خطاها را در هم پیچید و زنجیره‌ای از خطاها ساخت:</p>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-
-    L3["خطای سطح ۳ (API)fmt.Errorf("api: %w", svcErr)"]
-    L2["خطای سطح ۲ (Service)fmt.Errorf("service: %w", dbErr)"]
-    L1["خطای سطح ۱ (DB)sql.ErrNoRows"]
-
-    L3 -- "Unwrap()" --&gt; L2
-    L2 -- "Unwrap()" --&gt; L1
-
-    CHECK[errors.Is(err, sql.ErrNoRows) → trueerrors.As(err, &amp;dbErr) → true (extracts...]
-
-        L1 --&gt; CHECK
-
-    classDef titleBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
-    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef bothBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
-    class TITLE titleBox;
-    class L3,L2,L1 goBox;
-    class CHECK bothBox;</pre>
-<figcaption>شکل ۱-۴: زنجیره‌ی <bdi dir="ltr">Error</bdi> <bdi dir="ltr">Wrapping</bdi> و نحوه‌ی پیمایش آن</figcaption>
-</figure>
 <h3 id="error-anti-patterns">4.1.7 الگوهای ضد در مدیریت خطا</h3>
 <p>برنامه‌نویسان PHP هنگام مهاجرت به Go معمولاً الگوهای زیر را تکرار می‌کنند که همگی <bdi dir="ltr">anti-pattern</bdi> محسوب می‌شوند:</p>
 <p><strong>۱. نادیده گرفتن خطا:</strong> بدترین الگوی ممکن — خطا را کلاً بررسی نکردن.</p>
@@ -432,62 +384,6 @@ if code, ok := errors.AsType[ErrorCode](err); ok {
 <h3 id="error-flow-call-stack">4.1.11 جریان خطا در پشته فراخوانی: از Database تا Handler</h3>
 <p>در یک برنامه‌ی وب واقعی، خطا معمولاً در پایین‌ترین لایه (مثلاً <bdi dir="ltr">Database</bdi>) رخ می‌دهد و باید از طریق لایه‌های میانی به بالاترین لایه منتقل شود. هر لایه باید خطا را با <code dir="ltr">fmt.Errorf</code> و فعل <code>%w</code> بسته‌بندی کند تا ضمن حفظ زنجیره‌ی خطا، زمینه‌ی خود را نیز اضافه نماید. </p><p>این رویکرد تضمین می‌کند که وقتی خطا به <bdi dir="ltr">Handler</bdi> می‌رسد، پیام آن شامل مسیر کامل از منبع خطا تا لایه‌ی بالاست. بدون این بسته‌بندی، ردیابی علت واقعی خطا در یک سیستم چندلایه بسیار دشوار خواهد بود.</p>
 <p>در لایه‌ی <bdi dir="ltr">Repository</bdi> خطا با اطلاعاتی درباره‌ی عملیات پایگاه‌داده بسته‌بندی می‌شود، مثلاً <code dir="ltr">fmt.Errorf("query user: %w", err)</code>. در لایه‌ی <bdi dir="ltr">Service</bdi> همان خطا با زمینه‌ی منطق کسب‌وکار بسته‌بندی می‌شود مثل <code dir="ltr">fmt.Errorf("get user: %w", err)</code>. </p><p>در نهایت <bdi dir="ltr">HTTP Handler</bdi> خطا را بررسی کرده و تصمیم می‌گیرد چه کد وضعیت مناسبی به کلاینت برگردانده شود. این الگوی لایه‌ای بسته‌بندی، ردیابی خطا را در سیستم‌های بزرگ ساده‌تر و قابل‌اتکاتر می‌کند.</p>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-
-    subgraph STACK["پشته‌ی فراخوانی"]
-        direction TB
-        H[HTTP Handlerبررسی خطا و تصمیم‌گیری درباره‌ی کد وضعیت پاسخerrors.Is(err,...]
-        S["Service Layerمنطق کسب‌وکار و اعتبارسنجیبسته‌بندی با زمینه‌ی سرویس:fmt.Errorf("get user: %w", err)"]
-        R["Repositoryدسترسی به داده‌ها و کوئری‌هابسته‌بندی با زمینه‌ی ریپازیتوری:fmt.Errorf("query user: %w", err)"]
-        D[Databaseمنشأ خطا: کوئری ناموفق (مثلاً سطر پیدا نشد)منشأ خطا — بدون...]
-        H -- "wrap" --&gt; S
-        S -- "wrap" --&gt; R
-        R -- "root" --&gt; D
-    end
-
-    FLOW_SUCC["success flow ↓"]
-    FLOW_ERR["error flow ↑"]
-
-    subgraph CHAIN["رشد زنجیره‌ی خطا هنگام بازگشت به بالا"]
-        direction LR
-        C1["sql.ErrNoRows"]
-        C2[""query user: sql.ErrNoRows""]
-        C3[""get user: query user: sql.ErrNoRows""]
-        C1 --&gt; C2 --&gt; C3
-    end
-
-    UNWRAP[errors.Is و errors.As با فراخوانی Unwrap() زنجیره را از راست به چپ پیمایش...]
-
-    subgraph CODE["// Handler: inspect the error chain"]
-        direction TB
-        CO1["if errors.Is(err, sql.ErrNoRows) {    http.Error(w, "Not Found", 404)} else {    http.Error(w, "Internal Error", 500)}"]
-    end
-
-    GOLD["قانون طلایی: هر لایه خطا را با fmt.Errorf("context: %w", err) بسته‌بندی کنیداما هر خطا را فقط یک‌بار wrap کنید!"]
-
-        STACK --&gt; FLOW_SUCC
-    STACK --&gt; FLOW_ERR
-    STACK --&gt; CHAIN
-    CHAIN --&gt; UNWRAP
-        
-    classDef titleBox fill:#ecfdf5,stroke:#10b981,stroke-width:2px,color:#1f2937;
-    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef neutralBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
-    classDef bothBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
-    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
-    classDef errBox fill:#fef2f2,stroke:#ef4444,stroke-width:1.5px,color:#1f2937;
-    class TITLE titleBox;
-    class STACK,H,S,R goBox;
-    class D errBox;
-    class FLOW_SUCC bothBox;
-    class FLOW_ERR errBox;
-    class CHAIN,C1,C2,C3 neutralBox;
-    class UNWRAP bothBox;
-    class CODE,CO1 neutralBox;
-    class GOLD warnBox;</pre>
-<figcaption>شکل ۴-۱-ب: جریان مقدار خطا در پشته فراخوانی — از <bdi dir="ltr">Database</bdi> تا <bdi dir="ltr">HTTP Handler</bdi> با بسته‌بندی در هر لایه</figcaption>
-</figure>
 <h3 id="سناریوهای-عملیاتی-error">4.1.12 سناریوهای عملیاتی مدیریت خطا</h3>
 <p>در پروژه‌های واقعی، مدیریت خطا فراتر از <code dir="ltr">if err != nil</code> ساده است. هر لایه‌ی برنامه مسئولیت‌های متفاوتی در برخورد با خطا دارد و باید بر اساس نقش خود تصمیم‌گیری کند. برنامه‌نویسان PHP که به <code>try-catch</code> عادت دارند، باید در Go به‌صورت صریح‌تری درباره‌ی نحوه‌ی مدیریت و انتقال خطا فکر کنند. </p><p>در ادامه مهم‌ترین سناریوهای عملیاتی مدیریت خطا در برنامه‌های Go را بررسی می‌کنیم که هر یک در عمل روزمره به‌طور مکرر استفاده می‌شوند.</p>
 <ul>
@@ -543,7 +439,6 @@ if code, ok := errors.AsType[ErrorCode](err); ok {
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/xml.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/ini.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/plaintext.min.js"></script>
-<script src="assets/js/diagrams.js"></script>
 <script src="assets/js/main.js"></script>
 </body>
 </html>

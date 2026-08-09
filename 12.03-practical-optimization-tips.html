@@ -68,36 +68,6 @@
 <h2 id="نکات-کاربردی-برای-بهینهسازی">نکات کاربردی برای بهینه‌سازی</h2><div class="abstract">
 <strong>چکیده:</strong> این بخش نکات عملی بهینه‌سازی در Go را پوشش می‌دهد: allocation، buffer و sync.Pool. الگوی reduce allocation و reuse بررسی می‌شود. کاربردهای real-world پوشش داده می‌گردد.
 </div>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-
-    subgraph TECH["تکنیک‌ها"]
-        direction TB
-        T1["پیش‌تخصیص Slicemake([]T, 0, n)جلوگیری از reallocation و کپی مکرر داده"]
-        T2["پیش‌تخصیص Mapmake(map[K]V, hint)کاهش resize bucket در map بزرگ"]
-        T3["strings.Buildersb.Grow(n)به جای + در حلقه — ۱ allocation نهایی"]
-        T4[تبدیل []byte ↔ stringهر تبدیل = allocation جدیداز conversion اجتناب کنید،...]
-        T5[مدیریت Goroutinecontext + WaitGroupgoroutine leak = نشت حافظه — همیشه عمر را...]
-        T6["defer با احتیاطدر حلقه‌های پرتکرار از defer استفاده نکنیدمستقیماً پاک‌سازی کنید"]
-    end
-
-    subgraph MIST["اشتباهات رایج در بهینه‌سازی"]
-        direction TB
-        M1["۱. بهینه‌سازی بدون اندازه‌گیری (حدس زدن به جای profiling)"]
-        M2["۲. نادیده گرفتن خوانایی کد برای سرعت کم‌اهمیت"]
-        M3["۳. استفاده بیش از حد از pointer و افزایش فشار GC"]
-    end
-
-        TECH --&gt; MIST
-
-    classDef titleBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
-    classDef techBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef errBox fill:#fef2f2,stroke:#ef4444,stroke-width:1.5px,color:#1f2937;
-    class TITLE titleBox;
-    class T1,T2,T3,T4,T5,T6 techBox;
-    class M1,M2,M3 errBox;</pre>
-<figcaption dir="rtl">شکل ۱۲-۳: راهنمای بصری تکنیک‌های کاهش تخصیص حافظه</figcaption>
-</figure>
 <h3 id="پیشتخصیص-slice-با-benchmarks">12.3.1 پیش‌تخصیص Slice با Benchmarks</h3>
 <p>وقتی اندازه‌ی نهایی یک slice از قبل مشخص یا قابل تخمین است، preallocation از تخصیص‌های مکرر و کپی‌شدن داده‌ها جلوگیری می‌کند. هر بار که <bdi dir="ltr">append</bdi> capacity فعلی را پر کند، Go یک آرایه‌ی جدید با ظرفیت دوبرابر تخصیص می‌دهد، داده‌ها را کپی می‌کند و آرایه‌ی قدیمی را رها می‌کند. این فرآیند در حلقه‌های بزرگ پرهزینه است:</p>
 <figure class="code go" dir="ltr">
@@ -303,67 +273,6 @@ $ go build -gcflags="-m" ./...
 <div class="note"><strong>نکته:</strong> بهترین راه اطمینان از inlining، نوشتن توابع کوچک و ساده است. اگر تابعی بیش از حد بزرگ شد، آن را به توابع کوچک‌تر بشکنید. این هم خوانایی را بهبود می‌دهد و هم شانس inlining را افزایش می‌دهد.</div>
 <h3 id="مقایسه-عملکرد-روشهای-الحاق-رشته">12.3.9 مقایسه عملکرد روش‌های الحاق رشته</h3>
 <p>یکی از مهم‌ترین تصمیمات عملکردی در Go، انتخاب روش مناسب برای ترکیب رشته‌هاست. تفاوت بین روش‌های مختلف الحاق رشته می‌تواند چندین مرتبه‌ای باشد و تأثیر مستقیمی بر latency و مصرف حافظه‌ی برنامه داشته باشد. در نمودار زیر، پنج روش رایج الحاق رشته بر اساس زمان اجرای نسبی مقایسه شده‌اند. </p><p>روش‌هایی با پیچیدگی <bdi dir="ltr">O(n²)</bdi> عملکرد بسیار ضعیف‌تری نسبت به روش‌های <bdi dir="ltr">O(n)</bdi> دارند و این تفاوت با افزایش تعداد الحاق‌ها به‌صورت نمایی رشد می‌کند.</p>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart LR
-
-    subgraph SLOW["ناکارآمد (O(n²))"]
-        direction TB
-        A1["+ =~500μs~۲۰۰۰ alloc"]
-        A2["fmt.Sprintf~350μs~۱۵۰۰ alloc"]
-    end
-
-    subgraph FAST["کارآمد (O(n))"]
-        direction TB
-        B1["strings.Join~15μs~۱ alloc"]
-        B2["bytes.Buffer~5μs~۱ alloc"]
-        B3["strings.Builder ★~1.5μs~۱ alloc×۳۳۳ سریع‌تر"]
-    end
-
-    subgraph WHY["چرا این تفاوت؟"]
-        direction TB
-        W1["▪ += هر بار رشته‌ی جدید می‌سازد"]
-        W2["▪ fmt.Sprintf overhead پارس دارد"]
-        W3["▪ strings.Join یک‌بار join می‌کند"]
-        W4["▪ bytes.Buffer بافر داخلی دارد"]
-        W5["▪ strings.Builder بهینه‌ترینGrow() → ۱ allocationString() → بدون کپی اضافی"]
-    end
-
-    subgraph CODE["الگوی idiom (strings.Builder)"]
-        direction TB
-        C1["var b strings.Builder"]
-        C2["b.Grow(totalSize)"]
-        C3["for _, s := range parts {    b.WriteString(s)}"]
-        C4["return b.String()"]
-        C5["✓ ۱ allocation، بدون کپی اضافی"]
-        C1 --&gt; C2 --&gt; C3 --&gt; C4 --&gt; C5
-    end
-
-    subgraph RULE["قانون طلایی"]
-        direction TB
-        R1[⚡ در حلقه‌های الحاق رشته، همیشه از strings.Builder با Grow() استفاده کنید....]
-        R2[⚠ هرگز از عملگر += برای الحاق مکرر رشته‌ها در حلقه استفاده نکنید — پیچیدگی...]
-        R3["بنچمارک: Go 1.22 / amd64"]
-    end
-
-            SLOW --&gt; WHY
-    FAST --&gt; CODE
-    WHY --&gt; RULE
-    CODE --&gt; RULE
-
-    classDef titleBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
-    classDef slowBox fill:#fef2f2,stroke:#ef4444,stroke-width:1.5px,color:#1f2937;
-    classDef fastBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
-    classDef whyBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
-    classDef codeBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef ruleBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
-    class TITLE titleBox;
-    class A1,A2 slowBox;
-    class B1,B2,B3 fastBox;
-    class W1,W2,W3,W4,W5 whyBox;
-    class C1,C2,C3,C4,C5 codeBox;
-    class R1,R2,R3 ruleBox;</pre>
-<figcaption dir="rtl">شکل ۱۲-۳-ب: مقایسه عملکرد روش‌های الحاق رشته در <bdi dir="ltr">Go</bdi> (مقیاس لگاریتمی)</figcaption>
-</figure>
 <h3 id="سناریوهای-عملیاتی-الحاق-رشته">12.3.10 سناریوهای عملیاتی الحاق رشته</h3>
 <p>انتخاب روش مناسب الحاق رشته در Go بستگی به زمینه‌ی استفاده دارد. هر روشی نقاط قوت و ضعف خود را دارد و در سناریوهای مختلف عملکرد متفاوتی نشان می‌دهد. درک این تفاوت‌ها به شما کمک می‌کند در هر موقعیت بهترین تصمیم را بگیرید و از تخصیص حافظه‌ی غیرضروری جلوگیری کنید.</p><p>در ادامه رایج‌ترین سناریوهای عملیاتی و روش بهینه برای هر کدام را بررسی می‌کنیم.</p><p>به یاد داشته باشید که خوانایی کد نیز یک فاکتور مهم است و نباید برای میکروبهینه‌سازی فدا شود.</p>
 <ul>
@@ -418,7 +327,6 @@ $ go build -gcflags="-m" ./...
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/xml.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/ini.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/plaintext.min.js"></script>
-<script src="assets/js/diagrams.js"></script>
 <script src="assets/js/main.js"></script>
 </body>
 </html>

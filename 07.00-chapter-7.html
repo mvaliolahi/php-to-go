@@ -89,61 +89,6 @@
 <li>جاسازی قالب‌ها و فایل‌ها با <bdi dir="ltr">embed.FS</bdi> برای باینری مستقل</li>
 <li>پردازش فرم‌ها با اعتبارسنجی، محافظت <bdi dir="ltr">CSRF</bdi> و آپلود فایل</li>
 </ul>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-    subgraph NET["لایه شبکه و امنیت"]
-        direction LR
-        N1["Client"] --&gt; N2["TLS/HTTPS<br/>Let's Encrypt"]
-    end
-    subgraph SRV["net/http Server"]
-        direction LR
-        S1["Timeouts + Graceful"]
-        S2["Security Headers<br/>CORS / CSP / HSTS"]
-    end
-    subgraph MW["Middleware Chain"]
-        direction LR
-        M1["Recover → Log → Auth → CSRF → RateLimit"]
-    end
-    subgraph RTR["ServeMux (Go 1.22+)"]
-        direction LR
-        R1["Method + Path Params"]
-    end
-    subgraph HAND["هندلرها"]
-        direction LR
-        H1["Cookies"]
-        H2["Session"]
-        H3["Forms"]
-        H4["JSON API"]
-        H5["File Upload"]
-    end
-    subgraph TPL["html/template"]
-        direction LR
-        T1["Layout + Partials + FuncMap"]
-    end
-    subgraph STA["Static Files"]
-        direction LR
-        ST1["FileServer + embed.FS + Cache"]
-    end
-    subgraph DEP["embed.FS"]
-        direction LR
-        D1["Single Binary Deployment"]
-    end
-    subgraph SEC["امنیت فرم"]
-        direction LR
-        SE1["Validation + CSRF"]
-        SE2["Form Processing + Security"]
-    end
-    NET --&gt; SRV --&gt; MW --&gt; RTR --&gt; HAND --&gt; TPL
-    HAND --&gt; STA
-    TPL --&gt; DEP
-    HAND --&gt; SEC
-
-    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef neuBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
-    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
-    class N1,N2,S1,S2,M1,R1,H1,H2,H3,H4,H5,T1,ST1,D1,SE1,SE2 goBox;</pre>
-<figcaption dir="rtl">شکل ۷-۰: نقشه راه فصل ۷ — از ساخت سرور تا قالب‌سازی و امنیت</figcaption>
-</figure>
 <p><bdi dir="ltr">Go</bdi> زبانی بسیار قدرتمند و سبک‌وزن برای توسعه وب است که به صورت پیش‌فرض امکانات لازم برای ساخت وب‌سرورهای سریع، مقیاس‌پذیر و امن را در اختیار برنامه‌نویس قرار می‌دهد. </p><p>پکیج استاندارد <bdi dir="ltr">net/http</bdi> شامل همه ابزارهای پایه‌ای برای ساخت یک سرور <bdi dir="ltr">HTTP</bdi> کامل است — از مسیریابی گرفته تا سرو فایل‌های استاتیک و مدیریت <bdi dir="ltr">TLS</bdi>. </p><p>این یعنی برخلاف <bdi dir="ltr">PHP</bdi> که همیشه به وب‌سرور جانبی مثل <bdi dir="ltr">Apache</bdi> یا <bdi dir="ltr">Nginx</bdi> نیاز دارد، در <bdi dir="ltr">Go</bdi> می‌توانید بدون هیچ وابستگی خارجی، یک سرور وب حرفه‌ای و آماده‌ی <bdi dir="ltr">production</bdi> بسازید.</p>
 <p>این فصل به شما کمک می‌کند تا بتوانید بدون استفاده از فریم‌ورک خاص، اصول طراحی یک وب‌سرور حرفه‌ای، مدیریت مسیرها، سرو کردن فایل‌های استاتیک، مدیریت کوکی و سشن، استفاده از قالب‌های <bdi dir="ltr">HTML</bdi> و اعتبارسنجی ورودی‌ها را به صورت عملی و قابل اتکا در پروژه‌های واقعی پیاده کنید. </p><p>همچنین با مباحث پیشرفته‌ای مثل <bdi dir="ltr">Rate Limiting</bdi>، هدرهای امنیتی، <bdi dir="ltr">CSRF</bdi> و جاسازی فایل‌ها در باینری آشنا خواهید شد.</p>
 <p>یکی از جذاب‌ترین ویژگی‌های <bdi dir="ltr">Go</bdi> در حوزه وب، امکان تولید یک فایل باینری مستقل است که تمام قالب‌ها، فایل‌های استاتیک و حتی گواهی‌نامه‌های <bdi dir="ltr">TLS</bdi> را درون خود جای داده است. این ویژگی که با پکیج <bdi dir="ltr">embed</bdi> ممکن شده، فرآیند استقرار (<bdi dir="ltr">deployment</bdi>) را به شدت ساده می‌کند. </p><p>دیگر نیازی به کپی کردن پوشه‌های متعدد، تنظیم وب‌سرور و نصب وابستگی‌ها روی سرور نیست — فقط یک فایل باینری کافی است.</p>
@@ -193,7 +138,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/xml.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/ini.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/plaintext.min.js"></script>
-<script src="assets/js/diagrams.js"></script>
 <script src="assets/js/main.js"></script>
 </body>
 </html>

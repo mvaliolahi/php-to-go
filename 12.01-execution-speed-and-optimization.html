@@ -243,70 +243,6 @@ $ go tool pprof http://localhost:6060/debug/pprof/heap
 </figure>
 <p><strong>نکات کلیدی تحلیل pprof:</strong> عبارت <code>flat</code> زمانی است که خود تابع صرف کرده (بدون فراخوانی توابع دیگر) و <code>cum</code> زمان تجمیعی شامل زیرتوابع است. برای شناسایی گلوگاه عملکرد، همیشه ابتدا <code>flat</code> بالا را بررسی کنید چون نشان‌دهنده‌ی نقطه‌ای است که واقعاً CPU مصرف شده. اگر <code>cum</code> بالا اما <code>flat</code> پایین دارید، یعنی مشکل در یکی از زیرفراخوانی‌هاست.</p>
 <div class="important"><strong>نکته مهم pprof:</strong> هرگز بدون pprof بهینه‌سازی نکنید. حدس زدن گلوگاه عملکرد معمولاً اشتباه است. در یک پروژه‌ی واقعی، ما تصور می‌کردیم تابع JSON serialization گلوگاه است، اما pprof نشان داد ۷۰٪ وقت CPU در یک تابع کوچک timestamp formatting صرف می‌شود. بدون pprof هفته‌ها وقت تلف می‌کردیم.</div>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart LR
-
-    B["۱. بنچمارکgo test -bench"]
-    P["۲. پروفایلpprof CPU/Heap"]
-    O["۳. بهینه‌سازیتغییر الگوریتم/کد"]
-    V["۴. تأییدbenchstat"]
-
-    B --&gt; P --&gt; O --&gt; V
-    V -- "تکرار تا رسیدن به هدف" --&gt; B
-
-    subgraph TOOLS["ابزارهای کلیدی بهینه‌سازی"]
-        direction TB
-        T1["go test -bench -benchmem"]
-        T2["go tool pprof -http"]
-        T3["benchstat"]
-        T4["go build -gcflags '-m'"]
-    end
-
-    WARN[⚠ توجه: هرگز بدون pprof بهینه‌سازی نکنید — حدس زدن گلوگاه عملکرد معمولاً...]
-
-        V --&gt; TOOLS
-    TOOLS --&gt; WARN
-
-    classDef titleBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
-    classDef stageBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef toolBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
-    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
-    class TITLE titleBox;
-    class B,P,O,V stageBox;
-    class T1,T2,T3,T4 toolBox;
-    class WARN warnBox;</pre>
-<figcaption>شکل ۱۲-۱: فرآیند بهینه‌سازی مبتنی بر اندازه‌گیری در <bdi dir="ltr">Go</bdi></figcaption>
-</figure>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart LR
-
-    subgraph PHP_SIDE["PHP"]
-        direction TB
-        PHTTP["HTTP~75"]
-        PJSON["JSON~60"]
-        PDB["DB Query~70"]
-        PCPU["CPU-bound~95"]
-        PCONC["Concurrent~85"]
-    end
-
-    subgraph GO_SIDE["Go"]
-        direction TB
-        GHTTP["HTTP~15"]
-        GJSON["JSON~10"]
-        GDB["DB Query~25"]
-        GCPU["CPU-bound~5"]
-        GCONC["Concurrent~10"]
-    end
-
-        
-    classDef titleBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
-    classDef phpBox fill:#f5f0fb,stroke:#777BB4,stroke-width:1.5px,color:#1f2937;
-    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    class TITLE titleBox;
-    class PHTTP,PJSON,PDB,PCPU,PCONC phpBox;
-    class GHTTP,GJSON,GDB,GCPU,GCONC goBox;</pre>
-<figcaption>شکل ۱۲-۱-ب: مقایسه نسبی سرعت اجرای <bdi dir="ltr">PHP</bdi> و <bdi dir="ltr">Go</bdi> در سناریوهای مختلف</figcaption>
-</figure>
 <h3 id="workflow-کامل-پروفایلینگ">12.1.5 Workflow کامل پروفایلینگ</h3>
 <p>یک جریان کار کامل پروفایلینگ شامل مراحل زیر است. این جریان را به‌عنوان چک‌لیست همیشگی خود در نظر بگیرید:</p>
 <p><strong>مرحله ۱: بنچمارک اولیه.</strong> قبل از هر تغییری، بنچمارک بگیرید تا baseline داشته باشید. از <bdi dir="ltr">-count=5</bdi> استفاده کنید تا نوسانات سیستم را فیلتر کنید.</p>
@@ -362,73 +298,6 @@ if err != nil {
 </div>
 <h3 id="مقایسه-بنچمارک-go-و-php-در-عملیات-مختلف">12.1.9 مقایسه بنچمارک Go و PHP در عملیات مختلف</h3>
 <p>یکی از بهترین روش‌ها برای درک تفاوت عملکرد Go و PHP، اجرای بنچمارک‌های مستقیم روی عملیات رایج برنامه‌نویسی است. نمودار زیر نتایج بنچمارک‌های واقعی را نشان می‌دهد که با استفاده از <bdi dir="ltr">testing.B</bdi> در Go و <bdi dir="ltr">PHPBench</bdi> در PHP روی سخت‌افزار یکسان اجرا شده‌اند. </p><p>این نتایج به‌وضوح نشان می‌دهند که Go در عملیات CPU-bound (مثل پردازش ریاضی و regex) برتری چشمگیری دارد، در حالی که در عملیات I/O-bound (مثل خواندن فایل) تفاوت کمتر است. دلیل این موضوع آن است که در عملیات I/O، گلوگاه عملکرد دیسک یا شبکه است نه زبان برنامه‌نویسی، بنابراین سرعت زبان تأثیر کمتری دارد. اما در عملیات محاسباتی، کامپایل بومی Go و بهینه‌سازی‌های کامپایلر تأثیر تعیین‌کننده‌ای دارند.</p>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart LR
-
-    subgraph JSON_OPS["JSON Parsing"]
-        direction TB
-        JP["PHP 8.3 (JIT)85K ops/sec"]
-        JG["Go (compiled)650K ops/sec"]
-        JL["۷.۶x برتری Go"]
-    end
-
-    subgraph HTTP_OPS["HTTP Handling"]
-        direction TB
-        HP["PHP12K ops/sec"]
-        HG["Go180K ops/sec"]
-        HL["۱۵x برتری Go"]
-    end
-
-    subgraph STR_OPS["String Process"]
-        direction TB
-        SP["PHP55K ops/sec"]
-        SG["Go420K ops/sec"]
-        SL["۷.۶x برتری Go"]
-    end
-
-    subgraph RGX_OPS["Regex Match"]
-        direction TB
-        RP["PHP40K ops/sec"]
-        RG["Go350K ops/sec"]
-        RL["۸.۸x برتری Go"]
-    end
-
-    subgraph FILE_OPS["File I/O"]
-        direction TB
-        FP["PHP45K ops/sec"]
-        FG["Go58K ops/sec"]
-        FL["۱.۳x — قابل مقایسه"]
-    end
-
-    subgraph MATH_OPS["Math Compute"]
-        direction TB
-        MP["PHP25K ops/sec"]
-        MG["Go780K ops/sec"]
-        ML["۳۱.۲x برتری Go"]
-    end
-
-    subgraph NOTES["روش‌شناسی بنچمارک — ابزارها و نکات کلیدی"]
-        direction TB
-        N1[در Go: از testing.B با حلقه b.N استفاده می‌شود. Go خودش تعداد تکرار را تنظیم...]
-        N2[فلگ -benchmem تعداد تخصیص حافظه و حجم تخصیص شده را هم نشان می‌دهد. بدون آن...]
-        N3["در PHP: از PHPBench یا php -r با microtime(true). دقت کمتر به‌دلیل سربار تفسیر."]
-        N4[قانون طلایی: در عملیات CPU-bound برتری Go چشمگیر است. در عملیات I/O-bound...]
-    end
-
-                            MATH_OPS --&gt; NOTES
-
-    classDef titleBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
-    classDef phpBox fill:#f5f0fb,stroke:#777BB4,stroke-width:1.5px,color:#1f2937;
-    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef leadBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
-    classDef noteBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
-    class TITLE titleBox;
-    class JP,HP,SP,RP,FP,MP phpBox;
-    class JG,HG,SG,RG,FG,MG goBox;
-    class JL,HL,SL,RL,FL,ML leadBox;
-    class N1,N2,N3,N4 noteBox;</pre>
-<figcaption>شکل ۱۲-۱-ج: مقایسه بنچمارک <bdi dir="ltr">Go</bdi> و <bdi dir="ltr">PHP</bdi> در عملیات مختلف — عملیات در ثانیه (داده‌های نمونه)</figcaption>
-</figure>
 <p>همان‌طور که نمودار فوق نشان می‌دهد، تفاوت عملکرد Go و PHP به نوع عملیات بستگی دارد. در عملیات محاسباتی مثل پردازش ریاضی، Go تا ۳۱ برابر سریع‌تر از PHP عمل می‌کند.</p><p>دلیل اصلی این تفاوت آن است که Go مستقیماً به باینری بومی کامپایل می‌شود و دستورات ماشین را بدون واسطه اجرا می‌کند، در حالی که PHP حتی با JIT همچنان سربار تفسیر و مدل dynamic-typing خود را دارد.</p><p>اما در عملیات File I/O که گلوگاه اصلی دیسک یا سیستم‌عامل است، تفاوت تنها حدود ۱.۳ برابر است چون زمان انتظار برای دیسک در هر دو زبان مشابه است.</p><p>این نکته عملی مهمی است: قبل از مهاجرت به Go به‌دلیل سرعت، ابتدا بررسی کنید که آیا گلوگاه برنامه‌ی شما CPU-bound است یا I/O-bound.</p>
 <h3 id="سناریوهای-عملیاتی-بنچمارک-و-پروفایلینگ">12.1.10 سناریوهای عملیاتی: بنچمارک و پروفایلینگ</h3>
 <p>در پروژه‌های واقعی، نوشتن بنچمارک و پروفایلینگ مهارت‌هایی هستند که باید به‌صورت روزمره استفاده شوند. بسیاری از توسعه‌دهندگان تازه‌کار Go بنچمارک می‌نویسند اما نتایج را به‌درستی تفسیر نمی‌کنند یا از ابزارهای آماری استفاده نمی‌کنند.</p><p>در اینجا سناریوهای عملیاتی کلیدی را مرور می‌کنیم که هر برنامه‌نویس Go باید بداند و در جریان کار روزانه خود به‌کار ببرد.</p><p>این سناریوها بر اساس تجربیات واقعی تیم‌های بزرگ مانند Uber، Twitch و Dropbox تنظیم شده‌اند و هر کدام نکته‌ی مهمی درباره‌ی اندازه‌گیری عملکرد دارند.</p>
@@ -484,7 +353,6 @@ if err != nil {
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/xml.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/ini.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/plaintext.min.js"></script>
-<script src="assets/js/diagrams.js"></script>
 <script src="assets/js/main.js"></script>
 </body>
 </html>

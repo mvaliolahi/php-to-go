@@ -88,95 +88,6 @@
 </p>
 </div>
 <p>همانطور که گفته شد در Go خبری از کلاس نیست و به جای آن نوع داده‌ای به نام struct وجود دارد که مجموعه‌ای از فیلدهای داده‌ای را کنار هم قرار می‌دهد. می‌توان struct را مشابه کلاس‌های ساده در PHP دانست. برای درک این مفهوم به شکل ۴-۳ توجه کنید.</p>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart LR
-    title(["ترتیب جستجوی متد: PHP در برابر Go"])
-
-    subgraph PHP["PHP: Method Resolution"]
-        direction TB
-        PA["Admin::method()"]
-        PU["User::method()"]
-        PB["BaseModel::method()"]
-        PA --&gt; PU --&gt; PB
-        PN1(["parent::method() → زنجیره‌ای<br/>تغییر والد = شکست فرزند<br/>(is-a relationship)"])
-    end
-
-    subgraph GO["Go: Method Resolution"]
-        direction TB
-        IFACE["interface { Method() }"]
-        GA["Admin struct"]
-        GU["User struct"]
-        GAM["Admin.Method()"]
-        GUM["User.Method()"]
-        IFACE -.-&gt; GA
-        IFACE -.-&gt; GU
-        GA --&gt; GAM
-        GU --&gt; GUM
-        GN1(["مستقل — بدون زنجیره<br/>تغییر یکی، بقیه بی‌تأثیر<br/>(interface + struct — has-a)"])
-    end
-
-    title ~~~ PHP
-    title ~~~ GO
-
-    classDef titleBox fill:#f8fafc,stroke:#475569,stroke-width:1px,color:#1f2937,font-weight:bold;
-    classDef phpBox fill:#f5f0fb,stroke:#777BB4,stroke-width:1.5px,color:#1f2937;
-    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef okBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
-    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
-    classDef noteBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1px,color:#1f2937,font-style:italic;
-    class title titleBox;
-    class PA,PU,PB phpBox;
-    class GA,GU goBox;
-    class IFACE warnBox;
-    class GAM,GUM okBox;
-    class PN1,GN1 noteBox;</pre>
-<figcaption dir="rtl">شکل ۵-۳-ب: ترتیب جستجوی متد در <bdi dir="ltr">PHP</bdi> (زنجیره‌ی ارث‌بری) در برابر <bdi dir="ltr">Go</bdi> (<bdi dir="ltr">interface</bdi> + <bdi dir="ltr">struct</bdi> مستقل)</figcaption>
-</figure>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart LR
-    title(["شی‌گرایی: PHP vs Go"])
-
-    subgraph PHP["PHP — OOP کلاسیک"]
-        direction TB
-        P1["کلاس و شیء"]
-        P2["وراثت (extends)"]
-        P3["Interface (implements)"]
-        P4["public/private/protected"]
-        P5["Trait"]
-        P6["Constructor (__construct())"]
-        P7["Abstract Class"]
-        P8["Magic Methods"]
-        PN["سلسله‌مراتب عمیق، coupling بالا"]
-    end
-
-    subgraph GO["Go — OOP مینیمال"]
-        direction TB
-        G1["struct (به‌جای کلاس)"]
-        G2["Composition (به‌جای وراثت)"]
-        G3["Interface ضمنی"]
-        G4["Exported/Unexported"]
-        G5["Embedding"]
-        G6["NewX() (به‌جای constructor)"]
-        G7["بدون ارث‌بری"]
-        G8["بدون Trait / Magic Method"]
-        GN["ترکیب ساده، coupling پایین"]
-    end
-
-    title ~~~ PHP
-    title ~~~ GO
-
-    classDef titleBox fill:#f8fafc,stroke:#475569,stroke-width:1px,color:#1f2937,font-weight:bold;
-    classDef phpBox fill:#f5f0fb,stroke:#777BB4,stroke-width:1.5px,color:#1f2937;
-    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef errBox fill:#fef2f2,stroke:#ef4444,stroke-width:1px,color:#1f2937;
-    classDef okBox fill:#ecfdf5,stroke:#10b981,stroke-width:1px,color:#1f2937;
-    class title titleBox;
-    class P1,P2,P3,P4,P5,P6,P7,P8 phpBox;
-    class PN errBox;
-    class G1,G2,G3,G4,G5,G6,G7,G8 goBox;
-    class GN okBox;</pre>
-<figcaption>شکل ۴-۳: مقایسه‌ی شی‌گرایی در <bdi dir="ltr">PHP</bdi> و <bdi dir="ltr">Go</bdi></figcaption>
-</figure>
 <p>حال به پیاده سازی این struct دقت کنید:</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">package main
@@ -488,51 +399,6 @@ func (u *User) SetEmail(e string) {
 <p>این سبک کپسوله‌سازی ساده اما مؤثر است و در کنار طراحی ماژولار Go باعث کاهش dependency ها و افزایش خوانایی و قابلیت تست کد می‌شود.</p>
 <h3 id="وراثت-در-برابر-ترکیب">3.5.4 وراثت در برابر ترکیب: مقایسه‌ی عمیق</h3>
 <p>یکی از بزرگترین تغییرات ذهنی که برنامه‌نویسان PHP باید انجام دهند، گذاشتن از تفکر «وراثت» به تفکر «ترکیب» است. در PHP معمولاً سلسله‌مراتب وراثت عمیقی ساخته می‌شود: <code>Animal → Mammal → Dog</code>. اما در Go این الگو <bdi dir="ltr">anti-pattern</bdi> محسوب می‌شود. به‌جای پرسش «Dog چه نوع Animal ای است؟» باید بپرسید «Dog چه رفتارهایی دارد؟»</p>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-    subgraph PHP["PHP: وراثت (Inheritance)"]
-        direction TB
-        ANIMAL_P["Animal"]
-        MAMMAL["Mammal"]
-        BIRD["Bird"]
-        DOG_P["Dog"]
-        ANIMAL_P --&gt; MAMMAL
-        ANIMAL_P --&gt; BIRD
-        MAMMAL --&gt; DOG_P
-        PN(["سلسله‌مراتب عمیق، coupling بالا، تغییر سخت"])
-    end
-
-    subgraph GO["Go: ترکیب (Composition)"]
-        direction TB
-        WALKER["Walker"]
-        SWIMMER["Swimmer"]
-        BARKER["Barker"]
-        FLYER["Flyer"]
-        DOG_G["Dog<br/>Walker + Swimmer + Barker"]
-        DUCK_G["Duck<br/>Walker + Swimmer + Flyer"]
-        WALKER --&gt; DOG_G
-        SWIMMER --&gt; DOG_G
-        BARKER --&gt; DOG_G
-        WALKER --&gt; DUCK_G
-        SWIMMER --&gt; DUCK_G
-        FLYER --&gt; DUCK_G
-        GN(["ترکیب انعطاف‌پذیر، coupling پایین، تغییر آسان"])
-    end
-
-    PHP ~~~ GO
-
-    classDef phpBox fill:#f5f0fb,stroke:#777BB4,stroke-width:1.5px,color:#1f2937;
-    classDef errBox fill:#fef2f2,stroke:#ef4444,stroke-width:1.5px,color:#1f2937;
-    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef okBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
-    classDef noteBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1px,color:#1f2937,font-style:italic;
-    class ANIMAL_P,MAMMAL,BIRD phpBox;
-    class DOG_P errBox;
-    class WALKER,SWIMMER,BARKER,FLYER goBox;
-    class DOG_G,DUCK_G okBox;
-    class PN,GN noteBox;</pre>
-<figcaption>شکل ۵-۳: مقایسه‌ی وراثت در <bdi dir="ltr">PHP</bdi> با ترکیب در <bdi dir="ltr">Go</bdi></figcaption>
-</figure>
 <h4 id="method-promotion">ارتقای متد از طریق Embedding</h4>
 <p>وقتی یک struct را در struct دیگری <bdi dir="ltr">embed</bdi> می‌کنید، متدهای struct داخلی به‌صورت خودکار روی struct بیرونی قابل دسترسی می‌شوند. این مکانیزم <bdi dir="ltr">method promotion</bdi> نامیده می‌شود و شبیه‌ترین چیز به وراثت در Go است اما با تفاوت‌های مهم:</p>
 <figure class="code go" dir="ltr">
@@ -599,48 +465,6 @@ MakeThemSpeak(animals)
 </table>
 <h3 id="embedding-method-promotion-chain">3.5.5 زنجیره‌ی ارتقای متد در Embedding</h3>
 <p>یکی از مهم‌ترین مفاهیمی که برنامه‌نویسان PHP باید درباره‌ی <bdi dir="ltr">embedding</bdi> در Go درک کنند، نحوه‌ی عملکرد <bdi dir="ltr">method promotion chain</bdi> است. وقتی یک <bdi dir="ltr">struct</bdi> را در <bdi dir="ltr">struct</bdi> دیگری تعبیه می‌کنید، کامپایلر Go یک مسیر جستجوی مشخص برای متدها ایجاد می‌کند که کاملاً با زنجیره‌ی وراثت PHP متفاوت است. </p><p>در PHP وقتی متدی روی یک شیء فراخوانی می‌شود، موتور زبان از کلاس فرزند به سمت والد حرکت می‌کند تا متد مناسب را بیابد و با <code dir="ltr">parent::method()</code> می‌توان متد والد را صریحاً فراخوانی کرد. </p><p>اما در Go مکانیزم method promotion صرفاً یک <bdi dir="ltr">syntactic sugar</bdi> است که فراخوانی متد struct تعبیه‌شده را ساده‌تر می‌کند و هیچ زنجیره‌ی واقعی وجود ندارد.</p>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-    title(["زنجیره‌ی ارتقای متد: PHP extends در برابر Go embedding"])
-
-    subgraph PHP["PHP: class Dog extends Animal"]
-        direction TB
-        PAN["class Animal+ speak(): string+ move(): string+ getName(): string"]
-        PDG[class Dog extends Animal+ fetch(): string+ speak(): string ← override+...]
-        PCT["class Cat extends Animal+ purr(): string+ speak(): string ← inherited"]
-        PAN --&gt; PDG
-        PAN --&gt; PCT
-        PINFO([رابطه‌ی is-a: Dog یک Animal استparent::speak() → calls Animal's version$dog...])
-        PCALL(["$dog-&gt;speak() → Dog::speak() (override wins)"])
-    end
-
-    subgraph GO["Go: type Dog struct { Animal }"]
-        direction TB
-        GAN[type Animal struct { Name string }+ func (a Animal) Speak() string+ func (a...]
-        GDG[type Dog struct { Animal; Breed string }+ func (d Dog) Fetch() string+ func...]
-        GCT[type Cat struct { Animal; Indoor bool }+ func (c Cat) Purr() string✓...]
-        GAN --&gt; GDG
-        GAN --&gt; GCT
-        GINFO([رابطه‌ی has-a: Dog یک Animal داردd.Animal.Speak() → always Animal's...])
-        GCALL(["d.Speak() → Dog.Speak() (shadow wins) — receiver is Dog, not Animal"])
-    end
-
-    title ~~~ PHP
-    title ~~~ GO
-    PHP ~~~ GO
-
-    classDef titleBox fill:#f8fafc,stroke:#475569,stroke-width:1px,color:#1f2937,font-weight:bold;
-    classDef phpBox fill:#f5f0fb,stroke:#777BB4,stroke-width:1.5px,color:#1f2937;
-    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1px,color:#1f2937;
-    classDef noteBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1px,color:#1f2937,font-style:italic;
-    class title titleBox;
-    class PAN,PDG,PCT phpBox;
-    class GAN,GDG,GCT goBox;
-    class PINFO,GINFO warnBox;
-    class PCALL,GCALL noteBox;</pre>
-<figcaption dir="rtl">شکل ۵-۳-ج: زنجیره‌ی ارتقای متد در <bdi dir="ltr">Go embedding</bdi> در برابر وراثت <bdi dir="ltr">PHP</bdi> — ارتقا ≠ وراثت</figcaption>
-</figure>
 <p>در نمودار بالا می‌بینید که در سمت <bdi dir="ltr">PHP</bdi> رابطه‌ی <code dir="ltr">class Dog extends Animal</code> یک رابطه‌ی <strong>is-a</strong> واقعی است: <bdi dir="ltr">Dog</bdi> واقعاً یک <bdi dir="ltr">Animal</bdi> است و با <code dir="ltr">parent::speak()</code> می‌تواند به متد والد دسترسی پیدا کند. </p><p>اما در سمت <bdi dir="ltr">Go</bdi> رابطه‌ی <code dir="ltr">type Dog struct { Animal }</code> یک رابطه‌ی <strong>has-a</strong> است: <bdi dir="ltr">Dog</bdi> یک <bdi dir="ltr">Animal</bdi> را در خود جای داده و متدهای آن به‌صورت خودکار «ارتقا» یافته‌اند. </p><p>این ارتقا فقط یک میانبر نحوی است و هیچ زنجیره‌ی وراثت واقعی ایجاد نمی‌کند. تفاوت کلیدی این است که وقتی <bdi dir="ltr">Dog.Speak()</bdi> تعریف می‌شود متد <bdi dir="ltr">Animal.Speak()</bdi> را <bdi dir="ltr">shadow</bdi> می‌کند نه <bdi dir="ltr">override</bdi>. </p><p>در نتیجه هرگز <bdi dir="ltr">parent</bdi> وجود ندارد که بخواهید از آن فراخوانی کنید — فقط <code dir="ltr">d.Animal.Speak()</code> دارید که صریحاً متد struct تعبیه‌شده را فراخوانی می‌کند و receiver همیشه <bdi dir="ltr">Animal</bdi> است نه <bdi dir="ltr">Dog</bdi>.</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">type Animal struct {
@@ -733,7 +557,6 @@ func main() {
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/xml.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/ini.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/plaintext.min.js"></script>
-<script src="assets/js/diagrams.js"></script>
 <script src="assets/js/main.js"></script>
 </body>
 </html>

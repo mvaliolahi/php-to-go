@@ -80,21 +80,6 @@
 <tr><td>کتابخانه</td><td>session handler داخلی</td><td>gorilla/sessions یا دستی</td></tr>
 </tbody>
 </table>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-    L["Login"] --&gt; GEN["Generate Session ID<br/>crypto/rand + base64"]
-    GEN --&gt; ST["Session Store<br/>map / Redis / DB"]
-    GEN --&gt; SC["Set Cookie<br/>session_id=abc123"]
-    SC --&gt; V["Verify Session<br/>r.Cookie → Store lookup"]
-    V --&gt; EX["مدیریت انقضا<br/>MaxAge / Cleanup"]
-
-    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef neuBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
-    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
-    class L,GEN,ST,SC,V goBox;
-    class EX warnBox;</pre>
-<figcaption>شکل ۷-۷: جریان مدیریت <bdi dir="ltr">Session</bdi> — ایجاد، ذخیره و بررسی سشن</figcaption>
-</figure>
 <p>Go به صورت پیش‌فرض session ندارد. برای مدیریت سشن‌ها در محیط production باید از شناسه‌های امن، نگهداری در حافظه‌ای ایمن یا دیتابیس استفاده کنید.</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">package main
@@ -169,24 +154,6 @@ func main() {
 </figure>
 <h3 id="جلوگیری-از-session-fixation">7.7.1 جلوگیری از Session Fixation</h3>
 <p>حمله Session Fixation زمانی رخ می‌دهد که مهاجم یک شناسه سشن معتبر را به قربانی بدهد (مثلاً از طریق لینک حاوی شناسه سشن) و سپس از همان شناسه برای دسترسی به حساب کاربری استفاده کند. برای جلوگیری از این حمله، باید بعد از هر تغییر سطح دسترسی (مثل لاگین یا ارتقای نقش)، شناسه سشن را تغییر دهید:</p>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart LR
-    C["کلاینت<br/>Cookie: session_id<br/>abc123xyz"] --&gt; SS["Session Store<br/>جستجو با شناسه<br/>map / Redis / DB"]
-    SS --&gt; H["هندلر<br/>userID, role"]
-    H --&gt;|"ذخیره تغییرات در Store"| SS
-    H --&gt;|"Set-Cookie: session_id"| C
-
-    NOTE1(["تنظیمات امنیتی کوکی: HttpOnly=true | Secure=true | SameSite=Lax"])
-    NOTE2(["پس از لاگین شناسه سشن را تغییر دهید (Session Fixation prevention)"])
-    NOTE3(["سشن‌های منقضی‌شده را پاک‌سازی کنید — Redis TTL خودکار"])
-
-    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef neuBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
-    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
-    class C,SS,H goBox;
-    class NOTE1,NOTE2,NOTE3 warnBox;</pre>
-<figcaption dir="rtl">شکل ۷-۷-ب: چرخه‌ی کامل <bdi dir="ltr">Session</bdi> — از کوکی تا ذخیره‌گاه و بازگشت</figcaption>
-</figure>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">func loginHandler(w http.ResponseWriter, r *http.Request) {
     // ... user validation ...
@@ -513,67 +480,6 @@ func initSessionStore(redisURL string) *scs.SessionManager {
 </code></pre>
 </figure>
 <div class="tip"><strong>نکته:</strong> <bdi dir="ltr">Redis</bdi> زمان انقضای خودکار (<bdi dir="ltr">TTL</bdi>) را روی کلیدها پشتیبانی می‌کند. وقتی سشن منقضی شود، <bdi dir="ltr">Redis</bdi> به صورت خودکار آن را حذف می‌کند و نیازی به <bdi dir="ltr">goroutine</bdi> پاکسازی ندارید. این یکی از مزایای اصلی <bdi dir="ltr">Redis</bdi> نسبت به ذخیره‌سازی در حافظه محلی است.</div>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-    subgraph BR["Browser"]
-        direction TB
-        BR1["🌐 Chrome / Firefox"]
-        BR2["Cookie:session_id=abc123"]
-    end
-
-    BR --&gt;|"1 +Cookie"| GS["Go Server"]
-    GS --&gt;|"2 → Extract session_id from Cookie"| SS["Session Store"]
-    SS --&gt;|"3"| SS2["map[string]SessionData"abc123" → {userID: "u42",role: "admin", expires: ...}"]
-    SS2 --&gt;|"4 → Get SessionData {userID, role}"| GS2["Go Server — 5 → Process Request"]
-    GS2 --&gt;|"6 → Update Session in Store"| SS
-    GS2 --&gt;|"7 → Response + Set-Cookie"| BR
-
-    SS --&gt; DL["Data Layer"]
-    subgraph DL["Data Layer"]
-        direction LR
-        RS["Redis Store"]
-        DB["PostgreSQL / MySQL"]
-    end
-
-    subgraph MEM["ذخیره‌گاه در حافظه (In-Memory)"]
-        direction TB
-        ME1["✓ Very fast — no network I/O"]
-        ME2["✓ Simple setup — just map[string]SessionData"]
-        ME3["✗ Lost on server restart"]
-        ME4["✗ Not shared across instances"]
-        CODE1[// In-Memory Storevar sessions = map[string]SessionData{}// ← lost on...]
-    end
-
-    subgraph RDS["ذخیره‌گاه Redis"]
-        direction TB
-        RD1["✓ Persistent — survives restarts"]
-        RD2["✓ Shared across multiple instances"]
-        RD3["✓ Auto-expiry with TTL"]
-        CODE2[// Redis StoresessionManager.Store = redisstore.New(client)// ← persistent ·...]
-    end
-
-    subgraph WHEN["چه زمانی از کدام ذخیره‌گاه استفاده کنیم؟"]
-        direction TB
-        WH1["تک‌نمونه و توسعه: In-Memory کافیست"]
-        WH2["چندنمونه و production: حتماً Redis"]
-        WH3["داده حساس: هرگز در کوکی ذخیره نکنید"]
-    end
-
-    GOLD([قانون طلایی: همیشه HttpOnly + Secure + SameSite روی کوکی سشن تنظیم کنید و...])
-
-    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef neuBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
-    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
-    classDef bothBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
-    classDef errBox fill:#fef2f2,stroke:#ef4444,stroke-width:1.5px,color:#1f2937;
-    class GS,GS2,SS,SS2 goBox;
-    class BR1,BR2,RS,DB,CODE1,CODE2 neuBox;
-    class ME1,ME2,RD1,RD2,RD3 bothBox;
-    class ME3,ME4 errBox
-    class WH1,WH2,WH3 warnBox;
-    class GOLD warnBox;</pre>
-<figcaption>شکل ۷-۷-ج: معماری <bdi dir="ltr">Session Store</bdi> — جریان کامل درخواست از مرورگر تا سرور، مقایسه <bdi dir="ltr">In-Memory</bdi> و <bdi dir="ltr">Redis</bdi></figcaption>
-</figure>
 <h3 id="سناریوهای-عملیاتی-session">7.7.7 سناریوهای عملیاتی Session</h3>
 <p>مدیریت سشن در برنامه‌های وب فراتر از ذخیره‌سازی ساده شناسه کاربر است. هر سناریوی زیر چالش‌ها و نیازمندی‌های خاص خود را دارد و درک آن‌ها برای طراحی سیستم احراز هویت ایمن و مقیاس‌پذیر ضروری است. </p><p>بدون مدیریت صحیح سشن، برنامه شما در برابر حملات گوناگون آسیب‌پذیر خواهد بود و تجربه کاربری رضایت‌بخشی ارائه نخواهد داد.</p><p>در ادامه پنج سناریوی عملیاتی کلیدی را بررسی می‌کنیم.</p>
 <ul>
@@ -630,7 +536,6 @@ func initSessionStore(redisURL string) *scs.SessionManager {
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/xml.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/ini.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/plaintext.min.js"></script>
-<script src="assets/js/diagrams.js"></script>
 <script src="assets/js/main.js"></script>
 </body>
 </html>

@@ -68,24 +68,6 @@
 <h2 id="جاسازی-قالبها-با-پکیج-embed">جاسازی قالب‌ها با پکیج embed</h2><div class="abstract">
 <strong>چکیده:</strong> این بخش جاسازی template با embed را به‌طور تخصصی پوشش می‌دهد: //go:embed، parse و کاربردهای عملی. الگوی embed + template برای deployment تک‌فایلی بررسی می‌شود. تفاوت با readFile در PHP مشخص می‌گردد.
 </div>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart LR
-    T["templates/<br/>*.html files"] --&gt;|"//go:embed"| EFS["embed.FS<br/>templateFS"]
-    EFS --&gt; PF["ParseFS()"]
-    PF --&gt; TMPL["*Template<br/>parsed &amp; ready"]
-    TMPL --&gt; SB["Single Binary"]
-
-    NOTE(["قالب‌ها داخل باینری کامپایل می‌شوند"])
-    TMPL ~~~ NOTE
-
-    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef neuBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
-    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
-    class T,EFS,PF,TMPL goBox;
-    class SB neuBox;
-    class NOTE warnBox;</pre>
-<figcaption>شکل ۷-۱۰: جریان جاسازی قالب‌ها با پکیج <bdi dir="ltr">embed</bdi> و تبدیل به باینری واحد</figcaption>
-</figure>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">package main
 import (
@@ -156,33 +138,6 @@ tmpl, err := template.ParseFS(templateFS, "templates/*.html", "templates/**/*.ht
 <div class="note"><strong>یادداشت:</strong> دستور <code dir="ltr">//go:embed</code> محدودیت‌های امنیتی دارد: نمی‌توان از <code dir="ltr">..</code> برای خروج از دایرکتوری فایل منبع استفاده کرد و فایل‌هایی که با <code dir="ltr">.</code> یا <code dir="ltr">_</code> شروع می‌شوند (مثل <code dir="ltr">.env</code> یا <code dir="ltr">_test.go</code>) به‌صورت پیش‌فرض جاسازی نمی‌شوند — باید صریحاً نام‌برده شوند. این محدودیت‌ها از نشت تصادفی فایل‌های حساس (مثل <code dir="ltr">.git</code> یا کلیدها) به داخل باینری جلوگیری می‌کنند. قبل از <code dir="ltr">go build</code> با <code dir="ltr">git status</code> بررسی کنید که فقط فایل‌های مورد نظر در پوشه‌ی <code dir="ltr">templates/</code> یا <code dir="ltr">static/</code> قرار دارند.</div>
 <h3 id="جریان-کامل-embed-و-parsefs">7.10.3 جریان کامل embed و ParseFS</h3>
 <p>برای درک بهتر نحوه کار <code dir="ltr">embed</code> با سیستم قالب‌سازی، در ادامه کل جریان را از زمان کامپایل تا اجرای قالب مرور می‌کنیم. وقتی شما دستور <code dir="ltr">go build</code> را اجرا می‌کنید، کامپایلر فایل‌های مشخص‌شده توسط <code>//go:embed</code> را می‌خواند و محتوای آن‌ها را مستقیماً در باینری برنامه جاسازی می‌کند. </p><p>در زمان اجرا، این محتوا از طریق <code dir="ltr">embed.FS</code> در دسترس است که یک سیستم فایل فقط‌خواندنی پیاده‌سازی رابط <code dir="ltr">fs.FS</code> است:</p>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-    subgraph COMPILE["زمان کامپایل"]
-        direction LR
-        C1["//go:embed → embed.FS"] --&gt; C2["ParseFS()<br/>+ Funcs() + Must()"]
-        C2 --&gt; C3["*Template<br/>ready to execute"]
-    end
-
-    REQ["HTTP Request"] --&gt; EX["ExecuteTemplate()"]
-    EX --&gt; RES["HTML Response"]
-    C3 -.-&gt; EX
-
-    NOTE1(["قالب‌ها فقط یک‌بار پارس می‌شوند"])
-    NOTE2(["هر درخواست فقط Execute را فراخوانی می‌کند"])
-    NOTE3(["سرعت بالا"])
-    C3 ~~~ NOTE1
-    C3 ~~~ NOTE2
-    C3 ~~~ NOTE3
-
-    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef neuBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
-    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
-    class C1,C2,C3,EX goBox;
-    class REQ,RES neuBox;
-    class NOTE1,NOTE2,NOTE3 warnBox;</pre>
-<figcaption>شکل ۷-۱۰-ب: جریان کامل از <bdi dir="ltr">embed</bdi> تا رندر قالب</figcaption>
-</figure>
 <p><strong>مفاهیم کلیدی قالب‌ها</strong></p>
 <p><strong dir="ltr">Template inheritance</strong> : با استفاده از <code>block</code> و <code>define</code> می‌توانید یک طرح کلی داشته باشید و صفحات مختلف را درون آن جای‌گذاری کنید.</p>
 <p><strong>Context داده‌ها</strong> : قالب‌ها با استفاده از struct یا map داده‌ها را دریافت و رندر می‌کنند. نماد نقطه (<code>.</code>) به داده‌های context فعلی اشاره دارد.</p>
@@ -251,88 +206,6 @@ func main() {
 </figure>
 <p><strong>نکات امنیتی و حرفه‌ای</strong></p>
 <p>عدم استفاده از ورودی‌های خام در قالب‌ها: همیشه از html/template استفاده کنید تا داده‌ها escape شوند. جلوگیری از حملات XSS: داده‌هایی که از کاربر می‌آیند باید فقط از طریق متغیرهای template رندر شوند. بهینه‌سازی عملکرد: قالب‌ها را فقط یک‌بار در ابتدای برنامه با <span dir="ltr">init()</span> بارگذاری کنید. </p><p>ساختار‌دهی مناسب به پوشه‌ها: قالب‌ها را در مسیر templates/ و فایل‌های استاتیک را در مسیر static/ نگه‌داری کنید. جاسازی همه قالب‌ها با embed: برای اطمینان از استقرار ساده در محیط production.</p>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-    subgraph SRC["templates/ directory"]
-        direction TB
-        S1["├── layout.html"]
-        S2["├── header.html"]
-        S3["├── footer.html"]
-        S4["├── home.html"]
-        S5["├── about.html"]
-        S6["└── partials/"]
-        S6A["    └── nav.html"]
-        S6B["    └── alert.html"]
-        S6 --&gt; S6A
-        S6 --&gt; S6B
-    end
-
-    SRC --&gt;|"//go:embed"| EFS["embed.FS (fs.FS)"]
-    subgraph EFSFEAT["ویژگی‌های embed.FS"]
-        direction TB
-        E1["فقط‌خواندنی ✓"]
-        E2["داخل باینری ✓"]
-        E3["fs.FS interface ✓"]
-        E4["مسیرها با پیشوند ✓"]
-        E5["غیرقابل تغییر ✗ — hot-reload ندارد ✗ — نیاز به recompile ✗"]
-    end
-    EFS --&gt; EFSFEAT
-    EFS --&gt; PF["ParseFS()"]
-    PF --&gt; TMPL["*template.Template"]
-    subgraph TMPLFEAT["محتویات قالب پارس‌شده"]
-        direction TB
-        T1["define: "layout.html""]
-        T2["define: "header""]
-        T3["define: "footer""]
-        T4["define: "content" (block)"]
-        T5["define: "nav""]
-        T6["FuncMap: custom funcs"]
-        T7["cached in memory ✓"]
-    end
-    TMPL --&gt; TMPLFEAT
-
-    subgraph CMP["مقایسه ParseFS و ParseFiles"]
-        direction TB
-        subgraph PF1["ParseFS (Production)"]
-            direction TB
-            P1["✓ فایل‌ها داخل باینری — بدون وابستگی خارجی"]
-            P2["✓ استقرار ساده — فقط یک فایل باینری"]
-            P3["✗ تغییر قالب = recompile لازم"]
-        end
-        subgraph PF2["ParseFiles (Development)"]
-            direction TB
-            P4["✓ hot-reload — بدون recompile"]
-            P5["✓ ویرایش زنده قالب‌ها"]
-            P6["✗ نیاز به فایل‌های فیزیکی کنار باینری"]
-        end
-    end
-
-    subgraph PHPNOTE["PHP: templates همیشه روی filesystem"]
-        direction TB
-        PH1["PHP مفهوم embed نداره — Blade/Twig از دیسک خوانده می‌شن"]
-    end
-
-    subgraph OPT["الگوی بهینه: Development + Production"]
-        direction TB
-        O1["if dev { ParseFiles } else { ParseFS(embedFS) }"]
-    end
-
-    GOLD([قانون طلایی: embed.FS برای production (باینری واحد) و os.DirFS برای...])
-    WARN(["هشدار: مسیرهای ParseFS باید دقیقاً مطابق embed.FS باشند — اگر //go:embed templates/*.html استفاده می‌کنید، ParseFS هم باید "templates/home.html" داشته باشد · نه "home.html" — پیشوند templates/ حتماً باید ذکر شود"])
-
-    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef phpBox fill:#f5f0fb,stroke:#777BB4,stroke-width:1.5px,color:#1f2937;
-    classDef neuBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
-    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
-    classDef bothBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
-    class EFS,PF,TMPL goBox;
-    class S1,S2,S3,S4,S5,S6,S6A,S6B,T1,T2,T3,T4,T5,T6,O1 neuBox;
-    class E1,E2,E3,E4,P1,P2,P4,P5,T7 bothBox;
-    class E5,P3,P6 warnBox;
-    class PH1 phpBox;
-    class GOLD,WARN warnBox;</pre>
-<figcaption>شکل ۷-۱۰-ج: مقایسه <bdi dir="ltr">embed.FS</bdi> و <bdi dir="ltr">template.ParseFS</bdi> — از ساختار پوشه تا قالب آماده‌ی رندر</figcaption>
-</figure>
 <p>یکی از مهم‌ترین تصمیمات در سیستم قالب‌سازی، انتخاب بین <bdi dir="ltr">embed.FS</bdi> و خواندن مستقیم از filesystem است. <bdi dir="ltr">embed.FS</bdi> همه قالب‌ها را در زمان کامپایل داخل باینری جاسازی می‌کند که مزایای زیادی دارد: استقرار ساده (فقط یک فایل باینری)، عدم وابستگی به فایل‌های خارجی، و عملکرد بالاتر (بدون I/O دیسک در زمان اجرا). </p><p>اما محدودیت مهمی هم دارد: برای هر تغییر در قالب‌ها باید برنامه مجدداً کامپایل شود. به همین دلیل بهترین روش، استفاده از <bdi dir="ltr">os.DirFS</bdi> در زمان توسعه (برای hot-reload) و <bdi dir="ltr">embed.FS</bdi> در محیط production است.</p>
 <p><strong>سناریوهای عملیاتی جاسازی قالب‌ها:</strong></p>
 <ul>
@@ -386,7 +259,6 @@ func main() {
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/xml.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/ini.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/plaintext.min.js"></script>
-<script src="assets/js/diagrams.js"></script>
 <script src="assets/js/main.js"></script>
 </body>
 </html>

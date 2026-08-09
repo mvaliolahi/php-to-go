@@ -86,10 +86,6 @@
 <div class="tip">
 <strong>نکته‌ی حرفه‌ای:</strong> جمع‌آور زباله <bdi dir="ltr">Go</bdi> برای تأخیر کم طراحی شده، نه حداکثر توان عملیاتی. اگر به حداکثر توان عملیاتی نیاز دارید، تخصیص‌ها را با استفاده از <bdi dir="ltr">sync.Pool</bdi> برای اشیاء تخصیص‌داده‌شده مکرر کاهش دهید، sliceها را با <bdi dir="ltr">make([]T, 0, n)</bdi> پیش‌تخصیص کنید، و وقتی داده کوچک است ترجیحاً از نوع مقداری به جای نوع اشاره‌گری استفاده کنید.
 </div>
-<figure class="diagram d2-diagram" dir="ltr">
-<img alt="نمودار" loading="lazy" src="assets/diagrams/ch12_04_gc_cycle.svg"/>
-<figcaption>شکل ۱۲-۴-۱: چرخه <bdi dir="ltr">Garbage</bdi> <bdi dir="ltr">Collector</bdi> در <bdi dir="ltr">Go</bdi> (<bdi dir="ltr">Mark-and-Sweep</bdi>)</figcaption>
-</figure>
 <h3 id="stack-و-heap">12.4.1 Stack و Heap</h3>
 <div class="case-study">
 <div class="case-study-header">
@@ -160,33 +156,6 @@ func heapAllocated() *User {
 <div class="warning"><strong>تله‌ی رایج:</strong> بسیاری از برنامه‌نویسان تازه‌کار Go فکر می‌کنند استفاده از اشاره‌گر همیشه بهتر است چون از کپی‌شدن مقدار جلوگیری می‌کند. اما در واقعیت، اشاره‌گر باعث escape شدن متغیر به heap می‌شود و هزینه‌ی GC را افزایش می‌دهد. قانون ساده: اگر ساختار کوچک‌تر از یک cache line باشد، value برگردانید نه اشاره‌گر.</div>
 <h3 id="pprof-تحلیل-حافظه-با-ابزار-پروفایلینگ">12.4.3 pprof: تحلیل حافظه با ابزار پروفایلینگ</h3>
 <p>اولین قدم در بهینه‌سازی حافظه، اندازه‌گیری و شناسایی مشکلات است. Go ابزار قدرتمندی به نام <bdi dir="ltr">pprof</bdi> برای پروفایلینگ CPU و حافظه ارائه می‌دهد. بدون پروفایلینگ، هر تلاشی برای بهینه‌سازی حافظه صرفاً حدس و گمان است.</p>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart LR
-
-    A["go test -memprofileتولید فایل پروفایل"]
-    B["go tool pprofتحلیل تعاملی"]
-    C["top / web / listشناسایی نقطه تخصیص"]
-
-    A --&gt; B --&gt; C
-
-    subgraph EXTRA["ابزارهای تکمیلی"]
-        direction TB
-        E1["net/http/pprof — پروفایلینگ زنده در production"]
-        E2["runtime.ReadMemStats — خواندن آمار حافظه در کد"]
-        E3[فرمان‌های کلیدی pprof:top20 (بیشترین تخصیص) | web (نمودار گراف) | list...]
-        E4["pprof با فلگ -inuse_objects (تعداد اشیاء) یا -alloc_objects (تخصیص تجمیعی)"]
-    end
-
-        C --&gt; EXTRA
-
-    classDef titleBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
-    classDef stageBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef extraBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
-    class TITLE titleBox;
-    class A,B,C stageBox;
-    class E1,E2,E3,E4 extraBox;</pre>
-<figcaption>شکل ۱۲-۴-۲: جریان کار تحلیل حافظه با <bdi dir="ltr">pprof</bdi></figcaption>
-</figure>
 <p><strong>روش ۱: پروفایلینگ در تست</strong></p>
 <figure class="code bash" dir="ltr">
 <pre><code class="language-bash"># Generate memory profile file
@@ -242,10 +211,6 @@ mem.Alloc, mem.TotalAlloc, mem.Sys, mem.NumGC)
 <p><bdi dir="ltr">sync.Pool</bdi> ابزار کلیدی Go برای کاهش فشار GC در برنامه‌های با بار بالا است. thread-safe مورد استفاده قرار گیرد. وقتی شیئی دیگر لازم نیست، به pool بازگردانده می‌شود و دفعه‌ی بعد بدون تخصیص حافظه‌ی جدید قابل استفاده است.</p>
 <p><strong>چرا sync.Pool مهم است؟</strong> هر تخصیص جدید روی heap یک شیء اضافه برای GC ایجاد می‌کند. اگر برنامه شما در هر ثانیه هزاران شیء موقت ایجاد کند (مثلاً بافرهای خواندن، شیءهای response)، GC باید همه آن‌ها را ردیابی و آزاد کند. با sync.Pool اشیاء بازیافت می‌شوند و تخصیص جدید نیاز نیست.</p>
 <p><strong>معماری داخلی:</strong> هر <code dir="ltr">sync.Pool</code> دو سطح ذخیره‌سازی دارد: <strong dir="ltr">local</strong> (محلی به هر P/پردازنده) و <strong dir="ltr">victim</strong> (اشیاء از چرخه GC قبلی). وقتی <code dir="ltr">Get()</code> فراخوانی می‌شود، ابتدا در local pool پردازنده جاری جستجو می‌شود، سپس در victim pool. </p><p>وقتی <code dir="ltr">Put()</code> فراخوانی می‌شود، شیء در local pool ذخیره می‌شود. در هر چرخه GC، اشیاء local به victim منتقل می‌شوند و victim قبلی حذف می‌شوند.</p>
-<figure class="diagram d2-diagram" dir="ltr">
-<img alt="نمودار" loading="lazy" src="assets/diagrams/ch12_04_sync_pool.svg"/>
-<figcaption>شکل ۱۲-۴-۳: چرخه حیاتsync.Pool— دریافت، استفاده، بازگرداندن</figcaption>
-</figure>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">package bufferpool
 
@@ -345,10 +310,6 @@ $ GOGC=200 GOMEMLIMIT=2GiB ./myapp
 </code></pre>
 </figure>
 <div class="tip"><strong>نکته عملی:</strong> در محیط‌های container (Docker/Kubernetes)، <code>GOMEMLIMIT</code> باید حدود ۸۰-۹۰٪ حافظه‌ی container تنظیم شود تا فضایی برای Stack و buffers باقی بماند. مثلاً اگر container 512MB حافظه دارد: <code>GOMEMLIMIT=460MiB</code>.</div>
-<figure class="diagram d2-diagram" dir="ltr">
-<img alt="نمودار" loading="lazy" src="assets/diagrams/ch12_04_gc_tuning.svg"/>
-<figcaption>شکل ۱۲-۴-۴: پارامترهای تنظیمGCدر محیطProduction</figcaption>
-</figure>
 <h3 id="تنظیمات-پیشرفته-gc-برای-production">12.4.8 تنظیمات پیشرفته GC برای Production</h3>
 <p>در محیط‌های production با بار بالا، تنظیم GC می‌تواند تأثیر قابل‌توجهی بر عملکرد داشته باشد. در اینجا چند الگوی رایج را بررسی می‌کنیم:</p>
 <div class="tip"><strong>نکته:</strong> قبل از تنظیم <code>GOGC</code> یا <code>GOMEMLIMIT</code>، با <bdi dir="ltr">GODEBUG=gctrace=1 ./myapp</bdi> لاگ‌های GC را در stderr فعال کنید. هر خط نشان می‌دهد GC چند بار اجرا شده، چقدر طول کشیده (<bdi dir="ltr">STW</bdi>)، heap قبل/بعد چقدر بوده و چند goroutine فعال بوده است. بدون این داده‌ها تنظیم GOGC فقط حدس است. الگوی سالم: GC با فرکانس منظم، STW زیر ۱ms و heap پایدار. الگوی مشکوک: GC هر چند صد میلی‌ثانیه، STW طولانی یا heap رشد مستمر.</div>
@@ -484,10 +445,6 @@ GOEXPERIMENT=nogreenteagc go build -o myapp .
 </div>
 <h3 id="الگوریتم-سه-رنگی-gc-در-go">12.4.13 الگوریتم سه‌رنگی GC در Go — مرحله به مرحله</h3>
 <p>قلب تپنده‌ی Garbage Collector در Go الگوریتم Tri-Color Marking است که به‌صورت concurrent با اجرای برنامه کار می‌کند. درک این الگوریتم برای هر توسعه‌دهنده‌ی Go ضروری است، زیرا رفتار حافظه‌ی برنامه‌تان مستقیماً تحت تأثیر نحوه کار این الگوریتم قرار دارد.</p><p>الگوریتم سه‌رنگی اشیاء روی heap را به سه دسته تقسیم می‌کند: سیاه (قابل دسترس و کاملاً بررسی‌شده)، خاکستری (قابل دسترس اما هنوز بررسی نشده) و سفید (احتمالاً غیرقابل دسترس). فرآیند marking از root‌ها شروع می‌شود و به‌تدریج تمام اشیاء قابل دسترس را از خاکستری به سیاه تبدیل می‌کند.</p><p>در پایان، اشیاء سفید باقی‌مانده زباله محسوب شده و حافظه‌ی آنها آزاد می‌شود.</p>
-<figure class="diagram d2-diagram" dir="ltr">
-<img alt="نمودار" loading="lazy" src="assets/diagrams/ch12_04_tri_color_gc.svg"/>
-<figcaption>شکل ۱۲-۴-۵: الگوریتم سه‌رنگیGCدرGo— از marking تا sweep باwrite barrier</figcaption>
-</figure>
 <p>نمودار فوق فرآیند الگوریتم سه‌رنگی را پنج مرحله‌ی اصلی نشان می‌دهد. در مرحله‌ی اول، همه‌ی اشیاء روی heap سفید هستند و GC هنوز شروع نکرده. در مرحله‌ی دوم، root‌ها (اشیاء مستقیماً قابل دسترس از stack و متغیرهای سراسری) خاکستری标记 می‌شوند.</p><p>مرحله‌ی سوم قلب الگوریتم است: GC یک شیء خاکستری را انتخاب می‌کند، آن را سیاه می‌کند (یعنی بررسی‌شده) و تمام اشیایی که به آن ارجاع دارند خاکستری می‌شوند.</p><p>این فرآیند در مرحله‌ی چهارم تکرار می‌شود تا هیچ شیء خاکستری باقی نماند. در مرحله‌ی پنجم، اشیاء سفید باقی‌مانده زباله هستند و حافظه‌ی آنها آزاد می‌شود. اما نکته‌ی حیاتی write barrier است: چون mutator همزمان با GC در حال اجراست، ممکن است یک اشاره‌گر از شیء سیاه به شیء سفید اضافه کند.</p><p>بدون write barrier، این شیء سفید ناپدید می‌شد چون هیچ خاکستری‌ای دیگر به آن اشاره نمی‌کرد.</p><p>write barrier با خاکستری کردن شیء سفید هدف، این مشکل را حل می‌کند.</p>
 <h3 id="سناریوهای-عملیاتی-بهینهسازی-حافظه-و-gc">12.4.14 سناریوهای عملیاتی: بهینه‌سازی حافظه و GC</h3>
 <p>درک تئوری الگوریتم GC مهم است، اما در عمل نیاز دارید تکنیک‌های خاصی را برای کاهش فشار GC و بهینه‌سازی مصرف حافظه به‌کار ببرید. این سناریوهای عملیاتی بر اساس تجربیات تیم‌هایی مثل Twitch، Uber و Dropbox تنظیم شده‌اند و هر کدام راهکار مشخصی برای یک مشکل واقعی ارائه می‌دهند.</p><p>به‌یاد داشته باشید که بهینه‌سازی GC بدون اندازه‌گیری اولیه بی‌فایده است — همیشه ابتدا با pprof مشکل را شناسایی کنید و سپس راهکار مناسب را اعمال کنید.</p><p>بسیاری از تیم‌ها بدون پروفایلینگ، GOGC را تنظیم می‌کنند و نتایج عکس می‌گیرند چون مشکل واقعی اصلاً GC نبوده.</p>
@@ -543,7 +500,6 @@ GOEXPERIMENT=nogreenteagc go build -o myapp .
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/xml.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/ini.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/plaintext.min.js"></script>
-<script src="assets/js/diagrams.js"></script>
 <script src="assets/js/main.js"></script>
 </body>
 </html>

@@ -69,33 +69,6 @@
 <strong>چکیده:</strong> این بخش serialize و deserialize JSON و YAML در Go را پوشش می‌دهد: struct tags، custom marshaler و handling پیشرفته. تفاوت با json_encode/json_decode در PHP و مدیریت type بررسی می‌شود. الگوهای tagged struct و omitEmpty توضیح داده می‌شود.
 </div>
 <p>در دنیای مدرن نرم‌افزار، تبادل داده بین سرویس‌ها و پیکربندی برنامه‌ها عمدتاً با فرمت‌های JSON و YAML انجام می‌شود. در PHP کار با این فرمت‌ها بسیار ساده است: <code dir="ltr">json_decode()</code> و <code dir="ltr">json_encode()</code> برای JSON و افزونه‌های YAML در دسترس هستند. </p><p>در Go اما رویکرد متفاوتی وجود دارد: تبدیل داده‌ها به و از struct‌ها با استفاده از struct tag ها. </p><p>این رویکرد ابتدا ممکن است پیچیده به نظر برسد اما مزیت‌های بزرگی دارد: نوع‌داری ایستا، عملکرد بالا و امنیت بیشتر.</p>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart LR
-    subgraph GO_FLOW["Go (Unmarshal/Marshal)"]
-        direction LR
-        D1["داده خام<br/>JSON یا YAML<br/>رشته یا []byte"]
-        D1 --&gt; UM["Unmarshal"]
-        UM --&gt; ST["Struct<br/>type User struct {<br/>Name string `json:"name"`<br/>Age int `json:"age"`<br/>}"]
-        ST --&gt; MA["Marshal"]
-        MA --&gt; D2["خروجی JSON/YAML<br/>رشته یا []byte"]
-        ST --&gt; USE["استفاده<br/>دسترسی نوع‌دار<br/>user.Name<br/>user.Age"]
-    end
-
-    subgraph PHP_FLOW["در PHP"]
-        direction LR
-        P1["json_decode → array / stdClass<br/>دسترسی پویا: $data["name"]<br/>بدون بررسی نوع در زمان کامپایل"]
-    end
-
-    classDef dataBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
-    classDef opBox   fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef stBox   fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937,font-weight:bold;
-    classDef phpBox  fill:#f5f0fb,stroke:#777BB4,stroke-width:1.5px,color:#1f2937;
-    class D1,D2 dataBox;
-    class UM,MA opBox;
-    class ST,USE stBox;
-    class P1 phpBox;</pre>
-<figcaption>شکل ۶-۶ — مقایسه جریان پردازش <bdi dir="ltr">JSON/YAML</bdi> در <bdi dir="ltr">Go</bdi> (<bdi dir="ltr">Unmarshal/Marshal</bdi>) و <bdi dir="ltr">PHP</bdi> (<bdi dir="ltr">decode/encode</bdi>)</figcaption>
-</figure>
 <h3 id="کار-با-json">6.6.1 کار با JSON</h3>
 <p>ساختار <code>encoding/json</code> برای تبدیل بین JSON و struct بسیار مفید است. برخلاف PHP که <code dir="ltr">json_decode()</code> یک آرایه یا شیء پویا برمی‌گرداند، در Go داده‌ها به یک struct با نوع مشخص نگاشت می‌شوند.</p>
 <div class="quote-box">
@@ -110,39 +83,6 @@
 <div class="tip">
 <strong>نکته‌ی حرفه‌ای:</strong> رویکرد <bdi dir="ltr">Go</bdi> در استفاده از struct با <bdi dir="ltr">JSON</bdi> tag‌ها، رویکردی ساختار‌داده‌محور است. برخلاف <bdi dir="ltr">PHP</bdi> که ممکن است از آرایه‌های انجمنی برای همه‌چیز استفاده کنید، در <bdi dir="ltr">Go</bdi> ابتدا شکل داده‌هایتان را تعریف می‌کنید و سپس به رمزگشای <bdi dir="ltr">JSON</bdi> اجازه می‌دهید آن را پر کند.
 </div>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart LR
-    subgraph HEADER["نگاشت Struct Tags: فیلد Go ↔ کلید JSON"]
-        direction LR
-        subgraph GO["Go Struct"]
-            direction TB
-            S1["Name string `json:"name"`"]
-            S2["Age int `json:"age"`"]
-            S3["Email string `json:"email"`"]
-            S4["Pass string `json:"-"`<br/>هیچ‌گاه در JSON ظاهر نمی‌شود"]
-        end
-        subgraph JSON["JSON Keys"]
-            direction TB
-            J1[""name": "Sara""]
-            J2[""age": 27"]
-            J3[""email": "sara@...""]
-            J4["بدون کلید "Pass""]
-        end
-        S1 -.-&gt; J1
-        S2 -.-&gt; J2
-        S3 -.-&gt; J3
-        S4 -.-&gt; J4
-    end
-    note(["گزینه‌ها: `json:"name"` نام کلید | `json:",omitempty"` حذف اگر خالی | `json:"-"` نادیده"])
-
-    classDef goBox   fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef jsonBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
-    classDef noteBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1px,color:#1f2937,font-style:italic;
-    class S1,S2,S3,S4 goBox;
-    class J1,J2,J3,J4 jsonBox;
-    class note noteBox;</pre>
-<figcaption dir="rtl">شکل ۶-۶-ج: نگاشت <bdi dir="ltr">Struct Tags</bdi> — فیلدهای <bdi dir="ltr">Go</bdi> به کلیدهای <bdi dir="ltr">JSON</bdi> تبدیل می‌شوند</figcaption>
-</figure>
 <h4 id="تبدیل-json-به-struct">تبدیل JSON به struct (Unmarshal)</h4>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">type User struct {
@@ -454,48 +394,6 @@ func streamUsers(w http.ResponseWriter, r *http.Request) {
 }
 </code></pre>
 </figure>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-    subgraph HEADER["جریان رمزگذاری/رمزگشایی JSON"]
-        direction TB
-        subgraph UM["json.Unmarshal"]
-            direction TB
-            U1["ورودی: []byte کامل در حافظه"]
-            U2["خروجی: struct یکپارچه"]
-            U3["حافظه: ۲× حجم JSON"]
-            U4["ساده‌تر — مناسب JSON کوچک"]
-            U1 --&gt; U2 --&gt; U3 --&gt; U4
-        end
-        subgraph DEC["json.Decoder"]
-            direction TB
-            D1["ورودی: io.Reader (جریانی)"]
-            D2["خروجی: struct یکی‌یکی"]
-            D3["حافظه: فقط یک آبجکت"]
-            D4["پیچیده‌تر — مناسب JSON بزرگ"]
-            D1 --&gt; D2 --&gt; D3 --&gt; D4
-        end
-    end
-
-    subgraph FLOW["جریان داخلی json.Decoder"]
-        direction LR
-        F1["io.Reader"] --&gt; F2["Tokenizer"]
-        F2 --&gt; F3["Parse Token"]
-        F3 --&gt; F4["reflect.Set"]
-        F4 --&gt; F5["struct"]
-    end
-
-    note(["هر آبجکت JSON مستقلاً رمزگشایی می‌شود — بدون نیاز به بارگذاری کل فایل"])
-
-    classDef umBox   fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef decBox  fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
-    classDef flowBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
-    classDef noteBox fill:#ecfdf5,stroke:#10b981,stroke-width:1px,color:#1f2937,font-style:italic;
-    class U1,U2,U3,U4 umBox;
-    class D1,D2,D3,D4 decBox;
-    class F1,F2,F3,F4,F5 flowBox;
-    class note noteBox;</pre>
-<figcaption>شکل ۶-۶-ب — مقایسه <bdi dir="ltr">json.Unmarshal</bdi> و <bdi dir="ltr">json.Decoder</bdi>: جریان داخلی رمزگشایی</figcaption>
-</figure>
 <h3 id="unmarshaljson-عمیق">6.6.10 UnmarshalJSON سفارشی: کنترل کامل روی رمزگشایی</h3>
 <p>درست مثل <code>MarshalJSON</code>، می‌توانید <code>UnmarshalJSON</code> را برای کنترل کامل روی نحوه رمزگشایی JSON پیاده‌سازی کنید. این الگو برای اعتبارسنجی، تبدیل نوع، مقداردهی پیش‌فرض و ساختارهای داده پیچیده مفید است:</p>
 <figure class="code go" dir="ltr">
@@ -673,82 +571,6 @@ func main() {
 </div>
 <h3 id="json-marshal-unmarshal-type-mapping">6.6.13 نگاشت نوع‌هایGoبهJSONدرMarshal/Unmarshal</h3>
 <p>درک دقیق نگاشت نوع‌های <bdi dir="ltr">Go</bdi> به نوع‌های <bdi dir="ltr">JSON</bdi> برای جلوگیری از باگ‌های پنهان بسیار مهم است. برخی نگاشت‌ها مستقیم و ساده هستند مانند تبدیل <bdi dir="ltr">string</bdi> به رشته‌ی <bdi dir="ltr">JSON</bdi> یا <bdi dir="ltr">bool</bdi> به <bdi dir="ltr">boolean</bdi>، اما برخی دیگر نیاز به توجه ویژه دارند. مثلاً <bdi dir="ltr">time.Time</bdi> به رشته‌ی <bdi dir="ltr">RFC3339</bdi> تبدیل می‌شود و <bdi dir="ltr">[]byte</bdi> به رشته‌ی <bdi dir="ltr">base64</bdi> تبدیل می‌شود. </p><p>همچنین فیلدهای <bdi dir="ltr">unexported</bdi> (که با حرف کوچک شروع می‌شوند) به‌طور کامل نادیده گرفته می‌شوند و هرگز در خروجی <bdi dir="ltr">JSON</bdi> ظاهر نمی‌شوند. این رفتار می‌تواند برای برنامه‌نویسان <bdi dir="ltr">PHP</bdi> که به دسترسی پویا به همه‌ی کلیدها عادت دارند، غافلگیرکننده باشد.</p>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-    subgraph HEADER["نگاشت نوع‌های Go به نوع‌های JSON"]
-        direction TB
-        L1["نگاشت مستقیم"]
-        L2["تبدیل خاص"]
-        L3["نکته‌ی مهم"]
-        L1 --- L2 --- L3
-    end
-
-    subgraph GO["Go Types"]
-        direction TB
-        G1["struct"]
-        G2["map[string]any"]
-        G3["[]T (slice)"]
-        G4["string"]
-        G5["int / float64"]
-        G6["bool"]
-        G7["nil pointer (*T)"]
-        G8["time.Time"]
-        G9["[]byte"]
-    end
-
-    subgraph JSON["JSON Types"]
-        direction TB
-        J1["object { }"]
-        J2["object { }"]
-        J3["array [ ]"]
-        J4["string " ""]
-        J5["number"]
-        J6["boolean true/false"]
-        J7["null"]
-        J8["RFC3339 string<br/>"2024-01-15T10:30:00Z""]
-        J9["base64 string<br/>"SGVsbG8=""]
-    end
-
-    G1 -.-&gt;|مستقیم| J1
-    G2 -.-&gt;|مستقیم| J2
-    G3 -.-&gt;|مستقیم| J3
-    G4 -.-&gt;|مستقیم| J4
-    G5 -.-&gt;|مستقیم| J5
-    G6 -.-&gt;|مستقیم| J6
-    G7 -.-&gt;|مستقیم| J7
-    G8 -.-&gt;|تبدیل خاص| J8
-    G9 -.-&gt;|تبدیل خاص| J9
-
-    subgraph TAGS["ساختار json tag — گزینه‌های پرکاربرد"]
-        direction TB
-        T1["json:"name" → کلید JSON برابر "name""]
-        T2["json:"-" → فیلد هرگز در JSON ظاهر نمی‌شود"]
-        T3["json:",omitempty" → حذف اگر مقدار پیش‌فرض (صفر/خالی)"]
-        T4["json:",string" → عدد به‌صورت رشته‌ی JSON"]
-    end
-
-    subgraph PIT["⚠️ اشتباهات رایج"]
-        direction TB
-        P1["فیلدهای unexported (حرف کوچک) نادیده گرفته می‌شوند"]
-        P2["time.Time نیاز به فرمت RFC3339 دارد"]
-        P3["[]byte به base64 تبدیل می‌شود (نه آرایه‌ی عدد!)"]
-        P4["کلید map حتماً باید string باشد"]
-    end
-
-    classDef lblBox  fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937,font-weight:bold;
-    classDef goBox   fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef jsonBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
-    classDef tagBox  fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
-    classDef pitBox  fill:#fef2f2,stroke:#ef4444,stroke-width:1.5px,color:#1f2937;
-    class L1 goBox;
-    class L2 tagBox;
-    class L3 pitBox;
-    class G1,G2,G3,G4,G5,G6,G7,G8,G9 goBox;
-    class J1,J2,J3,J4,J5,J6,J7,J8,J9 jsonBox;
-    class T1,T2,T3,T4 tagBox;
-    class P1,P2,P3,P4 pitBox;</pre>
-<figcaption>شکل ۶-۶-د — نگاشت نوع‌های <bdi dir="ltr">Go</bdi> به نوع‌های <bdi dir="ltr">JSON</bdi>: سبز = مستقیم، نارنجی = تبدیل خاص، صورتی = نکته‌ی مهم</figcaption>
-</figure>
 <h3 id="json-سناریوهای-عملیاتی">6.6.14 سناریوهای عملیاتی</h3>
 <p>در پروژه‌های واقعی، کار با <bdi dir="ltr">JSON</bdi> فراتر از تبدیل ساده‌ی <bdi dir="ltr">struct</bdi> به <bdi dir="ltr">JSON</bdi> است. سناریوهای متعددی وجود دارند که هر کدام نیازمند رویکرد و تکنیک خاصی هستند. آشنایی با این الگوها به شما کمک می‌کند در موقعیت‌های مختلف بهترین تصمیم را بگیرید و از خطاهای رایج جلوگیری کنید. در ادامه پنج سناریوی عملیاتی کلیدی بررسی می‌شوند که هر برنامه‌نویس <bdi dir="ltr">Go</bdi> باید با آن‌ها آشنا باشد.</p>
 <ul>
@@ -808,7 +630,6 @@ func main() {
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/xml.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/ini.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/plaintext.min.js"></script>
-<script src="assets/js/diagrams.js"></script>
 <script src="assets/js/main.js"></script>
 </body>
 </html>

@@ -255,10 +255,6 @@ func TestAdd(t *testing.T) {
 }
 </code></pre>
 </figure>
-<figure class="diagram d2-diagram" dir="ltr">
-<img alt="نمودار" loading="lazy" src="assets/diagrams/ch11_01_testing_workflow.svg"/>
-<figcaption>شکل ۱۱-۲: گردش کار تست درGoازUnitTestتاFuzzing</figcaption>
-</figure>
 <h3 id="table-driven-tests">11.1.7 Table-driven Tests</h3>
 <div class="quote-box">
 <p class="quote-text">تست‌های جدولی یکی از متمایزترین الگوهای تست Go است. به جای نوشتن توابع تست جداگانه برای هر مورد، جدولی از ورودی‌ها و خروجی‌های مورد انتظار تعریف می‌کنید و سپس روی آن‌ها حلقه می‌زنید. این کار افزودن موارد تست جدید و مشاهده همه موارد با یک نگاه را آسان می‌کند.</p>
@@ -634,23 +630,6 @@ $ go tool cover -html=coverage.out -o coverage.html
 </code></pre>
 </figure>
 <p>فرمان <code>go tool cover -html</code> یک فایل HTML تولید می‌کند که کدهای شما را با رنگ‌بندی نمایش می‌دهد: خطوط سبز توسط تست پوشش داده شده‌اند، خطوط قرمز پوشش داده نشده‌اند و خطوط خاکستری قابل نادیده‌گیری هستند.</p>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart LR
-    subgraph HEADER["فرآیند Coverage در Go"]
-        direction LR
-        S1["go test -coverprofile<br/>تولید فایل coverage.out"] --&gt; S2["go tool cover -func<br/>مشاهده درصد هر تابع"]
-        S2 --&gt; S3["go tool cover -html<br/>گزارش بصری HTML"]
-    end
-
-    note1(["تفسیر گزارش: سبز = پوشش داده‌شده | قرمز = پوشش نداده | خاکستری = غیرقابل‌اجرا"])
-    note2(["هدف: پوشش بالای ۸۰٪ برای منطق اصلی، نه صرفاً عدد بالا برای همه کدها"])
-
-    classDef cmdBox  fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef noteBox fill:#ecfdf5,stroke:#10b981,stroke-width:1px,color:#1f2937,font-style:italic;
-    class S1,S2,S3 cmdBox;
-    class note1,note2 noteBox;</pre>
-<figcaption>شکل ۱۱-۲: فرآیند تولید و تحلیل گزارش <bdi dir="ltr">Coverage</bdi> در <bdi dir="ltr">Go</bdi></figcaption>
-</figure>
 <div class="warning"><strong>هشدار درباره Coverage:</strong> پوشش ۱۰۰٪ به معنای تست کامل نیست. Coverage edge cases تست شده‌اند یا خیر. مثلاً اگر یک تابع با سه شاخه شرطی دارید و فقط یکی از شاخه‌ها اجرا شده باشد، Coverage بالاست اما دو شاخه دیگر تست نشده‌اند. همیشه کیفیت تست را بر کمیت Coverage ترجیح دهید.</div>
 <table class="comparison-table" dir="rtl">
 <thead>
@@ -723,34 +702,6 @@ $ go test -update ./...
 </figure>
 <div class="tip"><strong>نکته درباره پوشه testdata:</strong> در Go، پوشه <code>testdata/</code> یک قرارداد ویژه است. ابزار <code>go test</code> این پوشه را به‌عنوان وابستگی تست شناسایی می‌کند و فایل‌های داخل آن در build نهایی برنامه قرار نمی‌گیرند. فایل‌های golden، فایل‌های ورودی تست و سایر fixtureها باید در این پوشه ذخیره شوند. همیشه فایل‌های golden را در git commit کنید تا توسط اعضای تیم قابل استفاده باشند.</div>
 <div class="comparison"><strong>مقایسه با PHP:</strong> در PHPUnit می‌توانید با <code dir="ltr">$this-&gt;assertStringEqualsFile('expected.json', $output)</code> خروجی را با فایل مقایسه کنید. اما الگوی Golden File در Go با فلگ <code>-update</code> و پوشه <code>testdata/</code> بسیار ساختاریافته‌تر و خودکارتر است. همچنین ابزار <code>go test</code> پوشه testdata را به‌صورت خودکار مدیریت می‌کند.</div>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-    subgraph HEADER["الگوی Golden File Testing"]
-        direction TB
-        EXEC["اجرای کد<br/>GenerateReport()"] --&gt; OUT["دریافت خروجی<br/>actual output"]
-        OUT --&gt; CMP{"مقایسه<br/>bytes.Equal()"}
-        GOLD["فایل Golden<br/>testdata/*.golden"]
-        GOLD --&gt; CMP
-        CMP -- "برابر" --&gt; PASS["PASS ✓"]
-        CMP -- "نابرابر" --&gt; FAIL["FAIL ✗"]
-    end
-
-    note(["go test -update → نوشتن خودکار فایل golden جدید"])
-
-    classDef execBox  fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef goldBox  fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
-    classDef decBox   fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937,font-weight:bold;
-    classDef passBox  fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
-    classDef failBox  fill:#fef2f2,stroke:#ef4444,stroke-width:1.5px,color:#1f2937;
-    classDef noteBox  fill:#ecfdf5,stroke:#10b981,stroke-width:1px,color:#1f2937,font-style:italic;
-    class EXEC,OUT execBox;
-    class GOLD goldBox;
-    class CMP decBox;
-    class PASS passBox;
-    class FAIL failBox;
-    class note noteBox;</pre>
-<figcaption>شکل ۱۱-۳: الگوی <bdi dir="ltr">Golden</bdi> <bdi dir="ltr">File</bdi> <bdi dir="ltr">Testing</bdi> — مقایسه خروجی با فایل مرجع</figcaption>
-</figure>
 <h3 id="b-loop-go-1.24">11.1.16 روش جدید بنچمارک با B.Loop — Go 1.24</h3>
 <p>
  بنچمارک‌ها اکنون می‌توانند از روش سریع‌تر و کم‌خطاتر <code>testing.B.Loop</code>
@@ -842,10 +793,6 @@ func BenchmarkNew(b *testing.B) {
 <h3 id="چرخه-حیات-اجرای-تست-در-go">11.1.19 چرخه حیات اجرای تست در Go</h3>
 <p>درک چرخه حیات اجرای تست در Go برای نوشتن تست‌های اصولی و قابل نگهداری بسیار مهم است. </p><p>وقتی دستور <bdi dir="ltr">go test</bdi> را اجرا می‌کنید، فرآیندی چند مرحله‌ای طی می‌شود: ابتدا ابزار تست Go فایل‌های <bdi dir="ltr">_test.go</bdi> را کشف می‌کند، سپس آن‌ها را به همراه کد اصلی کامپایل کرده و در نهایت توابع تست را به‌ترتیب اجرا و گزارش‌دهی می‌کند. </p><p>این چرخه حیات شامل مراحل <bdi dir="ltr">setup</bdi>، اجرای تست‌ها (ترتیبی یا موازی) و <bdi dir="ltr">teardown</bdi> است که هر کدام نقش مهمی در تضمین صحت تست‌ها دارند.</p>
 <p>در Go قراردادهای ساده‌ای وجود دارد: فایل‌های تست باید با پسوند <bdi dir="ltr">_test.go</bdi> ختم شوند، توابع تست باید با پیشوند <bdi dir="ltr">Test</bdi> شروع شوند و آرگومان <bdi dir="ltr">*testing.T</bdi> بپذیرند. تابع <bdi dir="ltr">TestMain</bdi> امکان اجرای کد قبل و بعد از همه تست‌ها را فراهم می‌کند و <bdi dir="ltr">t.Cleanup</bdi> منابع را حتی در صورت شکست تست آزاد می‌کند. </p><p>این رویکرد مینیمال با <bdi dir="ltr">PHPUnit</bdi> متفاوت است که در آن <bdi dir="ltr">setUp()</bdi> و <bdi dir="ltr">tearDown()</bdi> قبل و بعد از هر متد تست اجرا می‌شوند.</p>
-<figure class="diagram d2-diagram" dir="ltr">
-<img alt="نمودار" loading="lazy" src="assets/diagrams/ch11_01_testing_workflow.svg"/>
-<figcaption>شکل ۱۱-۴: چرخه حیات اجرای تست درGo— ازTestMainتاt.Cleanupبا مقایسهPHPUnit</figcaption>
-</figure>
 <h3 id="سناریوهای-عملیاتی-تستنویسی">11.1.20 سناریوهای عملیاتی تست‌نویسی</h3>
 <p>در پروژه‌های واقعی، تسلط بر الگوهای عملیاتی تست‌نویسی به اندازه دانستن مفاهیم پایه مهم است. هر سناریو زیر چالش خاصی را حل می‌کند که توسعه‌دهندگان مهاجر از <bdi dir="ltr">PHP</bdi> ممکن است در ابتدا با آن مواجه شوند. </p><p>این الگوها در کدبیس‌های بزرگ و تیمی حیاتی هستند و رعایت آن‌ها باعث می‌شود تست‌ها قابل نگهداری، سریع و معنادار باقی بمانند.</p>
 <ul>
@@ -900,7 +847,6 @@ func BenchmarkNew(b *testing.B) {
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/xml.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/ini.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/plaintext.min.js"></script>
-<script src="assets/js/diagrams.js"></script>
 <script src="assets/js/main.js"></script>
 </body>
 </html>

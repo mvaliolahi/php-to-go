@@ -69,35 +69,6 @@
 <strong>چکیده:</strong> این بخش خواندن خط‌به‌خط فایل را با bufio.Scanner به‌طور تخصصی پوشش می‌دهد. الگوهای پردازش فایل‌های بزرگ، CSV و log بررسی می‌شود. کارایی و مدیریت حافظه برای فایل‌های حجیم توضیح داده می‌شود.
 </div>
 <p>گاهی لازم است فایل را به‌صورت خط‌به‌خط بخوانیم، مثلاً وقتی فایل لاگ بزرگی دارید یا می‌خواهید هر خط را جداگانه پردازش کنید. خواندن خط‌به‌خط مزیت مهمی دارد: نیازی به بارگذاری کل فایل در حافظه نیست و می‌توانید حتی فایل‌های بسیار بزرگ را به‌صورت stream پردازش کنید.</p>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-    subgraph FILE["log.txt"]
-        direction TB
-        L1["خط ۱"]
-        L2["خط ۲"]
-        L3["خط ۳"]
-        L4["..."]
-        LN["خط N"]
-        EOF["EOF"]
-        L1 --- L2 --- L3 --- L4 --- LN --- EOF
-    end
-    OPEN["os.Open()<br/>*os.File<br/>File Handle"] --&gt; SCAN["bufio.NewScanner"]
-    FILE --&gt; OPEN
-    SCAN --&gt; LOOP{"حلقه خواندن<br/>scanner.Scan()"}
-    LOOP -- "true" --&gt; TEXT["scanner.Text()<br/>پردازش خط<br/>فیلتر / تبدیل / شمارش"]
-    TEXT --&gt; LOOP
-    LOOP -- "false (EOF)" --&gt; CLOSE["defer file.Close()"]
-
-    classDef fileBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
-    classDef opBox   fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef procBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
-    classDef decBox  fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
-    class L1,L2,L3,L4,LN,EOF fileBox;
-    class OPEN,SCAN opBox;
-    class TEXT,LOOP,CLOSE procBox;
-    class LOOP decBox;</pre>
-<figcaption>شکل ۶-۴ — جریان خواندن خط‌به‌خط فایل با <bdi dir="ltr">bufio.Scanner</bdi> در <bdi dir="ltr">Go</bdi></figcaption>
-</figure>
 <h3 id="خواندن-با-scanner">6.4.1 خواندن با bufio.Scanner</h3>
 <p>رایج‌ترین و ساده‌ترین روش خواندن خط‌به‌خط در Go استفاده از <code dir="ltr">bufio.Scanner</code> است:</p>
 <figure class="code go" dir="ltr">
@@ -349,30 +320,6 @@ writer.WriteAll([][]string{
 })
 </code></pre>
 </figure>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart LR
-    subgraph HEADER["خط لوله پردازش خط‌به‌خط"]
-        direction LR
-        F["data.csv<br/>فایل متنی"] --&gt; O["os.Open()<br/>*os.File<br/>io.Reader"]
-        O --&gt; N["NewReader()<br/>csv.Reader /<br/>bufio.Scanner"]
-        N --&gt; LOOP["حلقه<br/>پردازش<br/>فیلتر/تبدیل"]
-    end
-
-    subgraph CMP["مقایسه ابزارهای خواندن خط‌به‌خط"]
-        direction TB
-        C1["bufio.Scanner → ساده‌ترین، مناسب فایل‌های متنی معمولی"]
-        C2["bufio.Reader → کنترل بیشتر، مناسب خطوط خیلی بلند"]
-        C3["csv.Reader → تخصصی CSV، مدیریت نقل‌قول و فرار"]
-    end
-
-    classDef fileBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
-    classDef opBox   fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef cmpBox  fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
-    class F fileBox;
-    class O,N,LOOP opBox;
-    class C1,C2,C3 cmpBox;</pre>
-<figcaption dir="rtl">شکل ۶-۴-ب — خط لوله پردازش خط‌به‌خط: از فایل تا پردازش</figcaption>
-</figure>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">// Combine CSV with struct (convert records to typed)
 type User struct {
@@ -415,81 +362,6 @@ func readUsersCSV(path string) ([]User, error) {
 </div>
 <h3 id="خط-لوله-توکنایز-اسکنر">6.4.8 خط لوله توکنایزیشن Scanner: نگاهی به درون bufio.Scanner</h3>
 <p>فهم نحوه کار داخلی <bdi dir="ltr">bufio.Scanner</bdi> به شما کمک می‌کند از آن به‌درستی استفاده کنید و خطاهای رایج مانند «token too long» را رفع کنید. </p><p>Scanner یک خط لوله پردازشی است: داده از جریان ورودی خوانده می‌شود، توسط تابع Split به توکن‌ها تقسیم می‌شود، و هر توکن در یک بافر داخلی ذخیره شده و به کاربر بازگردانده می‌شود. </p><p>در نمودار زیر تمام جزئیات این خط لوله، مدیریت بافر داخلی، و نحوه نوشتن تابع Split سفارشی را مشاهده می‌کنید.</p>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-    subgraph HEADER["خط لوله توکنایزیشن bufio.Scanner"]
-        direction LR
-        R["جریان ورودیio.Readerفایل / شبکه / هر منبع"]
-        R --&gt; READ["Read()"]
-        READ --&gt; BUF[Internal Bufferاندازه اولیه: ۶۴KBMaxTokenLength = 65536قابل افزایش با...]
-        BUF --&gt; SPLIT[تقسیمSplitFuncتوکنایزر قابل تعویض→ advance, token, errScanLines | ScanWords...]
-        SPLIT --&gt; TOK["Token[]bytescanner.Text()"]
-    end
-
-    subgraph SPLITS["توابع Split داخلی و سفارشی"]
-        direction TB
-        SP1["ScanLinesتقسیم بر اساس \n یا \r\nپیش‌فرض Scanner — حذف انتهای خط"]
-        SP2["ScanWordsتقسیم بر اساس فاصلههر توکن = یک کلمه"]
-        SP3["ScanBytesهر بایت یک توکنمعادل خواندن بایت‌به‌بایت"]
-        SP4[Custom SplitFuncجداکننده دلخواه (کاما، pipe، ...)func(data, atEOF) → adv,...]
-    end
-
-    subgraph MEMVIEW["بافر داخلی Scanner — نمایی از حافظه"]
-        direction TB
-        MT["Token data | Unscanned | Free space"]
-        MM1["۱. بافر اولیه: startBufSize = 4096 بایت"]
-        MM2["۲. حداکثر توکن: MaxTokenSize = 65536 بایت (۶۴KB)"]
-        MM3["۳. اگر توکن بزرگ‌تر باشد → bufio.ErrTooLong"]
-        MM4["۴. افزایش بافر: scanner.Buffer(buf, max)"]
-        MM5["۵. buf: بافر اولیه (حداقل startBufSize)"]
-        MM6["۶. max: حداکثر اندازه مجاز توکن"]
-        MM7(["⚠ اگر از ErrTooLong خطا گرفتید → scanner.Buffer(make([]byte, 0), 1024*1024)"])
-    end
-
-    subgraph EXEC["جریان اجرای SplitFunc سفارشی"]
-        direction TB
-        E1["data []byteداده خوانده‌شده از بافر"]
-        E1 --&gt; E2["SplitFunc(data, atEOF)پیدا کردن مرز توکن بعدی"]
-        E2 --&gt; E3["advance — تعداد بایت جلو"]
-        E2 --&gt; E4["token — محتوای توکن"]
-        E2 --&gt; E5["err — خطا یا nil"]
-    end
-
-    subgraph SCEN["سناریوهای مقدار بازگشتی SplitFunc"]
-        direction TB
-        SC1["advance&gt;0, token≠nil, err==nil → token found, continue"]
-        SC2["advance==0, token==nil, err==nil → need more data (read more)"]
-        SC3["advance==0, token==nil, err!=nil → error (including ErrTooLong)"]
-        SC4["atEOF=true + data remaining → return last token"]
-        SC5["atEOF=true + no data → return 0, nil, nil (done)"]
-    end
-
-    subgraph CMP["مقایسه با PHP"]
-        direction TB
-        PC1["PHP: file() → array of all lines in memory"]
-        PC2["PHP: fgets() → one line at a time (streaming)"]
-        PC3["Go: Scanner → streaming + tokenization ✓"]
-    end
-
-    note([قانون طلایی: اگر خطای «token too long» گرفتید، بافر Scanner را افزایش دهید:...])
-
-    classDef hdrBox  fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937,font-weight:bold;
-    classDef opBox   fill:#e6f9fc,stroke:#00ADD8,stroke-width:1px,color:#1f2937;
-    classDef splitBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
-    classDef memBox  fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
-    classDef execBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
-    classDef scenBox fill:#f8fafc,stroke:#475569,stroke-width:1px,color:#1f2937;
-    classDef cmpBox  fill:#f5f0fb,stroke:#777BB4,stroke-width:1.5px,color:#1f2937;
-    classDef noteBox fill:#ecfdf5,stroke:#10b981,stroke-width:1px,color:#1f2937,font-style:italic;
-    class R,READ,BUF,SPLIT,TOK hdrBox;
-    class SP1,SP2,SP3,SP4 splitBox;
-    class MT,MM1,MM2,MM3,MM4,MM5,MM6,MM7 memBox;
-    class E1,E2,E3,E4,E5 execBox;
-    class SC1,SC2,SC3,SC4,SC5 scenBox;
-    class PC1,PC2,PC3 cmpBox;
-    class note noteBox;</pre>
-<figcaption>شکل ۶-۴-ج — خط لوله توکنایزیشن <bdi dir="ltr">bufio.Scanner</bdi>: مدیریت بافر، توابع Split و مقایسه با PHP</figcaption>
-</figure>
 <p>نمودار بالا نحوه کار داخلی <bdi dir="ltr">bufio.Scanner</bdi> را به‌تفصیل نشان می‌دهد. داده‌ها از <bdi dir="ltr">io.Reader</bdi> وارد بافر داخلی Scanner می‌شوند، سپس تابع <bdi dir="ltr">SplitFunc</bdi> مشخص می‌کند که چگونه داده‌ها به توکن‌ها تقسیم شوند. </p><p>سه تابع Split داخلی وجود دارد: <bdi dir="ltr">ScanLines</bdi> (پیش‌فرض — تقسیم بر اساس خطوط)، <bdi dir="ltr">ScanWords</bdi> (تقسیم بر اساس کلمات) و <bdi dir="ltr">ScanBytes</bdi> (هر بایت یک توکن). </p><p>همچنین می‌توانید تابع Split سفارشی خود را بنویسید که برای جداکننده‌های دلخواه مانند کاما، pipe یا فرمت‌های خاص کاربرد دارد.</p>
 <p>مهم‌ترین نکته درباره مدیریت بافر این است که Scanner یک بافر ۶۴ کیلوبایتی برای ذخیره توکن دارد. اگر خطی بلندتر از این حد باشد، خطای <code dir="ltr">bufio.ErrTooLong</code> صادر می‌شود. </p><p>این خطا در فایل‌های معمولی نادر است اما در فایل‌هایی مثل لاگ‌های باینری یا فایل‌های CSV که ممکن است خطوط بسیار بلندی داشته باشند، رخ می‌دهد. </p><p>راه‌حل افزایش اندازه بافر با تابع <code dir="ltr">scanner.Buffer()</code> است که در بخش سناریوهای عملیاتی توضیح داده شده است.</p>
 <h3 id="سناریوهای-عملیاتی-خط‌به‌خط">6.4.9 سناریوهای عملیاتی خواندن خط‌به‌خط</h3>
@@ -548,7 +420,6 @@ func readUsersCSV(path string) ([]User, error) {
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/xml.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/ini.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/plaintext.min.js"></script>
-<script src="assets/js/diagrams.js"></script>
 <script src="assets/js/main.js"></script>
 </body>
 </html>

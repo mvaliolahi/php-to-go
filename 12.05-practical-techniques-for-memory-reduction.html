@@ -68,42 +68,6 @@
 <h2 id="تکنیکهای-عملی-برای-کاهش-مصرف-حافظه">تکنیک‌های عملی برای کاهش مصرف حافظه</h2><div class="abstract">
 <strong>چکیده:</strong> این بخش تکنیک‌های عملی کاهش حافظه در Go را پوشش می‌دهد: struct packing، interning و freelist. الگوی memory-efficient data structure بررسی می‌شود. کاربردهای real-world پوشش داده می‌گردد.
 </div>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-
-    subgraph TECHS["تکنیک‌های کاهش مصرف حافظه"]
-        direction TB
-        T1["مرتب‌سازی فیلدهای structبزرگ→کوچک: int64 قبل از bool"]
-        T2["استفاده از انواع کوچک‌ترint64→int32 اگر مقدار &lt; ۲ میلیارد"]
-        T3["String Interningکاهش رشته‌های تکراری"]
-        T4["Pooling HTTP Response Bodyبازخوانی و بستن body"]
-        T5["Memory-Mapped I/Ommap برای فایل‌های بزرگ"]
-        T6["Byte Slice Poolingsync.Pool for buffers"]
-        T7["Pointers آگاهانهکوچک: by value / بزرگ: by pointer"]
-        T8["nil کردن داده بلااستفادهlargeSlice = nil"]
-        T9["Escape Analysisgo build -gcflags '-m'"]
-    end
-
-    subgraph CHECK["چک‌لیست نهایی کاهش مصرف حافظه"]
-        direction TB
-        C1["۱. آیا فیلدهای struct را از بزرگ به کوچک مرتب کرده‌اید؟"]
-        C2["۲. آیا از انواع کوچک‌تر (int32 به جای int64) استفاده کرده‌اید؟"]
-        C3["۳. آیا رشته‌های تکراری را interning کرده‌اید؟"]
-        C4["۴. آیا از sync.Pool برای بافرهای موقتی استفاده می‌کنید؟"]
-        C5["۵. آیا داده‌های بزرگ بلااستفاده را nil کرده‌اید؟"]
-        C6[۶. آیا با go build -gcflags '-m' بررسی کرده‌اید کدام متغیرها به heap فرار...]
-    end
-
-        TECHS --&gt; CHECK
-
-    classDef titleBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
-    classDef techBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef checkBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
-    class TITLE titleBox;
-    class T1,T2,T3,T4,T5,T6,T7,T8,T9 techBox;
-    class C1,C2,C3,C4,C5,C6 checkBox;</pre>
-<figcaption dir="rtl">شکل ۱۲-۵: چک‌لیست جامع تکنیک‌های کاهش مصرف حافظه</figcaption>
-</figure>
 <h3 id="مرتبسازی-فیلدهای-struct-تحلیل-padding">12.5.1 مرتب‌سازی فیلدهای struct (تحلیل Padding)</h3>
 <p>یکی از مؤثرترین و در عین حال ساده‌ترین تکنیک‌های کاهش مصرف حافظه، مرتب‌سازی صحیح فیلدهای struct است. کامپایلر Go alignment. اگر فیلدها به‌صورت نامنظم ترکیب شوند، فضای padding بین آن‌ها ایجاد می‌شود که حافظه‌ی بلااستفاده است.</p>
 <p>قانون ساده: <strong>فیلدها را از بزرگ‌ترین نوع به کوچک‌ترین مرتب کنید.</strong> یعنی <code>int64</code> و <code>float64</code> اول، سپس <code>int32</code>، سپس <code>int16</code> و در نهایت <code>bool</code> و <code>byte</code>. این ترتیب تضمین می‌کند که padding حداقل باشد.</p>
@@ -442,62 +406,6 @@ for method := range v.Methods() {
 </div>
 <h3 id="مقایسه-تکنیکهای-کاهش-حافظه">12.5.11 مقایسه تأثیر و دشواری تکنیک‌های کاهش حافظه</h3>
 <p>همه‌ی تکنیک‌های کاهش مصرف حافظه تأثیر یکسانی ندارند و پیاده‌سازی برخی از آن‌ها ساده‌تر از دیگری است. برای تصمیم‌گیری مؤثر، باید هم میزان صرفه‌جویی حافظه و هم سطح دشواری پیاده‌سازی را در نظر بگیرید.</p><p>بهترین استراتژی این است که ابتدا تکنیک‌هایی با تأثیر بالا و دشواری پایین را پیاده‌سازی کنید تا بیشترین بازدهی را با کمترین تلاش به‌دست آورید.</p><p>نمودار زیر مقایسه‌ی بصری شش تکنیک اصلی را بر اساس این دو معیار نشان می‌دهد.</p>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-    SUB["صرفه‌جویی نسبی حافظه و سطح دشواری پیاده‌سازی هر تکنیک"]
-
-    subgraph CHART["نمودار مقایسه — تأثیر (صرفه‌جویی حافظه) × دشواری × تکنیک"]
-        direction TB
-        R1["sync.Pool برای اشیاء موقتیدشواری: متوسط | صرفه‌جویی: 70%"]
-        R2["String Interning برای رشته‌های تکراریدشواری: متوسط | صرفه‌جویی: 60%"]
-        R3["پیش‌تخصیص Sliceدشواری: آسان | صرفه‌جویی: 55%"]
-        R4["اجتناب از تبدیل []byte↔stringدشواری: آسان | صرفه‌جویی: 45%"]
-        R5["مرتب‌سازی فیلدهای struct (alignment)دشواری: آسان | صرفه‌جویی: 40%"]
-        R6["پیش‌تخصیص Mapدشواری: آسان | صرفه‌جویی: 25%"]
-    end
-
-    subgraph LEGEND["راهنمای نمودار"]
-        direction TB
-        L1["📊 نوار سبز = تأثیر بالا | نوار نارنجی = تأثیر متوسط | نوار قرمز = تأثیر کم‌تر"]
-        L2["شانس بالای ROI: تکنیک‌های آسان با تأثیر بالا را ابتدا پیاده‌سازی کنید"]
-    end
-
-    subgraph REC["✅ توصیه عملی — اولویت‌بندی"]
-        direction TB
-        RE1["۱. slice/map پیش‌تخصیص (آسان + فوری)"]
-        RE2["۲. struct مرتب‌سازی (آسان + مؤثر)"]
-        RE3["۳. sync.Pool (بیشترین تأثیر)"]
-    end
-
-    subgraph GOLD["⚡ قانون طلایی"]
-        direction TB
-        G1[ابتدا با pprof اندازه‌گیری کنید، فقط hot path‌ها را بهینه کنید، و تکنیک‌های...]
-        G2["بهینه‌سازی بدون اندازه‌گیری = حدس زدن. از go tool pprof و benchmem شروع کنید."]
-    end
-
-        SUB --&gt; CHART
-    CHART --&gt; LEGEND
-    LEGEND --&gt; REC
-    REC --&gt; GOLD
-
-    classDef titleBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
-    classDef subBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
-    classDef hiBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
-    classDef midBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
-    classDef loBox fill:#fef2f2,stroke:#ef4444,stroke-width:1.5px,color:#1f2937;
-    classDef legBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
-    classDef recBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef goldBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
-    class TITLE titleBox;
-    class SUB subBox;
-    class R1,R2 hiBox;
-    class R3,R4 midBox;
-    class R5,R6 loBox;
-    class L1,L2 legBox;
-    class RE1,RE2,RE3 recBox;
-    class G1,G2 goldBox;</pre>
-<figcaption dir="rtl">شکل ۱۲-۵-ب: مقایسه تأثیر و دشواری تکنیک‌های کاهش مصرف حافظه در <bdi dir="ltr">Go</bdi></figcaption>
-</figure>
 <h3 id="سناریوهای-عملیاتی-کاهش-حافظه">12.5.12 سناریوهای عملیاتی کاهش حافظه</h3>
 <p>هر تکنیک کاهش مصرف حافظه در Go برای سناریوهای خاصی طراحی شده و در زمینه‌های متفاوت کارایی متفاوتی دارد. به‌کارگیری تکنیک مناسب در جای درست، نه‌تنها مصرف حافظه را کاهش می‌دهد، بلکه عملکرد کلی برنامه را نیز بهبود می‌بخشد.</p><p>در مقابل، استفاده نادرست از تکنیک‌های بهینه‌سازی می‌تواند پیچیدگی کد را بدون مزیت واقعی افزایش دهد و حتی باگ‌های جدیدی ایجاد کند.</p><p>در ادامه مهم‌ترین سناریوهای عملیاتی و بهترین رویکرد برای هر کدام را بررسی می‌کنیم و نشان می‌دهیم کدام تکنیک در چه شرایطی بیشترین بازدهی را دارد.</p>
 <ul>
@@ -551,7 +459,6 @@ for method := range v.Methods() {
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/xml.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/ini.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/plaintext.min.js"></script>
-<script src="assets/js/diagrams.js"></script>
 <script src="assets/js/main.js"></script>
 </body>
 </html>

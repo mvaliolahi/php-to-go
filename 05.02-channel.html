@@ -71,10 +71,6 @@
 <div class="tip"><strong>نکته:</strong> Channel‌ها در Go الهام‌گرفته از مدل CSP هستند. شعار معروف Go در این زمینه این است: <bdi dir="ltr">"Share memory by communicating, don't communicate by sharing memory."</bdi> به جای اینکه چند <bdi dir="ltr">Goroutine</bdi> از حافظه‌ی مشترک استفاده کنند، از طریق Channel‌ها با یکدیگر ارتباط برقرار می‌کنند.</div>
 <p>تا اینجا دیدیم که <bdi dir="ltr">Goroutine</bdi>‌ها همانند <bdi dir="ltr">Thread</bdi>‌های بسیار سبک و کم‌هزینه عمل می‌کنند. اما سؤال مهم این است که اگر چند <bdi dir="ltr">Goroutine</bdi> نیاز به ارتباط و تبادل داده داشته باشند چه راهکاری وجود دارد؟ </p><p>در بسیاری از زبان‌ها مثل PHP این کار معمولاً از طریق یک واسطه‌ی خارجی مانند فایل، دیتابیس، Redis یا RabbitMQ انجام می‌شود. </p><p>اما Go یک رویکرد متفاوت و بسیار قدرتمند به نام <bdi dir="ltr">Channel</bdi> را ارائه می‌دهد — یک ساختار <bdi dir="ltr">Built-in</bdi> که امکان انتقال داده بین <bdi dir="ltr">Goroutine</bdi>‌ها را به صورت ایمن و بدون نیاز به <bdi dir="ltr">Lock</bdi> فراهم می‌کند.</p>
 <p><bdi dir="ltr">Channel</bdi>‌ها در واقع لوله‌های ارتباطی نوع‌دار هستند. یعنی شما به‌طور دقیق مشخص می‌کنید چه نوع داده‌ای از یک کانال عبور خواهد کرد. <strong>ارسال</strong> با دستور <code>ch &lt;- value</code> و <strong>دریافت</strong> با دستور <code>value := &lt;-ch</code> انجام می‌شود. </p><p>نکته کلیدی اینجاست که <bdi dir="ltr">Channel</bdi> به طور پیش‌فرض <bdi dir="ltr">Synchronous</bdi> است — اگر گیرنده آماده نباشد ارسال‌کننده بلاک می‌شود و بالعکس. این رفتار باعث می‌شود <bdi dir="ltr">Channel</bdi>‌ها هم نقش انتقال داده و هم نقش مکانیزم همگام‌سازی را ایفا کنند.</p>
-<figure class="diagram d2-diagram" dir="ltr">
-<img alt="نمودار" loading="lazy" src="assets/diagrams/ch05_02_channel_anatomy.svg"/>
-<figcaption>شکل ۵-۵: <bdi dir="ltr">Channel</bdi> ساده برای ارسال و دریافت داده بین دو <bdi dir="ltr">Goroutine</bdi></figcaption>
-</figure>
 <h3 id="channel-internals">5.2.1 ساختار داخلی Channel (hchan)</h3>
 <p>هر <bdi dir="ltr">Channel</bdi> در <bdi dir="ltr">Runtime</bdi> زبان Go توسط ساختار داده‌ای به نام <code dir="ltr">runtime.hchan</code> نمایش داده می‌شود. درک این ساختار به شما کمک می‌کند رفتار <bdi dir="ltr">Channel</bdi>‌ها را بهتر پیش‌بینی کنید و کد کارآمدتری بنویسید.</p>
 <div class="tip"><strong>جزئیات داخلی — ساختار hchan:</strong> فیلدهای اصلی این ساختار عبارتند از:
@@ -89,51 +85,7 @@
 </ul>
 نکته مهم: هر عملیات ارسال یا دریافت روی channel ابتدا قفل <code dir="ltr">hchan.mutex</code> را می‌گیرد. این یعنی دسترسی همزمان به یک channel از چند goroutine به صورت خودکار ایمن است. اما به همین دلیل استفاده‌ی شدید از یک channel مشترک می‌تواند <bdi dir="ltr">Lock Contention</bdi> ایجاد کند.
 </div>
-<figure class="diagram d2-diagram" dir="ltr">
-<img alt="نمودار" loading="lazy" src="assets/diagrams/ch05_02_channel_flow.svg"/>
-<figcaption>شکل ۵-۶: ساختار داخلیhchan—RingBufferو صف‌های انتظارsendqوrecvq</figcaption>
-</figure>
 <h3 id="buffered-vs-unbuffered">5.2.2 Buffered vs Unbuffered</h3>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart LR
-    subgraph UB["کانال بدون بافر (cap=0)"]
-        direction TB
-        US["Sender<br/>بلاک"]
-        UC["chan T<br/>ظرفیت: ۰"]
-        UR["Receiver<br/>بلاک"]
-        US --&gt; UC
-        UC --&gt; UR
-        UN1["دست دادن مستقیم (Handshake)"]
-        UN2["فرستنده تا آماده‌شدن گیرنده بلاک می‌شود"]
-        UN3["دریافت‌کننده تا ارسال بلاک می‌شود"]
-        UN4["همگام‌سازی دقیق — سیگنال‌دهی و اطلاع‌رسانی"]
-        UN1 --&gt; UN2 --&gt; UN3 --&gt; UN4
-    end
-
-    subgraph BB["کانال با بافر (cap=N)"]
-        direction TB
-        BS["Sender<br/>غیربلاک"]
-        BRB["Ring Buffer<br/>v1 · v2 · v3 · خالی"]
-        BR["Receiver<br/>خواندن"]
-        BS --&gt; BRB
-        BRB --&gt; BR
-        BN1["بافر میانی — ارسال بدون انتظار"]
-        BN2["فرستنده تا پر‌نشده بافر بلاک نمی‌شود"]
-        BN3["گیرنده از بافر می‌خواند — شبیه Redis Queue"]
-        BN4["جدا شده — صف کارها و بافر داده"]
-        BN1 --&gt; BN2 --&gt; BN3 --&gt; BN4
-    end
-
-    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef bothBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
-    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
-    classDef neuBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
-    class UB,US,UC,UR warnBox;
-    class UN1,UN2,UN3,UN4 neuBox;
-    class BB,BS,BRB,BR goBox;
-    class BN1,BN2,BN3,BN4 neuBox;</pre>
-<figcaption dir="rtl">شکل ۵-۷: کانال بدون بافر (همگام، دست‌دادن مستقیم) در برابر کانال با بافر (ناهمگام، بافر میانی)</figcaption>
-</figure>
 <h4 id="unbuffered-channel">Unbuffered Channel</h4>
 <p>یک <strong>کانال بدون بافر</strong> یعنی یک کانال با ظرفیت صفر — هیچ فضای موقتی برای ذخیره داده وجود ندارد. ارسال‌کننده <strong>بلاک</strong> می‌شود تا گیرنده آماده شود و بالعکس. مثل یک دست دادن مستقیم بین دو نفر.</p>
 <figure class="code go" dir="ltr">
@@ -325,61 +277,6 @@ func main() {
 </figure>
 <h3 id="channel-internals-diagram">5.2.7 نمودار داخلی کانال با بافر و بدون بافر</h3>
 <p>درک تفاوت داخلی کانال‌های بافر‌دار و بدون بافر برای نوشتن کد همزمان صحیح بسیار مهم است. هر دو نوع کانال از ساختار <code>hchan</code> مشابهی استفاده می‌کنند، اما <bdi dir="ltr">Blocking Behavior</bdi> آن‌ها کاملاً متفاوت است. </p><p>در نمودار زیر نیمی از تصویر یک کانال بدون بافر را نشان می‌دهد که در آن فرستنده مستقیماً منتظر گیرنده است (دست دادن همگام)، و نیمی دیگر یک کانال بافر‌دار را نمایش می‌دهد که در آن یک <bdi dir="ltr">Ring Buffer</bdi> داخلی به‌عنوان صف میانی عمل می‌کند. این تفاوت ساختاری، رفتار کاملاً متفاوتی در مسدودسازی ایجاد می‌کند که直接影响 عملکرد و طراحی سیستم دارد.</p>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart LR
-    subgraph UB["کانال بدون بافر (make(chan T))"]
-        direction TB
-        US["Sender Gمسدود ⏸ منتظر"]
-        UC["chan Tظرفیت: ۰ — بافر ندارد"]
-        UR["Receiver Gمسدود ⏸ منتظر"]
-        US --&gt; UC
-        UC --&gt; UR
-        UT["دست دادن همگام (Synchronous Handoff)"]
-        UN1["فرستنده داده را مستقیماً به Stack گیرنده کپی می‌کند"]
-        UN2["هر دو طرف باید آماده باشند — هیچ بافر میانی وجود ندارد"]
-        UT --&gt; UN1 --&gt; UN2
-        UBH["رفتار مسدودسازی:"]
-        UB1["ارسال: همیشه مسدود می‌شود تا گیرنده آماده شود"]
-        UB2["دریافت: همیشه مسدود می‌شود تا فرستنده ارسال کند"]
-        UB3["ch &lt;- v   // blocks until receiver"]
-        UBH --&gt; UB1 --&gt; UB2 --&gt; UB3
-        UU["کاربرد اصلی:سیگنال‌دهی، اطلاع‌رسانی، همگام‌سازی دقیق بین دو Goroutine"]
-        UC2["ch := make(chan struct{})  // unbuffered signal"]
-        UU --&gt; UC2
-        USUM["همگام — هر دو طرف همزمان آماده می‌شوند"]
-    end
-
-    subgraph BB["کانال با بافر (make(chan T, 4))"]
-        direction TB
-        BS["Sender Gغیرمسدود ✅ch&lt;-v"]
-        BRB["Ring Buffer (hchan.buf)val0 · val1 · val2 · خالی↑recvx   ↑sendx"]
-        BR["Receiver G&lt;-ch"]
-        BS --&gt; BRB
-        BRB --&gt; BR
-        BM["cap(ch) = 4    |    len(ch) = 3ظرفیت ثابت است، طول با ارسال/دریافت تغییر می‌کند"]
-        BN1["بافر میانی — جداسازی فرستنده و گیرنده"]
-        BN2["فرستنده داده را در Ring Buffer می‌نویسد و بدون انتظار ادامه می‌دهد"]
-        BN3["گیرنده از Ring Buffer می‌خواند — مشابه صف Redis Queue"]
-        BN1 --&gt; BN2 --&gt; BN3
-        BBH["رفتار مسدودسازی:"]
-        BB1["ارسال: فقط وقتی بافر پر باشد مسدود می‌شود"]
-        BB2["دریافت: فقط وقتی بافر خالی باشد مسدود می‌شود"]
-        BB3["ch := make(chan int, 4)  // buffered, cap=4"]
-        BBH --&gt; BB1 --&gt; BB2 --&gt; BB3
-        BSUM["ناهمگام — بافر میانی، فرستنده و گیرنده مستقل‌تر"]
-    end
-
-    GOLD[قانون طلایی: بدون بافر = سیگنال‌دهی | با بافر = صف کار.ظرفیت بافر را بر اساس...]
-
-    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
-    classDef neuBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
-    classDef bothBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
-    class UB,US,UC,UR,UT,UN1,UN2,UBH,UB1,UB2,UB3,UU,UC2,USUM warnBox;
-    class BB,BS,BRB,BR,BM,BN1,BN2,BN3,BBH,BB1,BB2,BB3,BSUM goBox;
-    class GOLD bothBox;</pre>
-<figcaption>شکل ۵-۸: ساختار داخلی کانال بدون بافر (دست دادن همگام) در برابر کانال با بافر (<bdi dir="ltr">Ring Buffer</bdi> میانی و رفتار مسدودسازی متفاوت)</figcaption>
-</figure>
 <h3 id="سناریوهای-عملیاتی-channel">5.2.8 سناریوهای عملیاتیChannel</h3>
 <p>کانال‌ها در Go فقط وسیله‌ی انتقال داده نیستند — آن‌ها ابزار قدرتمندی برای طراحی سیستم‌های همزمان هستند. هر الگوی استفاده از کانال مسئله‌ی خاصی را حل می‌کند و انتخاب الگوی مناسب تأثیر مستقیم بر سادگی و قابلیت اطمینان کد دارد. در این بخش با پنج سناریو عملیاتی رایج آشنا می‌شویم که هر توسعه‌دهنده Go باید بشناسد.</p><p>این الگوها در پروژه‌های واقعی بارها و بارها تکرار می‌شوند و درک عمیق آن‌ها برای نوشتن کد همزمان اصولی ضروری است.</p>
 <ul>
@@ -435,7 +332,6 @@ func main() {
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/xml.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/ini.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/plaintext.min.js"></script>
-<script src="assets/js/diagrams.js"></script>
 <script src="assets/js/main.js"></script>
 </body>
 </html>

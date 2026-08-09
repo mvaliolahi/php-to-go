@@ -1086,9 +1086,6 @@
     }
     attachZoomButtons();
 
-    // Re-attach when Mermaid finishes rendering (post-load SVGs)
-    document.addEventListener('diagrams:rendered', attachZoomButtons);
-
     function createLightbox() {
       if (lightbox) return lightbox;
 

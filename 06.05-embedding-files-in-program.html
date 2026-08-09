@@ -70,34 +70,6 @@
 </div>
 <p>در بسیاری از برنامه‌ها نیاز دارید فایل‌هایی مانند قالب‌های HTML، فایل‌های config، تصاویر، داده‌های ثابت یا منابع متنی را همراه با خود برنامه توزیع کنید. اگر این فایل‌ها در زمان اجرا از دیسک بارگذاری شوند، توزیع، امنیت و اجرای برنامه ممکن است پیچیده‌تر شود. </p><p>برای حل این مشکل از Go نسخه 1.16 به بعد قابلیتی به نام <strong dir="ltr">embed</strong> معرفی شده است که به شما اجازه می‌دهد فایل‌ها را مستقیماً داخل فایل اجرایی برنامه جاسازی کنید.</p>
 <p>با این کار فایل‌ها دیگر نیازی به وجود جداگانه در کنار فایل اجرایی ندارند و برنامه شما به‌صورت مستقل، بدون وابستگی به مسیرهای خارجی اجرا خواهد شد. این تکنیک مخصوصاً برای اپلیکیشن‌های توزیع‌شونده یا سرورهای کوچک بسیار مفید است.</p>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart LR
-    subgraph SRC["کد منبع و فایل‌ها"]
-        direction TB
-        F1["message.txt<br/>فایل متنی"]
-        F2["template.html<br/>قالب HTML"]
-        F3["templates/<br/>چند فایل"]
-    end
-    EMB["//go:embed<br/>زمان کامپایل"]
-    SRC --&gt; EMB
-    EMB --&gt; BUILD["go build"]
-    BUILD --&gt; OUT["خروجی<br/>باینری اجرایی<br/>myapp<br/>فایل‌ها داخلش"]
-    OUT --&gt; DIST["بدون وابستگی<br/>قابل توزیع تنها"]
-    OUT --&gt; ACCESS["دسترسی در زمان اجرا<br/>بدون خواندن از دیسک"]
-    BUILD --&gt; T1["→ string (رشته)"]
-    BUILD --&gt; T2["→ []byte (بایت‌آرایه)"]
-    BUILD --&gt; T3["→ embed.FS (سیستم‌فایل)"]
-
-    classDef srcBox   fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
-    classDef opBox    fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef outBox   fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937,font-weight:bold;
-    classDef typeBox  fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
-    class F1,F2,F3 srcBox;
-    class EMB,BUILD opBox;
-    class OUT,DIST,ACCESS outBox;
-    class T1,T2,T3 typeBox;</pre>
-<figcaption>شکل ۶-۵ — جریان جاسازی فایل‌ها در باینری <bdi dir="ltr">Go</bdi> با پکیج <bdi dir="ltr">embed</bdi></figcaption>
-</figure>
 <h3 id="جاسازی-ساده">6.5.1 جاسازی یک فایل متنی</h3>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">import (
@@ -150,20 +122,6 @@ var templates embed.FS
 </figure>
 <h3 id="مثال-عملی-قالب-html">6.5.4 مثال عملی: جاسازی قالب HTML</h3>
 <p>ساختار پروژه:</p>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-    subgraph ROOT["project/"]
-        direction TB
-        M["main.go"]
-        T["template.html"]
-    end
-
-    classDef dirBox  fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937,font-weight:bold;
-    classDef fileBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1px,color:#1f2937;
-    class ROOT dirBox;
-    class M,T fileBox;</pre>
-<figcaption dir="rtl">ساختار پروژه</figcaption>
-</figure>
 <p>محتوای فایل <code dir="ltr">template.html</code>:</p>
 <figure class="code html" dir="ltr">
 <pre><code class="language-html">&lt;!DOCTYPE html&gt;
@@ -386,36 +344,6 @@ content, _ := fs.ReadFile(subFS, "css/style.css")
 <div class="important">
 <strong>نکته‌ی عملی درباره fs.Sub:</strong> تابع <code dir="ltr">fs.Sub()</code> یک subsystem ایجاد می‌کند که ریشه‌ی آن یک زیردایرکتوری از <code dir="ltr">embed.FS</code> است. این تابع برای <code dir="ltr">http.FileServer</code> ضروری است زیرا <code dir="ltr">embed.FS</code> مسیرهای کامل (مثل <code>static/css/style.css</code>) را ذخیره می‌کند اما <code>http.FileServer</code> مسیر نسبی نسبت به URL را طلب می‌کند. بدون <code dir="ltr">fs.Sub()</code>، فایل‌ها در مسیر اشتباه جستجو می‌شوند و 404 دریافت می‌کنید.
 </div>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart LR
-    subgraph HEADER["مقایسه جاسازی فایل: PHP در مقابل Go"]
-        direction LR
-        subgraph PHP["روش PHP"]
-            direction TB
-            P1["__DIR__ . '/config.php'<br/>مسیر نسبی — وابسته به محل فایل"]
-            P1 --&gt; P2["file_get_contents($path)<br/>خواندن از دیسک در هر درخواست"]
-            P2 --&gt; P3["فایل‌ها باید همراه باینری باشند"]
-            P3 --&gt; P4["خطر تغییر/حذف فایل در تولید"]
-            P3 --&gt; P5["مسئله مسیر نسبی/مطلق"]
-            P3 --&gt; P6["composer install → vendor/ لازم است"]
-        end
-        subgraph GO["روش Go"]
-            direction TB
-            G1["//go:embed config.yaml<br/>جاسازی در زمان کامپایل"]
-            G1 --&gt; G2["embed.FS.ReadFile()<br/>خواندن از حافظه — بدون دیسک"]
-            G2 --&gt; G3["فایل‌ها داخل باینری هستند"]
-            G3 --&gt; G4["بدون خطر تغییر/حذف فایل"]
-            G3 --&gt; G5["بدون مسئله مسیر"]
-            G3 --&gt; G6["go build → باینری مستقل"]
-        end
-    end
-
-    classDef phpBox fill:#f5f0fb,stroke:#777BB4,stroke-width:1.5px,color:#1f2937;
-    classDef goBox  fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    class PHP phpBox;
-    class GO goBox;</pre>
-<figcaption>شکل ۶-۵-ب — مقایسه رویکرد <bdi dir="ltr">PHP</bdi> و <bdi dir="ltr">Go</bdi> به جاسازی فایل‌ها</figcaption>
-</figure>
 <h3 id="embed-عملی-میکروسرویس">6.5.9 مثال عملی: میکروسرویس با قالب‌ها و فایل‌های استاتیک embed شده</h3>
 <p>در یک میکروسرویس واقعی معمولاً هم قالب‌های HTML و هم فایل‌های استاتیک (CSS، JS) را embed می‌کنید. این کار توزیع برنامه را بسیار ساده می‌کند — فقط یک باینری کافی است:</p>
 <figure class="code go" dir="ltr">
@@ -470,63 +398,6 @@ func homeHandler(w http.ResponseWriter, r *http.Request) {
 </div>
 <h3 id="خط-لوله-کامپایل-embed">6.5.10 خط لوله کامپایل //go:embed: از کد منبع تا باینری مستقل</h3>
 <p>برای درک عمیق‌تر نحوه کار <code dir="ltr">//go:embed</code>، باید خط لوله کامپایل را از نزدیک بررسی کنیم. شکل زیر نشان می‌دهد که چگونه فایل‌های منبع <bdi dir="ltr">Go</bdi> و فایل‌های موجود در سیستم‌فایل در طول فرآیند کامپایل با هم ترکیب می‌شوند و به یک باینری مستقل تبدیل می‌شوند. </p><p>تفاوت اساسی با <bdi dir="ltr">PHP</bdi> در این است که <bdi dir="ltr">PHP</bdi> هر بار فایل‌ها را از دیسک می‌خواند و هیچ مکانیزم رسمی برای جاسازی فایل‌ها در باینری ندارد. </p><p>اما <bdi dir="ltr">Go</bdi> در زمان کامپایل فایل‌ها را در باینری قرار می‌دهد و در زمان اجرا بدون دسترسی به دیسک اصلی، مستقیماً از حافظه می‌خواند. این تفاوت بنیادین، مدل استقرار و توزیع برنامه‌های <bdi dir="ltr">Go</bdi> را متحول می‌کند.</p>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-    subgraph SRC["کد منبع و فایل‌ها"]
-        direction TB
-        M["main.go//go:embed static/*var files embed.FS"]
-        F1["style.css"]
-        F2["app.js"]
-        F3["logo.png"]
-        F4["index.html"]
-    end
-
-    subgraph COMP["Go Compiler (gc)"]
-        direction TB
-        C1["۱. تحلیل دستور //go:embedشناسایی فایل‌های مورد نظر"]
-        C2["۲. خواندن محتوای فایل‌هااز دیسک در زمان کامپایل"]
-        C3["۳. جاسازی در بخش data باینریفایل‌ها تبدیل به بایت‌های خام می‌شوند"]
-        C4["۴. مقداردهی قبل از main()متغیرها با داده جاسازی پر می‌شوند"]
-        C1 --&gt; C2 --&gt; C3 --&gt; C4
-    end
-
-    BIN["باینری کامپایل‌شدهmyapp (binary)بدون وابستگی خارجیقابل توزیع تنها"]
-    EFS["embed.FSسیستم‌فایل مجازی در حافظه"]
-
-    SRC --&gt; COMP
-    COMP --&gt; BIN
-    BIN --&gt; EFS
-
-    subgraph CMP["مقایسه"]
-        direction TB
-        PH[روش PHP (دسترسی در زمان اجرا)file_get_contents('/path/to/file')فایل باید در...]
-        GO2["روش Go (جاسازی در زمان کامپایل)embed.FS.ReadFile("static/style.css")فایل داخل باینری است — بدون وابستگی به دیسک"]
-    end
-
-    subgraph HTTP["جریان تبدیل embed.FS به http.Handler"]
-        direction LR
-        H1["embed.FS"] --&gt; H2["http.FS()http.FileSystem"]
-        H2 --&gt; H3["FileServer()http.Handler"]
-        H3 --&gt; H4["Client"]
-    end
-
-    note1(["ترتیب: embed.FS → http.FS() → http.FileServer() → http.Handle()"])
-    note2(["قانون طلایی: یک باینری = یک استقرار — بدون وابستگی به فایل‌های جانبی"])
-
-    classDef srcBox  fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
-    classDef compBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef binBox  fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937,font-weight:bold;
-    classDef cmpBox  fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
-    classDef httpBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1px,color:#1f2937;
-    classDef noteBox fill:#ecfdf5,stroke:#10b981,stroke-width:1px,color:#1f2937,font-style:italic;
-    class M,F1,F2,F3,F4 srcBox;
-    class C1,C2,C3,C4 compBox;
-    class BIN,EFS binBox;
-    class PH,GO2 cmpBox;
-    class H1,H2,H3,H4 httpBox;
-    class note1,note2 noteBox;</pre>
-<figcaption>شکل ۶-۵-ج — خط لوله کامپایل <bdi dir="ltr">//go:embed</bdi>: مقایسه روش <bdi dir="ltr">PHP</bdi> و <bdi dir="ltr">Go</bdi> و جریان تبدیل <bdi dir="ltr">embed.FS</bdi> به <bdi dir="ltr">http.Handler</bdi></figcaption>
-</figure>
 <h3 id="سناریوهای-عملیاتی-embed">6.5.11 سناریوهای عملیاتی</h3>
 <p>پکیج <code dir="ltr">embed</code> در بسیاری از سناریوهای واقعی عملیاتی نقش حیاتی دارد و می‌تواند معماری استقرار و توزیع برنامه‌های <bdi dir="ltr">Go</bdi> را متحول کند. هر سناریویی که در ادامه بررسی می‌کنیم، بدون <code dir="ltr">embed</code> نیازمند فایل‌های جانبی، تنظیمات مسیر پیچیده و وابستگی‌های خارجی بود. </p><p>اما با <code dir="ltr">embed</code>، همه‌چیز در یک باینری مستقل جمع می‌شود و استقرار برنامه به سادگی کپی کردن یک فایل اجرایی کاهش می‌یابد. این رویکرد مخصوصاً در محیط‌های <bdi dir="ltr">Docker</bdi>، <bdi dir="ltr">Kubernetes</bdi> و سرورهای ابری که سادگی استقرار اهمیت بالایی دارد، ارزشمند است.</p>
 <ul>
@@ -621,7 +492,6 @@ func main() {
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/xml.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/ini.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/plaintext.min.js"></script>
-<script src="assets/js/diagrams.js"></script>
 <script src="assets/js/main.js"></script>
 </body>
 </html>

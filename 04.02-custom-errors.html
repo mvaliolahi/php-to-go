@@ -69,40 +69,6 @@
 <strong>چکیده:</strong> این بخش ساخت خطاهای سفارشی را با نوع‌های خطا، error wrapping و errors.Is/As پوشش می‌دهد. الگوهای sentinel error، typed error و error chain با مثال‌های عملی توضیح داده می‌شود. طراحی API خطا برای مصرف‌کننده بررسی می‌شود.
 </div>
 <p>برای کنترل دقیق‌تر و ارائه‌ی اطلاعات کامل‌تر می‌توان خطاهای سفارشی ساخت. در PHP معمولاً با ایجاد کلاس سفارشی از <code>Exception</code> این کار را انجام می‌دهید. در Go نیز می‌توانید با تعریف یک <code>struct</code> و پیاده‌سازی متد <code>Error() string</code> خطای سفارشی بسازید.</p>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-    subgraph PHP["PHP: Custom Exception"]
-        direction TB
-        P1["class MyEx extends Exception<br/>{ protected $message; }"]
-        P2["throw new MyEx("msg")"]
-        P3["catch (MyEx $e) { ... }"]
-        P1 --&gt; P2 --&gt; P3
-    end
-
-    subgraph GO["Go: Custom Error"]
-        direction TB
-        G1["type MyError struct { ... }"]
-        G2["func (e *MyError) Error() string"]
-        G3["return &amp;MyError{...}"]
-        G4["if err != nil { ... }"]
-        G1 --&gt; G2 --&gt; G3 --&gt; G4
-    end
-
-    subgraph IFACE["error interface"]
-        direction TB
-        I1["Error() string"]
-        I2["satisfies"]
-        G2 -.-&gt;|"satisfies"| I1
-    end
-
-    classDef phpBox fill:#f5f0fb,stroke:#777BB4,stroke-width:1.5px,color:#1f2937;
-    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef neutralBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
-    class PHP,P1,P2,P3 phpBox;
-    class GO,G1,G2,G3,G4 goBox;
-    class IFACE,I1,I2 neutralBox;</pre>
-<figcaption>شکل ۴-۲: مقایسه ساخت خطای سفارشی در <bdi dir="ltr">PHP</bdi> و <bdi dir="ltr">Go</bdi></figcaption>
-</figure>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">type DivideByZeroError struct {
     Dividend float64
@@ -131,48 +97,6 @@ if err != nil {
 <p>در خط 16 تا 19 تابع divideV2 فراخوانی شده و دو مقدار result و err دریافت می‌کنیم. بررسی شرط if err != nil مسئول مدیریت خطاست. در این حالت پیغام خطا چاپ می‌شود.</p><p>تفاوت اساسی با PHP این است که در Go خطا یک مقدار عادی است و اجرای برنامه پرش نمی‌کند در حالی که در PHP استفاده از throw و catch باعث پرش در جریان اجرای کد می‌شود.</p>
 <h3 id="خطای-پیچیده-تر-با-wrapping">4.2.1 خطای پیچیده‌تر با Wrapping</h3>
 <p>یکی از ویژگی‌های قدرتمند Go در مدیریت خطا مفهوم <strong dir="ltr">Error Wrapping</strong> است. با استفاده از <code dir="ltr">fmt.Errorf</code> و فعل قالب <code>%w</code> می‌توان خطاها را در هم پیچید و زنجیره‌ی خطا ساخت. این قابلیت مشابه زنجیره‌ی Exceptions در PHP با <code dir="ltr">getPrevious()</code> است اما بسیار سبک‌تر و صریح‌تر عمل می‌کند.</p>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-
-    subgraph IS["errors.Is(err, target)"]
-        direction TB
-        I1["مقایسه‌ی مقدار خطا (==)"]
-        I2["apiErr → Unwrap()"]
-        I3["svcErr → Unwrap()"]
-        I4["sql.ErrNoRows == target (بله)"]
-        I5["آیا این مقدار خطا، هدف است؟"]
-        I6["errors.Is(err, os.ErrNotExist) → bool"]
-        I2 -- "Unwrap()" --&gt; I3
-        I3 -- "Unwrap()" --&gt; I4
-        I1 --&gt; I2
-        I4 --&gt; I5
-        I5 --&gt; I6
-    end
-
-    subgraph AS["errors.As(err, ⌖)"]
-        direction TB
-        A1["instanceof"]
-        A2["apiErr → Unwrap()"]
-        A3["svcErr → Unwrap()"]
-        A4["*DBError matches target (بله)"]
-        A5["آیا این نوع، در زنجیره وجود دارد؟"]
-        A6["var db *DBError; errors.As(err, &amp;db) → bool"]
-        A2 -- "Unwrap()" --&gt; A3
-        A3 -- "Unwrap()" --&gt; A4
-        A1 --&gt; A2
-        A4 --&gt; A5
-        A5 --&gt; A6
-    end
-
-        
-    classDef titleBox fill:#ecfdf5,stroke:#10b981,stroke-width:2px,color:#1f2937;
-    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef bothBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
-    class TITLE titleBox;
-    class IS,I1,I2,I3,I4,I5,I6 goBox;
-    class AS,A1,A2,A3,A4,A5,A6 goBox;</pre>
-<figcaption dir="rtl">شکل ۲-۴-ب: مقایسه‌ی <bdi dir="ltr">errors.Is</bdi> (بررسی مقدار) و <bdi dir="ltr">errors.As</bdi> (بررسی نوع) در زنجیره‌ی خطا</figcaption>
-</figure>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">func readConfig(path string) error {
     _, err := os.ReadFile(path)
@@ -407,106 +331,8 @@ func GetUser(id int) (*User, error) {
 }
 </code></pre>
 </figure>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-
-    IFACE["error interface"]
-
-    subgraph STD["خطاهای استاندارد کتابخانه"]
-        direction TB
-        E1["*errorStringerrors.New()"]
-        E2["*wrapErrorfmt.Errorf("%w")"]
-        E3["*joinErrorerrors.Join()"]
-    end
-
-    CUST["خطاهای سفارشی شما*DBError, *APIError, *ValidError..."]
-
-    IFACE --&gt; E1
-    IFACE --&gt; E2
-    IFACE --&gt; E3
-    IFACE --&gt; CUST
-
-    classDef titleBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
-    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef neutralBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
-    classDef bothBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
-    class TITLE titleBox;
-    class IFACE bothBox;
-    class STD,E1,E2,E3 neutralBox;
-    class CUST goBox;</pre>
-<figcaption>شکل ۲-۴: سلسله‌مراتب خطاهای سفارشی در <bdi dir="ltr">Go</bdi></figcaption>
-</figure>
 <h3 id="error-wrapping-chain-tree">4.2.8 زنجیره‌ی پیچیدن خطا: درختfmt.Errorf %w</h3>
 <p>در بخش «<a href="#خطای-پیچیده-تر-با-wrapping">خطای پیچیده‌تر با Wrapping</a>» دیدیم که <code dir="ltr">fmt.Errorf</code> با فعل <code dir="ltr">%w</code> چگونه زنجیره‌ی خطا می‌سازد و متد <code dir="ltr">Unwrap()</code> را به‌صورت خودکار پیاده‌سازی می‌کند. در این بخش روی نکته‌ی حیاتی‌ای تمرکز می‌کنیم که منبع رایج باگ‌های پنهان در پروژه‌های <bdi dir="ltr">Go</bdi> است: تفاوت <code dir="ltr">%w</code> با <code dir="ltr">%v</code>. <code dir="ltr">%v</code> فقط پیغام خطا را قالب‌بندی می‌کند و زنجیره را می‌شکند — فراخوانی‌کننده دیگر نمی‌تواند خطای اصلی را با <code dir="ltr">errors.Is()</code> یا <code dir="ltr">errors.As()</code> بررسی کند. نمودار زیر این تفاوت را در کنار مکانیزم <code dir="ltr">Unwrap()</code> سفارشی و ساخت درخت خطا نشان می‌دهد.</p>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-
-    subgraph CHAIN["زنجیره‌ی خطا"]
-        direction TB
-        H["handleErrfmt.Errorf("handle request: %w", svcErr)"]
-        S["svcErrfmt.Errorf("get user: %w", dbErr)"]
-        D["sql.ErrNoRowsoriginal error (sentinel)"]
-        H -- "Unwrap()" --&gt; S
-        S -- "Unwrap()" --&gt; D
-    end
-
-    subgraph IS["errors.Is(handleErr, sql.ErrNoRows) → true ✓"]
-        direction TB
-        I1["پیمایش زنجیره: handleErr → svcErr → sql.ErrNoRows"]
-        I2["هر مقدار در زنجیره با هدف مقایسه می‌شود"]
-        I3["مشابه instanceof در PHP اما برای مقایسه‌ی مقدار"]
-    end
-
-    subgraph AS["errors.As(handleErr, &amp;pqErr) → true ✓"]
-        direction TB
-        A1["جستجوی نوع در زنجیره: استخراج *pq.Error"]
-        A2["دسترسی به فیلدها: pqErr.Code، pqErr.Message"]
-        A3["مشابه catch (DBError $e) در PHP"]
-    end
-
-    subgraph COMPARE["تفاوت حیاتی: %w در برابر %v"]
-        direction LR
-        subgraph W["fmt.Errorf("...: %w", err)"]
-            direction TB
-            W1["✓ زنجیره حفظ می‌شود"]
-            W2["errors.Is و errors.As کار می‌کنند"]
-        end
-        subgraph V["fmt.Errorf("...: %v", err)"]
-            direction TB
-            V1["✗ زنجیره شکسته می‌شود!"]
-            V2["errors.Is و errors.As کار نمی‌کنند"]
-        end
-    end
-
-    DANGER["⚠ خطر!"]
-
-    subgraph CUSTOM["پیاده‌سازی Unwrap() سفارشی — درخت خطا"]
-        direction TB
-        CU1["type DBError struct {    Query string    Err   error  // wrapped error}func (e *DBError) Error() string { return e.Query + ": " + e.Err.Error() }func (e *DBError) Unwrap() error { return e.Err }"]
-        CU2[نکته: errors.Join (Go 1.20+) زنجیره‌ی چندشاخه می‌سازدمتد Unwrap() []error...]
-    end
-
-        CHAIN --&gt; IS
-    CHAIN --&gt; AS
-        COMPARE --&gt; DANGER
-    
-    classDef titleBox fill:#ecfdf5,stroke:#10b981,stroke-width:2px,color:#1f2937;
-    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef bothBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
-    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
-    classDef errBox fill:#fef2f2,stroke:#ef4444,stroke-width:1.5px,color:#1f2937;
-    classDef neutralBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
-    class TITLE titleBox;
-    class CHAIN,H,S goBox;
-    class D errBox;
-    class IS,I1,I2,I3 bothBox;
-    class AS,A1,A2,A3 bothBox;
-    class W,W1,W2 goBox;
-    class V,V1,V2 errBox;
-    class DANGER errBox;
-    class CUSTOM,CU1,CU2 neutralBox;</pre>
-<figcaption>شکل ۴-۲-ب — زنجیره‌ی پیچیدن خطا با <bdi dir="ltr">fmt.Errorf %w</bdi>: <bdi dir="ltr">errors.Is</bdi> و <bdi dir="ltr">errors.As</bdi> در برابر خطر <bdi dir="ltr">%v</bdi></figcaption>
-</figure>
 <h3 id="errors-سناریوهای-عملیاتی">4.2.9 سناریوهای عملیاتی</h3>
 <p>مدیریت خطا در <bdi dir="ltr">Go</bdi> فراتر از بررسی ساده‌ی <code dir="ltr">err != nil</code> است. در سیستم‌های واقعی با لایه‌های مختلف نرم‌افزاری، خطاها از لایه‌ی پایین به بالا حرکت می‌کنند و هر لایه باید زمینه‌ی خود را اضافه کند. </p><p>سناریوهای عملیاتی زیر نشان می‌دهند چگونه از قابلیت‌های پیشرفته‌ی مدیریت خطا برای نوشتن کد قابل نگهداری و دیباگ‌پذیر استفاده کنید. </p><p>آشنایی با این الگوها تفاوت بین کدی که خطاها را بی‌صدا نادیده می‌گیرد و کدی که خطاها را به‌درستی مدیریت و گزارش می‌کند ایجاد می‌کند.</p>
 <ul>
@@ -563,7 +389,6 @@ func GetUser(id int) (*User, error) {
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/xml.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/ini.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/plaintext.min.js"></script>
-<script src="assets/js/diagrams.js"></script>
 <script src="assets/js/main.js"></script>
 </body>
 </html>

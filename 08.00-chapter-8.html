@@ -68,37 +68,6 @@
 <h2 id="فصل-هشتم">فصل هشتم</h2><div class="abstract">
 <strong>چکیده:</strong> این فصل کار با پایگاه داده در Go را باز می‌کند: database/sql، migration، transaction و ORM. تفاوت با PDO/Eloquent در PHP و الگوی Go بررسی می‌شود. کار با Redis و JSON در پایگاه داده پوشش داده می‌گردد.
 </div>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-    Title["نقشه‌ی فصل ۸ — پایگاه داده در Go"]
-    M1["۸.۱ Migration"]
-    M2["۸.۲ اتصال و Pool"]
-    M3["۸.۳ اجرای کوئری"]
-    M4["۸.۴ نگاشت Struct"]
-    M5["۸.۵ تراکنش‌ها"]
-    M6["۸.۶ مدیریت خطا"]
-    M7["۸.۷ JSON/Array/Time"]
-    M8["۸.۸ Redis"]
-    Core["هسته‌ی مشترک: database/sql + درایور + context.Context"]
-
-    Title --&gt; M1 --&gt; M2 --&gt; M3 --&gt; M4 --&gt; M5 --&gt; M6 --&gt; M7 --&gt; M8
-    M1 ~~~ Core
-    M2 ~~~ Core
-    M3 ~~~ Core
-    M4 ~~~ Core
-    M5 ~~~ Core
-    M6 ~~~ Core
-    M7 ~~~ Core
-    M8 --&gt; Core
-
-    classDef titleBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:2px,color:#1f2937,font-weight:bold;
-    classDef stepBox  fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
-    classDef coreBox   fill:#ecfdf5,stroke:#10b981,stroke-width:2px,color:#1f2937,font-weight:bold;
-    class Title titleBox;
-    class M1,M2,M3,M4,M5,M6,M7,M8 stepBox;
-    class Core coreBox;</pre>
-<figcaption>شکل ۸-۰: نقشه‌ی راه فصل پایگاه داده — از <bdi dir="ltr">Migration</bdi> تا <bdi dir="ltr">Redis</bdi></figcaption>
-</figure>
 <p>در این فصل خواننده با مفاهیم زیر آشنا خواهد شد:</p>
 <p>استفاده از ابزار <bdi dir="ltr">golang-migrate</bdi> و <bdi dir="ltr">goose</bdi> برای ورژنینگ ساختار دیتابیس، مدیریت فایل‌های <bdi dir="ltr">up.sql</bdi> و <bdi dir="ltr">down.sql</bdi>، و مقایسه با سیستم <bdi dir="ltr">Migration</bdi> در <bdi dir="ltr">Laravel</bdi>.</p>
 <p>استفاده از پکیج <bdi dir="ltr">database/sql</bdi> برای اتصال به دیتابیس‌های رابطه‌ای مانند <bdi dir="ltr">PostgreSQL</bdi> با کنترل دقیق منابع، آشنایی با <bdi dir="ltr">Prepared Statements</bdi> برای جلوگیری از <bdi dir="ltr">SQL Injection</bdi>، مدیریت مقادیر <bdi dir="ltr">NULL</bdi> با انواع <bdi dir="ltr">sql.Null*</bdi>، و مقایسه با ابزارهای انتزاعی <bdi dir="ltr">Laravel</bdi> مانند <bdi dir="ltr">Eloquent</bdi>.</p>
@@ -175,7 +144,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/xml.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/ini.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/plaintext.min.js"></script>
-<script src="assets/js/diagrams.js"></script>
 <script src="assets/js/main.js"></script>
 </body>
 </html>

@@ -77,47 +77,6 @@
 <span class="quote-book">Observability: A Manifesto</span>
 </p>
 </div>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-    title(["سه رکن Observability در Go"])
-
-    LOG["Logging<br/>ثبت وقایع و خطاها"]
-    METRIC["Metrics<br/>اندازه‌گیری کمی عملکرد"]
-    TRACE["Tracing<br/>ردیابی مسیر درخواست"]
-
-    SLOG["slog / zap"]
-    PROM["Prometheus"]
-    OTEL["OpenTelemetry"]
-
-    GRAFANA["Grafana<br/>داشبورد یکپارچه"]
-
-    LOG --&gt; SLOG
-    METRIC --&gt; PROM
-    TRACE --&gt; OTEL
-    SLOG -.-&gt; GRAFANA
-    PROM -.-&gt; GRAFANA
-    OTEL -.-&gt; GRAFANA
-
-    title ~~~ LOG
-    title ~~~ METRIC
-    title ~~~ TRACE
-
-    classDef titleBox fill:#f8fafc,stroke:#475569,stroke-width:1px,color:#1f2937,font-weight:bold;
-    classDef logBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
-    classDef metricBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
-    classDef traceBox fill:#f5f0fb,stroke:#9C27B0,stroke-width:1.5px,color:#1f2937;
-    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
-    classDef vizBox fill:#fffbeb,stroke:#F46800,stroke-width:2px,color:#1f2937,font-weight:bold;
-    class title titleBox;
-    class LOG logBox;
-    class METRIC metricBox;
-    class TRACE traceBox;
-    class SLOG logBox;
-    class PROM metricBox;
-    class OTEL traceBox;
-    class GRAFANA vizBox;</pre>
-<figcaption>شکل ۹-۰: سه رکن <bdi dir="ltr">Observability</bdi> — <bdi dir="ltr">Logging</bdi>، <bdi dir="ltr">Metrics</bdi> و <bdi dir="ltr">Tracing</bdi></figcaption>
-</figure>
 <p><strong>در این فصل خواننده با مفاهیم زیر آشنا خواهد شد:</strong></p>
 <p>استفاده از پکیج استاندارد <bdi dir="ltr">log</bdi> برای ثبت Logsی ساده، و معرفی ابزارهای پیشرفته مانند <bdi dir="ltr">logrus</bdi>، <bdi dir="ltr">zap</bdi> یا <bdi dir="ltr">zerolog</bdi> برای Logging ساخت‌یافته در پروژه‌های بزرگ. همچنین آشنایی عمیق با <bdi dir="ltr">slog</bdi> در <bdi dir="ltr">Go 1.21+</bdi> به‌عنوان استاندارد جدید Logging ساخت‌یافته.</p>
 <p>اهمیت Logs و کاربرد در <bdi dir="ltr">Debugging</bdi>، <bdi dir="ltr">Monitoring</bdi>، تحلیل رفتار کاربران و ثبت عملیات بحرانی برای امنیت. سطوح لاگ (<bdi dir="ltr">Debug</bdi>، <bdi dir="ltr">Info</bdi>، <bdi dir="ltr">Warn</bdi>، <bdi dir="ltr">Error</bdi>، <bdi dir="ltr">Fatal</bdi>) و مقایسه با <bdi dir="ltr">Monolog</bdi> در <bdi dir="ltr">PHP</bdi>.</p>
@@ -142,71 +101,8 @@
 <li>بدون <strong>Metrics</strong> نمی‌توانید ببینید آیا زمان اجرای <bdi dir="ltr">job</bdi> به‌مرور افزایش یافته (نشانه‌ای از مشکل دیتابیس) یا تعداد خطاها بالا رفته.</li>
 <li>بدون <strong>ردیابی</strong> نمی‌توانید بفهمید <bdi dir="ltr">job</bdi> دقیقاً در کدام مرحله (دریافت داده؟ پردازش؟ ذخیره؟) کند یا ناقص شده.</li>
 </ul>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart LR
-    title(["سناریو دیباگ: بدون مشاده‌پذیری vs با مشاده‌پذیری"])
-
-    subgraph WITHOUT["بدون Observability"]
-        direction TB
-        W1["۱. کاربر گزارش مشکل می‌دهد"]
-        W2["۲. Logs را بررسی → هزاران خطه نامرتب"]
-        W3["۳. SSH به سرور → بررسی دستی فرآیندها"]
-        W4["۴. حدس و آزمایش → ساعت‌ها وقت تلف"]
-        W5(["زمان رفع مشکل: ساعت‌ها تا روزها"])
-        W1 --&gt; W2 --&gt; W3 --&gt; W4 --&gt; W5
-    end
-
-    subgraph WITH["با Observability"]
-        direction TB
-        H1["۱. Alert خودکار در Grafana فعال می‌شود"]
-        H2["۲. Metrics → زمان پاسخ دیتابیس بالا رفته"]
-        H3["۳. Trace → دقیقاً کوئری کند شناسایی می‌شود"]
-        H4["۴. لاگ → علت اتصال قطع شده مشخص است"]
-        H5(["زمان رفع مشکل: دقیقه‌ها"])
-        H1 --&gt; H2 --&gt; H3 --&gt; H4 --&gt; H5
-    end
-
-    title ~~~ WITHOUT
-    title ~~~ WITH
-
-    classDef titleBox fill:#f8fafc,stroke:#475569,stroke-width:1px,color:#1f2937,font-weight:bold;
-    classDef errBox fill:#fef2f2,stroke:#ef4444,stroke-width:1.5px,color:#1f2937;
-    classDef okBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
-    classDef errNoteBox fill:#fef2f2,stroke:#ef4444,stroke-width:1px,color:#1f2937,font-style:italic,font-weight:bold;
-    classDef okNoteBox fill:#ecfdf5,stroke:#10b981,stroke-width:1px,color:#1f2937,font-style:italic,font-weight:bold;
-    class title titleBox;
-    class W1,W2,W3,W4 errBox;
-    class W5 errNoteBox;
-    class H1,H2,H3,H4 okBox;
-    class H5 okNoteBox;</pre>
-<figcaption>شکل ۹-۰-الف: مقایسه دیباگ بدون و با <bdi dir="ltr">Observability</bdi> — تفاوت ساعت‌ها و دقیقه‌ها</figcaption>
-</figure>
 <h3 id="مسیر-یادگیری-فصل">9.0.3 مسیر یادگیری این فصل</h3>
 <p>برای درک کامل <bdi dir="ltr">Observability</bdi> در <bdi dir="ltr">Go</bdi> بهتر است مفاهیم را به ترتیب زیر مطالعه کنید. هر بخش بر پایه‌ی بخش قبلی بنا شده و در نهایت همه در <bdi dir="ltr">OpenTelemetry</bdi> یکپارچه می‌شوند:</p>
-<figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-    title(["مسیر یادگیری فصل ۹"])
-    L["۹.۱ Loggingپایه: ثبت وقایع و خطاهاlog → slog → zap"]
-    M["۹.۲ Metricsکمی‌سازی: اندازه‌گیری عملکردPrometheus + Grafana"]
-    T["۹.۳ Tracingیکپارچه‌سازی: ردیابی کاملOpenTelemetry"]
-    RESULT([نتیجه نهایی: سیستم Observability کامل — Logs + Metrics + Traces = درک کامل...])
-    L --&gt; M --&gt; T
-    T --&gt; RESULT
-
-    title ~~~ L
-
-    classDef titleBox fill:#f8fafc,stroke:#475569,stroke-width:1px,color:#1f2937,font-weight:bold;
-    classDef logBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
-    classDef metricBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
-    classDef traceBox fill:#f5f0fb,stroke:#9C27B0,stroke-width:1.5px,color:#1f2937;
-    classDef vizBox fill:#fffbeb,stroke:#F46800,stroke-width:2px,color:#1f2937,font-weight:bold;
-    class title titleBox;
-    class L logBox;
-    class M metricBox;
-    class T traceBox;
-    class RESULT vizBox;</pre>
-<figcaption>شکل ۹-۰-ب: مسیر یادگیری فصل ۹ — از Logging پایه تا یکپارچه‌سازی کامل</figcaption>
-</figure>
 <table class="comparison-table" dir="rtl">
 <thead>
 <tr><th>رکن</th><th>ابزار PHP</th><th>ابزار Go</th><th>مزیت Go</th></tr>
@@ -262,7 +158,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/xml.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/ini.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/plaintext.min.js"></script>
-<script src="assets/js/diagrams.js"></script>
 <script src="assets/js/main.js"></script>
 </body>
 </html>
