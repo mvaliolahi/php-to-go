@@ -83,36 +83,26 @@
 </tbody>
 </table>
 <figure class="diagram" dir="ltr">
-<svg height="320" viewBox="0 0 600 320" width="600" xmlns="http://www.w3.org/2000/svg">
-<defs>
-<marker id="arrow8" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#555" points="0 0, 10 3.5, 0 7"></polygon></marker>
-<filter height="104%" id="sh8" width="104%" x="-2%" y="-2%"><fedropshadow dx="1" dy="1" flood-opacity="0.15" stddeviation="2"></fedropshadow></filter>
-</defs>
-<rect fill="#fff" height="320" rx="8" width="600" x="0" y="0"></rect>
-<text fill="#333" font-size="16" font-weight="bold" text-anchor="middle" x="300" y="28" direction="rtl" unicode-bidi="embed">سیستم قالب‌سازی <tspan direction="ltr" unicode-bidi="embed">Go</tspan> در مقابل <tspan direction="ltr" unicode-bidi="embed">PHP</tspan></text>
-<!-- Go side -->
-<rect fill="#E0F7FA" height="240" rx="8" stroke="#00ADD8" width="250" x="30" y="50"></rect>
-<text fill="#00ADD8" font-size="14" font-weight="bold" text-anchor="middle" x="155" y="75" direction="ltr" unicode-bidi="embed">Go Templates</text>
-<rect fill="#00ADD8" filter="url(#sh8)" height="35" rx="4" width="210" x="50" y="90"></rect>
-<text fill="#fff" font-size="10" text-anchor="middle" x="155" y="112" direction="ltr" unicode-bidi="embed">html/template (auto-escape XSS)</text>
-<rect fill="#4CAF50" filter="url(#sh8)" height="35" rx="4" width="210" x="50" y="140"></rect>
-<text fill="#fff" font-size="10" text-anchor="middle" x="155" y="162" direction="ltr" unicode-bidi="embed">{{ define }} {{ block }} {{ template }}</text>
-<rect fill="#FF9800" filter="url(#sh8)" height="35" rx="4" width="210" x="50" y="190"></rect>
-<text fill="#fff" font-size="10" text-anchor="middle" x="155" y="212" direction="ltr" unicode-bidi="embed">embed.FS → ParseFS()</text>
-<rect fill="#9C27B0" filter="url(#sh8)" height="35" rx="4" width="210" x="50" y="240"></rect>
-<text fill="#fff" font-size="10" text-anchor="middle" x="155" y="262" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">FuncMap</tspan> → توابع سفارشی</text>
-<!-- PHP side -->
-<rect fill="#F3E5F5" height="240" rx="8" stroke="#777BB4" width="250" x="320" y="50"></rect>
-<text fill="#777BB4" font-size="14" font-weight="bold" text-anchor="middle" x="445" y="75" direction="ltr" unicode-bidi="embed">Laravel Blade</text>
-<rect fill="#777BB4" filter="url(#sh8)" height="35" rx="4" width="210" x="340" y="90"></rect>
-<text fill="#fff" font-size="10" text-anchor="middle" x="445" y="112" direction="ltr" unicode-bidi="embed">{{ }} {!! !!} (auto-escape)</text>
-<rect fill="#4CAF50" filter="url(#sh8)" height="35" rx="4" width="210" x="340" y="140"></rect>
-<text fill="#fff" font-size="10" text-anchor="middle" x="445" y="162" direction="ltr" unicode-bidi="embed">@extends @yield @section</text>
-<rect fill="#FF9800" filter="url(#sh8)" height="35" rx="4" width="210" x="340" y="190"></rect>
-<text fill="#fff" font-size="10" text-anchor="middle" x="445" y="212" direction="ltr" unicode-bidi="embed">File-based (resources/views)</text>
-<rect fill="#9C27B0" filter="url(#sh8)" height="35" rx="4" width="210" x="340" y="240"></rect>
-<text fill="#fff" font-size="10" text-anchor="middle" x="445" y="262" direction="ltr" unicode-bidi="embed">Blade Directives / Components</text>
-</svg>
+<pre class="mermaid">flowchart LR
+    subgraph GO["Go Templates"]
+        direction TB
+        G1["html/template (auto-escape XSS)"]
+        G2["&#123;&#123; define &#125;&#125; &#123;&#123; block &#125;&#125; &#123;&#123; template &#125;&#125;"]
+        G3["embed.FS → ParseFS()"]
+        G4["FuncMap → توابع سفارشی"]
+    end
+    subgraph PHP["Laravel Blade"]
+        direction TB
+        P1["&#123;&#123; &#125;&#125; &#123;!! !!&#125; (auto-escape)"]
+        P2["@extends @yield @section"]
+        P3["File-based (resources/views)"]
+        P4["Blade Directives / Components"]
+    end
+
+    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
+    classDef phpBox fill:#f5f0fb,stroke:#777BB4,stroke-width:1.5px,color:#1f2937;
+    class G1,G2,G3,G4 goBox;
+    class P1,P2,P3,P4 phpBox;</pre>
 <figcaption>شکل ۷-۸: مقایسه سیستم قالب‌سازی <bdi dir="ltr">Go</bdi> با <bdi dir="ltr">Laravel</bdi> <bdi dir="ltr">Blade</bdi></figcaption>
 </figure>
 <p>در توسعه‌ی وب، نمایش صحیح داده‌ها در صفحات HTML اهمیت زیادی دارد. در Go برای ایجاد صفحات وب پویا از پکیجی به نام html/template استفاده می‌شود. این پکیج امکان جدا کردن منطق برنامه‌نویسی از Presentation را مشابه template engine هایی مثل Laravel Blade فراهم می‌کند, همانطور که در فصل های قبل اشاره شد از Go 1.16 به بعد ابزار جدیدی به نام embed نیز معرفی شد که به شما اجازه می‌دهد فایل‌هایی مانند قالب‌های HTML، CSS یا فایل‌های پیکربندی را مستقیماً درون فایل binary برنامه جاسازی کنید. این ویژگی برای توزیع ساده‌تر، امنیت بالاتر، و حذف وابستگی به فایل‌های خارجی بسیار مفید است.</p>
@@ -207,173 +197,86 @@ func loadTemplates() *template.Template {
 </code></pre>
 </figure>
 <figure class="diagram" dir="ltr">
-<svg height="280" viewBox="0 0 580 280" width="580" xmlns="http://www.w3.org/2000/svg">
-<defs>
-<marker id="arrow8b" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#555" points="0 0, 10 3.5, 0 7"></polygon></marker>
-<filter height="104%" id="sh8b" width="104%" x="-2%" y="-2%"><fedropshadow dx="1" dy="1" flood-opacity="0.15" stddeviation="2"></fedropshadow></filter>
-</defs>
-<rect fill="#fafafa" height="280" rx="8" width="580" x="0" y="0"></rect>
-<text fill="#333" font-size="16" font-weight="bold" text-anchor="middle" x="290" y="28" direction="rtl" unicode-bidi="embed">خط لوله رندر قالب‌ها</text>
-<rect fill="#00ADD8" filter="url(#sh8b)" height="40" rx="6" width="100" x="30" y="70"></rect>
-<text fill="#fff" font-size="11" text-anchor="middle" x="80" y="95" direction="ltr" unicode-bidi="embed">Data (.Name)</text>
-<line marker-end="url(#arrow8b)" stroke="#555" stroke-width="2" x1="130" x2="170" y1="90" y2="90"></line>
-<rect fill="#4CAF50" filter="url(#sh8b)" height="40" rx="6" width="120" x="170" y="70"></rect>
-<text fill="#fff" font-size="11" text-anchor="middle" x="230" y="95" direction="ltr" unicode-bidi="embed">FuncMap</text>
-<line marker-end="url(#arrow8b)" stroke="#555" stroke-width="2" x1="290" x2="330" y1="90" y2="90"></line>
-<rect fill="#FF9800" filter="url(#sh8b)" height="40" rx="6" width="140" x="330" y="70"></rect>
-<text fill="#fff" font-size="10" text-anchor="middle" x="400" y="88" direction="ltr" unicode-bidi="embed">Context-Aware</text>
-<text fill="#fff3e0" font-size="9" text-anchor="middle" x="400" y="102" direction="ltr" unicode-bidi="embed">Escaping</text>
-<line marker-end="url(#arrow8b)" stroke="#555" stroke-width="2" x1="470" x2="500" y1="90" y2="90"></line>
-<rect fill="#9C27B0" filter="url(#sh8b)" height="40" rx="6" width="60" x="500" y="70"></rect>
-<text fill="#fff" font-size="10" text-anchor="middle" x="530" y="95" direction="ltr" unicode-bidi="embed">HTML</text>
-<rect fill="#E3F2FD" height="35" rx="4" stroke="#2196F3" width="120" x="50" y="160"></rect>
-<text fill="#1565C0" font-size="9" text-anchor="middle" x="110" y="182" direction="ltr" unicode-bidi="embed">&lt;p&gt;{{.Name}}&lt;/p&gt;</text>
-<rect fill="#E8F5E9" height="35" rx="4" stroke="#4CAF50" width="120" x="190" y="160"></rect>
-<text fill="#2E7D32" font-size="9" text-anchor="middle" x="250" y="182" direction="ltr" unicode-bidi="embed">href="{{.URL}}"</text>
-<rect fill="#FFF3E0" height="35" rx="4" stroke="#FF9800" width="120" x="330" y="160"></rect>
-<text fill="#E65100" font-size="9" text-anchor="middle" x="390" y="182" direction="ltr" unicode-bidi="embed">&lt;script&gt;{{.Data}}&lt;/script&gt;</text>
-<rect fill="#FCE4EC" height="35" rx="4" stroke="#e91e63" width="120" x="470" y="160"></rect>
-<text fill="#c62828" font-size="9" text-anchor="middle" x="530" y="182" direction="ltr" unicode-bidi="embed">style="{{.Color}}"</text>
-<text fill="#2196F3" font-size="10" text-anchor="middle" x="110" y="215" direction="rtl" unicode-bidi="embed">HTML escape</text>
-<text fill="#4CAF50" font-size="10" text-anchor="middle" x="250" y="215" direction="rtl" unicode-bidi="embed">URL encode</text>
-<text fill="#FF9800" font-size="10" text-anchor="middle" x="390" y="215" direction="rtl" unicode-bidi="embed">JS escape</text>
-<text fill="#e91e63" font-size="10" text-anchor="middle" x="530" y="215" direction="rtl" unicode-bidi="embed">CSS escape</text>
-<rect fill="#f5f5f5" height="30" rx="6" stroke="#ddd" width="500" x="40" y="240"></rect>
-<text fill="#666" font-size="11" text-anchor="middle" x="290" y="260" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">html/template</tspan> به صورت خودکار بر اساس موقعیت، روش ایمن‌سازی مناسب را انتخاب می‌کند</text>
-</svg>
+<pre class="mermaid">flowchart LR
+    D["Data (.Name)"] --> FM["FuncMap"]
+    FM --> CA["Context-Aware Escaping"]
+
+    subgraph CTX["Context-Aware Escaping"]
+        direction TB
+        C1["HTML<br/>&lt;p&gt;&#123;&#123;.Name&#125;&#125;&lt;/p&gt;<br/>→ HTML escape"]
+        C2["href<br/>href=&quot;&#123;&#123;.URL&#125;&#125;&quot;<br/>→ URL encode"]
+        C3["JS<br/>&lt;script&gt;&#123;&#123;.Data&#125;&#125;&lt;/script&gt;<br/>→ JS escape"]
+        C4["CSS<br/>style=&quot;&#123;&#123;.Color&#125;&#125;&quot;<br/>→ CSS escape"]
+    end
+    CA --> CTX
+
+    NOTE(["html/template به صورت خودکار بر اساس موقعیت، روش ایمن‌سازی مناسب را انتخاب می‌کند"])
+    CA ~~~ NOTE
+
+    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
+    classDef neuBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
+    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
+    class D,FM,CA goBox;
+    class C1,C2,C3,C4 neuBox;
+    class NOTE warnBox;</pre>
 <figcaption>شکل ۷-۸-ب: خط لوله رندر قالب با <bdi dir="ltr">FuncMap</bdi> و ایمن‌سازی هوشمند</figcaption>
 </figure>
 <figure class="diagram" dir="ltr">
-<svg height="520" viewBox="0 0 780 520" width="780" xmlns="http://www.w3.org/2000/svg">
-<defs>
-<marker id="arrow8c" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#555" points="0 0, 10 3.5, 0 7"></polygon></marker>
-<marker id="arrow8cG" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#4CAF50" points="0 0, 10 3.5, 0 7"></polygon></marker>
-<filter height="104%" id="sh8c" width="104%" x="-2%" y="-2%"><fedropshadow dx="1" dy="1" flood-opacity="0.15" stddeviation="2"></fedropshadow></filter>
-</defs>
-<rect fill="#fafafa" height="520" rx="8" width="780" x="0" y="0"></rect>
-<text fill="#333" font-size="16" font-weight="bold" text-anchor="middle" x="390" y="28" direction="rtl" unicode-bidi="embed">خط لوله کامل پارس و اجرای قالب‌ها در <tspan direction="ltr" unicode-bidi="embed">Go</tspan></text>
+<pre class="mermaid">flowchart TB
+    subgraph SRC["فایل‌های قالب .html files"]
+        direction TB
+        L1["layout.html<br/>&#123;&#123; define &quot;layout&quot; &#125;&#125;<br/>&lt;html&gt;...&#123;&#123; template &quot;content&quot; . &#125;&#125;...<br/>&#123;&#123; end &#125;&#125;"]
+        H1["home.html<br/>&#123;&#123; define &quot;content&quot; &#125;&#125;<br/>&lt;h1&gt;&#123;&#123; .Title &#125;&#125;&lt;/h1&gt;<br/>&#123;&#123; end &#125;&#125;"]
+        P1["partials/nav.html<br/>&#123;&#123; define &quot;nav&quot; &#125;&#125;<br/>&lt;nav&gt;...&#123;&#123; .User &#125;&#125;...&lt;/nav&gt;<br/>&#123;&#123; end &#125;&#125;"]
+    end
 
-<!-- Step 1: Template Files -->
-<rect fill="#00ADD8" filter="url(#sh8c)" height="45" rx="6" width="120" x="30" y="55"></rect>
-<text fill="#fff" font-size="11" text-anchor="middle" x="90" y="73" direction="rtl" unicode-bidi="embed">فایل‌های قالب</text>
-<text fill="#e0f7fa" font-size="9" text-anchor="middle" x="90" y="89" direction="ltr" unicode-bidi="embed">.html files</text>
+    SRC --> PF["ParseFiles / ParseGlob<br/>ParseFS (embed.FS)"]
+    PF --> TMPL["*template.Template<br/>Parsed + Compiled"]
+    TMPL --> EX["Execute(w, data)<br/>ExecuteTemplate()"]
+    EX --> HTML["HTML"]
 
-<!-- Step 2: ParseFiles / ParseGlob -->
-<line marker-end="url(#arrow8c)" stroke="#555" stroke-width="2" x1="150" x2="190" y1="77" y2="77"></line>
-<rect fill="#00ADD8" filter="url(#sh8c)" height="45" rx="6" width="140" x="190" y="55"></rect>
-<text fill="#fff" font-size="10" text-anchor="middle" x="260" y="73" direction="ltr" unicode-bidi="embed">ParseFiles / ParseGlob</text>
-<text fill="#e0f7fa" font-size="9" text-anchor="middle" x="260" y="89" direction="ltr" unicode-bidi="embed">ParseFS (embed.FS)</text>
+    L1 -->|"calls"| H1
+    H1 -->|"calls"| P1
 
-<!-- Step 3: *template.Template object -->
-<line marker-end="url(#arrow8c)" stroke="#555" stroke-width="2" x1="330" x2="370" y1="77" y2="77"></line>
-<rect fill="#00ADD8" filter="url(#sh8c)" height="45" rx="6" width="130" x="370" y="55"></rect>
-<text fill="#fff" font-size="10" text-anchor="middle" x="435" y="73" direction="ltr" unicode-bidi="embed">*template.Template</text>
-<text fill="#e0f7fa" font-size="9" text-anchor="middle" x="435" y="89" direction="ltr" unicode-bidi="embed">Parsed + Compiled</text>
+    NOTE1(["ترکیب قالب‌ها: &#123;&#123; define &quot;layout&quot; &#125;&#125; + &#123;&#123; template &quot;content&quot; &#125;&#125;"])
 
-<!-- Step 4: Execute(w, data) -->
-<line marker-end="url(#arrow8c)" stroke="#555" stroke-width="2" x1="500" x2="540" y1="77" y2="77"></line>
-<rect fill="#4CAF50" filter="url(#sh8c)" height="45" rx="6" width="130" x="540" y="55"></rect>
-<text fill="#fff" font-size="10" text-anchor="middle" x="605" y="73" direction="ltr" unicode-bidi="embed">Execute(w, data)</text>
-<text fill="#e8f5e9" font-size="9" text-anchor="middle" x="605" y="89" direction="ltr" unicode-bidi="embed">ExecuteTemplate()</text>
+    subgraph DATA["جریان داده: Go struct → Execute → HTML"]
+        direction TB
+        D1["Go Struct<br/>Title: &quot;صفحه اصلی&quot;<br/>User: &quot;علی&quot;<br/>Price: 250000"]
+        D2["data → Execute(w, data)"]
+        D3["&#123;&#123; .Title &#125;&#125; → صفحه اصلی<br/>&#123;&#123; .User &#125;&#125; → علی<br/>&#123;&#123; .Price &#125;&#125; → 250000"]
+        D4["Auto-Escape<br/>&lt; → &amp;lt;<br/>&quot; → &amp;quot;<br/>JS → \uXXXX"]
+        D5["HTML<br/>&lt;h1&gt;صفحه...&lt;/h1&gt;<br/>Safe Output"]
+        D1 --> D2 --> D3 --> D4 --> D5
+    end
 
-<!-- Step 5: HTML Output -->
-<line marker-end="url(#arrow8c)" stroke="#555" stroke-width="2" x1="670" x2="700" y1="77" y2="77"></line>
-<rect fill="#FF9800" filter="url(#sh8c)" height="45" rx="6" width="60" x="700" y="55"></rect>
-<text fill="#fff" font-size="10" text-anchor="middle" x="730" y="82" direction="ltr" unicode-bidi="embed">HTML</text>
+    subgraph XSS["مقایسه جلوگیری از XSS: Go در مقابل PHP"]
+        direction TB
+        subgraph GX["Go html/template"]
+            direction TB
+            GX1["&#123;&#123;.Value&#125;&#125; → auto-escapes (XSS blocked ✓)"]
+            GX2["Go: &#123;&#123;.Value&#125;&#125; → &amp;lt;script&amp;gt;alert('xss')&amp;lt;/script&amp;gt; ✗ dangerous"]
+        end
+        subgraph PX["Twig / Blade"]
+            direction TB
+            PX1["&#123;&#123; var &#125;&#125; → escapes | &#123;!! var !!&#125; → raw (danger!)"]
+            PX2["Blade: &#123;!! $value !!&#125; → &lt;script&gt;alert('xss')&lt;/script&gt; ✓ executed!"]
+        end
+        INP["Input: &lt;script&gt;alert('xss')&lt;/script&gt;"]
+    end
 
-<!-- Template Composition Section -->
-<rect fill="#f5f5f5" height="25" rx="4" stroke="#ddd" width="740" x="20" y="118"></rect>
-<text fill="#555" font-size="11" font-weight="bold" text-anchor="middle" x="390" y="135" direction="rtl" unicode-bidi="embed">ترکیب قالب‌ها: <tspan direction="ltr" unicode-bidi="embed">{{ define "layout" }} + {{ template "content" }}</tspan></text>
-
-<!-- Layout template -->
-<rect fill="#E0F7FA" height="80" rx="6" stroke="#00ADD8" width="220" x="30" y="155"></rect>
-<text fill="#00ADD8" font-size="10" font-weight="bold" text-anchor="middle" x="140" y="173" direction="ltr" unicode-bidi="embed">layout.html</text>
-<text fill="#555" font-size="9" text-anchor="middle" x="140" y="190" direction="ltr" unicode-bidi="embed">{{ define "layout" }}</text>
-<text fill="#555" font-size="9" text-anchor="middle" x="140" y="205" direction="ltr" unicode-bidi="embed">  &lt;html&gt;...{{ template "content" . }}...</text>
-<text fill="#555" font-size="9" text-anchor="middle" x="140" y="220" direction="ltr" unicode-bidi="embed">{{ end }}</text>
-
-<!-- Arrow from layout to content -->
-<line marker-end="url(#arrow8c)" stroke="#00ADD8" stroke-width="1.5" x1="250" x2="290" y1="195" y2="195"></line>
-<text fill="#00ADD8" font-size="9" text-anchor="middle" x="270" y="188" direction="ltr" unicode-bidi="embed">calls</text>
-
-<!-- Content template -->
-<rect fill="#E0F7FA" height="80" rx="6" stroke="#00ADD8" width="220" x="290" y="155"></rect>
-<text fill="#00ADD8" font-size="10" font-weight="bold" text-anchor="middle" x="400" y="173" direction="ltr" unicode-bidi="embed">home.html</text>
-<text fill="#555" font-size="9" text-anchor="middle" x="400" y="190" direction="ltr" unicode-bidi="embed">{{ define "content" }}</text>
-<text fill="#555" font-size="9" text-anchor="middle" x="400" y="205" direction="ltr" unicode-bidi="embed">  &lt;h1&gt;{{ .Title }}&lt;/h1&gt;</text>
-<text fill="#555" font-size="9" text-anchor="middle" x="400" y="220" direction="ltr" unicode-bidi="embed">{{ end }}</text>
-
-<!-- Arrow from layout to partial -->
-<line marker-end="url(#arrow8c)" stroke="#00ADD8" stroke-width="1.5" x1="510" x2="550" y2="195" y1="195"></line>
-<text fill="#00ADD8" font-size="9" text-anchor="middle" x="530" y="188" direction="ltr" unicode-bidi="embed">calls</text>
-
-<!-- Partial template -->
-<rect fill="#E0F7FA" height="80" rx="6" stroke="#00ADD8" width="200" x="550" y="155"></rect>
-<text fill="#00ADD8" font-size="10" font-weight="bold" text-anchor="middle" x="650" y="173" direction="ltr" unicode-bidi="embed">partials/nav.html</text>
-<text fill="#555" font-size="9" text-anchor="middle" x="650" y="190" direction="ltr" unicode-bidi="embed">{{ define "nav" }}</text>
-<text fill="#555" font-size="9" text-anchor="middle" x="650" y="205" direction="ltr" unicode-bidi="embed">  &lt;nav&gt;...{{ .User }}...&lt;/nav&gt;</text>
-<text fill="#555" font-size="9" text-anchor="middle" x="650" y="220" direction="ltr" unicode-bidi="embed">{{ end }}</text>
-
-<!-- Data Flow Section -->
-<rect fill="#f5f5f5" height="25" rx="4" stroke="#ddd" width="740" x="20" y="248"></rect>
-<text fill="#555" font-size="11" font-weight="bold" text-anchor="middle" x="390" y="266" direction="rtl" unicode-bidi="embed">جریان داده: <tspan direction="ltr" unicode-bidi="embed">Go struct → Execute → HTML</tspan></text>
-
-<!-- Go struct -->
-<rect fill="#4CAF50" filter="url(#sh8c)" height="70" rx="6" width="180" x="30" y="285"></rect>
-<text fill="#fff" font-size="10" font-weight="bold" text-anchor="middle" x="120" y="305" direction="ltr" unicode-bidi="embed">Go Struct</text>
-<text fill="#e8f5e9" font-size="9" text-anchor="middle" x="120" y="320" direction="ltr" unicode-bidi="embed">Title: "صفحه اصلی"</text>
-<text fill="#e8f5e9" font-size="9" text-anchor="middle" x="120" y="335" direction="ltr" unicode-bidi="embed">User: "علی"</text>
-<text fill="#e8f5e9" font-size="9" text-anchor="middle" x="120" y="350" direction="ltr" unicode-bidi="embed">Price: 250000</text>
-
-<!-- Arrow -->
-<line marker-end="url(#arrow8cG)" stroke="#4CAF50" stroke-width="2" x1="210" x2="270" y1="320" y2="320"></line>
-<text fill="#4CAF50" font-size="9" text-anchor="middle" x="240" y="312" direction="ltr" unicode-bidi="embed">data</text>
-
-<!-- Execute binding -->
-<rect fill="#4CAF50" filter="url(#sh8c)" height="70" rx="6" width="160" x="270" y="285"></rect>
-<text fill="#fff" font-size="10" font-weight="bold" text-anchor="middle" x="350" y="305" direction="ltr" unicode-bidi="embed">Execute(w, data)</text>
-<text fill="#e8f5e9" font-size="9" text-anchor="middle" x="350" y="322" direction="ltr" unicode-bidi="embed">{{ .Title }} → صفحه اصلی</text>
-<text fill="#e8f5e9" font-size="9" text-anchor="middle" x="350" y="337" direction="ltr" unicode-bidi="embed">{{ .User }} → علی</text>
-<text fill="#e8f5e9" font-size="9" text-anchor="middle" x="350" y="352" direction="ltr" unicode-bidi="embed">{{ .Price }} → 250000</text>
-
-<!-- Arrow -->
-<line marker-end="url(#arrow8c)" stroke="#555" stroke-width="2" x1="430" x2="480" y1="320" y2="320"></line>
-
-<!-- Context-Aware Escaping -->
-<rect fill="#e91e63" filter="url(#sh8c)" height="70" rx="6" width="140" x="480" y="285"></rect>
-<text fill="#fff" font-size="10" font-weight="bold" text-anchor="middle" x="550" y="305" direction="ltr" unicode-bidi="embed">Auto-Escape</text>
-<text fill="#fce4ec" font-size="9" text-anchor="middle" x="550" y="322" direction="ltr" unicode-bidi="embed">&lt; → &amp;lt;</text>
-<text fill="#fce4ec" font-size="9" text-anchor="middle" x="550" y="337" direction="ltr" unicode-bidi="embed">" → &amp;quot;</text>
-<text fill="#fce4ec" font-size="9" text-anchor="middle" x="550" y="352" direction="ltr" unicode-bidi="embed">JS → \uXXXX</text>
-
-<!-- Arrow -->
-<line marker-end="url(#arrow8c)" stroke="#555" stroke-width="2" x1="620" x2="660" y1="320" y2="320"></line>
-
-<!-- HTML Output -->
-<rect fill="#FF9800" filter="url(#sh8c)" height="70" rx="6" width="100" x="660" y="285"></rect>
-<text fill="#fff" font-size="10" font-weight="bold" text-anchor="middle" x="710" y="305" direction="ltr" unicode-bidi="embed">HTML</text>
-<text fill="#fff3e0" font-size="9" text-anchor="middle" x="710" y="322" direction="ltr" unicode-bidi="embed">&lt;h1&gt;صفحه...&lt;/h1&gt;</text>
-<text fill="#fff3e0" font-size="9" text-anchor="middle" x="710" y="337" direction="ltr" unicode-bidi="embed">Safe Output</text>
-
-<!-- XSS Prevention comparison -->
-<rect fill="#f5f5f5" height="25" rx="4" stroke="#ddd" width="740" x="20" y="373"></rect>
-<text fill="#555" font-size="11" font-weight="bold" text-anchor="middle" x="390" y="391" direction="rtl" unicode-bidi="embed">مقایسه جلوگیری از <tspan direction="ltr" unicode-bidi="embed">XSS</tspan>: <tspan direction="ltr" unicode-bidi="embed">Go</tspan> در مقابل <tspan direction="ltr" unicode-bidi="embed">PHP</tspan></text>
-
-<!-- Go auto-escape -->
-<rect fill="#e91e63" height="50" rx="6" stroke="#c2185b" width="340" x="30" y="408"></rect>
-<text fill="#fff" font-size="10" font-weight="bold" text-anchor="middle" x="200" y="428" direction="ltr" unicode-bidi="embed">Go html/template</text>
-<text fill="#fce4ec" font-size="9" text-anchor="middle" x="200" y="445" direction="ltr" unicode-bidi="embed">{{.Value}} → auto-escapes (XSS blocked ✓)</text>
-
-<!-- PHP Twig/Blade -->
-<rect fill="#777BB4" height="50" rx="6" stroke="#5c6bc0" width="340" x="410" y="408"></rect>
-<text fill="#fff" font-size="10" font-weight="bold" text-anchor="middle" x="580" y="428" direction="ltr" unicode-bidi="embed">Twig / Blade</text>
-<text fill="#e8eaf6" font-size="9" text-anchor="middle" x="580" y="445" direction="ltr" unicode-bidi="embed">{{ var }} → escapes | {!! var !!} → raw (danger!)</text>
-
-<!-- XSS example -->
-<rect fill="#ffebee" height="45" rx="4" stroke="#e91e63" width="720" x="30" y="468"></rect>
-<text fill="#c62828" font-size="9" text-anchor="middle" x="390" y="485" direction="ltr" unicode-bidi="embed">Input: &lt;script&gt;alert('xss')&lt;/script&gt;</text>
-<text fill="#c62828" font-size="9" text-anchor="middle" x="390" y="502" direction="ltr" unicode-bidi="embed">Go: {{.Value}} → &amp;lt;script&amp;gt;alert('xss')&amp;lt;/script&amp;gt;  ✗ dangerous  |  Blade: {!! $value !!} → &lt;script&gt;alert('xss')&lt;/script&gt;  ✓ executed!</text>
-</svg>
+    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
+    classDef phpBox fill:#f5f0fb,stroke:#777BB4,stroke-width:1.5px,color:#1f2937;
+    classDef neuBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
+    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
+    classDef bothBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
+    class L1,H1,P1,PF,TMPL,EX goBox;
+    class HTML neuBox;
+    class D1,D2,D3,D4,D5 neuBox;
+    class GX1,GX2 goBox;
+    class PX1,PX2 phpBox;
+    class INP warnBox;
+    class NOTE1 warnBox;</pre>
 <figcaption>شکل ۷-۸-ج: خط لوله کامل پارس و اجرای قالب‌ها — از فایل‌های <bdi dir="ltr">HTML</bdi> تا خروجی ایمن</figcaption>
 </figure>
 <h3 id="سناریوهای-عملیاتی-قالبها">سناریوهای عملیاتی قالب‌ها</h3>

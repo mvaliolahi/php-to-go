@@ -82,42 +82,18 @@
 </tbody>
 </table>
 <figure class="diagram" dir="ltr">
-<svg height="340" viewBox="0 0 600 340" width="600" xmlns="http://www.w3.org/2000/svg">
-<defs>
-<marker id="arrow7" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#555" points="0 0, 10 3.5, 0 7"></polygon></marker>
-<filter height="104%" id="sh7" width="104%" x="-2%" y="-2%"><fedropshadow dx="1" dy="1" flood-opacity="0.15" stddeviation="2"></fedropshadow></filter>
-</defs>
-<rect fill="#fff" height="340" rx="8" width="600" x="0" y="0"></rect>
-<text fill="#333" font-size="16" font-weight="bold" text-anchor="middle" x="300" y="28" direction="rtl" unicode-bidi="embed">جریان مدیریت <tspan direction="ltr" unicode-bidi="embed">Session</tspan> در <tspan direction="ltr" unicode-bidi="embed">Go</tspan></text>
-<!-- Login -->
-<rect fill="#4CAF50" filter="url(#sh7)" height="40" rx="6" width="100" x="30" y="70"></rect>
-<text fill="#fff" font-size="11" text-anchor="middle" x="80" y="95" direction="ltr" unicode-bidi="embed">Login</text>
-<line marker-end="url(#arrow7)" stroke="#555" stroke-width="2" x1="130" x2="190" y1="90" y2="90"></line>
-<!-- Generate Session ID -->
-<rect fill="#00ADD8" filter="url(#sh7)" height="60" rx="6" width="160" x="190" y="60"></rect>
-<text fill="#fff" font-size="11" text-anchor="middle" x="270" y="85" direction="ltr" unicode-bidi="embed">Generate Session ID</text>
-<text fill="#e0f7fa" font-size="9" text-anchor="middle" x="270" y="105" direction="ltr" unicode-bidi="embed">crypto/rand + base64</text>
-<line marker-end="url(#arrow7)" stroke="#555" stroke-width="2" x1="350" x2="410" y1="90" y2="90"></line>
-<!-- Store -->
-<rect fill="#9C27B0" filter="url(#sh7)" height="60" rx="6" width="150" x="410" y="60"></rect>
-<text fill="#fff" font-size="11" text-anchor="middle" x="485" y="85" direction="ltr" unicode-bidi="embed">Session Store</text>
-<text fill="#e1bee7" font-size="9" text-anchor="middle" x="485" y="105" direction="ltr" unicode-bidi="embed">map / Redis / DB</text>
-<!-- Set Cookie -->
-<rect fill="#FF9800" filter="url(#sh7)" height="50" rx="6" width="160" x="190" y="160"></rect>
-<text fill="#fff" font-size="11" text-anchor="middle" x="270" y="185" direction="ltr" unicode-bidi="embed">Set Cookie</text>
-<text fill="#fff3e0" font-size="9" text-anchor="middle" x="270" y="200" direction="ltr" unicode-bidi="embed">session_id=abc123</text>
-<line marker-end="url(#arrow7)" stroke="#555" stroke-width="2" x1="270" x2="270" y1="120" y2="160"></line>
-<!-- Verify -->
-<rect fill="#e91e63" filter="url(#sh7)" height="50" rx="6" width="160" x="190" y="250"></rect>
-<text fill="#fff" font-size="11" text-anchor="middle" x="270" y="275" direction="ltr" unicode-bidi="embed">Verify Session</text>
-<text fill="#fce4ec" font-size="9" text-anchor="middle" x="270" y="290" direction="ltr" unicode-bidi="embed">r.Cookie → Store lookup</text>
-<line marker-end="url(#arrow7)" stroke="#555" stroke-width="2" x1="270" x2="270" y1="210" y2="250"></line>
-<!-- Expiry -->
-<rect fill="#FFF3E0" height="50" rx="6" stroke="#FF9800" width="140" x="420" y="250"></rect>
-<text fill="#E65100" font-size="10" text-anchor="middle" x="490" y="272" direction="rtl" unicode-bidi="embed">مدیریت انقضا</text>
-<text fill="#666" font-size="9" text-anchor="middle" x="490" y="288" direction="ltr" unicode-bidi="embed">MaxAge / Cleanup</text>
-<line stroke="#FF9800" stroke-dasharray="4,4" stroke-width="1.5" x1="350" x2="420" y1="275" y2="275"></line>
-</svg>
+<pre class="mermaid">flowchart TB
+    L["Login"] --> GEN["Generate Session ID<br/>crypto/rand + base64"]
+    GEN --> ST["Session Store<br/>map / Redis / DB"]
+    GEN --> SC["Set Cookie<br/>session_id=abc123"]
+    SC --> V["Verify Session<br/>r.Cookie → Store lookup"]
+    V --> EX["مدیریت انقضا<br/>MaxAge / Cleanup"]
+
+    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
+    classDef neuBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
+    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
+    class L,GEN,ST,SC,V goBox;
+    class EX warnBox;</pre>
 <figcaption>شکل ۷-۷: جریان مدیریت <bdi dir="ltr">Session</bdi> — ایجاد، ذخیره و بررسی سشن</figcaption>
 </figure>
 <p>Go به صورت پیش‌فرض session ندارد. برای مدیریت سشن‌ها در محیط production باید از شناسه‌های امن، نگهداری در حافظه‌ای ایمن یا دیتابیس استفاده کنید.</p>
@@ -196,47 +172,21 @@ func main() {
 <p>حمله Session Fixation زمانی رخ می‌دهد که مهاجم یک شناسه سشن معتبر را به قربانی بدهد (مثلاً از طریق لینک حاوی شناسه سشن) و سپس از همان شناسه برای دسترسی به حساب کاربری استفاده کند. برای جلوگیری از این حمله، باید بعد از هر تغییر سطح دسترسی (مثل لاگین یا ارتقای نقش)، شناسه سشن را تغییر دهید:</p>
 
 <figure class="diagram" dir="ltr">
-<svg width="700" height="240" viewBox="0 0 700 240" xmlns="http://www.w3.org/2000/svg">
-<rect fill="#fafafa" height="240" rx="8" width="700" x="0" y="0"></rect>
-<defs><filter id="sh146" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
-<marker id="aSs1" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#00ADD8" points="0 0,10 3.5,0 7"></polygon></marker>
-<marker id="aSs2" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#27ae60" points="0 0,10 3.5,0 7"></polygon></marker>
-<marker id="aSs3" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#f39c12" points="0 0,10 3.5,0 7"></polygon></marker>
-</defs>
-<text fill="#00ADD8" font-size="15" font-weight="bold" text-anchor="middle" x="350" y="22" direction="rtl" unicode-bidi="embed">چرخه‌ی حیات <tspan direction="ltr" unicode-bidi="embed">Session</tspan>: کوکی → شناسه → ذخیره‌گاه → پاسخ</text>
-<!-- Step 1: Client request -->
-<rect fill="#777BB4" height="40" opacity="0.12" rx="8" stroke="#777BB4" stroke-width="2" width="100" x="30" y="55"></rect>
-<text fill="#333" font-size="10" text-anchor="middle" x="80" y="80" direction="rtl" unicode-bidi="embed">کلاینت</text>
-<line marker-end="url(#aSs1)" stroke="#00ADD8" stroke-width="1.5" x1="130" x2="190" y1="70" y2="70"></line>
-<!-- Step 2: Cookie with Session ID -->
-<rect fill="#FF9800" height="40" opacity="0.12" rx="8" stroke="#FF9800" stroke-width="2" width="150" x="190" y="55"></rect>
-<text fill="#333" font-size="9" text-anchor="middle" x="265" y="72" direction="ltr" unicode-bidi="embed">Cookie: session_id</text>
-<text fill="#FF9800" font-size="8" text-anchor="middle" x="265" y="86" direction="ltr" unicode-bidi="embed">abc123xyz</text>
-<line marker-end="url(#aSs1)" stroke="#00ADD8" stroke-width="1.5" x1="340" x2="400" y1="70" y2="70"></line>
-<!-- Step 3: Session Store Lookup -->
-<rect fill="#9C27B0" height="55" opacity="0.12" rx="8" stroke="#9C27B0" stroke-width="2" width="150" x="400" y="48"></rect>
-<text fill="#333" font-size="10" text-anchor="middle" x="475" y="68" direction="ltr" unicode-bidi="embed">Session Store</text>
-<text fill="#9C27B0" font-size="8" text-anchor="middle" x="475" y="82" direction="rtl" unicode-bidi="embed">جستجو با شناسه</text>
-<text fill="#9C27B0" font-size="8" text-anchor="middle" x="475" y="96" direction="ltr" unicode-bidi="embed">map / Redis / DB</text>
-<line marker-end="url(#aSs2)" stroke="#27ae60" stroke-width="1.5" x1="550" x2="600" y1="70" y2="70"></line>
-<!-- Step 4: Handler processes -->
-<rect fill="#00ADD8" height="40" opacity="0.12" rx="8" stroke="#00ADD8" stroke-width="2" width="100" x="600" y="55"></rect>
-<text fill="#333" font-size="10" text-anchor="middle" x="650" y="72" direction="rtl" unicode-bidi="embed">هندلر</text>
-<text fill="#00ADD8" font-size="8" text-anchor="middle" x="650" y="86" direction="ltr" unicode-bidi="embed">userID, role</text>
-<!-- Response flow -->
-<line marker-end="url(#aSs3)" stroke="#f39c12" stroke-width="1.5" x1="650" x2="650" y1="95" y2="130"></line>
-<rect fill="#f39c12" height="35" opacity="0.12" rx="8" stroke="#f39c12" stroke-width="2" width="180" x="560" y="130"></rect>
-<text fill="#333" font-size="9" text-anchor="middle" x="650" y="148" direction="rtl" unicode-bidi="embed">ذخیره تغییرات در <tspan direction="ltr" unicode-bidi="embed">Store</tspan></text>
-<text fill="#f39c12" font-size="8" text-anchor="middle" x="650" y="160" direction="ltr" unicode-bidi="embed">Set-Cookie: session_id</text>
-<!-- Back to client -->
-<line marker-end="url(#aSs3)" stroke="#f39c12" stroke-width="1.5" x1="560" x2="80" y1="148" y2="148"></line>
-<line stroke="#f39c12" stroke-width="1.5" x1="80" x2="80" y1="148" y2="95"></line>
-<!-- Security notes -->
-<rect fill="#f5f5f5" height="55" rx="6" stroke="#ddd" stroke-width="1" width="600" x="50" y="175"></rect>
-<text fill="#555" font-size="9" text-anchor="middle" x="350" y="195" direction="rtl" unicode-bidi="embed">تنظیمات امنیتی کوکی: <tspan direction="ltr" unicode-bidi="embed">HttpOnly=true</tspan> | <tspan direction="ltr" unicode-bidi="embed">Secure=true</tspan> | <tspan direction="ltr" unicode-bidi="embed">SameSite=Lax</tspan></text>
-<text fill="#e74c3c" font-size="9" text-anchor="middle" x="350" y="212" direction="rtl" unicode-bidi="embed">پس از لاگین شناسه سشن را تغییر دهید (<tspan direction="ltr" unicode-bidi="embed">Session Fixation</tspan> prevention)</text>
-<text fill="#27ae60" font-size="9" text-anchor="middle" x="350" y="226" direction="rtl" unicode-bidi="embed">سشن‌های منقضی‌شده را پاک‌سازی کنید — <tspan direction="ltr" unicode-bidi="embed">Redis TTL</tspan> خودکار</text>
-</svg>
+<pre class="mermaid">flowchart LR
+    C["کلاینت<br/>Cookie: session_id<br/>abc123xyz"] --> SS["Session Store<br/>جستجو با شناسه<br/>map / Redis / DB"]
+    SS --> H["هندلر<br/>userID, role"]
+    H -->|"ذخیره تغییرات در Store"| SS
+    H -->|"Set-Cookie: session_id"| C
+
+    NOTE1(["تنظیمات امنیتی کوکی: HttpOnly=true | Secure=true | SameSite=Lax"])
+    NOTE2(["پس از لاگین شناسه سشن را تغییر دهید (Session Fixation prevention)"])
+    NOTE3(["سشن‌های منقضی‌شده را پاک‌سازی کنید — Redis TTL خودکار"])
+
+    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
+    classDef neuBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
+    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
+    class C,SS,H goBox;
+    class NOTE1,NOTE2,NOTE3 warnBox;</pre>
 <figcaption dir="rtl">شکل ۷-۷-ب: چرخه‌ی کامل <bdi dir="ltr">Session</bdi> — از کوکی تا ذخیره‌گاه و بازگشت</figcaption>
 </figure>
 
@@ -570,131 +520,64 @@ func initSessionStore(redisURL string) *scs.SessionManager {
 <div class="tip"><strong>نکته:</strong> <bdi dir="ltr">Redis</bdi> زمان انقضای خودکار (<bdi dir="ltr">TTL</bdi>) را روی کلیدها پشتیبانی می‌کند. وقتی سشن منقضی شود، <bdi dir="ltr">Redis</bdi> به صورت خودکار آن را حذف می‌کند و نیازی به <bdi dir="ltr">goroutine</bdi> پاکسازی ندارید. این یکی از مزایای اصلی <bdi dir="ltr">Redis</bdi> نسبت به ذخیره‌سازی در حافظه محلی است.</div>
 
 <figure class="diagram" dir="ltr">
-<svg height="740" viewBox="0 0 860 740" width="860" xmlns="http://www.w3.org/2000/svg">
-<defs>
-<marker id="arrowSS1" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#555" points="0 0, 10 3.5, 0 7"></polygon></marker>
-<marker id="arrowSS2" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#00ADD8" points="0 0, 10 3.5, 0 7"></polygon></marker>
-<marker id="arrowSS3" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#4CAF50" points="0 0, 10 3.5, 0 7"></polygon></marker>
-<marker id="arrowSS4" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#9C27B0" points="0 0, 10 3.5, 0 7"></polygon></marker>
-<filter height="104%" id="shSS" width="104%" x="-2%" y="-2%"><fedropshadow dx="1" dy="1" flood-opacity="0.15" stddeviation="2"></fedropshadow></filter>
-<linearGradient id="goldSS" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#FFD700" stop-opacity="0.18"></stop><stop offset="50%" stop-color="#FFD700" stop-opacity="0.08"></stop><stop offset="100%" stop-color="#FFD700" stop-opacity="0.18"></stop></linearGradient>
-</defs>
-<rect fill="#fafafa" height="740" rx="8" width="860" x="0" y="0"></rect>
+<pre class="mermaid">flowchart TB
+    subgraph BR["Browser"]
+        direction TB
+        BR1["🌐 Chrome / Firefox"]
+        BR2["Cookie:<br/>session_id=abc123"]
+    end
 
-<!-- Title -->
-<text fill="#333" font-size="16" font-weight="bold" text-anchor="middle" x="430" y="30" direction="rtl" unicode-bidi="embed">معماری <tspan direction="ltr" unicode-bidi="embed">Session Store</tspan> — جریان کامل درخواست و مقایسه ذخیره‌گاه‌ها</text>
+    BR -->|"1 +Cookie"| GS["Go Server"]
+    GS -->|"2 → Extract session_id from Cookie"| SS["Session Store"]
+    SS -->|"3"| SS2["map[string]SessionData<br/>&quot;abc123&quot; → &#123;userID: &quot;u42&quot;,<br/>role: &quot;admin&quot;, expires: ...&#125;"]
+    SS2 -->|"4 → Get SessionData &#123;userID, role&#125;"| GS2["Go Server — 5 → Process Request"]
+    GS2 -->|"6 → Update Session in Store"| SS
+    GS2 -->|"7 → Response + Set-Cookie"| BR
 
-<!-- ===== Browser (Left) ===== -->
-<rect fill="#FF9800" filter="url(#shSS)" height="100" rx="12" stroke="#E65100" stroke-width="2" width="150" x="30" y="70"></rect>
-<text fill="#fff" font-size="13" font-weight="bold" text-anchor="middle" x="105" y="95" direction="ltr" unicode-bidi="embed">Browser</text>
-<!-- Cookie box inside browser -->
-<rect fill="#FFF3E0" height="40" rx="4" stroke="#FF9800" stroke-width="1.5" width="130" x="40" y="105"></rect>
-<text fill="#E65100" font-size="9" text-anchor="middle" x="105" y="122" direction="ltr" unicode-bidi="embed">Cookie:</text>
-<text fill="#E65100" font-size="8" text-anchor="middle" x="105" y="136" direction="ltr" unicode-bidi="embed">session_id=abc123</text>
-<!-- Browser icon hint -->
-<rect fill="#FFE0B2" height="14" rx="3" width="110" x="50" y="78"></rect>
-<text fill="#BF360C" font-size="8" text-anchor="middle" x="105" y="89" direction="ltr" unicode-bidi="embed">🌐 Chrome / Firefox</text>
+    SS --> DL["Data Layer"]
+    subgraph DL["Data Layer"]
+        direction LR
+        RS["Redis Store"]
+        DB["PostgreSQL / MySQL"]
+    end
 
-<!-- ===== Server (Center) ===== -->
-<rect fill="#00ADD8" filter="url(#shSS)" height="160" rx="12" stroke="#00838F" stroke-width="2" width="260" x="240" y="60"></rect>
-<text fill="#fff" font-size="13" font-weight="bold" text-anchor="middle" x="370" y="85" direction="ltr" unicode-bidi="embed">Go Server</text>
-<!-- Session Store inside server -->
-<rect fill="#4CAF50" fill-opacity="0.15" height="100" rx="8" stroke="#4CAF50" stroke-width="2" width="220" x="260" y="95"></rect>
-<text fill="#4CAF50" font-size="11" font-weight="bold" text-anchor="middle" x="370" y="115" direction="ltr" unicode-bidi="embed">Session Store</text>
-<text fill="#4CAF50" font-size="9" text-anchor="middle" x="370" y="132" direction="ltr" unicode-bidi="embed">map[string]SessionData</text>
-<!-- Session data example -->
-<rect fill="#E8F5E9" height="44" rx="4" stroke="#4CAF50" stroke-width="1" width="190" x="275" y="140"></rect>
-<text fill="#2E7D32" font-size="8" text-anchor="start" x="282" y="155" direction="ltr" unicode-bidi="embed">"abc123" → {userID: "u42",</text>
-<text fill="#2E7D32" font-size="8" text-anchor="start" x="282" y="167" direction="ltr" unicode-bidi="embed">  role: "admin", expires: ...}</text>
+    subgraph MEM["ذخیره‌گاه در حافظه (In-Memory)"]
+        direction TB
+        ME1["✓ Very fast — no network I/O"]
+        ME2["✓ Simple setup — just map[string]SessionData"]
+        ME3["✗ Lost on server restart"]
+        ME4["✗ Not shared across instances"]
+        CODE1["// In-Memory Store<br/>var sessions = map[string]SessionData&#123;&#125;<br/>// ← lost on restart<br/>// needs sync.Mutex for concurrency"]
+    end
 
-<!-- ===== Data Layer (Right) ===== -->
-<rect fill="#9C27B0" fill-opacity="0.12" height="120" rx="12" stroke="#9C27B0" stroke-width="2" width="200" x="560" y="70"></rect>
-<text fill="#9C27B0" font-size="12" font-weight="bold" text-anchor="middle" x="660" y="95" direction="ltr" unicode-bidi="embed">Data Layer</text>
-<!-- Redis -->
-<rect fill="#9C27B0" filter="url(#shSS)" height="36" rx="6" width="160" x="580" y="105"></rect>
-<text fill="#fff" font-size="10" text-anchor="middle" x="660" y="128" direction="ltr" unicode-bidi="embed">Redis Store</text>
-<!-- DB -->
-<rect fill="#7B1FA2" fill-opacity="0.6" height="28" rx="6" width="160" x="580" y="148"></rect>
-<text fill="#fff" font-size="9" text-anchor="middle" x="660" y="167" direction="ltr" unicode-bidi="embed">PostgreSQL / MySQL</text>
+    subgraph RDS["ذخیره‌گاه Redis"]
+        direction TB
+        RD1["✓ Persistent — survives restarts"]
+        RD2["✓ Shared across multiple instances"]
+        RD3["✓ Auto-expiry with TTL"]
+        CODE2["// Redis Store<br/>sessionManager.Store = redisstore.New(client)<br/>// ← persistent · auto TTL, shared, scalable"]
+    end
 
-<!-- ===== Flow Arrows (numbered) ===== -->
-<!-- Step 1: Browser → Server -->
-<line marker-end="url(#arrowSS2)" stroke="#00ADD8" stroke-width="2.5" x1="180" x2="237" y1="120" y2="120"></line>
-<circle cx="195" cy="112" fill="#00ADD8" r="10"></circle>
-<text fill="#fff" font-size="9" font-weight="bold" text-anchor="middle" x="195" y="116" direction="ltr" unicode-bidi="embed">1</text>
-<text fill="#00ADD8" font-size="7" text-anchor="middle" x="210" y="108" direction="ltr" unicode-bidi="embed">+Cookie</text>
+    subgraph WHEN["چه زمانی از کدام ذخیره‌گاه استفاده کنیم؟"]
+        direction TB
+        WH1["تک‌نمونه و توسعه: In-Memory کافیست"]
+        WH2["چندنمونه و production: حتماً Redis"]
+        WH3["داده حساس: هرگز در کوکی ذخیره نکنید"]
+    end
 
-<!-- Step 2: Extract session_id (inside server) -->
-<text fill="#00ADD8" font-size="8" text-anchor="middle" x="370" y="212" direction="ltr" unicode-bidi="embed">2 → Extract session_id from Cookie</text>
+    GOLD(["قانون طلایی: همیشه HttpOnly + Secure + SameSite روی کوکی سشن تنظیم کنید و شناسه سشن را بعد از لاگین بازتولید کنید"])
 
-<!-- Step 3: Server → Session Store lookup -->
-<line marker-end="url(#arrowSS3)" stroke="#4CAF50" stroke-width="2" x1="370" x2="370" y1="218" y2="250"></line>
-<circle cx="358" cy="234" fill="#4CAF50" r="10"></circle>
-<text fill="#fff" font-size="9" font-weight="bold" text-anchor="middle" x="358" y="238" direction="ltr" unicode-bidi="embed">3</text>
-
-<!-- Step 4: Get SessionData -->
-<rect fill="#E8F5E9" height="30" rx="4" stroke="#4CAF50" stroke-width="1.5" width="200" x="270" y="255"></rect>
-<text fill="#2E7D32" font-size="9" text-anchor="middle" x="370" y="275" direction="ltr" unicode-bidi="embed">4 → Get SessionData {userID, role}</text>
-
-<!-- Step 5: Process Request -->
-<line marker-end="url(#arrowSS1)" stroke="#555" stroke-width="2" x1="370" x2="370" y1="285" y2="310"></line>
-<rect fill="#00ADD8" filter="url(#shSS)" height="30" rx="6" width="160" x="290" y="310"></rect>
-<text fill="#fff" font-size="10" text-anchor="middle" x="370" y="330" direction="ltr" unicode-bidi="embed">5 → Process Request</text>
-
-<!-- Step 6: Update Session -->
-<line marker-end="url(#arrowSS1)" stroke="#555" stroke-width="2" x1="370" x2="370" y1="340" y2="365"></line>
-<rect fill="#4CAF50" filter="url(#shSS)" height="26" rx="6" width="180" x="280" y="365"></rect>
-<text fill="#fff" font-size="9" text-anchor="middle" x="370" y="383" direction="ltr" unicode-bidi="embed">6 → Update Session in Store</text>
-
-<!-- Step 7: Response back to Browser -->
-<line marker-end="url(#arrowSS1)" stroke="#555" stroke-width="2" x1="370" x2="370" y1="391" y2="415"></line>
-<rect fill="#FF9800" filter="url(#shSS)" height="26" rx="6" width="180" x="280" y="415"></rect>
-<text fill="#fff" font-size="9" text-anchor="middle" x="370" y="433" direction="ltr" unicode-bidi="embed">7 → Response + Set-Cookie</text>
-
-<!-- Arrow from step 7 back to browser -->
-<path d="M280,428 L180,428 L180,170 L105,170 L105,172" fill="none" marker-end="url(#arrowSS1)" stroke="#999" stroke-dasharray="4,3" stroke-width="1.5"></path>
-
-<!-- Server → Data Layer arrow (for Redis store variant) -->
-<line marker-end="url(#arrowSS4)" stroke="#9C27B0" stroke-width="2" stroke-dasharray="5,3" x1="500" x2="557" y1="145" y2="145"></line>
-<text fill="#9C27B0" font-size="7" text-anchor="middle" x="528" y="138" direction="ltr" unicode-bidi="embed">sync to Redis</text>
-
-<!-- ===== Variant Comparison ===== -->
-<!-- In-Memory Variant -->
-<rect fill="#4CAF50" fill-opacity="0.08" height="110" rx="8" stroke="#4CAF50" stroke-width="2" width="360" x="30" y="470"></rect>
-<text fill="#4CAF50" font-size="12" font-weight="bold" text-anchor="middle" x="210" y="492" direction="rtl" unicode-bidi="embed">ذخیره‌گاه در حافظه (<tspan direction="ltr" unicode-bidi="embed">In-Memory</tspan>)</text>
-<rect fill="#4CAF50" filter="url(#shSS)" height="55" rx="6" width="320" x="50" y="502"></rect>
-<text fill="#fff" font-size="9" text-anchor="start" x="62" y="522" direction="ltr" unicode-bidi="embed">✓ Very fast — no network I/O</text>
-<text fill="#fff" font-size="9" text-anchor="start" x="62" y="536" direction="ltr" unicode-bidi="embed">✓ Simple setup — just map[string]SessionData</text>
-<text fill="#FFCDD2" font-size="9" text-anchor="start" x="62" y="550" direction="ltr" unicode-bidi="embed">✗ Lost on server restart</text>
-<text fill="#FFCDD2" font-size="9" text-anchor="start" x="195" y="550" direction="ltr" unicode-bidi="embed">✗ Not shared across instances</text>
-
-<!-- Redis Variant -->
-<rect fill="#9C27B0" fill-opacity="0.08" height="110" rx="8" stroke="#9C27B0" stroke-width="2" width="360" x="470" y="470"></rect>
-<text fill="#9C27B0" font-size="12" font-weight="bold" text-anchor="middle" x="650" y="492" direction="rtl" unicode-bidi="embed">ذخیره‌گاه <tspan direction="ltr" unicode-bidi="embed">Redis</tspan></text>
-<rect fill="#9C27B0" filter="url(#shSS)" height="55" rx="6" width="320" x="490" y="502"></rect>
-<text fill="#fff" font-size="9" text-anchor="start" x="502" y="522" direction="ltr" unicode-bidi="embed">✓ Persistent — survives restarts</text>
-<text fill="#fff" font-size="9" text-anchor="start" x="502" y="536" direction="ltr" unicode-bidi="embed">✓ Shared across multiple instances</text>
-<text fill="#fff" font-size="9" text-anchor="start" x="502" y="550" direction="ltr" unicode-bidi="embed">✓ Auto-expiry with TTL</text>
-<text fill="#E1BEE7" font-size="9" text-anchor="start" x="502" y="550" direction="ltr" unicode-bidi="embed"></text>
-
-<!-- Info Box -->
-<rect fill="#E3F2FD" height="50" rx="6" stroke="#1565C0" stroke-width="1.5" width="800" x="30" y="595"></rect>
-<text fill="#1565C0" font-size="10" font-weight="bold" text-anchor="middle" x="430" y="615" direction="rtl" unicode-bidi="embed">چه زمانی از کدام ذخیره‌گاه استفاده کنیم؟</text>
-<text fill="#333" font-size="9" text-anchor="middle" x="430" y="633" direction="rtl" unicode-bidi="embed">تک‌نمونه و توسعه: <tspan direction="ltr" unicode-bidi="embed">In-Memory</tspan> کافیست · چندنمونه و <tspan direction="ltr" unicode-bidi="embed">production</tspan>: حتماً <tspan direction="ltr" unicode-bidi="embed">Redis</tspan> · داده حساس: هرگز در کوکی ذخیره نکنید</text>
-
-<!-- Code snippet for session store -->
-<rect fill="#263238" height="62" rx="6" width="800" x="30" y="658"></rect>
-<text fill="#80CBC4" font-size="9" text-anchor="start" x="45" y="676" direction="ltr" unicode-bidi="embed">// In-Memory Store</text>
-<text fill="#C3E88D" font-size="9" text-anchor="start" x="45" y="692" direction="ltr" unicode-bidi="embed">var sessions = map[string]SessionData{}  // ← lost on restart</text>
-<text fill="#80CBC4" font-size="9" text-anchor="start" x="440" y="676" direction="ltr" unicode-bidi="embed">// Redis Store</text>
-<text fill="#C3E88D" font-size="9" text-anchor="start" x="440" y="692" direction="ltr" unicode-bidi="embed">sessionManager.Store = redisstore.New(client)  // ← persistent</text>
-<text fill="#82AAFF" font-size="9" text-anchor="start" x="440" y="710" direction="ltr" unicode-bidi="embed">// auto TTL, shared, scalable</text>
-<text fill="#82AAFF" font-size="9" text-anchor="start" x="45" y="710" direction="ltr" unicode-bidi="embed">// needs sync.Mutex for concurrency</text>
-
-<!-- Golden Rule Bar -->
-<rect fill="url(#goldSS)" height="28" rx="6" stroke="#FFD700" stroke-width="2" width="800" x="30" y="726"></rect>
-<text fill="#B8860B" font-size="10" font-weight="bold" text-anchor="middle" x="430" y="745" direction="rtl" unicode-bidi="embed">قانون طلایی: همیشه <tspan direction="ltr" unicode-bidi="embed">HttpOnly</tspan> + <tspan direction="ltr" unicode-bidi="embed">Secure</tspan> + <tspan direction="ltr" unicode-bidi="embed">SameSite</tspan> روی کوکی سشن تنظیم کنید و شناسه سشن را بعد از لاگین بازتولید کنید</text>
-</svg>
+    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
+    classDef neuBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
+    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
+    classDef bothBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
+    classDef errBox fill:#fef2f2,stroke:#ef4444,stroke-width:1.5px,color:#1f2937;
+    class GS,GS2,SS,SS2 goBox;
+    class BR1,BR2,RS,DB,CODE1,CODE2 neuBox;
+    class ME1,ME2,RD1,RD2,RD3 bothBox;
+    class ME3,ME4 errBox
+    class WH1,WH2,WH3 warnBox;
+    class GOLD warnBox;</pre>
 <figcaption>شکل ۷-۷-ج: معماری <bdi dir="ltr">Session Store</bdi> — جریان کامل درخواست از مرورگر تا سرور، مقایسه <bdi dir="ltr">In-Memory</bdi> و <bdi dir="ltr">Redis</bdi></figcaption>
 </figure>
 

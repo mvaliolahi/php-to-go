@@ -91,75 +91,58 @@
 <li>پردازش فرم‌ها با اعتبارسنجی، محافظت <bdi dir="ltr">CSRF</bdi> و آپلود فایل</li>
 </ul>
 <figure class="diagram" dir="ltr">
-<svg height="520" viewBox="0 0 700 520" width="700" xmlns="http://www.w3.org/2000/svg">
-<defs>
-<marker id="arrowC" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#555" points="0 0, 10 3.5, 0 7"></polygon></marker>
-<filter height="104%" id="shC" width="104%" x="-2%" y="-2%"><fedropshadow dx="1" dy="1" flood-opacity="0.15" stddeviation="2"></fedropshadow></filter>
-</defs>
-<rect fill="#fafafa" height="520" rx="8" width="700" x="0" y="0"></rect>
-<text fill="#333" font-size="18" font-weight="bold" text-anchor="middle" x="350" y="32" direction="rtl" unicode-bidi="embed">نقشه راه فصل ۷: ساخت وب‌سرور حرفه‌ای با <tspan direction="ltr" unicode-bidi="embed">Go</tspan></text>
-<!-- Client -->
-<rect fill="#777BB4" filter="url(#shC)" height="45" rx="6" width="100" x="20" y="60"></rect>
-<text fill="#fff" font-size="12" text-anchor="middle" x="70" y="87" direction="ltr" unicode-bidi="embed">Client</text>
-<line marker-end="url(#arrowC)" stroke="#555" stroke-width="2" x1="120" x2="180" y1="82" y2="82"></line>
-<!-- TLS -->
-<rect fill="#4CAF50" filter="url(#shC)" height="45" rx="6" width="100" x="180" y="60"></rect>
-<text fill="#fff" font-size="11" text-anchor="middle" x="230" y="78" direction="ltr" unicode-bidi="embed">TLS/HTTPS</text>
-<text fill="#e8f5e9" font-size="9" text-anchor="middle" x="230" y="94" direction="ltr" unicode-bidi="embed">Let's Encrypt</text>
-<line marker-end="url(#arrowC)" stroke="#555" stroke-width="2" x1="280" x2="340" y1="82" y2="82"></line>
-<!-- Server -->
-<rect fill="#00ADD8" filter="url(#shC)" height="60" rx="6" width="160" x="340" y="55"></rect>
-<text fill="#fff" font-size="13" text-anchor="middle" x="420" y="80" direction="ltr" unicode-bidi="embed">net/http Server</text>
-<text fill="#e0f7fa" font-size="10" text-anchor="middle" x="420" y="100" direction="ltr" unicode-bidi="embed">Timeouts + Graceful</text>
-<!-- Security -->
-<rect fill="#FF9800" filter="url(#shC)" height="45" rx="6" width="120" x="540" y="60"></rect>
-<text fill="#fff" font-size="10" text-anchor="middle" x="600" y="78" direction="ltr" unicode-bidi="embed">Security Headers</text>
-<text fill="#fff3e0" font-size="9" text-anchor="middle" x="600" y="94" direction="ltr" unicode-bidi="embed">CORS/CSP/HSTS</text>
-<line marker-end="url(#arrowC)" stroke="#555" stroke-width="2" x1="500" x2="540" y1="82" y2="82"></line>
-<!-- Middleware -->
-<rect fill="#9C27B0" filter="url(#shC)" height="50" rx="6" width="250" x="50" y="150"></rect>
-<text fill="#fff" font-size="12" text-anchor="middle" x="175" y="172" direction="ltr" unicode-bidi="embed">Middleware Chain</text>
-<text fill="#e1bee7" font-size="9" text-anchor="middle" x="175" y="190" direction="ltr" unicode-bidi="embed">Recover → Log → Auth → CSRF → RateLimit</text>
-<line marker-end="url(#arrowC)" stroke="#555" stroke-width="2" x1="420" x2="420" y1="115" y2="145"></line>
-<!-- Router -->
-<rect fill="#00ADD8" filter="url(#shC)" height="50" rx="6" width="180" x="350" y="150"></rect>
-<text fill="#fff" font-size="12" text-anchor="middle" x="440" y="172" direction="ltr" unicode-bidi="embed">ServeMux (Go 1.22+)</text>
-<text fill="#e0f7fa" font-size="9" text-anchor="middle" x="440" y="190" direction="ltr" unicode-bidi="embed">Method + Path Params</text>
-<line marker-end="url(#arrowC)" stroke="#555" stroke-width="2" x1="300" x2="350" y1="175" y2="175"></line>
-<!-- Handlers -->
-<rect fill="#FF9800" filter="url(#shC)" height="40" rx="6" width="90" x="80" y="250"></rect>
-<text fill="#fff" font-size="10" text-anchor="middle" x="125" y="275" direction="ltr" unicode-bidi="embed">Cookies</text>
-<rect fill="#FF9800" filter="url(#shC)" height="40" rx="6" width="90" x="190" y="250"></rect>
-<text fill="#fff" font-size="10" text-anchor="middle" x="235" y="275" direction="ltr" unicode-bidi="embed">Session</text>
-<rect fill="#FF9800" filter="url(#shC)" height="40" rx="6" width="90" x="300" y="250"></rect>
-<text fill="#fff" font-size="10" text-anchor="middle" x="345" y="275" direction="ltr" unicode-bidi="embed">Forms</text>
-<rect fill="#FF9800" filter="url(#shC)" height="40" rx="6" width="90" x="410" y="250"></rect>
-<text fill="#fff" font-size="10" text-anchor="middle" x="455" y="275" direction="ltr" unicode-bidi="embed">JSON API</text>
-<rect fill="#FF9800" filter="url(#shC)" height="40" rx="6" width="90" x="520" y="250"></rect>
-<text fill="#fff" font-size="10" text-anchor="middle" x="565" y="275" direction="ltr" unicode-bidi="embed">File Upload</text>
-<!-- Arrows from router to handlers -->
-<line marker-end="url(#arrowC)" stroke="#555" stroke-width="1.5" x1="440" x2="125" y1="200" y2="250"></line>
-<line marker-end="url(#arrowC)" stroke="#555" stroke-width="1.5" x1="440" x2="235" y1="200" y2="250"></line>
-<line marker-end="url(#arrowC)" stroke="#555" stroke-width="1.5" x1="440" x2="345" y1="200" y2="250"></line>
-<line marker-end="url(#arrowC)" stroke="#555" stroke-width="1.5" x1="440" x2="455" y1="200" y2="250"></line>
-<line marker-end="url(#arrowC)" stroke="#555" stroke-width="1.5" x1="440" x2="565" y1="200" y2="250"></line>
-<!-- Templates -->
-<rect fill="#4CAF50" filter="url(#shC)" height="50" rx="6" width="220" x="50" y="340"></rect>
-<text fill="#fff" font-size="12" text-anchor="middle" x="160" y="362" direction="ltr" unicode-bidi="embed">html/template</text>
-<text fill="#e8f5e9" font-size="9" text-anchor="middle" x="160" y="380" direction="ltr" unicode-bidi="embed">Layout + Partials + FuncMap</text>
-<!-- Static Files -->
-<rect fill="#9C27B0" filter="url(#shC)" height="50" rx="6" width="220" x="300" y="340"></rect>
-<text fill="#fff" font-size="12" text-anchor="middle" x="410" y="362" direction="ltr" unicode-bidi="embed">Static Files</text>
-<text fill="#e1bee7" font-size="9" text-anchor="middle" x="410" y="380" direction="ltr" unicode-bidi="embed">FileServer + embed.FS + Cache</text>
-<!-- embed -->
-<rect fill="#00ADD8" filter="url(#shC)" height="50" rx="6" width="220" x="50" y="430"></rect>
-<text fill="#fff" font-size="12" text-anchor="middle" x="160" y="452" direction="ltr" unicode-bidi="embed">embed.FS</text>
-<text fill="#e0f7fa" font-size="9" text-anchor="middle" x="160" y="470" direction="ltr" unicode-bidi="embed">Single Binary Deployment</text>
-<!-- Validation -->
-<rect fill="#e91e63" filter="url(#shC)" height="50" rx="6" width="220" x="300" y="430"></rect>
-<text fill="#fff" font-size="12" text-anchor="middle" x="410" y="452" direction="ltr" unicode-bidi="embed">Validation + CSRF</text>
-<text fill="#fce4ec" font-size="9" text-anchor="middle" x="410" y="470" direction="ltr" unicode-bidi="embed">Form Processing + Security</text>
-</svg>
+<pre class="mermaid">flowchart TB
+    subgraph NET["لایه شبکه و امنیت"]
+        direction LR
+        N1["Client"] --> N2["TLS/HTTPS<br/>Let's Encrypt"]
+    end
+    subgraph SRV["net/http Server"]
+        direction LR
+        S1["Timeouts + Graceful"]
+        S2["Security Headers<br/>CORS / CSP / HSTS"]
+    end
+    subgraph MW["Middleware Chain"]
+        direction LR
+        M1["Recover → Log → Auth → CSRF → RateLimit"]
+    end
+    subgraph RTR["ServeMux (Go 1.22+)"]
+        direction LR
+        R1["Method + Path Params"]
+    end
+    subgraph HAND["هندلرها"]
+        direction LR
+        H1["Cookies"]
+        H2["Session"]
+        H3["Forms"]
+        H4["JSON API"]
+        H5["File Upload"]
+    end
+    subgraph TPL["html/template"]
+        direction LR
+        T1["Layout + Partials + FuncMap"]
+    end
+    subgraph STA["Static Files"]
+        direction LR
+        ST1["FileServer + embed.FS + Cache"]
+    end
+    subgraph DEP["embed.FS"]
+        direction LR
+        D1["Single Binary Deployment"]
+    end
+    subgraph SEC["امنیت فرم"]
+        direction LR
+        SE1["Validation + CSRF"]
+        SE2["Form Processing + Security"]
+    end
+    NET --> SRV --> MW --> RTR --> HAND --> TPL
+    HAND --> STA
+    TPL --> DEP
+    HAND --> SEC
+
+    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
+    classDef neuBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
+    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
+    class N1,N2,S1,S2,M1,R1,H1,H2,H3,H4,H5,T1,ST1,D1,SE1,SE2 goBox;</pre>
 <figcaption dir="rtl">شکل ۷-۰: نقشه راه فصل ۷ — از ساخت سرور تا قالب‌سازی و امنیت</figcaption>
 </figure>
 <p><bdi dir="ltr">Go</bdi> زبانی بسیار قدرتمند و سبک‌وزن برای توسعه وب است که به صورت پیش‌فرض امکانات لازم برای ساخت وب‌سرورهای سریع، مقیاس‌پذیر و امن را در اختیار برنامه‌نویس قرار می‌دهد. پکیج استاندارد <bdi dir="ltr">net/http</bdi> شامل همه ابزارهای پایه‌ای برای ساخت یک سرور <bdi dir="ltr">HTTP</bdi> کامل است — از مسیریابی گرفته تا سرو فایل‌های استاتیک و مدیریت <bdi dir="ltr">TLS</bdi>. این یعنی برخلاف <bdi dir="ltr">PHP</bdi> که همیشه به وب‌سرور جانبی مثل <bdi dir="ltr">Apache</bdi> یا <bdi dir="ltr">Nginx</bdi> نیاز دارد، در <bdi dir="ltr">Go</bdi> می‌توانید بدون هیچ وابستگی خارجی، یک سرور وب حرفه‌ای و آماده‌ی <bdi dir="ltr">production</bdi> بسازید.</p>

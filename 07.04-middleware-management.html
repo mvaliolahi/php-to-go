@@ -84,51 +84,21 @@
 </tbody>
 </table>
 <figure class="diagram" dir="ltr">
-<svg height="360" viewBox="0 0 620 360" width="620" xmlns="http://www.w3.org/2000/svg">
-<defs>
-<marker id="arrow4" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#555" points="0 0, 10 3.5, 0 7"></polygon></marker>
-<marker id="arrow4r" markerheight="7" markerwidth="10" orient="auto" refx="0" refy="3.5"><polygon fill="#999" points="10 0, 0 3.5, 10 7"></polygon></marker>
-<filter height="104%" id="sh4" width="104%" x="-2%" y="-2%"><fedropshadow dx="1" dy="1" flood-opacity="0.15" stddeviation="2"></fedropshadow></filter>
-</defs>
-<rect fill="#fff" height="360" rx="8" width="620" x="0" y="0"></rect>
-<text fill="#333" font-size="16" font-weight="bold" text-anchor="middle" x="310" y="28" direction="rtl" unicode-bidi="embed">زنجیره <tspan direction="ltr" unicode-bidi="embed">Middleware</tspan> در <tspan direction="ltr" unicode-bidi="embed">Go</tspan></text>
-<!-- Request -->
-<rect fill="#777BB4" filter="url(#sh4)" height="40" rx="6" width="90" x="20" y="80"></rect>
-<text fill="#fff" font-size="11" text-anchor="middle" x="65" y="105" direction="ltr" unicode-bidi="embed">Request</text>
-<!-- Middleware 1: Logging -->
-<rect fill="#4CAF50" filter="url(#sh4)" height="80" rx="6" width="110" x="140" y="60"></rect>
-<text fill="#fff" font-size="11" text-anchor="middle" x="195" y="90" direction="ltr" unicode-bidi="embed">Logging</text>
-<text fill="#e8f5e9" font-size="9" text-anchor="middle" x="195" y="108" direction="ltr" unicode-bidi="embed">Middleware</text>
-<!-- Middleware 2: Security -->
-<rect fill="#FF9800" filter="url(#sh4)" height="80" rx="6" width="110" x="280" y="60"></rect>
-<text fill="#fff" font-size="11" text-anchor="middle" x="335" y="90" direction="ltr" unicode-bidi="embed">Security</text>
-<text fill="#fff3e0" font-size="9" text-anchor="middle" x="335" y="108" direction="ltr" unicode-bidi="embed">Headers</text>
-<!-- Middleware 3: CORS -->
-<rect fill="#9C27B0" filter="url(#sh4)" height="80" rx="6" width="110" x="420" y="60"></rect>
-<text fill="#fff" font-size="11" text-anchor="middle" x="475" y="90" direction="ltr" unicode-bidi="embed">CORS</text>
-<text fill="#e1bee7" font-size="9" text-anchor="middle" x="475" y="108" direction="ltr" unicode-bidi="embed">Middleware</text>
-<!-- Handler -->
-<rect fill="#00ADD8" filter="url(#sh4)" height="45" rx="6" width="110" x="420" y="200"></rect>
-<text fill="#fff" font-size="12" text-anchor="middle" x="475" y="227" direction="ltr" unicode-bidi="embed">Handler</text>
-<!-- Arrows forward -->
-<line marker-end="url(#arrow4)" stroke="#555" stroke-width="2" x1="110" x2="140" y1="100" y2="100"></line>
-<line marker-end="url(#arrow4)" stroke="#555" stroke-width="2" x1="250" x2="280" y1="100" y2="100"></line>
-<line marker-end="url(#arrow4)" stroke="#555" stroke-width="2" x1="390" x2="420" y1="100" y2="100"></line>
-<line marker-end="url(#arrow4)" stroke="#555" stroke-width="2" x1="475" x2="475" y1="140" y2="200"></line>
-<!-- Response -->
-<rect fill="#777BB4" filter="url(#sh4)" height="40" rx="6" width="90" x="20" y="200"></rect>
-<text fill="#fff" font-size="11" text-anchor="middle" x="65" y="225" direction="ltr" unicode-bidi="embed">Response</text>
-<!-- Arrows backward -->
-<line stroke="#999" stroke-dasharray="4,4" stroke-width="1.5" x1="475" x2="475" y1="245" y2="280"></line>
-<line marker-end="url(#arrow4r)" stroke="#999" stroke-width="1.5" x1="420" x2="390" y1="280" y2="280"></line>
-<line marker-end="url(#arrow4r)" stroke="#999" stroke-width="1.5" x1="280" x2="250" y1="280" y2="280"></line>
-<line marker-end="url(#arrow4r)" stroke="#999" stroke-width="1.5" x1="140" x2="110" y1="280" y2="280"></line>
-<text fill="#999" font-size="11" text-anchor="middle" x="310" y="310" direction="rtl" unicode-bidi="embed">مسیر بازگشت پاسخ (بعد از اجرای هندلر)</text>
-<!-- Labels -->
-<text fill="#4CAF50" font-size="9" text-anchor="middle" x="195" y="310" direction="ltr" unicode-bidi="embed">log end</text>
-<text fill="#FF9800" font-size="9" text-anchor="middle" x="335" y="310" direction="ltr" unicode-bidi="embed">add headers</text>
-<text fill="#9C27B0" font-size="9" text-anchor="middle" x="475" y="310" direction="ltr" unicode-bidi="embed">CORS headers</text>
-</svg>
+<pre class="mermaid">flowchart LR
+    REQ["Request"] --> L["Logging<br/>Middleware"]
+    L --> S["Security<br/>Headers<br/>Middleware"]
+    S --> C["CORS<br/>Middleware"]
+    C --> H["Handler"]
+    H -.->|"مسیر بازگشت پاسخ (بعد از اجرای هندلر)"| C
+    C -.->|"CORS headers"| S
+    S -.->|"add headers"| L
+    L -.->|"log end"| R["Response"]
+
+    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
+    classDef neuBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
+    classDef bothBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
+    class L,S,C goBox;
+    class H,REQ,R neuBox;</pre>
 <figcaption>شکل ۷-۴: زنجیره <bdi dir="ltr">Middleware</bdi> — درخواست از چپ به راست و پاسخ از راست به چپ</figcaption>
 </figure>
 <p>در ساختار یک وب‌سرور، معمولاً نیازمند اضافه کردن قابلیت‌های جانبی مانند Logging، کنترل دسترسی، مدیریت خطا، افزودن هدرهای امنیتی و بسیاری موارد دیگر هستیم که نباید در تک‌تک Handler برنامه تکرار شوند. اینجا نقش <strong dir="ltr">Middleware</strong> مطرح می‌شود.</p>
@@ -404,59 +374,37 @@ server := &amp;http.Server{Handler: handler}
 </code></pre>
 </figure>
 <figure class="diagram" dir="ltr">
-<svg height="420" viewBox="0 0 650 420" width="650" xmlns="http://www.w3.org/2000/svg">
-<defs>
-<marker id="arrowM1" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#555" points="0 0, 10 3.5, 0 7"></polygon></marker>
-<filter height="104%" id="shM1" width="104%" x="-2%" y="-2%"><fedropshadow dx="1" dy="1" flood-opacity="0.15" stddeviation="2"></fedropshadow></filter>
-</defs>
-<rect fill="#fff" height="420" rx="8" width="650" x="0" y="0"></rect>
-<text fill="#333" font-size="16" font-weight="bold" text-anchor="middle" x="325" y="28" direction="rtl" unicode-bidi="embed">موقعیت <tspan direction="ltr" unicode-bidi="embed">Middleware</tspan> و دامنه اعمال</text>
-<!-- Global section -->
-<text fill="#4CAF50" font-size="13" font-weight="bold" text-anchor="middle" x="160" y="60" direction="rtl" unicode-bidi="embed">روش ۱: <tspan direction="ltr" unicode-bidi="embed">Middleware</tspan> سراسری (قبل از <tspan direction="ltr" unicode-bidi="embed">mux</tspan>)</text>
-<rect fill="#777BB4" filter="url(#shM1)" height="35" rx="6" width="80" x="30" y="75"></rect>
-<text fill="#fff" font-size="10" text-anchor="middle" x="70" y="97" direction="ltr" unicode-bidi="embed">Request</text>
-<line marker-end="url(#arrowM1)" stroke="#555" stroke-width="2" x1="110" x2="140" y1="92" y2="92"></line>
-<rect fill="#4CAF50" filter="url(#shM1)" height="40" rx="6" width="90" x="140" y="72"></rect>
-<text fill="#fff" font-size="9" text-anchor="middle" x="185" y="97" direction="ltr" unicode-bidi="embed">commonHeaders</text>
-<line marker-end="url(#arrowM1)" stroke="#555" stroke-width="2" x1="230" x2="260" y1="92" y2="92"></line>
-<rect fill="#FF9800" filter="url(#shM1)" height="40" rx="6" width="90" x="260" y="72"></rect>
-<text fill="#fff" font-size="9" text-anchor="middle" x="305" y="97" direction="ltr" unicode-bidi="embed">requestLogger</text>
-<line marker-end="url(#arrowM1)" stroke="#555" stroke-width="2" x1="350" x2="380" y1="92" y2="92"></line>
-<rect fill="#00ADD8" filter="url(#shM1)" height="40" rx="6" width="100" x="380" y="72"></rect>
-<text fill="#fff" font-size="10" text-anchor="middle" x="430" y="97" direction="ltr" unicode-bidi="embed">ServeMux</text>
-<!-- Routes from global mux -->
-<line stroke="#555" stroke-dasharray="4,4" stroke-width="1.5" x1="430" x2="430" y1="112" y2="140"></line>
-<rect fill="#E3F2FD" height="30" rx="4" stroke="#2196F3" width="70" x="310" y="140"></rect>
-<text fill="#1565C0" font-size="9" text-anchor="middle" x="345" y="160" direction="ltr" unicode-bidi="embed">/</text>
-<rect fill="#E3F2FD" height="30" rx="4" stroke="#2196F3" width="70" x="395" y="140"></rect>
-<text fill="#1565C0" font-size="9" text-anchor="middle" x="430" y="160" direction="ltr" unicode-bidi="embed">/admin</text>
-<rect fill="#E3F2FD" height="30" rx="4" stroke="#2196F3" width="70" x="480" y="140"></rect>
-<text fill="#1565C0" font-size="9" text-anchor="middle" x="515" y="160" direction="ltr" unicode-bidi="embed">/public</text>
-<text fill="#999" font-size="10" text-anchor="middle" x="430" y="190" direction="rtl" unicode-bidi="embed">همه مسیرها هدر امنیتی و لاگ دارند</text>
-<!-- Per-route section -->
-<text fill="#9C27B0" font-size="13" font-weight="bold" text-anchor="middle" x="160" y="230" direction="rtl" unicode-bidi="embed">روش ۲: <tspan direction="ltr" unicode-bidi="embed">Middleware</tspan> روی مسیر خاص (بعد از <tspan direction="ltr" unicode-bidi="embed">mux</tspan>)</text>
-<rect fill="#777BB4" filter="url(#shM1)" height="35" rx="6" width="80" x="30" y="245"></rect>
-<text fill="#fff" font-size="10" text-anchor="middle" x="70" y="267" direction="ltr" unicode-bidi="embed">Request</text>
-<line marker-end="url(#arrowM1)" stroke="#555" stroke-width="2" x1="110" x2="140" y1="262" y2="262"></line>
-<rect fill="#00ADD8" filter="url(#shM1)" height="40" rx="6" width="100" x="140" y="242"></rect>
-<text fill="#fff" font-size="10" text-anchor="middle" x="190" y="267" direction="ltr" unicode-bidi="embed">ServeMux</text>
-<!-- /admin route with auth -->
-<line marker-end="url(#arrowM1)" stroke="#555" stroke-width="2" x1="240" x2="290" y1="252" y2="252"></line>
-<rect fill="#e91e63" filter="url(#shM1)" height="34" rx="6" width="90" x="290" y="235"></rect>
-<text fill="#fff" font-size="9" text-anchor="middle" x="335" y="257" direction="ltr" unicode-bidi="embed">authMiddleware</text>
-<line marker-end="url(#arrowM1)" stroke="#555" stroke-width="2" x1="380" x2="410" y1="252" y2="252"></line>
-<rect fill="#E3F2FD" height="30" rx="4" stroke="#2196F3" width="80" x="410" y="237"></rect>
-<text fill="#1565C0" font-size="9" text-anchor="middle" x="450" y="257" direction="ltr" unicode-bidi="embed">/admin</text>
-<!-- /public route without auth -->
-<line marker-end="url(#arrowM1)" stroke="#555" stroke-width="2" x1="240" x2="290" y1="282" y2="282"></line>
-<rect fill="#E3F2FD" height="30" rx="4" stroke="#2196F3" width="80" x="410" y="267"></rect>
-<text fill="#1565C0" font-size="9" text-anchor="middle" x="450" y="287" direction="ltr" unicode-bidi="embed">/public</text>
-<text fill="#e91e63" font-size="10" text-anchor="middle" x="335" y="320" direction="rtl" unicode-bidi="embed">فقط /<tspan direction="ltr" unicode-bidi="embed">admin</tspan> از <tspan direction="ltr" unicode-bidi="embed">auth</tspan> می‌گذرد</text>
-<text fill="#999" font-size="10" text-anchor="middle" x="335" y="338" direction="rtl" unicode-bidi="embed">/<tspan direction="ltr" unicode-bidi="embed">public</tspan> بدون <tspan direction="ltr" unicode-bidi="embed">authMiddleware</tspan></text>
-<!-- Key -->
-<rect fill="#f5f5f5" height="40" rx="6" stroke="#ddd" width="590" x="30" y="370"></rect>
-<text fill="#555" font-size="11" text-anchor="middle" x="325" y="395" direction="rtl" unicode-bidi="embed">قبل از <tspan direction="ltr" unicode-bidi="embed">mux</tspan> = سراسری · بعد از <tspan direction="ltr" unicode-bidi="embed">mux</tspan> روی هندلر = فقط همان مسیر</text>
-</svg>
+<pre class="mermaid">flowchart TB
+    subgraph M1["روش ۱: Middleware سراسری (قبل از mux)"]
+        direction LR
+        R1["Request"] --> CH1["commonHeaders"]
+        CH1 --> RL["requestLogger"]
+        RL --> SM1["ServeMux"]
+        SM1 --> P1A["/"]
+        SM1 --> P1B["/admin"]
+        SM1 --> P1C["/public"]
+        N1(["همه مسیرها هدر امنیتی و لاگ دارند"])
+        SM1 ~~~ N1
+    end
+
+    subgraph M2["روش ۲: Middleware روی مسیر خاص (بعد از mux)"]
+        direction LR
+        R2["Request"] --> SM2["ServeMux"]
+        SM2 --> AM["authMiddleware"]
+        SM2 --> P2B["/public"]
+        AM --> P2A["/admin"]
+        N2(["فقط /admin از auth می‌گذرد · /public بدون authMiddleware"])
+        SM2 ~~~ N2
+    end
+
+    GOLD(["قبل از mux = سراسری · بعد از mux روی هندلر = فقط همان مسیر"])
+
+    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
+    classDef neuBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
+    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
+    class CH1,RL,SM1,SM2,AM goBox;
+    class R1,P1A,P1B,P1C,R2,P2A,P2B neuBox;
+    class N1,N2,GOLD warnBox;</pre>
 <figcaption>شکل ۷-۴-ب: تفاوت قرارگیری <bdi dir="ltr">middleware</bdi> قبل و بعد از <bdi dir="ltr">ServeMux</bdi></figcaption>
 </figure>
 <div class="important">
@@ -585,151 +533,80 @@ $userID = app('userID');
 </tbody>
 </table>
 <figure class="diagram" dir="ltr">
-<svg height="780" viewBox="0 0 820 780" width="820" xmlns="http://www.w3.org/2000/svg">
-<defs>
-<marker id="arrowMC1" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#555" points="0 0, 10 3.5, 0 7"></polygon></marker>
-<marker id="arrowMC2" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#e91e63" points="0 0, 10 3.5, 0 7"></polygon></marker>
-<marker id="arrowMC3" markerheight="7" markerwidth="10" orient="auto" refx="0" refy="3.5"><polygon fill="#999" points="10 0, 0 3.5, 10 7"></polygon></marker>
-<filter height="104%" id="shMC" width="104%" x="-2%" y="-2%"><fedropshadow dx="1" dy="1" flood-opacity="0.15" stddeviation="2"></fedropshadow></filter>
-<linearGradient id="goldMC" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#FFD700" stop-opacity="0.18"></stop><stop offset="50%" stop-color="#FFD700" stop-opacity="0.08"></stop><stop offset="100%" stop-color="#FFD700" stop-opacity="0.18"></stop></linearGradient>
-</defs>
-<rect fill="#fafafa" height="780" rx="8" width="820" x="0" y="0"></rect>
-<!-- Title -->
-<text fill="#333" font-size="16" font-weight="bold" text-anchor="middle" x="410" y="30" direction="rtl" unicode-bidi="embed">مدل حلقه‌ای <tspan direction="ltr" unicode-bidi="embed">Middleware</tspan> — ترتیب اجرا و مسیر <tspan direction="ltr" unicode-bidi="embed">Short-Circuit</tspan></text>
+<pre class="mermaid">flowchart TB
+    subgraph ONION["مدل لایه‌ای حلقه پیاز"]
+        direction TB
+        O1["Logging Middleware"]
+        O2["Auth Middleware"]
+        O3["Rate Limit Middleware"]
+        O4["Handler<br/>Business Logic<br/>Process Request → Return Response"]
+        O1 --> O2 --> O3 --> O4
+    end
 
-<!-- ===== LEFT: Onion/Concentric Model ===== -->
-<text fill="#555" font-size="12" font-weight="bold" text-anchor="middle" x="220" y="58" direction="rtl" unicode-bidi="embed">مدل لایه‌ای حلقه پیاز</text>
+    subgraph BEFORE["before next()"]
+        direction TB
+        B1["→ log start · start timer"]
+        B2["→ check JWT · validate session"]
+        B3["→ check rate · increment counter"]
+    end
 
-<!-- Outermost: Logging -->
-<rect fill="#00ADD8" fill-opacity="0.08" height="420" rx="20" stroke="#00ADD8" stroke-width="2.5" width="380" x="30" y="72"></rect>
-<rect fill="#00ADD8" height="22" rx="4" width="140" x="150" y="72"></rect>
-<text fill="#fff" font-size="11" font-weight="bold" text-anchor="middle" x="220" y="88" direction="ltr" unicode-bidi="embed">Logging Middleware</text>
+    subgraph AFTER["after next()"]
+        direction TB
+        A1["← log end + duration · record status code"]
+        A2["← add user to ctx"]
+        A3["← set X-RateLimit headers"]
+    end
 
-<!-- Second: Auth -->
-<rect fill="#00ADD8" fill-opacity="0.13" height="320" rx="16" stroke="#00ADD8" stroke-width="2" width="300" x="70" y="112"></rect>
-<rect fill="#00ADD8" height="22" rx="4" width="120" x="160" y="112"></rect>
-<text fill="#fff" font-size="11" font-weight="bold" text-anchor="middle" x="220" y="128" direction="ltr" unicode-bidi="embed">Auth Middleware</text>
+    O1 -.-> B1
+    O2 -.-> B2
+    O3 -.-> B3
+    O4 -.-> A3
+    O3 -.-> A3
+    O2 -.-> A2
+    O1 -.-> A1
 
-<!-- Third: Rate Limit -->
-<rect fill="#00ADD8" fill-opacity="0.18" height="220" rx="14" stroke="#00ADD8" stroke-width="2" width="220" x="110" y="152"></rect>
-<rect fill="#00ADD8" height="22" rx="4" width="155" x="143" y="152"></rect>
-<text fill="#fff" font-size="11" font-weight="bold" text-anchor="middle" x="220" y="168" direction="ltr" unicode-bidi="embed">Rate Limit Middleware</text>
+    REQ(["Request ↓"]) --> O1
+    O4 --> RESP(["Response ↑"])
 
-<!-- Center: Handler -->
-<rect fill="#4CAF50" fill-opacity="0.2" height="120" rx="12" stroke="#4CAF50" stroke-width="3" width="150" x="145" y="200"></rect>
-<rect fill="#4CAF50" height="24" rx="4" width="90" x="175" y="215"></rect>
-<text fill="#fff" font-size="12" font-weight="bold" text-anchor="middle" x="220" y="233" direction="ltr" unicode-bidi="embed">Handler</text>
-<text fill="#4CAF50" font-size="9" text-anchor="middle" x="220" y="260" direction="ltr" unicode-bidi="embed">Business Logic</text>
-<text fill="#4CAF50" font-size="8" text-anchor="middle" x="220" y="275" direction="ltr" unicode-bidi="embed">Process Request</text>
-<text fill="#4CAF50" font-size="8" text-anchor="middle" x="220" y="288" direction="ltr" unicode-bidi="embed">Return Response</text>
+    subgraph SC["خط لوله عمودی با Short-Circuit"]
+        direction TB
+        SC1["Request"]
+        SC2["Logging Middleware — before: log"]
+        SC3["Auth Middleware — 401 Unauthorized · next() NOT called · chain stops here!"]
+        SC4["⚡ Short-Circuit!"]
+        SC5["Response 401"]
+        SC1 --> SC2 --> SC3 --> SC4 --> SC5
+    end
 
-<!-- Request label top -->
-<rect fill="#777BB4" filter="url(#shMC)" height="26" rx="6" width="80" x="180" y="40"></rect>
-<text fill="#fff" font-size="10" text-anchor="middle" x="220" y="58" direction="ltr" unicode-bidi="embed">Request ↓</text>
+    subgraph SCWHY["چرا Short-Circuit مهم است؟"]
+        direction TB
+        SW1["وقتی Auth بدون next() پاسخ دهد، بقیه زنجیره اجرا نمی‌شود"]
+        SW2["اما Logging (لایه بیرونی) هنوز بخش after next() را اجرا می‌کند"]
+    end
 
-<!-- "before next()" left annotations -->
-<line stroke="#00ADD8" stroke-width="1.5" stroke-dasharray="3,3" x1="32" x2="32" y1="95" y2="390"></line>
-<polygon fill="#00ADD8" points="32,95 28,105 36,105"></polygon>
+    subgraph CODE["// Short-circuit in Auth Middleware"]
+        direction TB
+        C1["func authMiddleware(next http.Handler) http.Handler &#123;"]
+        C2["if !isAuthenticated(r) &#123;"]
+        C3["http.Error(w, &quot;401&quot;, 401)"]
+        C4["return // ← chain stops!"]
+        C5["&#125;"]
+        C6["next.ServeHTTP(w, r) // continue"]
+        C7["&#125;"]
+    end
 
-<text fill="#00ADD8" font-size="9" font-weight="bold" text-anchor="end" x="26" y="155" direction="ltr" unicode-bidi="embed">before next()</text>
-<text fill="#00ADD8" font-size="8" text-anchor="end" x="26" y="168" direction="ltr" unicode-bidi="embed">→ log start</text>
-<text fill="#00ADD8" font-size="8" text-anchor="end" x="26" y="180" direction="ltr" unicode-bidi="embed">→ start timer</text>
+    GOLD(["قانون طلایی: Recover بیرونی‌ترین ← Logging بعد از آن ← Rate Limit قبل از Auth — تا درخواست‌های ردشده هم لاگ شوند و Recover همه panic‌ها را شکار کند"])
 
-<text fill="#00ADD8" font-size="9" font-weight="bold" text-anchor="end" x="66" y="230" direction="ltr" unicode-bidi="embed">before next()</text>
-<text fill="#00ADD8" font-size="8" text-anchor="end" x="66" y="243" direction="ltr" unicode-bidi="embed">→ check JWT</text>
-<text fill="#00ADD8" font-size="8" text-anchor="end" x="66" y="255" direction="ltr" unicode-bidi="embed">→ validate session</text>
-
-<text fill="#00ADD8" font-size="9" font-weight="bold" text-anchor="end" x="106" y="310" direction="ltr" unicode-bidi="embed">before next()</text>
-<text fill="#00ADD8" font-size="8" text-anchor="end" x="106" y="323" direction="ltr" unicode-bidi="embed">→ check rate</text>
-<text fill="#00ADD8" font-size="8" text-anchor="end" x="106" y="335" direction="ltr" unicode-bidi="embed">→ increment counter</text>
-
-<!-- "after next()" right annotations -->
-<line stroke="#999" stroke-width="1.5" stroke-dasharray="3,3" x1="408" x2="408" y1="390" y2="95"></line>
-<polygon fill="#999" points="408,95 404,85 412,85"></polygon>
-
-<text fill="#999" font-size="9" font-weight="bold" text-anchor="start" x="414" y="155" direction="ltr" unicode-bidi="embed">after next()</text>
-<text fill="#999" font-size="8" text-anchor="start" x="414" y="168" direction="ltr" unicode-bidi="embed">← log end + duration</text>
-<text fill="#999" font-size="8" text-anchor="start" x="414" y="180" direction="ltr" unicode-bidi="embed">← record status code</text>
-
-<text fill="#999" font-size="9" font-weight="bold" text-anchor="start" x="374" y="230" direction="ltr" unicode-bidi="embed">after next()</text>
-<text fill="#999" font-size="8" text-anchor="start" x="374" y="243" direction="ltr" unicode-bidi="embed">← add user to ctx</text>
-
-<text fill="#999" font-size="9" font-weight="bold" text-anchor="start" x="334" y="310" direction="ltr" unicode-bidi="embed">after next()</text>
-<text fill="#999" font-size="8" text-anchor="start" x="334" y="323" direction="ltr" unicode-bidi="embed">← set X-RateLimit headers</text>
-
-<!-- Response label bottom -->
-<rect fill="#777BB4" filter="url(#shMC)" height="26" rx="6" width="80" x="180" y="498"></rect>
-<text fill="#fff" font-size="10" text-anchor="middle" x="220" y="516" direction="ltr" unicode-bidi="embed">Response ↑</text>
-
-<!-- ===== RIGHT: Vertical Pipeline + Short-Circuit ===== -->
-<text fill="#555" font-size="12" font-weight="bold" text-anchor="middle" x="640" y="58" direction="rtl" unicode-bidi="embed">خط لوله عمودی با <tspan direction="ltr" unicode-bidi="embed">Short-Circuit</tspan></text>
-
-<!-- Request -->
-<rect fill="#777BB4" filter="url(#shMC)" height="28" rx="6" width="80" x="600" y="68"></rect>
-<text fill="#fff" font-size="10" text-anchor="middle" x="640" y="87" direction="ltr" unicode-bidi="embed">Request</text>
-<line marker-end="url(#arrowMC1)" stroke="#555" stroke-width="2" x1="640" x2="640" y1="96" y2="112"></line>
-
-<!-- Logging -->
-<rect fill="#00ADD8" filter="url(#shMC)" height="36" rx="6" width="170" x="555" y="112"></rect>
-<text fill="#fff" font-size="10" text-anchor="middle" x="640" y="135" direction="ltr" unicode-bidi="embed">Logging Middleware</text>
-<line marker-end="url(#arrowMC1)" stroke="#555" stroke-width="2" x1="640" x2="640" y1="148" y2="164"></line>
-<text fill="#00ADD8" font-size="7" text-anchor="start" x="730" y="130" direction="ltr" unicode-bidi="embed">before: log</text>
-
-<!-- Auth -->
-<rect fill="#00ADD8" filter="url(#shMC)" height="36" rx="6" width="170" x="555" y="164"></rect>
-<text fill="#fff" font-size="10" text-anchor="middle" x="640" y="187" direction="ltr" unicode-bidi="embed">Auth Middleware</text>
-
-<!-- Short-circuit from Auth -->
-<line stroke="#e91e63" stroke-width="2.5" x1="555" x2="518" y1="182" y2="182"></line>
-<rect fill="#e91e63" filter="url(#shMC)" height="48" rx="6" width="140" x="378" y="158"></rect>
-<text fill="#fff" font-size="10" font-weight="bold" text-anchor="middle" x="448" y="177" direction="ltr" unicode-bidi="embed">401 Unauthorized</text>
-<text fill="#fce4ec" font-size="8" text-anchor="middle" x="448" y="191" direction="ltr" unicode-bidi="embed">next() NOT called</text>
-<text fill="#fce4ec" font-size="8" text-anchor="middle" x="448" y="202" direction="ltr" unicode-bidi="embed">chain stops here!</text>
-<text fill="#e91e63" font-size="10" font-weight="bold" text-anchor="middle" x="448" y="148" direction="ltr" unicode-bidi="embed">⚡ Short-Circuit!</text>
-<!-- Short-circuit response -->
-<line marker-end="url(#arrowMC2)" stroke="#e91e63" stroke-width="2" stroke-dasharray="5,3" x1="448" x2="448" y1="206" y2="240"></line>
-<rect fill="#e91e63" filter="url(#shMC)" height="26" rx="6" width="100" x="398" y="240"></rect>
-<text fill="#fff" font-size="9" text-anchor="middle" x="448" y="258" direction="ltr" unicode-bidi="embed">Response 401</text>
-
-<!-- Normal path continues -->
-<line marker-end="url(#arrowMC1)" stroke="#555" stroke-width="2" x1="640" x2="640" y1="200" y2="216"></line>
-<text fill="#4CAF50" font-size="7" text-anchor="start" x="730" y="210" direction="ltr" unicode-bidi="embed">if auth ✓</text>
-
-<!-- Rate Limit -->
-<rect fill="#00ADD8" filter="url(#shMC)" height="36" rx="6" width="170" x="555" y="216"></rect>
-<text fill="#fff" font-size="10" text-anchor="middle" x="640" y="239" direction="ltr" unicode-bidi="embed">Rate Limit Middleware</text>
-<line marker-end="url(#arrowMC1)" stroke="#555" stroke-width="2" x1="640" x2="640" y1="252" y2="268"></line>
-
-<!-- Handler -->
-<rect fill="#4CAF50" filter="url(#shMC)" height="38" rx="6" width="170" x="555" y="268"></rect>
-<text fill="#fff" font-size="12" font-weight="bold" text-anchor="middle" x="640" y="292" direction="ltr" unicode-bidi="embed">Handler</text>
-
-<!-- Response back -->
-<line marker-end="url(#arrowMC3)" stroke="#999" stroke-width="1.5" stroke-dasharray="4,3" x1="728" x2="728" y1="306" y2="340"></line>
-<rect fill="#777BB4" filter="url(#shMC)" height="26" rx="6" width="80" x="600" y="340"></rect>
-<text fill="#fff" font-size="10" text-anchor="middle" x="640" y="358" direction="ltr" unicode-bidi="embed">Response</text>
-
-<!-- Info Box: Short-circuit -->
-<rect fill="#fff3e0" height="58" rx="6" stroke="#FF9800" stroke-width="1.5" width="340" x="460" y="378"></rect>
-<text fill="#E65100" font-size="10" font-weight="bold" text-anchor="middle" x="630" y="398" direction="rtl" unicode-bidi="embed">چرا <tspan direction="ltr" unicode-bidi="embed">Short-Circuit</tspan> مهم است؟</text>
-<text fill="#555" font-size="9" text-anchor="middle" x="630" y="414" direction="rtl" unicode-bidi="embed">وقتی <tspan direction="ltr" unicode-bidi="embed">Auth</tspan> بدون <tspan direction="ltr" unicode-bidi="embed">next()</tspan> پاسخ دهد، بقیه زنجیره اجرا نمی‌شود</text>
-<text fill="#555" font-size="9" text-anchor="middle" x="630" y="428" direction="rtl" unicode-bidi="embed">اما <tspan direction="ltr" unicode-bidi="embed">Logging</tspan> (لایه بیرونی) هنوز بخش <tspan direction="ltr" unicode-bidi="embed">after next()</tspan> را اجرا می‌کند</text>
-
-<!-- Code Example Box -->
-<rect fill="#263238" height="95" rx="6" width="340" x="460" y="448"></rect>
-<text fill="#80CBC4" font-size="9" text-anchor="start" x="475" y="466" direction="ltr" unicode-bidi="embed">// Short-circuit in Auth Middleware</text>
-<text fill="#C3E88D" font-size="9" text-anchor="start" x="475" y="482" direction="ltr" unicode-bidi="embed">func authMiddleware(next http.Handler) http.Handler {</text>
-<text fill="#F77669" font-size="9" text-anchor="start" x="490" y="498" direction="ltr" unicode-bidi="embed">if !isAuthenticated(r) {</text>
-<text fill="#F77669" font-size="9" text-anchor="start" x="505" y="512" direction="ltr" unicode-bidi="embed">http.Error(w, "401", 401)</text>
-<text fill="#FF9800" font-size="9" text-anchor="start" x="505" y="526" direction="ltr" unicode-bidi="embed">return // ← chain stops!</text>
-<text fill="#F77669" font-size="9" text-anchor="start" x="490" y="538" direction="ltr" unicode-bidi="embed">}</text>
-<text fill="#82AAFF" font-size="9" text-anchor="start" x="490" y="538" direction="ltr" unicode-bidi="embed"> next.ServeHTTP(w, r)  // continue</text>
-
-<!-- Golden Rule Bar -->
-<rect fill="url(#goldMC)" height="48" rx="8" stroke="#FFD700" stroke-width="2" width="780" x="20" y="720"></rect>
-<text fill="#B8860B" font-size="12" font-weight="bold" text-anchor="middle" x="410" y="740" direction="rtl" unicode-bidi="embed">قانون طلایی: <tspan direction="ltr" unicode-bidi="embed">Recover</tspan> بیرونی‌ترین ← <tspan direction="ltr" unicode-bidi="embed">Logging</tspan> بعد از آن ← <tspan direction="ltr" unicode-bidi="embed">Rate Limit</tspan> قبل از <tspan direction="ltr" unicode-bidi="embed">Auth</tspan></text>
-<text fill="#B8860B" font-size="10" text-anchor="middle" x="410" y="758" direction="rtl" unicode-bidi="embed">تا درخواست‌های ردشده هم لاگ شوند و <tspan direction="ltr" unicode-bidi="embed">Recover</tspan> همه <tspan direction="ltr" unicode-bidi="embed">panic</tspan>‌ها را شکار کند</text>
-</svg>
+    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
+    classDef neuBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
+    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
+    classDef errBox fill:#fef2f2,stroke:#ef4444,stroke-width:1.5px,color:#1f2937;
+    class O1,O2,O3,O4 goBox;
+    class B1,B2,B3,A1,A2,A3 neuBox;
+    class SC1,SC2,SC5,REQ,RESP neuBox;
+    class SC3,SC4 errBox;
+    class SW1,SW2,C1,C2,C3,C4,C5,C6,C7 neuBox;
+    class GOLD warnBox;</pre>
 <figcaption>شکل ۷-۴-ج: مدل حلقه‌ای <bdi dir="ltr">Middleware</bdi> — لایه‌های تودرتو، ترتیب اجرای <bdi dir="ltr">before/after next()</bdi> و مسیر <bdi dir="ltr">Short-Circuit</bdi></figcaption>
 </figure>
 

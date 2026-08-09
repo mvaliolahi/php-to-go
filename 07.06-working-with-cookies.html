@@ -70,42 +70,33 @@
 <div class="chapter">فصل ۷.۶</div>
 <h2 id="کار-با-cookie-ها">کار با Cookie ها</h2>
 <figure class="diagram" dir="ltr">
-<svg height="300" viewBox="0 0 580 300" width="580" xmlns="http://www.w3.org/2000/svg">
-<defs>
-<marker id="arrow6" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#555" points="0 0, 10 3.5, 0 7"></polygon></marker>
-<filter height="104%" id="sh6" width="104%" x="-2%" y="-2%"><fedropshadow dx="1" dy="1" flood-opacity="0.15" stddeviation="2"></fedropshadow></filter>
-</defs>
-<rect fill="#fff" height="300" rx="8" width="580" x="0" y="0"></rect>
-<text fill="#333" font-size="16" font-weight="bold" text-anchor="middle" x="290" y="28" direction="rtl" unicode-bidi="embed">جریان کار با <tspan direction="ltr" unicode-bidi="embed">Cookie</tspan></text>
-<!-- Set Cookie -->
-<rect fill="#00ADD8" filter="url(#sh6)" height="40" rx="6" width="140" x="30" y="60"></rect>
-<text fill="#fff" font-size="11" text-anchor="middle" x="100" y="85" direction="ltr" unicode-bidi="embed">Server</text>
-<line marker-end="url(#arrow6)" stroke="#555" stroke-width="2" x1="170" x2="260" y1="80" y2="80"></line>
-<text fill="#00ADD8" font-size="9" text-anchor="middle" x="215" y="73" direction="ltr" unicode-bidi="embed">Set-Cookie</text>
-<rect fill="#777BB4" filter="url(#sh6)" height="40" rx="6" width="130" x="260" y="60"></rect>
-<text fill="#fff" font-size="11" text-anchor="middle" x="325" y="85" direction="ltr" unicode-bidi="embed">Browser</text>
-<!-- Read Cookie -->
-<line marker-end="url(#arrow6)" stroke="#555" stroke-width="2" x1="260" x2="170" y1="140" y2="140"></line>
-<text fill="#777BB4" font-size="9" text-anchor="middle" x="215" y="133" direction="ltr" unicode-bidi="embed">Cookie Header</text>
-<rect fill="#00ADD8" filter="url(#sh6)" height="40" rx="6" width="140" x="30" y="120"></rect>
-<text fill="#fff" font-size="11" text-anchor="middle" x="100" y="145" direction="ltr" unicode-bidi="embed">r.Cookie()</text>
-<rect fill="#777BB4" filter="url(#sh6)" height="40" rx="6" width="130" x="260" y="120"></rect>
-<text fill="#fff" font-size="11" text-anchor="middle" x="325" y="145" direction="ltr" unicode-bidi="embed">Cookie Store</text>
-<!-- Security flags -->
-<rect fill="#FCE4EC" height="170" rx="6" stroke="#e91e63" width="110" x="440" y="60"></rect>
-<text fill="#e91e63" font-size="11" font-weight="bold" text-anchor="middle" x="495" y="85" direction="rtl" unicode-bidi="embed">امنیت</text>
-<text fill="#666" font-size="10" text-anchor="middle" x="495" y="108" direction="ltr" unicode-bidi="embed">HttpOnly</text>
-<text fill="#666" font-size="10" text-anchor="middle" x="495" y="128" direction="ltr" unicode-bidi="embed">Secure</text>
-<text fill="#666" font-size="10" text-anchor="middle" x="495" y="148" direction="ltr" unicode-bidi="embed">SameSite</text>
-<text fill="#666" font-size="10" text-anchor="middle" x="495" y="168" direction="ltr" unicode-bidi="embed">MaxAge</text>
-<text fill="#666" font-size="10" text-anchor="middle" x="495" y="188" direction="ltr" unicode-bidi="embed">Path</text>
-<text fill="#666" font-size="10" text-anchor="middle" x="495" y="208" direction="ltr" unicode-bidi="embed">Domain</text>
-<line stroke="#e91e63" stroke-dasharray="4,4" stroke-width="1" x1="390" x2="440" y1="80" y2="80"></line>
-<!-- Code hint -->
-<rect fill="#E3F2FD" height="60" rx="6" stroke="#2196F3" width="260" x="100" y="210"></rect>
-<text fill="#1565C0" font-size="10" text-anchor="middle" x="230" y="232" direction="ltr" unicode-bidi="embed">http.SetCookie(w, &amp;http.Cookie{...})</text>
-<text fill="#1565C0" font-size="10" text-anchor="middle" x="230" y="250" direction="ltr" unicode-bidi="embed">cookie, err := r.Cookie("name")</text>
-</svg>
+<pre class="mermaid">flowchart LR
+    S["Server"] -->|"Set-Cookie"| B["Browser"]
+    B -->|"Cookie Header"| R["r.Cookie()"]
+    R --> CS["Cookie Store"]
+
+    subgraph SEC["امنیت"]
+        direction TB
+        SE1["HttpOnly"]
+        SE2["Secure"]
+        SE3["SameSite"]
+        SE4["MaxAge"]
+        SE5["Path"]
+        SE6["Domain"]
+    end
+
+    CODE1["http.SetCookie(w, &amp;http.Cookie&#123;...&#125;)"]
+    CODE2["cookie, err := r.Cookie(&quot;name&quot;)"]
+    S ~~~ CODE1
+    B ~~~ CODE2
+    S ~~~ SEC
+
+    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
+    classDef neuBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
+    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
+    class S,R,CS goBox;
+    class B neuBox;
+    class SE1,SE2,SE3,SE4,SE5,SE6,CODE1,CODE2 warnBox;</pre>
 <figcaption>شکل ۷-۶: جریان تنظیم و خواندن <bdi dir="ltr">Cookie</bdi> بین سرور و مرورگر</figcaption>
 </figure>
 <p>کوکی‌ها ابزار اصلی ذخیره داده کوتاه‌مدت در مرورگر کاربر هستند. در محیط حرفه‌ای باید نکات امنیتی کوکی مثل HttpOnly و Secure را رعایت کنید.</p>
@@ -216,80 +207,39 @@ func readSignedCookie(w http.ResponseWriter, r *http.Request) {
 <div class="important"><strong>مهم:</strong> کلیدهای امضا و رمزنگاری باید مخفی بمانند و هرگز در سورس کد عمومی قرار نگیرند. از متغیرهای محیطی یا سرویس‌های مدیریت راز (مثل <bdi dir="ltr">Vault</bdi>) برای ذخیره کلیدها استفاده کنید. اگر کلید افشا شود، مهاجم می‌تواند کوکی‌ها را جعل کند.</div>
 <h3 id="محافظت-csrf-با-کوکیها">محافظت CSRF با کوکی‌ها</h3>
 <figure class="diagram" dir="ltr">
-<svg height="360" viewBox="0 0 620 360" width="620" xmlns="http://www.w3.org/2000/svg">
-<defs><filter id="sh145" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
-<marker id="arrCsrf1" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#00ADD8" points="0 0, 10 3.5, 0 7"></polygon></marker>
-<marker id="arrCsrf2" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#4caf50" points="0 0, 10 3.5, 0 7"></polygon></marker>
-<marker id="arrCsrf3" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#e91e63" points="0 0, 10 3.5, 0 7"></polygon></marker>
-</defs>
-<rect fill="#fafafa" height="360" rx="12" stroke="#ddd" stroke-width="1" width="620" x="0" y="0"></rect>
-<text fill="#333" font-size="15" font-weight="bold" text-anchor="middle" x="310" y="28" direction="rtl" unicode-bidi="embed">جریان محافظت <tspan direction="ltr" unicode-bidi="embed">CSRF</tspan> با الگوی <tspan direction="ltr" unicode-bidi="embed">Double Submit Cookie</tspan></text>
+<pre class="mermaid">flowchart TB
+    subgraph S1["Step 1: GET /form"]
+        direction LR
+        B1["Browser"] -->|"GET /form"| SV1["Server"]
+        SV1 -->|"Set-Cookie + HTML"| B1B["Browser<br/>Cookie: csrf_token=abc<br/>+ Hidden field: abc"]
+    end
 
-<!-- Step 1: GET Request -->
-<rect fill="#e3f2fd" height="85" rx="6" stroke="#00ADD8" stroke-width="1.5" width="580" x="20" y="45"></rect>
-<text fill="#00ADD8" font-size="11" font-weight="bold" x="35" y="65" direction="ltr" unicode-bidi="embed">Step 1: GET /form</text>
+    subgraph S2["Step 2: POST /form (submit)"]
+        direction LR
+        B2["Browser<br/>Cookie: csrf_token=abc<br/>Header: X-CSRF-Token: abc"] -->|"POST"| SV2["Server"]
+        SV2 --> CMP["مقایسه: کوکی == هدر؟"]
+        CMP -->|"برابر"| OK["درخواست معتبر ✓"]
+    end
 
-<!-- Browser -->
-<rect fill="#777BB4" height="35" rx="6" stroke="#777BB4" stroke-width="1.5" width="100" x="40" y="75"></rect>
-<text fill="#fff" font-size="10" text-anchor="middle" x="90" y="97" direction="ltr" unicode-bidi="embed">Browser</text>
-<!-- Arrow -->
-<line marker-end="url(#arrCsrf1)" stroke="#00ADD8" stroke-width="2" x1="140" x2="230" y1="92" y2="92"></line>
-<text fill="#00ADD8" font-size="8" text-anchor="middle" x="185" y="85" direction="ltr" unicode-bidi="embed">GET /form</text>
-<!-- Server -->
-<rect fill="#00ADD8" height="35" rx="6" stroke="#00ADD8" stroke-width="1.5" width="100" x="230" y="75"></rect>
-<text fill="#fff" font-size="10" text-anchor="middle" x="280" y="97" direction="ltr" unicode-bidi="embed">Server</text>
-<!-- Response arrow -->
-<line marker-end="url(#arrCsrf1)" stroke="#00ADD8" stroke-width="2" x1="330" x2="420" y1="92" y2="92"></line>
-<text fill="#4caf50" font-size="7" text-anchor="middle" x="375" y="85" direction="ltr" unicode-bidi="embed">Set-Cookie + HTML</text>
-<!-- Cookie store -->
-<rect fill="#4caf50" height="35" rx="6" stroke="#4caf50" stroke-width="1.5" width="140" x="420" y="75"></rect>
-<text fill="#fff" font-size="8" text-anchor="middle" x="490" y="90" direction="ltr" unicode-bidi="embed">Cookie: csrf_token=abc</text>
-<text fill="#e8f5e9" font-size="7" text-anchor="middle" x="490" y="103" direction="ltr" unicode-bidi="embed">+ Hidden field: abc</text>
+    subgraph S3["Step 3: Attack — malicious site sends POST"]
+        direction LR
+        EV["Evil Site"] -->|"POST"| B3["Browser<br/>Cookie: csrf_token=abc<br/>NO X-CSRF-Token header!"]
+        B3 --> SV3["Server"]
+        SV3 --> REJ["هدر موجود نیست → رد شد ✗"]
+    end
 
-<!-- Step 2: POST Request -->
-<rect fill="#fff3e0" height="85" rx="6" stroke="#ff9800" stroke-width="1.5" width="580" x="20" y="145"></rect>
-<text fill="#ff9800" font-size="11" font-weight="bold" x="35" y="165" direction="ltr" unicode-bidi="embed">Step 2: POST /form (submit)</text>
+    NOTE(["نکته: کوکی CSRF نباید HttpOnly باشد — جاوااسکریپت باید بتواند آن را بخواند و در هدر ارسال کند"])
 
-<!-- Browser sends -->
-<rect fill="#777BB4" height="35" rx="6" stroke="#777BB4" stroke-width="1.5" width="100" x="40" y="175"></rect>
-<text fill="#fff" font-size="10" text-anchor="middle" x="90" y="197" direction="ltr" unicode-bidi="embed">Browser</text>
-<!-- Arrow with two tokens -->
-<line marker-end="url(#arrCsrf2)" stroke="#ff9800" stroke-width="2" x1="140" x2="260" y1="192" y2="192"></line>
-<!-- Labels on arrow -->
-<text fill="#4caf50" font-size="7" text-anchor="middle" x="200" y="182" direction="ltr" unicode-bidi="embed">Cookie: csrf_token=abc</text>
-<text fill="#e91e63" font-size="7" text-anchor="middle" x="200" y="205" direction="ltr" unicode-bidi="embed">Header: X-CSRF-Token: abc</text>
-<!-- Server validates -->
-<rect fill="#00ADD8" height="35" rx="6" stroke="#00ADD8" stroke-width="1.5" width="100" x="260" y="175"></rect>
-<text fill="#fff" font-size="10" text-anchor="middle" x="310" y="197" direction="ltr" unicode-bidi="embed">Server</text>
-
-<!-- Validation result -->
-<rect fill="#fff" height="35" rx="6" stroke="#ddd" stroke-width="1" width="220" x="380" y="175"></rect>
-<text fill="#333" font-size="9" text-anchor="middle" x="490" y="190" direction="rtl" unicode-bidi="embed">مقایسه: کوکی <tspan direction="ltr" unicode-bidi="embed">==</tspan> هدر؟</text>
-<text fill="#4caf50" font-size="9" text-anchor="middle" x="490" y="205" direction="rtl" unicode-bidi="embed">برابر → درخواست معتبر ✓</text>
-
-<!-- Step 3: Attack Blocked -->
-<rect fill="#fce4ec" height="85" rx="6" stroke="#e91e63" stroke-width="1.5" width="580" x="20" y="245"></rect>
-<text fill="#e91e63" font-size="11" font-weight="bold" x="35" y="265" direction="ltr" unicode-bidi="embed">Step 3: Attack — malicious site sends POST</text>
-
-<!-- Evil site -->
-<rect fill="#e91e63" height="35" rx="6" stroke="#e91e63" stroke-width="1.5" width="100" x="40" y="275"></rect>
-<text fill="#fff" font-size="10" text-anchor="middle" x="90" y="297" direction="ltr" unicode-bidi="embed">Evil Site</text>
-<!-- Arrow -->
-<line marker-end="url(#arrCsrf3)" stroke="#e91e63" stroke-width="2" x1="140" x2="260" y1="292" y2="292"></line>
-<text fill="#4caf50" font-size="7" text-anchor="middle" x="200" y="282" direction="ltr" unicode-bidi="embed">Cookie: csrf_token=abc</text>
-<text fill="#e91e63" font-size="7" text-anchor="middle" x="200" y="305" direction="ltr" unicode-bidi="embed">NO X-CSRF-Token header!</text>
-<!-- Server rejects -->
-<rect fill="#00ADD8" height="35" rx="6" stroke="#00ADD8" stroke-width="1.5" width="100" x="260" y="275"></rect>
-<text fill="#fff" font-size="10" text-anchor="middle" x="310" y="297" direction="ltr" unicode-bidi="embed">Server</text>
-<!-- Blocked -->
-<rect fill="#e91e63" height="35" rx="6" stroke="#e91e63" stroke-width="1.5" width="220" x="380" y="275"></rect>
-<text fill="#fff" font-size="9" text-anchor="middle" x="490" y="290" direction="rtl" unicode-bidi="embed">هدر موجود نیست → رد شد ✗</text>
-<text fill="#fce4ec" font-size="8" text-anchor="middle" x="490" y="303" direction="rtl" unicode-bidi="embed">مهاجم نمی‌تواند هدر را تنظیم کند</text>
-
-<!-- Footer note -->
-<rect fill="#fff9c4" height="22" rx="4" stroke="#f9a825" stroke-width="1" width="580" x="20" y="340"></rect>
-<text fill="#f57f17" font-size="9" text-anchor="middle" x="310" y="356" direction="rtl" unicode-bidi="embed">نکته: کوکی <tspan direction="ltr" unicode-bidi="embed">CSRF</tspan> نباید <tspan direction="ltr" unicode-bidi="embed">HttpOnly</tspan> باشد — جاوااسکریپت باید بتواند آن را بخواند و در هدر ارسال کند</text>
-</svg>
+    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
+    classDef neuBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
+    classDef bothBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
+    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
+    classDef errBox fill:#fef2f2,stroke:#ef4444,stroke-width:1.5px,color:#1f2937;
+    class SV1,SV2,SV3 goBox;
+    class B1,B1B,B2,B3,EV neuBox;
+    class CMP,OK bothBox;
+    class REJ errBox;
+    class NOTE warnBox;</pre>
 <figcaption dir="rtl">شکل ۷-۷: الگوی <bdi dir="ltr">Double Submit Cookie</bdi> برای محافظت <bdi dir="ltr">CSRF</bdi> — مقایسه توکن کوکی و هدر</figcaption>
 </figure>
 <p>حمله <bdi dir="ltr">CSRF</bdi> (<bdi dir="ltr">Cross-Site Request Forgery</bdi>) زمانی رخ می‌دهد که سایت مخرب، مرورگر کاربر را مجبور به ارسال درخواست به سایت شما می‌کند. کوکی‌ها نقش مهمی در این حمله دارند زیرا به صورت خودکار با هر درخوست ارسال می‌شوند. تنظیم <code dir="ltr">SameSite</code> روی <code dir="ltr">Lax</code> یا <code dir="ltr">Strict</code> اولین لایه دفاع است، اما برای حصول اطمینان کامل باید از توکن <bdi dir="ltr">CSRF</bdi> استفاده کنید. الگوی <bdi dir="ltr">Double Submit Cookie</bdi> ساده‌ترین روش پیاده‌سازی است:</p>
@@ -353,151 +303,78 @@ func csrfMiddleware(next http.Handler) http.Handler {
 <p>درک کامل چرخه حیات کوکی برای ساخت اپلیکیشن‌های وب امن ضروری است. کوکی‌ها در یک چرخه دو مرحله‌ای عمل می‌کنند: در درخواست اول سرور کوکی را با هدر <code dir="ltr">Set-Cookie</code> در پاسخ تنظیم می‌کند، و در درخواست‌های بعدی مرورگر کوکی را با هدر <code dir="ltr">Cookie</code> ارسال می‌نماید. هر مرحله از این چرخه دارای نکات امنیتی و فنی مهمی است. ساختار <code dir="ltr">http.Cookie</code> در <bdi dir="ltr">Go</bdi> فیلدهای متعددی دارد که هر کدام نقش مشخصی در امنیت و رفتار کوکی ایفا می‌کنند. در نمودار زیر چرخه کامل کوکی به همراه فیلدهای ساختار <code dir="ltr">http.Cookie</code> و ویژگی‌های امنیتی نمایش داده شده است:</p>
 
 <figure class="diagram" dir="ltr">
-<svg width="900" height="650" viewBox="0 0 900 650" xmlns="http://www.w3.org/2000/svg">
-<defs>
-<marker id="aCK1" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#00ADD8" points="0 0,10 3.5,0 7"></polygon></marker>
-<marker id="aCK2" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#FF9800" points="0 0,10 3.5,0 7"></polygon></marker>
-<marker id="aCK3" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#4CAF50" points="0 0,10 3.5,0 7"></polygon></marker>
-<filter height="104%" id="shCK" width="104%" x="-2%" y="-2%"><fedropshadow dx="1" dy="1" flood-opacity="0.12" stddeviation="2"></fedropshadow></filter>
-</defs>
-<rect fill="#fafafa" height="650" rx="10" width="900" x="0" y="0"></rect>
+<pre class="mermaid">flowchart TB
+    subgraph REQ1["درخواست ۱: تنظیم کوکی (اولین)"]
+        direction LR
+        A1["Browser<br/>(no cookie)"] -->|"GET /login"| A2["Server<br/>http.SetCookie()"]
+        A2 -->|"Set-Cookie:<br/>session=abc123;<br/>Secure; HttpOnly; SameSite=Lax"| A3["Browser<br/>stores cookie ✓"]
+    end
 
-<!-- Title -->
-<text fill="#333" font-size="16" font-weight="bold" text-anchor="middle" x="450" y="28" direction="rtl" unicode-bidi="embed">چرخه حیات کوکی: تنظیم و خواندن با ویژگی‌های امنیتی</text>
+    CODE1["http.SetCookie(w, &amp;http.Cookie&#123;Name: &quot;session&quot;, Value: &quot;abc123&quot;,<br/>Secure: true, HttpOnly: true, SameSite: http.SameSiteLaxMode&#125;)"]
 
-<!-- ====== REQUEST 1: Set Cookie ====== -->
-<rect fill="#E3F2FD" height="175" rx="8" stroke="#00ADD8" stroke-width="1.5" width="530" x="20" y="45"></rect>
-<text fill="#00ADD8" font-size="12" font-weight="bold" x="35" y="65" direction="rtl" unicode-bidi="embed">درخواست ۱: تنظیم کوکی (اولین)</text>
+    subgraph REQ2["درخواست ۲: خواندن کوکی (بعدی)"]
+        direction LR
+        B1["Browser<br/>Cookie: session=abc123"] -->|"GET /dashboard"| B2["Server<br/>r.Cookie(&quot;session&quot;)"]
+        B2 -->|"200 OK"| B3["Dashboard<br/>content shown ✓"]
+        B2 -.->|"(optionally update cookie)"| B1
+    end
 
-<!-- Browser sends request -->
-<rect fill="#FF9800" filter="url(#shCK)" height="40" rx="6" width="110" x="35" y="80"></rect>
-<text fill="#fff" font-size="11" font-weight="bold" text-anchor="middle" x="90" y="105" direction="ltr" unicode-bidi="embed">Browser</text>
-<text fill="#999" font-size="8" text-anchor="middle" x="90" y="138" direction="ltr" unicode-bidi="embed">(no cookie)</text>
+    CODE2["cookie, err := r.Cookie(&quot;session&quot;) → cookie.Value == &quot;abc123&quot; → process request"]
 
-<!-- Arrow: Request -->
-<line marker-end="url(#aCK1)" stroke="#00ADD8" stroke-width="2" x1="145" x2="230" y1="100" y2="100"></line>
-<text fill="#00ADD8" font-size="8" text-anchor="middle" x="188" y="93" direction="ltr" unicode-bidi="embed">GET /login</text>
+    subgraph FIELDS["http.Cookie Struct Fields"]
+        direction TB
+        subgraph FR["Required Fields"]
+            direction TB
+            FR1["Name string — Cookie name (required)"]
+            FR2["Value string — Cookie value (required)"]
+        end
+        subgraph FS["Scope Fields"]
+            direction TB
+            FS1["Path string — Scope path (default: /)"]
+            FS2["Domain string — Scope domain"]
+        end
+        subgraph FL["Lifetime Fields"]
+            direction TB
+            FL1["Expires time.Time — Absolute expiry"]
+            FL2["MaxAge int — Seconds (overrides Expires)"]
+        end
+        subgraph FSEC["Security Fields"]
+            direction TB
+            FSEC1["Secure bool — HTTPS only ✓"]
+            FSEC2["HttpOnly bool — No JS access ✓"]
+            FSEC3["SameSite SameSite — CSRF protection ✓"]
+            FSEC4["Partitioned bool — CHIPS (future)"]
+        end
+    end
 
-<!-- Server processes -->
-<rect fill="#00ADD8" filter="url(#shCK)" height="50" rx="6" width="120" x="230" y="80"></rect>
-<text fill="#fff" font-size="11" font-weight="bold" text-anchor="middle" x="290" y="100" direction="ltr" unicode-bidi="embed">Server</text>
-<text fill="#e0f7fa" font-size="8" text-anchor="middle" x="290" y="118" direction="ltr" unicode-bidi="embed">http.SetCookie()</text>
+    subgraph SAFE["ویژگی‌های امنیتی کوکی — مقایسه امن و ناامن"]
+        direction TB
+        subgraph GOOD["امن"]
+            direction TB
+            G1["Secure = true ✓ — فقط روی HTTPS ارسال می‌شود → Prevents MITM attacks"]
+            G2["HttpOnly = true ✓ — جاوااسکریپت دسترسی ندارد → Prevents XSS cookie theft"]
+            G3["SameSite = Lax/Strict ✓ — کنترل ارسال بین‌سایتی → Prevents CSRF attacks"]
+        end
+        subgraph BAD["ناامن: بدون Secure + HttpOnly + SameSite"]
+            direction TB
+            BA1["کوکی روی HTTP ارسال می‌شود + document.cookie قابل دسترسی است + درخواست‌های بین‌سایتی شامل کوکی می‌شوند"]
+            BA2["→ XSS + CSRF + MITM ✗"]
+        end
+    end
 
-<!-- Arrow: Response with Set-Cookie -->
-<line marker-end="url(#aCK3)" stroke="#4CAF50" stroke-width="2" x1="350" x2="440" y1="100" y2="100"></line>
-<text fill="#4CAF50" font-size="8" text-anchor="middle" x="395" y="93" direction="ltr" unicode-bidi="embed">Set-Cookie:</text>
-<text fill="#4CAF50" font-size="7" text-anchor="middle" x="395" y="120" direction="ltr" unicode-bidi="embed">session=abc123;</text>
-<text fill="#4CAF50" font-size="7" text-anchor="middle" x="395" y="132" direction="ltr" unicode-bidi="embed">Secure; HttpOnly; SameSite=Lax</text>
+    GOLD(["قانون طلایی: همیشه Secure=true + HttpOnly=true + SameSite=Lax/Strict برای کوکی‌های نشست — هرگز داده حساس را بدون رمزنگاری در کوکی ذخیره نکنید"])
 
-<!-- Browser stores cookie -->
-<rect fill="#FF9800" filter="url(#shCK)" height="50" rx="6" width="110" x="440" y="80"></rect>
-<text fill="#fff" font-size="10" font-weight="bold" text-anchor="middle" x="495" y="100" direction="ltr" unicode-bidi="embed">Browser</text>
-<text fill="#fff3e0" font-size="8" text-anchor="middle" x="495" y="118" direction="ltr" unicode-bidi="embed">stores cookie ✓</text>
-
-<!-- Info box for Request 1 -->
-<rect fill="#fff" height="30" rx="4" stroke="#00ADD8" stroke-width="1" width="510" x="30" y="150"></rect>
-<text fill="#00838F" font-size="9" text-anchor="middle" x="285" y="170" direction="ltr" unicode-bidi="embed">http.SetCookie(w, &amp;http.Cookie{Name: "session", Value: "abc123", Secure: true, HttpOnly: true, SameSite: http.SameSiteLaxMode})</text>
-
-<!-- ====== REQUEST 2: Read Cookie ====== -->
-<rect fill="#FFF3E0" height="175" rx="8" stroke="#FF9800" stroke-width="1.5" width="530" x="20" y="230"></rect>
-<text fill="#FF9800" font-size="12" font-weight="bold" x="35" y="250" direction="rtl" unicode-bidi="embed">درخواست ۲: خواندن کوکی (بعدی)</text>
-
-<!-- Browser sends cookie -->
-<rect fill="#FF9800" filter="url(#shCK)" height="40" rx="6" width="110" x="35" y="265"></rect>
-<text fill="#fff" font-size="11" font-weight="bold" text-anchor="middle" x="90" y="290" direction="ltr" unicode-bidi="embed">Browser</text>
-
-<!-- Arrow: Request with Cookie header -->
-<line marker-end="url(#aCK1)" stroke="#00ADD8" stroke-width="2" x1="145" x2="230" y1="285" y2="285"></line>
-<text fill="#FF9800" font-size="8" text-anchor="middle" x="188" y="278" direction="ltr" unicode-bidi="embed">GET /dashboard</text>
-<text fill="#FF9800" font-size="7" text-anchor="middle" x="188" y="305" direction="ltr" unicode-bidi="embed">Cookie: session=abc123</text>
-
-<!-- Server reads cookie -->
-<rect fill="#00ADD8" filter="url(#shCK)" height="50" rx="6" width="120" x="230" y="265"></rect>
-<text fill="#fff" font-size="11" font-weight="bold" text-anchor="middle" x="290" y="285" direction="ltr" unicode-bidi="embed">Server</text>
-<text fill="#e0f7fa" font-size="8" text-anchor="middle" x="290" y="303" direction="ltr" unicode-bidi="embed">r.Cookie("session")</text>
-
-<!-- Arrow: Response -->
-<line marker-end="url(#aCK3)" stroke="#4CAF50" stroke-width="2" x1="350" x2="440" y1="285" y2="285"></line>
-<text fill="#4CAF50" font-size="8" text-anchor="middle" x="395" y="278" direction="ltr" unicode-bidi="embed">200 OK</text>
-<text fill="#999" font-size="7" text-anchor="middle" x="395" y="305" direction="ltr" unicode-bidi="embed">(optionally update cookie)</text>
-
-<!-- Browser displays content -->
-<rect fill="#FF9800" filter="url(#shCK)" height="40" rx="6" width="110" x="440" y="265"></rect>
-<text fill="#fff" font-size="10" font-weight="bold" text-anchor="middle" x="495" y="285" direction="ltr" unicode-bidi="embed">Dashboard</text>
-<text fill="#fff3e0" font-size="8" text-anchor="middle" x="495" y="300" direction="ltr" unicode-bidi="embed">content shown ✓</text>
-
-<!-- Info box for Request 2 -->
-<rect fill="#fff" height="30" rx="4" stroke="#FF9800" stroke-width="1" width="510" x="30" y="335"></rect>
-<text fill="#E65100" font-size="9" text-anchor="middle" x="285" y="355" direction="ltr" unicode-bidi="embed">cookie, err := r.Cookie("session") → cookie.Value == "abc123" → process request</text>
-
-<!-- ====== http.Cookie Struct Fields ====== -->
-<rect fill="#333" height="26" rx="5" width="340" x="570" y="45"></rect>
-<text fill="#fff" font-size="12" font-weight="bold" text-anchor="middle" x="740" y="64" direction="ltr" unicode-bidi="embed">http.Cookie Struct Fields</text>
-
-<rect fill="#fff" height="360" rx="6" stroke="#555" stroke-width="1.5" width="340" x="570" y="75"></rect>
-
-<!-- Required fields -->
-<text fill="#00ADD8" font-size="10" font-weight="bold" x="585" y="95" direction="ltr" unicode-bidi="embed">Required Fields:</text>
-<rect fill="#E0F7FA" height="20" rx="3" width="310" x="585" y="102"></rect>
-<text fill="#00838F" font-size="9" x="595" y="117" direction="ltr" unicode-bidi="embed">Name  string    // Cookie name (required)</text>
-<rect fill="#E0F7FA" height="20" rx="3" width="310" x="585" y="125"></rect>
-<text fill="#00838F" font-size="9" x="595" y="140" direction="ltr" unicode-bidi="embed">Value string    // Cookie value (required)</text>
-
-<!-- Scope fields -->
-<text fill="#FF9800" font-size="10" font-weight="bold" x="585" y="162" direction="ltr" unicode-bidi="embed">Scope Fields:</text>
-<rect fill="#FFF3E0" height="20" rx="3" width="310" x="585" y="168"></rect>
-<text fill="#E65100" font-size="9" x="595" y="183" direction="ltr" unicode-bidi="embed">Path    string  // Scope path (default: /)</text>
-<rect fill="#FFF3E0" height="20" rx="3" width="310" x="585" y="191"></rect>
-<text fill="#E65100" font-size="9" x="595" y="206" direction="ltr" unicode-bidi="embed">Domain  string  // Scope domain</text>
-
-<!-- Lifetime fields -->
-<text fill="#9C27B0" font-size="10" font-weight="bold" x="585" y="228" direction="ltr" unicode-bidi="embed">Lifetime Fields:</text>
-<rect fill="#F3E5F5" height="20" rx="3" width="310" x="585" y="234"></rect>
-<text fill="#6A1B9A" font-size="9" x="595" y="249" direction="ltr" unicode-bidi="embed">Expires time.Time // Absolute expiry</text>
-<rect fill="#F3E5F5" height="20" rx="3" width="310" x="585" y="257"></rect>
-<text fill="#6A1B9A" font-size="9" x="595" y="272" direction="ltr" unicode-bidi="embed">MaxAge  int     // Seconds (overrides Expires)</text>
-
-<!-- Security fields -->
-<text fill="#4CAF50" font-size="10" font-weight="bold" x="585" y="294" direction="ltr" unicode-bidi="embed">Security Fields:</text>
-<rect fill="#E8F5E9" height="20" rx="3" width="310" x="585" y="300"></rect>
-<text fill="#2E7D32" font-size="9" x="595" y="315" direction="ltr" unicode-bidi="embed">Secure   bool     // HTTPS only ✓</text>
-<rect fill="#E8F5E9" height="20" rx="3" width="310" x="585" y="323"></rect>
-<text fill="#2E7D32" font-size="9" x="595" y="338" direction="ltr" unicode-bidi="embed">HttpOnly bool     // No JS access ✓</text>
-<rect fill="#E8F5E9" height="20" rx="3" width="310" x="585" y="346"></rect>
-<text fill="#2E7D32" font-size="9" x="595" y="361" direction="ltr" unicode-bidi="embed">SameSite SameSite // CSRF protection ✓</text>
-<rect fill="#E8F5E9" height="20" rx="3" width="310" x="585" y="369"></rect>
-<text fill="#2E7D32" font-size="9" x="595" y="384" direction="ltr" unicode-bidi="embed">Partitioned bool  // CHIPS (future)</text>
-
-<!-- ====== Security Attributes Visual ====== -->
-<rect fill="#4CAF50" height="26" rx="5" width="860" x="20" y="420"></rect>
-<text fill="#fff" font-size="12" font-weight="bold" text-anchor="middle" x="450" y="440" direction="rtl" unicode-bidi="embed">ویژگی‌های امنیتی کوکی — مقایسه امن و ناامن</text>
-
-<!-- Secure attribute -->
-<rect fill="#E8F5E9" height="70" rx="6" stroke="#4CAF50" stroke-width="1.5" width="270" x="20" y="455"></rect>
-<text fill="#2E7D32" font-size="11" font-weight="bold" text-anchor="middle" x="155" y="478" direction="ltr" unicode-bidi="embed">Secure = true ✓</text>
-<text fill="#666" font-size="9" text-anchor="middle" x="155" y="496" direction="rtl" unicode-bidi="embed">فقط روی <tspan direction="ltr" unicode-bidi="embed">HTTPS</tspan> ارسال می‌شود</text>
-<text fill="#4CAF50" font-size="8" text-anchor="middle" x="155" y="512" direction="ltr" unicode-bidi="embed">→ Prevents MITM attacks</text>
-
-<rect fill="#FCE4EC" height="70" rx="6" stroke="#e91e63" stroke-width="1.5" width="270" x="310" y="455"></rect>
-<text fill="#e91e63" font-size="11" font-weight="bold" text-anchor="middle" x="445" y="478" direction="ltr" unicode-bidi="embed">HttpOnly = true ✓</text>
-<text fill="#666" font-size="9" text-anchor="middle" x="445" y="496" direction="rtl" unicode-bidi="embed">جاوااسکریپت دسترسی ندارد</text>
-<text fill="#e91e63" font-size="8" text-anchor="middle" x="445" y="512" direction="ltr" unicode-bidi="embed">→ Prevents XSS cookie theft</text>
-
-<rect fill="#E3F2FD" height="70" rx="6" stroke="#2196F3" stroke-width="1.5" width="270" x="600" y="455"></rect>
-<text fill="#1565C0" font-size="11" font-weight="bold" text-anchor="middle" x="735" y="478" direction="ltr" unicode-bidi="embed">SameSite = Lax/Strict ✓</text>
-<text fill="#666" font-size="9" text-anchor="middle" x="735" y="496" direction="rtl" unicode-bidi="embed">کنترل ارسال بین‌سایتی</text>
-<text fill="#2196F3" font-size="8" text-anchor="middle" x="735" y="512" direction="ltr" unicode-bidi="embed">→ Prevents CSRF attacks</text>
-
-<!-- Insecure example -->
-<rect fill="#FFEBEE" height="55" rx="6" stroke="#e91e63" stroke-width="1.5" width="860" x="20" y="535"></rect>
-<text fill="#e91e63" font-size="11" font-weight="bold" x="35" y="558" direction="rtl" unicode-bidi="embed">ناامن: بدون <tspan direction="ltr" unicode-bidi="embed">Secure + HttpOnly + SameSite</tspan></text>
-<text fill="#666" font-size="9" x="35" y="578" direction="rtl" unicode-bidi="embed">کوکی روی <tspan direction="ltr" unicode-bidi="embed">HTTP</tspan> ارسال می‌شود + <tspan direction="ltr" unicode-bidi="embed">document.cookie</tspan> قابل دسترسی است + درخواست‌های بین‌سایتی شامل کوکی می‌شوند</text>
-<text fill="#e91e63" font-size="8" font-weight="bold" x="700" y="578" direction="ltr" unicode-bidi="embed">→ XSS + CSRF + MITM ✗</text>
-
-<!-- Golden Rule bar -->
-<rect fill="#fff9c4" height="30" rx="5" stroke="#f9a825" stroke-width="1.5" width="860" x="20" y="605"></rect>
-<text fill="#f57f17" font-size="11" font-weight="bold" text-anchor="middle" x="450" y="625" direction="rtl" unicode-bidi="embed">قانون طلایی: همیشه <tspan direction="ltr" unicode-bidi="embed">Secure=true + HttpOnly=true + SameSite=Lax/Strict</tspan> برای کوکی‌های نشست — هرگز داده حساس را بدون رمزنگاری در کوکی ذخیره نکنید</text>
-</svg>
+    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
+    classDef neuBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
+    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
+    classDef errBox fill:#fef2f2,stroke:#ef4444,stroke-width:1.5px,color:#1f2937;
+    classDef bothBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
+    class A2,B2 goBox;
+    class A1,A3,B1,B3,CODE1,CODE2 neuBox;
+    class FR1,FR2,FS1,FS2,FL1,FL2,FSEC1,FSEC2,FSEC3,FSEC4 neuBox;
+    class G1,G2,G3 bothBox;
+    class BA1,BA2 errBox;
+    class GOLD warnBox;</pre>
 <figcaption dir="rtl">شکل ۷-۶-ب: چرخه حیات کوکی — تنظیم و خواندن با ساختار <bdi dir="ltr">http.Cookie</bdi> و ویژگی‌های امنیتی</figcaption>
 </figure>
 

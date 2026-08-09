@@ -70,67 +70,54 @@
 <div class="chapter">فصل ۷.۹</div>
 <h2 id="ساختار-پیشنهادی-برای-قالبها">ساختار پیشنهادی برای قالب‌ها</h2>
 <figure class="diagram" dir="ltr">
-<svg height="300" viewBox="0 0 500 300" width="500" xmlns="http://www.w3.org/2000/svg">
-<defs>
-<filter height="104%" id="sh9" width="104%" x="-2%" y="-2%"><fedropshadow dx="1" dy="1" flood-opacity="0.15" stddeviation="2"></fedropshadow></filter>
-</defs>
-<rect fill="#fff" height="300" rx="8" width="500" x="0" y="0"></rect>
-<text fill="#333" font-size="16" font-weight="bold" text-anchor="middle" x="250" y="28" direction="rtl" unicode-bidi="embed">ساختار پیشنهادی قالب‌ها</text>
-<!-- Project tree -->
-<rect fill="#E3F2FD" height="230" rx="6" stroke="#2196F3" width="200" x="40" y="50"></rect>
-<text fill="#1565C0" font-size="12" font-weight="bold" text-anchor="middle" x="140" y="75" direction="ltr" unicode-bidi="embed">templates/</text>
-<rect fill="#00ADD8" filter="url(#sh9)" height="30" rx="4" width="160" x="60" y="90"></rect>
-<text fill="#fff" font-size="10" text-anchor="middle" x="140" y="110" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">layout.html</tspan> (اسکلت)</text>
-<rect fill="#4CAF50" filter="url(#sh9)" height="30" rx="4" width="160" x="60" y="130"></rect>
-<text fill="#fff" font-size="10" text-anchor="middle" x="140" y="150" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">home.html</tspan> (محتوا)</text>
-<rect fill="#FF9800" filter="url(#sh9)" height="30" rx="4" width="160" x="60" y="170"></rect>
-<text fill="#fff" font-size="10" text-anchor="middle" x="140" y="190" direction="ltr" unicode-bidi="embed">header.html (partial)</text>
-<rect fill="#FF9800" filter="url(#sh9)" height="30" rx="4" width="160" x="60" y="210"></rect>
-<text fill="#fff" font-size="10" text-anchor="middle" x="140" y="230" direction="ltr" unicode-bidi="embed">footer.html (partial)</text>
-<rect fill="#9C27B0" filter="url(#sh9)" height="30" rx="4" width="160" x="60" y="250"></rect>
-<text fill="#fff" font-size="10" text-anchor="middle" x="140" y="270" direction="ltr" unicode-bidi="embed">pages/*.html</text>
-<!-- Rendering flow -->
-<rect fill="#00ADD8" filter="url(#sh9)" height="35" rx="4" width="170" x="290" y="90"></rect>
-<text fill="#fff" font-size="10" text-anchor="middle" x="375" y="112" direction="ltr" unicode-bidi="embed">layout.html</text>
-<rect fill="#FF9800" filter="url(#sh9)" height="35" rx="4" width="80" x="290" y="145"></rect>
-<text fill="#fff" font-size="9" text-anchor="middle" x="330" y="167" direction="ltr" unicode-bidi="embed">header</text>
-<rect fill="#4CAF50" filter="url(#sh9)" height="35" rx="4" width="80" x="380" y="145"></rect>
-<text fill="#fff" font-size="9" text-anchor="middle" x="420" y="167" direction="ltr" unicode-bidi="embed">content</text>
-<rect fill="#FF9800" filter="url(#sh9)" height="35" rx="4" width="80" x="290" y="200"></rect>
-<text fill="#fff" font-size="9" text-anchor="middle" x="330" y="222" direction="ltr" unicode-bidi="embed">footer</text>
-<text fill="#666" font-size="11" text-anchor="middle" x="375" y="260" direction="ltr" unicode-bidi="embed">ExecuteTemplate()</text>
-</svg>
+<pre class="mermaid">flowchart TB
+    subgraph TREE["templates/"]
+        direction TB
+        T1["layout.html (اسکلت)"]
+        T2["home.html (محتوا)"]
+        T3["header.html (partial)"]
+        T4["footer.html (partial)"]
+    end
+
+    subgraph PAGE["pages/*.html → layout.html"]
+        direction TB
+        L1["layout.html"]
+        L2["header"]
+        L3["content"]
+        L4["footer"]
+        L1 --> L2
+        L1 --> L3
+        L1 --> L4
+    end
+
+    PAGE --> EX["ExecuteTemplate()"]
+    TREE --> EX
+
+    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
+    classDef neuBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
+    class T1,T2,T3,T4,L1,L2,L3,L4,EX goBox;</pre>
 <figcaption dir="rtl">شکل ۷-۹: ساختار پیشنهادی پوشه قالب‌ها و نحوه رندر شدن آن‌ها</figcaption>
 </figure>
 <figure class="diagram" dir="ltr">
-<svg height="225" viewBox="0 0 380 225" width="380" xmlns="http://www.w3.org/2000/svg"><defs><filter id="sh147" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter></defs>
-<rect fill="#fafafa" height="225" rx="8" stroke="#e0e0e0" stroke-width="1.5" width="380" x="0" y="0"></rect>
-<!-- Tree connector lines -->
-<g fill="none" stroke="#ccc" stroke-linecap="round" stroke-width="1.5">
-<!-- Level 0 vertical line -->
-<line x1="32" x2="32" y1="54" y2="82"></line>
-<!-- Level 0 horizontal connectors -->
-<line x1="32" x2="46" y1="54" y2="54"></line>
-<line x1="32" x2="46" y1="82" y2="82"></line>
-<!-- Level 1 vertical line (under templates/) -->
-<line x1="54" x2="54" y1="90" y2="194"></line>
-<!-- Level 1 horizontal connectors -->
-<line x1="54" x2="68" y1="110" y2="110"></line>
-<line x1="54" x2="68" y1="138" y2="138"></line>
-<line x1="54" x2="68" y1="166" y2="166"></line>
-<line x1="54" x2="68" y1="194" y2="194"></line>
-</g>
-<!-- Root -->
-<text fill="#00ADD8" font-family="monospace" font-size="13" font-weight="bold" x="16" y="30" direction="ltr" unicode-bidi="embed">project/</text>
-<!-- Level 0 items -->
-<text fill="#555" font-family="monospace" font-size="13" x="50" y="58" direction="ltr" unicode-bidi="embed">main.go</text>
-<text fill="#00ADD8" font-family="monospace" font-size="13" font-weight="bold" x="50" y="86" direction="ltr" unicode-bidi="embed">templates/</text>
-<!-- Level 1 items (under templates/) -->
-<text fill="#555" font-family="monospace" font-size="12" x="72" y="114" direction="ltr" unicode-bidi="embed">layout.html</text>
-<text fill="#555" font-family="monospace" font-size="12" x="72" y="142" direction="ltr" unicode-bidi="embed">home.html</text>
-<text fill="#555" font-family="monospace" font-size="12" x="72" y="170" direction="ltr" unicode-bidi="embed">header.html</text>
-<text fill="#555" font-family="monospace" font-size="12" x="72" y="198" direction="ltr" unicode-bidi="embed">footer.html</text>
-</svg>
+<pre class="mermaid">flowchart TB
+    subgraph TREE["project/"]
+        direction TB
+        F1["main.go"]
+        F2["templates/"]
+        F2A["layout.html"]
+        F2B["home.html"]
+        F2C["header.html"]
+        F2D["footer.html"]
+        F2 --> F2A
+        F2 --> F2B
+        F2 --> F2C
+        F2 --> F2D
+    end
+
+    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
+    classDef neuBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
+    class F1 goBox;
+    class F2,F2A,F2B,F2C,F2D neuBox;</pre>
 <figcaption dir="rtl">ساختار پروژه با پوشه قالب‌ها</figcaption>
 </figure>
 <p>در این ساختار فایل layout.html نقش اسکلت اصلی صفحه را دارد و فایل‌های دیگر مانند home.html بخش محتوای متغیر را تعریف می‌کنند.</p>
@@ -226,41 +213,26 @@ err = tmpl.ExecuteTemplate(w, "base.layout.html", data)
 </code></pre>
 </figure>
 <figure class="diagram" dir="ltr">
-<svg height="320" viewBox="0 0 600 320" width="600" xmlns="http://www.w3.org/2000/svg">
-<defs>
-<marker id="arrow9b" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#555" points="0 0, 10 3.5, 0 7"></polygon></marker>
-<filter height="104%" id="sh9b" width="104%" x="-2%" y="-2%"><fedropshadow dx="1" dy="1" flood-opacity="0.15" stddeviation="2"></fedropshadow></filter>
-</defs>
-<rect fill="#fafafa" height="320" rx="8" width="600" x="0" y="0"></rect>
-<text fill="#333" font-size="16" font-weight="bold" text-anchor="middle" x="300" y="28" direction="rtl" unicode-bidi="embed">وراثت قالب و <tspan direction="ltr" unicode-bidi="embed">Partials</tspan></text>
-<!-- Base layout -->
-<rect fill="#00ADD8" filter="url(#sh9b)" height="50" rx="6" width="200" x="200" y="50"></rect>
-<text fill="#fff" font-size="12" text-anchor="middle" x="300" y="72" direction="ltr" unicode-bidi="embed">base.layout.html</text>
-<text fill="#e0f7fa" font-size="9" text-anchor="middle" x="300" y="90" direction="ltr" unicode-bidi="embed">{{ block "title" }} {{ block "content" }}</text>
-<!-- Partials -->
-<rect fill="#4CAF50" filter="url(#sh9b)" height="35" rx="4" width="150" x="30" y="140"></rect>
-<text fill="#fff" font-size="10" text-anchor="middle" x="105" y="162" direction="ltr" unicode-bidi="embed">partial.header.html</text>
-<line marker-end="url(#arrow9b)" stroke="#4CAF50" stroke-width="1.5" x1="250" x2="180" y1="100" y2="140"></line>
-<rect fill="#4CAF50" filter="url(#sh9b)" height="35" rx="4" width="150" x="220" y="140"></rect>
-<text fill="#fff" font-size="10" text-anchor="middle" x="295" y="162" direction="ltr" unicode-bidi="embed">partial.footer.html</text>
-<line marker-end="url(#arrow9b)" stroke="#4CAF50" stroke-width="1.5" x1="300" x2="295" y1="100" y2="140"></line>
-<rect fill="#4CAF50" filter="url(#sh9b)" height="35" rx="4" width="150" x="410" y="140"></rect>
-<text fill="#fff" font-size="10" text-anchor="middle" x="485" y="162" direction="ltr" unicode-bidi="embed">partial.pagination.html</text>
-<!-- Pages -->
-<rect fill="#FF9800" filter="url(#sh9b)" height="35" rx="4" width="100" x="60" y="220"></rect>
-<text fill="#fff" font-size="10" text-anchor="middle" x="110" y="242" direction="ltr" unicode-bidi="embed">home.html</text>
-<rect fill="#FF9800" filter="url(#sh9b)" height="35" rx="4" width="100" x="180" y="220"></rect>
-<text fill="#fff" font-size="10" text-anchor="middle" x="230" y="242" direction="ltr" unicode-bidi="embed">about.html</text>
-<rect fill="#FF9800" filter="url(#sh9b)" height="35" rx="4" width="100" x="300" y="220"></rect>
-<text fill="#fff" font-size="10" text-anchor="middle" x="350" y="242" direction="ltr" unicode-bidi="embed">contact.html</text>
-<rect fill="#FF9800" filter="url(#sh9b)" height="35" rx="4" width="100" x="420" y="220"></rect>
-<text fill="#fff" font-size="10" text-anchor="middle" x="470" y="242" direction="ltr" unicode-bidi="embed">login.html</text>
-<line marker-end="url(#arrow9b)" stroke="#FF9800" stroke-width="1.5" x1="300" x2="110" y1="100" y2="220"></line>
-<line marker-end="url(#arrow9b)" stroke="#FF9800" stroke-width="1.5" x1="300" x2="230" y1="100" y2="220"></line>
-<line marker-end="url(#arrow9b)" stroke="#FF9800" stroke-width="1.5" x1="300" x2="350" y1="100" y2="220"></line>
-<line marker-end="url(#arrow9b)" stroke="#FF9800" stroke-width="1.5" x1="300" x2="470" y1="100" y2="220"></line>
-<text fill="#666" font-size="11" text-anchor="middle" x="300" y="290" direction="rtl" unicode-bidi="embed">صفحات بلوک‌ها را بازنویسی می‌کنند · <tspan direction="ltr" unicode-bidi="embed">Partials</tspan> محتوای ثابت دارند</text>
-</svg>
+<pre class="mermaid">flowchart TB
+    BASE["base.layout.html<br/>&#123;&#123; block &quot;title&quot; &#125;&#125; &#123;&#123; block &quot;content&quot; &#125;&#125;"]
+    BASE --> P1["home.html"]
+    BASE --> P2["about.html"]
+    BASE --> P3["contact.html"]
+    BASE --> P4["login.html"]
+
+    BASE --> PH1["partial.header.html"]
+    BASE --> PH2["partial.footer.html"]
+    BASE --> PH3["partial.pagination.html"]
+
+    NOTE1(["صفحات بلوک‌ها را بازنویسی می‌کنند · Partials محتوای ثابت دارند"])
+    BASE ~~~ NOTE1
+
+    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
+    classDef neuBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
+    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
+    class BASE goBox;
+    class P1,P2,P3,P4,PH1,PH2,PH3 neuBox;
+    class NOTE1 warnBox;</pre>
 <figcaption dir="rtl">شکل ۷-۹-ب: وراثت قالب و قالب‌های جزئی</figcaption>
 </figure>
 
@@ -268,52 +240,41 @@ err = tmpl.ExecuteTemplate(w, "base.layout.html", data)
 <p>سیستم قالب‌بندی <bdi dir="ltr">Go</bdi> بر اساس ترکیب قالب‌ها کار می‌کند، نه وراثت کلاسیک مثل <bdi dir="ltr">Laravel Blade</bdi>. قالب پایه (<code dir="ltr">base.html</code>) بلوک‌هایی با محتوای پیش‌فرض تعریف می‌کند و قالب‌های محتوا (<code dir="ltr">home.html</code> و <code dir="ltr">about.html</code>) آن‌ها را بازنویسی می‌کنند. کلید درک این سیستم، فهمیدن نحوه‌ی ترکیب <code dir="ltr">{{ define }}</code> و <code dir="ltr">{{ block }}</code> و <code dir="ltr">{{ template }}</code> است. قالب پایه با <code dir="ltr">{{ block "content" . }}...{{ end }}</code> یک بلوک با پیش‌فرض تعریف می‌کند و قالب محتوا با <code dir="ltr">{{ define "content" . }}...{{ end }}</code> آن را جایگزین می‌کند. رندر نهایی همیشه با <code dir="ltr">ExecuteTemplate(w, "base.html", data)</code> انجام می‌شود، نه با نام قالب محتوا.</p>
 
 <figure class="diagram" dir="ltr">
-<svg height="420" viewBox="0 0 480 420" width="480" xmlns="http://www.w3.org/2000/svg">
-<rect fill="#fafafa" height="420" rx="8" width="480" x="0" y="0"></rect>
-<defs><filter id="sh148" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter><marker id="arrTmpl" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#00ADD8" points="0 0, 10 3.5, 0 7"></polygon></marker></defs>
-<text fill="#00ADD8" font-size="14" font-weight="bold" text-anchor="middle" x="240" y="25" direction="rtl" unicode-bidi="embed">وراثت قالب و ترکیب <tspan direction="ltr" unicode-bidi="embed">Layout</tspan> در <tspan direction="ltr" unicode-bidi="embed">Go</tspan></text>
+<pre class="mermaid">flowchart TB
+    subgraph GO["وراثت قالب و ترکیب Layout در Go"]
+        direction TB
+        G_BASE["base.html<br/>&#123;&#123; template &quot;header&quot; . &#125;&#125;<br/>&#123;&#123; block &quot;content&quot; . &#125;&#125;&#123;&#123; end &#125;&#125;<br/>&#123;&#123; template &quot;footer&quot; . &#125;&#125;"]
+        G_HOME["home.html<br/>&#123;&#123; define &quot;content&quot; . &#125;&#125;<br/>صفحه اصلی..."]
+        G_ABOUT["about.html<br/>&#123;&#123; define &quot;content&quot; . &#125;&#125;<br/>درباره ما..."]
+        G_BASE --> G_HOME
+        G_BASE --> G_ABOUT
+    end
 
-<!-- base.html layout -->
-<rect fill="#e0f7fa" height="70" rx="7" stroke="#00ADD8" stroke-width="2" width="200" x="140" y="45"></rect>
-<text fill="#00ADD8" font-size="12" font-weight="bold" text-anchor="middle" x="240" y="66" direction="ltr" unicode-bidi="embed">base.html</text>
-<text fill="#555" font-size="9" text-anchor="middle" x="240" y="82" direction="ltr" unicode-bidi="embed">{{ template "header" . }}</text>
-<text fill="#555" font-size="9" text-anchor="middle" x="240" y="95" direction="ltr" unicode-bidi="embed">{{ block "content" . }}{{ end }}</text>
-<text fill="#555" font-size="9" text-anchor="middle" x="240" y="108" direction="ltr" unicode-bidi="embed">{{ template "footer" . }}</text>
+    subgraph FLOW["Rendering Flow"]
+        direction TB
+        F1["template.Must(template.ParseGlob(&quot;templates/*.html&quot;))"]
+        F2["→ tmpl.ExecuteTemplate(w, &quot;base.html&quot;, data)"]
+        F1 --> F2
+    end
 
-<!-- Arrow to home.html -->
-<line marker-end="url(#arrTmpl)" stroke="#4CAF50" stroke-width="1.5" x1="190" x2="120" y1="115" y2="155"></line>
-<!-- Arrow to about.html -->
-<line marker-end="url(#arrTmpl)" stroke="#4CAF50" stroke-width="1.5" x1="290" x2="360" y1="115" y2="155"></line>
+    NOTE1(["همیشه نام قالب پایه را به ExecuteTemplate بدهید!"])
 
-<!-- home.html -->
-<rect fill="#e8f5e9" height="55" rx="7" stroke="#4CAF50" stroke-width="1.5" width="160" x="30" y="155"></rect>
-<text fill="#2e7d32" font-size="11" font-weight="bold" text-anchor="middle" x="110" y="176" direction="ltr" unicode-bidi="embed">home.html</text>
-<text fill="#555" font-size="9" text-anchor="middle" x="110" y="192" direction="ltr" unicode-bidi="embed">{{ define "content" . }}</text>
-<text fill="#555" font-size="9" text-anchor="middle" x="110" y="204" direction="ltr" unicode-bidi="embed">  صفحه اصلی...</text>
+    subgraph CMP["PHP Blade vs Go Templates"]
+        direction TB
+        C1["Blade: @extends('layout') @section('content') ... @endsection"]
+        C2["Go: &#123;&#123; define &quot;content&quot; &#125;&#125; ... &#123;&#123; end &#125;&#125; + ExecuteTemplate(&quot;base&quot;)"]
+    end
 
-<!-- about.html -->
-<rect fill="#e8f5e9" height="55" rx="7" stroke="#4CAF50" stroke-width="1.5" width="160" x="290" y="155"></rect>
-<text fill="#2e7d32" font-size="11" font-weight="bold" text-anchor="middle" x="370" y="176" direction="ltr" unicode-bidi="embed">about.html</text>
-<text fill="#555" font-size="9" text-anchor="middle" x="370" y="192" direction="ltr" unicode-bidi="embed">{{ define "content" . }}</text>
-<text fill="#555" font-size="9" text-anchor="middle" x="370" y="204" direction="ltr" unicode-bidi="embed">  درباره ما...</text>
+    GOLD(["قاعده‌ی طلایی: همیشه ExecuteTemplate را با نام قالب پایه فراخوانی کنید، نه با نام قالب محتوا"])
 
-<!-- Rendering flow box -->
-<rect fill="#fff3e0" height="80" rx="6" stroke="#FF9800" stroke-width="1.5" width="440" x="20" y="240"></rect>
-<text fill="#e65100" font-size="12" font-weight="bold" text-anchor="middle" x="240" y="262" direction="ltr" unicode-bidi="embed">Rendering Flow</text>
-<text fill="#555" font-size="10" text-anchor="middle" x="240" y="280" direction="ltr" unicode-bidi="embed">template.Must(template.ParseGlob("templates/*.html"))</text>
-<text fill="#555" font-size="10" text-anchor="middle" x="240" y="298" direction="ltr" unicode-bidi="embed">→ tmpl.ExecuteTemplate(w, "base.html", data)</text>
-<text fill="#555" font-size="10" text-anchor="middle" x="240" y="314" direction="rtl" unicode-bidi="embed">همیشه نام قالب پایه را به <tspan direction="ltr" unicode-bidi="embed">ExecuteTemplate</tspan> بدهید!</text>
-
-<!-- PHP comparison box -->
-<rect fill="#f3e5f5" height="70" rx="6" stroke="#9C27B0" stroke-width="1" width="440" x="20" y="335"></rect>
-<text fill="#7B1FA2" font-size="11" font-weight="bold" text-anchor="middle" x="240" y="355" direction="ltr" unicode-bidi="embed">PHP Blade vs Go Templates</text>
-<text fill="#555" font-size="9" text-anchor="middle" x="240" y="373" direction="ltr" unicode-bidi="embed">Blade: @extends('layout') @section('content') ... @endsection</text>
-<text fill="#555" font-size="9" text-anchor="middle" x="240" y="390" direction="ltr" unicode-bidi="embed">Go: {{ define "content" }} ... {{ end }} + ExecuteTemplate("base")</text>
-
-<!-- Golden Rule bar -->
-<rect fill="#FF9800" height="22" rx="4" width="440" x="20" y="395"></rect>
-<text fill="#fff" font-size="9" font-weight="bold" text-anchor="middle" x="240" y="411" direction="rtl" unicode-bidi="embed">قاعده‌ی طلایی: همیشه <tspan direction="ltr" unicode-bidi="embed">ExecuteTemplate</tspan> را با نام قالب پایه فراخوانی کنید، نه با نام قالب محتوا</text>
-</svg>
+    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
+    classDef phpBox fill:#f5f0fb,stroke:#777BB4,stroke-width:1.5px,color:#1f2937;
+    classDef neuBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
+    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
+    class G_BASE,G_HOME,G_ABOUT,F1,F2 goBox;
+    class C1 phpBox;
+    class C2 goBox;
+    class NOTE1,GOLD warnBox;</pre>
 <figcaption>وراثت قالب و ترکیب <bdi dir="ltr">Layout</bdi>: مقایسه‌ی <bdi dir="ltr">Go</bdi> و <bdi dir="ltr">PHP Blade</bdi></figcaption>
 </figure>
 

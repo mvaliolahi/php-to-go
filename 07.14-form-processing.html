@@ -71,92 +71,43 @@
 <div class="comparison"><strong>مقایسه با PHP:</strong> در Laravel پردازش فرم‌ها با متد <code dir="ltr">$request-&gt;validate()</code> بسیار ساده است. در Go این کار به صورت دستی انجام می‌شود، اما این رویکرد کنترل بیشتری و شفافیت بالاتری نسبت به «جادوی» فریم‌ورک ارائه می‌دهد.</div>
 <h2 id="پردازش-فرمها">پردازش فرم‌ها</h2>
 <figure class="diagram" dir="ltr">
-<svg height="360" viewBox="0 0 620 360" width="620" xmlns="http://www.w3.org/2000/svg">
-<defs>
-<marker id="arrow14" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#555" points="0 0, 10 3.5, 0 7"></polygon></marker>
-<filter height="104%" id="sh14" width="104%" x="-2%" y="-2%"><fedropshadow dx="1" dy="1" flood-opacity="0.15" stddeviation="2"></fedropshadow></filter>
-</defs>
-<rect fill="#fff" height="360" rx="8" width="620" x="0" y="0"></rect>
-<text fill="#333" font-size="16" font-weight="bold" text-anchor="middle" x="310" y="28" direction="rtl" unicode-bidi="embed">جریان پردازش فرم در <tspan direction="ltr" unicode-bidi="embed">Go</tspan></text>
-<!-- Step 1: Form Submit -->
-<rect fill="#777BB4" filter="url(#sh14)" height="50" rx="6" width="120" x="30" y="60"></rect>
-<text fill="#fff" font-size="11" text-anchor="middle" x="90" y="82" direction="rtl" unicode-bidi="embed">ارسال فرم</text>
-<text fill="#e8eaf6" font-size="9" text-anchor="middle" x="90" y="98" direction="ltr" unicode-bidi="embed">&lt;form POST&gt;</text>
-<line marker-end="url(#arrow14)" stroke="#555" stroke-width="2" x1="150" x2="190" y1="85" y2="85"></line>
-<!-- Step 2: ParseForm -->
-<rect fill="#00ADD8" filter="url(#sh14)" height="60" rx="6" width="120" x="190" y="55"></rect>
-<text fill="#fff" font-size="11" text-anchor="middle" x="250" y="80" direction="ltr" unicode-bidi="embed">ParseForm()</text>
-<text fill="#e0f7fa" font-size="9" text-anchor="middle" x="250" y="100" direction="ltr" unicode-bidi="embed">r.Form / r.PostForm</text>
-<line marker-end="url(#arrow14)" stroke="#555" stroke-width="2" x1="310" x2="350" y1="85" y2="85"></line>
-<!-- Step 3: Validate -->
-<rect fill="#FF9800" filter="url(#sh14)" height="60" rx="6" width="120" x="350" y="55"></rect>
-<text fill="#fff" font-size="11" text-anchor="middle" x="410" y="80" direction="rtl" unicode-bidi="embed">اعتبارسنجی</text>
-<text fill="#fff3e0" font-size="9" text-anchor="middle" x="410" y="100" direction="ltr" unicode-bidi="embed">Validator struct</text>
-<!-- Validation fail branch -->
-<line marker-end="url(#arrow14)" stroke="#e91e63" stroke-width="2" x1="410" x2="410" y1="115" y2="160"></line>
-<rect fill="#e91e63" filter="url(#sh14)" height="50" rx="6" width="140" x="340" y="160"></rect>
-<text fill="#fff" font-size="11" text-anchor="middle" x="410" y="182" direction="rtl" unicode-bidi="embed">نمایش خطاها</text>
-<text fill="#fce4ec" font-size="9" text-anchor="middle" x="410" y="198" direction="rtl" unicode-bidi="embed">+ پر کردن مجدد فیلدها</text>
-<!-- Validation success branch -->
-<line marker-end="url(#arrow14)" stroke="#4CAF50" stroke-width="2" x1="470" x2="510" y1="85" y2="85"></line>
-<rect fill="#4CAF50" filter="url(#sh14)" height="50" rx="6" width="100" x="510" y="60"></rect>
-<text fill="#fff" font-size="11" text-anchor="middle" x="560" y="82" direction="rtl" unicode-bidi="embed">پردازش</text>
-<text fill="#e8f5e9" font-size="9" text-anchor="middle" x="560" y="98" direction="rtl" unicode-bidi="embed">ذخیره در <tspan direction="ltr" unicode-bidi="embed">DB</tspan></text>
-<line marker-end="url(#arrow14)" stroke="#555" stroke-width="2" x1="560" x2="560" y1="110" y2="160"></line>
-<!-- Redirect -->
-<rect fill="#9C27B0" filter="url(#sh14)" height="45" rx="6" width="120" x="490" y="160"></rect>
-<text fill="#fff" font-size="11" text-anchor="middle" x="550" y="180" direction="ltr" unicode-bidi="embed">Redirect</text>
-<text fill="#e1bee7" font-size="9" text-anchor="middle" x="550" y="196" direction="ltr" unicode-bidi="embed">+ Flash Message</text>
-<!-- Labels -->
-<text fill="#e91e63" font-size="10" text-anchor="middle" x="430" y="140" direction="rtl" unicode-bidi="embed">نامعتبر</text>
-<text fill="#4CAF50" font-size="10" text-anchor="middle" x="500" y="75" direction="rtl" unicode-bidi="embed">معتبر</text>
-</svg>
+<pre class="mermaid">flowchart TB
+    F["ارسال فرم<br/>&lt;form POST&gt;"] --> PF["ParseForm()<br/>r.Form / r.PostForm"]
+    PF --> V["اعتبارسنجی<br/>Validator struct"]
+    V -->|"معتبر"| PROC["پردازش<br/>ذخیره در DB"]
+    PROC --> R["Redirect<br/>+ Flash Message"]
+    V -->|"نامعتبر"| ERR["نمایش خطاها<br/>+ پر کردن مجدد فیلدها"]
+
+    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
+    classDef neuBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
+    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
+    classDef errBox fill:#fef2f2,stroke:#ef4444,stroke-width:1.5px,color:#1f2937;
+    classDef bothBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
+    class F,PF,V,PROC,R goBox;
+    class ERR errBox;</pre>
 <figcaption dir="rtl">شکل ۷-۱۴: جریان پردازش فرم — از ارسال تا اعتبارسنجی و نمایش خطا</figcaption>
 </figure>
 <h3 id="تنظیم-فرم-html">تنظیم فرم HTML</h3>
 <p>در Go برخلاف Laravel، هیچ helper خودکاری برای تولید فرم وجود ندارد. فرم‌ها به صورت دستی در HTML نوشته می‌شوند:</p>
 
 <figure class="diagram" dir="ltr">
-<svg width="700" height="220" viewBox="0 0 700 220" xmlns="http://www.w3.org/2000/svg">
-<rect fill="#fafafa" height="220" rx="8" width="700" x="0" y="0"></rect>
-<defs><filter id="sh153" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
-<marker id="aFv1" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#777BB4" points="0 0,10 3.5,0 7"></polygon></marker>
-<marker id="aFv2" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#00ADD8" points="0 0,10 3.5,0 7"></polygon></marker>
-<marker id="aFv3" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#e91e63" points="0 0,10 3.5,0 7"></polygon></marker>
-<marker id="aFv4" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#27ae60" points="0 0,10 3.5,0 7"></polygon></marker>
-</defs>
-<text fill="#00ADD8" font-size="15" font-weight="bold" text-anchor="middle" x="350" y="22" direction="rtl" unicode-bidi="embed">جریان اعتبارسنجی فرم: ارسال → بررسی → خطا/موفق</text>
-<!-- Submit -->
-<rect fill="#777BB4" height="35" opacity="0.12" rx="6" stroke="#777BB4" stroke-width="2" width="100" x="30" y="50"></rect>
-<text fill="#333" font-size="10" text-anchor="middle" x="80" y="72" direction="rtl" unicode-bidi="embed">ارسال فرم</text>
-<line marker-end="url(#aFv2)" stroke="#00ADD8" stroke-width="1.5" x1="130" x2="190" y1="67" y2="67"></line>
-<!-- ParseForm -->
-<rect fill="#00ADD8" height="35" opacity="0.12" rx="6" stroke="#00ADD8" stroke-width="2" width="110" x="190" y="50"></rect>
-<text fill="#333" font-size="10" text-anchor="middle" x="245" y="72" direction="ltr" unicode-bidi="embed">ParseForm()</text>
-<line marker-end="url(#aFv2)" stroke="#00ADD8" stroke-width="1.5" x1="300" x2="360" y1="67" y2="67"></line>
-<!-- Validate -->
-<rect fill="#FF9800" height="50" opacity="0.12" rx="8" stroke="#FF9800" stroke-width="2" width="130" x="360" y="42"></rect>
-<text fill="#333" font-size="10" text-anchor="middle" x="425" y="62" direction="rtl" unicode-bidi="embed">اعتبارسنجی</text>
-<text fill="#FF9800" font-size="8" text-anchor="middle" x="425" y="80" direction="ltr" unicode-bidi="embed">Validator struct</text>
-<!-- Error branch -->
-<line marker-end="url(#aFv3)" stroke="#e91e63" stroke-width="2" x1="425" x2="425" y1="92" y2="130"></line>
-<text fill="#e91e63" font-size="8" text-anchor="middle" x="455" y="115" direction="rtl" unicode-bidi="embed">نامعتبر</text>
-<rect fill="#e91e63" height="35" opacity="0.12" rx="6" stroke="#e91e63" stroke-width="2" width="160" x="345" y="130"></rect>
-<text fill="#e91e63" font-size="9" text-anchor="middle" x="425" y="152" direction="rtl" unicode-bidi="embed">نمایش خطا + پر کردن مجدد</text>
-<!-- Success branch -->
-<line marker-end="url(#aFv4)" stroke="#27ae60" stroke-width="2" x1="490" x2="540" y1="67" y2="67"></line>
-<text fill="#27ae60" font-size="8" text-anchor="middle" x="515" y="58" direction="rtl" unicode-bidi="embed">معتبر</text>
-<rect fill="#27ae60" height="35" opacity="0.12" rx="6" stroke="#27ae60" stroke-width="2" width="90" x="540" y="50"></rect>
-<text fill="#333" font-size="10" text-anchor="middle" x="585" y="72" direction="rtl" unicode-bidi="embed">پردازش</text>
-<line marker-end="url(#aFv4)" stroke="#27ae60" stroke-width="1.5" x1="630" x2="630" y1="85" y2="130"></line>
-<!-- PRG -->
-<rect fill="#9C27B0" height="35" opacity="0.12" rx="6" stroke="#9C27B0" stroke-width="2" width="120" x="570" y="130"></rect>
-<text fill="#333" font-size="9" text-anchor="middle" x="630" y="148" direction="ltr" unicode-bidi="embed">Redirect 303</text>
-<text fill="#9C27B0" font-size="8" text-anchor="middle" x="630" y="160" direction="ltr" unicode-bidi="embed">+ Flash Message</text>
-<!-- PRG note -->
-<rect fill="#f5f5f5" height="35" rx="6" stroke="#ddd" stroke-width="1" width="620" x="40" y="180"></rect>
-<text fill="#555" font-size="9" text-anchor="middle" x="350" y="197" direction="rtl" unicode-bidi="embed">الگوی <tspan direction="ltr" unicode-bidi="embed">POST-Redirect-GET</tspan>: جلوگیری از ارسال مجدد فرم + <tspan direction="ltr" unicode-bidi="embed">CSRF</tspan> محافظت ضروری</text>
-</svg>
+<pre class="mermaid">flowchart TB
+    F["ارسال فرم"] --> PF["ParseForm()"]
+    PF --> V["اعتبارسنجی<br/>Validator struct"]
+    V -->|"نامعتبر"| ERR["نمایش خطا + پر کردن مجدد"]
+    V -->|"معتبر"| PROC["پردازش"]
+    PROC --> R["Redirect 303<br/>+ Flash Message"]
+
+    NOTE(["الگوی POST-Redirect-GET: جلوگیری از ارسال مجدد فرم + CSRF محافظت ضروری"])
+    V ~~~ NOTE
+
+    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
+    classDef neuBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
+    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
+    classDef errBox fill:#fef2f2,stroke:#ef4444,stroke-width:1.5px,color:#1f2937;
+    class F,PF,V,PROC,R goBox;
+    class ERR errBox;
+    class NOTE warnBox;</pre>
 <figcaption dir="rtl">شکل ۷-۱۴-ب: جریان اعتبارسنجی فرم — از ارسال تا نتیجه</figcaption>
 </figure>
 
@@ -624,142 +575,63 @@ func contactHandler(w http.ResponseWriter, r *http.Request) {
 </figure>
 <div class="warning"><strong>هشدار:</strong> هرگز نام فایل اصلی را مستقیماً برای ذخیره استفاده نکنید. مهاجم می‌تواند نام فایل مخرب (مثل <code>../../../etc/passwd</code>) ارسال کند. همیشه نام فایل را با <code dir="ltr">filepath.Base()</code> پاک‌سازی کنید یا یک نام تصادفی جدید تولید کنید. همچنین حتماً MIME type واقعی فایل را با <code dir="ltr">http.DetectContentType()</code> بررسی کنید، نه پسوند فایل.</div>
 <figure class="diagram" dir="ltr">
-<svg height="580" viewBox="0 0 800 580" width="800" xmlns="http://www.w3.org/2000/svg">
-<defs>
-<marker id="arrow14c" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#555" points="0 0, 10 3.5, 0 7"></polygon></marker>
-<marker id="arrow14cG" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#4CAF50" points="0 0, 10 3.5, 0 7"></polygon></marker>
-<marker id="arrow14cR" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#e91e63" points="0 0, 10 3.5, 0 7"></polygon></marker>
-<marker id="arrow14cO" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#FF9800" points="0 0, 10 3.5, 0 7"></polygon></marker>
-<marker id="arrow14cP" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#9C27B0" points="0 0, 10 3.5, 0 7"></polygon></marker>
-<filter height="104%" id="sh14c" width="104%" x="-2%" y="-2%"><fedropshadow dx="1" dy="1" flood-opacity="0.15" stddeviation="2"></fedropshadow></filter>
-</defs>
-<rect fill="#fafafa" height="580" rx="8" width="800" x="0" y="0"></rect>
-<text fill="#333" font-size="16" font-weight="bold" text-anchor="middle" x="400" y="28" direction="rtl" unicode-bidi="embed">خط لوله کامل پردازش فرم: ارسال ← پارس ← اعتبارسنجی ← پردازش</text>
+<pre class="mermaid">flowchart TB
+    B["مرورگر<br/>POST /submit"] --> PF["ParseForm()<br/>r.FormValue(&quot;field&quot;)"]
+    PF --> V["اعتبارسنجی<br/>required / format / length"]
+    V --> D{"تصمیم‌گیری: معتبر یا نامعتبر؟"}
+    D -->|"معتبر"| OK["پردازش<br/>ذخیره در DB، ارسال ایمیل"]
+    D -->|"نامعتبر"| RER["رندر مجدد فرم<br/>+ خطاها + مقادیر قبلی<br/>نمایش خطا"]
+    OK --> R303["Redirect 303<br/>See Other + Flash"]
 
-<!-- Step 1: Browser submits form -->
-<rect fill="#00ADD8" filter="url(#sh14c)" height="50" rx="6" width="130" x="20" y="50"></rect>
-<text fill="#fff" font-size="11" font-weight="bold" text-anchor="middle" x="85" y="70" direction="rtl" unicode-bidi="embed">مرورگر</text>
-<text fill="#e0f7fa" font-size="9" text-anchor="middle" x="85" y="88" direction="ltr" unicode-bidi="embed">POST /submit</text>
+    subgraph PRG["الگوی POST-Redirect-GET (PRG) — جلوگیری از ارسال مجدد فرم"]
+        direction TB
+        P1["POST /submit"]
+        P2["Redirect 303 → /success"]
+        P3["GET /success<br/>Refresh بی‌خطر ← ارسال مجدد نمی‌شود"]
+        P4["بدون PRG: Refresh ← ارسال مجدد!"]
+        P1 --> P2 --> P3
+        P1 -.-> P4
+    end
 
-<line marker-end="url(#arrow14c)" stroke="#555" stroke-width="2" x1="150" x2="190" y1="75" y2="75"></line>
+    subgraph CSRF["تایید توکن CSRF — محافظت در برابر جعل درخواست"]
+        direction TB
+        C1["csrf.Token(r) → hidden input"]
+        C2["Form Submission — token sent with POST"]
+        C3["Middleware Verify — compare token → 403 if invalid"]
+        C4["توکن معتبر ← ادامه"]
+        C5["توکن نامعتبر ← 403"]
+        C1 --> C2 --> C3
+        C3 --> C4
+        C3 --> C5
+    end
 
-<!-- Step 2: Server parses form -->
-<rect fill="#00ADD8" filter="url(#sh14c)" height="50" rx="6" width="140" x="190" y="50"></rect>
-<text fill="#fff" font-size="11" font-weight="bold" text-anchor="middle" x="260" y="70" direction="ltr" unicode-bidi="embed">ParseForm()</text>
-<text fill="#e0f7fa" font-size="9" text-anchor="middle" x="260" y="88" direction="ltr" unicode-bidi="embed">r.FormValue("field")</text>
+    subgraph CMP["مقایسه اعتبارسنجی فرم: PHP $_POST در مقابل Go دستی"]
+        direction TB
+        subgraph LAR["Laravel — Automatic"]
+            direction TB
+            L1["$request-&gt;validate(['name' =&gt; 'required'])"]
+            L2["@csrf → auto token | @error → auto display"]
+        end
+        subgraph GOM["Go — Manual + Explicit"]
+            direction TB
+            G1["validator.NotBlank(form.Name)"]
+            G2["gorilla/csrf → &#123;&#123;.CSRFField&#125;&#125; | &#123;&#123;with .FormErrors.name&#125;&#125;"]
+        end
+    end
 
-<line marker-end="url(#arrow14c)" stroke="#555" stroke-width="2" x1="330" x2="370" y1="75" y2="75"></line>
+    R303 --> PRG
 
-<!-- Step 3: Validate -->
-<rect fill="#FF9800" filter="url(#sh14c)" height="50" rx="6" width="130" x="370" y="50"></rect>
-<text fill="#fff" font-size="11" font-weight="bold" text-anchor="middle" x="435" y="70" direction="rtl" unicode-bidi="embed">اعتبارسنجی</text>
-<text fill="#fff3e0" font-size="9" text-anchor="middle" x="435" y="88" direction="ltr" unicode-bidi="embed">required / format / length</text>
-
-<!-- Decision diamond area -->
-<rect fill="#f5f5f5" height="25" rx="4" stroke="#ddd" width="360" x="220" y="115"></rect>
-<text fill="#555" font-size="11" font-weight="bold" text-anchor="middle" x="400" y="133" direction="rtl" unicode-bidi="embed">تصمیم‌گیری: معتبر یا نامعتبر؟</text>
-
-<!-- Valid path (right) -->
-<line marker-end="url(#arrow14cG)" stroke="#4CAF50" stroke-width="2.5" x1="435" x2="435" y1="100" y2="145"></line>
-<text fill="#4CAF50" font-size="10" font-weight="bold" text-anchor="middle" x="470" y="125" direction="rtl" unicode-bidi="embed">معتبر</text>
-
-<!-- Invalid path (down-left) -->
-<line marker-end="url(#arrow14cR)" stroke="#e91e63" stroke-width="2.5" x1="370" x2="370" y1="100" y2="145"></line>
-<text fill="#e91e63" font-size="10" font-weight="bold" text-anchor="middle" x="340" y="125" direction="rtl" unicode-bidi="embed">نامعتبر</text>
-
-<!-- Valid: Process -->
-<rect fill="#4CAF50" filter="url(#sh14c)" height="55" rx="6" width="150" x="360" y="150"></rect>
-<text fill="#fff" font-size="11" font-weight="bold" text-anchor="middle" x="435" y="172" direction="rtl" unicode-bidi="embed">پردازش</text>
-<text fill="#e8f5e9" font-size="9" text-anchor="middle" x="435" y="192" direction="rtl" unicode-bidi="embed">ذخیره در <tspan direction="ltr" unicode-bidi="embed">DB</tspan>، ارسال ایمیل</text>
-
-<!-- Invalid: Re-render with errors -->
-<rect fill="#e91e63" filter="url(#sh14c)" height="55" rx="6" width="170" x="140" y="150"></rect>
-<text fill="#fff" font-size="11" font-weight="bold" text-anchor="middle" x="225" y="172" direction="rtl" unicode-bidi="embed">رندر مجدد فرم</text>
-<text fill="#fce4ec" font-size="9" text-anchor="middle" x="225" y="192" direction="rtl" unicode-bidi="embed">+ خطاها + مقادیر قبلی</text>
-
-<!-- Arrow from invalid back to browser -->
-<line marker-end="url(#arrow14cR)" stroke="#e91e63" stroke-width="1.5" x1="140" x2="85" y1="177" y2="177"></line>
-<line marker-end="url(#arrow14cR)" stroke="#e91e63" stroke-width="1.5" x1="85" y1="177" x2="85" y2="110"></line>
-<text fill="#e91e63" font-size="8" text-anchor="middle" x="70" y="145" direction="rtl" unicode-bidi="embed">نمایش خطا</text>
-
-<!-- Valid → Redirect (PRG) -->
-<line marker-end="url(#arrow14cG)" stroke="#4CAF50" stroke-width="2.5" x1="510" x2="560" y1="177" y2="177"></line>
-
-<rect fill="#FF9800" filter="url(#sh14c)" height="55" rx="6" width="140" x="560" y="150"></rect>
-<text fill="#fff" font-size="11" font-weight="bold" text-anchor="middle" x="630" y="172" direction="ltr" unicode-bidi="embed">Redirect 303</text>
-<text fill="#fff3e0" font-size="9" text-anchor="middle" x="630" y="192" direction="ltr" unicode-bidi="embed">See Other + Flash</text>
-
-<!-- PRG explanation -->
-<rect fill="#f5f5f5" height="25" rx="4" stroke="#ddd" width="760" x="20" y="220"></rect>
-<text fill="#555" font-size="11" font-weight="bold" text-anchor="middle" x="400" y="238" direction="rtl" unicode-bidi="embed">الگوی <tspan direction="ltr" unicode-bidi="embed">POST-Redirect-GET (PRG)</tspan> — جلوگیری از ارسال مجدد فرم</text>
-
-<!-- PRG flow -->
-<rect fill="#4CAF50" filter="url(#sh14c)" height="40" rx="4" width="120" x="30" y="255"></rect>
-<text fill="#fff" font-size="10" text-anchor="middle" x="90" y="280" direction="ltr" unicode-bidi="embed">POST /submit</text>
-
-<line marker-end="url(#arrow14cO)" stroke="#FF9800" stroke-width="2" x1="150" x2="200" y1="275" y2="275"></line>
-
-<rect fill="#FF9800" filter="url(#sh14c)" height="40" rx="4" width="140" x="200" y="255"></rect>
-<text fill="#fff" font-size="10" text-anchor="middle" x="270" y="280" direction="ltr" unicode-bidi="embed">Redirect 303 → /success</text>
-
-<line marker-end="url(#arrow14c)" stroke="#555" stroke-width="2" x1="340" x2="390" y1="275" y2="275"></line>
-
-<rect fill="#00ADD8" filter="url(#sh14c)" height="40" rx="4" width="120" x="390" y="255"></rect>
-<text fill="#fff" font-size="10" text-anchor="middle" x="450" y="280" direction="ltr" unicode-bidi="embed">GET /success</text>
-
-<rect fill="#e8f5e9" height="25" rx="4" stroke="#4CAF50" width="200" x="540" y="260"></rect>
-<text fill="#2E7D32" font-size="9" text-anchor="middle" x="640" y="278" direction="rtl" unicode-bidi="embed">Refresh بی‌خطر ← ارسال مجدد نمی‌شود</text>
-
-<!-- Without PRG -->
-<rect fill="#ffebee" height="25" rx="4" stroke="#e91e63" width="200" x="540" y="295"></rect>
-<text fill="#c62828" font-size="9" text-anchor="middle" x="640" y="313" direction="rtl" unicode-bidi="embed">بدون <tspan direction="ltr" unicode-bidi="embed">PRG</tspan>: Refresh ← ارسال مجدد!</text>
-
-<!-- CSRF Token Section -->
-<rect fill="#f5f5f5" height="25" rx="4" stroke="#ddd" width="760" x="20" y="335"></rect>
-<text fill="#555" font-size="11" font-weight="bold" text-anchor="middle" x="400" y="353" direction="rtl" unicode-bidi="embed">تایید توکن <tspan direction="ltr" unicode-bidi="embed">CSRF</tspan> — محافظت در برابر جعل درخواست</text>
-
-<!-- CSRF flow -->
-<rect fill="#9C27B0" filter="url(#sh14c)" height="45" rx="6" width="130" x="30" y="370"></rect>
-<text fill="#fff" font-size="10" font-weight="bold" text-anchor="middle" x="95" y="390" direction="ltr" unicode-bidi="embed">csrf.Token(r)</text>
-<text fill="#e1bee7" font-size="9" text-anchor="middle" x="95" y="407" direction="ltr" unicode-bidi="embed">→ hidden input</text>
-
-<line marker-end="url(#arrow14cP)" stroke="#9C27B0" stroke-width="2" x1="160" x2="210" y1="392" y2="392"></line>
-
-<rect fill="#9C27B0" filter="url(#sh14c)" height="45" rx="6" width="160" x="210" y="370"></rect>
-<text fill="#fff" font-size="10" font-weight="bold" text-anchor="middle" x="290" y="390" direction="ltr" unicode-bidi="embed">Form Submission</text>
-<text fill="#e1bee7" font-size="9" text-anchor="middle" x="290" y="407" direction="ltr" unicode-bidi="embed">token sent with POST</text>
-
-<line marker-end="url(#arrow14cP)" stroke="#9C27B0" stroke-width="2" x1="370" x2="420" y1="392" y2="392"></line>
-
-<rect fill="#9C27B0" filter="url(#sh14c)" height="45" rx="6" width="170" x="420" y="370"></rect>
-<text fill="#fff" font-size="10" font-weight="bold" text-anchor="middle" x="505" y="390" direction="ltr" unicode-bidi="embed">Middleware Verify</text>
-<text fill="#e1bee7" font-size="9" text-anchor="middle" x="505" y="407" direction="ltr" unicode-bidi="embed">compare token → 403 if invalid</text>
-
-<!-- CSRF result -->
-<line marker-end="url(#arrow14cP)" stroke="#9C27B0" stroke-width="1.5" x1="590" x2="640" y1="380" y2="365"></line>
-<rect fill="#4CAF50" height="25" rx="4" stroke="#4CAF50" width="130" x="640" y="350"></rect>
-<text fill="#fff" font-size="9" text-anchor="middle" x="705" y="368" direction="rtl" unicode-bidi="embed">توکن معتبر ← ادامه</text>
-
-<line marker-end="url(#arrow14cP)" stroke="#9C27B0" stroke-width="1.5" x1="590" x2="640" y1="403" y2="418"></line>
-<rect fill="#e91e63" height="25" rx="4" stroke="#e91e63" width="130" x="640" y="405"></rect>
-<text fill="#fff" font-size="9" text-anchor="middle" x="705" y="423" direction="rtl" unicode-bidi="embed">توکن نامعتبر ← 403</text>
-
-<!-- PHP vs Go comparison -->
-<rect fill="#f5f5f5" height="25" rx="4" stroke="#ddd" width="760" x="20" y="445"></rect>
-<text fill="#555" font-size="11" font-weight="bold" text-anchor="middle" x="400" y="463" direction="rtl" unicode-bidi="embed">مقایسه اعتبارسنجی فرم: <tspan direction="ltr" unicode-bidi="embed">PHP $_POST</tspan> در مقابل <tspan direction="ltr" unicode-bidi="embed">Go</tspan> دستی</text>
-
-<!-- PHP side -->
-<rect fill="#777BB4" filter="url(#sh14c)" height="70" rx="6" width="340" x="30" y="480"></rect>
-<text fill="#fff" font-size="10" font-weight="bold" text-anchor="middle" x="200" y="500" direction="ltr" unicode-bidi="embed">Laravel — Automatic</text>
-<text fill="#e8eaf6" font-size="9" text-anchor="middle" x="200" y="518" direction="ltr" unicode-bidi="embed">$request-&gt;validate(['name' =&gt; 'required'])</text>
-<text fill="#e8eaf6" font-size="9" text-anchor="middle" x="200" y="536" direction="ltr" unicode-bidi="embed">@csrf → auto token | @error → auto display</text>
-
-<!-- Go side -->
-<rect fill="#00ADD8" filter="url(#sh14c)" height="70" rx="6" width="340" x="430" y="480"></rect>
-<text fill="#fff" font-size="10" font-weight="bold" text-anchor="middle" x="600" y="500" direction="ltr" unicode-bidi="embed">Go — Manual + Explicit</text>
-<text fill="#e0f7fa" font-size="9" text-anchor="middle" x="600" y="518" direction="ltr" unicode-bidi="embed">validator.NotBlank(form.Name)</text>
-<text fill="#e0f7fa" font-size="9" text-anchor="middle" x="600" y="536" direction="ltr" unicode-bidi="embed">gorilla/csrf → {{.CSRFField}} | {{with .FormErrors.name}}</text>
-</svg>
+    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
+    classDef phpBox fill:#f5f0fb,stroke:#777BB4,stroke-width:1.5px,color:#1f2937;
+    classDef neuBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
+    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
+    classDef errBox fill:#fef2f2,stroke:#ef4444,stroke-width:1.5px,color:#1f2937;
+    classDef bothBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
+    class B,PF,V,OK,R303,P1,P2,P3,C1,C2,C3,C4,G1,G2 goBox;
+    class D,RER,C5 errBox
+    class P4 warnBox
+    class L1,L2 phpBox
+    class C5 errBox</pre>
 <figcaption>شکل ۷-۱۴-ج: خط لوله کامل پردازش فرم — از ارسال تا اعتبارسنجی، الگوی <bdi dir="ltr">PRG</bdi> و محافظت <bdi dir="ltr">CSRF</bdi></figcaption>
 </figure>
 <h3 id="سناریوهای-عملیاتی-فرم">سناریوهای عملیاتی فرم</h3>

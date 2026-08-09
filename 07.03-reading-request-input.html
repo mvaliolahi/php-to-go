@@ -70,46 +70,19 @@
 <div class="chapter">فصل ۷.۳</div>
 <h2 id="خواندن-دادههای-ورودی-از-request">خواندن داده‌های ورودی از request</h2>
 <figure class="diagram" dir="ltr">
-<svg height="350" viewBox="0 0 600 350" width="600" xmlns="http://www.w3.org/2000/svg">
-<defs>
-<marker id="arrow3" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#555" points="0 0, 10 3.5, 0 7"></polygon></marker>
-<filter height="104%" id="sh3" width="104%" x="-2%" y="-2%"><fedropshadow dx="1" dy="1" flood-opacity="0.15" stddeviation="2"></fedropshadow></filter>
-</defs>
-<rect fill="#fff" height="350" rx="8" width="600" x="0" y="0"></rect>
-<text fill="#333" font-size="16" font-weight="bold" text-anchor="middle" x="300" y="28" direction="rtl" unicode-bidi="embed">پردازش داده‌های ورودی درخواست</text>
-<!-- Request box -->
-<rect fill="#00ADD8" filter="url(#sh3)" height="45" rx="6" width="160" x="220" y="50"></rect>
-<text fill="#fff" font-size="13" text-anchor="middle" x="300" y="78" direction="ltr" unicode-bidi="embed">http.Request</text>
-<!-- Three branches -->
-<line marker-end="url(#arrow3)" stroke="#555" stroke-width="2" x1="260" x2="100" y1="95" y2="140"></line>
-<line marker-end="url(#arrow3)" stroke="#555" stroke-width="2" x1="300" x2="300" y1="95" y2="140"></line>
-<line marker-end="url(#arrow3)" stroke="#555" stroke-width="2" x1="340" x2="500" y1="95" y2="140"></line>
-<!-- Query Params -->
-<rect fill="#4CAF50" filter="url(#sh3)" height="55" rx="6" width="160" x="20" y="140"></rect>
-<text fill="#fff" font-size="11" text-anchor="middle" x="100" y="163" direction="ltr" unicode-bidi="embed">Query Parameters</text>
-<text fill="#e8f5e9" font-size="10" text-anchor="middle" x="100" y="182" direction="ltr" unicode-bidi="embed">r.URL.Query().Get()</text>
-<!-- Path Params -->
-<rect fill="#FF9800" filter="url(#sh3)" height="55" rx="6" width="160" x="220" y="140"></rect>
-<text fill="#fff" font-size="11" text-anchor="middle" x="300" y="163" direction="ltr" unicode-bidi="embed">Path Parameters</text>
-<text fill="#fff3e0" font-size="10" text-anchor="middle" x="300" y="182" direction="ltr" unicode-bidi="embed">r.URL.Path parsing</text>
-<!-- Request Body -->
-<rect fill="#9C27B0" filter="url(#sh3)" height="55" rx="6" width="160" x="420" y="140"></rect>
-<text fill="#fff" font-size="11" text-anchor="middle" x="500" y="163" direction="ltr" unicode-bidi="embed">Request Body</text>
-<text fill="#e1bee7" font-size="10" text-anchor="middle" x="500" y="182" direction="ltr" unicode-bidi="embed">JSON / Form Data</text>
-<!-- Sub items -->
-<rect fill="#E8F5E9" height="40" rx="6" stroke="#4CAF50" width="160" x="20" y="230"></rect>
-<text fill="#2E7D32" font-size="10" text-anchor="middle" x="100" y="255" direction="ltr" unicode-bidi="embed">?key=value</text>
-<rect fill="#FFF3E0" height="40" rx="6" stroke="#FF9800" width="160" x="220" y="230"></rect>
-<text fill="#E65100" font-size="10" text-anchor="middle" x="300" y="255" direction="ltr" unicode-bidi="embed">/user/123</text>
-<rect fill="#F3E5F5" height="40" rx="6" stroke="#9C27B0" width="160" x="420" y="230"></rect>
-<text fill="#6A1B9A" font-size="10" text-anchor="middle" x="500" y="255" direction="ltr" unicode-bidi="embed">json.NewDecoder()</text>
-<!-- Validation -->
-<rect fill="#e91e63" filter="url(#sh3)" height="35" rx="6" width="240" x="180" y="300"></rect>
-<text fill="#fff" font-size="12" text-anchor="middle" x="300" y="322" direction="rtl" unicode-bidi="embed">اعتبارسنجی + <tspan direction="ltr" unicode-bidi="embed">MaxBytesReader</tspan></text>
-<line marker-end="url(#arrow3)" stroke="#555" stroke-width="1.5" x1="100" x2="230" y1="270" y2="300"></line>
-<line marker-end="url(#arrow3)" stroke="#555" stroke-width="1.5" x1="300" x2="300" y1="270" y2="300"></line>
-<line marker-end="url(#arrow3)" stroke="#555" stroke-width="1.5" x1="500" x2="370" y1="270" y2="300"></line>
-</svg>
+<pre class="mermaid">flowchart TB
+    REQ["http.Request"] --> Q["Query Parameters<br/>?key=value<br/>r.URL.Query().Get()"]
+    REQ --> P["Path Parameters<br/>/user/123<br/>r.URL.Path parsing"]
+    REQ --> B["Request Body<br/>JSON / Form Data<br/>json.NewDecoder()"]
+    NOTE(["اعتبارسنجی + MaxBytesReader"])
+    REQ ~~~ NOTE
+
+    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
+    classDef neuBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
+    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
+    class REQ goBox;
+    class Q,P,B neuBox;
+    class NOTE warnBox;</pre>
 <figcaption>شکل ۷-۳: جریان خواندن داده‌های ورودی از درخواست <bdi dir="ltr">HTTP</bdi></figcaption>
 </figure>
 <p>در برنامه‌های وب دریافت و پردازش داده‌های ارسالی توسط کلاینت نقش بسیار مهمی دارد. این داده‌ها ممکن است به شکل Path params، Query params یا Request Body باشند. در این بخش نحوه خواندن و مدیریت هرکدام را به صورت دقیق و کاربردی توضیح می‌دهیم.</p>
@@ -164,47 +137,25 @@ mux.HandleFunc("GET /user/{id}", func(w http.ResponseWriter, r *http.Request) {
 <p>برای خواندن JSON ابتدا باید Body را بخوانید و سپس آن را به ساختار Go دیکد کنید.</p>
 
 <figure class="diagram" dir="ltr">
-<svg width="700" height="250" viewBox="0 0 700 250" xmlns="http://www.w3.org/2000/svg">
-<rect fill="#fafafa" height="250" rx="8" width="700" x="0" y="0"></rect>
-<defs><filter id="sh144" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
-<marker id="aRq1" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#00ADD8" points="0 0,10 3.5,0 7"></polygon></marker>
-</defs>
-<text fill="#00ADD8" font-size="15" font-weight="bold" text-anchor="middle" x="350" y="22" direction="rtl" unicode-bidi="embed">منابع داده درخواست <tspan direction="ltr" unicode-bidi="embed">HTTP</tspan></text>
-<!-- Central Request -->
-<rect fill="#00ADD8" height="40" opacity="0.15" rx="8" stroke="#00ADD8" stroke-width="2" width="160" x="270" y="45"></rect>
-<text fill="#333" font-size="12" text-anchor="middle" x="350" y="70" direction="ltr" unicode-bidi="embed">http.Request</text>
-<!-- Five data sources -->
-<line marker-end="url(#aRq1)" stroke="#4CAF50" stroke-width="1.5" x1="280" x2="115" y1="85" y2="115"></line>
-<line marker-end="url(#aRq1)" stroke="#FF9800" stroke-width="1.5" x1="310" x2="245" y1="85" y2="115"></line>
-<line marker-end="url(#aRq1)" stroke="#9C27B0" stroke-width="1.5" x1="350" x2="350" y1="85" y2="115"></line>
-<line marker-end="url(#aRq1)" stroke="#e91e63" stroke-width="1.5" x1="390" x2="460" y1="85" y2="115"></line>
-<line marker-end="url(#aRq1)" stroke="#2196F3" stroke-width="1.5" x1="420" x2="585" y1="85" y2="115"></line>
-<!-- Source boxes -->
-<rect fill="#4CAF50" height="55" opacity="0.12" rx="6" stroke="#4CAF50" stroke-width="1.5" width="130" x="30" y="115"></rect>
-<text fill="#333" font-size="10" text-anchor="middle" x="95" y="135" direction="ltr" unicode-bidi="embed">URL Params</text>
-<text fill="#4CAF50" font-size="8" text-anchor="middle" x="95" y="150" direction="ltr" unicode-bidi="embed">/user/:id</text>
-<text fill="#666" font-size="8" text-anchor="middle" x="95" y="162" direction="ltr" unicode-bidi="embed">r.URL.Path</text>
-<rect fill="#FF9800" height="55" opacity="0.12" rx="6" stroke="#FF9800" stroke-width="1.5" width="130" x="175" y="115"></rect>
-<text fill="#333" font-size="10" text-anchor="middle" x="240" y="135" direction="ltr" unicode-bidi="embed">Query Params</text>
-<text fill="#FF9800" font-size="8" text-anchor="middle" x="240" y="150" direction="ltr" unicode-bidi="embed">?page=2&q=go</text>
-<text fill="#666" font-size="8" text-anchor="middle" x="240" y="162" direction="ltr" unicode-bidi="embed">r.URL.Query()</text>
-<rect fill="#9C27B0" height="55" opacity="0.12" rx="6" stroke="#9C27B0" stroke-width="1.5" width="130" x="285" y="115"></rect>
-<text fill="#333" font-size="10" text-anchor="middle" x="350" y="135" direction="ltr" unicode-bidi="embed">Form Data</text>
-<text fill="#9C27B0" font-size="8" text-anchor="middle" x="350" y="150" direction="ltr" unicode-bidi="embed">application/x-www...</text>
-<text fill="#666" font-size="8" text-anchor="middle" x="350" y="162" direction="ltr" unicode-bidi="embed">r.FormValue()</text>
-<rect fill="#e91e63" height="55" opacity="0.12" rx="6" stroke="#e91e63" stroke-width="1.5" width="130" x="395" y="115"></rect>
-<text fill="#333" font-size="10" text-anchor="middle" x="460" y="135" direction="ltr" unicode-bidi="embed">JSON Body</text>
-<text fill="#e91e63" font-size="8" text-anchor="middle" x="460" y="150" direction="ltr" unicode-bidi="embed">application/json</text>
-<text fill="#666" font-size="8" text-anchor="middle" x="460" y="162" direction="ltr" unicode-bidi="embed">json.NewDecoder()</text>
-<rect fill="#2196F3" height="55" opacity="0.12" rx="6" stroke="#2196F3" stroke-width="1.5" width="130" x="520" y="115"></rect>
-<text fill="#333" font-size="10" text-anchor="middle" x="585" y="135" direction="ltr" unicode-bidi="embed">Headers</text>
-<text fill="#2196F3" font-size="8" text-anchor="middle" x="585" y="150" direction="ltr" unicode-bidi="embed">Authorization</text>
-<text fill="#666" font-size="8" text-anchor="middle" x="585" y="162" direction="ltr" unicode-bidi="embed">r.Header.Get()</text>
-<!-- Validation note -->
-<rect fill="#f5f5f5" height="40" rx="6" stroke="#ddd" stroke-width="1" width="620" x="40" y="195"></rect>
-<text fill="#555" font-size="10" text-anchor="middle" x="350" y="212" direction="rtl" unicode-bidi="embed">همه منابع داده باید اعتبارسنجی شوند + محدودیت حجم با <tspan direction="ltr" unicode-bidi="embed">MaxBytesReader</tspan></text>
-<text fill="#e74c3c" font-size="9" text-anchor="middle" x="350" y="228" direction="rtl" unicode-bidi="embed">هرگز به داده ورودی اعتماد نکنید — خطر <tspan direction="ltr" unicode-bidi="embed">SQL Injection</tspan> و <tspan direction="ltr" unicode-bidi="embed">XSS</tspan></text>
-</svg>
+<pre class="mermaid">flowchart TB
+    REQ["http.Request"] --> U["URL Params<br/>/user/:id<br/>r.URL.Path"]
+    REQ --> Q["Query Params<br/>?page=2&q=go<br/>r.URL.Query()"]
+    REQ --> F["Form Data<br/>application/x-www...<br/>r.FormValue()"]
+    REQ --> J["JSON Body<br/>application/json<br/>json.NewDecoder()"]
+    REQ --> H["Headers<br/>Authorization<br/>r.Header.Get()"]
+    NOTE(["همه منابع داده باید اعتبارسنجی شوند + محدودیت حجم با MaxBytesReader"])
+    WARN(["هرگز به داده ورودی اعتماد نکنید — خطر SQL Injection و XSS"])
+    REQ ~~~ NOTE
+    NOTE ~~~ WARN
+
+    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
+    classDef neuBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
+    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
+    classDef errBox fill:#fef2f2,stroke:#ef4444,stroke-width:1.5px,color:#1f2937;
+    class REQ goBox;
+    class U,Q,F,J,H neuBox;
+    class NOTE warnBox;
+    class WARN errBox;</pre>
 <figcaption dir="rtl">شکل ۷-۳-ب: منابع داده درخواست <bdi dir="ltr">HTTP</bdi> — پنج منبع اصلی ورودی</figcaption>
 </figure>
 
@@ -434,122 +385,72 @@ func createArticleHandler(w http.ResponseWriter, r *http.Request) {
 <p>یکی از مهم‌ترین تفاوت‌های بنیادین بین <bdi dir="ltr">PHP</bdi> و <bdi dir="ltr">Go</bdi> در نحوه دسترسی به داده‌های ورودی درخواست است. در <bdi dir="ltr">PHP</bdi> سوپرگلوبال‌هایی مثل <code dir="ltr">$_GET</code> و <code dir="ltr">$_POST</code> به صورت خودکار توسط موتور <bdi dir="ltr">PHP</bdi> پر می‌شوند و توسعه‌دهنده نیازی به فراخوانی صریح ندارد. اما در <bdi dir="ltr">Go</bdi> هر نوع داده ورودی با متد و رویکرد متفاوتی استخراج می‌شود و توسعه‌دهنده باید بداند کدام متد را برای کدام هدف استفاده کند. این تفاوت در عمل مزیت محسوب می‌شود زیرا کنترل دقیق‌تری روی منبع داده و نحوه پردازش آن به شما می‌دهد، اما نیازمند آشنایی کامل با هر متد و رفتار آن است. در نمودار زیر می‌توانید شش روش اصلی استخراج داده از درخواست <bdi dir="ltr">HTTP</bdi> در <bdi dir="ltr">Go</bdi> را همراه با معادل <bdi dir="ltr">PHP</bdi> آن‌ها مشاهده کنید:</p>
 
 <figure class="diagram" dir="ltr">
-<svg width="850" height="580" viewBox="0 0 850 580" xmlns="http://www.w3.org/2000/svg">
-<defs>
-<marker id="aComp1" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#00ADD8" points="0 0,10 3.5,0 7"></polygon></marker>
-<marker id="aComp2" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#777BB4" points="0 0,10 3.5,0 7"></polygon></marker>
-<filter height="104%" id="shComp" width="104%" x="-2%" y="-2%"><fedropshadow dx="1" dy="1" flood-opacity="0.12" stddeviation="2"></fedropshadow></filter>
-<linearGradient id="goGrad" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#00ADD8" stop-opacity="0.08"/><stop offset="100%" stop-color="#00ADD8" stop-opacity="0.02"/></linearGradient>
-<linearGradient id="phpGrad" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#777BB4" stop-opacity="0.08"/><stop offset="100%" stop-color="#777BB4" stop-opacity="0.02"/></linearGradient>
-</defs>
-<rect fill="#fafafa" height="580" rx="10" width="850" x="0" y="0"></rect>
+<pre class="mermaid">flowchart TB
+    HTTP(["HTTP Request"]) --> METHODS
 
-<!-- Title -->
-<text fill="#333" font-size="16" font-weight="bold" text-anchor="middle" x="425" y="28" direction="rtl" unicode-bidi="embed">مقایسه روش‌های پارس ورودی درخواست: <tspan direction="ltr" unicode-bidi="embed">Go</tspan> در مقابل <tspan direction="ltr" unicode-bidi="embed">PHP</tspan></text>
+    subgraph METHODS["منبع داده"]
+        direction TB
+        M1["کوئری + فرم (urlencoded)"]
+        M2["فقط پارامترهای کوئری"]
+        M3["آپلود فایل (multipart)"]
+        M4["بدنه JSON درخواست"]
+        M5["هدرهای HTTP درخواست"]
+        M6["Go 1.22+ پارامتر مسیر"]
+    end
 
-<!-- Column Headers -->
-<rect fill="#00ADD8" height="30" rx="5" width="200" x="50" y="48"></rect>
-<text fill="#fff" font-size="12" font-weight="bold" text-anchor="middle" x="150" y="68" direction="ltr" unicode-bidi="embed">Go Method</text>
-<rect fill="#777BB4" height="30" rx="5" width="200" x="320" y="48"></rect>
-<text fill="#fff" font-size="12" font-weight="bold" text-anchor="middle" x="420" y="68" direction="ltr" unicode-bidi="embed">PHP Equivalent</text>
-<rect fill="#555" height="30" rx="5" width="160" x="580" y="48"></rect>
-<text fill="#fff" font-size="12" font-weight="bold" text-anchor="middle" x="660" y="68" direction="rtl" unicode-bidi="embed">منبع داده</text>
+    subgraph GO["Go Method"]
+        direction TB
+        G1["r.FormValue(&quot;key&quot;)<br/>ابتدا کوئری، سپس body"]
+        G2["r.URL.Query().Get(&quot;key&quot;)<br/>بدون فراخوانی ParseForm"]
+        G3["r.FormFile(&quot;file&quot;)<br/>بررسی نوع واقعی فایل"]
+        G4["json.NewDecoder(r.Body)<br/>استریم + اعتبارسنجی ساختار"]
+        G5["r.Header.Get(&quot;Key&quot;)"]
+        G6["r.PathValue(&quot;id&quot;)<br/>mux.HandleFunc pattern"]
+    end
 
-<!-- Row 1: r.FormValue -->
-<rect fill="url(#goGrad)" height="65" rx="5" stroke="#00ADD8" stroke-width="1" width="200" x="50" y="90"></rect>
-<text fill="#00ADD8" font-size="12" font-weight="bold" text-anchor="middle" x="150" y="112" direction="ltr" unicode-bidi="embed">r.FormValue("key")</text>
-<text fill="#666" font-size="9" text-anchor="middle" x="150" y="128" direction="rtl" unicode-bidi="embed">کوئری + فرم <tspan direction="ltr" unicode-bidi="embed">(urlencoded)</tspan></text>
-<text fill="#999" font-size="8" text-anchor="middle" x="150" y="145" direction="rtl" unicode-bidi="embed">ابتدا کوئری، سپس <tspan direction="ltr" unicode-bidi="embed">body</tspan></text>
-<!-- Arrow -->
-<line marker-end="url(#aComp2)" stroke="#999" stroke-width="1.5" x1="250" x2="320" y1="120" y2="120"></line>
-<!-- PHP -->
-<rect fill="url(#phpGrad)" height="65" rx="5" stroke="#777BB4" stroke-width="1" width="200" x="320" y="90"></rect>
-<text fill="#777BB4" font-size="12" font-weight="bold" text-anchor="middle" x="420" y="112" direction="ltr" unicode-bidi="embed">$_GET['key']</text>
-<text fill="#777BB4" font-size="12" font-weight="bold" text-anchor="middle" x="420" y="130" direction="ltr" unicode-bidi="embed">$_POST['key']</text>
-<text fill="#999" font-size="8" text-anchor="middle" x="420" y="148" direction="rtl" unicode-bidi="embed">تفکیک‌شده بر متد</text>
-<!-- Data source -->
-<rect fill="#f5f5f5" height="65" rx="5" stroke="#ddd" width="160" x="580" y="90"></rect>
-<text fill="#555" font-size="10" text-anchor="middle" x="660" y="115" direction="ltr" unicode-bidi="embed">?key=value</text>
-<text fill="#555" font-size="10" text-anchor="middle" x="660" y="132" direction="ltr" unicode-bidi="embed">form-urlencoded body</text>
+    subgraph PHP["PHP Equivalent"]
+        direction TB
+        P1["$_GET['key'] · $_POST['key']<br/>تفکیک‌شده بر متد"]
+        P2["$_GET['key']<br/>معادل دقیق"]
+        P3["$_FILES['file']<br/>شامل tmp_name, name, size"]
+        P4["json_decode(<br/>file_get_contents(<br/>'php://input'))"]
+        P5["$_SERVER['HTTP_*']<br/>پیشوند HTTP_ اضافه می‌شود"]
+        P6["$_GET['id']<br/>توسط .htaccess بازنویسی"]
+    end
 
-<!-- Row 2: r.URL.Query() -->
-<rect fill="url(#goGrad)" height="65" rx="5" stroke="#00ADD8" stroke-width="1" width="200" x="50" y="165"></rect>
-<text fill="#00ADD8" font-size="12" font-weight="bold" text-anchor="middle" x="150" y="188" direction="ltr" unicode-bidi="embed">r.URL.Query().Get("key")</text>
-<text fill="#666" font-size="9" text-anchor="middle" x="150" y="205" direction="rtl" unicode-bidi="embed">فقط پارامترهای کوئری</text>
-<text fill="#999" font-size="8" text-anchor="middle" x="150" y="222" direction="rtl" unicode-bidi="embed">بدون فراخوانی <tspan direction="ltr" unicode-bidi="embed">ParseForm</tspan></text>
-<line marker-end="url(#aComp2)" stroke="#999" stroke-width="1.5" x1="250" x2="320" y1="198" y2="198"></line>
-<rect fill="url(#phpGrad)" height="65" rx="5" stroke="#777BB4" stroke-width="1" width="200" x="320" y="165"></rect>
-<text fill="#777BB4" font-size="12" font-weight="bold" text-anchor="middle" x="420" y="195" direction="ltr" unicode-bidi="embed">$_GET['key']</text>
-<text fill="#999" font-size="8" text-anchor="middle" x="420" y="215" direction="rtl" unicode-bidi="embed">معادل دقیق</text>
-<rect fill="#f5f5f5" height="65" rx="5" stroke="#ddd" width="160" x="580" y="165"></rect>
-<text fill="#555" font-size="10" text-anchor="middle" x="660" y="198" direction="ltr" unicode-bidi="embed">?page=2&amp;q=go</text>
+    subgraph SRC["نمونه‌ی منبع"]
+        direction TB
+        S1["?key=value · form-urlencoded body"]
+        S2["?page=2&q=go"]
+        S3["multipart/form-data · &lt;input type=&quot;file&quot;&gt;"]
+        S4["application/json · &#123;&quot;name&quot;: &quot;Ali&quot;&#125;"]
+        S5["Authorization · Content-Type"]
+        S6["/user/{id}"]
+    end
 
-<!-- Row 3: r.FormFile -->
-<rect fill="url(#goGrad)" height="65" rx="5" stroke="#00ADD8" stroke-width="1" width="200" x="50" y="240"></rect>
-<text fill="#00ADD8" font-size="12" font-weight="bold" text-anchor="middle" x="150" y="263" direction="ltr" unicode-bidi="embed">r.FormFile("file")</text>
-<text fill="#666" font-size="9" text-anchor="middle" x="150" y="280" direction="rtl" unicode-bidi="embed">آپلود فایل <tspan direction="ltr" unicode-bidi="embed">(multipart)</tspan></text>
-<text fill="#999" font-size="8" text-anchor="middle" x="150" y="297" direction="rtl" unicode-bidi="embed">بررسی نوع واقعی فایل</text>
-<line marker-end="url(#aComp2)" stroke="#999" stroke-width="1.5" x1="250" x2="320" y1="273" y2="273"></line>
-<rect fill="url(#phpGrad)" height="65" rx="5" stroke="#777BB4" stroke-width="1" width="200" x="320" y="240"></rect>
-<text fill="#777BB4" font-size="12" font-weight="bold" text-anchor="middle" x="420" y="263" direction="ltr" unicode-bidi="embed">$_FILES['file']</text>
-<text fill="#999" font-size="8" text-anchor="middle" x="420" y="283" direction="rtl" unicode-bidi="embed">شامل <tspan direction="ltr" unicode-bidi="embed">tmp_name, name, size</tspan></text>
-<rect fill="#f5f5f5" height="65" rx="5" stroke="#ddd" width="160" x="580" y="240"></rect>
-<text fill="#555" font-size="10" text-anchor="middle" x="660" y="268" direction="ltr" unicode-bidi="embed">multipart/form-data</text>
-<text fill="#555" font-size="10" text-anchor="middle" x="660" y="288" direction="ltr" unicode-bidi="embed">&lt;input type="file"&gt;</text>
+    G1 -.- P1
+    G2 -.- P2
+    G3 -.- P3
+    G4 -.- P4
+    G5 -.- P5
+    G6 -.- P6
+    G1 -.- S1
+    G2 -.- S2
+    G3 -.- S3
+    G4 -.- S4
+    G5 -.- S5
+    G6 -.- S6
 
-<!-- Row 4: json.NewDecoder -->
-<rect fill="url(#goGrad)" height="65" rx="5" stroke="#00ADD8" stroke-width="1" width="200" x="50" y="315"></rect>
-<text fill="#00ADD8" font-size="12" font-weight="bold" text-anchor="middle" x="150" y="338" direction="ltr" unicode-bidi="embed">json.NewDecoder(r.Body)</text>
-<text fill="#666" font-size="9" text-anchor="middle" x="150" y="355" direction="rtl" unicode-bidi="embed">بدنه <tspan direction="ltr" unicode-bidi="embed">JSON</tspan> درخواست</text>
-<text fill="#999" font-size="8" text-anchor="middle" x="150" y="372" direction="rtl" unicode-bidi="embed">استریم + اعتبارسنجی ساختار</text>
-<line marker-end="url(#aComp2)" stroke="#999" stroke-width="1.5" x1="250" x2="320" y1="348" y2="348"></line>
-<rect fill="url(#phpGrad)" height="65" rx="5" stroke="#777BB4" stroke-width="1" width="200" x="320" y="315"></rect>
-<text fill="#777BB4" font-size="11" font-weight="bold" text-anchor="middle" x="420" y="335" direction="ltr" unicode-bidi="embed">json_decode(</text>
-<text fill="#777BB4" font-size="11" font-weight="bold" text-anchor="middle" x="420" y="353" direction="ltr" unicode-bidi="embed">  file_get_contents(</text>
-<text fill="#777BB4" font-size="11" font-weight="bold" text-anchor="middle" x="420" y="371" direction="ltr" unicode-bidi="embed">    'php://input'))</text>
-<rect fill="#f5f5f5" height="65" rx="5" stroke="#ddd" width="160" x="580" y="315"></rect>
-<text fill="#555" font-size="10" text-anchor="middle" x="660" y="343" direction="ltr" unicode-bidi="embed">application/json</text>
-<text fill="#555" font-size="10" text-anchor="middle" x="660" y="360" direction="ltr" unicode-bidi="embed">{"name": "Ali"}</text>
+    GOLD(["قانون طلایی: همیشه Content-Type هدر را قبل از پارس بررسی کنید — هرگز سعی نکنید JSON را از یک فرم multipart پارس کنید"])
 
-<!-- Row 5: r.Header.Get -->
-<rect fill="url(#goGrad)" height="55" rx="5" stroke="#00ADD8" stroke-width="1" width="200" x="50" y="390"></rect>
-<text fill="#00ADD8" font-size="12" font-weight="bold" text-anchor="middle" x="150" y="413" direction="ltr" unicode-bidi="embed">r.Header.Get("Key")</text>
-<text fill="#666" font-size="9" text-anchor="middle" x="150" y="430" direction="rtl" unicode-bidi="embed">هدرهای <tspan direction="ltr" unicode-bidi="embed">HTTP</tspan> درخواست</text>
-<line marker-end="url(#aComp2)" stroke="#999" stroke-width="1.5" x1="250" x2="320" y1="418" y2="418"></line>
-<rect fill="url(#phpGrad)" height="55" rx="5" stroke="#777BB4" stroke-width="1" width="200" x="320" y="390"></rect>
-<text fill="#777BB4" font-size="12" font-weight="bold" text-anchor="middle" x="420" y="415" direction="ltr" unicode-bidi="embed">$_SERVER['HTTP_*']</text>
-<text fill="#999" font-size="8" text-anchor="middle" x="420" y="435" direction="rtl" unicode-bidi="embed">پیشوند <tspan direction="ltr" unicode-bidi="embed">HTTP_</tspan> اضافه می‌شود</text>
-<rect fill="#f5f5f5" height="55" rx="5" stroke="#ddd" width="160" x="580" y="390"></rect>
-<text fill="#555" font-size="10" text-anchor="middle" x="660" y="415" direction="ltr" unicode-bidi="embed">Authorization</text>
-<text fill="#555" font-size="10" text-anchor="middle" x="660" y="432" direction="ltr" unicode-bidi="embed">Content-Type</text>
-
-<!-- Row 6: r.PathValue (Go 1.22) -->
-<rect fill="url(#goGrad)" height="55" rx="5" stroke="#00ADD8" stroke-width="1" width="200" x="50" y="455"></rect>
-<text fill="#00ADD8" font-size="12" font-weight="bold" text-anchor="middle" x="150" y="478" direction="ltr" unicode-bidi="embed">r.PathValue("id")</text>
-<text fill="#666" font-size="9" text-anchor="middle" x="150" y="495" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">Go 1.22+</tspan> پارامتر مسیر</text>
-<line marker-end="url(#aComp2)" stroke="#999" stroke-width="1.5" x1="250" x2="320" y1="483" y2="483"></line>
-<rect fill="url(#phpGrad)" height="55" rx="5" stroke="#777BB4" stroke-width="1" width="200" x="320" y="455"></rect>
-<text fill="#777BB4" font-size="12" font-weight="bold" text-anchor="middle" x="420" y="478" direction="ltr" unicode-bidi="embed">$_GET['id']</text>
-<text fill="#999" font-size="8" text-anchor="middle" x="420" y="498" direction="rtl" unicode-bidi="embed">توسط <tspan direction="ltr" unicode-bidi="embed">.htaccess</tspan> بازنویسی</text>
-<rect fill="#f5f5f5" height="55" rx="5" stroke="#ddd" width="160" x="580" y="455"></rect>
-<text fill="#555" font-size="10" text-anchor="middle" x="660" y="480" direction="ltr" unicode-bidi="embed">/user/{id}</text>
-<text fill="#555" font-size="10" text-anchor="middle" x="660" y="498" direction="ltr" unicode-bidi="embed">mux.HandleFunc pattern</text>
-
-<!-- HTTP Request source on far right -->
-<rect fill="#00ADD8" filter="url(#shComp)" height="40" rx="6" width="90" x="780" y="260"></rect>
-<text fill="#fff" font-size="10" text-anchor="middle" x="825" y="278" direction="ltr" unicode-bidi="embed">HTTP</text>
-<text fill="#fff" font-size="10" text-anchor="middle" x="825" y="292" direction="ltr" unicode-bidi="embed">Request</text>
-<line stroke="#00ADD8" stroke-dasharray="4,3" stroke-width="1" x1="740" x2="780" y1="122" y2="270"></line>
-<line stroke="#00ADD8" stroke-dasharray="4,3" stroke-width="1" x1="740" x2="780" y1="198" y2="270"></line>
-<line stroke="#00ADD8" stroke-dasharray="4,3" stroke-width="1" x1="740" x2="780" y1="273" y2="270"></line>
-<line stroke="#00ADD8" stroke-dasharray="4,3" stroke-width="1" x1="740" x2="780" y1="348" y2="270"></line>
-<line stroke="#00ADD8" stroke-dasharray="4,3" stroke-width="1" x1="740" x2="780" y1="418" y2="270"></line>
-<line stroke="#00ADD8" stroke-dasharray="4,3" stroke-width="1" x1="740" x2="780" y1="483" y2="270"></line>
-
-<!-- Golden Rule bar -->
-<rect fill="#fff9c4" height="30" rx="5" stroke="#f9a825" stroke-width="1.5" width="810" x="20" y="530"></rect>
-<text fill="#f57f17" font-size="11" font-weight="bold" text-anchor="middle" x="425" y="550" direction="rtl" unicode-bidi="embed">قانون طلایی: همیشه <tspan direction="ltr" unicode-bidi="embed">Content-Type</tspan> هدر را قبل از پارس بررسی کنید — هرگز سعی نکنید <tspan direction="ltr" unicode-bidi="embed">JSON</tspan> را از یک فرم <tspan direction="ltr" unicode-bidi="embed">multipart</tspan> پارس کنید</text>
-</svg>
+    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
+    classDef phpBox fill:#f5f0fb,stroke:#777BB4,stroke-width:1.5px,color:#1f2937;
+    classDef neuBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
+    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
+    class HTTP,G1,G2,G3,G4,G5,G6 goBox;
+    class P1,P2,P3,P4,P5,P6 phpBox;
+    class M1,M2,M3,M4,M5,M6,S1,S2,S3,S4,S5,S6 neuBox;
+    class GOLD warnBox;</pre>
 <figcaption dir="rtl">شکل ۷-۳-ج: مقایسه روش‌های پارس ورودی درخواست در <bdi dir="ltr">Go</bdi> و <bdi dir="ltr">PHP</bdi> — شش روش اصلی استخراج داده</figcaption>
 </figure>
 

@@ -83,46 +83,30 @@
 </tbody>
 </table>
 <figure class="diagram" dir="ltr">
-<svg height="380" viewBox="0 0 620 380" width="620" xmlns="http://www.w3.org/2000/svg">
-<defs>
-<marker id="arrowhead1" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#555" points="0 0, 10 3.5, 0 7"></polygon></marker>
-<filter height="104%" id="shadow1" width="104%" x="-2%" y="-2%"><fedropshadow dx="1" dy="1" flood-opacity="0.15" stddeviation="2"></fedropshadow></filter>
-</defs>
-<rect fill="#fff" height="380" rx="8" width="620" x="0" y="0"></rect>
-<text fill="#333" font-size="16" font-weight="bold" text-anchor="middle" x="310" y="28" direction="rtl" unicode-bidi="embed">معماری وب‌سرور <tspan direction="ltr" unicode-bidi="embed">Go</tspan></text>
-<!-- Client -->
-<rect fill="#777BB4" filter="url(#shadow1)" height="50" rx="6" width="120" x="30" y="60"></rect>
-<text fill="#fff" font-size="13" text-anchor="middle" x="90" y="90" direction="ltr" unicode-bidi="embed">Client</text>
-<!-- Arrow -->
-<line marker-end="url(#arrowhead1)" stroke="#555" stroke-width="2" x1="150" x2="220" y1="85" y2="85"></line>
-<text fill="#666" font-size="10" text-anchor="middle" x="185" y="78" direction="ltr" unicode-bidi="embed">HTTP</text>
-<!-- net/http Server -->
-<rect fill="#00ADD8" filter="url(#shadow1)" height="70" rx="6" width="180" x="220" y="50"></rect>
-<text fill="#fff" font-size="13" text-anchor="middle" x="310" y="78" direction="ltr" unicode-bidi="embed">net/http Server</text>
-<text fill="#e0f7fa" font-size="11" text-anchor="middle" x="310" y="98" direction="ltr" unicode-bidi="embed">ServeMux + Timeouts</text>
-<!-- Middleware -->
-<rect fill="#4CAF50" filter="url(#shadow1)" height="50" rx="6" width="180" x="220" y="150"></rect>
-<text fill="#fff" font-size="12" text-anchor="middle" x="310" y="180" direction="ltr" unicode-bidi="embed">Middleware Chain</text>
-<line marker-end="url(#arrowhead1)" stroke="#555" stroke-width="2" x1="310" x2="310" y1="120" y2="150"></line>
-<!-- Handlers -->
-<rect fill="#FF9800" filter="url(#shadow1)" height="40" rx="6" width="100" x="170" y="240"></rect>
-<text fill="#fff" font-size="11" text-anchor="middle" x="220" y="265" direction="ltr" unicode-bidi="embed">homeHandler</text>
-<rect fill="#FF9800" filter="url(#shadow1)" height="40" rx="6" width="100" x="290" y="240"></rect>
-<text fill="#fff" font-size="11" text-anchor="middle" x="340" y="265" direction="ltr" unicode-bidi="embed">aboutHandler</text>
-<rect fill="#FF9800" filter="url(#shadow1)" height="40" rx="6" width="100" x="410" y="240"></rect>
-<text fill="#fff" font-size="11" text-anchor="middle" x="460" y="265" direction="ltr" unicode-bidi="embed">apiHandler</text>
-<line marker-end="url(#arrowhead1)" stroke="#555" stroke-width="2" x1="280" x2="220" y1="200" y2="240"></line>
-<line marker-end="url(#arrowhead1)" stroke="#555" stroke-width="2" x1="310" x2="340" y1="200" y2="240"></line>
-<line marker-end="url(#arrowhead1)" stroke="#555" stroke-width="2" x1="350" x2="460" y1="200" y2="240"></line>
-<!-- Graceful Shutdown -->
-<rect fill="#9C27B0" filter="url(#shadow1)" height="50" rx="6" width="150" x="440" y="50"></rect>
-<text fill="#fff" font-size="11" text-anchor="middle" x="515" y="75" direction="ltr" unicode-bidi="embed">Graceful Shutdown</text>
-<text fill="#e1bee7" font-size="10" text-anchor="middle" x="515" y="92" direction="ltr" unicode-bidi="embed">os.Signal + Context</text>
-<line stroke="#9C27B0" stroke-dasharray="5,5" stroke-width="2" x1="400" x2="440" y1="85" y2="75"></line>
-<!-- Response -->
-<line marker-end="url(#arrowhead1)" stroke="#555" stroke-dasharray="4,4" stroke-width="2" x1="150" x2="220" y1="105" y2="105"></line>
-<text fill="#666" font-size="10" text-anchor="middle" x="185" y="120" direction="ltr" unicode-bidi="embed">Response</text>
-</svg>
+<pre class="mermaid">flowchart TB
+    subgraph TOP["معماری وب‌سرور Go"]
+        direction TB
+        C["Client"] -->|"HTTP"| S
+    end
+    S["net/http Server<br/>ServeMux + Timeouts"] --> MW
+    subgraph MW["Middleware Chain"]
+        direction LR
+        M1["Middleware"] --> M2["Middleware"]
+    end
+    MW --> H1["homeHandler"]
+    MW --> H2["aboutHandler"]
+    MW --> H3["apiHandler"]
+    H1 --> GS["Graceful Shutdown<br/>os.Signal + Context"]
+    H2 --> GS
+    H3 --> GS
+    GS --> R["Response"]
+
+    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
+    classDef neuBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
+    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
+    class S,MW,M1,M2,H1,H2,H3 goBox;
+    class C,R neuBox;
+    class GS warnBox;</pre>
 <figcaption>شکل ۷-۱: معماری وب‌سرور <bdi dir="ltr">Go</bdi> با <bdi dir="ltr">ServeMux</bdi> ، <bdi dir="ltr">Middleware</bdi> و <bdi dir="ltr">Graceful</bdi> <bdi dir="ltr">Shutdown</bdi></figcaption>
 </figure>
 <p>پکیج استاندارد net/http مبنای ساخت وب‌سرور در Go است. در محیط production باید علاوه بر پاسخ‌دهی به درخواست‌ها، خطاها را مدیریت، لاگ‌گیری انجام دهید و سرور را به صورت امن راه‌اندازی کنید.</p>
@@ -506,54 +490,40 @@ handler := maxBodySizeMiddleware(1 &lt;&lt; 20)(mux)
 </figure>
 <p>علاوه بر تنظیمات <code dir="ltr">http.Server</code> ، می‌توانید تعداد اتصالات همزمان از هر <bdi dir="ltr">IP</bdi> را نیز محدود کنید. این کار با شمارش اتصالات فعال از هر آدرس و مسدود کردن موقت آدرس‌های مشکوک انجام می‌شود. همچنین استفاده از یک <bdi dir="ltr">proxy</bdi> معکوس (مثل <bdi dir="ltr">Nginx</bdi>) جلوی سرور <bdi dir="ltr">Go</bdi> لایه محافظتی اضافی در برابر این نوع حملات فراهم می‌کند.</p>
 <figure class="diagram" dir="ltr">
-<svg height="400" viewBox="0 0 650 400" width="650" xmlns="http://www.w3.org/2000/svg">
-<defs>
-<marker id="arrow1b" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#555" points="0 0, 10 3.5, 0 7"></polygon></marker>
-<filter height="104%" id="sh1b" width="104%" x="-2%" y="-2%"><fedropshadow dx="1" dy="1" flood-opacity="0.15" stddeviation="2"></fedropshadow></filter>
-</defs>
-<rect fill="#fafafa" height="400" rx="8" width="650" x="0" y="0"></rect>
-<text fill="#333" font-size="16" font-weight="bold" text-anchor="middle" x="325" y="28" direction="rtl" unicode-bidi="embed">معماری وب‌سرور امن <tspan direction="ltr" unicode-bidi="embed">Go</tspan></text>
-<!-- Client -->
-<rect fill="#777BB4" filter="url(#sh1b)" height="40" rx="6" width="90" x="30" y="50"></rect>
-<text fill="#fff" font-size="11" text-anchor="middle" x="75" y="75" direction="ltr" unicode-bidi="embed">Client</text>
-<!-- TLS -->
-<line marker-end="url(#arrow1b)" stroke="#555" stroke-width="2" x1="120" x2="160" y1="70" y2="70"></line>
-<rect fill="#4CAF50" filter="url(#sh1b)" height="40" rx="6" width="100" x="160" y="50"></rect>
-<text fill="#fff" font-size="10" text-anchor="middle" x="210" y="75" direction="ltr" unicode-bidi="embed">TLS/HTTPS</text>
-<!-- Middleware chain -->
-<line marker-end="url(#arrow1b)" stroke="#555" stroke-width="2" x1="260" x2="300" y1="70" y2="70"></line>
-<rect fill="#e91e63" filter="url(#sh1b)" height="35" rx="4" width="80" x="300" y="55"></rect>
-<text fill="#fff" font-size="9" text-anchor="middle" x="340" y="77" direction="ltr" unicode-bidi="embed">RateLimit</text>
-<line marker-end="url(#arrow1b)" stroke="#555" stroke-width="2" x1="380" x2="420" y1="70" y2="70"></line>
-<rect fill="#FF9800" filter="url(#sh1b)" height="35" rx="4" width="80" x="420" y="55"></rect>
-<text fill="#fff" font-size="9" text-anchor="middle" x="460" y="77" direction="ltr" unicode-bidi="embed">Headers</text>
-<line marker-end="url(#arrow1b)" stroke="#555" stroke-width="2" x1="500" x2="540" y1="70" y2="70"></line>
-<rect fill="#9C27B0" filter="url(#sh1b)" height="35" rx="4" width="80" x="540" y="55"></rect>
-<text fill="#fff" font-size="9" text-anchor="middle" x="580" y="77" direction="ltr" unicode-bidi="embed">CORS</text>
-<!-- Server box -->
-<rect fill="#00ADD8" filter="url(#sh1b)" height="50" rx="6" width="200" x="220" y="130"></rect>
-<text fill="#fff" font-size="12" text-anchor="middle" x="320" y="155" direction="ltr" unicode-bidi="embed">net/http Server</text>
-<text fill="#e0f7fa" font-size="9" text-anchor="middle" x="320" y="170" direction="ltr" unicode-bidi="embed">Timeouts + MaxHeaderBytes</text>
-<line marker-end="url(#arrow1b)" stroke="#555" stroke-width="2" x1="580" x2="580" y1="90" y2="130"></line>
-<!-- Security layers -->
-<rect fill="#FFF3E0" height="140" rx="6" stroke="#FF9800" width="280" x="30" y="220"></rect>
-<text fill="#E65100" font-size="12" font-weight="bold" text-anchor="middle" x="170" y="245" direction="rtl" unicode-bidi="embed">لایه‌های امنیتی</text>
-<text fill="#666" font-size="10" text-anchor="middle" x="170" y="268" direction="rtl" unicode-bidi="embed">• <tspan direction="ltr" unicode-bidi="embed">ReadHeaderTimeout</tspan> ← ضد <tspan direction="ltr" unicode-bidi="embed">Slowloris</tspan></text>
-<text fill="#666" font-size="10" text-anchor="middle" x="170" y="288" direction="rtl" unicode-bidi="embed">• <tspan direction="ltr" unicode-bidi="embed">MaxBytesReader</tspan> ← ضد حجم زیاد</text>
-<text fill="#666" font-size="10" text-anchor="middle" x="170" y="308" direction="rtl" unicode-bidi="embed">• <tspan direction="ltr" unicode-bidi="embed">Rate</tspan> <tspan direction="ltr" unicode-bidi="embed">Limiting</tspan> ← ضد <tspan direction="ltr" unicode-bidi="embed">DDoS</tspan></text>
-<text fill="#666" font-size="10" text-anchor="middle" x="170" y="328" direction="rtl" unicode-bidi="embed">• <tspan direction="ltr" unicode-bidi="embed">Security</tspan> <tspan direction="ltr" unicode-bidi="embed">Headers</tspan> ← ضد <tspan direction="ltr" unicode-bidi="embed">XSS/Clickjacking</tspan></text>
-<text fill="#666" font-size="10" text-anchor="middle" x="170" y="348" direction="rtl" unicode-bidi="embed">• <tspan direction="ltr" unicode-bidi="embed">TLS</tspan> 1.2+ ← رمزنگاری انتقال</text>
-<!-- Graceful shutdown -->
-<rect fill="#9C27B0" filter="url(#sh1b)" height="50" rx="6" width="200" x="360" y="220"></rect>
-<text fill="#fff" font-size="11" text-anchor="middle" x="460" y="242" direction="ltr" unicode-bidi="embed">Graceful Shutdown</text>
-<text fill="#e1bee7" font-size="9" text-anchor="middle" x="460" y="260" direction="ltr" unicode-bidi="embed">os.Signal + Context + Cleanup</text>
-<line marker-end="url(#arrow1b)" stroke="#9C27B0" stroke-dasharray="5,5" stroke-width="2" x1="420" x2="420" y1="180" y2="220"></line>
-<!-- Resource cleanup -->
-<rect fill="#4CAF50" filter="url(#sh1b)" height="60" rx="6" width="200" x="360" y="310"></rect>
-<text fill="#fff" font-size="10" text-anchor="middle" x="460" y="335" direction="rtl" unicode-bidi="embed">پاکسازی منابع</text>
-<text fill="#e8f5e9" font-size="9" text-anchor="middle" x="460" y="355" direction="rtl" unicode-bidi="embed">بستن <tspan direction="ltr" unicode-bidi="embed">DB</tspan>، <tspan direction="ltr" unicode-bidi="embed">Flush</tspan> لاگ، قطع <tspan direction="ltr" unicode-bidi="embed">Redis</tspan></text>
-<line marker-end="url(#arrow1b)" stroke="#4CAF50" stroke-width="2" x1="460" x2="460" y1="270" y2="310"></line>
-</svg>
+<pre class="mermaid">flowchart TB
+    C["Client"] -->|"TLS/HTTPS"| RL
+    subgraph RL["لایه‌های امنیتی"]
+        direction LR
+        RL1["RateLimit"] --> RL2["Headers"]
+        RL2 --> RL3["CORS"]
+    end
+    RL --> S["net/http Server<br/>Timeouts + MaxHeaderBytes"]
+    S --> GS["Graceful Shutdown<br/>os.Signal + Context + Cleanup"]
+    subgraph SEC["لایه‌های امنیتی — جزئیات"]
+        direction TB
+        SH1["• ReadHeaderTimeout ← ضد Slowloris"]
+        SH2["• MaxBytesReader ← ضد حجم زیاد"]
+        SH3["• Rate Limiting ← ضد DDoS"]
+        SH4["• Security Headers ← ضد XSS/Clickjacking"]
+        SH5["• TLS 1.2+ ← رمزنگاری انتقال"]
+    end
+    subgraph CLEAN["پاکسازی منابع"]
+        direction TB
+        CL1["بستن DB، Flush لاگ، قطع Redis"]
+    end
+    S -.-> SEC
+    GS --> CLEAN
+    CLEAN --> R["Response"]
+
+    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
+    classDef neuBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
+    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
+    classDef errBox fill:#fef2f2,stroke:#ef4444,stroke-width:1.5px,color:#1f2937;
+    class S,GS goBox;
+    class RL1,RL2,RL3 warnBox;
+    class SH1,SH2,SH3,SH4,SH5 warnBox;
+    class CL1 neuBox;
+    class C,R neuBox;</pre>
 <figcaption>شکل ۷-۱-ب: معماری کامل وب‌سرور امن <bdi dir="ltr">Go</bdi> با لایه‌های امنیتی و خاموش شدن آرام</figcaption>
 </figure>
 <h3 id="graceful-shutdown-با-پاکسازی-منابع">Graceful Shutdown با پاکسازی منابع</h3>
@@ -611,157 +581,87 @@ handler := maxBodySizeMiddleware(1 &lt;&lt; 20)(mux)
 <!-- ENRICHMENT: SVG — http.Server Internal Connection Handling    -->
 <!-- ═══════════════════════════════════════════════════════════════ -->
 <figure class="diagram" dir="ltr">
-<svg height="720" viewBox="0 0 880 720" width="880" xmlns="http://www.w3.org/2000/svg">
-<defs>
-<marker id="arrowEnr1a" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#555" points="0 0, 10 3.5, 0 7"></polygon></marker>
-<marker id="arrowEnr1b" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#e91e63" points="0 0, 10 3.5, 0 7"></polygon></marker>
-<filter height="104%" id="shEnr1" width="104%" x="-2%" y="-2%"><fedropshadow dx="1" dy="1" flood-opacity="0.15" stddeviation="2"></fedropshadow></filter>
-<linearGradient id="gradServer" x1="0" y1="0" x2="0" y2="1">
-<stop offset="0%" stop-color="#00ADD8"/>
-<stop offset="100%" stop-color="#0097A7"/>
-</linearGradient>
-</defs>
+<pre class="mermaid">flowchart TB
+    subgraph IN["کلاینت‌ها"]
+        direction LR
+        C1["Client 1"]
+        C2["Client 2"]
+        CN["Client N"]
+        CDOTS["⋯"]
+    end
+    C1 --> L["net.Listener<br/>Accept() → new conn"]
+    C2 --> L
+    CN --> L
+    CDOTS --> L
+    L --> G1["go c.serve(ctx) ← goroutine/conn"]
+    L --> G2["go c.serve(ctx) ← goroutine/conn"]
+    L --> G3["go c.serve(ctx) ← goroutine/conn"]
 
-<!-- Background -->
-<rect fill="#fafafa" height="720" rx="10" width="880" x="0" y="0"></rect>
+    subgraph TO["زمان‌بندی‌های محافظ"]
+        direction TB
+        TO1["ReadHeaderTimeout ~2s — ضد Slowloris"]
+        TO2["ReadTimeout ~5s — خواندن کامل درخواست"]
+        TO3["WriteTimeout"]
+    end
+    G1 --> RR["c.readRequest()<br/>http.Request"]
+    G2 --> RR
+    G3 --> RR
+    RR --> SM["ServeMux<br/>Longest prefix match"]
+    SM -->|"match"| HD["Handler<br/>ServeHTTP(w, r)<br/>http.ResponseWriter"]
 
-<!-- Title -->
-<text fill="#333" font-size="17" font-weight="bold" text-anchor="middle" x="440" y="30" direction="rtl" unicode-bidi="embed">چرخه‌ی حیات اتصال در <tspan direction="ltr" unicode-bidi="embed">http.Server</tspan></text>
+    subgraph KA["اتصال Keep-Alive"]
+        direction TB
+        KA1["پس از ارسال پاسخ، اتصال بسته نمی‌شود"]
+        KA2["منتظر درخواست بعدی روی همان TCP"]
+        KA3["اگر بدون درخواست بماند → IdleTimeout"]
+        KA4["IdleTimeout ~120s → conn.close()"]
+        KA1 --> KA2 --> KA3 --> KA4
+    end
+    HD -->|"next request"| KA
+    KA -.->|"next request"| RR
 
-<!-- ─── CLIENTS (top-left) ─── -->
-<rect fill="#777BB4" filter="url(#shEnr1)" height="42" rx="6" width="100" x="30" y="55"></rect>
-<text fill="#fff" font-size="12" text-anchor="middle" x="80" y="81" direction="ltr" unicode-bidi="embed">Client 1</text>
-<rect fill="#777BB4" filter="url(#shEnr1)" height="42" rx="6" width="100" x="30" y="110"></rect>
-<text fill="#fff" font-size="12" text-anchor="middle" x="80" y="136" direction="ltr" unicode-bidi="embed">Client 2</text>
-<rect fill="#777BB4" filter="url(#shEnr1)" height="42" rx="6" width="100" x="30" y="165"></rect>
-<text fill="#fff" font-size="12" text-anchor="middle" x="80" y="191" direction="ltr" unicode-bidi="embed">Client N</text>
+    subgraph AT["⚠ Slowloris Attack"]
+        direction TB
+        AT1["بدون ReadHeaderTimeout"]
+        AT2["مهاجم هدرها را کُند ارسال می‌کند"]
+        AT3["اتصال نیمه‌باز → تخلیه‌ی منابع سرور!"]
+        AT1 --> AT2 --> AT3
+    end
 
-<!-- Ellipsis between Client 2 and N -->
-<text fill="#777BB4" font-size="18" text-anchor="middle" x="80" y="158" direction="ltr" unicode-bidi="embed">⋯</text>
+    subgraph CFG["تنظیمات حیاتی http.Server"]
+        direction TB
+        CF1["server := &amp;http.Server&#123;"]
+        CF2["Addr: &quot;:8080&quot;,"]
+        CF3["ReadTimeout: 5 * time.Second,"]
+        CF4["ReadHeaderTimeout: 2 * time.Second,"]
+        CF5["WriteTimeout: 10 * time.Second,"]
+        CF6["IdleTimeout: 120 * time.Second,"]
+        CF7["MaxHeaderBytes: 1 &lt;&lt; 20, // 1MB"]
+        CF8["&#125;"]
+    end
 
-<!-- ─── ACCEPT → GOROUTINE SPAWN ─── -->
-<line marker-end="url(#arrowEnr1a)" stroke="#555" stroke-width="2" x1="130" x2="200" y1="100" y2="100"></line>
-<text fill="#666" font-size="10" text-anchor="middle" x="165" y="93" direction="ltr" unicode-bidi="embed">TCP</text>
+    subgraph NOTES["نکات کلیدی چرخه‌ی حیات اتصال"]
+        direction TB
+        NT1["① هر اتصال جدید = یک goroutine مستقل (نه thread سنگین)"]
+        NT2["② ServeMux با بلندترین تطبیق پیشوند، هندلر مناسب را انتخاب می‌کند"]
+        NT3["③ ReadHeaderTimeout مهم‌ترین سپر ضد حمله‌ی Slowloris است"]
+        NT4["④ Keep-Alive اتصال را باز نگه می‌دارد تا IdleTimeout تمام شود"]
+        NT5["⑤ بدون timeout، یک کلاینت کند می‌تواند goroutine را indefinitely اشغال کند"]
+        NT6["⑥ WriteTimeout باید بزرگ‌تر از زمان پردازش هندلر باشد"]
+        NT7["قانون طلایی: هر سرور production باید ReadTimeout و WriteTimeout صریح داشته باشد — بدون استثنا!"]
+    end
 
-<rect fill="url(#gradServer)" filter="url(#shEnr1)" height="155" rx="8" width="200" x="200" y="55"></rect>
-<text fill="#fff" font-size="13" font-weight="bold" text-anchor="middle" x="300" y="80" direction="ltr" unicode-bidi="embed">net.Listener</text>
-<text fill="#e0f7fa" font-size="10" text-anchor="middle" x="300" y="97" direction="ltr" unicode-bidi="embed">Accept() → new conn</text>
-
-<!-- Goroutine per connection -->
-<rect fill="#00ADD8" opacity="0.25" height="24" rx="4" width="170" x="215" y="108"></rect>
-<text fill="#006064" font-size="9" text-anchor="middle" x="300" y="125" direction="ltr" unicode-bidi="embed">go c.serve(ctx)  ← goroutine/conn</text>
-
-<rect fill="#00ADD8" opacity="0.25" height="24" rx="4" width="170" x="215" y="138"></rect>
-<text fill="#006064" font-size="9" text-anchor="middle" x="300" y="155" direction="ltr" unicode-bidi="embed">go c.serve(ctx)  ← goroutine/conn</text>
-
-<rect fill="#00ADD8" opacity="0.25" height="24" rx="4" width="170" x="215" y="168"></rect>
-<text fill="#006064" font-size="9" text-anchor="middle" x="300" y="185" direction="ltr" unicode-bidi="embed">go c.serve(ctx)  ← goroutine/conn</text>
-
-<!-- ─── TIMEOUT TIMELINE (right side of Listener) ─── -->
-<rect fill="#FFF3E0" height="155" rx="6" stroke="#FF9800" stroke-width="1.5" width="175" x="430" y="55"></rect>
-<text fill="#E65100" font-size="12" font-weight="bold" text-anchor="middle" x="517" y="78" direction="rtl" unicode-bidi="embed">زمان‌بندی‌های محافظ</text>
-
-<text fill="#FF9800" font-size="10" text-anchor="middle" x="517" y="102" direction="ltr" unicode-bidi="embed">ReadHeaderTimeout</text>
-<rect fill="#FF9800" height="8" rx="2" width="80" x="477" y="110"></rect>
-<text fill="#BF360C" font-size="9" text-anchor="middle" x="517" y="130" direction="ltr" unicode-bidi="embed">~2s  ضد Slowloris</text>
-
-<text fill="#FF9800" font-size="10" text-anchor="middle" x="517" y="150" direction="ltr" unicode-bidi="embed">ReadTimeout</text>
-<rect fill="#FF9800" height="8" rx="2" width="120" x="457" y="158"></rect>
-<text fill="#BF360C" font-size="9" text-anchor="middle" x="517" y="175" direction="ltr" unicode-bidi="embed">~5s  خواندن کامل درخواست</text>
-
-<text fill="#FF9800" font-size="10" text-anchor="middle" x="517" y="195" direction="ltr" unicode-bidi="embed">WriteTimeout</text>
-<rect fill="#FF9800" height="8" rx="2" width="140" x="447" y="200"></rect>
-
-<!-- ─── SLOWLORIS WARNING BOX ─── -->
-<rect fill="#FCE4EC" height="72" rx="6" stroke="#e91e63" stroke-width="1.5" width="175" x="640" y="55"></rect>
-<text fill="#e91e63" font-size="11" font-weight="bold" text-anchor="middle" x="727" y="78" direction="ltr" unicode-bidi="embed">⚠ Slowloris Attack</text>
-<text fill="#880E4F" font-size="9" text-anchor="middle" x="727" y="97" direction="rtl" unicode-bidi="embed">بدون <tspan direction="ltr" unicode-bidi="embed">ReadHeaderTimeout</tspan></text>
-<text fill="#880E4F" font-size="9" text-anchor="middle" x="727" y="112" direction="rtl" unicode-bidi="embed">مهاجم هدرها را کُند ارسال</text>
-<text fill="#880E4F" font-size="9" text-anchor="middle" x="727" y="127" direction="rtl" unicode-bidi="embed">می‌کند → اتصال نیمه‌باز →</text>
-<text fill="#880E4F" font-size="9" text-anchor="middle" x="727" y="142" direction="rtl" unicode-bidi="embed">تخلیه‌ی منابع سرور!</text>
-
-<!-- Connector from timeout box to slowloris -->
-<line stroke="#e91e63" stroke-dasharray="4,4" stroke-width="1.5" x1="605" x2="640" y1="90" y2="90"></line>
-
-<!-- ─── REQUEST → SERVEMUX → HANDLER FLOW ─── -->
-<!-- Connection serve flow -->
-<line marker-end="url(#arrowEnr1a)" stroke="#555" stroke-width="2" x1="300" x2="300" y1="210" y2="250"></line>
-<text fill="#666" font-size="10" text-anchor="middle" x="340" y="235" direction="ltr" unicode-bidi="embed">c.readRequest()</text>
-
-<!-- Request object -->
-<rect fill="#E3F2FD" filter="url(#shEnr1)" height="38" rx="6" width="160" x="220" y="250"></rect>
-<text fill="#1565C0" font-size="11" text-anchor="middle" x="300" y="274" direction="ltr" unicode-bidi="embed">http.Request</text>
-
-<!-- Arrow to ServeMux -->
-<line marker-end="url(#arrowEnr1a)" stroke="#555" stroke-width="2" x1="380" x2="460" y1="269" y2="269"></line>
-<text fill="#666" font-size="10" text-anchor="middle" x="420" y="262" direction="ltr" unicode-bidi="embed">ServeHTTP</text>
-
-<!-- ServeMux (Multiplexer) -->
-<rect fill="url(#gradServer)" filter="url(#shEnr1)" height="55" rx="8" width="180" x="460" y="242"></rect>
-<text fill="#fff" font-size="13" font-weight="bold" text-anchor="middle" x="550" y="266" direction="ltr" unicode-bidi="embed">ServeMux</text>
-<text fill="#e0f7fa" font-size="10" text-anchor="middle" x="550" y="284" direction="ltr" unicode-bidi="embed">Longest prefix match</text>
-
-<!-- Arrow to Handler -->
-<line marker-end="url(#arrowEnr1a)" stroke="#555" stroke-width="2" x1="640" x2="700" y1="269" y2="269"></line>
-<text fill="#666" font-size="10" text-anchor="middle" x="670" y="262" direction="ltr" unicode-bidi="embed">match</text>
-
-<!-- Handler -->
-<rect fill="#4CAF50" filter="url(#shEnr1)" height="55" rx="8" width="140" x="700" y="242"></rect>
-<text fill="#fff" font-size="12" font-weight="bold" text-anchor="middle" x="770" y="266" direction="ltr" unicode-bidi="embed">Handler</text>
-<text fill="#e8f5e9" font-size="10" text-anchor="middle" x="770" y="284" direction="ltr" unicode-bidi="embed">ServeHTTP(w, r)</text>
-
-<!-- ResponseWriter back -->
-<line marker-end="url(#arrowEnr1a)" stroke="#4CAF50" stroke-dasharray="5,5" stroke-width="2" x1="770" x2="770" y1="297" y2="340"></line>
-<rect fill="#E8F5E9" height="34" rx="6" width="150" x="695" y="340"></rect>
-<text fill="#2E7D32" font-size="10" text-anchor="middle" x="770" y="362" direction="ltr" unicode-bidi="embed">http.ResponseWriter</text>
-
-<!-- ─── KEEP-ALIVE / CONNECTION POOL ─── -->
-<rect fill="#E0F7FA" height="110" rx="6" stroke="#00ADD8" stroke-width="1.5" width="250" x="200" y="320"></rect>
-<text fill="#006064" font-size="12" font-weight="bold" text-anchor="middle" x="325" y="345" direction="rtl" unicode-bidi="embed">اتصال <tspan direction="ltr" unicode-bidi="embed">Keep-Alive</tspan></text>
-
-<text fill="#00838F" font-size="10" text-anchor="middle" x="325" y="368" direction="rtl" unicode-bidi="embed">پس از ارسال پاسخ، اتصال بسته نمی‌شود</text>
-<text fill="#00838F" font-size="10" text-anchor="middle" x="325" y="386" direction="rtl" unicode-bidi="embed">منتظر درخواست بعدی روی همان <tspan direction="ltr" unicode-bidi="embed">TCP</tspan></text>
-<text fill="#00838F" font-size="10" text-anchor="middle" x="325" y="404" direction="rtl" unicode-bidi="embed">اگر بدون درخواست بماند → <tspan direction="ltr" unicode-bidi="embed">IdleTimeout</tspan></text>
-<text fill="#00838F" font-size="10" text-anchor="middle" x="325" y="422" direction="ltr" unicode-bidi="embed">→ conn.close()</text>
-
-<!-- IdleTimeout bar -->
-<rect fill="#FF9800" opacity="0.3" height="10" rx="2" width="200" x="225" y="428"></rect>
-<text fill="#BF360C" font-size="9" text-anchor="middle" x="325" y="438" direction="ltr" unicode-bidi="embed">IdleTimeout ~120s</text>
-
-<!-- Arrow from keep-alive back to readRequest (loop) -->
-<path d="M 200 380 Q 160 380 160 310 Q 160 269 220 269" fill="none" stroke="#00ADD8" stroke-dasharray="5,3" stroke-width="1.5" marker-end="url(#arrowEnr1a)"></path>
-<text fill="#00ADD8" font-size="9" text-anchor="middle" x="145" y="330" direction="ltr" unicode-bidi="embed">next request</text>
-
-<!-- ─── SERVER CONFIG BOX ─── -->
-<rect fill="#E8EAF6" height="180" rx="8" stroke="#3F51B5" stroke-width="1.5" width="310" x="30" y="470"></rect>
-<text fill="#1A237E" font-size="13" font-weight="bold" text-anchor="middle" x="185" y="495" direction="rtl" unicode-bidi="embed">تنظیمات حیاتی <tspan direction="ltr" unicode-bidi="embed">http.Server</tspan></text>
-
-<!-- Code snippet inside box -->
-<rect fill="#fff" height="138" rx="4" width="285" x="42" y="505"></rect>
-<text fill="#333" font-family="Fira Code, monospace" font-size="9.5" x="52" y="522" direction="ltr" unicode-bidi="embed">server := &amp;http.Server{</text>
-<text fill="#00ADD8" font-family="Fira Code, monospace" font-size="9.5" x="62" y="538" direction="ltr" unicode-bidi="embed">Addr:              ":8080",</text>
-<text fill="#FF9800" font-family="Fira Code, monospace" font-size="9.5" x="62" y="554" direction="ltr" unicode-bidi="embed">ReadTimeout:       5 * time.Second,</text>
-<text fill="#FF9800" font-family="Fira Code, monospace" font-size="9.5" x="62" y="570" direction="ltr" unicode-bidi="embed">ReadHeaderTimeout: 2 * time.Second,</text>
-<text fill="#FF9800" font-family="Fira Code, monospace" font-size="9.5" x="62" y="586" direction="ltr" unicode-bidi="embed">WriteTimeout:      10 * time.Second,</text>
-<text fill="#FF9800" font-family="Fira Code, monospace" font-size="9.5" x="62" y="602" direction="ltr" unicode-bidi="embed">IdleTimeout:       120 * time.Second,</text>
-<text fill="#00ADD8" font-family="Fira Code, monospace" font-size="9.5" x="62" y="618" direction="ltr" unicode-bidi="embed">MaxHeaderBytes:    1 &lt;&lt; 20,  // 1MB</text>
-<text fill="#333" font-family="Fira Code, monospace" font-size="9.5" x="52" y="634" direction="ltr" unicode-bidi="embed">}</text>
-
-<!-- ─── INFO BOX: Key Points ─── -->
-<rect fill="#E8F5E9" height="180" rx="8" stroke="#4CAF50" stroke-width="1.5" width="490" x="360" y="470"></rect>
-<text fill="#1B5E20" font-size="13" font-weight="bold" text-anchor="middle" x="605" y="495" direction="rtl" unicode-bidi="embed">نکات کلیدی چرخه‌ی حیات اتصال</text>
-
-<text fill="#2E7D32" font-size="10.5" text-anchor="middle" x="605" y="520" direction="rtl" unicode-bidi="embed">① هر اتصال جدید = یک <tspan direction="ltr" unicode-bidi="embed">goroutine</tspan> مستقل (نه <tspan direction="ltr" unicode-bidi="embed">thread</tspan> سنگین)</text>
-<text fill="#2E7D32" font-size="10.5" text-anchor="middle" x="605" y="542" direction="rtl" unicode-bidi="embed">② <tspan direction="ltr" unicode-bidi="embed">ServeMux</tspan> با بلندترین تطبیق پیشوند، هندلر مناسب را انتخاب می‌کند</text>
-<text fill="#2E7D32" font-size="10.5" text-anchor="middle" x="605" y="564" direction="rtl" unicode-bidi="embed">③ <tspan direction="ltr" unicode-bidi="embed">ReadHeaderTimeout</tspan> مهم‌ترین سپر ضد حمله‌ی <tspan direction="ltr" unicode-bidi="embed">Slowloris</tspan> است</text>
-<text fill="#2E7D32" font-size="10.5" text-anchor="middle" x="605" y="586" direction="rtl" unicode-bidi="embed">④ <tspan direction="ltr" unicode-bidi="embed">Keep-Alive</tspan> اتصال را باز نگه می‌دارد تا <tspan direction="ltr" unicode-bidi="embed">IdleTimeout</tspan> تمام شود</text>
-<text fill="#2E7D32" font-size="10.5" text-anchor="middle" x="605" y="608" direction="rtl" unicode-bidi="embed">⑤ بدون <tspan direction="ltr" unicode-bidi="embed">timeout</tspan> ، یک کلاینت کند می‌تواند <tspan direction="ltr" unicode-bidi="embed">goroutine</tspan> را indefinitely اشغال کند</text>
-<text fill="#2E7D32" font-size="10.5" text-anchor="middle" x="605" y="630" direction="rtl" unicode-bidi="embed">⑥ <tspan direction="ltr" unicode-bidi="embed">WriteTimeout</tspan> باید بزرگ‌تر از زمان پردازش هندلر باشد</text>
-
-<!-- ─── GOLDEN RULE BAR ─── -->
-<rect fill="#FF9800" height="36" rx="6" width="820" x="30" y="672"></rect>
-<text fill="#fff" font-size="12" font-weight="bold" text-anchor="middle" x="440" y="695" direction="rtl" unicode-bidi="embed">قانون طلایی: هر سرور <tspan direction="ltr" unicode-bidi="embed">production</tspan> باید <tspan direction="ltr" unicode-bidi="embed">ReadTimeout</tspan> و <tspan direction="ltr" unicode-bidi="embed">WriteTimeout</tspan> صریح داشته باشد — بدون استثنا!</text>
-</svg>
+    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
+    classDef neuBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
+    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
+    classDef errBox fill:#fef2f2,stroke:#ef4444,stroke-width:1.5px,color:#1f2937;
+    class C1,C2,CN,CDOTS,L neuBox;
+    class G1,G2,G3,RR,SM,HD goBox;
+    class TO1,TO2,TO3 warnBox;
+    class KA1,KA2,KA3,KA4 neuBox;
+    class AT1,AT2,AT3 errBox;
+    class CF1,CF2,CF3,CF4,CF5,CF6,CF7,CF8 neuBox;
+    class NT1,NT2,NT3,NT4,NT5,NT6,NT7 warnBox;</pre>
 <figcaption>شکل ۷-۱-ج: چرخه‌ی حیات اتصال در <bdi dir="ltr">http.Server</bdi> — از پذیرش اتصال تا مدیریت درخواست، زمان‌بندی‌ها و رفتار <bdi dir="ltr">Keep-Alive</bdi></figcaption>
 </figure>
 
