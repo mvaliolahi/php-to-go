@@ -71,49 +71,34 @@
 <h2 id="فصل-هشتم">فصل هشتم</h2>
 
 <figure class="diagram" dir="ltr">
-<svg height="420" viewBox="0 0 620 420" width="620" xmlns="http://www.w3.org/2000/svg">
-<defs>
-<marker id="arrowC8" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#555" points="0 0, 10 3.5, 0 7"></polygon></marker>
-<filter height="104%" id="shC8" width="104%" x="-2%" y="-2%"><fedropshadow dx="1" dy="1" flood-opacity="0.15" stddeviation="2"></fedropshadow></filter>
-</defs>
-<rect fill="#fafafa" height="420" rx="8" width="620" x="0" y="0"></rect>
-<text fill="#333" font-size="16" font-weight="bold" text-anchor="middle" x="310" y="28" direction="rtl" unicode-bidi="embed">نقشه‌ی فصل ۸ — پایگاه داده در <tspan direction="ltr" unicode-bidi="embed">Go</tspan></text>
+<pre class="mermaid">flowchart TB
+    Title["نقشه‌ی فصل ۸ — پایگاه داده در Go"]
+    M1["۸.۱ Migration"]
+    M2["۸.۲ اتصال و Pool"]
+    M3["۸.۳ اجرای کوئری"]
+    M4["۸.۴ نگاشت Struct"]
+    M5["۸.۵ تراکنش‌ها"]
+    M6["۸.۶ مدیریت خطا"]
+    M7["۸.۷ JSON/Array/Time"]
+    M8["۸.۸ Redis"]
+    Core["هسته‌ی مشترک: database/sql + درایور + context.Context"]
 
-<rect fill="#00ADD8" filter="url(#shC8)" height="36" rx="6" width="160" x="230" y="50"></rect>
-<text fill="#fff" font-size="11" text-anchor="middle" x="310" y="73" direction="rtl" unicode-bidi="embed">۸.۱ <tspan direction="ltr" unicode-bidi="embed">Migration</tspan></text>
+    Title --> M1 --> M2 --> M3 --> M4 --> M5 --> M6 --> M7 --> M8
+    M1 ~~~ Core
+    M2 ~~~ Core
+    M3 ~~~ Core
+    M4 ~~~ Core
+    M5 ~~~ Core
+    M6 ~~~ Core
+    M7 ~~~ Core
+    M8 --> Core
 
-<rect fill="#4CAF50" filter="url(#shC8)" height="36" rx="6" width="160" x="30" y="120"></rect>
-<text fill="#fff" font-size="11" text-anchor="middle" x="110" y="143" direction="rtl" unicode-bidi="embed">۸.۲ اتصال و <tspan direction="ltr" unicode-bidi="embed">Pool</tspan></text>
-
-<rect fill="#FF9800" filter="url(#shC8)" height="36" rx="6" width="160" x="230" y="120"></rect>
-<text fill="#fff" font-size="11" text-anchor="middle" x="310" y="143" direction="rtl" unicode-bidi="embed">۸.۳ اجرای کوئری</text>
-
-<rect fill="#9C27B0" filter="url(#shC8)" height="36" rx="6" width="160" x="430" y="120"></rect>
-<text fill="#fff" font-size="11" text-anchor="middle" x="510" y="143" direction="rtl" unicode-bidi="embed">۸.۴ نگاشت <tspan direction="ltr" unicode-bidi="embed">Struct</tspan></text>
-
-<rect fill="#e91e63" filter="url(#shC8)" height="36" rx="6" width="160" x="30" y="190"></rect>
-<text fill="#fff" font-size="11" text-anchor="middle" x="110" y="213" direction="rtl" unicode-bidi="embed">۸.۵ تراکنش‌ها</text>
-
-<rect fill="#777BB4" filter="url(#shC8)" height="36" rx="6" width="160" x="230" y="190"></rect>
-<text fill="#fff" font-size="11" text-anchor="middle" x="310" y="213" direction="rtl" unicode-bidi="embed">۸.۶ مدیریت خطا</text>
-
-<rect fill="#00897B" filter="url(#shC8)" height="36" rx="6" width="160" x="430" y="190"></rect>
-<text fill="#fff" font-size="11" text-anchor="middle" x="510" y="213" direction="rtl" unicode-bidi="embed">۸.۷ <tspan direction="ltr" unicode-bidi="embed">JSON/Array/Time</tspan></text>
-
-<rect fill="#DC382D" filter="url(#shC8)" height="36" rx="6" width="160" x="230" y="260"></rect>
-<text fill="#fff" font-size="11" text-anchor="middle" x="310" y="283" direction="rtl" unicode-bidi="embed">۸.۸ <tspan direction="ltr" unicode-bidi="embed">Redis</tspan></text>
-
-<line marker-end="url(#arrowC8)" stroke="#555" stroke-width="1.5" x1="310" x2="110" y1="86" y2="120"></line>
-<line marker-end="url(#arrowC8)" stroke="#555" stroke-width="1.5" x1="310" x2="310" y1="86" y2="120"></line>
-<line marker-end="url(#arrowC8)" stroke="#555" stroke-width="1.5" x1="310" x2="510" y1="86" y2="120"></line>
-<line marker-end="url(#arrowC8)" stroke="#555" stroke-width="1.5" x1="110" x2="110" y1="156" y2="190"></line>
-<line marker-end="url(#arrowC8)" stroke="#555" stroke-width="1.5" x1="310" x2="310" y1="156" y2="190"></line>
-<line marker-end="url(#arrowC8)" stroke="#555" stroke-width="1.5" x1="510" x2="510" y1="156" y2="190"></line>
-<line marker-end="url(#arrowC8)" stroke="#555" stroke-width="1.5" x1="310" x2="310" y1="226" y2="260"></line>
-
-<rect fill="#FFF3E0" height="45" rx="6" stroke="#FF9800" width="400" x="110" y="330"></rect>
-<text fill="#E65100" font-size="11" text-anchor="middle" x="310" y="358" direction="rtl" unicode-bidi="embed">هسته‌ی مشترک: <tspan direction="ltr" unicode-bidi="embed">database/sql</tspan>+ درایور + <tspan direction="ltr" unicode-bidi="embed">context.Context</tspan></text>
-</svg>
+    classDef titleBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:2px,color:#1f2937,font-weight:bold;
+    classDef stepBox  fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
+    classDef coreBox   fill:#ecfdf5,stroke:#10b981,stroke-width:2px,color:#1f2937,font-weight:bold;
+    class Title titleBox;
+    class M1,M2,M3,M4,M5,M6,M7,M8 stepBox;
+    class Core coreBox;</pre>
 <figcaption>شکل ۸-۰: نقشه‌ی راه فصل پایگاه داده — از <bdi dir="ltr">Migration</bdi> تا <bdi dir="ltr">Redis</bdi></figcaption>
 </figure>
 

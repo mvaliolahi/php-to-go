@@ -71,46 +71,27 @@
 <h2 id="اجرای-query">اجرای Query</h2>
 
 <figure class="diagram" dir="ltr">
-<svg height="350" viewBox="0 0 580 350" width="580" xmlns="http://www.w3.org/2000/svg">
-<defs>
-<marker id="arrow1601" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#555" points="0 0, 10 3.5, 0 7"></polygon></marker>
-<filter height="104%" id="sh1601" width="104%" x="-2%" y="-2%"><fedropshadow dx="1" dy="1" flood-opacity="0.15" stddeviation="2"></fedropshadow></filter>
-</defs>
-<rect fill="#fafafa" height="350" rx="8" width="580" x="0" y="0"></rect>
-<text fill="#333" font-size="16" font-weight="bold" text-anchor="middle" x="290" y="28" direction="rtl" unicode-bidi="embed">انواع کوئری و جریان اجرا در <tspan direction="ltr" unicode-bidi="embed">database/sql</tspan></text>
+<pre class="mermaid">flowchart TB
+    Title["انواع کوئری و جریان اجرا در database/sql"]
 
-<!-- Query -->
-<rect fill="#4CAF50" filter="url(#sh1601)" height="55" rx="6" width="160" x="30" y="55"></rect>
-<text fill="#fff" font-size="11" text-anchor="middle" x="110" y="78" direction="ltr" unicode-bidi="embed">db.Query()</text>
-<text fill="#e8f5e9" font-size="9" text-anchor="middle" x="110" y="95" direction="rtl" unicode-bidi="embed">چند سطر + <tspan direction="ltr" unicode-bidi="embed">rows.Next</tspan>()</text>
+    Q1["db.Query()<br/>چند سطر + rows.Next()"]
+    Q2["db.QueryRow()<br/>یک سطر + .Scan()"]
+    Q3["db.Exec()<br/>INSERT/UPDATE/DELETE"]
+    Q4["db.Prepare() → stmt.Exec()<br/>کوئری‌های تکراری + امنیت"]
+    Q5["QueryContext / ExecContext<br/>کنترل Timeout"]
+    Q6["sqlx: Named Query + Struct Scan"]
 
-<!-- QueryRow -->
-<rect fill="#00ADD8" filter="url(#sh1601)" height="55" rx="6" width="160" x="210" y="55"></rect>
-<text fill="#fff" font-size="11" text-anchor="middle" x="290" y="78" direction="ltr" unicode-bidi="embed">db.QueryRow()</text>
-<text fill="#e0f7fa" font-size="9" text-anchor="middle" x="290" y="95" direction="rtl" unicode-bidi="embed">یک سطر + .<tspan direction="ltr" unicode-bidi="embed">Scan</tspan>()</text>
+    Title --> Q1
+    Title --> Q2
+    Title --> Q3
+    Title --> Q4
+    Title --> Q5
+    Title --> Q6
 
-<!-- Exec -->
-<rect fill="#FF9800" filter="url(#sh1601)" height="55" rx="6" width="160" x="390" y="55"></rect>
-<text fill="#fff" font-size="11" text-anchor="middle" x="470" y="78" direction="ltr" unicode-bidi="embed">db.Exec()</text>
-<text fill="#fff3e0" font-size="9" text-anchor="middle" x="470" y="95" direction="ltr" unicode-bidi="embed">INSERT/UPDATE/DELETE</text>
-
-<!-- Prepare -->
-<rect fill="#9C27B0" filter="url(#sh1601)" height="50" rx="6" width="280" x="150" y="155"></rect>
-<text fill="#fff" font-size="11" text-anchor="middle" x="290" y="178" direction="ltr" unicode-bidi="embed">db.Prepare() → stmt.Exec()</text>
-<text fill="#e1bee7" font-size="9" text-anchor="middle" x="290" y="195" direction="rtl" unicode-bidi="embed">کوئری‌های تکراری + امنیت</text>
-
-<!-- Context -->
-<rect fill="#e91e63" filter="url(#sh1601)" height="40" rx="6" width="280" x="150" y="230"></rect>
-<text fill="#fff" font-size="11" text-anchor="middle" x="290" y="255" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">QueryContext</tspan> / <tspan direction="ltr" unicode-bidi="embed">ExecContext</tspan> → کنترل <tspan direction="ltr" unicode-bidi="embed">Timeout</tspan></text>
-
-<!-- sqlx -->
-<rect fill="#00897B" filter="url(#sh1601)" height="40" rx="6" width="280" x="150" y="290"></rect>
-<text fill="#fff" font-size="11" text-anchor="middle" x="290" y="315" direction="ltr" unicode-bidi="embed">sqlx: Named Query + Struct Scan</text>
-
-<line stroke="#555" stroke-width="1.5" x1="110" x2="220" y1="110" y2="155"></line>
-<line stroke="#555" stroke-width="1.5" x1="290" x2="290" y1="110" y2="155"></line>
-<line stroke="#555" stroke-width="1.5" x1="470" x2="360" y1="110" y2="155"></line>
-</svg>
+    classDef titleBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:2px,color:#1f2937,font-weight:bold;
+    classDef goBox   fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
+    class Title titleBox;
+    class Q1,Q2,Q3,Q4,Q5,Q6 goBox;</pre>
 <figcaption dir="rtl">شکل ۸-۳: انواع متدهای اجرای کوئری و جریان اجرا</figcaption>
 </figure>
 
@@ -157,103 +138,76 @@ if err := rows.Err(); err != nil {
 <p><strong>نکات:</strong> <bdi dir="ltr">rows.Close()</bdi> را فراموش نکنید. بررسی خطا بعد از <bdi dir="ltr">rows.Next()</bdi> با <bdi dir="ltr">rows.Err()</bdi> ضروری است.</p>
 
 <figure class="diagram" dir="ltr">
-<svg height="380" viewBox="0 0 760 380" width="760" xmlns="http://www.w3.org/2000/svg">
-<defs>
-<marker id="arrowP803" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#555" points="0 0, 10 3.5, 0 7"></polygon></marker>
-<filter height="104%" id="shP803" width="104%" x="-2%" y="-2%"><fedropshadow dx="1" dy="1" flood-opacity="0.15" stddeviation="2"></fedropshadow></filter>
-</defs>
-<rect fill="#fafafa" height="380" rx="8" width="760" x="0" y="0"></rect>
-<text fill="#333" font-size="15" font-weight="bold" text-anchor="middle" x="330" y="25" direction="rtl" unicode-bidi="embed">خط لوله اجرای <tspan direction="ltr" unicode-bidi="embed">Query</tspan> در <tspan direction="ltr" unicode-bidi="embed">database/sql</tspan></text>
+<pre class="mermaid">flowchart TB
+    Title["خط لوله اجرای Query در database/sql"]
 
-<!-- Step 1: db.Prepare() -->
-<rect fill="#00ADD8" filter="url(#shP803)" height="55" rx="6" width="120" x="20" y="55"></rect>
-<text fill="#fff" font-size="11" font-weight="bold" text-anchor="middle" x="80" y="78" direction="ltr" unicode-bidi="embed">db.Prepare()</text>
-<text fill="#e0f7fa" font-size="8" text-anchor="middle" x="80" y="96" direction="rtl" unicode-bidi="embed">اتصال پارامترها</text>
+    subgraph PIPE["خط لوله اجرا"]
+        direction TB
+        P1["db.Prepare()<br/>اتصال پارامترها"]
+        P2["stmt.Query()<br/>ایجاد cursor"]
+        P3["rows.Next()<br/>پیمایش سطرها"]
+        P4["rows.Scan()<br/>تبدیل نوع"]
+        P5["rows.Close()<br/>آزادسازی منابع"]
+        P1 -- "کوئری فقط ۱ بار پارس می‌شود" --> P2
+        P2 -- "مقادیر جایگزین پارامترها<br/>ایجاد cursor" --> P3
+        P3 -- "loop: true → سطر بعدی<br/>حلقه تکرار برای هر سطر" --> P4
+        P4 -- "SQL → Go types<br/>تبدیل نوع‌ها در Scan" --> P5
+        P5 -- "بستن اتصال cursor" --> END_P[" "]
+    end
 
-<!-- Arrow 1→2 -->
-<line marker-end="url(#arrowP803)" stroke="#555" stroke-width="2" x1="140" x2="168" y1="82" y2="82"></line>
+    subgraph TYPES["تبدیل نوع‌ها"]
+        direction TB
+        T1["INT → int"]
+        T2["VARCHAR → string"]
+        T3["TIMESTAMP → time.Time"]
+        T4["NULL ← نیاز به sql.Null*"]
+    end
 
-<!-- Step 2: stmt.Query() -->
-<rect fill="#00ADD8" filter="url(#shP803)" height="55" rx="6" width="120" x="170" y="55"></rect>
-<text fill="#fff" font-size="11" font-weight="bold" text-anchor="middle" x="230" y="78" direction="ltr" unicode-bidi="embed">stmt.Query()</text>
-<text fill="#e0f7fa" font-size="8" text-anchor="middle" x="230" y="96" direction="rtl" unicode-bidi="embed">ایجاد <tspan direction="ltr" unicode-bidi="embed">cursor</tspan></text>
+    subgraph GO_CODE["Go Code Pattern"]
+        direction TB
+        G1["stmt, _ := db.Prepare(&quot;SELECT ... WHERE id=$1&quot;)"]
+        G2["defer stmt.Close()"]
+        G3["rows, _ := stmt.Query(42)"]
+        G4["defer rows.Close()"]
+        G5["for rows.Next() { rows.Scan(&amp;id, &amp;name) }"]
+        G1 --> G2 --> G3 --> G4 --> G5
+    end
 
-<!-- Arrow 2→3 -->
-<line marker-end="url(#arrowP803)" stroke="#555" stroke-width="2" x1="290" x2="318" y1="82" y2="82"></line>
+    subgraph ERRORS["خطاهای رایج"]
+        direction TB
+        E1["فراموش کردن rows.Close() → نشت اتصال"]
+        E2["عدم بررسی rows.Err() → از دست رفتن خطا"]
+    end
 
-<!-- Step 3: rows.Next() -->
-<rect fill="#00ADD8" filter="url(#shP803)" height="55" rx="6" width="120" x="320" y="55"></rect>
-<text fill="#fff" font-size="11" font-weight="bold" text-anchor="middle" x="380" y="78" direction="ltr" unicode-bidi="embed">rows.Next()</text>
-<text fill="#e0f7fa" font-size="8" text-anchor="middle" x="380" y="96" direction="rtl" unicode-bidi="embed">پیمایش سطرها</text>
+    subgraph PHP_CODE["PHP PDO Equivalent"]
+        direction TB
+        PH1["$stmt = $pdo->prepare(); $stmt->execute();"]
+    end
 
-<!-- Arrow 3→4 -->
-<line marker-end="url(#arrowP803)" stroke="#555" stroke-width="2" x1="440" x2="468" y1="82" y2="82"></line>
+    Golden["قانون طلایی: همیشه rows.Close() را با defer فراخوانی کنید و بعد از حلقه rows.Err() را بررسی کنید"]
 
-<!-- Step 4: rows.Scan() -->
-<rect fill="#00ADD8" filter="url(#shP803)" height="55" rx="6" width="120" x="470" y="55"></rect>
-<text fill="#fff" font-size="11" font-weight="bold" text-anchor="middle" x="530" y="78" direction="ltr" unicode-bidi="embed">rows.Scan()</text>
-<text fill="#e0f7fa" font-size="8" text-anchor="middle" x="530" y="96" direction="rtl" unicode-bidi="embed">تبدیل نوع</text>
+    Title --> PIPE
+    PIPE --> TYPES
+    PIPE --> GO_CODE
+    PIPE --> ERRORS
+    PIPE --> PHP_CODE
+    ERRORS --> Golden
 
-<!-- Arrow 4→5 -->
-<line marker-end="url(#arrowP803)" stroke="#555" stroke-width="2" x1="590" x2="618" y1="82" y2="82"></line>
-
-<!-- Step 5: rows.Close() -->
-<rect fill="#00ADD8" filter="url(#shP803)" height="55" rx="6" width="120" x="620" y="55"></rect>
-<text fill="#fff" font-size="11" font-weight="bold" text-anchor="middle" x="680" y="78" direction="ltr" unicode-bidi="embed">rows.Close()</text>
-<text fill="#e0f7fa" font-size="8" text-anchor="middle" x="680" y="96" direction="rtl" unicode-bidi="embed">آزادسازی منابع</text>
-
-<!-- Annotations below each step -->
-<rect fill="#E3F2FD" height="30" rx="4" width="120" x="20" y="120"></rect>
-<text fill="#1565C0" font-size="7.5" text-anchor="middle" x="80" y="139" direction="rtl" unicode-bidi="embed">کوئری فقط ۱ بار پارس می‌شود</text>
-
-<rect fill="#E3F2FD" height="30" rx="4" width="120" x="170" y="120"></rect>
-<text fill="#1565C0" font-size="7.5" text-anchor="middle" x="230" y="139" direction="rtl" unicode-bidi="embed">مقادیر جایگزین پارامترها</text>
-
-<rect fill="#E3F2FD" height="30" rx="4" width="120" x="320" y="120"></rect>
-<text fill="#1565C0" font-size="7.5" text-anchor="middle" x="380" y="139" direction="ltr" unicode-bidi="embed">loop: true → سطر بعدی</text>
-
-<rect fill="#E3F2FD" height="30" rx="4" width="120" x="470" y="120"></rect>
-<text fill="#1565C0" font-size="7.5" text-anchor="middle" x="530" y="139" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">SQL</tspan> → <tspan direction="ltr" unicode-bidi="embed">Go types</tspan></text>
-
-<rect fill="#E3F2FD" height="30" rx="4" width="120" x="620" y="120"></rect>
-<text fill="#1565C0" font-size="7.5" text-anchor="middle" x="680" y="139" direction="rtl" unicode-bidi="embed">بستن اتصال <tspan direction="ltr" unicode-bidi="embed">cursor</tspan></text>
-
-<!-- Loop arrow for Next/Scan -->
-<path d="M 380 110 Q 380 165 455 165 Q 530 165 530 110" fill="none" stroke="#00ADD8" stroke-width="1.5" stroke-dasharray="4,3"></path>
-<text fill="#00ADD8" font-size="8" text-anchor="middle" x="455" y="178" direction="rtl" unicode-bidi="embed">حلقه تکرار برای هر سطر</text>
-
-<!-- Info boxes on right side -->
-<rect fill="#fff" height="85" rx="4" stroke="#00ADD8" stroke-width="1.5" width="190" x="555" y="200"></rect>
-<text fill="#00ADD8" font-size="9" font-weight="bold" text-anchor="middle" x="650" y="218" direction="rtl" unicode-bidi="embed">تبدیل نوع‌ها در <tspan direction="ltr" unicode-bidi="embed">Scan</tspan></text>
-<text fill="#333" font-size="7.5" text-anchor="middle" x="650" y="234" direction="ltr" unicode-bidi="embed">INT → int</text>
-<text fill="#333" font-size="7.5" text-anchor="middle" x="650" y="248" direction="ltr" unicode-bidi="embed">VARCHAR → string</text>
-<text fill="#333" font-size="7.5" text-anchor="middle" x="650" y="262" direction="ltr" unicode-bidi="embed">TIMESTAMP → time.Time</text>
-<text fill="#e91e63" font-size="7.5" text-anchor="middle" x="650" y="278" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">NULL</tspan> ← نیاز به <tspan direction="ltr" unicode-bidi="embed">sql.Null*</tspan></text>
-
-<!-- Code example box -->
-<rect fill="#fff" height="85" rx="4" stroke="#00ADD8" stroke-width="1" width="280" x="20" y="200"></rect>
-<text fill="#00ADD8" font-size="9" font-weight="bold" text-anchor="middle" x="160" y="218" direction="ltr" unicode-bidi="embed">Go Code Pattern</text>
-<text fill="#333" font-size="7" text-anchor="start" x="30" y="234" direction="ltr" unicode-bidi="embed">stmt, _ := db.Prepare("SELECT ... WHERE id=$1")</text>
-<text fill="#333" font-size="7" text-anchor="start" x="30" y="247" direction="ltr" unicode-bidi="embed">defer stmt.Close()</text>
-<text fill="#333" font-size="7" text-anchor="start" x="30" y="260" direction="ltr" unicode-bidi="embed">rows, _ := stmt.Query(42)</text>
-<text fill="#333" font-size="7" text-anchor="start" x="30" y="273" direction="ltr" unicode-bidi="embed">defer rows.Close()</text>
-<text fill="#333" font-size="7" text-anchor="start" x="30" y="286" direction="ltr" unicode-bidi="embed">for rows.Next() { rows.Scan(&amp;id, &amp;name) }</text>
-
-<!-- Error handling box -->
-<rect fill="#fff" height="45" rx="4" stroke="#e91e63" stroke-width="1" width="240" x="310" y="200"></rect>
-<text fill="#e91e63" font-size="9" font-weight="bold" text-anchor="middle" x="430" y="218" direction="rtl" unicode-bidi="embed">خطاهای رایج</text>
-<text fill="#333" font-size="7.5" text-anchor="middle" x="430" y="233" direction="rtl" unicode-bidi="embed">فراموش کردن <tspan direction="ltr" unicode-bidi="embed">rows.Close()</tspan> → نشت اتصال</text>
-<text fill="#333" font-size="7.5" text-anchor="middle" x="430" y="245" direction="rtl" unicode-bidi="embed">عدم بررسی <tspan direction="ltr" unicode-bidi="embed">rows.Err()</tspan> → از دست رفتن خطا</text>
-
-<!-- PHP comparison box -->
-<rect fill="#fff" height="45" rx="4" stroke="#FF9800" stroke-width="1" width="240" x="310" y="255"></rect>
-<text fill="#FF9800" font-size="9" font-weight="bold" text-anchor="middle" x="430" y="273" direction="ltr" unicode-bidi="embed">PHP PDO Equivalent</text>
-<text fill="#333" font-size="7.5" text-anchor="middle" x="430" y="289" direction="ltr" unicode-bidi="embed">$stmt = $pdo→prepare(); $stmt→execute();</text>
-
-<!-- Golden rule bar -->
-<rect fill="#00ADD8" filter="url(#shP803)" height="35" rx="6" width="720" x="20" y="330"></rect>
-<text fill="#fff" font-size="10" text-anchor="middle" x="380" y="352" direction="rtl" unicode-bidi="embed">قانون طلایی: همیشه <tspan direction="ltr" unicode-bidi="embed">rows.Close()</tspan> را با <tspan direction="ltr" unicode-bidi="embed">defer</tspan> فراخوانی کنید و بعد از حلقه <tspan direction="ltr" unicode-bidi="embed">rows.Err()</tspan> را بررسی کنید</text>
-</svg>
+    classDef titleBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:2px,color:#1f2937,font-weight:bold;
+    classDef goBox   fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
+    classDef phpBox  fill:#f5f0fb,stroke:#777BB4,stroke-width:1.5px,color:#1f2937;
+    classDef bothBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
+    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
+    classDef errBox  fill:#fef2f2,stroke:#ef4444,stroke-width:1.5px,color:#1f2937;
+    classDef neuBox  fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
+    class Title titleBox;
+    class P1,P2,P3,P4,P5 goBox;
+    class T1,T2,T3 bothBox;
+    class T4 warnBox;
+    class G1,G2,G3,G4,G5 goBox;
+    class E1,E2 errBox;
+    class PH1 phpBox;
+    class Golden warnBox;</pre>
 <figcaption dir="rtl">شکل ۸-۳-ب: خط لوله اجرای <bdi dir="ltr">Query</bdi> — از <bdi dir="ltr">Prepare</bdi> تا <bdi dir="ltr">Close</bdi></figcaption>
 </figure>
 
