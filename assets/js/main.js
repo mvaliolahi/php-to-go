@@ -1054,28 +1054,40 @@
     var CLOSE_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>';
     var RESET_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>';
 
-    // Add zoom button to each diagram figure
-    document.querySelectorAll('figure.diagram').forEach(function(figure) {
-      var svg = figure.querySelector('svg');
-      if (!svg) return;
+    // Add zoom button to each diagram figure (idempotent — safe to call again
+    // after Mermaid renders more <svg> elements post-load).
+    function attachZoomButtons() {
+      document.querySelectorAll('figure.diagram').forEach(function(figure) {
+        // Skip if button already attached
+        if (figure.querySelector('.diagram-zoom-btn')) return;
 
-      // Only add zoom button for SVGs with text content (diagrams, not tiny icons)
-      var textElements = svg.querySelectorAll('text');
-      if (textElements.length === 0) return;
+        var svg = figure.querySelector('svg');
+        if (!svg) return;
 
-      var btn = document.createElement('button');
-      btn.className = 'diagram-zoom-btn';
-      btn.innerHTML = ZOOM_IN_ICON;
-      btn.setAttribute('aria-label', 'بزرگنمایی دیاگرام');
-      btn.title = 'بزرگنمایی';
+        // Only add zoom button for SVGs with text content (diagrams, not tiny icons)
+        var textElements = svg.querySelectorAll('text');
+        if (textElements.length === 0) return;
 
-      btn.addEventListener('click', function(e) {
-        e.stopPropagation();
-        openLightbox(figure, svg);
+        var btn = document.createElement('button');
+        btn.className = 'diagram-zoom-btn';
+        btn.innerHTML = ZOOM_IN_ICON;
+        btn.setAttribute('aria-label', 'بزرگنمایی دیاگرام');
+        btn.title = 'بزرگنمایی';
+
+        btn.addEventListener('click', function(e) {
+          e.stopPropagation();
+          // Re-query the svg at click time in case Mermaid re-rendered it
+          var liveSvg = figure.querySelector('svg');
+          openLightbox(figure, liveSvg || svg);
+        });
+
+        figure.appendChild(btn);
       });
+    }
+    attachZoomButtons();
 
-      figure.appendChild(btn);
-    });
+    // Re-attach when Mermaid finishes rendering (post-load SVGs)
+    document.addEventListener('diagrams:rendered', attachZoomButtons);
 
     function createLightbox() {
       if (lightbox) return lightbox;

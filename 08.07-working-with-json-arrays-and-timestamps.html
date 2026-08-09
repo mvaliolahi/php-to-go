@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html dir="rtl" lang="fa">
 <head>
 <script>!function(){try{var t=localStorage.getItem('php2go-theme');if(t==='dark'||(!t&&window.matchMedia('(prefers-color-scheme:dark)').matches)){document.documentElement.setAttribute('data-theme','dark')}}catch(e){}}();</script>
@@ -6,26 +7,25 @@
 <meta content="ie=edge" http-equiv="x-ua-compatible"/>
 <title>۸.۷ کار با JSON، Array و Timestamp — PHP to Go</title>
 <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport"/>
-<link rel="preconnect" href="https://fonts.googleapis.com"/>
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600;700&amp;family=Fira+Code:wght@400;500&amp;display=swap" rel="stylesheet"/>
 <link href="assets/css/main.css" rel="stylesheet" type="text/css"/>
 <link href="assets/img/favicon.ico" rel="icon" type="image/x-icon"/>
-<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" media="screen" class="hljs-light-theme" rel="stylesheet"/>
-<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css" media="not screen" class="hljs-dark-theme" rel="stylesheet"/>
+<link class="hljs-light-theme" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" media="screen" rel="stylesheet"/>
+<link class="hljs-dark-theme" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css" media="not screen" rel="stylesheet"/>
 </head>
 <body>
 <!-- Progress Bar -->
 <div class="progress-bar"><div class="progress-bar__fill"></div></div>
-
 <!-- Header -->
 <header class="site-header">
 <div class="header-inner">
 <div class="header-left">
-<button class="header-btn sidebar-toggle" aria-label="فهرست">
-<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+<button aria-label="فهرست" class="header-btn sidebar-toggle">
+<svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24"><line x1="3" x2="21" y1="6" y2="6"></line><line x1="3" x2="21" y1="12" y2="12"></line><line x1="3" x2="21" y1="18" y2="18"></line></svg>
 </button>
-<a href="00.00-front-matter.html" class="header-logo"><span class="logo-php">PHP</span> to <span class="logo-go">Go</span></a>
+<a class="header-logo" href="00.00-front-matter.html"><span class="logo-php">PHP</span> to <span class="logo-go">Go</span></a>
 <span class="header-crumbs">پایگاه داده › کار با JSON، Array و Timestamp</span>
 </div>
 <div class="header-right">
@@ -36,86 +36,69 @@
 <a href="08.08-using-redis.html"><span class="nav-label">۸.۸ استفاده از Redis</span></a>
 <span class="nav-arrow">›</span>
 </nav>
-<button class="header-btn search-toggle" aria-label="جستجو">
-<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+<button aria-label="جستجو" class="header-btn search-toggle">
+<svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" x2="16.65" y1="21" y2="16.65"></line></svg>
 </button>
-<button class="header-btn theme-toggle" aria-label="تغییر تم">
-<svg class="theme-icon-light" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
-<svg class="theme-icon-dark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+<button aria-label="تغییر تم" class="header-btn theme-toggle">
+<svg class="theme-icon-light" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24"><circle cx="12" cy="12" r="5"></circle><line x1="12" x2="12" y1="1" y2="3"></line><line x1="12" x2="12" y1="21" y2="23"></line><line x1="4.22" x2="5.64" y1="4.22" y2="5.64"></line><line x1="18.36" x2="19.78" y1="18.36" y2="19.78"></line><line x1="1" x2="3" y1="12" y2="12"></line><line x1="21" x2="23" y1="12" y2="12"></line><line x1="4.22" x2="5.64" y1="19.78" y2="18.36"></line><line x1="18.36" x2="19.78" y1="5.64" y2="4.22"></line></svg>
+<svg class="theme-icon-dark" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
 </button>
 </div>
 </div>
 </header>
-
 <!-- Search Modal -->
 <div class="search-overlay">
 <div class="search-modal">
 <div class="search-input-wrap">
-<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-<input type="text" class="search-input" placeholder="جستجو... (Ctrl+K)" dir="rtl"/>
+<svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" x2="16.65" y1="21" y2="16.65"></line></svg>
+<input class="search-input" dir="rtl" placeholder="جستجو... (Ctrl+K)" type="text"/>
 </div>
 <div class="search-results"></div>
 </div>
 </div>
-
 <!-- Layout -->
 <div class="site-layout">
 <!-- Sidebar -->
 <aside class="sidebar"></aside>
 <div class="sidebar-overlay"></div>
-
 <!-- Main Content -->
 <main class="content-area">
 <div class="content-wrap text">
 <div class="chapter">فصل ۸.۷</div>
-<h2 id="کار-با-json-array-و-timestamp">کار با JSON، Array و Timestamp</h2>
-
+<h2 id="کار-با-json-array-و-timestamp">کار با JSON، Array و Timestamp</h2><div class="abstract">
+<strong>چکیده:</strong> این بخش کار با JSON array و timestamp در Go را پوشش می‌دهد: json.Marshal، time.Time و timezone. الگوی custom type و scanner بررسی می‌شود. تفاوت با Carbon در PHP مشخص می‌گردد.
+</div>
 <figure class="diagram" dir="ltr">
-<svg height="320" viewBox="0 0 550 320" width="550" xmlns="http://www.w3.org/2000/svg">
-<defs>
-<marker id="arrow2001" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#555" points="0 0, 10 3.5, 0 7"></polygon></marker>
-<filter height="104%" id="sh2001" width="104%" x="-2%" y="-2%"><fedropshadow dx="1" dy="1" flood-opacity="0.15" stddeviation="2"></fedropshadow></filter>
-</defs>
-<rect fill="#fafafa" height="320" rx="8" width="550" x="0" y="0"></rect>
-<text fill="#333" font-size="16" font-weight="bold" text-anchor="middle" x="275" y="28" direction="rtl" unicode-bidi="embed">نگاشت <tspan direction="ltr" unicode-bidi="embed">JSON</tspan>، <tspan direction="ltr" unicode-bidi="embed">Array</tspan> و <tspan direction="ltr" unicode-bidi="embed">Timestamp</tspan> بین <tspan direction="ltr" unicode-bidi="embed">Go</tspan> و <tspan direction="ltr" unicode-bidi="embed">PostgreSQL</tspan></text>
+<pre class="mermaid">flowchart TB
+    Title["نگاشت JSON، Array و Timestamp بین Go و PostgreSQL"]
 
-<!-- JSON -->
-<rect fill="#9C27B0" filter="url(#sh2001)" height="70" rx="6" width="160" x="20" y="55"></rect>
-<text fill="#fff" font-size="11" text-anchor="middle" x="100" y="78" direction="ltr" unicode-bidi="embed">JSONB</text>
-<text fill="#e1bee7" font-size="9" text-anchor="middle" x="100" y="95" direction="ltr" unicode-bidi="embed">json.Marshal/Unmarshal</text>
-<text fill="#e1bee7" font-size="9" text-anchor="middle" x="100" y="110" direction="ltr" unicode-bidi="embed">sql.Scanner / Valuer</text>
+    subgraph MAPPINGS["انواع نگاشت"]
+        direction TB
+        M1["JSONB → json.Marshal/Unmarshal<br/>sql.Scanner / Valuer"]
+        M2["Array (text[]) → pq.Array() / pq.StringArray<br/>pq.Int64Array"]
+        M3["Timestamp → time.Time<br/>UTC + timezone"]
+    end
 
-<!-- Array -->
-<rect fill="#FF9800" filter="url(#sh2001)" height="70" rx="6" width="160" x="195" y="55"></rect>
-<text fill="#fff" font-size="11" text-anchor="middle" x="275" y="78" direction="ltr" unicode-bidi="embed">Array (text[])</text>
-<text fill="#fff3e0" font-size="9" text-anchor="middle" x="275" y="95" direction="ltr" unicode-bidi="embed">pq.Array() / pq.StringArray</text>
-<text fill="#fff3e0" font-size="9" text-anchor="middle" x="275" y="110" direction="ltr" unicode-bidi="embed">pq.Int64Array</text>
+    Struct["Go Struct with db + json tags<br/>json:"..." db:"...""]
+    Laravel["در Laravel: $casts = ['settings' =&gt;'json', 'tags' =&gt;'array']"]
 
-<!-- Timestamp -->
-<rect fill="#00ADD8" filter="url(#sh2001)" height="70" rx="6" width="150" x="375" y="55"></rect>
-<text fill="#fff" font-size="11" text-anchor="middle" x="450" y="78" direction="ltr" unicode-bidi="embed">Timestamp</text>
-<text fill="#e0f7fa" font-size="9" text-anchor="middle" x="450" y="95" direction="ltr" unicode-bidi="embed">time.Time</text>
-<text fill="#e0f7fa" font-size="9" text-anchor="middle" x="450" y="110" direction="ltr" unicode-bidi="embed">UTC + timezone</text>
+    Title --&gt; MAPPINGS
+    MAPPINGS --&gt; Struct
+    Struct --&gt; Laravel
 
-<!-- Go Struct -->
-<rect fill="#4CAF50" filter="url(#sh2001)" height="50" rx="6" width="310" x="120" y="175"></rect>
-<text fill="#fff" font-size="11" text-anchor="middle" x="275" y="198" direction="ltr" unicode-bidi="embed">Go Struct with db + json tags</text>
-<text fill="#e8f5e9" font-size="9" text-anchor="middle" x="275" y="215" direction="ltr" unicode-bidi="embed">json:"..." db:"..."</text>
-
-<line marker-end="url(#arrow2001)" stroke="#555" stroke-width="1.5" x1="100" x2="180" y1="125" y2="175"></line>
-<line marker-end="url(#arrow2001)" stroke="#555" stroke-width="1.5" x1="275" x2="275" y1="125" y2="175"></line>
-<line marker-end="url(#arrow2001)" stroke="#555" stroke-width="1.5" x1="450" x2="370" y1="125" y2="175"></line>
-
-<!-- Comparison -->
-<rect fill="#F3E5F5" height="45" rx="6" stroke="#777BB4" width="390" x="80" y="255"></rect>
-<text fill="#777BB4" font-size="11" text-anchor="middle" x="275" y="282" direction="rtl" unicode-bidi="embed">در <tspan direction="ltr" unicode-bidi="embed">Laravel</tspan>: $<tspan direction="ltr" unicode-bidi="embed">casts</tspan> = ['<tspan direction="ltr" unicode-bidi="embed">settings</tspan>' =>'<tspan direction="ltr" unicode-bidi="embed">json</tspan>', '<tspan direction="ltr" unicode-bidi="embed">tags</tspan>' =>'<tspan direction="ltr" unicode-bidi="embed">array</tspan>']</text>
-</svg>
-<figcaption>شکل ۸-۷: نگاشت <bdi dir="ltr">JSON</bdi> ، <bdi dir="ltr">Array</bdi> و <bdi dir="ltr">Timestamp</bdi> بین <bdi dir="ltr">Go</bdi> و <bdi dir="ltr">PostgreSQL</bdi></figcaption>
+    classDef titleBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:2px,color:#1f2937,font-weight:bold;
+    classDef goBox   fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
+    classDef phpBox  fill:#f5f0fb,stroke:#777BB4,stroke-width:1.5px,color:#1f2937;
+    classDef bothBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
+    classDef neuBox  fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
+    class Title titleBox;
+    class M1,M2,M3 goBox;
+    class Struct goBox;
+    class Laravel phpBox;</pre>
+<figcaption>شکل ۸-۷: نگاشت <bdi dir="ltr">JSON</bdi>، <bdi dir="ltr">Array</bdi> و <bdi dir="ltr">Timestamp</bdi> بین <bdi dir="ltr">Go</bdi> و <bdi dir="ltr">PostgreSQL</bdi></figcaption>
 </figure>
-
-<p>در کاربرد واقعی داده‌های ذخیره شده در دیتابیس‌ها فقط محدود به انواع ساده مثل اعداد و رشته‌ها نیستند. معمولاً نیاز داریم با داده‌های پیچیده‌تری مثل ساختارهای <bdi dir="ltr">JSON</bdi> ، آرایه‌ها یا تایم‌استمپ‌ها کار کنیم.</p>
-
-<h3 id="jsonb">کار با JSONB در PostgreSQL</h3>
+<p>در کاربرد واقعی داده‌های ذخیره شده در دیتابیس‌ها فقط محدود به انواع ساده مثل اعداد و رشته‌ها نیستند. معمولاً نیاز داریم با داده‌های پیچیده‌تری مثل ساختارهای <bdi dir="ltr">JSON</bdi>، آرایه‌ها یا تایم‌استمپ‌ها کار کنیم.</p>
+<h3 id="jsonb">8.7.1 کار با JSONB در PostgreSQL</h3>
 <p><bdi dir="ltr">PostgreSQL</bdi> از نوع <bdi dir="ltr">JSONB</bdi> پشتیبانی می‌کند که امکان ذخیره‌سازی و کوئری‌های کارآمد روی داده‌های ساختاریافته را فراهم می‌کند:</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">type Settings struct {
@@ -135,10 +118,9 @@ err := db.QueryRow("SELECT settings FROM user_settings WHERE user_id = $1", user
 var settings Settings
 json.Unmarshal(jsonData, &amp;settings)</code></pre>
 </figure>
-
 <p><strong>کوئری‌های JSONB:</strong> می‌توانید مستقیماً روی فیلدهای <bdi dir="ltr">JSONB</bdi> کوئری بزنید:</p>
 <figure class="code sql" dir="ltr"><pre><code class="language-sql">-- یافتن کاربران با تم تیره
-SELECT * FROM user_settings WHERE settings->>'theme' = 'dark';
+SELECT * FROM user_settings WHERE settings-&gt;&gt;'theme' = 'dark';
 
 -- بررسی وجود کلید
 SELECT * FROM user_settings WHERE settings ? 'language';
@@ -147,8 +129,7 @@ SELECT * FROM user_settings WHERE settings ? 'language';
 UPDATE user_settings
 SET settings = jsonb_set(settings, '{theme}', '"light"')
 WHERE user_id = 42;</code></pre></figure>
-
-<h3 id="arrays">کار با آرایه‌ها در PostgreSQL</h3>
+<h3 id="arrays">8.7.2 کار با آرایه‌ها در PostgreSQL</h3>
 <p>در <bdi dir="ltr">PostgreSQL</bdi> از آرایه‌ها به صورت بومی پشتیبانی می‌شود. درایور <bdi dir="ltr">lib/pq</bdi> تابع <bdi dir="ltr">pq.Array</bdi> را برای این منظور ارائه می‌دهد:</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">// Save array
@@ -159,8 +140,7 @@ _, err := db.Exec("INSERT INTO articles(title, tags) VALUES($1, $2)", title, pq.
 var tags []string
 err := db.QueryRow("SELECT tags FROM articles WHERE id=$1", articleID).Scan(pq.Array(&amp;tags))</code></pre>
 </figure>
-
-<h3 id="timestamps">مدیریت زمان با time.Time</h3>
+<h3 id="timestamps">8.7.3 مدیریت زمان با time.Time</h3>
 <p>در <bdi dir="ltr">Go</bdi> زمان با <bdi dir="ltr">time.Time</bdi> مدیریت می‌شود. بیشتر درایورها تبدیل خودکار را پشتیبانی می‌کنند:</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">// Save time
@@ -176,10 +156,8 @@ loc, _ := time.LoadLocation("Asia/Tehran")
 localTime := eventTime.In(loc)
 fmt.Println("زمان:", localTime.Format("2006-01-02 15:04:05"))</code></pre>
 </figure>
-
 <div class="important"><strong>نکته مهم درباره زمان:</strong> همیشه زمان‌ها را به <bdi dir="ltr">UTC</bdi> در دیتابیس ذخیره کنید و فقط هنگام نمایش به <bdi dir="ltr">timezone</bdi> محلی تبدیل کنید. برای MySQL حتماً پارامتر <bdi dir="ltr">parseTime=true</bdi> را در <bdi dir="ltr">DSN</bdi> تنظیم کنید. برای زمان‌های <bdi dir="ltr">nullable</bdi> از <code>sql.NullTime</code> (Go 1.17+) یا <code>*time.Time</code> استفاده کنید.</div>
-
-<h3 id="custom-types">تبدیل سفارشی با sql.Scanner و driver.Valuer</h3>
+<h3 id="custom-types">8.7.4 تبدیل سفارشی با sql.Scanner و driver.Valuer</h3>
 <p>با پیاده‌سازی این دو رابط می‌توانید هر نوع پیچیده‌ای را به صورت شفاف با دیتابیس تبادل کنید. این رابط‌ها قبلاً در بخش «نگاشت داده‌ها به <bdi dir="ltr">Struct</bdi>» (فصل ۸.۴) معرفی شدند؛ در اینجا مثال عملیاتی‌تری مخصوص ستون‌های <bdi dir="ltr">JSONB</bdi> ارائه می‌دهیم:</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">// JSONBColumn wraps a Go value for seamless JSONB storage
@@ -211,207 +189,109 @@ type Product struct {
     Metadata JSONBColumn `db:"metadata" json:"metadata"`
 }</code></pre>
 </figure>
-
 <p>با این پیاده‌سازی، هنگام خواندن از دیتابیس متد <code dir="ltr">Scan()</code> به‌طور خودکار مقدار <bdi dir="ltr">JSONB</bdi> را به <bdi dir="ltr">Go</bdi> تبدیل می‌کند و هنگام نوشتن متد <code dir="ltr">Value()</code> تبدیل معکوس را انجام می‌دهد. این الگو خوانایی کد مصرف‌کننده را به‌شدت بهبود می‌بخشد.</p>
-
-<div class="comparison"><strong>مقایسه با Laravel/Eloquent:</strong> در <bdi dir="ltr">Laravel</bdi> ستون‌های <code>timestamp</code> به‌صورت خودکار به <code>Carbon</code> تبدیل می‌شوند و <code>$casts</code> امکان تبدیل سفارشی را فراهم می‌کند (<code>'settings' => 'json'</code>، <code>'tags' => 'array'</code>). در <bdi dir="ltr">Go</bdi> باید تبدیل را دستی انجام دهید: <bdi dir="ltr">JSONB</bdi> با <code>json.Marshal/Unmarshal</code>، آرایه‌ها با <code>pq.Array()</code> و زمان با <code>time.Time</code>. اگرچه کد بیشتری نیاز است اما شفافیت و کنترل کاملی روی نحوه‌ی تبدیل داده‌ها دارید و رفتار غیرمنتظره‌ای در تولید <bdi dir="ltr">JSON</bdi> یا مدیریت مقادیر <bdi dir="ltr">NULL</bdi> مشاهده نخواهید کرد.</div>
-
-<h3 id="ماتریس-تبدیل-نوع-sql-به-go">ماتریس تبدیل نوع SQL به Go</h3>
-
-<p>یکی از چالش‌های اصلی در کار با دیتابیس در <bdi dir="ltr">Go</bdi> نگاشت صحیح انواع داده‌ای <bdi dir="ltr">SQL</bdi> به انواع <bdi dir="ltr">Go</bdi> است. برخلاف <bdi dir="ltr">PHP</bdi> که نوع‌گذاری پویا دارد و تبدیل‌ها عموماً خودکار هستند، در <bdi dir="ltr">Go</bdi> باید دقیقاً بدانید هر نوع <bdi dir="ltr">SQL</bdi> به کدام نوع <bdi dir="ltr">Go</bdi> نگاشت می‌شود. شکل زیر ماتریس کامل این نگاشت‌ها را نشان می‌دهد. رنگ سبز نشان‌دهنده‌ی نگاشت مستقیم و بی‌خطر، رنگ نارنجی نشان‌دهنده‌ی تبدیل با احتمال از دست رفتن دقت و رنگ قرمز نشان‌دهنده‌ی مواردی است که نیاز به توجه ویژه دارند.</p>
-
+<div class="comparison"><strong>مقایسه با Laravel/Eloquent:</strong> در <bdi dir="ltr">Laravel</bdi> ستون‌های <code>timestamp</code> به‌صورت خودکار به <code>Carbon</code> تبدیل می‌شوند و <code>$casts</code> امکان تبدیل سفارشی را فراهم می‌کند (<code>'settings' =&gt; 'json'</code>، <code>'tags' =&gt; 'array'</code>). در <bdi dir="ltr">Go</bdi> باید تبدیل را دستی انجام دهید: <bdi dir="ltr">JSONB</bdi> با <code>json.Marshal/Unmarshal</code>، آرایه‌ها با <code>pq.Array()</code> و زمان با <code>time.Time</code>. اگرچه کد بیشتری نیاز است اما شفافیت و کنترل کاملی روی نحوه‌ی تبدیل داده‌ها دارید و رفتار غیرمنتظره‌ای در تولید <bdi dir="ltr">JSON</bdi> یا مدیریت مقادیر <bdi dir="ltr">NULL</bdi> مشاهده نخواهید کرد.</div>
+<h3 id="ماتریس-تبدیل-نوع-sql-به-go">8.7.5 ماتریس تبدیل نوع SQL به Go</h3>
+<p>یکی از چالش‌های اصلی در کار با دیتابیس در <bdi dir="ltr">Go</bdi> نگاشت صحیح انواع داده‌ای <bdi dir="ltr">SQL</bdi> به انواع <bdi dir="ltr">Go</bdi> است. برخلاف <bdi dir="ltr">PHP</bdi> که نوع‌گذاری پویا دارد و تبدیل‌ها عموماً خودکار هستند، در <bdi dir="ltr">Go</bdi> باید دقیقاً بدانید هر نوع <bdi dir="ltr">SQL</bdi> به کدام نوع <bdi dir="ltr">Go</bdi> نگاشت می‌شود. شکل زیر ماتریس کامل این نگاشت‌ها را نشان می‌دهد. </p><p>رنگ سبز نشان‌دهنده‌ی نگاشت مستقیم و بی‌خطر، رنگ نارنجی نشان‌دهنده‌ی تبدیل با احتمال از دست رفتن دقت و رنگ قرمز نشان‌دهنده‌ی مواردی است که نیاز به توجه ویژه دارند.</p>
 <figure class="diagram" dir="ltr">
-<svg height="620" viewBox="0 0 780 620" width="780" xmlns="http://www.w3.org/2000/svg">
-<defs>
-<marker id="arrowT1" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#555" points="0 0, 10 3.5, 0 7"></polygon></marker>
-<filter height="104%" id="shT1" width="104%" x="-2%" y="-2%"><fedropshadow dx="1" dy="1" flood-opacity="0.13" stddeviation="2"></fedropshadow></filter>
-</defs>
-<rect fill="#fafafa" height="620" rx="8" width="780" x="0" y="0"></rect>
-<text fill="#333" font-size="16" font-weight="bold" text-anchor="middle" x="390" y="28" direction="rtl" unicode-bidi="embed">ماتریس تبدیل نوع <tspan direction="ltr" unicode-bidi="embed">SQL</tspan> به <tspan direction="ltr" unicode-bidi="embed">Go</tspan></text>
+<pre class="mermaid">flowchart TB
+    Title["ماتریس تبدیل نوع SQL به Go"]
 
-<!-- Column Headers -->
-<rect fill="#37474F" height="30" rx="4" width="230" x="20" y="45"></rect>
-<text fill="#fff" font-size="12" font-weight="bold" text-anchor="middle" x="135" y="65" direction="ltr" unicode-bidi="embed">SQL Type</text>
+    subgraph MATRIX["ماتریس تبدیل"]
+        direction TB
+        H1["SQL Type | Go Type | توضیحات"]
+        R1["VARCHAR / TEXT → string — نگاشت مستقیم — NULL → sql.NullString"]
+        R2["INTEGER / INT → int32 / int — نگاشت مستقیم — NULL → sql.NullInt32"]
+        R3["BIGINT / INT8 → int64 — نگاشت مستقیم — NULL → sql.NullInt64"]
+        R4["BOOLEAN / BOOL → bool — نگاشت مستقیم — NULL → sql.NullBool"]
+        R5["TIMESTAMP / TIMESTAMPTZ → time.Time — همیشه UTC ذخیره کنید — NULL → sql.NullTime"]
+        R6["JSON / JSONB → []byte / json.RawMessage — custom Scanner/Valuer — نیاز به Unmarshal — json.RawMessage = deferred"]
+        R7["BYTEA / BLOB → []byte — داده‌های باینری — فایل‌ها، تصاویر، هش‌ها"]
+        R8["DECIMAL / NUMERIC → float64 ⚠ or shopspring/decimal — خطر از دست رفت دقت! — داده مالی ← decimal سفارشی"]
+    end
 
-<rect fill="#37474F" height="30" rx="4" width="260" x="280" y="45"></rect>
-<text fill="#fff" font-size="12" font-weight="bold" text-anchor="middle" x="410" y="65" direction="ltr" unicode-bidi="embed">Go Type</text>
+    subgraph NULLMGMT["مدیریت مقادیر NULL در Go"]
+        direction TB
+        N1["sql.NullString{String: "value", Valid: true}"]
+        N2["sql.NullInt64{Int64: 42, Valid: true}"]
+        N3["sql.NullTime{Time: time.Now(), Valid: true}"]
+        N4["یا از اشاره‌گر استفاده کنید:<br/>*string, *int64, *time.Time<br/>nil = NULL در دیتابیس"]
+    end
 
-<rect fill="#37474F" height="30" rx="4" width="190" x="570" y="45"></rect>
-<text fill="#fff" font-size="12" font-weight="bold" text-anchor="middle" x="665" y="65" direction="rtl" unicode-bidi="embed">توضیحات</text>
+    subgraph LEGEND["راهنما"]
+        direction TB
+        L1["سبز: نگاشت مستقیم"]
+        L2["نارنجی: نیاز به تبدیل سفارشی"]
+        L3["قرمز: خطر از دست رفت دقت"]
+    end
 
-<!-- Row 1: VARCHAR → string (green/direct) -->
-<rect fill="#e8f5e9" height="42" rx="4" stroke="#4CAF50" stroke-width="1" width="230" x="20" y="82"></rect>
-<text fill="#2E7D32" font-size="11" font-weight="bold" text-anchor="middle" x="135" y="108" direction="ltr" unicode-bidi="embed">VARCHAR / TEXT</text>
+    Golden["قانون طلایی: برای داده‌های مالی هرگز از float64 استفاده نکنید — از shopspring/decimal یا نوع سفارشی استفاده کنید"]
 
-<rect fill="#e8f5e9" height="42" rx="4" stroke="#4CAF50" stroke-width="1" width="260" x="280" y="82"></rect>
-<text fill="#2E7D32" font-size="11" font-weight="bold" text-anchor="middle" x="410" y="108" direction="ltr" unicode-bidi="embed">string</text>
+    Title --&gt; MATRIX
+    MATRIX --&gt; NULLMGMT
+    NULLMGMT --&gt; LEGEND
+    LEGEND --&gt; Golden
 
-<!-- Arrow -->
-<line marker-end="url(#arrowT1)" stroke="#4CAF50" stroke-width="2" x1="250" x2="280" y1="103" y2="103"></line>
-
-<rect fill="#e8f5e9" height="42" rx="4" stroke="#4CAF50" stroke-width="1" width="190" x="570" y="82"></rect>
-<text fill="#2E7D32" font-size="8" text-anchor="middle" x="665" y="100" direction="rtl" unicode-bidi="embed">نگاشت مستقیم</text>
-<text fill="#2E7D32" font-size="8" text-anchor="middle" x="665" y="115" direction="ltr" unicode-bidi="embed">NULL → sql.NullString</text>
-
-<!-- Row 2: INTEGER → int32 (green/direct) -->
-<rect fill="#e8f5e9" height="42" rx="4" stroke="#4CAF50" stroke-width="1" width="230" x="20" y="130"></rect>
-<text fill="#2E7D32" font-size="11" font-weight="bold" text-anchor="middle" x="135" y="156" direction="ltr" unicode-bidi="embed">INTEGER / INT</text>
-
-<rect fill="#e8f5e9" height="42" rx="4" stroke="#4CAF50" stroke-width="1" width="260" x="280" y="130"></rect>
-<text fill="#2E7D32" font-size="11" font-weight="bold" text-anchor="middle" x="410" y="156" direction="ltr" unicode-bidi="embed">int32 / int</text>
-
-<line marker-end="url(#arrowT1)" stroke="#4CAF50" stroke-width="2" x1="250" x2="280" y1="151" y2="151"></line>
-
-<rect fill="#e8f5e9" height="42" rx="4" stroke="#4CAF50" stroke-width="1" width="190" x="570" y="130"></rect>
-<text fill="#2E7D32" font-size="8" text-anchor="middle" x="665" y="148" direction="rtl" unicode-bidi="embed">نگاشت مستقیم</text>
-<text fill="#2E7D32" font-size="8" text-anchor="middle" x="665" y="163" direction="ltr" unicode-bidi="embed">NULL → sql.NullInt32</text>
-
-<!-- Row 3: BIGINT → int64 (green/direct) -->
-<rect fill="#e8f5e9" height="42" rx="4" stroke="#4CAF50" stroke-width="1" width="230" x="20" y="178"></rect>
-<text fill="#2E7D32" font-size="11" font-weight="bold" text-anchor="middle" x="135" y="204" direction="ltr" unicode-bidi="embed">BIGINT / INT8</text>
-
-<rect fill="#e8f5e9" height="42" rx="4" stroke="#4CAF50" stroke-width="1" width="260" x="280" y="178"></rect>
-<text fill="#2E7D32" font-size="11" font-weight="bold" text-anchor="middle" x="410" y="204" direction="ltr" unicode-bidi="embed">int64</text>
-
-<line marker-end="url(#arrowT1)" stroke="#4CAF50" stroke-width="2" x1="250" x2="280" y1="199" y2="199"></line>
-
-<rect fill="#e8f5e9" height="42" rx="4" stroke="#4CAF50" stroke-width="1" width="190" x="570" y="178"></rect>
-<text fill="#2E7D32" font-size="8" text-anchor="middle" x="665" y="196" direction="rtl" unicode-bidi="embed">نگاشت مستقیم</text>
-<text fill="#2E7D32" font-size="8" text-anchor="middle" x="665" y="211" direction="ltr" unicode-bidi="embed">NULL → sql.NullInt64</text>
-
-<!-- Row 4: BOOLEAN → bool (green/direct) -->
-<rect fill="#e8f5e9" height="42" rx="4" stroke="#4CAF50" stroke-width="1" width="230" x="20" y="226"></rect>
-<text fill="#2E7D32" font-size="11" font-weight="bold" text-anchor="middle" x="135" y="252" direction="ltr" unicode-bidi="embed">BOOLEAN / BOOL</text>
-
-<rect fill="#e8f5e9" height="42" rx="4" stroke="#4CAF50" stroke-width="1" width="260" x="280" y="226"></rect>
-<text fill="#2E7D32" font-size="11" font-weight="bold" text-anchor="middle" x="410" y="252" direction="ltr" unicode-bidi="embed">bool</text>
-
-<line marker-end="url(#arrowT1)" stroke="#4CAF50" stroke-width="2" x1="250" x2="280" y1="247" y2="247"></line>
-
-<rect fill="#e8f5e9" height="42" rx="4" stroke="#4CAF50" stroke-width="1" width="190" x="570" y="226"></rect>
-<text fill="#2E7D32" font-size="8" text-anchor="middle" x="665" y="244" direction="rtl" unicode-bidi="embed">نگاشت مستقیم</text>
-<text fill="#2E7D32" font-size="8" text-anchor="middle" x="665" y="259" direction="ltr" unicode-bidi="embed">NULL → sql.NullBool</text>
-
-<!-- Row 5: TIMESTAMP → time.Time (green/direct) -->
-<rect fill="#e8f5e9" height="42" rx="4" stroke="#4CAF50" stroke-width="1" width="230" x="20" y="274"></rect>
-<text fill="#2E7D32" font-size="11" font-weight="bold" text-anchor="middle" x="135" y="300" direction="ltr" unicode-bidi="embed">TIMESTAMP / TIMESTAMPTZ</text>
-
-<rect fill="#e8f5e9" height="42" rx="4" stroke="#4CAF50" stroke-width="1" width="260" x="280" y="274"></rect>
-<text fill="#2E7D32" font-size="11" font-weight="bold" text-anchor="middle" x="410" y="300" direction="ltr" unicode-bidi="embed">time.Time</text>
-
-<line marker-end="url(#arrowT1)" stroke="#4CAF50" stroke-width="2" x1="250" x2="280" y1="295" y2="295"></line>
-
-<rect fill="#e8f5e9" height="42" rx="4" stroke="#4CAF50" stroke-width="1" width="190" x="570" y="274"></rect>
-<text fill="#2E7D32" font-size="8" text-anchor="middle" x="665" y="289" direction="rtl" unicode-bidi="embed">همیشه <tspan direction="ltr" unicode-bidi="embed">UTC</tspan> ذخیره کنید</text>
-<text fill="#2E7D32" font-size="8" text-anchor="middle" x="665" y="304" direction="ltr" unicode-bidi="embed">NULL → sql.NullTime</text>
-
-<!-- Row 6: JSON/JSONB → []byte / json.RawMessage (orange/special) -->
-<rect fill="#fff3e0" height="42" rx="4" stroke="#FF9800" stroke-width="1.5" width="230" x="20" y="322"></rect>
-<text fill="#E65100" font-size="11" font-weight="bold" text-anchor="middle" x="135" y="348" direction="ltr" unicode-bidi="embed">JSON / JSONB</text>
-
-<rect fill="#fff3e0" height="42" rx="4" stroke="#FF9800" stroke-width="1.5" width="260" x="280" y="322"></rect>
-<text fill="#E65100" font-size="10" font-weight="bold" text-anchor="middle" x="410" y="340" direction="ltr" unicode-bidi="embed">[]byte / json.RawMessage</text>
-<text fill="#E65100" font-size="8" text-anchor="middle" x="410" y="355" direction="ltr" unicode-bidi="embed">custom Scanner/Valuer</text>
-
-<line marker-end="url(#arrowT1)" stroke="#FF9800" stroke-width="2" x1="250" x2="280" y1="343" y2="343"></line>
-
-<rect fill="#fff3e0" height="42" rx="4" stroke="#FF9800" stroke-width="1.5" width="190" x="570" y="322"></rect>
-<text fill="#E65100" font-size="8" text-anchor="middle" x="665" y="337" direction="rtl" unicode-bidi="embed">نیاز به <tspan direction="ltr" unicode-bidi="embed">Unmarshal</tspan></text>
-<text fill="#E65100" font-size="8" text-anchor="middle" x="665" y="352" direction="ltr" unicode-bidi="embed">json.RawMessage = deferred</text>
-
-<!-- Row 7: BYTEA → []byte (green/direct) -->
-<rect fill="#e8f5e9" height="42" rx="4" stroke="#4CAF50" stroke-width="1" width="230" x="20" y="370"></rect>
-<text fill="#2E7D32" font-size="11" font-weight="bold" text-anchor="middle" x="135" y="396" direction="ltr" unicode-bidi="embed">BYTEA / BLOB</text>
-
-<rect fill="#e8f5e9" height="42" rx="4" stroke="#4CAF50" stroke-width="1" width="260" x="280" y="370"></rect>
-<text fill="#2E7D32" font-size="11" font-weight="bold" text-anchor="middle" x="410" y="396" direction="ltr" unicode-bidi="embed">[]byte</text>
-
-<line marker-end="url(#arrowT1)" stroke="#4CAF50" stroke-width="2" x1="250" x2="280" y1="391" y2="391"></line>
-
-<rect fill="#e8f5e9" height="42" rx="4" stroke="#4CAF50" stroke-width="1" width="190" x="570" y="370"></rect>
-<text fill="#2E7D32" font-size="8" text-anchor="middle" x="665" y="385" direction="rtl" unicode-bidi="embed">داده‌های باینری</text>
-<text fill="#2E7D32" font-size="8" text-anchor="middle" x="665" y="400" direction="rtl" unicode-bidi="embed">فایل‌ها، تصاویر، هش‌ها</text>
-
-<!-- Row 8: DECIMAL/NUMERIC → float64 (red/pitfall) -->
-<rect fill="#fce4ec" height="42" rx="4" stroke="#e91e63" stroke-width="1.5" width="230" x="20" y="418"></rect>
-<text fill="#c62828" font-size="11" font-weight="bold" text-anchor="middle" x="135" y="444" direction="ltr" unicode-bidi="embed">DECIMAL / NUMERIC</text>
-
-<rect fill="#fce4ec" height="42" rx="4" stroke="#e91e63" stroke-width="1.5" width="260" x="280" y="418"></rect>
-<text fill="#c62828" font-size="10" font-weight="bold" text-anchor="middle" x="410" y="436" direction="ltr" unicode-bidi="embed">float64 ⚠</text>
-<text fill="#c62828" font-size="8" text-anchor="middle" x="410" y="451" direction="ltr" unicode-bidi="embed">or shopspring/decimal</text>
-
-<line marker-end="url(#arrowT1)" stroke="#e91e63" stroke-width="2" x1="250" x2="280" y1="439" y2="439"></line>
-
-<rect fill="#fce4ec" height="42" rx="4" stroke="#e91e63" stroke-width="1.5" width="190" x="570" y="418"></rect>
-<text fill="#c62828" font-size="8" text-anchor="middle" x="665" y="433" direction="rtl" unicode-bidi="embed">خطر از دست رفتن دقت!</text>
-<text fill="#c62828" font-size="8" text-anchor="middle" x="665" y="448" direction="rtl" unicode-bidi="embed">داده مالی ← <tspan direction="ltr" unicode-bidi="embed">decimal</tspan> سفارشی</text>
-
-<!-- NULL handling box -->
-<rect fill="#fff" height="85" rx="6" stroke="#9C27B0" stroke-width="1.5" width="530" x="20" y="475"></rect>
-<text fill="#9C27B0" font-size="11" font-weight="bold" text-anchor="middle" x="285" y="495" direction="rtl" unicode-bidi="embed">مدیریت مقادیر <tspan direction="ltr" unicode-bidi="embed">NULL</tspan> در <tspan direction="ltr" unicode-bidi="embed">Go</tspan></text>
-<text fill="#333" font-size="8" text-anchor="start" x="35" y="513" direction="ltr" unicode-bidi="embed">sql.NullString{String: "value", Valid: true}</text>
-<text fill="#333" font-size="8" text-anchor="start" x="35" y="528" direction="ltr" unicode-bidi="embed">sql.NullInt64{Int64: 42, Valid: true}</text>
-<text fill="#333" font-size="8" text-anchor="start" x="35" y="543" direction="ltr" unicode-bidi="embed">sql.NullTime{Time: time.Now(), Valid: true}</text>
-<text fill="#888" font-size="7" text-anchor="start" x="300" y="513" direction="rtl" unicode-bidi="embed">یا از اشاره‌گر استفاده کنید:</text>
-<text fill="#888" font-size="8" text-anchor="start" x="300" y="528" direction="ltr" unicode-bidi="embed">*string, *int64, *time.Time</text>
-<text fill="#888" font-size="7" text-anchor="start" x="300" y="543" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">nil</tspan> = <tspan direction="ltr" unicode-bidi="embed">NULL</tspan> در دیتابیس</text>
-
-<!-- Legend -->
-<rect fill="#4CAF50" height="14" rx="3" width="14" x="580" y="480"></rect>
-<text fill="#333" font-size="8" text-anchor="start" x="600" y="491" direction="rtl" unicode-bidi="embed">نگاشت مستقیم</text>
-<rect fill="#FF9800" height="14" rx="3" width="14" x="580" y="500"></rect>
-<text fill="#333" font-size="8" text-anchor="start" x="600" y="511" direction="rtl" unicode-bidi="embed">نیاز به تبدیل سفارشی</text>
-<rect fill="#e91e63" height="14" rx="3" width="14" x="580" y="520"></rect>
-<text fill="#333" font-size="8" text-anchor="start" x="600" y="531" direction="rtl" unicode-bidi="embed">خطر از دست رفتن دقت</text>
-
-<!-- Golden rule bar -->
-<rect fill="#37474F" filter="url(#shT1)" height="38" rx="6" width="740" x="20" y="572"></rect>
-<text fill="#fff" font-size="9" text-anchor="middle" x="390" y="596" direction="rtl" unicode-bidi="embed">قانون طلایی: برای داده‌های مالی هرگز از <tspan direction="ltr" unicode-bidi="embed">float64</tspan> استفاده نکنید — از <tspan direction="ltr" unicode-bidi="embed">shopspring/decimal</tspan> یا نوع سفارشی استفاده کنید</text>
-</svg>
+    classDef titleBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:2px,color:#1f2937,font-weight:bold;
+    classDef goBox   fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
+    classDef bothBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
+    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
+    classDef errBox  fill:#fef2f2,stroke:#ef4444,stroke-width:1.5px,color:#1f2937;
+    classDef neuBox  fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
+    class Title,H1 titleBox;
+    class R1,R2,R3,R4,R5,R7 bothBox;
+    class R6 warnBox;
+    class R8 errBox;
+    class N1,N2,N3 goBox;
+    class N4 warnBox;
+    class L1 bothBox;
+    class L2 warnBox;
+    class L3 errBox;
+    class Golden warnBox;</pre>
 <figcaption dir="rtl">شکل ۸-۷-ب: ماتریس تبدیل انواع <bdi dir="ltr">SQL</bdi> به <bdi dir="ltr">Go</bdi> — سبز: مستقیم، نارنجی: سفارشی، قرمز: خطرناک</figcaption>
 </figure>
-
-<p>همان‌طور که در ماتریس بالا مشاهده می‌کنید، بیشتر انواع پایه‌ای <bdi dir="ltr">SQL</bdi> نگاشت مستقیمی به انواع <bdi dir="ltr">Go</bdi> دارند. اما سه مورد نیاز به توجه ویژه دارند: نوع <bdi dir="ltr">JSON/JSONB</bdi> که نیاز به <bdi dir="ltr">json.RawMessage</bdi> یا پیاده‌سازی <code>sql.Scanner</code> دارد، نوع <bdi dir="ltr">DECIMAL/NUMERIC</bdi> که تبدیل آن به <code>float64</code> با خطر از دست رفتن دقت همراه است، و مقادیر <bdi dir="ltr">NULL</bdi> که باید با انواع <code>sql.Null*</code> یا اشاره‌گرها مدیریت شوند. درک این تفاوت‌ها برای جلوگیری از باگ‌های پنهان در اپلیکیشن‌های واقعی بسیار مهم است.</p>
-
+<p>همان‌طور که در ماتریس بالا مشاهده می‌کنید، بیشتر انواع پایه‌ای <bdi dir="ltr">SQL</bdi> نگاشت مستقیمی به انواع <bdi dir="ltr">Go</bdi> دارند. </p><p>اما سه مورد نیاز به توجه ویژه دارند: نوع <bdi dir="ltr">JSON/JSONB</bdi> که نیاز به <bdi dir="ltr">json.RawMessage</bdi> یا پیاده‌سازی <code>sql.Scanner</code> دارد، نوع <bdi dir="ltr">DECIMAL/NUMERIC</bdi> که تبدیل آن به <code>float64</code> با خطر از دست رفتن دقت همراه است، و مقادیر <bdi dir="ltr">NULL</bdi> که باید با انواع <code>sql.Null*</code> یا اشاره‌گرها مدیریت شوند. درک این تفاوت‌ها برای جلوگیری از باگ‌های پنهان در اپلیکیشن‌های واقعی بسیار مهم است.</p>
 <div class="note"><strong>چرا <bdi dir="ltr">Go</bdi> خطاهای نوع را زودتر از <bdi dir="ltr">PHP</bdi> نشان می‌دهد:</strong> در <bdi dir="ltr">PHP</bdi> تبدیل <code>string</code> به <code>int</code> یا <code>float</code> به‌صورت ضمنی انجام می‌شود و حتی اگر ستون <bdi dir="ltr">SQL</bdi> از نوع <bdi dir="ltr">NUMERIC</bdi> باشد، مقدار بدون خطا در متغیر عددی قرار می‌گیرد — البته با احتمال از دست رفتن دقت. در <bdi dir="ltr">Go</bdi> این خطا در زمان <code>Scan()</code> فوراً اعلام می‌شود. برای داده‌های مالی به‌جای مبارزه با <code>float64</code>، یا مقدار را به‌صورت <code>int64</code> در کوچک‌ترین واحد (ریال/سنت) ذخیره کنید یا از <code>github.com/shopspring/decimal</code> با پیاده‌سازی <code>sql.Scanner</code> استفاده کنید. این سخت‌گیری در نگاه اول آزاردهنده است اما جلوی باگ‌های مالی خاموش را می‌گیرد.</div>
-
-<h3 id="سناریوهای-عملیاتی-تبدیل-نوع">سناریوهای عملیاتی تبدیل نوع</h3>
-
-<p>در پروژه‌های واقعی تبدیل نوع بین <bdi dir="ltr">SQL</bdi> و <bdi dir="ltr">Go</bdi> فراتر از نگاشت‌های ساده است. هر سناریو چالش‌های خاص خود را دارد و نیاز به آشنایی با الگوهای رایج و تله‌های احتمالی دارد. در ادامه چهار سناریوی عملیاتی کلیدی را بررسی می‌کنیم که در پروژه‌های <bdi dir="ltr">Go</bdi> مبتنی بر دیتابیس مکرراً با آن‌ها مواجه می‌شوید. این سناریوها شامل نکات مهمی هستند که در مستندات رسمی کمتر به آن‌ها پرداخته شده ولی در عمل بسیار کاربردی هستند.</p>
-
+<h3 id="سناریوهای-عملیاتی-تبدیل-نوع">8.7.6 سناریوهای عملیاتی تبدیل نوع</h3>
+<p>در پروژه‌های واقعی تبدیل نوع بین <bdi dir="ltr">SQL</bdi> و <bdi dir="ltr">Go</bdi> فراتر از نگاشت‌های ساده است. هر سناریو چالش‌های خاص خود را دارد و نیاز به آشنایی با الگوهای رایج و تله‌های احتمالی دارد. در ادامه چهار سناریوی عملیاتی کلیدی را بررسی می‌کنیم که در پروژه‌های <bdi dir="ltr">Go</bdi> مبتنی بر دیتابیس مکرراً با آن‌ها مواجه می‌شوید. </p><p>این سناریوها شامل نکات مهمی هستند که در مستندات رسمی کمتر به آن‌ها پرداخته شده ولی در عمل بسیار کاربردی هستند.</p>
 <ul>
-<li><strong>مدیریت ستون‌های <bdi dir="ltr">JSONB</bdi> در <bdi dir="ltr">PostgreSQL</bdi>:</strong> ستون‌های <bdi dir="ltr">JSONB</bdi> برای ذخیره‌سازی داده‌های نیمه‌ساختاریافته مثل تنظیمات کاربر، پیکربندی پویا یا پاسخ فرم‌ها ایده‌آل هستند. برای خواندن این ستون‌ها در <bdi dir="ltr">Go</bdi> دو رویکرد دارید: اول <code>json.RawMessage</code> برای تأخیر در <bdi dir="ltr">parsing</bdi> (مناسب وقتی لازم نیست فوراً ساختار را بررسی کنید)، و دوم پیاده‌سازی <code>sql.Scanner</code> سفارشی برای تبدیل خودکار به <bdi dir="ltr">struct</bdi>. نکته مهم این است که <bdi dir="ltr">JSONB</bdi> در <bdi dir="ltr">PostgreSQL</bdi> ایندکس‌پذیر است و می‌توانید با عملگرهای <code>->></code> و <code>?</code> مستقیماً روی فیلدهای داخلی کوئری بزنید.</li>
+<li><strong>مدیریت ستون‌های <bdi dir="ltr">JSONB</bdi> در <bdi dir="ltr">PostgreSQL</bdi>:</strong> ستون‌های <bdi dir="ltr">JSONB</bdi> برای ذخیره‌سازی داده‌های نیمه‌ساختاریافته مثل تنظیمات کاربر، پیکربندی پویا یا پاسخ فرم‌ها ایده‌آل هستند. برای خواندن این ستون‌ها در <bdi dir="ltr">Go</bdi> دو رویکرد دارید: اول <code>json.RawMessage</code> برای تأخیر در <bdi dir="ltr">parsing</bdi> (مناسب وقتی لازم نیست فوراً ساختار را بررسی کنید)، و دوم پیاده‌سازی <code>sql.Scanner</code> سفارشی برای تبدیل خودکار به <bdi dir="ltr">struct</bdi>. نکته مهم این است که <bdi dir="ltr">JSONB</bdi> در <bdi dir="ltr">PostgreSQL</bdi> ایندکس‌پذیر است و می‌توانید با عملگرهای <code>-&gt;&gt;</code> و <code>?</code> مستقیماً روی فیلدهای داخلی کوئری بزنید.</li>
 <li><strong>ذخیره‌سازی و بازیابی <bdi dir="ltr">Timestamp</bdi> با <bdi dir="ltr">Timezone</bdi>:</strong> مهم‌ترین قانون: همیشه زمان را به صورت <bdi dir="ltr">UTC</bdi> در دیتابیس ذخیره کنید. نوع <code>timestamptz</code> در <bdi dir="ltr">PostgreSQL</bdi> زمان را به <bdi dir="ltr">UTC</bdi> تبدیل و ذخیره می‌کند و هنگام خواندن <bdi dir="ltr">timezone</bdi> نشست را اعمال می‌کند. در <bdi dir="ltr">Go</bdi> مقدار <code>time.Time</code> همراه با اطلاعات <bdi dir="ltr">timezone</bdi> است و برای نمایش به کاربر باید با <code>time.In(loc)</code> به منطقه زمانی محلی تبدیل شود. برای <bdi dir="ltr">MySQL</bdi> حتماً پارامتر <code>parseTime=true</code> را در <bdi dir="ltr">DSN</bdi> تنظیم کنید.</li>
 <li><strong>برخورد با <bdi dir="ltr">NUMERIC/DECIMAL</bdi> برای داده‌های مالی:</strong> تبدیل <bdi dir="ltr">DECIMAL</bdi> به <code>float64</code> خطری جدی برای داده‌های مالی است. مثلاً <code>0.1 + 0.2</code> در <code>float64</code> برابر <code>0.30000000000000004</code> می‌شود. برای محاسبات مالی از کتابخانه‌ی <code>github.com/shopspring/decimal</code> استفاده کنید و یک نوع سفارشی با <code>sql.Scanner</code> و <code>driver.Valuer</code> پیاده‌سازی کنید. همچنین می‌توانید مبلغ را به صورت <code>int64</code> (به واحد کوچک‌تر مثل ریال یا سنت) ذخیره کنید تا مشکل دقت اعشاری اصلاً پیش نیاید.</li>
 <li><strong>الگوهای ذخیره‌سازی داده‌های باینری:</strong> نوع <bdi dir="ltr">BYTEA</bdi> در <bdi dir="ltr">PostgreSQL</bdi> و <bdi dir="ltr">BLOB</bdi> در <bdi dir="ltr">MySQL</bdi> برای ذخیره‌سازی داده‌های باینری مثل هش رمز عبور، تصاویر کوچک یا گواهی‌نامه‌ها استفاده می‌شوند. در <bdi dir="ltr">Go</bdi> این داده‌ها به <code>[]byte</code> نگاشت می‌شوند. اما نکته مهم این است که فایل‌های بزرگ (بیشتر از ۱ مگابایت) را مستقیماً در دیتابیس ذخیره نکنید — آن‌ها را در فضای ابری (<bdi dir="ltr">S3</bdi> یا <bdi dir="ltr">MinIO</bdi>) قرار دهید و فقط <bdi dir="ltr">URL</bdi> را در دیتابیس نگه دارید.</li>
 </ul>
-
 <div class="tip"><strong>نکته عملی درباره <code>json.RawMessage</code> و رابط‌های سفارشی:</strong> از <code>json.RawMessage</code> زمانی استفاده کنید که بخواهید <bdi dir="ltr">parsing</bdi> <bdi dir="ltr">JSON</bdi> را به تأخیر بیندازید — مثلاً وقتی ساختار <bdi dir="ltr">JSON</bdi> متغیر است یا لازم نیست فوراً پردازش شود. این کار هم عملکرد بهتری دارد (چون از <bdi dir="ltr">Unmarshal</bdi> مضاعف جلوگیری می‌کند) و هم انعطاف‌پذیری بیشتری می‌دهد. برای انواع پیچیده‌تر مثل <bdi dir="ltr">PostgreSQL Array</bdi> یا <bdi dir="ltr">HSTORE</bdi> حتماً رابط‌های <code>sql.Scanner</code> و <code>driver.Valuer</code> را پیاده‌سازی کنید تا کد مصرف‌کننده تمیز و خوانا بماند. این رابط‌ها لایه‌ی انتزاعی بین دیتابیس و منطق کسب‌وکار شما ایجاد می‌کنند و تغییر دیتابیس در آینده را بسیار ساده‌تر می‌کنند.</div>
-</div>
-</div>
-
+<div class="summary">
+<strong>خلاصه‌ی نکات کلیدی:</strong>
+<ul>
+<li>json.Marshal/Unmarshal برای JSON column</li>
+<li>time.Time برای timestamp</li>
+<li>timezone با time.LoadLocation</li>
+<li>custom type با Valuer/Scanner</li>
+<li>duration با time.Duration</li>
+</ul>
+</div></div>
+</main></div>
 <!-- Footer -->
 <footer class="site-footer">
 <div class="footer-inner">
 <div class="footer-nav">
 <span class="nav-arrow">‹</span>
-<a href="08.06-database-error-handling.html" data-prev>۸.۶ مدیریت خطاهای دیتابیس</a>
+<a data-prev="" href="08.06-database-error-handling.html">۸.۶ مدیریت خطاهای دیتابیس</a>
 </div>
 <div class="footer-toc">
 <a href="00.01-contents.html">فهرست</a>
 </div>
 <div class="footer-nav">
-<a href="08.08-using-redis.html" data-next>۸.۸ استفاده از Redis</a>
+<a data-next="" href="08.08-using-redis.html">۸.۸ استفاده از Redis</a>
 <span class="nav-arrow">›</span>
 </div>
 </div>
 </footer>
-
 <!-- Back to Top -->
-<button class="back-to-top" aria-label="بازگشت به بالا">
-<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
+<button aria-label="بازگشت به بالا" class="back-to-top">
+<svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24"><polyline points="18 15 12 9 6 15"></polyline></svg>
 </button>
-
 <!-- Scripts -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/go.min.js"></script>
@@ -424,6 +304,7 @@ type Product struct {
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/xml.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/ini.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/plaintext.min.js"></script>
+<script src="assets/js/diagrams.js"></script>
 <script src="assets/js/main.js"></script>
 </body>
 </html>

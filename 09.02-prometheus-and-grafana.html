@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html dir="rtl" lang="fa">
 <head>
 <script>!function(){try{var t=localStorage.getItem('php2go-theme');if(t==='dark'||(!t&&window.matchMedia('(prefers-color-scheme:dark)').matches)){document.documentElement.setAttribute('data-theme','dark')}}catch(e){}}();</script>
@@ -6,26 +7,25 @@
 <meta content="ie=edge" http-equiv="x-ua-compatible"/>
 <title>۹.۲ Prometheus و Grafana — PHP to Go</title>
 <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport"/>
-<link rel="preconnect" href="https://fonts.googleapis.com"/>
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600;700&amp;family=Fira+Code:wght@400;500&amp;display=swap" rel="stylesheet"/>
 <link href="assets/css/main.css" rel="stylesheet" type="text/css"/>
 <link href="assets/img/favicon.ico" rel="icon" type="image/x-icon"/>
-<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" media="screen" class="hljs-light-theme" rel="stylesheet"/>
-<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css" media="not screen" class="hljs-dark-theme" rel="stylesheet"/>
+<link class="hljs-light-theme" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" media="screen" rel="stylesheet"/>
+<link class="hljs-dark-theme" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css" media="not screen" rel="stylesheet"/>
 </head>
 <body>
 <!-- Progress Bar -->
 <div class="progress-bar"><div class="progress-bar__fill"></div></div>
-
 <!-- Header -->
 <header class="site-header">
 <div class="header-inner">
 <div class="header-left">
-<button class="header-btn sidebar-toggle" aria-label="فهرست">
-<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+<button aria-label="فهرست" class="header-btn sidebar-toggle">
+<svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24"><line x1="3" x2="21" y1="6" y2="6"></line><line x1="3" x2="21" y1="12" y2="12"></line><line x1="3" x2="21" y1="18" y2="18"></line></svg>
 </button>
-<a href="00.00-front-matter.html" class="header-logo"><span class="logo-php">PHP</span> to <span class="logo-go">Go</span></a>
+<a class="header-logo" href="00.00-front-matter.html"><span class="logo-php">PHP</span> to <span class="logo-go">Go</span></a>
 <span class="header-crumbs">مانیتورینگ و Observability › Prometheus و Grafana</span>
 </div>
 <div class="header-right">
@@ -36,195 +36,141 @@
 <a href="09.03-opentelemetry.html"><span class="nav-label">۹.۳ OpenTelemetry</span></a>
 <span class="nav-arrow">›</span>
 </nav>
-<button class="header-btn search-toggle" aria-label="جستجو">
-<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+<button aria-label="جستجو" class="header-btn search-toggle">
+<svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" x2="16.65" y1="21" y2="16.65"></line></svg>
 </button>
-<button class="header-btn theme-toggle" aria-label="تغییر تم">
-<svg class="theme-icon-light" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
-<svg class="theme-icon-dark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+<button aria-label="تغییر تم" class="header-btn theme-toggle">
+<svg class="theme-icon-light" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24"><circle cx="12" cy="12" r="5"></circle><line x1="12" x2="12" y1="1" y2="3"></line><line x1="12" x2="12" y1="21" y2="23"></line><line x1="4.22" x2="5.64" y1="4.22" y2="5.64"></line><line x1="18.36" x2="19.78" y1="18.36" y2="19.78"></line><line x1="1" x2="3" y1="12" y2="12"></line><line x1="21" x2="23" y1="12" y2="12"></line><line x1="4.22" x2="5.64" y1="19.78" y2="18.36"></line><line x1="18.36" x2="19.78" y1="5.64" y2="4.22"></line></svg>
+<svg class="theme-icon-dark" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
 </button>
 </div>
 </div>
 </header>
-
 <!-- Search Modal -->
 <div class="search-overlay">
 <div class="search-modal">
 <div class="search-input-wrap">
-<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-<input type="text" class="search-input" placeholder="جستجو... (Ctrl+K)" dir="rtl"/>
+<svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" x2="16.65" y1="21" y2="16.65"></line></svg>
+<input class="search-input" dir="rtl" placeholder="جستجو... (Ctrl+K)" type="text"/>
 </div>
 <div class="search-results"></div>
 </div>
 </div>
-
 <!-- Layout -->
 <div class="site-layout">
 <!-- Sidebar -->
 <aside class="sidebar"></aside>
 <div class="sidebar-overlay"></div>
-
 <!-- Main Content -->
 <main class="content-area">
 <div class="content-wrap text">
 <div class="chapter">فصل ۹.۲</div>
-<h2 id="prometheus-و-grafana">Prometheus و Grafana</h2>
-
+<h2 id="prometheus-و-grafana">Prometheus و Grafana</h2><div class="abstract">
+<strong>چکیده:</strong> این بخش Prometheus و Grafana را پوشش می‌دهد: counter، gauge، histogram و dashboard. الگوی instrument و exposition بررسی می‌شود. تفاوت با statsd در PHP و الگوی Go پوشش داده می‌گردد.
+</div>
 <figure class="diagram" dir="ltr">
-<svg height="400" viewBox="0 0 620 400" width="620" xmlns="http://www.w3.org/2000/svg">
-<defs>
-<marker id="arrow2301" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#555" points="0 0, 10 3.5, 0 7"></polygon></marker>
-<filter height="104%" id="sh2301" width="104%" x="-2%" y="-2%"><fedropshadow dx="1" dy="1" flood-opacity="0.15" stddeviation="2"></fedropshadow></filter>
-</defs>
-<rect fill="#fafafa" height="400" rx="8" width="620" x="0" y="0"></rect>
-<text fill="#333" font-size="16" font-weight="bold" text-anchor="middle" x="310" y="28" direction="rtl" unicode-bidi="embed">خط لوله جمع‌آوری Metrics</text>
+<pre class="mermaid">flowchart LR
+    title(["خط لوله جمع‌آوری Metrics"])
 
-<rect fill="#00ADD8" filter="url(#sh2301)" height="60" rx="6" width="130" x="30" y="80"></rect>
-<text fill="#fff" font-size="12" text-anchor="middle" x="95" y="105" direction="ltr" unicode-bidi="embed">Go App</text>
-<text fill="#e0f7fa" font-size="9" text-anchor="middle" x="95" y="125" direction="ltr" unicode-bidi="embed">Counter/Gauge/Histogram</text>
+    APP["Go App<br/>Counter/Gauge/Histogram"]
+    PROM["Prometheus<br/>Scrape + TSDB<br/>PromQL"]
+    GRAF["Grafana<br/>Dashboards<br/>Alerting"]
+    APP -- "/metrics" --&gt; PROM
+    PROM -- "query" --&gt; GRAF
 
-<line marker-end="url(#arrow2301)" stroke="#555" stroke-width="2" x1="160" x2="230" y1="110" y2="110"></line>
-<text fill="#666" font-size="8" text-anchor="middle" x="195" y="103" direction="ltr" unicode-bidi="embed">/metrics</text>
+    subgraph TYPES["انواع متریک"]
+        direction LR
+        C["Counter<br/>فقط افزایش"]
+        G["Gauge<br/>افزایش/کاهش"]
+        H["Histogram<br/>توزیع + percentiles"]
+        S["Summary<br/>percentile سمت کلاینت"]
+    end
 
-<rect fill="#E65100" filter="url(#sh2301)" height="80" rx="6" width="160" x="230" y="70"></rect>
-<text fill="#fff" font-size="13" text-anchor="middle" x="310" y="100" direction="ltr" unicode-bidi="embed">Prometheus</text>
-<text fill="#fff" font-size="9" text-anchor="middle" x="310" y="118" direction="ltr" unicode-bidi="embed">Scrape + TSDB</text>
-<text fill="#fff" font-size="9" text-anchor="middle" x="310" y="135" direction="ltr" unicode-bidi="embed">PromQL</text>
+    ALERT(["Alerting → Slack / Email / Telegram"])
+    LABELS(["Labels: method="GET", path="/api/users", status="200""])
 
-<line marker-end="url(#arrow2301)" stroke="#555" stroke-width="2" x1="390" x2="460" y1="110" y2="110"></line>
-<text fill="#666" font-size="8" text-anchor="middle" x="425" y="103" direction="ltr" unicode-bidi="embed">query</text>
+    title ~~~ APP
+    GRAF ~~~ ALERT
+    ALERT ~~~ TYPES
+    TYPES ~~~ LABELS
 
-<rect fill="#F46800" filter="url(#sh2301)" height="80" rx="6" width="130" x="460" y="70"></rect>
-<text fill="#fff" font-size="13" text-anchor="middle" x="525" y="100" direction="ltr" unicode-bidi="embed">Grafana</text>
-<text fill="#fff" font-size="9" text-anchor="middle" x="525" y="118" direction="ltr" unicode-bidi="embed">Dashboards</text>
-<text fill="#fff" font-size="9" text-anchor="middle" x="525" y="135" direction="ltr" unicode-bidi="embed">Alerting</text>
-
-<!-- Metric Types -->
-<rect fill="#4CAF50" filter="url(#sh2301)" height="45" rx="4" width="130" x="30" y="200"></rect>
-<text fill="#fff" font-size="11" text-anchor="middle" x="95" y="220" direction="ltr" unicode-bidi="embed">Counter</text>
-<text fill="#e8f5e9" font-size="8" text-anchor="middle" x="95" y="237" direction="ltr" unicode-bidi="embed">فقط افزایش</text>
-
-<rect fill="#FF9800" filter="url(#sh2301)" height="45" rx="4" width="130" x="175" y="200"></rect>
-<text fill="#fff" font-size="11" text-anchor="middle" x="240" y="220" direction="ltr" unicode-bidi="embed">Gauge</text>
-<text fill="#fff3e0" font-size="8" text-anchor="middle" x="240" y="237" direction="ltr" unicode-bidi="embed">افزایش/کاهش</text>
-
-<rect fill="#9C27B0" filter="url(#sh2301)" height="45" rx="4" width="130" x="320" y="200"></rect>
-<text fill="#fff" font-size="11" text-anchor="middle" x="385" y="220" direction="ltr" unicode-bidi="embed">Histogram</text>
-<text fill="#e1bee7" font-size="8" text-anchor="middle" x="385" y="237" direction="ltr" unicode-bidi="embed">توزیع + percentiles</text>
-
-<rect fill="#e91e63" filter="url(#sh2301)" height="45" rx="4" width="130" x="465" y="200"></rect>
-<text fill="#fff" font-size="11" text-anchor="middle" x="530" y="220" direction="ltr" unicode-bidi="embed">Summary</text>
-<text fill="#fce4ec" font-size="8" text-anchor="middle" x="530" y="237" direction="ltr" unicode-bidi="embed">percentile سمت کلاینت</text>
-
-<!-- Alerting -->
-<rect fill="#e91e63" filter="url(#sh2301)" height="40" rx="6" width="220" x="200" y="280"></rect>
-<text fill="#fff" font-size="11" text-anchor="middle" x="310" y="305" direction="ltr" unicode-bidi="embed">Alerting → Slack / Email / Telegram</text>
-<line marker-end="url(#arrow2301)" stroke="#e91e63" stroke-dasharray="4,4" stroke-width="1.5" x1="525" x2="420" y1="150" y2="280"></line>
-
-<!-- Labels -->
-<rect fill="#E3F2FD" height="35" rx="4" stroke="#2196F3" width="400" x="110" y="345"></rect>
-<text fill="#1565C0" font-size="10" text-anchor="middle" x="310" y="368" direction="ltr" unicode-bidi="embed">Labels: method="GET", path="/api/users", status="200"</text>
-</svg>
+    classDef titleBox fill:#f8fafc,stroke:#475569,stroke-width:1px,color:#1f2937,font-weight:bold;
+    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
+    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
+    classDef vizBox fill:#fffbeb,stroke:#F46800,stroke-width:2px,color:#1f2937,font-weight:bold;
+    classDef okBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
+    classDef traceBox fill:#f5f0fb,stroke:#9C27B0,stroke-width:1.5px,color:#1f2937;
+    classDef errBox fill:#fef2f2,stroke:#ef4444,stroke-width:1.5px,color:#1f2937;
+    classDef noteBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1px,color:#1f2937,font-style:italic;
+    class title titleBox;
+    class APP goBox;
+    class PROM warnBox;
+    class GRAF vizBox;
+    class C okBox;
+    class G warnBox;
+    class H traceBox;
+    class S errBox;
+    class ALERT errBox;
+    class LABELS noteBox;</pre>
 <figcaption>شکل ۹-۲: خط لوله جمع‌آوری Metrics — از <bdi dir="ltr">Go</bdi> <bdi dir="ltr">App</bdi> تا داشبورد <bdi dir="ltr">Grafana</bdi></figcaption>
 </figure>
-
 <p>در عمل زمانی که یک برنامه وارد محیط <bdi dir="ltr">Production</bdi> می‌شود موفقیت آن هم به درستی کد و هم به پایداری، کارایی و قابلیت <bdi dir="ltr">Observability</bdi> آن بستگی دارد. یکی از استانداردهای شناخته‌شده برای مانیتورینگ در اکوسیستم <bdi dir="ltr">cloud-native</bdi> استفاده از <bdi dir="ltr">Prometheus</bdi> برای جمع‌آوری Metrics و <bdi dir="ltr">Grafana</bdi> برای مصورسازی آن‌هاست.</p>
-
 <p>در هسته‌ی <bdi dir="ltr">Prometheus</bdi> داده‌ها به صورت <bdi dir="ltr">time series</bdi> ذخیره می‌شوند. هر <bdi dir="ltr">time series</bdi> شامل متریک، <bdi dir="ltr">Labels</bdi> (جفت‌های کلید-مقدار) و <bdi dir="ltr">Timestamp</bdi> است.</p>
-
-<h3 id="انواع-متریکها">انواع Metrics</h3>
-
+<h3 id="انواع-متریکها">9.2.1 انواع Metrics</h3>
 <div class="case-study">
-    <div class="case-study-header">
-        <span class="case-study-badge">مطالعه موردی</span>
-        <span class="case-study-title">Observability در SoundCloud با Prometheus</span>
-    </div>
-    <p>Prometheus در ابتدا توسط SoundCloud توسعه یافت تا نیازهای مانیتورینگ یک پلتفرم موسیقی با میلیون‌ها کاربر را برآورده کند. قبل از Prometheus، تیم SoundCloud از ابزارهای مانیتورینگ مبتنی بر push مانند Graphite و StatsD استفاده می‌کرد که در مقیاس بزرگ با مشکلاتی مواجه بودند: سرورهای مانیتورینگ بار زیادی تحمل می‌کردند، پیکربندی هر سرویس برای ارسال متریک‌ها پیچیده بود، و شناسایی سرویس‌های جدید به‌صورت خودکار انجام نمی‌شد.</p>
-    <p>مدل pull-based آن به این معناست که سرور Prometheus به‌صورت دوره‌ای متریک‌ها را از سرویس‌ها جمع‌آوری می‌کند، نه اینکه سرویس‌ها متریک‌ها را push کنند. این رویکرد مزایای کلیدی دارد: سرویس‌ها نیازی به دانستن آدرس سرور مانیتورینگ ندارند، service discovery به‌صورت خودکار انجام می‌شود، و سلامت سرویس با یک scrape ساده قابل بررسی است. اگر سرور Prometheus بتواند متریک‌های یک سرویس را scrape کند، یعنی سرویس سالم است — این یک built-in health check است که بدون پیکربندی اضافی کار می‌کند.</p>
-    <p>امروز Prometheus استاندارد واقعی مانیتورینگ در دنیای Cloud Native و عضو اصلی CNCF است. تقریباً هر پروژه Cloud Native از Kubernetes تا Istio متریک‌های Prometheus را به‌طور پیش‌فرض ارائه می‌دهند. اکوسیستم ابزارهای اطراف آن — شامل Alertmanager برای هشداردهی، Thanos برای مقیاس‌پذیری بلندمدت، و Grafana برای تجسم — آن را به کامل‌ترین راهکار مانیتورینگ تبدیل کرده است.</p>
-    <p class="case-study-source">
-        <span class="source-event">CloudNativeCon 2016</span>
-        <span class="source-year">، ۲۰۱۶</span>
-    </p>
+<div class="case-study-header">
+<span class="case-study-badge">مطالعه موردی</span>
+<span class="case-study-title">Observability در SoundCloud با Prometheus</span>
 </div>
-
+<p>Prometheus در ابتدا توسط SoundCloud توسعه یافت تا نیازهای مانیتورینگ یک پلتفرم موسیقی با میلیون‌ها کاربر را برآورده کند.</p><p>قبل از Prometheus، تیم SoundCloud از ابزارهای مانیتورینگ مبتنی بر push مانند Graphite و StatsD استفاده می‌کرد که در مقیاس بزرگ با مشکلاتی مواجه بودند: سرورهای مانیتورینگ بار زیادی تحمل می‌کردند، پیکربندی هر سرویس برای ارسال متریک‌ها پیچیده بود، و شناسایی سرویس‌های جدید به‌صورت خودکار انجام نمی‌شد.</p>
+<p>مدل pull-based آن به این معناست که سرور Prometheus به‌صورت دوره‌ای متریک‌ها را از سرویس‌ها جمع‌آوری می‌کند، نه اینکه سرویس‌ها متریک‌ها را push کنند.</p><p>این رویکرد مزایای کلیدی دارد: سرویس‌ها نیازی به دانستن آدرس سرور مانیتورینگ ندارند، service discovery به‌صورت خودکار انجام می‌شود، و سلامت سرویس با یک scrape ساده قابل بررسی است.</p><p>اگر سرور Prometheus بتواند متریک‌های یک سرویس را scrape کند، یعنی سرویس سالم است — این یک built-in health check است که بدون پیکربندی اضافی کار می‌کند.</p>
+<p>امروز Prometheus استاندارد واقعی مانیتورینگ در دنیای Cloud Native و عضو اصلی CNCF است. تقریباً هر پروژه Cloud Native از Kubernetes تا Istio متریک‌های Prometheus را به‌طور پیش‌فرض ارائه می‌دهند.</p><p>اکوسیستم ابزارهای اطراف آن — شامل Alertmanager برای هشداردهی، Thanos برای مقیاس‌پذیری بلندمدت، و Grafana برای تجسم — آن را به کامل‌ترین راهکار مانیتورینگ تبدیل کرده است.</p>
+<p class="case-study-source">
+<span class="source-event">CloudNativeCon 2016</span>
+<span class="source-year">، ۲۰۱۶</span>
+</p>
+</div>
 <p>Prometheus چهار نوع متریک اصلی دارد. انتخاب نوع مناسب برای هر سناریو، تفاوت بین داشبورد مفید و داده‌های بی‌فایده را رقم می‌زند. در ادامه هر نوع را با تصویر، مثال عملیاتی و کد Go بررسی می‌کنیم.</p>
-
 <!-- ===== Counter ===== -->
 <h4 id="metric-counter">Counter</h4>
-
 <figure class="diagram" dir="ltr">
-<svg height="300" viewBox="0 0 660 300" width="660" xmlns="http://www.w3.org/2000/svg">
-<defs>
-<filter height="104%" id="shCnt" width="104%" x="-2%" y="-2%"><fedropshadow dx="1" dy="1" flood-opacity="0.12" stddeviation="2"></fedropshadow></filter>
-<linearGradient id="cntGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#4CAF50"/><stop offset="100%" stop-color="#2E7D32"/></linearGradient>
-</defs>
-<rect fill="#fafafa" height="300" rx="8" width="660" x="0" y="0"></rect>
-<text fill="#333" font-size="15" font-weight="bold" text-anchor="middle" x="330" y="25" direction="ltr" unicode-bidi="embed">Counter — فقط افزایش می‌یابد (Monotonically Increasing)</text>
+<pre class="mermaid">flowchart TB
+    title(["Counter — فقط افزایش می‌یابد (Monotonically Increasing)"])
 
-<!-- Graph area -->
-<rect fill="#fff" height="140" rx="4" stroke="#ddd" width="400" x="30" y="45"></rect>
-<!-- Y axis -->
-<line stroke="#aaa" stroke-width="1" x1="30" x2="30" y1="45" y2="185"></line>
-<!-- X axis -->
-<line stroke="#aaa" stroke-width="1" x1="30" x2="430" y1="185" y2="185"></line>
-<text fill="#888" font-size="8" text-anchor="end" x="26" y="60" direction="ltr" unicode-bidi="embed">1000</text>
-<text fill="#888" font-size="8" text-anchor="end" x="26" y="115" direction="ltr" unicode-bidi="embed">500</text>
-<text fill="#888" font-size="8" text-anchor="end" x="26" y="185" direction="ltr" unicode-bidi="embed">0</text>
-<text fill="#888" font-size="8" text-anchor="middle" x="130" y="195" direction="ltr" unicode-bidi="embed">t1</text>
-<text fill="#888" font-size="8" text-anchor="middle" x="230" y="195" direction="ltr" unicode-bidi="embed">t2</text>
-<text fill="#888" font-size="8" text-anchor="middle" x="330" y="195" direction="ltr" unicode-bidi="embed">t3</text>
-<text fill="#888" font-size="8" text-anchor="middle" x="410" y="195" direction="ltr" unicode-bidi="embed">t4</text>
+    subgraph GRAPH["نمودار Counter (t1→t4)"]
+        direction TB
+        T1["t1: 0"]
+        T2["t2: ~500"]
+        T3["t3: restart → reset to 0"]
+        T4["t4: 1000"]
+        T1 --&gt; T2 --&gt; T3 --&gt; T4
+    end
 
-<!-- Counter line (monotonically increasing) -->
-<polyline fill="none" points="50,170 130,150 200,130 250,100 300,80 350,65 410,55" stroke="#4CAF50" stroke-width="2.5"></polyline>
-<!-- Data points -->
-<circle cx="50" cy="170" fill="#4CAF50" r="3"></circle>
-<circle cx="130" cy="150" fill="#4CAF50" r="3"></circle>
-<circle cx="200" cy="130" fill="#4CAF50" r="3"></circle>
-<circle cx="250" cy="100" fill="#4CAF50" r="3"></circle>
-<circle cx="300" cy="80" fill="#4CAF50" r="3"></circle>
-<circle cx="350" cy="65" fill="#4CAF50" r="3"></circle>
-<circle cx="410" cy="55" fill="#4CAF50" r="3"></circle>
+    subgraph INFO["api.RequestsTotal"]
+        direction TB
+        WHAT["چه چیزهایی شمارش شود؟<br/>• تعداد درخواست‌های HTTP<br/>• تعداد خطاهای دیتابیس<br/>• تعداد بایت‌های ارسالی"]
+        PROMQL["PromQL<br/>rate(http_requests_total[5m])<br/>نرخ درخواست در هر ثانیه<br/>نکته: هرگز Counter را مستقیم رسم نکنید!"]
+    end
 
-<!-- Reset arrow -->
-<circle cx="250" cy="100" fill="#e91e63" r="5" stroke="#fff" stroke-width="1"></circle>
-<line marker-end="url(#arrReset)" stroke="#e91e63" stroke-dasharray="4,3" stroke-width="1.5" x1="255" x2="285" y1="90" y2="70"></line>
-<rect fill="#fce4ec" height="20" rx="3" width="90" x="270" y="62"></rect>
-<text fill="#e91e63" font-size="7" text-anchor="middle" x="315" y="76" direction="ltr" unicode-bidi="embed">restart → reset to 0</text>
+    RULE(["قانون طلایی: Counter فقط با rate() یا increase() معنا دارد — مقدار مطلق آن اهمیت ندارد"])
 
-<!-- rate() visualization -->
-<rect fill="#e8f5e9" height="20" rx="3" stroke="#4CAF50" stroke-width="1" width="70" x="130" y="155"></rect>
-<text fill="#2E7D32" font-size="7" text-anchor="middle" x="165" y="168" direction="ltr" unicode-bidi="embed">rate()[5m]</text>
-<line stroke="#4CAF50" stroke-dasharray="3,2" x1="130" x2="130" y1="150" y2="155"></line>
-<line stroke="#4CAF50" stroke-dasharray="3,2" x1="200" x2="200" y1="130" y2="155"></line>
+    title ~~~ GRAPH
+    GRAPH ~~~ INFO
+    INFO ~~~ RULE
 
-<!-- Info boxes -->
-<rect fill="#4CAF50" filter="url(#shCnt)" height="30" rx="6" width="180" x="460" y="50"></rect>
-<text fill="#fff" font-size="11" font-weight="bold" text-anchor="middle" x="550" y="70" direction="ltr" unicode-bidi="embed">api.RequestsTotal</text>
-
-<rect fill="#fff" height="70" rx="4" stroke="#4CAF50" stroke-width="1.5" width="180" x="460" y="90"></rect>
-<text fill="#4CAF50" font-size="9" font-weight="bold" text-anchor="middle" x="550" y="108" direction="rtl" unicode-bidi="embed">چه چیزهایی شمارش شود؟</text>
-<text fill="#333" font-size="8" text-anchor="middle" x="550" y="122" direction="rtl" unicode-bidi="embed">• تعداد درخواست‌های HTTP</text>
-<text fill="#333" font-size="8" text-anchor="middle" x="550" y="135" direction="rtl" unicode-bidi="embed">• تعداد خطاهای دیتابیس</text>
-<text fill="#333" font-size="8" text-anchor="middle" x="550" y="148" direction="rtl" unicode-bidi="embed">• تعداد بایت‌های ارسالی</text>
-
-<!-- Use case box -->
-<rect fill="#fff" height="65" rx="4" stroke="#4CAF50" stroke-width="1" width="180" x="460" y="170"></rect>
-<text fill="#4CAF50" font-size="9" font-weight="bold" text-anchor="middle" x="550" y="188" direction="ltr" unicode-bidi="embed">PromQL</text>
-<text fill="#333" font-size="7.5" text-anchor="middle" x="550" y="203" direction="ltr" unicode-bidi="embed">rate(http_requests_total[5m])</text>
-<text fill="#888" font-size="7" text-anchor="middle" x="550" y="218" direction="rtl" unicode-bidi="embed">نرخ درخواست در هر ثانیه</text>
-<text fill="#e91e63" font-size="7" text-anchor="middle" x="550" y="230" direction="rtl" unicode-bidi="embed">نکته: هرگز Counter را مستقیم رسم نکنید!</text>
-
-<!-- Bottom summary -->
-<rect fill="#4CAF50" filter="url(#shCnt)" height="30" rx="6" width="620" x="20" y="262"></rect>
-<text fill="#fff" font-size="9" text-anchor="middle" x="330" y="282" direction="rtl" unicode-bidi="embed">قانون طلایی: <tspan direction="ltr" unicode-bidi="embed">Counter</tspan> فقط با <tspan direction="ltr" unicode-bidi="embed">rate()</tspan> یا <tspan direction="ltr" unicode-bidi="embed">increase()</tspan> معنا دارد — مقدار مطلق آن اهمیت ندارد</text>
-</svg>
+    classDef titleBox fill:#f8fafc,stroke:#475569,stroke-width:1px,color:#1f2937,font-weight:bold;
+    classDef okBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
+    classDef errBox fill:#fef2f2,stroke:#ef4444,stroke-width:1.5px,color:#1f2937;
+    classDef neutralBox fill:#f8fafc,stroke:#475569,stroke-width:1px,color:#1f2937;
+    classDef noteBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1px,color:#1f2937,font-style:italic;
+    class title titleBox;
+    class T1,T2,T4 okBox;
+    class T3 errBox;
+    class WHAT,PROMQL neutralBox;
+    class RULE okBox;</pre>
 <figcaption>شکل ۹-۲-ب: رفتار <bdi dir="ltr">Counter</bdi> — فقط بالا می‌رود و هرگز کاهش نمی‌یابد (مگر در ریستارت)</figcaption>
 </figure>
-
-<p><bdi dir="ltr">Counter</bdi> ساده‌ترین و پرکاربردترین نوع متریک است. مقدار آن از صفر شروع شده و فقط افزایش می‌یابد — هرگز کاهش نمی‌یابد. وقتی برنامه ری‌استارت شود، Counter به صفر برمی‌گردد و <bdi dir="ltr">Prometheus</bdi> به‌طور خودکار این ریستارت را تشخیص داده و <bdi dir="ltr">rate()</bdi> را درست محاسبه می‌کند. به همین دلیل هیچ‌گاه نباید Counter را مستقیم روی داشبورد رسم کنید — فقط نرخ تغییر آن (<bdi dir="ltr">rate</bdi>) معنادار است.</p>
-
+<p><bdi dir="ltr">Counter</bdi> ساده‌ترین و پرکاربردترین نوع متریک است. مقدار آن از صفر شروع شده و فقط افزایش می‌یابد — هرگز کاهش نمی‌یابد. وقتی برنامه ری‌استارت شود، Counter به صفر برمی‌گردد و <bdi dir="ltr">Prometheus</bdi> به‌طور خودکار این ریستارت را تشخیص داده و <bdi dir="ltr">rate()</bdi> را درست محاسبه می‌کند. </p><p>به همین دلیل هیچ‌گاه نباید Counter را مستقیم روی داشبورد رسم کنید — فقط نرخ تغییر آن (<bdi dir="ltr">rate</bdi>) معنادار است.</p>
 <p><strong>سناریوهای عملیاتی Counter:</strong></p>
 <ul>
 <li><strong>شمارش درخواست‌ها:</strong> هر درخواست HTTP یک واحد به <code>http_requests_total</code> اضافه می‌شود. با <bdi dir="ltr">rate()</bdi> نرخ درخواست در ثانیه به‌دست می‌آید.</li>
@@ -232,7 +178,6 @@
 <li><strong>بایت‌های ارسالی:</strong> هر پاسخ HTTP حجم بایت خود را به <code>response_bytes_total</code> اضافه می‌کند. <bdi dir="ltr">rate()</bdi> پهنای باند مصرفی را نشان می‌دهد.</li>
 <li><strong>تعداد پرداخت‌ها:</strong> در یک سیستم مالی، هر تراکنش موفق یک واحد اضافه می‌شود. <bdi dir="ltr">increase()[24h]</bdi> تعداد تراکنش‌های روزانه را نشان می‌دهد.</li>
 </ul>
-
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">// Counter: شمارش درخواست‌های HTTP به تفکیک متد و مسیر و وضعیت
 var httpRequestsTotal = prometheus.NewCounterVec(
@@ -262,79 +207,43 @@ func metricsMiddleware(next http.Handler) http.Handler {
     })
 }</code></pre>
 </figure>
-
 <div class="tip"><strong>نکته عملی:</strong> همیشه Counter را با Labels تعریف کنید (<code>NewCounterVec</code>). مثلاً به‌جای یک Counter کلی، از Labels مثل <code>method</code> و <code>status</code> استفاده کنید تا بتوانید نرخ خطا را به تفکیک endpoint تحلیل کنید. بدون Labels، فقط یک عدد کلی دارید که برای عیب‌یابی بی‌فایده است.</div>
-
 <!-- ===== Gauge ===== -->
 <h4 id="metric-gauge">Gauge</h4>
-
 <figure class="diagram" dir="ltr">
-<svg height="300" viewBox="0 0 660 300" width="660" xmlns="http://www.w3.org/2000/svg">
-<defs>
-<filter height="104%" id="shGau" width="104%" x="-2%" y="-2%"><fedropshadow dx="1" dy="1" flood-opacity="0.12" stddeviation="2"></fedropshadow></filter>
-<linearGradient id="gaugeGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#FF9800"/><stop offset="100%" stop-color="#E65100"/></linearGradient>
-</defs>
-<rect fill="#fafafa" height="300" rx="8" width="660" x="0" y="0"></rect>
-<text fill="#333" font-size="15" font-weight="bold" text-anchor="middle" x="330" y="25" direction="ltr" unicode-bidi="embed">Gauge — افزایش و کاهش (Current State)</text>
+<pre class="mermaid">flowchart TB
+    title(["Gauge — افزایش و کاهش (Current State)"])
 
-<!-- Graph area -->
-<rect fill="#fff" height="140" rx="4" stroke="#ddd" width="400" x="30" y="45"></rect>
-<line stroke="#aaa" stroke-width="1" x1="30" x2="30" y1="45" y2="185"></line>
-<line stroke="#aaa" stroke-width="1" x1="30" x2="430" y1="185" y2="185"></line>
-<text fill="#888" font-size="8" text-anchor="end" x="26" y="60" direction="ltr" unicode-bidi="embed">200</text>
-<text fill="#888" font-size="8" text-anchor="end" x="26" y="115" direction="ltr" unicode-bidi="embed">100</text>
-<text fill="#888" font-size="8" text-anchor="end" x="26" y="185" direction="ltr" unicode-bidi="embed">0</text>
+    subgraph GRAPH["نمودار Gauge (fluctuating)"]
+        direction LR
+        T1["Inc() +50"]
+        T2["Dec() -35"]
+        T3["Set(140)"]
+        T1 --&gt; T2 --&gt; T3
+    end
 
-<!-- Gauge line (fluctuating) -->
-<polyline fill="none" points="50,150 100,120 150,80 200,95 250,130 300,60 350,90 400,110" stroke="#FF9800" stroke-width="2.5"></polyline>
-<circle cx="50" cy="150" fill="#FF9800" r="3"></circle>
-<circle cx="100" cy="120" fill="#FF9800" r="3"></circle>
-<circle cx="150" cy="80" fill="#FF9800" r="3"></circle>
-<circle cx="200" cy="95" fill="#FF9800" r="3"></circle>
-<circle cx="250" cy="130" fill="#FF9800" r="3"></circle>
-<circle cx="300" cy="60" fill="#FF9800" r="3"></circle>
-<circle cx="350" cy="90" fill="#FF9800" r="3"></circle>
-<circle cx="400" cy="110" fill="#FF9800" r="3"></circle>
+    subgraph INFO["app.ActiveConnections"]
+        direction TB
+        WHAT["چه چیزهایی اندازه‌گیری شود؟<br/>• اتصال‌های فعال دیتابیس<br/>• تعداد goroutine‌ها<br/>• مصرف حافظه / دمای CPU"]
+        PROMQL["PromQL<br/>go_goroutines<br/>avg_over_time(temp[1h])<br/>مقدار Gauge مستقیم معنادار است"]
+    end
 
-<!-- Annotations -->
-<rect fill="#fff3e0" height="16" rx="3" width="60" x="120" y="62"></rect>
-<text fill="#E65100" font-size="7" text-anchor="middle" x="150" y="73" direction="ltr" unicode-bidi="embed">Inc() +50</text>
-<line stroke="#E65100" stroke-dasharray="2,2" x1="150" x2="150" y1="78" y2="80"></line>
+    RULE(["قانون طلایی: Gauge وضعیت فعلی را نشان می‌دهد — برعکس Counter، مقدار مطلق آن مهم است"])
 
-<rect fill="#fff3e0" height="16" rx="3" width="60" x="220" y="115"></rect>
-<text fill="#E65100" font-size="7" text-anchor="middle" x="250" y="126" direction="ltr" unicode-bidi="embed">Dec() -35</text>
-<line stroke="#E65100" stroke-dasharray="2,2" x1="250" x2="250" y1="115" y2="130"></line>
+    title ~~~ GRAPH
+    GRAPH ~~~ INFO
+    INFO ~~~ RULE
 
-<rect fill="#fff3e0" height="16" rx="3" width="60" x="270" y="42"></rect>
-<text fill="#E65100" font-size="7" text-anchor="middle" x="300" y="53" direction="ltr" unicode-bidi="embed">Set(140)</text>
-<line stroke="#E65100" stroke-dasharray="2,2" x1="300" x2="300" y1="58" y2="60"></line>
-
-<!-- Info boxes -->
-<rect fill="#FF9800" filter="url(#shGau)" height="30" rx="6" width="180" x="460" y="50"></rect>
-<text fill="#fff" font-size="11" font-weight="bold" text-anchor="middle" x="550" y="70" direction="ltr" unicode-bidi="embed">app.ActiveConnections</text>
-
-<rect fill="#fff" height="70" rx="4" stroke="#FF9800" stroke-width="1.5" width="180" x="460" y="90"></rect>
-<text fill="#FF9800" font-size="9" font-weight="bold" text-anchor="middle" x="550" y="108" direction="rtl" unicode-bidi="embed">چه چیزهایی اندازه‌گیری شود؟</text>
-<text fill="#333" font-size="8" text-anchor="middle" x="550" y="122" direction="rtl" unicode-bidi="embed">• اتصال‌های فعال دیتابیس</text>
-<text fill="#333" font-size="8" text-anchor="middle" x="550" y="135" direction="rtl" unicode-bidi="embed">• تعداد goroutine‌ها</text>
-<text fill="#333" font-size="8" text-anchor="middle" x="550" y="148" direction="rtl" unicode-bidi="embed">• مصرف حافظه / دمای CPU</text>
-
-<!-- PromQL -->
-<rect fill="#fff" height="65" rx="4" stroke="#FF9800" stroke-width="1" width="180" x="460" y="170"></rect>
-<text fill="#FF9800" font-size="9" font-weight="bold" text-anchor="middle" x="550" y="188" direction="ltr" unicode-bidi="embed">PromQL</text>
-<text fill="#333" font-size="7.5" text-anchor="middle" x="550" y="203" direction="ltr" unicode-bidi="embed">go_goroutines</text>
-<text fill="#333" font-size="7.5" text-anchor="middle" x="550" y="218" direction="ltr" unicode-bidi="embed">avg_over_time(temp[1h])</text>
-<text fill="#888" font-size="7" text-anchor="middle" x="550" y="230" direction="rtl" unicode-bidi="embed">مقدار Gauge مستقیم معنادار است</text>
-
-<!-- Bottom -->
-<rect fill="#FF9800" filter="url(#shGau)" height="30" rx="6" width="620" x="20" y="262"></rect>
-<text fill="#fff" font-size="9" text-anchor="middle" x="330" y="282" direction="rtl" unicode-bidi="embed">قانون طلایی: <tspan direction="ltr" unicode-bidi="embed">Gauge</tspan> وضعیت فعلی را نشان می‌دهد — برعکس <tspan direction="ltr" unicode-bidi="embed">Counter</tspan>، مقدار مطلق آن مهم است</text>
-</svg>
+    classDef titleBox fill:#f8fafc,stroke:#475569,stroke-width:1px,color:#1f2937,font-weight:bold;
+    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
+    classDef neutralBox fill:#f8fafc,stroke:#475569,stroke-width:1px,color:#1f2937;
+    class title titleBox;
+    class T1,T2,T3 warnBox;
+    class WHAT,PROMQL neutralBox;
+    class RULE warnBox;</pre>
 <figcaption>شکل ۹-۲-ج: رفتار <bdi dir="ltr">Gauge</bdi> — هم بالا و هم پایین می‌رود (وضعیت لحظه‌ای)</figcaption>
 </figure>
-
 <p><bdi dir="ltr">Gauge</bdi> متریک وضعیت لحظه‌ای است. برعکس Counter، مقدار Gauge می‌تواند افزایش یا کاهش یابد و مقدار مطلق آن مهم است — نیازی به <bdi dir="ltr">rate()</bdi> ندارد. Gauge نشان‌دهنده‌ی «وضعیت الان» است: چند اتصال فعال داریم؟ چقدر حافظه مصرف شده؟ چند goroutine در حال اجراست؟</p>
-
 <p><strong>سناریوهای عملیاتی Gauge:</strong></p>
 <ul>
 <li><strong>اتصال‌های فعال:</strong> هر اتصال ورودی <code>Inc()</code> و هر قطع اتصال <code>Dec()</code> فراخوانی می‌شود. این عدد نشان می‌دهد سرور چقدر تحت بار است.</li>
@@ -342,7 +251,6 @@ func metricsMiddleware(next http.Handler) http.Handler {
 <li><strong>تعداد goroutine:</strong> <code>go_goroutines</code> به‌طور خودکار توسط کتابخانه Prometheus گزارش می‌شود. افزایش مداوم نشانه‌ی goroutine leak است.</li>
 <li><strong>دمای CPU / فضای دیسک:</strong> منابع سیستمی که مقدارشان بالا و پایین می‌رود. برای این موارد Gauge مناسب است چون مقدار مطلق مهم است.</li>
 </ul>
-
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">// Gauge: اندازه‌گیری وضعیت لحظه‌ای
 var (
@@ -371,93 +279,69 @@ defer activeConnections.Dec()
 // تنظیم مستقیم مقدار
 dbConnections.WithLabelValues("primary").Set(float64(dbPool.Stats().OpenConnections))</code></pre>
 </figure>
-
 <!-- ===== Histogram ===== -->
 <h4 id="metric-histogram">Histogram</h4>
-
 <figure class="diagram" dir="ltr">
-<svg height="350" viewBox="0 0 660 350" width="660" xmlns="http://www.w3.org/2000/svg">
-<defs><filter id="sh160" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
-<linearGradient id="histGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#9C27B0"/><stop offset="100%" stop-color="#6A1B9A"/></linearGradient>
-</defs>
-<rect fill="#fafafa" height="350" rx="8" width="660" x="0" y="0"></rect>
-<text fill="#333" font-size="15" font-weight="bold" text-anchor="middle" x="330" y="25" direction="ltr" unicode-bidi="embed">Histogram — توزیع مقادیر در Bucket‌ها + محاسبه Percentile</text>
+<pre class="mermaid">flowchart TB
+    title(["Histogram — توزیع مقادیر در Bucket‌ها + محاسبه Percentile"])
 
-<!-- Bucket bar chart -->
-<text fill="#9C27B0" font-size="10" font-weight="bold" text-anchor="start" x="30" y="55" direction="ltr" unicode-bidi="embed">Bucket Distribution</text>
-<rect fill="#fff" height="120" rx="4" stroke="#ddd" width="400" x="30" y="62"></rect>
+    subgraph BUCKETS["Bucket Distribution (Cumulative Buckets)"]
+        direction LR
+        B1["le=0.005 → 10"]
+        B2["le=0.01 → 25"]
+        B3["le=0.025 → 50"]
+        B4["le=0.05 → 80"]
+        B5["le=0.1 → 92"]
+        B6["le=0.25 → 98"]
+        B7["le=+Inf → 100"]
+        B1 --&gt; B2 --&gt; B3 --&gt; B4 --&gt; B5 --&gt; B6 --&gt; B7
+    end
 
-<!-- Bars (cumulative) -->
-<rect fill="#CE93D8" height="20" rx="2" width="30" x="60" y="155"></rect>
-<text fill="#333" font-size="7" text-anchor="middle" x="75" y="168" direction="ltr" unicode-bidi="embed">10</text>
-<rect fill="#BA68C8" height="40" rx="2" width="30" x="110" y="135"></rect>
-<text fill="#333" font-size="7" text-anchor="middle" x="125" y="155" direction="ltr" unicode-bidi="embed">25</text>
-<rect fill="#AB47BC" height="70" rx="2" width="30" x="160" y="105"></rect>
-<text fill="#333" font-size="7" text-anchor="middle" x="175" y="125" direction="ltr" unicode-bidi="embed">50</text>
-<rect fill="#9C27B0" height="90" rx="2" width="30" x="210" y="85"></rect>
-<text fill="#fff" font-size="7" text-anchor="middle" x="225" y="105" direction="ltr" unicode-bidi="embed">80</text>
-<rect fill="#8E24AA" height="105" rx="2" width="30" x="260" y="70"></rect>
-<text fill="#fff" font-size="7" text-anchor="middle" x="275" y="90" direction="ltr" unicode-bidi="embed">92</text>
-<rect fill="#6A1B9A" height="110" rx="2" width="30" x="310" y="65"></rect>
-<text fill="#fff" font-size="7" text-anchor="middle" x="325" y="85" direction="ltr" unicode-bidi="embed">98</text>
-<rect fill="#4A148C" height="112" rx="2" width="30" x="360" y="63"></rect>
-<text fill="#fff" font-size="7" text-anchor="middle" x="375" y="83" direction="ltr" unicode-bidi="embed">100</text>
+    subgraph PERCENTILES["Percentile lines"]
+        direction TB
+        P50["p50 ~ 50ms"]
+        P95["p95 ~ 100ms"]
+        P99["p99 ~ 250ms"]
+    end
 
-<!-- Bucket labels -->
-<text fill="#666" font-size="6.5" text-anchor="middle" x="75" y="182" direction="ltr" unicode-bidi="embed">le=0.005</text>
-<text fill="#666" font-size="6.5" text-anchor="middle" x="125" y="182" direction="ltr" unicode-bidi="embed">le=0.01</text>
-<text fill="#666" font-size="6.5" text-anchor="middle" x="175" y="182" direction="ltr" unicode-bidi="embed">le=0.025</text>
-<text fill="#666" font-size="6.5" text-anchor="middle" x="225" y="182" direction="ltr" unicode-bidi="embed">le=0.05</text>
-<text fill="#666" font-size="6.5" text-anchor="middle" x="275" y="182" direction="ltr" unicode-bidi="embed">le=0.1</text>
-<text fill="#666" font-size="6.5" text-anchor="middle" x="325" y="182" direction="ltr" unicode-bidi="embed">le=0.25</text>
-<text fill="#666" font-size="6.5" text-anchor="middle" x="375" y="182" direction="ltr" unicode-bidi="embed">le=+Inf</text>
+    subgraph SERIES["Histogram = 3 Time Series"]
+        direction TB
+        S1["_bucket{le="0.05"} 80<br/>تعداد نمونه‌های ≤ 50ms"]
+        S2["_sum 4.52<br/>مجموع تمام مقادیر"]
+        S3["_count 100<br/>تعداد کل نمونه‌ها"]
+    end
 
-<!-- X axis label -->
-<text fill="#888" font-size="8" text-anchor="middle" x="220" y="198" direction="ltr" unicode-bidi="embed">Response Time (seconds) — Cumulative Buckets</text>
+    PROMQL(["PromQL: histogram_quantile(0.95, rate(http_duration_bucket[5m]))"])
+    RULE(["قانون طلایی: Histogram را وقتی استفاده کنید که نیاز به percentile دارید و می‌خواهید از چند نمونه تجمیع کنید<br/>مثال عملی: p95 زمان پاسخ در 10 پاد سرویس → فقط Histogram می‌تواند تجمیع را درست محاسبه کند"])
 
-<!-- Percentile lines -->
-<line stroke="#e91e63" stroke-dasharray="4,3" stroke-width="1.5" x1="30" x2="430" y1="85" y2="85"></line>
-<text fill="#e91e63" font-size="7" font-weight="bold" text-anchor="start" x="432" y="88" direction="ltr" unicode-bidi="embed">p50 ~ 50ms</text>
-<line stroke="#FF9800" stroke-dasharray="4,3" stroke-width="1.5" x1="30" x2="430" y1="70" y2="70"></line>
-<text fill="#FF9800" font-size="7" font-weight="bold" text-anchor="start" x="432" y="73" direction="ltr" unicode-bidi="embed">p95 ~ 100ms</text>
-<line stroke="#f44336" stroke-dasharray="4,3" stroke-width="1.5" x1="30" x2="430" y1="65" y2="65"></line>
-<text fill="#f44336" font-size="7" font-weight="bold" text-anchor="start" x="432" y="68" direction="ltr" unicode-bidi="embed">p99 ~ 250ms</text>
+    title ~~~ BUCKETS
+    BUCKETS ~~~ PERCENTILES
+    PERCENTILES ~~~ SERIES
+    SERIES ~~~ PROMQL
+    PROMQL ~~~ RULE
 
-<!-- Right side: 3 series explanation -->
-<rect fill="#9C27B0" filter="url(#shCnt)" height="30" rx="6" width="200" x="445" y="50"></rect>
-<text fill="#fff" font-size="11" font-weight="bold" text-anchor="middle" x="545" y="70" direction="ltr" unicode-bidi="embed">Histogram = 3 Time Series</text>
-
-<rect fill="#fff" height="85" rx="4" stroke="#9C27B0" stroke-width="1.5" width="200" x="445" y="90"></rect>
-<text fill="#9C27B0" font-size="8" font-weight="bold" text-anchor="start" x="455" y="106" direction="ltr" unicode-bidi="embed">_bucket{le="0.05"} 80</text>
-<text fill="#666" font-size="7" text-anchor="start" x="455" y="118" direction="rtl" unicode-bidi="embed">تعداد نمونه‌های ≤ 50ms</text>
-<text fill="#9C27B0" font-size="8" font-weight="bold" text-anchor="start" x="455" y="134" direction="ltr" unicode-bidi="embed">_sum 4.52</text>
-<text fill="#666" font-size="7" text-anchor="start" x="455" y="146" direction="rtl" unicode-bidi="embed">مجموع تمام مقادیر</text>
-<text fill="#9C27B0" font-size="8" font-weight="bold" text-anchor="start" x="455" y="162" direction="ltr" unicode-bidi="embed">_count 100</text>
-<text fill="#666" font-size="7" text-anchor="start" x="455" y="174" direction="rtl" unicode-bidi="embed">تعداد کل نمونه‌ها</text>
-
-<!-- Bottom -->
-<rect fill="#fff" height="55" rx="4" stroke="#9C27B0" stroke-width="1" width="200" x="445" y="185"></rect>
-<text fill="#9C27B0" font-size="9" font-weight="bold" text-anchor="middle" x="545" y="203" direction="ltr" unicode-bidi="embed">PromQL</text>
-<text fill="#333" font-size="7" text-anchor="middle" x="545" y="218" direction="ltr" unicode-bidi="embed">histogram_quantile(0.95,</text>
-<text fill="#333" font-size="7" text-anchor="middle" x="545" y="230" direction="ltr" unicode-bidi="embed">  rate(http_duration_bucket[5m]))</text>
-
-<!-- Bottom summary -->
-<rect fill="#9C27B0" filter="url(#shCnt)" height="45" rx="6" width="620" x="20" y="295"></rect>
-<text fill="#fff" font-size="9" text-anchor="middle" x="330" y="314" direction="rtl" unicode-bidi="embed">قانون طلایی: <tspan direction="ltr" unicode-bidi="embed">Histogram</tspan> را وقتی استفاده کنید که نیاز به <tspan direction="ltr" unicode-bidi="embed">percentile</tspan> دارید و می‌خواهید از چند نمونه تجمیع کنید</text>
-<text fill="#e1bee7" font-size="8" text-anchor="middle" x="330" y="332" direction="rtl" unicode-bidi="embed">مثال عملی: p95 زمان پاسخ در 10 پاد سرویس → فقط <tspan direction="ltr" unicode-bidi="embed">Histogram</tspan> می‌تواند تجمیع را درست محاسبه کند</text>
-</svg>
+    classDef titleBox fill:#f8fafc,stroke:#475569,stroke-width:1px,color:#1f2937,font-weight:bold;
+    classDef traceBox fill:#f5f0fb,stroke:#9C27B0,stroke-width:1.5px,color:#1f2937;
+    classDef errBox fill:#fef2f2,stroke:#ef4444,stroke-width:1px,color:#1f2937;
+    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1px,color:#1f2937;
+    classDef noteBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1px,color:#1f2937,font-style:italic;
+    class title titleBox;
+    class B1,B2,B3,B4,B5,B6,B7 traceBox;
+    class P50 traceBox;
+    class P95 warnBox;
+    class P99 errBox;
+    class S1,S2,S3 traceBox;
+    class PROMQL warnBox;
+    class RULE noteBox;</pre>
 <figcaption>شکل ۹-۲-د: رفتار <bdi dir="ltr">Histogram</bdi> — توزیع تجمعی در Bucket‌ها و محاسبه Percentile</figcaption>
 </figure>
-
 <p><bdi dir="ltr">Histogram</bdi> سه سری زمانی تولید می‌کند: <code>_bucket</code> (توزیع تجمعی)، <code>_sum</code> (مجموع مقادیر) و <code>_count</code> (تعداد نمونه‌ها). مزیت اصلی Histogram این است که <bdi dir="ltr">percentile</bdi> ها سمت سرور (Prometheus) محاسبه می‌شوند — یعنی می‌توانید داده‌های چند instance را تجمیع کرده و p95 کلی سیستم را به‌دست آورید. این ویژگی در محیط‌های میکروسرویسی حیاتی است.</p>
-
 <p><strong>سناریوهای عملیاتی Histogram:</strong></p>
 <ul>
 <li><strong>زمان پاسخ HTTP:</strong> هر درخواست زمان <code>Observe(duration)</code> فراخوانی می‌شود. p95 و p99 latency از مهم‌ترین متریک‌های هر API هستند.</li>
 <li><strong>حجم پاسخ:</strong> <code>Observe(float64(len(responseBody)))</code> — توزیع حجم پاسخ‌ها کمک می‌کند بفهمید آیا برخی endpoint‌ها پاسخ‌های غیرعادی بزرگ برمی‌گردانند.</li>
 <li><strong>مدت کوئری دیتابیس:</strong> <code>Observe(queryDuration.Seconds())</code> — شناسایی کوئری‌های کند با بررسی p99 به تفکیک نام کوئری.</li>
 </ul>
-
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">// Histogram: اندازه‌گیری توزیع زمان پاسخ
 var httpDuration = prometheus.NewHistogramVec(
@@ -485,72 +369,56 @@ func durationMiddleware(next http.Handler) http.Handler {
 // نکته مهم: Bucketها را بر اساس SLA خود انتخاب کنید
 // اگر SLA شما "p99 &lt; 500ms" است، حتماً 0.5 در Buckets باشد</code></pre>
 </figure>
-
 <div class="important"><strong>انتخاب Bucket مناسب:</strong> Bucket پیش‌فرض Prometheus (<code>DefBuckets</code>) شامل بازه‌های <code>{0.005, 0.01, 0.025, 0.05, 0.1, 0.25, 0.5, 1, 2.5, 5, 10}</code> ثانیه است. این بازه‌ها برای اکثر API‌ها مناسب هستند، اما اگر SLA شما متفاوت است باید Bucket سفارشی تعریف کنید. مثلاً اگر SLA شما «p99 زیر 100ms» است، باید بازه‌های ریزتری مثل <code>{0.01, 0.025, 0.05, 0.075, 0.1, 0.15, 0.25}</code> داشته باشید تا دقت محاسبه percentile بالا باشد. Bucketها قابل تغییر پس از تعریف نیستند — فقط با ری‌استارت و از دست رفتن داده‌های قبلی قابل تغییر هستند.</div>
-
 <!-- ===== Summary ===== -->
 <h4 id="metric-summary">Summary</h4>
-
 <figure class="diagram" dir="ltr">
-<svg height="300" viewBox="0 0 660 300" width="660" xmlns="http://www.w3.org/2000/svg">
-<defs><filter id="sh161" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
-<linearGradient id="sumGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#e91e63"/><stop offset="100%" stop-color="#AD1457"/></linearGradient>
-</defs>
-<rect fill="#fafafa" height="300" rx="8" width="660" x="0" y="0"></rect>
-<text fill="#333" font-size="15" font-weight="bold" text-anchor="middle" x="330" y="25" direction="ltr" unicode-bidi="embed">Summary — Percentile سمت کلاینت (بدون قابلیت تجمیع)</text>
+<pre class="mermaid">flowchart TB
+    title(["Summary — Percentile سمت کلاینت (بدون قابلیت تجمیع)"])
 
-<!-- Client-side computation -->
-<rect fill="#e91e63" filter="url(#shCnt)" height="35" rx="6" width="180" x="30" y="50"></rect>
-<text fill="#fff" font-size="11" font-weight="bold" text-anchor="middle" x="120" y="72" direction="ltr" unicode-bidi="embed">Go App (Client)</text>
+    APP["Go App (Client)"]
+    OBS["Observe(value)<br/>ذخیره در حافظه محلی<br/>محاسبه percentile در سمت کلاینت"]
+    SERIES["_seconds{quantile="0.5"}<br/>_seconds{quantile="0.9"}<br/>_seconds{quantile="0.99"}<br/>_seconds_sum / _seconds_count"]
+    PROM["Prometheus"]
+    APP --&gt; OBS --&gt; SERIES --&gt; PROM
 
-<!-- Flow -->
-<rect fill="#fff" height="60" rx="4" stroke="#e91e63" stroke-width="1.5" width="150" x="45" y="95"></rect>
-<text fill="#e91e63" font-size="8" font-weight="bold" text-anchor="middle" x="120" y="112" direction="ltr" unicode-bidi="embed">Observe(value)</text>
-<text fill="#666" font-size="7" text-anchor="middle" x="120" y="125" direction="rtl" unicode-bidi="embed">ذخیره در حافظه محلی</text>
-<text fill="#666" font-size="7" text-anchor="middle" x="120" y="137" direction="rtl" unicode-bidi="embed">محاسبه percentile در سمت کلاینت</text>
+    WARN(["مشکل: نمی‌توانید از چند نمونه تجمیع کنید!<br/>p95 نمونه A = 100ms + p95 نمونه B = 200ms ≠ p95 کل سیستم<br/>دلیل: percentile از روی percentile قابل ترکیب نیست — نیاز به داده‌های خام دارد"])
 
-<!-- Output series -->
-<line stroke="#e91e63" stroke-width="2" x1="195" x2="220" y1="125" y2="125"></line>
-<rect fill="#fff" height="80" rx="4" stroke="#e91e63" stroke-width="1.5" width="180" x="220" y="85"></rect>
-<text fill="#e91e63" font-size="8" font-weight="bold" text-anchor="middle" x="310" y="103" direction="ltr" unicode-bidi="embed">_seconds{quantile="0.5"}</text>
-<text fill="#e91e63" font-size="8" font-weight="bold" text-anchor="middle" x="310" y="118" direction="ltr" unicode-bidi="embed">_seconds{quantile="0.9"}</text>
-<text fill="#e91e63" font-size="8" font-weight="bold" text-anchor="middle" x="310" y="133" direction="ltr" unicode-bidi="embed">_seconds{quantile="0.99"}</text>
-<text fill="#666" font-size="7" text-anchor="middle" x="310" y="150" direction="ltr" unicode-bidi="embed">_seconds_sum / _seconds_count</text>
+    subgraph CMP["Summary vs Histogram"]
+        direction LR
+        H["Histogram: قابل تجمیع ✓"]
+        S["Summary: غیرقابل تجمیع ✗"]
+    end
 
-<!-- Prometheus -->
-<line stroke="#E65100" stroke-width="2" x1="400" x2="430" y1="125" y2="125"></line>
-<rect fill="#E65100" filter="url(#shCnt)" height="35" rx="6" width="120" x="430" y="108"></rect>
-<text fill="#fff" font-size="10" font-weight="bold" text-anchor="middle" x="490" y="130" direction="ltr" unicode-bidi="embed">Prometheus</text>
+    RULE(["قانون طلایی: فقط وقتی از Summary استفاده کنید که یک نمونه دارید و تجمیع لازم ندارید<br/>در غیر این صورت همیشه Histogram ترجیح داده می‌شود"])
 
-<!-- Warning -->
-<rect fill="#fce4ec" height="50" rx="6" stroke="#e91e63" stroke-width="1.5" width="560" x="50" y="180"></rect>
-<text fill="#e91e63" font-size="9" font-weight="bold" text-anchor="middle" x="330" y="198" direction="rtl" unicode-bidi="embed">مشکل: نمی‌توانید از چند نمونه تجمیع کنید!</text>
-<text fill="#333" font-size="8" text-anchor="middle" x="330" y="215" direction="rtl" unicode-bidi="embed">p95 نمونه A = 100ms + p95 نمونه B = 200ms ≠ p95 کل سیستم</text>
-<text fill="#888" font-size="7" text-anchor="middle" x="330" y="227" direction="rtl" unicode-bidi="embed">دلیل: percentile از روی percentile قابل ترکیب نیست — نیاز به داده‌های خام دارد</text>
+    title ~~~ APP
+    PROM ~~~ WARN
+    WARN ~~~ CMP
+    CMP ~~~ RULE
 
-<!-- Right side comparison -->
-<rect fill="#fff" height="60" rx="4" stroke="#e91e63" stroke-width="1" width="140" x="490" y="50"></rect>
-<text fill="#e91e63" font-size="8" font-weight="bold" text-anchor="middle" x="560" y="68" direction="ltr" unicode-bidi="embed">Summary vs Histogram</text>
-<text fill="#4CAF50" font-size="7" text-anchor="middle" x="560" y="82" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">Histogram</tspan>: قابل تجمیع ✓</text>
-<text fill="#e91e63" font-size="7" text-anchor="middle" x="560" y="95" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">Summary</tspan>: غیرقابل تجمیع ✗</text>
-
-<!-- Bottom -->
-<rect fill="#e91e63" filter="url(#shCnt)" height="40" rx="6" width="620" x="20" y="250"></rect>
-<text fill="#fff" font-size="9" text-anchor="middle" x="330" y="268" direction="rtl" unicode-bidi="embed">قانون طلایی: فقط وقتی از <tspan direction="ltr" unicode-bidi="embed">Summary</tspan> استفاده کنید که یک نمونه دارید و تجمیع لازم ندارید</text>
-<text fill="#fce4ec" font-size="8" text-anchor="middle" x="330" y="284" direction="rtl" unicode-bidi="embed">در غیر این صورت همیشه <tspan direction="ltr" unicode-bidi="embed">Histogram</tspan> ترجیح داده می‌شود</text>
-</svg>
+    classDef titleBox fill:#f8fafc,stroke:#475569,stroke-width:1px,color:#1f2937,font-weight:bold;
+    classDef errBox fill:#fef2f2,stroke:#ef4444,stroke-width:1.5px,color:#1f2937;
+    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
+    classDef okBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
+    classDef noteBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1px,color:#1f2937,font-style:italic;
+    class title titleBox;
+    class APP errBox;
+    class OBS,SERIES errBox;
+    class PROM warnBox;
+    class WARN errBox;
+    class H okBox;
+    class S errBox;
+    class RULE noteBox;</pre>
 <figcaption>شکل ۹-۲-ه: رفتار <bdi dir="ltr">Summary</bdi> — محاسبه percentile سمت کلاینت (بدون قابلیت تجمیع)</figcaption>
 </figure>
-
-<p><bdi dir="ltr">Summary</bdi> مشابه Histogram است اما percentile‌ها سمت کلاینت (برنامه Go) محاسبه می‌شوند. این یعنی هر instance عدد percentile خودش را گزارش می‌دهد و <bdi dir="ltr">Prometheus</bdi> فقط آن را ذخیره می‌کند. مشکل اصلی: نمی‌توانید percentile‌های چند instance را با هم ترکیب کنید. p95 نمونه A بعلاوه p95 نمونه B مساوی p95 کل سیستم نیست — percentile از روی percentile قابل محاسبه نیست.</p>
-
+<p><bdi dir="ltr">Summary</bdi> مشابه Histogram است اما percentile‌ها سمت کلاینت (برنامه Go) محاسبه می‌شوند. این یعنی هر instance عدد percentile خودش را گزارش می‌دهد و <bdi dir="ltr">Prometheus</bdi> فقط آن را ذخیره می‌کند. مشکل اصلی: نمی‌توانید percentile‌های چند instance را با هم ترکیب کنید. </p><p>p95 نمونه A بعلاوه p95 نمونه B مساوی p95 کل سیستم نیست — percentile از روی percentile قابل محاسبه نیست.</p>
 <p><strong>چه زمانی از Summary استفاده کنید؟</strong></p>
 <ul>
 <li><strong>پروسه‌ی تک‌نمونه‌ای:</strong> وقتی فقط یک instance از برنامه دارید و نیاز به تجمیع ندارید. مثلاً یک cron job که تعداد محدودی اجرا می‌شود.</li>
 <li><strong>لاگ توزیع‌شده نمی‌خواهید:</strong> Summary منابع کمتری نسبت به Histogram مصرف می‌کند چون bucketها را ذخیره نمی‌کند.</li>
 <li><strong>percentile دقیق‌تر:</strong> Summary percentile دقیق محاسبه می‌کند (نه تقریبی از bucketها). اگر دقت عدد مهم‌تر از تجمیع‌پذیری است، Summary بهتر است.</li>
 </ul>
-
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">// Summary: محاسبه percentile سمت کلاینت
 var rpcDuration = prometheus.NewSummaryVec(
@@ -572,12 +440,9 @@ rpcDuration.WithLabelValues("UserService", "GetUser").Observe(duration.Seconds()
 // rpc_duration_seconds{service="UserService",method="GetUser",quantile="0.9"} 0.045
 // rpc_duration_seconds{service="UserService",method="GetUser",quantile="0.99"} 0.120</code></pre>
 </figure>
-
 <div class="warning"><strong>هشدار:</strong> در اکثر پروژه‌های production، <bdi dir="ltr">Histogram</bdi> ترجیح داده می‌شود چون قابلیت تجمیع دارد. اگر 5 پاد از سرویس شما اجرا شده و بخواهید p95 کلی را بدانید، فقط Histogram این امکان را می‌دهد. Summary فقط زمانی مناسب است که دقیقاً یک نمونه دارید یا تجمیع برایتان مهم نیست. همچنین Summary حافظه بیشتری مصرف می‌کند چون باید تمام نمونه‌های اخیر را در حافظه نگه دارد.</div>
-
 <!-- ===== Comparison Table ===== -->
 <h4 id="مقایسه-انواع-متریک">مقایسه چهار نوع متریک</h4>
-
 <table class="comparison-table" dir="rtl">
 <thead>
 <tr><th>نوع</th><th>رفتار</th><th>percentile</th><th>تجمیع‌پذیری</th><th>بهترین کاربرد</th><th>کوئری رایج</th></tr>
@@ -589,10 +454,8 @@ rpcDuration.WithLabelValues("UserService", "GetUser").Observe(duration.Seconds()
 <tr><td><bdi dir="ltr">Summary</bdi></td><td>percentile کلاینت</td><td>سمت کلاینت ✓</td><td>غیرقابل تجمیع ✗</td><td>latency تک نمونه‌ای</td><td><bdi dir="ltr">rpc_duration{quantile="0.95"}</bdi></td></tr>
 </tbody>
 </table>
-
 <div class="note"><strong>راهنمای انتخاب سریع:</strong> اگر نمی‌دانید کدام را انتخاب کنید — <bdi dir="ltr">Histogram</bdi> انتخاب امنی است. Counter برای شمارش، Gauge برای وضعیت لحظه‌ای، و Histogram برای توزیع. فقط در موارد خاص (تک‌نمونه‌ای و دقت بالا) Summary را در نظر بگیرید.</div>
-
-<h3 id="افزودن-متریک-به-برنامه-go">افزودن متریک به برنامه Go</h3>
+<h3 id="افزودن-متریک-به-برنامه-go">9.2.2 افزودن متریک به برنامه Go</h3>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">package main
 
@@ -649,8 +512,7 @@ func main() {
     log.Fatal(http.ListenAndServe(":9000", nil))
 }</code></pre>
 </figure>
-
-<h3 id="فرمت-exposition">فرمت Exposition داخلی Prometheus</h3>
+<h3 id="فرمت-exposition">9.2.3 فرمت Exposition داخلی Prometheus</h3>
 <p>وقتی <bdi dir="ltr">Prometheus</bdi> متریک‌ها را از <bdi dir="ltr">endpoint</bdi> <code>/metrics</code> جمع‌آوری می‌کند داده‌ها به فرمت <bdi dir="ltr">Exposition Format</bdi> ارائه می‌شوند:</p>
 <figure class="code plain" dir="ltr">
 <pre><code class="language-plain"># HELP http_requests_total Total HTTP requests
@@ -665,12 +527,9 @@ http_request_duration_seconds_bucket{le="+Inf"} 100
 http_request_duration_seconds_sum 1.5
 http_request_duration_seconds_count 100</code></pre>
 </figure>
-
 <div class="tip"><strong>نکته داخلی:</strong> پکیج <code>prometheus/client_golang</code> از <code>sync/atomic</code> برای <bdi dir="ltr">Counter</bdi> استفاده می‌کند (بدون قفل) و از <code>sync.Mutex</code> برای <bdi dir="ltr">Gauge</bdi>. این تفاوت باعث عملکرد بالاتر <bdi dir="ltr">Counter</bdi> در محیط‌های همزمان می‌شود.</div>
-
-<div class="comparison"><strong>مقایسه با PHP:</strong> در PHP متریک‌ها باید در حافظه مشترک (<bdi dir="ltr">APCu</bdi> ، <bdi dir="ltr">Redis</bdi>) ذخیره شوند. اما در Go چون همه <bdi dir="ltr">goroutine</bdi> ها در یک <bdi dir="ltr">process</bdi> هستند متریک‌ها مستقیماً در حافظه برنامه نگهداری می‌شوند و عملکرد بسیار بالاتری دارند.</div>
-
-<h3 id="پیکربندی-prometheus">پیکربندی Prometheus</h3>
+<div class="comparison"><strong>مقایسه با PHP:</strong> در PHP متریک‌ها باید در حافظه مشترک (<bdi dir="ltr">APCu</bdi>، <bdi dir="ltr">Redis</bdi>) ذخیره شوند. اما در Go چون همه <bdi dir="ltr">goroutine</bdi> ها در یک <bdi dir="ltr">process</bdi> هستند متریک‌ها مستقیماً در حافظه برنامه نگهداری می‌شوند و عملکرد بسیار بالاتری دارند.</div>
+<h3 id="پیکربندی-prometheus">9.2.4 پیکربندی Prometheus</h3>
 <figure class="code yaml" dir="ltr">
 <pre><code class="language-yaml">global:
     scrape_interval: 5s
@@ -680,88 +539,64 @@ scrape_configs:
     static_configs:
     - targets: ['host.docker.internal:9000']</code></pre>
 </figure>
-
-<h3 id="اتصال-grafana">اتصال Grafana و ساخت داشبورد</h3>
+<h3 id="اتصال-grafana">9.2.5 اتصال Grafana و ساخت داشبورد</h3>
 <p><bdi dir="ltr">Grafana</bdi> پلتفرمی <bdi dir="ltr">open source</bdi> برای مصورسازی داده‌های سری زمانی است. <bdi dir="ltr">Prometheus</bdi> داده‌ها را جمع‌آوری و ذخیره می‌کند اما خود قابلیت نمایش گرافیکی ندارد. <bdi dir="ltr">Grafana</bdi> این نقش را پر می‌کند.</p>
-
 <p><strong>نصب:</strong></p>
 <figure class="code bash" dir="ltr"><pre><code class="language-bash">docker run -d -p 3000:3000 grafana/grafana
 # Username/password: admin / admin</code></pre></figure>
-
 <p><strong>کوئری‌های پرکاربرد <bdi dir="ltr">PromQL</bdi>:</strong></p>
 <p>نرخ درخواست‌ها: <bdi dir="ltr">rate(http_requests_total[5m])</bdi></p>
 <p>صدک ۹۵ زمان پاسخ: <bdi dir="ltr">histogram_quantile(0.95, sum(rate(http_request_duration_seconds_bucket[5m])) by (le))</bdi></p>
 <p>نرخ خطا: <bdi dir="ltr">sum(rate(http_requests_total{status=~"5.."}[5m])) / sum(rate(http_requests_total[5m]))</bdi></p>
-
 <div class="tip"><strong>نکته طراحی داشبورد:</strong> یک داشبورد <bdi dir="ltr">Grafana</bdi> مؤثر معمولاً چهار پنل کلیدی در ردیف بالایی دارد: <bdi dir="ltr">request rate</bdi>، <bdi dir="ltr">error rate</bdi>، <bdi dir="ltr">latency p95/p99</bdi> و <bdi dir="ltr">saturation</bdi> (الگوی <bdi dir="ltr">RED</bdi>). هر پنل باید یک عنوان واضح، <bdi dir="ltr">unit</bdi> صحیح (مثلاً <code>requests/sec</code> یا <code>milliseconds</code>) و <bdi dir="ltr">threshold</bdi>‌های رنگی داشته باشد. از تعداد زیاد پنل در یک داشبورد پرهیز کنید — به‌جای یک داشبورد شلوغ با ۲۰ پنل، چند داشبورد تخصصی بسازید (یکی برای <bdi dir="ltr">HTTP</bdi>، یکی برای دیتابیس، یکی برای <bdi dir="ltr">background jobs</bdi>). متغیرهای <bdi dir="ltr">$service</bdi> و <bdi dir="ltr">$env</bdi> را تعریف کنید تا بتوانید بین سرویس‌ها و محیط‌ها سوئیچ کنید.</div>
-
-<h3 id="alerting">تنظیم Alerting</h3>
-<p>یکی از قابلیت‌های مهم <bdi dir="ltr">Grafana</bdi> تعریف <bdi dir="ltr">Alert</bdi> روی متریک‌هاست. مثلاً وقتی نرخ خطا بیش از ۵ درصد شود یا زمان پاسخ بیشتر از ۲ ثانیه گردد اعلان به <bdi dir="ltr">Slack</bdi> ، ایمیل یا <bdi dir="ltr">Telegram</bdi> ارسال می‌شود.</p>
-
-<p>همچنین می‌توانید از <bdi dir="ltr">Alertmanager</bdi> (جزء جدانشدنی اکوسیستم <bdi dir="ltr">Prometheus</bdi>) برای مدیریت پیشرفته‌ی هشدارها شامل <bdi dir="ltr">grouping</bdi> ، <bdi dir="ltr">inhibition</bdi> و <bdi dir="ltr">silencing</bdi> استفاده کنید.</p>
-
+<h3 id="alerting">9.2.6 تنظیم Alerting</h3>
+<p>یکی از قابلیت‌های مهم <bdi dir="ltr">Grafana</bdi> تعریف <bdi dir="ltr">Alert</bdi> روی متریک‌هاست. مثلاً وقتی نرخ خطا بیش از ۵ درصد شود یا زمان پاسخ بیشتر از ۲ ثانیه گردد اعلان به <bdi dir="ltr">Slack</bdi>، ایمیل یا <bdi dir="ltr">Telegram</bdi> ارسال می‌شود.</p>
+<p>همچنین می‌توانید از <bdi dir="ltr">Alertmanager</bdi> (جزء جدانشدنی اکوسیستم <bdi dir="ltr">Prometheus</bdi>) برای مدیریت پیشرفته‌ی هشدارها شامل <bdi dir="ltr">grouping</bdi>، <bdi dir="ltr">inhibition</bdi> و <bdi dir="ltr">silencing</bdi> استفاده کنید.</p>
 <div class="important"><strong>نکته‌ی عملی:</strong> متریک‌های کلیدی که باید مانیتور کنید: <bdi dir="ltr">request rate</bdi>، <bdi dir="ltr">latency</bdi>، <bdi dir="ltr">error rate</bdi> و <bdi dir="ltr">saturation</bdi>. این چهار متریک به‌عنوان <bdi dir="ltr">USE/RED method</bdi> شناخته می‌شوند.</div>
-
-<h3 id="روش-red-و-use">روش‌های RED و USE: متریک‌های طلایی</h3>
+<h3 id="روش-red-و-use">9.2.7 روش‌های RED و USE: متریک‌های طلایی</h3>
 <p>دو چارچوب رایج برای انتخاب متریک‌های مناسب وجود دارد که هر توسعه‌دهنده‌ای باید بشناسد. این چارچوب‌ها به شما کمک می‌کنند بدانید دقیقاً چه چیزی را باید اندازه بگیرید:</p>
-
 <figure class="diagram" dir="ltr">
-<svg height="350" viewBox="0 0 650 350" width="650" xmlns="http://www.w3.org/2000/svg">
-<defs>
-<filter height="104%" id="shRUE" width="104%" x="-2%" y="-2%"><fedropshadow dx="1" dy="1" flood-opacity="0.12" stddeviation="2"></fedropshadow></filter>
-</defs>
-<rect fill="#fafafa" height="350" rx="8" width="650" x="0" y="0"></rect>
-<text fill="#333" font-size="15" font-weight="bold" text-anchor="middle" x="325" y="28" direction="rtl" unicode-bidi="embed">چارچوب‌های انتخاب متریک: <tspan direction="ltr" unicode-bidi="embed">RED</tspan> (سرویس) و <tspan direction="ltr" unicode-bidi="embed">USE</tspan> (منابع)</text>
+<pre class="mermaid">flowchart LR
+    title(["چارچوب‌های انتخاب متریک: RED (سرویس) و USE (منابع)"])
 
-<!-- RED Method -->
-<rect fill="#e91e63" filter="url(#shRUE)" height="35" rx="6" width="300" x="15" y="50"></rect>
-<text fill="#fff" font-size="14" font-weight="bold" text-anchor="middle" x="165" y="73" direction="ltr" unicode-bidi="embed">RED Method — For Services/APIs</text>
+    subgraph RED["RED Method — For Services/APIs"]
+        direction TB
+        R["R — Rate<br/>تعداد درخواست‌ها در ثانیه"]
+        E["E — Errors<br/>نرخ درخواست‌های ناموفق"]
+        D["D — Duration<br/>توزیع زمان پاسخ‌دهی"]
+        REDUSE["مناسب برای: API endpoints, HTTP handlers, microservices"]
+    end
 
-<rect fill="#fff" height="40" rx="4" stroke="#e91e63" stroke-width="1.5" width="280" x="25" y="95"></rect>
-<text fill="#e91e63" font-size="12" font-weight="bold" text-anchor="middle" x="165" y="113" direction="ltr" unicode-bidi="embed">R — Rate</text>
-<text fill="#333" font-size="9" text-anchor="middle" x="165" y="128" direction="rtl" unicode-bidi="embed">تعداد درخواست‌ها در ثانیه</text>
+    subgraph USE["USE Method — For Resources"]
+        direction TB
+        U["U — Utilization<br/>درصد استفاده از منبع (CPU, RAM, Disk)"]
+        SAT["S — Saturation<br/>مقدار کار در صف انتظار"]
+        UE["E — Errors<br/>تعداد خطاهای منبع"]
+        USEUSE["مناسب برای: CPU, Memory, Disk, Network, DB connections"]
+    end
 
-<rect fill="#fff" height="40" rx="4" stroke="#e91e63" stroke-width="1.5" width="280" x="25" y="145"></rect>
-<text fill="#e91e63" font-size="12" font-weight="bold" text-anchor="middle" x="165" y="163" direction="ltr" unicode-bidi="embed">E — Errors</text>
-<text fill="#333" font-size="9" text-anchor="middle" x="165" y="178" direction="rtl" unicode-bidi="embed">نرخ درخواست‌های ناموفق</text>
+    RULE(["قانون ساده: برای هر سرویس RED را پیاده کنید + برای هر منبع USE را<br/>اگر فقط ۶ متریک داشتید: request_rate, error_rate, latency_p99 + cpu_usage, memory_usage, disk_saturation"])
 
-<rect fill="#fff" height="40" rx="4" stroke="#e91e63" stroke-width="1.5" width="280" x="25" y="195"></rect>
-<text fill="#e91e63" font-size="12" font-weight="bold" text-anchor="middle" x="165" y="213" direction="ltr" unicode-bidi="embed">D — Duration</text>
-<text fill="#333" font-size="9" text-anchor="middle" x="165" y="228" direction="rtl" unicode-bidi="embed">توزیع زمان پاسخ‌دهی</text>
+    title ~~~ RED
+    title ~~~ USE
+    RED ~~~ RULE
+    USE ~~~ RULE
 
-<rect fill="#fce4ec" height="30" rx="4" width="280" x="25" y="245"></rect>
-<text fill="#e91e63" font-size="9" font-weight="bold" text-anchor="middle" x="165" y="265" direction="rtl" unicode-bidi="embed">مناسب برای: <tspan direction="ltr" unicode-bidi="embed">API endpoints, HTTP handlers, microservices</tspan></text>
-
-<!-- USE Method -->
-<rect fill="#4CAF50" filter="url(#shRUE)" height="35" rx="6" width="300" x="335" y="50"></rect>
-<text fill="#fff" font-size="14" font-weight="bold" text-anchor="middle" x="485" y="73" direction="ltr" unicode-bidi="embed">USE Method — For Resources</text>
-
-<rect fill="#fff" height="40" rx="4" stroke="#4caf50" stroke-width="1.5" width="280" x="345" y="95"></rect>
-<text fill="#4caf50" font-size="12" font-weight="bold" text-anchor="middle" x="485" y="113" direction="ltr" unicode-bidi="embed">U — Utilization</text>
-<text fill="#333" font-size="9" text-anchor="middle" x="485" y="128" direction="rtl" unicode-bidi="embed">درصد استفاده از منبع (CPU, RAM, Disk)</text>
-
-<rect fill="#fff" height="40" rx="4" stroke="#4caf50" stroke-width="1.5" width="280" x="345" y="145"></rect>
-<text fill="#4caf50" font-size="12" font-weight="bold" text-anchor="middle" x="485" y="163" direction="ltr" unicode-bidi="embed">S — Saturation</text>
-<text fill="#333" font-size="9" text-anchor="middle" x="485" y="178" direction="rtl" unicode-bidi="embed">مقدار کار در صف انتظار</text>
-
-<rect fill="#fff" height="40" rx="4" stroke="#4caf50" stroke-width="1.5" width="280" x="345" y="195"></rect>
-<text fill="#4caf50" font-size="12" font-weight="bold" text-anchor="middle" x="485" y="213" direction="ltr" unicode-bidi="embed">E — Errors</text>
-<text fill="#333" font-size="9" text-anchor="middle" x="485" y="228" direction="rtl" unicode-bidi="embed">تعداد خطاهای منبع</text>
-
-<rect fill="#e8f5e9" height="30" rx="4" width="280" x="345" y="245"></rect>
-<text fill="#4caf50" font-size="9" font-weight="bold" text-anchor="middle" x="485" y="265" direction="rtl" unicode-bidi="embed">مناسب برای: <tspan direction="ltr" unicode-bidi="embed">CPU, Memory, Disk, Network, DB connections</tspan></text>
-
-<!-- Bottom summary -->
-<rect fill="#00ADD8" filter="url(#shRUE)" height="50" rx="6" width="620" x="15" y="290"></rect>
-<text fill="#fff" font-size="11" font-weight="bold" text-anchor="middle" x="325" y="312" direction="rtl" unicode-bidi="embed">قانون ساده: برای هر سرویس <tspan direction="ltr" unicode-bidi="embed">RED</tspan> را پیاده کنید + برای هر منبع <tspan direction="ltr" unicode-bidi="embed">USE</tspan> را</text>
-<text fill="#e0f7fa" font-size="9" text-anchor="middle" x="325" y="330" direction="rtl" unicode-bidi="embed">اگر فقط ۶ متریک داشتید: <tspan direction="ltr" unicode-bidi="embed">request_rate, error_rate, latency_p99 + cpu_usage, memory_usage, disk_saturation</tspan></text>
-</svg>
+    classDef titleBox fill:#f8fafc,stroke:#475569,stroke-width:1px,color:#1f2937,font-weight:bold;
+    classDef errBox fill:#fef2f2,stroke:#ef4444,stroke-width:1.5px,color:#1f2937;
+    classDef okBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
+    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:2px,color:#1f2937,font-weight:bold;
+    classDef noteBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1px,color:#1f2937,font-style:italic;
+    class title titleBox;
+    class R,E,D errBox;
+    class REDUSE errBox;
+    class U,SAT,UE okBox;
+    class USEUSE okBox;
+    class RULE goBox;</pre>
 <figcaption>شکل ۹-۲-الف: چارچوب‌های <bdi dir="ltr">RED</bdi> و <bdi dir="ltr">USE</bdi> — راهنمای انتخاب متریک‌های طلایی</figcaption>
 </figure>
-
-<h3 id="نامگذاری-متریکها">قرارداد نام‌گذاری متریک‌ها</h3>
+<h3 id="نامگذاری-متریکها">9.2.8 قرارداد نام‌گذاری متریک‌ها</h3>
 <p>رعایت استاندارد نام‌گذاری متریک‌ها برای قابلیت خواندن و فیلترینگ در <bdi dir="ltr">PromQL</bdi> ضروری است. فرمت پیشنهادی <bdi dir="ltr">Prometheus</bdi>:</p>
-
 <figure class="code plain" dir="ltr">
 <pre><code class="language-plain"># Format: namespace_subsystem_name_unit
 # Examples:
@@ -778,20 +613,18 @@ go_goroutines                 # Gauge: number of goroutines
 # 4. Use a common namespace prefix (app_, http_, db_)
 # 5. Avoid generic names (count, value, duration) — be specific</code></pre>
 </figure>
-
-<h3 id="قوانین-alerting">قوانین Alerting در Prometheus</h3>
+<h3 id="قوانین-alerting">9.2.9 قوانین Alerting در Prometheus</h3>
 <p>تعریف <bdi dir="ltr">Alert</bdi> به شما اطمینان می‌دهد که از مشکلات قبل از کاربران مطلع می‌شوید. در اینجا چند قانون پرکاربرد آورده شده است:</p>
-
 <figure class="code yaml" dir="ltr">
 <pre><code class="language-yaml"># prometheus_alerts.yml
 groups:
     - name: app_alerts
     rules:
-    # Alert: High error rate (>5% in last 5 minutes)
+    # Alert: High error rate (&gt;5% in last 5 minutes)
     - alert: HighErrorRate
         expr: |
         sum(rate(http_requests_total{status=~"5.."}[5m]))
-        / sum(rate(http_requests_total[5m])) > 0.05
+        / sum(rate(http_requests_total[5m])) &gt; 0.05
         for: 2m
         labels:
         severity: critical
@@ -799,12 +632,12 @@ groups:
         summary: "High error rate detected"
         description: "Error rate is {{ $value | humanizePercentage }}"
 
-    # Alert: High latency (p99 > 2 seconds)
+    # Alert: High latency (p99 &gt; 2 seconds)
     - alert: HighLatency
         expr: |
         histogram_quantile(0.99,
         sum(rate(http_request_duration_seconds_bucket[5m])) by (le)
-        ) > 2.0
+        ) &gt; 2.0
         for: 5m
         labels:
         severity: warning
@@ -813,7 +646,7 @@ groups:
 
     # Alert: Too many goroutines (potential leak)
     - alert: HighGoroutineCount
-        expr: go_goroutines > 1000
+        expr: go_goroutines &gt; 1000
         for: 10m
         labels:
         severity: warning
@@ -829,12 +662,9 @@ groups:
         annotations:
         summary: "Service {{ $labels.job }} is down"</code></pre>
 </figure>
-
 <div class="tip"><strong>نکته عملی:</strong> همیشه از <code>for</code> در قوانین <bdi dir="ltr">Alert</bdi> استفاده کنید تا از اعلان‌های ناشی از نوسانات لحظه‌ای جلوگیری شود. مثلاً <code>for: 2m</code> یعنی شرط باید حداقل ۲ دقیقه برقرار باشد تا اعلان ارسال شود. بدون <code>for</code> هر اسپایک لحظه‌ای یک اعلان تولید می‌کند.</div>
-
-<h3 id="کوئریهای-پرکاربرد-promql">کوئری‌های پرکاربرد PromQL با توضیح</h3>
+<h3 id="کوئریهای-پرکاربرد-promql">9.2.10 کوئری‌های پرکاربرد PromQL با توضیح</h3>
 <p><bdi dir="ltr">PromQL</bdi> زبان کوئری‌نویسی <bdi dir="ltr">Prometheus</bdi> است. درک این زبان برای تحلیل متریک‌ها ضروری است. هر کوئری از سه بخش تشکیل می‌شود: <strong>انتخاب متریک</strong>، <strong>فیلتر با Labels</strong> و <strong>توابع تجمیع</strong>:</p>
-
 <table class="comparison-table" dir="rtl">
 <thead>
 <tr><th>هدف</th><th>کوئری PromQL</th><th>توضیح</th></tr>
@@ -848,33 +678,38 @@ groups:
 <tr><td>مقایسه با هفته قبل</td><td><bdi dir="ltr">rate(http_requests_total[5m]) / rate(http_requests_total[5m] offset 7d)</bdi></td><td>رشد نسبت به هفته گذشته</td></tr>
 </tbody>
 </table>
-
 <div class="note"><strong>برای توسعه‌دهندگان تازه‌کار:</strong> یادگیری <bdi dir="ltr">PromQL</bdi> ممکن است در ابتدا دشوار به نظر برسد. پیشنهاد می‌کنیم ابتدا سه کوئری اول جدول بالا را در <bdi dir="ltr">Grafana Explore</bdi> امتحان کنید و نتایج را مشاهده نمایید. سپس به‌تدریج کوئری‌های پیچیده‌تر بنویسید. منبع کامل <bdi dir="ltr">PromQL</bdi> در <bdi dir="ltr">prometheus.io/docs/prometheus/latest/querying</bdi> موجود است.</div>
-</div>
-</div>
-
+<div class="summary">
+<strong>خلاصه‌ی نکات کلیدی:</strong>
+<ul>
+<li>Prometheus pull-based metrics</li>
+<li>counter: monotonic increasing</li>
+<li>gauge: up/down</li>
+<li>histogram: distribution</li>
+<li>Grafana برای dashboard و alerting</li>
+</ul>
+</div></div>
+</main></div>
 <!-- Footer -->
 <footer class="site-footer">
 <div class="footer-inner">
 <div class="footer-nav">
 <span class="nav-arrow">‹</span>
-<a href="09.01-logging.html" data-prev>۹.۱ Logging</a>
+<a data-prev="" href="09.01-logging.html">۹.۱ Logging</a>
 </div>
 <div class="footer-toc">
 <a href="00.01-contents.html">فهرست</a>
 </div>
 <div class="footer-nav">
-<a href="09.03-opentelemetry.html" data-next>۹.۳ OpenTelemetry</a>
+<a data-next="" href="09.03-opentelemetry.html">۹.۳ OpenTelemetry</a>
 <span class="nav-arrow">›</span>
 </div>
 </div>
 </footer>
-
 <!-- Back to Top -->
-<button class="back-to-top" aria-label="بازگشت به بالا">
-<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
+<button aria-label="بازگشت به بالا" class="back-to-top">
+<svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24"><polyline points="18 15 12 9 6 15"></polyline></svg>
 </button>
-
 <!-- Scripts -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/go.min.js"></script>
@@ -887,6 +722,7 @@ groups:
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/xml.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/ini.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/plaintext.min.js"></script>
+<script src="assets/js/diagrams.js"></script>
 <script src="assets/js/main.js"></script>
 </body>
 </html>

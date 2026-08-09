@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html dir="rtl" lang="fa">
 <head>
 <script>!function(){try{var t=localStorage.getItem('php2go-theme');if(t==='dark'||(!t&&window.matchMedia('(prefers-color-scheme:dark)').matches)){document.documentElement.setAttribute('data-theme','dark')}}catch(e){}}();</script>
@@ -6,26 +7,25 @@
 <meta content="ie=edge" http-equiv="x-ua-compatible"/>
 <title>۵.۶ Race Condition — PHP to Go</title>
 <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport"/>
-<link rel="preconnect" href="https://fonts.googleapis.com"/>
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600;700&amp;family=Fira+Code:wght@400;500&amp;display=swap" rel="stylesheet"/>
 <link href="assets/css/main.css" rel="stylesheet" type="text/css"/>
 <link href="assets/img/favicon.ico" rel="icon" type="image/x-icon"/>
-<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" media="screen" class="hljs-light-theme" rel="stylesheet"/>
-<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css" media="not screen" class="hljs-dark-theme" rel="stylesheet"/>
+<link class="hljs-light-theme" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" media="screen" rel="stylesheet"/>
+<link class="hljs-dark-theme" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css" media="not screen" rel="stylesheet"/>
 </head>
 <body>
 <!-- Progress Bar -->
 <div class="progress-bar"><div class="progress-bar__fill"></div></div>
-
 <!-- Header -->
 <header class="site-header">
 <div class="header-inner">
 <div class="header-left">
-<button class="header-btn sidebar-toggle" aria-label="فهرست">
-<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+<button aria-label="فهرست" class="header-btn sidebar-toggle">
+<svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24"><line x1="3" x2="21" y1="6" y2="6"></line><line x1="3" x2="21" y1="12" y2="12"></line><line x1="3" x2="21" y1="18" y2="18"></line></svg>
 </button>
-<a href="00.00-front-matter.html" class="header-logo"><span class="logo-php">PHP</span> to <span class="logo-go">Go</span></a>
+<a class="header-logo" href="00.00-front-matter.html"><span class="logo-php">PHP</span> to <span class="logo-go">Go</span></a>
 <span class="header-crumbs">همزمانی › Race Condition</span>
 </div>
 <div class="header-right">
@@ -36,39 +36,38 @@
 <a href="05.07-concurrency-patterns.html"><span class="nav-label">۵.۷ Concurrency Patterns</span></a>
 <span class="nav-arrow">›</span>
 </nav>
-<button class="header-btn search-toggle" aria-label="جستجو">
-<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+<button aria-label="جستجو" class="header-btn search-toggle">
+<svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" x2="16.65" y1="21" y2="16.65"></line></svg>
 </button>
-<button class="header-btn theme-toggle" aria-label="تغییر تم">
-<svg class="theme-icon-light" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
-<svg class="theme-icon-dark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+<button aria-label="تغییر تم" class="header-btn theme-toggle">
+<svg class="theme-icon-light" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24"><circle cx="12" cy="12" r="5"></circle><line x1="12" x2="12" y1="1" y2="3"></line><line x1="12" x2="12" y1="21" y2="23"></line><line x1="4.22" x2="5.64" y1="4.22" y2="5.64"></line><line x1="18.36" x2="19.78" y1="18.36" y2="19.78"></line><line x1="1" x2="3" y1="12" y2="12"></line><line x1="21" x2="23" y1="12" y2="12"></line><line x1="4.22" x2="5.64" y1="19.78" y2="18.36"></line><line x1="18.36" x2="19.78" y1="5.64" y2="4.22"></line></svg>
+<svg class="theme-icon-dark" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
 </button>
 </div>
 </div>
 </header>
-
 <!-- Search Modal -->
 <div class="search-overlay">
 <div class="search-modal">
 <div class="search-input-wrap">
-<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-<input type="text" class="search-input" placeholder="جستجو... (Ctrl+K)" dir="rtl"/>
+<svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" x2="16.65" y1="21" y2="16.65"></line></svg>
+<input class="search-input" dir="rtl" placeholder="جستجو... (Ctrl+K)" type="text"/>
 </div>
 <div class="search-results"></div>
 </div>
 </div>
-
 <!-- Layout -->
 <div class="site-layout">
 <!-- Sidebar -->
 <aside class="sidebar"></aside>
 <div class="sidebar-overlay"></div>
-
 <!-- Main Content -->
 <main class="content-area">
 <div class="content-wrap text">
 <div class="chapter">فصل ۵.۶</div>
-<h2 id="race-condition">Race Condition</h2>
+<h2 id="race-condition">Race Condition</h2><div class="abstract">
+<strong>چکیده:</strong> Race condition یکی از خطرناک‌ترین باگ‌های هم‌روندی است و Go ابزارهای تشخیص آن را دارد. این بخش -race flag، sync.Mutex و sync.RWMutex را پوشش می‌دهد. الگوهای صحیح دسترسی به state مشترک بررسی می‌شود.
+</div>
 <p>وقتی چند Goroutine به طور هم‌زمان روی داده‌ای مشترک کار می‌کنند اگر این دسترسی‌ها مدیریت نشود نتیجه می‌تواند غیرقابل پیش‌بینی و اشتباه باشد. این اتفاق را Race Condition می‌نامیم.</p>
 <div class="note"><strong>تمایز مهم: Data Race vs Race Condition:</strong> این دو مفهوم اغلب اشتباه گرفته می‌شوند اما متفاوت هستند:
 <ul>
@@ -77,7 +76,7 @@
 </ul>
 به زبان ساده: هر Data Race یک Race Condition است اما هر Race Condition لزوماً Data Race نیست.
 </div>
-<p><strong dir="ltr">Race Condition</strong> <strong>زمانی رخ می‌دهد که دو یا چند Goroutine یا thread / process به طور همزمان به داده مشترکی دسترسی داشته باشند و حداقل یکی از آن‌ها بدون هماهنگی لازم داده را تغییر دهد .</strong></p>
+<p><strong dir="ltr">Race Condition</strong> <strong>زمانی رخ می‌دهد که دو یا چند Goroutine یا thread / process به طور همزمان به داده مشترکی دسترسی داشته باشند و حداقل یکی از آن‌ها بدون هماهنگی لازم داده را تغییر دهد.</strong></p>
 <p>مثلاً در نظر بگیرید یک متغیر شمارنده دارید که چند goroutine می‌خواهند مقدارش را افزایش دهند. اگر این عملیات به صورت همزمان و بدون هماهنگی انجام شود ممکن است افزایش‌ها به درستی ثبت نشوند.</p>
 <p>در PHP معمولاً وقتی چند پردازش یا Worker به یک منبع مشترک مثل دیتابیس یا Redis دسترسی دارند برای جلوگیری از این مشکلات از قفل redis یا فایل یا دیتابیس استفاده می‌کنیم. اما در Go ابزار استاندارد و سبک برای مدیریت این مشکل استفاده از</p>
 <p><strong dir="ltr">Mutex</strong></p>
@@ -85,40 +84,35 @@
 <p><strong dir="ltr">Atomic operations</strong></p>
 <p>است که توسط پکیج sync ارائه می‌شود.</p>
 <figure class="diagram" dir="ltr">
-<svg height="280" viewBox="0 0 650 280" width="650" xmlns="http://www.w3.org/2000/svg">
-<rect fill="#fafafa" height="280" rx="8" width="650" x="0" y="0"></rect>
-<defs><filter id="sh106" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
-<marker id="aRc1" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#00ADD8" points="0 0,10 3.5,0 7"></polygon></marker>
-<marker id="aRc2" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#e74c3c" points="0 0,10 3.5,0 7"></polygon></marker>
-</defs>
-<text fill="#e74c3c" font-size="15" font-weight="bold" text-anchor="middle" x="325" y="25" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">Race</tspan> <tspan direction="ltr" unicode-bidi="embed">Condition</tspan>: دسترسی همزمان به داده مشترک</text>
-<!-- Shared data -->
-<rect fill="#f39c12" height="50" opacity="0.15" rx="8" stroke="#f39c12" stroke-width="2" width="150" x="250" y="45"></rect>
-<text fill="#333" font-size="13" text-anchor="middle" x="325" y="68" direction="ltr" unicode-bidi="embed">counter = 0</text>
-<text fill="#666" font-size="10" text-anchor="middle" x="325" y="85" direction="rtl" unicode-bidi="embed">حافظه مشترک</text>
-<!-- Goroutine 1 -->
-<rect fill="#00ADD8" height="35" opacity="0.15" rx="6" stroke="#00ADD8" stroke-width="1.5" width="200" x="30" y="110"></rect>
-<text fill="#333" font-size="11" text-anchor="middle" x="130" y="133" direction="ltr" unicode-bidi="embed">Goroutine 1: counter++</text>
-<line marker-end="url(#aRc1)" stroke="#00ADD8" stroke-width="1.5" x1="130" x2="280" y1="95" y2="95"></line>
-<!-- Goroutine 2 -->
-<rect fill="#00ADD8" height="35" opacity="0.15" rx="6" stroke="#00ADD8" stroke-width="1.5" width="200" x="420" y="110"></rect>
-<text fill="#333" font-size="11" text-anchor="middle" x="520" y="133" direction="ltr" unicode-bidi="embed">Goroutine 2: counter++</text>
-<line marker-end="url(#aRc1)" stroke="#00ADD8" stroke-width="1.5" x1="520" x2="370" y1="95" y2="95"></line>
-<!-- Problem -->
-<rect fill="#e74c3c" height="50" opacity="0.1" rx="8" stroke="#e74c3c" stroke-width="2" width="450" x="100" y="165"></rect>
-<text fill="#e74c3c" font-size="12" text-anchor="middle" x="325" y="185" direction="rtl" unicode-bidi="embed">هر دو همزمان مقدار 0 را می‌خوانند</text>
-<text fill="#e74c3c" font-size="12" text-anchor="middle" x="325" y="203" direction="rtl" unicode-bidi="embed">هر دو 1 را می‌نویسند → یک افزایش از بین می‌رود!</text>
-<!-- Solutions -->
-<text fill="#27ae60" font-size="12" font-weight="bold" text-anchor="middle" x="325" y="235" direction="rtl" unicode-bidi="embed">راه‌حل‌ها:</text>
-<rect fill="#27ae60" height="25" opacity="0.1" rx="6" stroke="#27ae60" stroke-width="1.5" width="130" x="30" y="245"></rect>
-<text fill="#27ae60" font-size="10" text-anchor="middle" x="95" y="262" direction="ltr" unicode-bidi="embed">sync.Mutex</text>
-<rect fill="#27ae60" height="25" opacity="0.1" rx="6" stroke="#27ae60" stroke-width="1.5" width="130" x="180" y="245"></rect>
-<text fill="#27ae60" font-size="10" text-anchor="middle" x="245" y="262" direction="ltr" unicode-bidi="embed">Channel</text>
-<rect fill="#27ae60" height="25" opacity="0.1" rx="6" stroke="#27ae60" stroke-width="1.5" width="130" x="330" y="245"></rect>
-<text fill="#27ae60" font-size="10" text-anchor="middle" x="395" y="262" direction="ltr" unicode-bidi="embed">sync/atomic</text>
-<rect fill="#00ADD8" height="25" opacity="0.1" rx="6" stroke="#00ADD8" stroke-width="1.5" width="130" x="480" y="245"></rect>
-<text fill="#00ADD8" font-size="10" text-anchor="middle" x="545" y="262" direction="ltr" unicode-bidi="embed">go run -race</text>
-</svg>
+<pre class="mermaid">flowchart TB
+    Shared["counter = 0<br/>حافظه مشترک"]
+    G1["Goroutine 1:<br/>counter++"]
+    G2["Goroutine 2:<br/>counter++"]
+
+    Shared --&gt; G1
+    Shared --&gt; G2
+    G1 -. "هر دو همزمان مقدار 0 را می‌خوانند" .-&gt; G2
+    Conflict["هر دو 1 را می‌نویسند<br/>→ یک افزایش از بین می‌رود!"]
+    G1 --&gt; Conflict
+    G2 --&gt; Conflict
+
+    subgraph SOL["راه‌حل‌ها"]
+        direction LR
+        S1["sync.Mutex"]
+        S2["Channel"]
+        S3["sync/atomic"]
+        S4["go run -race"]
+    end
+
+    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
+    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
+    classDef errBox fill:#fef2f2,stroke:#ef4444,stroke-width:1.5px,color:#1f2937;
+    classDef bothBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
+    classDef neuBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
+    class Shared warnBox;
+    class G1,G2 goBox;
+    class Conflict errBox;
+    class SOL,S1,S2,S3,S4 bothBox;</pre>
 <figcaption>شکل ۵-۱۲: <bdi dir="ltr">Race</bdi> <bdi dir="ltr">Condition</bdi> - تداخل دسترسی همزمان و راه‌حل‌ها</figcaption>
 </figure>
 <p><strong>مثال ساده از Race Condition:</strong></p>
@@ -152,7 +146,7 @@ func main() {
 <p>دلیلش این است که چند goroutine به صورت همزمان به counter دسترسی پیدا می‌کنند عدد را می‌خوانند، افزایش می‌دهند و می‌نویسند. اما چون دسترسی‌ها هم‌زمان است برخی از افزایش‌ها روی هم می‌افتند و از بین می‌روند.
 </p>
 <p><strong>چرا</strong> <strong dir="ltr">Race Condition در PHP کمتر اتفاق می‌افتد</strong></p>
-<p>PHP در حالت عادی single-thread اجرا می‌شود و هر درخواست در یک process مستقل است. هر بار که می‌خواهید داده مشترکی را تغییر دهید معمولاً با دیتابیس، Redis یا job queue ارتباط دارید که خودش sync بودن را مدیریت می‌کند و یا از ابزارهایی مثل atomic lock یا database lock استفاده می کنید. در Go به خاطر مدل همزمانی goroutine و حافظه مشترک درون یک process اشتراک داده در حافظه برنامه به صورت مستقیم اتفاق می‌افتد. بنابراین ریسک race condition بیشتر است.</p>
+<p>PHP در حالت عادی single-thread اجرا می‌شود و هر درخواست در یک process مستقل است. هر بار که می‌خواهید داده مشترکی را تغییر دهید معمولاً با دیتابیس، Redis یا job queue ارتباط دارید که خودش sync بودن را مدیریت می‌کند و یا از ابزارهایی مثل atomic lock یا database lock استفاده می کنید.</p><p>در Go به خاطر مدل هم‌روندی goroutine و حافظه مشترک درون یک process اشتراک داده در حافظه برنامه به صورت مستقیم اتفاق می‌افتد.</p><p>بنابراین ریسک race condition بیشتر است.</p>
 <p>خوشبختانه تیم Go یک ابزار فوق‌العاده برای تشخیص race condition ساخته است که با کامپایل برنامه همراه شده است.</p>
 <p><strong>اجرای برنامه با فلگ</strong> <strong dir="ltr">race -</strong> :</p>
 <figure class="code go" dir="ltr">
@@ -165,7 +159,7 @@ func main() {
 ./main
 </code></pre>
 </figure>
-<p>این ابزار در زمان اجرا برنامه را مانیتور می‌کند و رفتار دسترسی به حافظه را بررسی می‌کند. اگر دو یا چند goroutine بدون هماهنگی (مثل mutex یا channel) به یک بخش حافظه مشترک دسترسی داشته باشند و حداقل یکی در حال نوشتن باشد ابزار هشدار می‌دهد. این کار باعث می‌شود بتوانید پیش از بروز مشکلات جدی محل دقیق race condition را در کد خود پیدا کنید.</p>
+<p>این ابزار در زمان اجرا برنامه را مانیتور می‌کند و رفتار دسترسی به حافظه را بررسی می‌کند. اگر دو یا چند goroutine بدون هماهنگی (مثل mutex یا channel) به یک بخش حافظه مشترک دسترسی داشته باشند و حداقل یکی در حال نوشتن باشد ابزار هشدار می‌دهد.</p><p>این کار باعث می‌شود بتوانید پیش از بروز مشکلات جدی محل دقیق race condition را در کد خود پیدا کنید.</p>
 <div class="tip"><strong>جزئیات داخلی — فلگ -race و ThreadSanitizer:</strong> وقتی برنامه را با فلگ <code>-race</code> کامپایل می‌کنید، کامپایلر Go ابزار <strong dir="ltr">ThreadSanitizer</strong> (TSan) گوگل را فعال می‌کند. TSan در زمان کامپایل instrumentاتی به کد اضافه می‌کند که هر دسترسی به حافظه (خواندن و نوشتن) را ردیابی می‌کند. در زمان اجرا:
 <ul>
 <li>هر دسترسی به حافظه با یک timestamp و شناسه‌ی goroutine ثبت می‌شود.</li>
@@ -174,50 +168,35 @@ func main() {
 </ul>
 نکته: فعال‌سازی <code>-race</code> کارایی برنامه را حدود ۵ تا ۱۰ برابر کاهش می‌دهد و مصرف حافظه حدود ۵ تا ۱۰ برابر افزایش می‌یابد. بنابراین فقط در زمان توسعه و تست از آن استفاده کنید و هرگز در production به کار نبرید.
 </div>
-<h3 id="mutex">Mutex</h3>
-<p>یکی دیگر از روش های جلوگیری از Race Condition استفاده از mutex است یعنی اجازه می‌دهد فقط یک Goroutine در هر لحظه به بخش محافظت شده از کد یا داده دسترسی داشته باشد. وقتی یک Goroutine قفل mutex را می‌گیرد سایر Goroutineها باید تا آزاد شدن قفل منتظر بمانند. به این ترتیب از تداخل همزمان جلوگیری شده و داده‌ها در وضعیت پایدار باقی می‌مانند.
-</p>
-
+<h3 id="mutex">5.6.1 Mutex</h3>
+<p>یکی دیگر از روش های جلوگیری از Race Condition استفاده از mutex است یعنی اجازه می‌دهد فقط یک Goroutine در هر لحظه به بخش محافظت شده از کد یا داده دسترسی داشته باشد. وقتی یک Goroutine قفل mutex را می‌گیرد سایر Goroutineها باید تا آزاد شدن قفل منتظر بمانند.</p><p>به این ترتیب از تداخل همزمان جلوگیری شده و داده‌ها در وضعیت پایدار باقی می‌مانند.</p>
 <figure class="diagram" dir="ltr">
-<svg width="700" height="280" viewBox="0 0 700 280" xmlns="http://www.w3.org/2000/svg">
-<rect fill="#fafafa" height="280" rx="8" width="700" x="0" y="0"></rect>
-<defs><filter id="sh107" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
-<marker id="aMx1" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#00ADD8" points="0 0,10 3.5,0 7"></polygon></marker>
-<marker id="aMx2" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#27ae60" points="0 0,10 3.5,0 7"></polygon></marker>
-<marker id="aMx3" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#f39c12" points="0 0,10 3.5,0 7"></polygon></marker>
-</defs>
-<text fill="#00ADD8" font-size="15" font-weight="bold" text-anchor="middle" x="350" y="25" direction="rtl" unicode-bidi="embed">جریان <tspan direction="ltr" unicode-bidi="embed">Mutex</tspan>: دسترسی نوبتی به داده مشترک</text>
-<!-- Shared data -->
-<rect fill="#f39c12" height="50" opacity="0.12" rx="8" stroke="#f39c12" stroke-width="2" width="140" x="280" y="50"></rect>
-<text fill="#333" font-size="13" text-anchor="middle" x="350" y="72" direction="ltr" unicode-bidi="embed">counter++</text>
-<text fill="#666" font-size="10" text-anchor="middle" x="350" y="90" direction="rtl" unicode-bidi="embed">داده مشترک</text>
-<!-- Mutex shield -->
-<rect fill="#e74c3c" height="55" opacity="0.08" rx="12" stroke="#e74c3c" stroke-dasharray="6,3" stroke-width="2" width="180" x="260" y="47"></rect>
-<text fill="#e74c3c" font-size="10" text-anchor="middle" x="350" y="115" direction="ltr" unicode-bidi="embed">mu.Lock() / mu.Unlock()</text>
-<!-- Goroutine A - has lock -->
-<rect fill="#00ADD8" height="40" opacity="0.12" rx="8" stroke="#00ADD8" stroke-width="2" width="140" x="40" y="140"></rect>
-<text fill="#333" font-size="11" text-anchor="middle" x="110" y="160" direction="ltr" unicode-bidi="embed">Goroutine A</text>
-<text fill="#27ae60" font-size="9" text-anchor="middle" x="110" y="173" direction="rtl" unicode-bidi="embed">قفل را دارد (خیر)</text>
-<line marker-end="url(#aMx1)" stroke="#00ADD8" stroke-width="2" x1="180" x2="280" y1="155" y2="80"></line>
-<!-- Goroutine B - waiting -->
-<rect fill="#999" height="40" opacity="0.12" rx="8" stroke="#999" stroke-width="2" width="140" x="220" y="180"></rect>
-<text fill="#333" font-size="11" text-anchor="middle" x="290" y="200" direction="ltr" unicode-bidi="embed">Goroutine B</text>
-<text fill="#e74c3c" font-size="9" text-anchor="middle" x="290" y="213" direction="rtl" unicode-bidi="embed">منتظر قفل...</text>
-<line stroke="#999" stroke-dasharray="4,3" stroke-width="1.5" x1="290" x2="350" y1="180" y2="102"></line>
-<!-- Goroutine C - waiting -->
-<rect fill="#999" height="40" opacity="0.12" rx="8" stroke="#999" stroke-width="2" width="140" x="420" y="180"></rect>
-<text fill="#333" font-size="11" text-anchor="middle" x="490" y="200" direction="ltr" unicode-bidi="embed">Goroutine C</text>
-<text fill="#e74c3c" font-size="9" text-anchor="middle" x="490" y="213" direction="rtl" unicode-bidi="embed">منتظر قفل...</text>
-<line stroke="#999" stroke-dasharray="4,3" stroke-width="1.5" x1="490" x2="400" y1="180" y2="102"></line>
-<!-- Flow: A unlocks, B gets lock -->
-<line marker-end="url(#aMx2)" stroke="#27ae60" stroke-width="2" x1="180" x2="180" y1="160" y2="245"></line>
-<rect fill="#f5f5f5" height="30" rx="6" stroke="#ddd" stroke-width="1" width="540" x="80" y="240"></rect>
-<text fill="#555" font-size="10" text-anchor="middle" x="350" y="260" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">Unlock()</tspan> → گوریوتین بعدی قفل را می‌گیرد → فقط یکی در هر لحظه دسترسی دارد</text>
-</svg>
+<pre class="mermaid">flowchart TB
+    Data["counter++<br/>داده مشترک"]
+    Lock["mu.Lock() / mu.Unlock()"]
+    A["Goroutine A<br/>قفل را دارد (خیر)"]
+    B["Goroutine B<br/>منتظر قفل..."]
+    C["Goroutine C<br/>منتظر قفل..."]
+
+    Lock --&gt; A
+    Lock --&gt; B
+    Lock --&gt; C
+    A -- "Unlock()" --&gt; B
+    B -- "Unlock()" --&gt; C
+
+    Note["Unlock() → گوریوتین بعدی قفل را می‌گیرد<br/>→ فقط یکی در هر لحظه دسترسی دارد"]
+
+    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
+    classDef bothBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
+    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
+    classDef neuBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
+    class Data warnBox;
+    class Lock bothBox;
+    class A goBox;
+    class B,C neuBox;
+    class Note neuBox;</pre>
 <figcaption dir="rtl">شکل ۵-۱۲-ب: جریان <bdi dir="ltr">Mutex</bdi> — فقط یک <bdi dir="ltr">Goroutine</bdi> در هر لحظه به داده مشترک دسترسی دارد</figcaption>
 </figure>
-
-
 <p><strong>تعریف و استفاده اولیه</strong></p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">package main
@@ -262,10 +241,9 @@ func main() {
 </code></pre>
 </figure>
 <p>count++ // افزایش شمارنده داخل بخش محافظت شده</p>
-<p>بدون استفاده از <span dir="ltr">mu.Lock()</span> و <span dir="ltr">mu.Unlock()</span> ممکن بود چند goroutine همزمان مقدار count را بخوانند و سپس بنویسند که باعث می‌شود تعداد افزایش‌ها کمتر از ۵۰ شود. در این مثال mutex تضمین می‌کند که فقط یک goroutine در هر لحظه بخش افزایش شمارنده را اجرا کند. توجه داشته باشید که deferها به صورت LIFO اجرا می‌شوند یعنی <span dir="ltr">wg.Done()</span> در آخر اجرا می‌شود چون اول <span dir="ltr">Unlock()</span> deferred شده.</p>
+<p>بدون استفاده از <span dir="ltr">mu.Lock()</span> و <span dir="ltr">mu.Unlock()</span> ممکن بود چند goroutine همزمان مقدار count را بخوانند و سپس بنویسند که باعث می‌شود تعداد افزایش‌ها کمتر از ۵۰ شود. در این مثال mutex تضمین می‌کند که فقط یک goroutine در هر لحظه بخش افزایش شمارنده را اجرا کند. </p><p>توجه داشته باشید که deferها به صورت LIFO اجرا می‌شوند یعنی <span dir="ltr">wg.Done()</span> در آخر اجرا می‌شود چون اول <span dir="ltr">Unlock()</span> deferred شده.</p>
 <h4 id="rwmutex">RWMutex</h4>
 <p>گاهی ممکن است بخواهید چند <bdi dir="ltr">Goroutine</bdi> به طور همزمان بتوانند فقط بخوانند اما نوشتن به صورت انحصاری باشد. Go این امکان را با <code>sync.RWMutex</code> فراهم کرده است. این نوع قفل برای سناریوهایی مثل <bdi dir="ltr">Cache</bdi> که خواندن بسیار بیشتر از نوشتن است بسیار مفید است.</p>
-
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">type SafeCache struct {
     mu sync.RWMutex
@@ -286,12 +264,9 @@ func (c *SafeCache) Set(key, value string) {
 }
 </code></pre>
 </figure>
-
 <p>وقتی <code>RLock()</code> فراخوانی شود، سایر خواننده‌ها نیز می‌توانند همزمان <code>RLock()</code> بگیرند. اما وقتی <code>Lock()</code> فراخوانی شود، تمام خواننده‌ها و نویسنده‌های دیگر باید منتظر بمانند. این کار <bdi dir="ltr">Throughput</bdi> خواندن را به شدت افزایش می‌دهد.</p>
-
 <h4 id="syncmap">sync.Map</h4>
 <p>برای کارهای خاص، Go نوع <code>sync.Map</code> را ارائه می‌دهد که یک <bdi dir="ltr">Map</bdi> همزمان‌امن بدون نیاز به <code>Mutex</code> است. این نوع برای دو سناریو بهینه شده: وقتی کلیدها فقط یک بار نوشته و بارها خوانده می‌شوند، و وقتی <bdi dir="ltr">Map</bdi> ناپیوسته از <bdi dir="ltr">Goroutine</bdi>‌های مختلف به‌روزرسانی می‌شود. برای سایر کاربردها، <code>map</code> معمولی با <code>Mutex</code> معمولاً بهتر عمل می‌کند.</p>
-
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">var m sync.Map
 
@@ -313,19 +288,15 @@ m.Range(func(key, val interface{}) bool {
 })
 </code></pre>
 </figure>
-
-<h3 id="race-detector">استفاده از Race Detector</h3>
-<p>ابزار <bdi dir="ltr">Race Detector</bdi> در Go یکی از قوی‌ترین ابزارهای تشخیص <bdi dir="ltr">Data Race</bdi> در بین زبان‌های برنامه‌نویسی است. با اضافه کردن فلگ <code>-race</code> به دستورات <code>go run</code> ، <code>go test</code> یا <code>go build</code> ، <bdi dir="ltr">ThreadSanitizer</bdi> فعال می‌شود و هر دسترسی همزمان غیرهمگام به حافظه را گزارش می‌دهد.</p>
-
+<h3 id="race-detector">5.6.2 استفاده از Race Detector</h3>
+<p>ابزار <bdi dir="ltr">Race Detector</bdi> در Go یکی از قوی‌ترین ابزارهای تشخیص <bdi dir="ltr">Data Race</bdi> در بین زبان‌های برنامه‌نویسی است. با اضافه کردن فلگ <code>-race</code> به دستورات <code>go run</code>، <code>go test</code> یا <code>go build</code>، <bdi dir="ltr">ThreadSanitizer</bdi> فعال می‌شود و هر دسترسی همزمان غیرهمگام به حافظه را گزارش می‌دهد.</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">$ go run -race main.go
 $ go test -race ./...
 $ go build -race -o myapp .
 </code></pre>
 </figure>
-
 <p>خروجی <bdi dir="ltr">Race Detector</bdi> اطلاعات دقیقی درباره محل وقوع <bdi dir="ltr">Data Race</bdi> ارائه می‌دهد: دو <bdi dir="ltr">Goroutine</bdi> درگیر، نوع عملیات (خواندن یا نوشتن)، و محل دقیق در کد (فایل و شماره خط). مثال خروجی:</p>
-
 <figure class="code bash" dir="ltr">
 <pre><code class="language-bash">==================
 WARNING: DATA RACE
@@ -339,7 +310,6 @@ Previous read at 0x00c0000b6010 by goroutine 6:
 ==================
 </code></pre>
 </figure>
-
 <div class="tip"><strong>بهترین شیوه‌ها برای Race Detector:</strong>
 <ul>
 <li>همیشه تست‌ها را با <code>-race</code> اجرا کنید (<code>go test -race ./...</code>).</li>
@@ -353,7 +323,7 @@ Previous read at 0x00c0000b6010 by goroutine 6:
 <p><strong dir="ltr">Starvation:</strong> قفل‌های mutex ممکن است باعث شوند برخی goroutineها همیشه منتظر بمانند.</p>
 <p><strong>فاصله زمانی زیاد بین</strong> <strong dir="ltr">Lock و Unlock</strong> باید حداقل کد ممکن در بخش قفل شده اجرا شود تا performance بالا بماند.</p>
 <p><strong dir="ltr">Avoid Mutex When Possible:</strong> در Go توصیه می‌شود به جای قفل کردن داده مگر در مواقع ضروری، از Channels برای ارتباط و هماهنگی استفاده کنید.</p>
-<h3 id="atomic-operations">عملیات Atomic</h3>
+<h3 id="atomic-operations">5.6.3 عملیات Atomic</h3>
 <p>پکیج <code>sync/atomic</code> عملیات سطح پایین و بدون قفل را برای انواع داده‌ای اولیه فراهم می‌کند. این عملیات مستقیماً از دستورالعمل‌های پردازنده (مانند CAS — Compare-And-Swap) استفاده می‌کنند و بدون نیاز به mutex کار می‌کنند.</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">var counter int64
@@ -402,17 +372,16 @@ func main() {
 }
 </code></pre>
 </figure>
-
-    <h3 id="new-vet-analyzers-go-1.25">تحلیل‌گرهای جدید go vet — Go 1.25</h3>
-    <p>
-        دستور <code>go vet</code> در Go 1.25 شامل دو تحلیل‌گر جدید است:
-    </p>
-    <ul>
-        <li><strong>waitgroup</strong>: فراخوانی‌های نادرست <code>sync.WaitGroup.Add</code> را گزارش می‌دهد، مانند فراخوانی <code>Add</code> با مقدار منفی درون goroutine به‌جای خارج از آن.</li>
-        <li><strong>hostport</strong>: استفاده از <code>fmt.Sprintf("%s:%d", host, port)</code> برای ساخت آدرس شبکه‌ای را گزارش می‌دهد، زیرا این روش با IPv6 کار نمی‌کند. به‌جای آن از <code>net.JoinHostPort</code> استفاده کنید.</li>
-    </ul>
-    <figure class="code go" dir="ltr">
-        <pre><code class="language-go">// ❌ مشکل: Add داخل goroutine
+<h3 id="new-vet-analyzers-go-1.25">5.6.4 تحلیل‌گرهای جدید go vet — Go 1.25</h3>
+<p>
+ دستور <code>go vet</code> در Go 1.25 شامل دو تحلیل‌گر جدید است:
+ </p>
+<ul>
+<li><strong>waitgroup</strong>: فراخوانی‌های نادرست <code>sync.WaitGroup.Add</code> را گزارش می‌دهد، مانند فراخوانی <code>Add</code> با مقدار منفی درون goroutine به‌جای خارج از آن.</li>
+<li><strong>hostport</strong>: استفاده از <code>fmt.Sprintf("%s:%d", host, port)</code> برای ساخت آدرس شبکه‌ای را گزارش می‌دهد، زیرا این روش با IPv6 کار نمی‌کند. به‌جای آن از <code>net.JoinHostPort</code> استفاده کنید.</li>
+</ul>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">// ❌ مشکل: Add داخل goroutine
 go func() {
     wg.Add(1) // تحلیل‌گر waitgroup هشدار میدهد
     defer wg.Done()
@@ -431,187 +400,72 @@ addr := fmt.Sprintf("%s:%d", host, port) // hostport هشدار میدهد
 
 // ✅ صحیح: استفاده از net.JoinHostPort
 addr := net.JoinHostPort(host, strconv.Itoa(port))</code></pre>
-    </figure>
-
-
-<h3 id="data-race-خط-زمانی-داخل‌درج">خط زمانی داخل‌درج <bdi dir="ltr">Data Race</bdi> — تجزیه گام‌به‌گام</h3>
-<p>برای درک عمیق‌تر <bdi dir="ltr">Data Race</bdi> باید ببینیم دقیقاً چه اتفاقی در سطح دستورات ماشین افتاده است. عملیات <bdi dir="ltr">counter++</bdi> در ظاهر یک دستور است اما در واقع سه مرحله مجزا دارد: خواندن مقدار فعلی از حافظه، افزایش مقدار در ثبات پردازنده، و نوشتن مقدار جدید در حافظه. وقتی دو <bdi dir="ltr">goroutine</bdi> این سه مرحله را به صورت درهم‌آمیخته اجرا کنند، ممکن است هر دو مقدار یکسانی را بخوانند و سپس هر دو مقدار یکسانی را بنویسند که نتیجه‌ی آن از بین رفتن یکی از افزایش‌هاست. این مشکل به نام <bdi dir="ltr">lost update</bdi> شناخته می‌شود و در سیستم‌های پایگاه داده نیز وقتی رخ می‌دهد که دو تراکنش همزمان روی یک رکورد تغییر ایجاد کنند بدون اینکه از قفل استفاده کنند.</p>
-
+</figure>
+<h3 id="data-race-خط-زمانی-داخل‌درج">5.6.5 خط زمانی داخل‌درجData Race— تجزیه گام‌به‌گام</h3>
+<p>برای درک عمیق‌تر <bdi dir="ltr">Data Race</bdi> باید ببینیم دقیقاً چه اتفاقی در سطح دستورات ماشین افتاده است. عملیات <bdi dir="ltr">counter++</bdi> در ظاهر یک دستور است اما در واقع سه مرحله مجزا دارد: خواندن مقدار فعلی از حافظه، افزایش مقدار در ثبات پردازنده، و نوشتن مقدار جدید در حافظه. </p><p>وقتی دو <bdi dir="ltr">goroutine</bdi> این سه مرحله را به صورت درهم‌آمیخته اجرا کنند، ممکن است هر دو مقدار یکسانی را بخوانند و سپس هر دو مقدار یکسانی را بنویسند که نتیجه‌ی آن از بین رفتن یکی از افزایش‌هاست. </p><p>این مشکل به نام <bdi dir="ltr">lost update</bdi> شناخته می‌شود و در سیستم‌های پایگاه داده نیز وقتی رخ می‌دهد که دو تراکنش همزمان روی یک رکورد تغییر ایجاد کنند بدون اینکه از قفل استفاده کنند.</p>
 <figure class="diagram" dir="ltr">
-<svg width="780" height="620" viewBox="0 0 780 620" xmlns="http://www.w3.org/2000/svg">
-<rect fill="#fafafa" height="620" rx="8" width="780" x="0" y="0"></rect>
-<defs><filter id="sh108" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
-<marker id="aDrE1" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#e91e63" points="0 0,10 3.5,0 7"></polygon></marker>
-<marker id="aDrE2" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#4CAF50" points="0 0,10 3.5,0 7"></polygon></marker>
-<marker id="aDrE3" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#00ADD8" points="0 0,10 3.5,0 7"></polygon></marker>
-</defs>
+<pre class="mermaid">flowchart TB
+    subgraph RACE["مسیر مسابقه — دسترسی همزمان بدون همگام‌سازی"]
+        direction TB
+        subgraph G1L["Goroutine G1"]
+            direction TB
+            G1A["t₁: READ counter → 0<br/>0 + 1 = 1"]
+            G1B["t₃: WRITE counter = 1<br/>done — thinks counter = 1"]
+            G1A --&gt; G1B
+        end
+        SH["Shared: counter<br/>counter = 0 → 0 → 1 → 1 ✗"]
+        subgraph G2L["Goroutine G2"]
+            direction TB
+            G2A["t₂: waiting..."]
+            G2B["t₄: READ counter → 0 ✗<br/>0 + 1 = 1"]
+            G2C["t₅: WRITE counter = 1 ✗<br/>done — thinks counter = 1"]
+            G2A --&gt; G2B --&gt; G2C
+        end
+        G1A -.-&gt; SH
+        G2B -.-&gt; SH
+        RL["یک افزایش از بین رفت!<br/>نتیجه: 1 (نه 2!)"]
+        RR["Expected: counter=2<br/>Actual: counter=1 ✗<br/>Lost Update!"]
+        SH --&gt; RL --&gt; RR
+    end
 
-<!-- Title -->
-<text fill="#e91e63" font-size="16" font-weight="bold" text-anchor="middle" x="390" y="28" direction="rtl" unicode-bidi="embed">خط زمانی <tspan direction="ltr" unicode-bidi="embed">Data Race</tspan>: درهم‌آمیختگی دسترسی همزمان و راه‌حل <tspan direction="ltr" unicode-bidi="embed">Mutex</tspan></text>
+    subgraph SAFE["راه‌حل: بخش بحرانی با Mutex Lock/Unlock"]
+        direction TB
+        subgraph S1L["Goroutine G1"]
+            direction TB
+            S1A["mu.Lock()<br/>READ 0 → +1 → WRITE 1<br/>✓ Critical Section (G1)<br/>mu.Unlock()"]
+            S1B["🔒 counter protected<br/>counter = 1"]
+            S1A --&gt; S1B
+        end
+        subgraph S2L["Goroutine G2"]
+            direction TB
+            S2A["mu.Lock() → waiting...<br/>READ 1 → +1 → WRITE 2<br/>✓ Critical Section (G2)<br/>mu.Unlock()"]
+            S2B["counter = 2 ✓"]
+            S2A --&gt; S2B
+        end
+        SR["نتیجه صحیح: counter = 2 ✓"]
+        S1B --&gt; SR
+        S2B --&gt; SR
+    end
 
-<!-- ===== Section 1: Race timeline ===== -->
-<text fill="#555" font-size="11" font-weight="bold" x="20" y="55" direction="rtl" unicode-bidi="embed">مسیر مسابقه — دسترسی همزمان بدون همگام‌سازی</text>
+    N1["بدون mutex: counter++ سه مرحله‌امد و درهم‌آمیخته"]
+    N2["با mutex: بخش بحرانی ایمن"]
+    GOLD["قانون طلایی: به حافظه مشترک فقط در بخش بحرانی mutex دسترسی دهید<br/>— یا از channel استفاده کنید"]
 
-<!-- Column headers -->
-<text fill="#00ADD8" font-size="12" font-weight="bold" text-anchor="middle" x="130" y="75" direction="ltr" unicode-bidi="embed">Goroutine G1</text>
-<text fill="#00ADD8" font-size="12" font-weight="bold" text-anchor="middle" x="400" y="75" direction="ltr" unicode-bidi="embed">Shared: counter</text>
-<text fill="#00ADD8" font-size="12" font-weight="bold" text-anchor="middle" x="650" y="75" direction="ltr" unicode-bidi="embed">Goroutine G2</text>
-
-<!-- Time labels -->
-<text fill="#999" font-size="9" text-anchor="end" x="45" y="110" direction="ltr" unicode-bidi="embed">t₁</text>
-<text fill="#999" font-size="9" text-anchor="end" x="45" y="150" direction="ltr" unicode-bidi="embed">t₂</text>
-<text fill="#999" font-size="9" text-anchor="end" x="45" y="190" direction="ltr" unicode-bidi="embed">t₃</text>
-<text fill="#999" font-size="9" text-anchor="end" x="45" y="230" direction="ltr" unicode-bidi="embed">t₄</text>
-<text fill="#999" font-size="9" text-anchor="end" x="45" y="270" direction="ltr" unicode-bidi="embed">t₅</text>
-<text fill="#999" font-size="9" text-anchor="end" x="45" y="310" direction="ltr" unicode-bidi="embed">t₆</text>
-
-<!-- G1 column -->
-<!-- G1: READ counter -->
-<rect fill="#e91e63" height="30" opacity="0.12" rx="6" stroke="#e91e63" stroke-width="1.5" width="170" x="45" y="95"></rect>
-<text fill="#e91e63" font-size="10" text-anchor="middle" x="130" y="115" direction="ltr" unicode-bidi="embed">READ counter → 0</text>
-
-<!-- G1: INCREMENT -->
-<rect fill="#e91e63" height="30" opacity="0.08" rx="6" stroke="#e91e63" stroke-width="1" width="170" x="45" y="135"></rect>
-<text fill="#e91e63" font-size="10" text-anchor="middle" x="130" y="155" direction="ltr" unicode-bidi="embed">0 + 1 = 1</text>
-
-<!-- G1: (gap - G2 runs) -->
-<rect fill="#f5f5f5" height="30" rx="4" stroke="#ddd" stroke-width="0.5" width="170" x="45" y="175"></rect>
-<text fill="#ccc" font-size="9" text-anchor="middle" x="130" y="195" direction="ltr" unicode-bidi="embed">waiting...</text>
-
-<!-- G1: WRITE counter=1 -->
-<rect fill="#e91e63" height="30" opacity="0.12" rx="6" stroke="#e91e63" stroke-width="1.5" width="170" x="45" y="215"></rect>
-<text fill="#e91e63" font-size="10" text-anchor="middle" x="130" y="235" direction="ltr" unicode-bidi="embed">WRITE counter = 1</text>
-
-<!-- G1 done -->
-<rect fill="#f5f5f5" height="30" rx="4" stroke="#ddd" stroke-width="0.5" width="170" x="45" y="255"></rect>
-<text fill="#ccc" font-size="9" text-anchor="middle" x="130" y="275" direction="ltr" unicode-bidi="embed">done</text>
-
-<!-- G1 result -->
-<text fill="#e91e63" font-size="10" font-weight="bold" text-anchor="middle" x="130" y="315" direction="ltr" unicode-bidi="embed">thinks counter = 1</text>
-
-<!-- Shared counter column -->
-<!-- counter=0 initially -->
-<rect fill="#FF9800" height="30" opacity="0.15" rx="6" stroke="#FF9800" stroke-width="1.5" width="120" x="340" y="95"></rect>
-<text fill="#FF9800" font-size="11" font-weight="bold" text-anchor="middle" x="400" y="115" direction="ltr" unicode-bidi="embed">counter = 0</text>
-
-<!-- counter still 0 (G2 reads) -->
-<rect fill="#FF9800" height="30" opacity="0.15" rx="6" stroke="#FF9800" stroke-width="1" width="120" x="340" y="135"></rect>
-<text fill="#FF9800" font-size="11" text-anchor="middle" x="400" y="155" direction="ltr" unicode-bidi="embed">counter = 0</text>
-
-<!-- counter=1 after G1 writes -->
-<rect fill="#FF9800" height="30" opacity="0.15" rx="6" stroke="#FF9800" stroke-width="1.5" width="120" x="340" y="175"></rect>
-<text fill="#FF9800" font-size="11" font-weight="bold" text-anchor="middle" x="400" y="195" direction="ltr" unicode-bidi="embed">counter = 1</text>
-
-<!-- counter=1 after G2 writes (OVERWRITE!) -->
-<rect fill="#e91e63" height="30" opacity="0.15" rx="6" stroke="#e91e63" stroke-width="2" width="120" x="340" y="215"></rect>
-<text fill="#e91e63" font-size="11" font-weight="bold" text-anchor="middle" x="400" y="235" direction="ltr" unicode-bidi="embed">counter = 1 ✗</text>
-
-<!-- Lost update annotation -->
-<rect fill="#e91e63" height="28" opacity="0.08" rx="4" stroke="#e91e63" stroke-width="1.5" width="120" x="340" y="255"></rect>
-<text fill="#e91e63" font-size="10" font-weight="bold" text-anchor="middle" x="400" y="273" direction="rtl" unicode-bidi="embed">یک افزایش از بین رفت!</text>
-
-<!-- Final wrong result -->
-<rect fill="#e91e63" height="28" opacity="0.12" rx="6" stroke="#e91e63" stroke-width="2" width="120" x="340" y="295"></rect>
-<text fill="#e91e63" font-size="10" font-weight="bold" text-anchor="middle" x="400" y="313" direction="ltr" unicode-bidi="embed">نتیجه: 1 (نه 2!)</text>
-
-<!-- G2 column -->
-<!-- G2: (gap - G1 runs) -->
-<rect fill="#f5f5f5" height="30" rx="4" stroke="#ddd" stroke-width="0.5" width="170" x="565" y="95"></rect>
-<text fill="#ccc" font-size="9" text-anchor="middle" x="650" y="115" direction="ltr" unicode-bidi="embed">waiting...</text>
-
-<!-- G2: READ counter (still 0!) -->
-<rect fill="#e91e63" height="30" opacity="0.12" rx="6" stroke="#e91e63" stroke-width="1.5" width="170" x="565" y="135"></rect>
-<text fill="#e91e63" font-size="10" text-anchor="middle" x="650" y="155" direction="ltr" unicode-bidi="embed">READ counter → 0 ✗</text>
-
-<!-- G2: INCREMENT -->
-<rect fill="#e91e63" height="30" opacity="0.08" rx="6" stroke="#e91e63" stroke-width="1" width="170" x="565" y="175"></rect>
-<text fill="#e91e63" font-size="10" text-anchor="middle" x="650" y="195" direction="ltr" unicode-bidi="embed">0 + 1 = 1</text>
-
-<!-- G2: WRITE counter=1 (OVERWRITE!) -->
-<rect fill="#e91e63" height="30" opacity="0.15" rx="6" stroke="#e91e63" stroke-width="2" width="170" x="565" y="215"></rect>
-<text fill="#e91e63" font-size="10" font-weight="bold" text-anchor="middle" x="650" y="235" direction="ltr" unicode-bidi="embed">WRITE counter = 1 ✗</text>
-
-<!-- G2 done -->
-<rect fill="#f5f5f5" height="30" rx="4" stroke="#ddd" stroke-width="0.5" width="170" x="565" y="255"></rect>
-<text fill="#ccc" font-size="9" text-anchor="middle" x="650" y="275" direction="ltr" unicode-bidi="embed">done</text>
-
-<!-- G2 result -->
-<text fill="#e91e63" font-size="10" font-weight="bold" text-anchor="middle" x="650" y="315" direction="ltr" unicode-bidi="embed">thinks counter = 1</text>
-
-<!-- Arrows between G1 and shared, shared and G2 -->
-<line stroke="#e91e63" stroke-width="1" stroke-dasharray="3,2" x1="215" x2="340" y1="110" y2="110"></line>
-<line stroke="#e91e63" stroke-width="1" stroke-dasharray="3,2" x1="460" x2="565" y1="150" y2="150"></line>
-<line stroke="#e91e63" stroke-width="1" stroke-dasharray="3,2" x1="215" x2="340" y1="230" y2="190"></line>
-<line stroke="#e91e63" stroke-width="1" stroke-dasharray="3,2" x1="460" x2="565" y1="230" y2="230"></line>
-
-<!-- Expected vs Actual -->
-<rect fill="#4CAF50" height="28" opacity="0.1" rx="6" stroke="#4CAF50" stroke-width="1.5" width="140" x="80" y="340"></rect>
-<text fill="#4CAF50" font-size="10" font-weight="bold" text-anchor="middle" x="150" y="358" direction="ltr" unicode-bidi="embed">Expected: counter=2</text>
-
-<line stroke="#999" stroke-width="1" x1="230" x2="310" y1="354" y2="354"></line>
-
-<rect fill="#e91e63" height="28" opacity="0.1" rx="6" stroke="#e91e63" stroke-width="1.5" width="140" x="320" y="340"></rect>
-<text fill="#e91e63" font-size="10" font-weight="bold" text-anchor="middle" x="390" y="358" direction="ltr" unicode-bidi="embed">Actual: counter=1 ✗</text>
-
-<text fill="#e91e63" font-size="10" font-weight="bold" text-anchor="middle" x="580" y="358" direction="ltr" unicode-bidi="embed">Lost Update!</text>
-
-<!-- ===== Section 2: Mutex fix ===== -->
-<text fill="#555" font-size="12" font-weight="bold" x="20" y="395" direction="rtl" unicode-bidi="embed">راه‌حل: بخش بحرانی با <tspan direction="ltr" unicode-bidi="embed">Mutex Lock/Unlock</tspan></text>
-
-<!-- G1 with mutex -->
-<rect fill="#4CAF50" height="32" opacity="0.1" rx="6" stroke="#4CAF50" stroke-width="2" width="200" x="30" y="415"></rect>
-<text fill="#4CAF50" font-size="10" text-anchor="middle" x="130" y="435" direction="ltr" unicode-bidi="embed">mu.Lock()</text>
-
-<rect fill="#4CAF50" height="50" opacity="0.12" rx="6" stroke="#4CAF50" stroke-width="2" width="200" x="30" y="452"></rect>
-<text fill="#4CAF50" font-size="9" text-anchor="middle" x="130" y="470" direction="ltr" unicode-bidi="embed">READ 0 → +1 → WRITE 1</text>
-<text fill="#4CAF50" font-size="9" font-weight="bold" text-anchor="middle" x="130" y="490" direction="ltr" unicode-bidi="embed">✓ Critical Section (G1)</text>
-
-<rect fill="#4CAF50" height="32" opacity="0.1" rx="6" stroke="#4CAF50" stroke-width="2" width="200" x="30" y="507"></rect>
-<text fill="#4CAF50" font-size="10" text-anchor="middle" x="130" y="527" direction="ltr" unicode-bidi="embed">mu.Unlock()</text>
-
-<!-- Shared counter with mutex -->
-<rect fill="#4CAF50" height="30" opacity="0.08" rx="10" stroke="#4CAF50" stroke-dasharray="6,3" stroke-width="2" width="150" x="325" y="420"></rect>
-<text fill="#4CAF50" font-size="10" text-anchor="middle" x="400" y="440" direction="ltr" unicode-bidi="embed">🔒 counter protected</text>
-
-<rect fill="#FF9800" height="50" opacity="0.12" rx="6" stroke="#FF9800" stroke-width="1.5" width="120" x="340" y="455"></rect>
-<text fill="#FF9800" font-size="11" font-weight="bold" text-anchor="middle" x="400" y="475" direction="ltr" unicode-bidi="embed">counter = 1</text>
-<text fill="#FF9800" font-size="11" font-weight="bold" text-anchor="middle" x="400" y="495" direction="ltr" unicode-bidi="embed">counter = 2 ✓</text>
-
-<!-- G2 with mutex -->
-<rect fill="#4CAF50" height="32" opacity="0.1" rx="6" stroke="#4CAF50" stroke-width="2" width="200" x="550" y="415"></rect>
-<text fill="#4CAF50" font-size="10" text-anchor="middle" x="650" y="435" direction="ltr" unicode-bidi="embed">mu.Lock() → waiting...</text>
-
-<rect fill="#4CAF50" height="50" opacity="0.12" rx="6" stroke="#4CAF50" stroke-width="2" width="200" x="550" y="452"></rect>
-<text fill="#4CAF50" font-size="9" text-anchor="middle" x="650" y="470" direction="ltr" unicode-bidi="embed">READ 1 → +1 → WRITE 2</text>
-<text fill="#4CAF50" font-size="9" font-weight="bold" text-anchor="middle" x="650" y="490" direction="ltr" unicode-bidi="embed">✓ Critical Section (G2)</text>
-
-<rect fill="#4CAF50" height="32" opacity="0.1" rx="6" stroke="#4CAF50" stroke-width="2" width="200" x="550" y="507"></rect>
-<text fill="#4CAF50" font-size="10" text-anchor="middle" x="650" y="527" direction="ltr" unicode-bidi="embed">mu.Unlock()</text>
-
-<!-- Arrows -->
-<line marker-end="url(#aDrE2)" stroke="#4CAF50" stroke-width="1.5" stroke-dasharray="3,2" x1="230" x2="325" y1="470" y2="470"></line>
-<line marker-end="url(#aDrE2)" stroke="#4CAF50" stroke-width="1.5" stroke-dasharray="3,2" x1="475" x2="550" y1="480" y2="480"></line>
-
-<!-- Correct result -->
-<rect fill="#4CAF50" height="28" opacity="0.12" rx="6" stroke="#4CAF50" stroke-width="2" width="200" x="290" y="555"></rect>
-<text fill="#4CAF50" font-size="11" font-weight="bold" text-anchor="middle" x="390" y="573" direction="ltr" unicode-bidi="embed">نتیجه صحیح: counter = 2 ✓</text>
-
-<!-- Info boxes -->
-<rect fill="#e91e63" height="35" opacity="0.08" rx="6" stroke="#e91e63" stroke-width="1.5" width="320" x="20" y="555"></rect>
-<text fill="#e91e63" font-size="9" font-weight="bold" text-anchor="middle" x="180" y="573" direction="rtl" unicode-bidi="embed">بدون <tspan direction="ltr" unicode-bidi="embed">mutex</tspan>: <tspan direction="ltr" unicode-bidi="embed">counter++</tspan> سه مرحله‌‌امد و درهم‌آمیخته</text>
-
-<rect fill="#4CAF50" height="35" opacity="0.08" rx="6" stroke="#4CAF50" stroke-width="1.5" width="150" x="570" y="555"></rect>
-<text fill="#4CAF50" font-size="9" font-weight="bold" text-anchor="middle" x="645" y="573" direction="rtl" unicode-bidi="embed">با <tspan direction="ltr" unicode-bidi="embed">mutex</tspan>: بخش بحرانی ایمن</text>
-
-<!-- Golden rule bar -->
-<rect fill="#FFD54F" height="32" opacity="0.2" rx="6" stroke="#F9A825" stroke-width="1.5" width="740" x="20" y="590"></rect>
-<text fill="#5D4037" font-size="11" font-weight="bold" text-anchor="middle" x="390" y="611" direction="rtl" unicode-bidi="embed">قانون طلایی: به حافظه مشترک فقط در بخش بحرانی <tspan direction="ltr" unicode-bidi="embed">mutex</tspan> دسترسی دهید — یا از <tspan direction="ltr" unicode-bidi="embed">channel</tspan> استفاده کنید</text>
-</svg>
+    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
+    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
+    classDef errBox fill:#fef2f2,stroke:#ef4444,stroke-width:1.5px,color:#1f2937;
+    classDef bothBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
+    classDef neuBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
+    class RACE,G1L,G1A,G1B,SH,G2L,G2A,G2B,G2C errBox;
+    class RL,RR errBox;
+    class SAFE,S1L,S1A,S1B,S2L,S2A,S2B bothBox;
+    class SR bothBox;
+    class N1 errBox;
+    class N2 bothBox;
+    class GOLD warnBox;</pre>
 <figcaption dir="rtl">شکل ۵-۱۲-ج: خط زمانی <bdi dir="ltr">Data Race</bdi> — درهم‌آمیختگی دسترسی همزمان و راه‌حل <bdi dir="ltr">Mutex</bdi></figcaption>
 </figure>
-
-<p>نمودار بالا به وضوح نشان می‌دهد که چرا <bdi dir="ltr">counter++</bdi> در محیط همزمان مشکل‌ساز است. در مسیر مسابقه، <bdi dir="ltr">G1</bdi> مقدار <bdi dir="ltr">0</bdi> را می‌خواند و قبل از اینکه بنویسد، <bdi dir="ltr">G2</bdi> هم مقدار <bdi dir="ltr">0</bdi> را می‌خواند. سپس هر دو مقدار <bdi dir="ltr">1</bdi> را می‌نویسند و نتیجه نهایی <bdi dir="ltr">1</bdi> می‌شود به جای <bdi dir="ltr">2</bdi>. این همان <bdi dir="ltr">lost update</bdi> است. در بخش پایینی نمودار می‌بینید که <bdi dir="ltr">Mutex</bdi> با ایجاد بخش بحرانی این مشکل را حل می‌کند: وقتی <bdi dir="ltr">G1</bdi> قفل را می‌گیرد، <bdi dir="ltr">G2</bdi> باید صبر کند تا <bdi dir="ltr">G1</bdi> کارش تمام شود و قفل را آزاد کند. سپس <bdi dir="ltr">G2</bdi> مقدار صحیح <bdi dir="ltr">1</bdi> را می‌خواند و <bdi dir="ltr">2</bdi> را می‌نویسد. نتیجه نهایی صحیح خواهد بود.</p>
-
+<p>نمودار بالا به وضوح نشان می‌دهد که چرا <bdi dir="ltr">counter++</bdi> در محیط همزمان مشکل‌ساز است. در مسیر مسابقه، <bdi dir="ltr">G1</bdi> مقدار <bdi dir="ltr">0</bdi> را می‌خواند و قبل از اینکه بنویسد، <bdi dir="ltr">G2</bdi> هم مقدار <bdi dir="ltr">0</bdi> را می‌خواند. سپس هر دو مقدار <bdi dir="ltr">1</bdi> را می‌نویسند و نتیجه نهایی <bdi dir="ltr">1</bdi> می‌شود به جای <bdi dir="ltr">2</bdi>. این همان <bdi dir="ltr">lost update</bdi> است. </p><p>در بخش پایینی نمودار می‌بینید که <bdi dir="ltr">Mutex</bdi> با ایجاد بخش بحرانی این مشکل را حل می‌کند: وقتی <bdi dir="ltr">G1</bdi> قفل را می‌گیرد، <bdi dir="ltr">G2</bdi> باید صبر کند تا <bdi dir="ltr">G1</bdi> کارش تمام شود و قفل را آزاد کند. سپس <bdi dir="ltr">G2</bdi> مقدار صحیح <bdi dir="ltr">1</bdi> را می‌خواند و <bdi dir="ltr">2</bdi> را می‌نویسد. نتیجه نهایی صحیح خواهد بود.</p>
 <h4 id="سناریوهای-عملیاتی-race">سناریوهای عملیاتی <bdi dir="ltr">Race Condition</bdi></h4>
 <ul>
 <li><strong>شمارنده‌های مشترک در <bdi dir="ltr">HTTP handler</bdi>ها:</strong> در یک سرور <bdi dir="ltr">HTTP</bdi> اگر چند درخواست همزمان به یک متغیر مشترک مانند شمارنده درخواست‌ها دسترسی داشته باشند، بدون <bdi dir="ltr">mutex</bdi> یا <bdi dir="ltr">atomic</bdi> تعداد درخواست‌ها به درستی شمارش نمی‌شود. این مشکل در <bdi dir="ltr">PHP</bdi> معمولاً رخ نمی‌دهد زیرا هر درخواست در <bdi dir="ltr">process</bdi> مجزا است، اما در <bdi dir="ltr">Go</bdi> تمام <bdi dir="ltr">HTTP handler</bdi>ها در یک <bdi dir="ltr">process</bdi> اجرا می‌شوند و حافظه مشترک دارند. برای حل این مشکل از <bdi dir="ltr">sync/atomic</bdi> برای شمارنده‌های ساده یا <bdi dir="ltr">sync.Mutex</bdi> برای ساختارهای پیچیده‌تر استفاده کنید.</li>
@@ -619,7 +473,6 @@ addr := net.JoinHostPort(host, strconv.Itoa(port))</code></pre>
 <li><strong>به‌روزرسانی موجودی حساب بانکی:</strong> اگر دو تراکنش همزمان بخواهند موجودی حساب را تغییر دهند، بدون همگام‌سازی ممکن است یک تراکنش از بین برود و موجودی نادرست شود. این دقیقاً مشابه <bdi dir="ltr">lost update</bdi> در نمودار بالا است. در سیستم‌های بانکی معمولاً از قفل‌های سطح دیتابیس استفاده می‌شود اما در حافظه <bdi dir="ltr">Go</bdi> باید از <bdi dir="ltr">mutex</bdi> یا <bdi dir="ltr">channel</bdi> استفاده کنید تا یکپارچگی داده حفظ شود.</li>
 <li><strong>مقداردهی تنبل با <bdi dir="ltr">sync.Once</bdi>:</strong> وقتی نیاز دارید یک منبع (مانند اتصال دیتابیس یا تنظیمات) فقط یک‌بار مقداردهی شود و چند <bdi dir="ltr">goroutine</bdi> همزمان بخواهند از آن استفاده کنند، <bdi dir="ltr">sync.Once</bdi> تضمین می‌کند که تابع مقداردهی فقط یک‌بار اجرا شود. بدون <bdi dir="ltr">sync.Once</bdi> ممکن است چند <bdi dir="ltr">goroutine</bdi> همزمان منبع را مقداردهی کنند که باعث نشت منبع یا رفتار غیرمنتظره می‌شود.</li>
 </ul>
-
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">// مقداردهی تنبل با sync.Once
 var (
@@ -654,38 +507,41 @@ func (m *SafeMap) Set(key, value string) {
 }
 </code></pre>
 </figure>
-
 <div class="tip"><strong>استفاده از فلگ <bdi dir="ltr">go test -race</bdi> در CI:</strong> در بخش <a href="#race-detector">Race Detector</a> همین فصل، فلگ <code>-race</code> و <bdi dir="ltr">ThreadSanitizer</bdi> معرفی شدند. همیشه تست‌های خود را با <bdi dir="ltr">go test -race ./...</bdi> اجرا و در <bdi dir="ltr">CI/CD</bdi> اجباری کنید — عدم شناسایی <bdi dir="ltr">Data Race</bdi> در یک اجرای خاص، به معنای عدم وجود آن نیست.</div>
-
-<div class="note"><strong>یادداشت:</strong> انتخاب بین <code>sync.Mutex</code> و <code>sync/atomic</code> اغلب گیج‌کننده است. قاعده ساده: اگر فقط یک متغیر ساده (مثل <code>int64</code> شمارنده) را به‌طور همزمان تغییر می‌دهید، <code>atomic.AddInt64</code> سریع‌تر و سبک‌تر از <code>Mutex</code> است. اما به‌محض اینکه باید چند متغیر را به‌صورت اتمیک به‌روزرسانی کنید یا منطق شرطی روی آن‌ها اعمال کنید، <code>Mutex</code> تنها گزینه‌ی صحیح است — ترکیب چند <code>atomic</code> روی متغیرهای مختلف، اتمیسیته‌ی کل عملیات را تضمین نمی‌کند. در <bdi dir="ltr">PHP</bdi> این تمایز وجود ندارد چون هر درخواست در فرآیند مستقل است و همزمانی روی حافظه مشترک رخ نمی‌دهد.</div>
-
+<div class="note"><strong>یادداشت:</strong> انتخاب بین <code>sync.Mutex</code> و <code>sync/atomic</code> اغلب گیج‌کننده است. قاعده ساده: اگر فقط یک متغیر ساده (مثل <code>int64</code> شمارنده) را به‌طور همزمان تغییر می‌دهید، <code>atomic.AddInt64</code> سریع‌تر و سبک‌تر از <code>Mutex</code> است. اما به‌محض اینکه باید چند متغیر را به‌صورت اتمیک به‌روزرسانی کنید یا منطق شرطی روی آن‌ها اعمال کنید، <code>Mutex</code> تنها گزینه‌ی صحیح است — ترکیب چند <code>atomic</code> روی متغیرهای مختلف، اتمیسیته‌ی کل عملیات را تضمین نمی‌کند. در <bdi dir="ltr">PHP</bdi> این تمایز وجود ندارد چون هر درخواست در فرآیند مستقل است و هم‌روندی روی حافظه مشترک رخ نمی‌دهد.</div>
 <div class="warning"><strong>هشدار درباره <bdi dir="ltr">map</bdi> همزمان:</strong> برخلاف <bdi dir="ltr">slice</bdi> و سایر ساختارهای داده، <bdi dir="ltr">map</bdi> در <bdi dir="ltr">Go</bdi> برای دسترسی همزمان طراحی نشده است. نوشتن همزمان روی <bdi dir="ltr">map</bdi> باعث <bdi dir="ltr">panic: concurrent map writes</bdi> می‌شود. حتی خواندن و نوشتن همزمان نیز خطرناک است. اگر نیاز به <bdi dir="ltr">map</bdi> همزمان دارید، حتماً از <bdi dir="ltr">sync.Map</bdi> یا <bdi dir="ltr">map</bdi> معمولی با <bdi dir="ltr">Mutex/RWMutex</bdi> استفاده کنید. این یکی از تفاوت‌های مهم <bdi dir="ltr">Go</bdi> با <bdi dir="ltr">PHP</bdi> است زیرا در <bdi dir="ltr">PHP</bdi> هر درخواست <bdi dir="ltr">map</bdi> (آرایه انجمنی) مستقل خود را دارد.</div>
-</div>
+<div class="summary">
+<strong>خلاصه‌ی نکات کلیدی:</strong>
+<ul>
+<li>race condition: دسترسی همزمان ناهماهنگ به منبع مشترک</li>
+<li>go build -race داده‌ی تشخیص race می‌دهد</li>
+<li>sync.Mutex برای دسترسی انحصاری</li>
+<li>sync.RWMutex برای خواندن همزمان و نوشتن انحصاری</li>
+<li>channel جایگزین امن‌تر برای shared memory</li>
+</ul>
+</div></div>
 </main>
 </div>
-
 <!-- Footer -->
 <footer class="site-footer">
 <div class="footer-inner">
 <div class="footer-nav">
 <span class="nav-arrow">‹</span>
-<a href="05.05-waitgroup.html" data-prev>۵.۵ WaitGroup</a>
+<a data-prev="" href="05.05-waitgroup.html">۵.۵ WaitGroup</a>
 </div>
 <div class="footer-toc">
 <a href="00.01-contents.html">فهرست</a>
 </div>
 <div class="footer-nav">
-<a href="05.07-concurrency-patterns.html" data-next>۵.۷ Concurrency Patterns</a>
+<a data-next="" href="05.07-concurrency-patterns.html">۵.۷ Concurrency Patterns</a>
 <span class="nav-arrow">›</span>
 </div>
 </div>
 </footer>
-
 <!-- Back to Top -->
-<button class="back-to-top" aria-label="بازگشت به بالا">
-<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
+<button aria-label="بازگشت به بالا" class="back-to-top">
+<svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24"><polyline points="18 15 12 9 6 15"></polyline></svg>
 </button>
-
 <!-- Scripts -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/go.min.js"></script>
@@ -698,6 +554,7 @@ func (m *SafeMap) Set(key, value string) {
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/xml.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/ini.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/plaintext.min.js"></script>
+<script src="assets/js/diagrams.js"></script>
 <script src="assets/js/main.js"></script>
 </body>
 </html>

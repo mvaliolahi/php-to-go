@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html dir="rtl" lang="fa">
 <head>
 <script>!function(){try{var t=localStorage.getItem('php2go-theme');if(t==='dark'||(!t&&window.matchMedia('(prefers-color-scheme:dark)').matches)){document.documentElement.setAttribute('data-theme','dark')}}catch(e){}}();</script>
@@ -6,26 +7,25 @@
 <meta content="ie=edge" http-equiv="x-ua-compatible"/>
 <title>۵.۸ کاربردهای عملی Concurrency — PHP to Go</title>
 <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport"/>
-<link rel="preconnect" href="https://fonts.googleapis.com"/>
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600;700&amp;family=Fira+Code:wght@400;500&amp;display=swap" rel="stylesheet"/>
 <link href="assets/css/main.css" rel="stylesheet" type="text/css"/>
 <link href="assets/img/favicon.ico" rel="icon" type="image/x-icon"/>
-<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" media="screen" class="hljs-light-theme" rel="stylesheet"/>
-<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css" media="not screen" class="hljs-dark-theme" rel="stylesheet"/>
+<link class="hljs-light-theme" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" media="screen" rel="stylesheet"/>
+<link class="hljs-dark-theme" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css" media="not screen" rel="stylesheet"/>
 </head>
 <body>
 <!-- Progress Bar -->
 <div class="progress-bar"><div class="progress-bar__fill"></div></div>
-
 <!-- Header -->
 <header class="site-header">
 <div class="header-inner">
 <div class="header-left">
-<button class="header-btn sidebar-toggle" aria-label="فهرست">
-<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+<button aria-label="فهرست" class="header-btn sidebar-toggle">
+<svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24"><line x1="3" x2="21" y1="6" y2="6"></line><line x1="3" x2="21" y1="12" y2="12"></line><line x1="3" x2="21" y1="18" y2="18"></line></svg>
 </button>
-<a href="00.00-front-matter.html" class="header-logo"><span class="logo-php">PHP</span> to <span class="logo-go">Go</span></a>
+<a class="header-logo" href="00.00-front-matter.html"><span class="logo-php">PHP</span> to <span class="logo-go">Go</span></a>
 <span class="header-crumbs">همزمانی › کاربردهای عملی Concurrency</span>
 </div>
 <div class="header-right">
@@ -36,83 +36,84 @@
 <a href="05.09-goroutine-leak.html"><span class="nav-label">۵.۹ Goroutine Leak</span></a>
 <span class="nav-arrow">›</span>
 </nav>
-<button class="header-btn search-toggle" aria-label="جستجو">
-<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+<button aria-label="جستجو" class="header-btn search-toggle">
+<svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" x2="16.65" y1="21" y2="16.65"></line></svg>
 </button>
-<button class="header-btn theme-toggle" aria-label="تغییر تم">
-<svg class="theme-icon-light" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
-<svg class="theme-icon-dark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+<button aria-label="تغییر تم" class="header-btn theme-toggle">
+<svg class="theme-icon-light" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24"><circle cx="12" cy="12" r="5"></circle><line x1="12" x2="12" y1="1" y2="3"></line><line x1="12" x2="12" y1="21" y2="23"></line><line x1="4.22" x2="5.64" y1="4.22" y2="5.64"></line><line x1="18.36" x2="19.78" y1="18.36" y2="19.78"></line><line x1="1" x2="3" y1="12" y2="12"></line><line x1="21" x2="23" y1="12" y2="12"></line><line x1="4.22" x2="5.64" y1="19.78" y2="18.36"></line><line x1="18.36" x2="19.78" y1="5.64" y2="4.22"></line></svg>
+<svg class="theme-icon-dark" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
 </button>
 </div>
 </div>
 </header>
-
 <!-- Search Modal -->
 <div class="search-overlay">
 <div class="search-modal">
 <div class="search-input-wrap">
-<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-<input type="text" class="search-input" placeholder="جستجو... (Ctrl+K)" dir="rtl"/>
+<svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" x2="16.65" y1="21" y2="16.65"></line></svg>
+<input class="search-input" dir="rtl" placeholder="جستجو... (Ctrl+K)" type="text"/>
 </div>
 <div class="search-results"></div>
 </div>
 </div>
-
 <!-- Layout -->
 <div class="site-layout">
 <!-- Sidebar -->
 <aside class="sidebar"></aside>
 <div class="sidebar-overlay"></div>
-
 <!-- Main Content -->
 <main class="content-area">
 <div class="content-wrap text">
 <div class="chapter">فصل ۵.۸</div>
-<h2 id="کاربردهای-عملی-concurrency">کاربردهای عملی Concurrency</h2>
+<h2 id="کاربردهای-عملی-concurrency">کاربردهای عملی Concurrency</h2><div class="abstract">
+<strong>چکیده:</strong> این بخش کاربردهای عملی هم‌روندی Go در سناریوهای واقعی را پوشش می‌دهد: HTTP handler، batch processing و background worker. الگوهای انتخاب بین goroutine، pool و channel بررسی می‌شود. هشدار درباره‌ی over-concurrency ارائه می‌شود.
+</div>
 <figure class="diagram" dir="ltr">
-<svg height="260" viewBox="0 0 700 260" width="700" xmlns="http://www.w3.org/2000/svg">
-<rect fill="#fafafa" height="260" rx="8" width="700" x="0" y="0"></rect>
-<defs><filter id="sh113" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
-<marker id="aPr1" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#00ADD8" points="0 0,10 3.5,0 7"></polygon></marker>
-<marker id="aPr2" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#27ae60" points="0 0,10 3.5,0 7"></polygon></marker>
-</defs>
-<text fill="#00ADD8" font-size="15" font-weight="bold" text-anchor="middle" x="350" y="25" direction="rtl" unicode-bidi="embed">کاربردهای عملی همزمانی در <tspan direction="ltr" unicode-bidi="embed">Go</tspan></text>
-<!-- PHP Sequential -->
-<text fill="#777BB4" font-size="13" font-weight="bold" text-anchor="middle" x="175" y="55" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">PHP</tspan>: ترتیبی (<tspan direction="ltr" unicode-bidi="embed">Sequential</tspan>)</text>
-<rect fill="#eee" height="35" rx="4" width="290" x="30" y="70"></rect>
-<rect fill="#777BB4" height="35" opacity="0.3" rx="4" width="70" x="30" y="70"></rect><text fill="#333" font-size="9" text-anchor="middle" x="65" y="92" direction="ltr" unicode-bidi="embed">Email 1</text>
-<rect fill="#777BB4" height="35" opacity="0.3" rx="4" width="70" x="105" y="70"></rect><text fill="#333" font-size="9" text-anchor="middle" x="140" y="92" direction="ltr" unicode-bidi="embed">Email 2</text>
-<rect fill="#777BB4" height="35" opacity="0.3" rx="4" width="70" x="180" y="70"></rect><text fill="#333" font-size="9" text-anchor="middle" x="215" y="92" direction="ltr" unicode-bidi="embed">Email 3</text>
-<rect fill="#777BB4" height="35" opacity="0.3" rx="4" width="65" x="255" y="70"></rect><text fill="#333" font-size="9" text-anchor="middle" x="287" y="92" direction="ltr" unicode-bidi="embed">Email 4</text>
-<text fill="#e74c3c" font-size="10" text-anchor="middle" x="175" y="125" direction="rtl" unicode-bidi="embed">زمان کل = مجموع همه = ~4s</text>
-<!-- Go Concurrent -->
-<text fill="#00ADD8" font-size="13" font-weight="bold" text-anchor="middle" x="525" y="55" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">Go</tspan>: همزمان (<tspan direction="ltr" unicode-bidi="embed">Concurrent</tspan>)</text>
-<rect fill="#eee" height="35" rx="4" width="290" x="380" y="70"></rect>
-<rect fill="#00ADD8" height="35" opacity="0.15" rx="4" width="290" x="380" y="70"></rect>
-<text fill="#333" font-size="8" text-anchor="middle" x="425" y="82" direction="ltr" unicode-bidi="embed">E1</text>
-<text fill="#333" font-size="8" text-anchor="middle" x="460" y="82" direction="ltr" unicode-bidi="embed">E2</text>
-<text fill="#333" font-size="8" text-anchor="middle" x="495" y="82" direction="ltr" unicode-bidi="embed">E3</text>
-<text fill="#333" font-size="8" text-anchor="middle" x="530" y="82" direction="ltr" unicode-bidi="embed">E4</text>
-<text fill="#00ADD8" font-size="8" text-anchor="middle" x="525" y="96" direction="rtl" unicode-bidi="embed">همه همزمان</text>
-<text fill="#27ae60" font-size="10" text-anchor="middle" x="525" y="125" direction="rtl" unicode-bidi="embed">زمان کل = <tspan direction="ltr" unicode-bidi="embed">max</tspan> = ~1s</text>
-<!-- Use cases -->
-<rect fill="#00ADD8" height="45" opacity="0.08" rx="8" stroke="#00ADD8" stroke-width="1.5" width="200" x="30" y="145"></rect>
-<text fill="#333" font-size="11" text-anchor="middle" x="130" y="165" direction="rtl" unicode-bidi="embed">ارسال موازی ایمیل</text>
-<text fill="#666" font-size="9" text-anchor="middle" x="130" y="182" direction="ltr" unicode-bidi="embed">goroutine + WaitGroup</text>
-<rect fill="#27ae60" height="45" opacity="0.08" rx="8" stroke="#27ae60" stroke-width="1.5" width="200" x="250" y="145"></rect>
-<text fill="#333" font-size="11" text-anchor="middle" x="350" y="165" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">Crawl</tspan> موازی <tspan direction="ltr" unicode-bidi="embed">API</tspan></text>
-<text fill="#666" font-size="9" text-anchor="middle" x="350" y="182" direction="ltr" unicode-bidi="embed">goroutine + channel</text>
-<rect fill="#f39c12" height="45" opacity="0.08" rx="8" stroke="#f39c12" stroke-width="1.5" width="200" x="470" y="145"></rect>
-<text fill="#333" font-size="11" text-anchor="middle" x="570" y="165" direction="rtl" unicode-bidi="embed">کوئری موازی <tspan direction="ltr" unicode-bidi="embed">DB</tspan></text>
-<text fill="#666" font-size="9" text-anchor="middle" x="570" y="182" direction="ltr" unicode-bidi="embed">goroutine + channel + WaitGroup</text>
-<!-- Comparison -->
-<rect fill="#f5f5f5" height="40" rx="6" stroke="#ddd" stroke-width="1" width="640" x="30" y="205"></rect>
-<text fill="#555" font-size="11" text-anchor="middle" x="350" y="228" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">PHP</tspan>: <tspan direction="ltr" unicode-bidi="embed">Queue</tspan> + <tspan direction="ltr" unicode-bidi="embed">Worker</tspan> خارجی | <tspan direction="ltr" unicode-bidi="embed">Go</tspan>: همه درون یک <tspan direction="ltr" unicode-bidi="embed">Process</tspan> با هزینه کم</text>
-</svg>
+<pre class="mermaid"><code>flowchart LR
+    subgraph PHP["PHP: ترتیبی (Sequential)"]
+        direction TB
+        E1["Email 1"]
+        E2["Email 2"]
+        E3["Email 3"]
+        E4["Email 4"]
+        PN["زمان کل = مجموع همه = ~4s"]
+        E1 --&gt; E2 --&gt; E3 --&gt; E4 --&gt; PN
+    end
+    subgraph GO["Go: همزمان (Concurrent)"]
+        direction TB
+        G1["E1"]
+        G2["E2"]
+        G3["E3"]
+        G4["E4"]
+        GN["همه همزمانزمان کل = max = ~1s"]
+        G1 --&gt; GN
+        G2 --&gt; GN
+        G3 --&gt; GN
+        G4 --&gt; GN
+    end
+
+    subgraph USES["کاربردهای عملی هم‌روندی در Go"]
+        direction TB
+        U1["ارسال موازی ایمیل — goroutine + WaitGroup"]
+        U2["Crawl موازی API — goroutine + channel"]
+        U3["کوئری موازی DB — goroutine + channel + WaitGroup"]
+        U1 --&gt; U2 --&gt; U3
+    end
+
+    Note["PHP: Queue + Worker خارجی |Go: همه درون یک Process با هزینه کم"]
+
+    classDef phpBox fill:#f5f0fb,stroke:#777BB4,stroke-width:1.5px,color:#1f2937;
+    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
+    classDef bothBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
+    classDef neuBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
+    class PHP,E1,E2,E3,E4,PN phpBox;
+    class GO,G1,G2,G3,G4,GN goBox;
+    class USES,U1,U2,U3 bothBox;
+    class Note neuBox;</code></pre>
 <figcaption>شکل ۵-۱۵: مقایسه پردازش ترتیبی <bdi dir="ltr">PHP</bdi> با پردازش همزمان <bdi dir="ltr">Go</bdi></figcaption>
 </figure>
-<h3 id="ارسال-موازی-ایمیل-یا-نوتیفیکیشن">ارسال موازی ایمیل‌ یا نوتیفیکیشن‌</h3>
-<p>در Laravel وقتی می‌خواهید چند ایمیل یا نوتیفیکیشن را بفرستید معمولا این کارها را به Queue می‌فرستید و Workerها به ترتیب آن‌ها را پردازش می‌کنند. این کار باعث می‌شود ارسال ایمیل‌ها async شود و کاربر سریع پاسخ بگیرد. اما اگر بخواهید مثلا در یک فرآیند واحد چند ایمیل را همزمان و سریع ارسال کنید باید منتظر تکمیل هر ایمیل بمانید یا پیچیدگی بیشتری به صف اضافه کنید.</p>
+<h3 id="ارسال-موازی-ایمیل-یا-نوتیفیکیشن">5.8.1 ارسال موازی ایمیل‌ یا نوتیفیکیشن‌</h3>
+<p>در Laravel وقتی می‌خواهید چند ایمیل یا نوتیفیکیشن را بفرستید معمولا این کارها را به Queue می‌فرستید و Workerها به ترتیب آن‌ها را پردازش می‌کنند. این کار باعث می‌شود ارسال ایمیل‌ها async شود و کاربر سریع پاسخ بگیرد.</p><p>اما اگر بخواهید مثلا در یک فرآیند واحد چند ایمیل را همزمان و سریع ارسال کنید باید منتظر تکمیل هر ایمیل بمانید یا پیچیدگی بیشتری به صف اضافه کنید.</p>
 <p><strong>راه حل در</strong> <strong dir="ltr">Go با goroutine و channel</strong></p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">package main
@@ -145,76 +146,50 @@ func main() {
 <p>برخلاف PHP که باید worker جداگانه بسازید یا از صف استفاده کنید اینجا در یک پروسه و با هزینه‌ی بسیار کم ارسال‌ها همزمان انجام می‌شوند.</p>
 <p>مزیت اصلی سرعت بالاتر و پیچیدگی کمتر در توسعه.
 </p>
-<h3 id="crawl-داده-از-چند-api-به-طور-همزمان">Crawl داده از چند API به طور همزمان</h3>
+<h3 id="crawl-داده-از-چند-api-به-طور-همزمان">5.8.2 Crawl داده از چند API به طور همزمان</h3>
 <figure class="diagram" dir="ltr">
-<svg height="320" viewBox="0 0 660 320" width="660" xmlns="http://www.w3.org/2000/svg">
-<defs><filter id="sh114" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
-<marker id="arrFo1" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#00ADD8" points="0 0,10 3.5,0 7"></polygon></marker>
-<marker id="arrFi1" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#4caf50" points="0 0,10 3.5,0 7"></polygon></marker>
-</defs>
-<rect fill="#fafafa" height="320" rx="12" stroke="#ddd" stroke-width="1" width="660" x="0" y="0"></rect>
-<text fill="#333" font-size="15" font-weight="bold" text-anchor="middle" x="330" y="28" direction="rtl" unicode-bidi="embed">الگوی <tspan direction="ltr" unicode-bidi="embed">Fan-Out / Fan-In</tspan></text>
+<pre class="mermaid">flowchart TB
+    Src["Source<br/>منبع داده / تولیدکننده"]
+    FO["▼ Fan-Out"]
+    W1["Worker 1<br/>fetch(url1)"]
+    W2["Worker 2<br/>fetch(url2)"]
+    W3["Worker 3<br/>fetch(url3)"]
+    Res["chan result<br/>تجمیع"]
+    FI["▼ Fan-In"]
+    Coll["Collector<br/>جمع‌آوری نتایج"]
 
-<!-- Source -->
-<rect fill="#00ADD8" height="50" rx="8" stroke="#00ADD8" stroke-width="2" width="140" x="50" y="50"></rect>
-<text fill="#fff" font-size="12" font-weight="bold" text-anchor="middle" x="120" y="72" direction="ltr" unicode-bidi="embed">Source</text>
-<text fill="#e0f7fa" font-size="9" text-anchor="middle" x="120" y="90" direction="rtl" unicode-bidi="embed">منبع داده / تولیدکننده</text>
+    Src --&gt; FO
+    FO --&gt; W1
+    FO --&gt; W2
+    FO --&gt; W3
+    W1 --&gt; Res
+    W2 --&gt; Res
+    W3 --&gt; Res
+    Res --&gt; FI
+    FI --&gt; Coll
 
-<!-- Fan-Out label -->
-<text fill="#00ADD8" font-size="13" font-weight="bold" text-anchor="middle" x="120" y="130" direction="ltr" unicode-bidi="embed">▼ Fan-Out</text>
+    subgraph PHP["معادل در PHP"]
+        direction TB
+        P1["Queue + Multiple Workers"]
+        P2["نیاز به Redis / RabbitMQ"]
+        P3["پیچیدگی بیشتر و هزینه بیشتر"]
+        P1 --&gt; P2 --&gt; P3
+    end
 
-<!-- Workers -->
-<rect fill="#ff9800" height="45" rx="6" stroke="#ff9800" stroke-width="2" width="110" x="20" y="150"></rect>
-<text fill="#fff" font-size="10" text-anchor="middle" x="75" y="170" direction="ltr" unicode-bidi="embed">Worker 1</text>
-<text fill="#fff3e0" font-size="8" text-anchor="middle" x="75" y="185" direction="ltr" unicode-bidi="embed">fetch(url1)</text>
+    subgraph GO["در Go"]
+        direction TB
+        G1["همه درون یک Process"]
+        G2["goroutine + channel"]
+        G1 --&gt; G2
+    end
 
-<rect fill="#ff9800" height="45" rx="6" stroke="#ff9800" stroke-width="2" width="110" x="140" y="150"></rect>
-<text fill="#fff" font-size="10" text-anchor="middle" x="195" y="170" direction="ltr" unicode-bidi="embed">Worker 2</text>
-<text fill="#fff3e0" font-size="8" text-anchor="middle" x="195" y="185" direction="ltr" unicode-bidi="embed">fetch(url2)</text>
-
-<rect fill="#ff9800" height="45" rx="6" stroke="#ff9800" stroke-width="2" width="110" x="260" y="150"></rect>
-<text fill="#fff" font-size="10" text-anchor="middle" x="315" y="170" direction="ltr" unicode-bidi="embed">Worker 3</text>
-<text fill="#fff3e0" font-size="8" text-anchor="middle" x="315" y="185" direction="ltr" unicode-bidi="embed">fetch(url3)</text>
-
-<!-- Fan-Out arrows -->
-<line marker-end="url(#arrFo1)" stroke="#00ADD8" stroke-width="2" x1="120" x2="75" y1="100" y2="150"></line>
-<line marker-end="url(#arrFo1)" stroke="#00ADD8" stroke-width="2" x1="120" x2="195" y1="100" y2="150"></line>
-<line marker-end="url(#arrFo1)" stroke="#00ADD8" stroke-width="2" x1="120" x2="315" y1="100" y2="150"></line>
-
-<!-- Channel -->
-<rect fill="#4caf50" height="80" rx="10" stroke="#4caf50" stroke-width="2" width="70" x="430" y="135"></rect>
-<text fill="#fff" font-size="11" font-weight="bold" text-anchor="middle" x="465" y="165" direction="ltr" unicode-bidi="embed">chan</text>
-<text fill="#fff" font-size="9" text-anchor="middle" x="465" y="180" direction="ltr" unicode-bidi="embed">result</text>
-<text fill="#e8f5e9" font-size="8" text-anchor="middle" x="465" y="200" direction="rtl" unicode-bidi="embed">تجمیع</text>
-
-<!-- Fan-In arrows from workers to channel -->
-<line marker-end="url(#arrFi1)" stroke="#ff9800" stroke-width="2" x1="130" x2="430" y1="172" y2="165"></line>
-<line marker-end="url(#arrFi1)" stroke="#ff9800" stroke-width="2" x1="250" x2="430" y1="172" y2="172"></line>
-<line marker-end="url(#arrFi1)" stroke="#ff9800" stroke-width="2" x1="370" x2="430" y1="172" y2="180"></line>
-
-<!-- Fan-In label -->
-<text fill="#4caf50" font-size="13" font-weight="bold" text-anchor="middle" x="465" y="240" direction="ltr" unicode-bidi="embed">▼ Fan-In</text>
-
-<!-- Collector -->
-<rect fill="#4caf50" height="50" rx="8" stroke="#4caf50" stroke-width="2" width="160" x="385" y="255"></rect>
-<text fill="#fff" font-size="12" font-weight="bold" text-anchor="middle" x="465" y="277" direction="ltr" unicode-bidi="embed">Collector</text>
-<text fill="#e8f5e9" font-size="9" text-anchor="middle" x="465" y="295" direction="rtl" unicode-bidi="embed">جمع‌آوری نتایج</text>
-
-<!-- Arrow from channel to collector -->
-<line marker-end="url(#arrFi1)" stroke="#4caf50" stroke-width="2" x1="465" x2="465" y1="215" y2="255"></line>
-
-<!-- PHP comparison note -->
-<rect fill="#e8eaf6" height="70" rx="6" stroke="#777BB4" stroke-width="1" width="190" x="520" y="50"></rect>
-<text fill="#777BB4" font-size="10" font-weight="bold" text-anchor="middle" x="615" y="70" direction="rtl" unicode-bidi="embed">معادل در <tspan direction="ltr" unicode-bidi="embed">PHP</tspan>:</text>
-<text fill="#333" font-size="9" text-anchor="middle" x="615" y="88" direction="ltr" unicode-bidi="embed">Queue + Multiple Workers</text>
-<text fill="#333" font-size="9" text-anchor="middle" x="615" y="103" direction="rtl" unicode-bidi="embed">نیاز به <tspan direction="ltr" unicode-bidi="embed">Redis</tspan> / <tspan direction="ltr" unicode-bidi="embed">RabbitMQ</tspan></text>
-<text fill="#e91e63" font-size="9" text-anchor="middle" x="615" y="115" direction="rtl" unicode-bidi="embed">پیچیدگی بیشتر و هزینه بیشتر</text>
-
-<!-- Go advantage -->
-<rect fill="#e0f7fa" height="40" rx="6" stroke="#00ADD8" stroke-width="1" width="190" x="520" y="135"></rect>
-<text fill="#00ADD8" font-size="9" text-anchor="middle" x="615" y="153" direction="rtl" unicode-bidi="embed">در <tspan direction="ltr" unicode-bidi="embed">Go</tspan>: همه درون یک <tspan direction="ltr" unicode-bidi="embed">Process</tspan></text>
-<text fill="#00ADD8" font-size="9" text-anchor="middle" x="615" y="168" direction="ltr" unicode-bidi="embed">goroutine + channel</text>
-</svg>
+    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
+    classDef bothBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
+    classDef phpBox fill:#f5f0fb,stroke:#777BB4,stroke-width:1.5px,color:#1f2937;
+    classDef neuBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
+    class Src,FO,W1,W2,W3,Res,FI,Coll goBox;
+    class GO,G1,G2 bothBox;
+    class PHP,P1,P2,P3 phpBox;</pre>
 <figcaption dir="rtl">شکل ۵-۱۶: الگوی Fan-Out/Fan-In — توزیع موازی کار بین Workerها و تجمیع نتایج</figcaption>
 </figure>
 <p>با goroutine و channel می‌توانید درخواست‌ها را به صورت همزمان بفرستید و نتایج را تجمیع کنید:</p>
@@ -256,7 +231,7 @@ func main() {
 <p>timeout روی کلاینت HTTP تضمین می‌کند که اگر API دیر پاسخ دهد goroutine بلاک نشود.</p>
 <p>مشابه اما ساده‌تر و مقیاس‌پذیرتر از راهکارهای multi-curl در PHP.
 </p>
-<h3 id="ترکیب-با-context-در-کاربردهای-عملی">ترکیب با Context در کاربردهای عملی</h3>
+<h3 id="ترکیب-با-context-در-کاربردهای-عملی">5.8.3 ترکیب با Context در کاربردهای عملی</h3>
 <p>در کاربردهای واقعی، هرگز نباید goroutineها را بدون Context راه‌اندازی کرد. در اینجا مثال fetch موازی را با مدیریت timeout و cancellation بازنویسی می‌کنیم:</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">func fetchURLs(ctx context.Context, urls []string) ([]string, error) {
@@ -306,9 +281,8 @@ func main() {
 </code></pre>
 </figure>
 <p>نکته‌ی مهم: <code dir="ltr">http.NewRequestWithContext</code> تضمین می‌کند که اگر Context لغو شود، درخواست HTTP بلافاصله متوقف می‌شود و اتصال آزاد می‌گردد. بدون Context، حتی اگر timeout تعریف کرده باشید، goroutine ممکن است مدت طولانی منتظر پاسخ بماند.</p>
-<h3 id="اجرای-موازی-queryهای-سنگین">اجرای موازی Queryهای سنگین</h3>
+<h3 id="اجرای-موازی-queryهای-سنگین">5.8.4 اجرای موازی Queryهای سنگین</h3>
 <p>در PHP وقتی چند query سنگین دارید که مستقل هستند معمولاً پشت سر هم اجرا می‌کنید و منتظر هر query می‌مانید که تمام شود. این باعث اتلاف زمان می‌شود. در Go می‌توانید این query‌ها را همزمان اجرا کنید:</p>
-
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">package main
 
@@ -360,10 +334,8 @@ func main() {
 }
 </code></pre>
 </figure>
-
-<h3 id="پردازنده-کار-پس‌زمینه">پردازنده کارهای پس‌زمینه</h3>
+<h3 id="پردازنده-کار-پس‌زمینه">5.8.5 پردازنده کارهای پس‌زمینه</h3>
 <p>یکی از الگوهای رایج در سیستم‌های واقعی، <bdi dir="ltr">Background Job Processor</bdi> است. در Laravel این کار با <bdi dir="ltr">Queue</bdi> و <bdi dir="ltr">Worker</bdi> انجام می‌شود. در Go می‌توانید یک <bdi dir="ltr">Worker Pool</bdi> با <bdi dir="ltr">Context</bdi> و <bdi dir="ltr">Graceful Shutdown</bdi> بسازید:</p>
-
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">package main
 
@@ -457,10 +429,8 @@ func main() {
 }
 </code></pre>
 </figure>
-
-<h3 id="مدیریت-اتصال-websocket">مدیریت اتصال WebSocket</h3>
+<h3 id="مدیریت-اتصال-websocket">5.8.6 مدیریت اتصال WebSocket</h3>
 <p>در PHP مدیریت <bdi dir="ltr">WebSocket</bdi> معمولاً به سرورهای خاصی مثل <bdi dir="ltr">Ratchet</bdi> یا <bdi dir="ltr">Swoole</bdi> نیاز دارد. اما در Go مدیریت <bdi dir="ltr">WebSocket</bdi> با <bdi dir="ltr">Goroutine</bdi> طبیعی و ساده است. هر اتصال <bdi dir="ltr">WebSocket</bdi> در یک <bdi dir="ltr">Goroutine</bdi> مستقل مدیریت می‌شود:</p>
-
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">type Hub struct {
     clients map[*Client]bool
@@ -509,211 +479,132 @@ func (h *Hub) Run(ctx context.Context) {
 </code></pre>
 </figure>
 <p>این الگو یک <bdi dir="ltr">Hub</bdi> مرکزی برای مدیریت اتصالات <bdi dir="ltr">WebSocket</bdi> ارائه می‌دهد. اتصال جدید در <code>register</code> ثبت، اتصال قطع‌شده در <code>unregister</code> حذف، و پیام‌ها از طریق <code>broadcast</code> به تمام اتصالات ارسال می‌شوند. استفاده از <code>RWMutex</code> اجازه می‌دهد خواندن لیست اتصالات و ارسال پیام به‌صورت همزمان انجام شود.</p>
-
 <div class="tip"><strong>نکته عملی:</strong> در سیستم‌های واقعی باید محدودیت تعداد اتصالات، <bdi dir="ltr">Rate Limiting</bdi> پیام‌ها، <bdi dir="ltr">Ping/Pong</bdi> برای تشخیص اتصالات قطع‌شده، و <bdi dir="ltr">Graceful Shutdown</bdi> را نیز پیاده‌سازی کنید. هر یک از این موارد با ترکیب الگوهایی که در این فصل آموختید قابل پیاده‌سازی است.</div>
-
-<h3 id="معماری-worker-pool-با-اتصال-کانال‌ها">معماری <bdi dir="ltr">Worker Pool</bdi> با اتصال کانال‌ها</h3>
-
-<p>یکی از مهم‌ترین الگوهای همزمانی در <bdi dir="ltr">Go</bdi>، الگوی <bdi dir="ltr">Worker Pool</bdi> است. این الگو به شما اجازه می‌دهد تعداد مشخصی <bdi dir="ltr">goroutine</bdi> برای پردازش موازی کارها ایجاد کنید و از طریق <bdi dir="ltr">channel</bdi>‌ها ورودی و خروجی آن‌ها را مدیریت کنید. برخلاف <bdi dir="ltr">PHP</bdi> که برای هر <bdi dir="ltr">Worker</bdi> نیاز به <bdi dir="ltr">Process</bdi> جداگانه دارید، در <bdi dir="ltr">Go</bdi> تمام <bdi dir="ltr">Worker</bdi>ها درون یک <bdi dir="ltr">Process</bdi> با حافظه مشترک اجرا می‌شوند. ترکیب <bdi dir="ltr">Worker Pool</bdi> با <bdi dir="ltr">Context</bdi> برای لغو عملیات و <bdi dir="ltr">WaitGroup</bdi> برای انتظار روی اتمام تمام <bdi dir="ltr">Worker</bdi>ها، یک سیستم مقیاس‌پذیر و امن ایجاد می‌کند.</p>
-
+<h3 id="معماری-worker-pool-با-اتصال-کانال‌ها">5.8.7 معماریWorker Poolبا اتصال کانال‌ها</h3>
+<p>یکی از مهم‌ترین الگوهای هم‌روندی در <bdi dir="ltr">Go</bdi>، الگوی <bdi dir="ltr">Worker Pool</bdi> است. این الگو به شما اجازه می‌دهد تعداد مشخصی <bdi dir="ltr">goroutine</bdi> برای پردازش موازی کارها ایجاد کنید و از طریق <bdi dir="ltr">channel</bdi>‌ها ورودی و خروجی آن‌ها را مدیریت کنید. </p><p>برخلاف <bdi dir="ltr">PHP</bdi> که برای هر <bdi dir="ltr">Worker</bdi> نیاز به <bdi dir="ltr">Process</bdi> جداگانه دارید، در <bdi dir="ltr">Go</bdi> تمام <bdi dir="ltr">Worker</bdi>ها درون یک <bdi dir="ltr">Process</bdi> با حافظه مشترک اجرا می‌شوند. </p><p>ترکیب <bdi dir="ltr">Worker Pool</bdi> با <bdi dir="ltr">Context</bdi> برای لغو عملیات و <bdi dir="ltr">WaitGroup</bdi> برای انتظار روی اتمام تمام <bdi dir="ltr">Worker</bdi>ها، یک سیستم مقیاس‌پذیر و امن ایجاد می‌کند.</p>
 <figure class="diagram" dir="ltr">
-<svg height="620" viewBox="0 0 820 620" width="820" xmlns="http://www.w3.org/2000/svg">
-<rect fill="#fafafa" height="620" rx="8" width="820" x="0" y="0"></rect>
-<defs><filter id="sh115" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
-<marker id="aWk1" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#00ADD8" points="0 0,10 3.5,0 7"></polygon></marker>
-<marker id="aWk2" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#FF9800" points="0 0,10 3.5,0 7"></polygon></marker>
-<marker id="aWk3" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#4CAF50" points="0 0,10 3.5,0 7"></polygon></marker>
-<marker id="aWk4" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#9C27B0" points="0 0,10 3.5,0 7"></polygon></marker>
-</defs>
+<pre class="mermaid">flowchart TB
+    Prod["Job Producer<br/>تولیدکننده کارها<br/>jobs &lt;- Job{}"]
+    JobsC["jobs chan Job<br/>cap: 100"]
 
-<!-- Title -->
-<text fill="#333" font-size="16" font-weight="bold" text-anchor="middle" x="410" y="28" direction="rtl" unicode-bidi="embed">معماری <tspan direction="ltr" unicode-bidi="embed">Worker Pool</tspan> با اتصال <tspan direction="ltr" unicode-bidi="embed">Channel</tspan></text>
+    W1["Worker 1 (goroutine)<br/>&lt;-jobs → process(job) → result<br/>wg.Done()"]
+    W2["Worker 2 (goroutine)<br/>&lt;-jobs → process(job) → result<br/>wg.Done()"]
+    W3["Worker 3 (goroutine)<br/>&lt;-jobs → process(job) → result<br/>wg.Done()"]
 
-<!-- ===== TOP: Job Producer ===== -->
-<rect fill="#FF9800" height="50" rx="8" stroke="#E65100" stroke-width="2" width="200" x="310" y="48"></rect>
-<text fill="#fff" font-size="13" font-weight="bold" text-anchor="middle" x="410" y="70" direction="ltr" unicode-bidi="embed">Job Producer</text>
-<text fill="#fff3e0" font-size="9" text-anchor="middle" x="410" y="87" direction="rtl" unicode-bidi="embed">تولیدکننده کارها</text>
+    ResC["results chan Result<br/>cap: 100"]
+    Coll["Result Collector<br/>جمع‌آوری نتایج<br/>&lt;-results"]
 
-<!-- Arrow: Producer → jobs chan -->
-<line marker-end="url(#aWk2)" stroke="#FF9800" stroke-width="2.5" x1="410" x2="410" y1="98" y2="132"></line>
-<text fill="#FF9800" font-size="8" text-anchor="middle" x="445" y="120" direction="ltr" unicode-bidi="embed">jobs &lt;- Job{}</text>
+    Prod -- "jobs &lt;- Job{}" --&gt; JobsC
+    JobsC -- "&lt;-jobs" --&gt; W1
+    JobsC -- "&lt;-jobs" --&gt; W2
+    JobsC -- "&lt;-jobs" --&gt; W3
+    W1 -- "results &lt;- res" --&gt; ResC
+    W2 -- "results &lt;- res" --&gt; ResC
+    W3 -- "results &lt;- res" --&gt; ResC
+    ResC -- "&lt;-results" --&gt; Coll
 
-<!-- ===== Jobs Channel ===== -->
-<rect fill="#00ADD8" height="36" rx="18" stroke="#00838F" stroke-width="2" width="220" x="300" y="132"></rect>
-<text fill="#fff" font-size="12" font-weight="bold" text-anchor="middle" x="410" y="155" direction="ltr" unicode-bidi="embed">jobs chan Job</text>
-<!-- Buffer annotation -->
-<rect fill="#E0F7FA" height="20" rx="4" stroke="#00ADD8" stroke-width="1" width="90" x="530" y="140"></rect>
-<text fill="#006064" font-size="8" text-anchor="middle" x="575" y="154" direction="ltr" unicode-bidi="embed">cap: 100</text>
+    subgraph CTX["Context"]
+        direction TB
+        CTX1["ctx.Done() — لغو عملیات"]
+        CTX2["cancel()"]
+        CTX3["context.WithCancel(bg)"]
+        CTX1 --&gt; CTX2 --&gt; CTX3
+    end
 
-<!-- Arrows: jobs chan → Workers -->
-<line marker-end="url(#aWk1)" stroke="#00ADD8" stroke-width="2" x1="350" x2="200" y1="168" y2="228"></line>
-<line marker-end="url(#aWk1)" stroke="#00ADD8" stroke-width="2" x1="410" x2="410" y1="168" y2="228"></line>
-<line marker-end="url(#aWk1)" stroke="#00ADD8" stroke-width="2" x1="470" x2="620" y1="168" y2="228"></line>
-<text fill="#00ADD8" font-size="8" text-anchor="middle" x="265" y="192" direction="ltr" unicode-bidi="embed">&lt;-jobs</text>
-<text fill="#00ADD8" font-size="8" text-anchor="middle" x="440" y="192" direction="ltr" unicode-bidi="embed">&lt;-jobs</text>
-<text fill="#00ADD8" font-size="8" text-anchor="middle" x="560" y="192" direction="ltr" unicode-bidi="embed">&lt;-jobs</text>
+    subgraph WG["WaitGroup (sync.WaitGroup)"]
+        direction TB
+        WG1["wg.Add(3)"]
+        WG2["wg.Wait()"]
+        WG3["wg.Done()"]
+        WG1 --&gt; WG2 --&gt; WG3
+    end
 
-<!-- ===== MIDDLE: 3 Workers ===== -->
-<!-- Worker 1 -->
-<rect fill="#4CAF50" height="90" rx="8" stroke="#2E7D32" stroke-width="2" width="180" x="110" y="228"></rect>
-<text fill="#fff" font-size="12" font-weight="bold" text-anchor="middle" x="200" y="250" direction="ltr" unicode-bidi="embed">Worker 1</text>
-<text fill="#E8F5E9" font-size="9" text-anchor="middle" x="200" y="265" direction="ltr" unicode-bidi="embed">goroutine</text>
-<rect fill="#2E7D32" height="20" rx="4" width="140" x="130" y="278"></rect>
-<text fill="#E8F5E9" font-size="8" text-anchor="middle" x="200" y="292" direction="ltr" unicode-bidi="embed">process(job) → result</text>
-<text fill="#C8E6C9" font-size="8" text-anchor="middle" x="200" y="310" direction="ltr" unicode-bidi="embed">wg.Done()</text>
+    CTX -. "ctx به Worker‌ها" .-&gt; W1
+    WG -. "wg به Worker‌ها" .-&gt; W2
 
-<!-- Worker 2 -->
-<rect fill="#4CAF50" height="90" rx="8" stroke="#2E7D32" stroke-width="2" width="180" x="320" y="228"></rect>
-<text fill="#fff" font-size="12" font-weight="bold" text-anchor="middle" x="410" y="250" direction="ltr" unicode-bidi="embed">Worker 2</text>
-<text fill="#E8F5E9" font-size="9" text-anchor="middle" x="410" y="265" direction="ltr" unicode-bidi="embed">goroutine</text>
-<rect fill="#2E7D32" height="20" rx="4" width="140" x="340" y="278"></rect>
-<text fill="#E8F5E9" font-size="8" text-anchor="middle" x="410" y="292" direction="ltr" unicode-bidi="embed">process(job) → result</text>
-<text fill="#C8E6C9" font-size="8" text-anchor="middle" x="410" y="310" direction="ltr" unicode-bidi="embed">wg.Done()</text>
+    subgraph CODE["کد نمونه Worker Pool"]
+        direction TB
+        C1["for i := 0; i &lt; numWorkers; i++ {"]
+        C2["    wg.Add(1)"]
+        C3["    go worker(ctx, jobs, results, &amp;wg)"]
+        C4["}"]
+        C5["wg.Wait()  // wait for all workers"]
+        C1 --&gt; C2 --&gt; C3 --&gt; C4 --&gt; C5
+    end
 
-<!-- Worker 3 -->
-<rect fill="#4CAF50" height="90" rx="8" stroke="#2E7D32" stroke-width="2" width="180" x="530" y="228"></rect>
-<text fill="#fff" font-size="12" font-weight="bold" text-anchor="middle" x="620" y="250" direction="ltr" unicode-bidi="embed">Worker 3</text>
-<text fill="#E8F5E9" font-size="9" text-anchor="middle" x="620" y="265" direction="ltr" unicode-bidi="embed">goroutine</text>
-<rect fill="#2E7D32" height="20" rx="4" width="140" x="550" y="278"></rect>
-<text fill="#E8F5E9" font-size="8" text-anchor="middle" x="620" y="292" direction="ltr" unicode-bidi="embed">process(job) → result</text>
-<text fill="#C8E6C9" font-size="8" text-anchor="middle" x="620" y="310" direction="ltr" unicode-bidi="embed">wg.Done()</text>
+    subgraph CHAN["اتصال کانال‌ها"]
+        direction TB
+        CH1["jobs: chan&lt;- Job (send-only)"]
+        CH2["results: &lt;-chan Result (recv)"]
+        CH1 --&gt; CH2
+    end
 
-<!-- Arrows: Workers → results chan -->
-<line marker-end="url(#aWk3)" stroke="#4CAF50" stroke-width="2" x1="200" x2="350" y1="318" y2="368"></line>
-<line marker-end="url(#aWk3)" stroke="#4CAF50" stroke-width="2" x1="410" x2="410" y1="318" y2="368"></line>
-<line marker-end="url(#aWk3)" stroke="#4CAF50" stroke-width="2" x1="620" x2="470" y1="318" y2="368"></line>
-<text fill="#4CAF50" font-size="8" text-anchor="middle" x="265" y="348" direction="ltr" unicode-bidi="embed">results &lt;- res</text>
-<text fill="#4CAF50" font-size="8" text-anchor="middle" x="440" y="348" direction="ltr" unicode-bidi="embed">results &lt;- res</text>
-<text fill="#4CAF50" font-size="8" text-anchor="middle" x="560" y="348" direction="ltr" unicode-bidi="embed">results &lt;- res</text>
+    subgraph SEL["الگوی select در Worker"]
+        direction TB
+        SL1["select {"]
+        SL2["case &lt;-ctx.Done(): return"]
+        SL1 --&gt; SL2
+    end
 
-<!-- ===== Results Channel ===== -->
-<rect fill="#00ADD8" height="36" rx="18" stroke="#00838F" stroke-width="2" width="220" x="300" y="368"></rect>
-<text fill="#fff" font-size="12" font-weight="bold" text-anchor="middle" x="410" y="391" direction="ltr" unicode-bidi="embed">results chan Result</text>
-<!-- Buffer annotation -->
-<rect fill="#E0F7FA" height="20" rx="4" stroke="#00ADD8" stroke-width="1" width="90" x="530" y="376"></rect>
-<text fill="#006064" font-size="8" text-anchor="middle" x="575" y="390" direction="ltr" unicode-bidi="embed">cap: 100</text>
+    GOLD["قانون طلایی: همیشه Worker Pool + Context + WaitGroup را با هم استفاده کنید —<br/>هرگز goroutine رها شده نسازید"]
 
-<!-- Arrow: results chan → Collector -->
-<line marker-end="url(#aWk1)" stroke="#00ADD8" stroke-width="2.5" x1="410" x2="410" y1="404" y2="438"></line>
-<text fill="#00ADD8" font-size="8" text-anchor="middle" x="450" y="424" direction="ltr" unicode-bidi="embed">&lt;-results</text>
+    LEG["تولیدکننده/جمع‌آوری · Worker · Channel · Context / WaitGroup"]
 
-<!-- ===== BOTTOM: Result Collector ===== -->
-<rect fill="#FF9800" height="50" rx="8" stroke="#E65100" stroke-width="2" width="200" x="310" y="438"></rect>
-<text fill="#fff" font-size="13" font-weight="bold" text-anchor="middle" x="410" y="460" direction="ltr" unicode-bidi="embed">Result Collector</text>
-<text fill="#fff3e0" font-size="9" text-anchor="middle" x="410" y="477" direction="rtl" unicode-bidi="embed">جمع‌آوری نتایج</text>
-
-<!-- ===== LEFT: Context / Cancellation ===== -->
-<rect fill="#9C27B0" height="80" rx="8" stroke="#6A1B9A" stroke-width="2" width="100" x="18" y="248"></rect>
-<text fill="#fff" font-size="10" font-weight="bold" text-anchor="middle" x="68" y="275" direction="ltr" unicode-bidi="embed">Context</text>
-<text fill="#E1BEE7" font-size="8" text-anchor="middle" x="68" y="290" direction="ltr" unicode-bidi="embed">ctx.Done()</text>
-<text fill="#E1BEE7" font-size="8" text-anchor="middle" x="68" y="305" direction="rtl" unicode-bidi="embed">لغو عملیات</text>
-<text fill="#E1BEE7" font-size="8" text-anchor="middle" x="68" y="318" direction="ltr" unicode-bidi="embed">cancel()</text>
-
-<!-- Context arrows to each Worker -->
-<line marker-end="url(#aWk4)" stroke="#9C27B0" stroke-dasharray="5,3" stroke-width="1.5" x1="118" x2="110" y1="273" y2="273"></line>
-<line marker-end="url(#aWk4)" stroke="#9C27B0" stroke-dasharray="5,3" stroke-width="1.5" x1="118" x2="175" y1="288" y2="273"></line>
-<line marker-end="url(#aWk4)" stroke="#9C27B0" stroke-dasharray="5,3" stroke-width="1.5" x1="118" x2="320" y1="295" y2="273"></line>
-
-<!-- Context label -->
-<rect fill="#F3E5F5" height="22" rx="4" stroke="#9C27B0" stroke-width="1" width="160" x="10" y="345"></rect>
-<text fill="#6A1B9A" font-size="8" text-anchor="middle" x="90" y="360" direction="ltr" unicode-bidi="embed">context.WithCancel(bg)</text>
-
-<!-- ===== RIGHT: WaitGroup ===== -->
-<rect fill="#9C27B0" height="80" rx="8" stroke="#6A1B9A" stroke-width="2" width="100" x="702" y="248"></rect>
-<text fill="#fff" font-size="10" font-weight="bold" text-anchor="middle" x="752" y="275" direction="ltr" unicode-bidi="embed">WaitGroup</text>
-<text fill="#E1BEE7" font-size="8" text-anchor="middle" x="752" y="290" direction="ltr" unicode-bidi="embed">wg.Add(3)</text>
-<text fill="#E1BEE7" font-size="8" text-anchor="middle" x="752" y="305" direction="ltr" unicode-bidi="embed">wg.Wait()</text>
-<text fill="#E1BEE7" font-size="8" text-anchor="middle" x="752" y="318" direction="ltr" unicode-bidi="embed">wg.Done()</text>
-
-<!-- WaitGroup arrows from each Worker -->
-<line marker-end="url(#aWk4)" stroke="#9C27B0" stroke-dasharray="5,3" stroke-width="1.5" x1="290" x2="702" y1="310" y2="288"></line>
-<line marker-end="url(#aWk4)" stroke="#9C27B0" stroke-dasharray="5,3" stroke-width="1.5" x1="500" x2="702" y1="310" y2="298"></line>
-<line marker-end="url(#aWk4)" stroke="#9C27B0" stroke-dasharray="5,3" stroke-width="1.5" x1="710" x2="702" y1="273" y2="288"></line>
-
-<!-- WaitGroup label -->
-<rect fill="#F3E5F5" height="22" rx="4" stroke="#9C27B0" stroke-width="1" width="160" x="650" y="345"></rect>
-<text fill="#6A1B9A" font-size="8" text-anchor="middle" x="730" y="360" direction="ltr" unicode-bidi="embed">sync.WaitGroup</text>
-
-<!-- ===== Code snippet box ===== -->
-<rect fill="#263238" height="90" rx="6" width="380" x="220" y="505"></rect>
-<text fill="#80CBC4" font-size="9" font-family="monospace" text-anchor="start" x="232" y="522" direction="ltr" unicode-bidi="embed">for i := 0; i &lt; numWorkers; i++ {</text>
-<text fill="#80CBC4" font-size="9" font-family="monospace" text-anchor="start" x="232" y="536" direction="ltr" unicode-bidi="embed">  wg.Add(1)</text>
-<text fill="#80CBC4" font-size="9" font-family="monospace" text-anchor="start" x="232" y="550" direction="ltr" unicode-bidi="embed">  go worker(ctx, jobs, results, &amp;wg)</text>
-<text fill="#80CBC4" font-size="9" font-family="monospace" text-anchor="start" x="232" y="564" direction="ltr" unicode-bidi="embed">}</text>
-<text fill="#80CBC4" font-size="9" font-family="monospace" text-anchor="start" x="232" y="578" direction="ltr" unicode-bidi="embed">wg.Wait()  // wait for all workers</text>
-
-<!-- ===== Info box: channel wiring ===== -->
-<rect fill="#E0F7FA" height="60" rx="6" stroke="#00ADD8" stroke-width="1" width="180" x="18" y="505"></rect>
-<text fill="#006064" font-size="9" font-weight="bold" text-anchor="middle" x="108" y="522" direction="rtl" unicode-bidi="embed">اتصال کانال‌ها:</text>
-<text fill="#006064" font-size="8" text-anchor="middle" x="108" y="538" direction="ltr" unicode-bidi="embed">jobs: chan&lt;- Job (send-only)</text>
-<text fill="#006064" font-size="8" text-anchor="middle" x="108" y="552" direction="ltr" unicode-bidi="embed">results: &lt;-chan Result (recv)</text>
-
-<!-- ===== Info box: select pattern ===== -->
-<rect fill="#E8F5E9" height="60" rx="6" stroke="#4CAF50" stroke-width="1" width="180" x="622" y="505"></rect>
-<text fill="#1B5E20" font-size="9" font-weight="bold" text-anchor="middle" x="712" y="522" direction="rtl" unicode-bidi="embed">الگوی <tspan direction="ltr" unicode-bidi="embed">select</tspan> در <tspan direction="ltr" unicode-bidi="embed">Worker</tspan>:</text>
-<text fill="#1B5E20" font-size="8" text-anchor="middle" x="712" y="538" direction="ltr" unicode-bidi="embed">select {</text>
-<text fill="#1B5E20" font-size="8" text-anchor="middle" x="712" y="552" direction="ltr" unicode-bidi="embed">  case &lt;-ctx.Done(): return</text>
-
-<!-- ===== Golden Rule Bar ===== -->
-<rect fill="#FFF8E1" height="24" rx="4" stroke="#F9A825" stroke-width="1.5" width="780" x="20" y="590"></rect>
-<text fill="#E65100" font-size="10" font-weight="bold" text-anchor="middle" x="410" y="606" direction="rtl" unicode-bidi="embed">قانون طلایی: همیشه <tspan direction="ltr" unicode-bidi="embed">Worker Pool</tspan> + <tspan direction="ltr" unicode-bidi="embed">Context</tspan> + <tspan direction="ltr" unicode-bidi="embed">WaitGroup</tspan> را با هم استفاده کنید — هرگز <tspan direction="ltr" unicode-bidi="embed">goroutine</tspan> رها شده نسازید</text>
-
-<!-- Legend -->
-<rect fill="#FF9800" height="10" rx="2" width="30" x="18" y="440"></rect>
-<text fill="#555" font-size="8" text-anchor="start" x="55" y="449" direction="rtl" unicode-bidi="embed">تولیدکننده/جمع‌آوری</text>
-<rect fill="#4CAF50" height="10" rx="2" width="30" x="18" y="455"></rect>
-<text fill="#555" font-size="8" text-anchor="start" x="55" y="464" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">Worker</tspan></text>
-<rect fill="#00ADD8" height="10" rx="2" width="30" x="18" y="470"></rect>
-<text fill="#555" font-size="8" text-anchor="start" x="55" y="479" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">Channel</tspan></text>
-<rect fill="#9C27B0" height="10" rx="2" width="30" x="18" y="485"></rect>
-<text fill="#555" font-size="8" text-anchor="start" x="55" y="494" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">Context</tspan> / <tspan direction="ltr" unicode-bidi="embed">WaitGroup</tspan></text>
-</svg>
+    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
+    classDef bothBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
+    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
+    classDef neuBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
+    class Prod,Coll goBox;
+    class JobsC,ResC,W1,W2,W3 bothBox;
+    class CTX,CTX1,CTX2,CTX3,WG,WG1,WG2,WG3 bothBox;
+    class CODE,C1,C2,C3,C4,C5,CHAN,CH1,CH2,SEL,SL1,SL2 neuBox;
+    class GOLD warnBox;
+    class LEG neuBox;</pre>
 <figcaption>شکل ۵-۱۷: معماری کامل <bdi dir="ltr">Worker Pool</bdi> با اتصال <bdi dir="ltr">Channel</bdi>، <bdi dir="ltr">Context</bdi> برای لغو و <bdi dir="ltr">WaitGroup</bdi> برای همگام‌سازی</figcaption>
 </figure>
-
-<p>در این معماری، <bdi dir="ltr">Job Producer</bdi> کارها را در <bdi dir="ltr">jobs</bdi> کانال قرار می‌دهد و هر <bdi dir="ltr">Worker</bdi> از کانال می‌خواند، پردازش می‌کند و نتیجه را در <bdi dir="ltr">results</bdi> کانال می‌نویسد. <bdi dir="ltr">Result Collector</bdi> نتایج را جمع‌آوری می‌کند. <bdi dir="ltr">Context</bdi> مسیر لغو فراهم می‌کند و <bdi dir="ltr">WaitGroup</bdi> تضمین می‌کند که تمام <bdi dir="ltr">Worker</bdi>ها قبل از بسته شدن برنامه به پایان برسند. این الگو شبیه به سیستم <bdi dir="ltr">Queue</bdi> در <bdi dir="ltr">Laravel</bdi> است اما بدون نیاز به <bdi dir="ltr">Redis</bdi> یا <bdi dir="ltr">RabbitMQ</bdi> و با هزینه بسیار کمتر.</p>
-
-<h3 id="سناریوهای-عملیاتی-concurrency">سناریوهای عملیاتی</h3>
-
-<p>در پروژه‌های واقعی، الگوهای همزمانی در سناریوهای متنوعی کاربرد دارند. هر سناریو نیازمند ترکیب متفاوتی از الگوهای <bdi dir="ltr">Worker Pool</bdi>، <bdi dir="ltr">Rate Limiting</bdi>، <bdi dir="ltr">Context</bdi> و <bdi dir="ltr">Channel</bdi> است. در ادامه رایج‌ترین سناریوهای عملیاتی را بررسی می‌کنیم که هر توسعه‌دهنده‌ای در پروژه‌های واقعی با آن‌ها روبه‌رو خواهد شد. این سناریوها نشان می‌دهند که چگونه مفاهیم تئوری این فصل در عمل پیاده‌سازی می‌شوند.</p>
-
+<p>در این معماری، <bdi dir="ltr">Job Producer</bdi> کارها را در <bdi dir="ltr">jobs</bdi> کانال قرار می‌دهد و هر <bdi dir="ltr">Worker</bdi> از کانال می‌خواند، پردازش می‌کند و نتیجه را در <bdi dir="ltr">results</bdi> کانال می‌نویسد. <bdi dir="ltr">Result Collector</bdi> نتایج را جمع‌آوری می‌کند. <bdi dir="ltr">Context</bdi> مسیر لغو فراهم می‌کند و <bdi dir="ltr">WaitGroup</bdi> تضمین می‌کند که تمام <bdi dir="ltr">Worker</bdi>ها قبل از بسته شدن برنامه به پایان برسند. </p><p>این الگو شبیه به سیستم <bdi dir="ltr">Queue</bdi> در <bdi dir="ltr">Laravel</bdi> است اما بدون نیاز به <bdi dir="ltr">Redis</bdi> یا <bdi dir="ltr">RabbitMQ</bdi> و با هزینه بسیار کمتر.</p>
+<h3 id="سناریوهای-عملیاتی-concurrency">5.8.8 سناریوهای عملیاتی</h3>
+<p>در پروژه‌های واقعی، الگوهای هم‌روندی در سناریوهای متنوعی کاربرد دارند. هر سناریو نیازمند ترکیب متفاوتی از الگوهای <bdi dir="ltr">Worker Pool</bdi>، <bdi dir="ltr">Rate Limiting</bdi>، <bdi dir="ltr">Context</bdi> و <bdi dir="ltr">Channel</bdi> است. در ادامه رایج‌ترین سناریوهای عملیاتی را بررسی می‌کنیم که هر توسعه‌دهنده‌ای در پروژه‌های واقعی با آن‌ها روبه‌رو خواهد شد. این سناریوها نشان می‌دهند که چگونه مفاهیم تئوری این فصل در عمل پیاده‌سازی می‌شوند.</p>
 <ul>
 <li><strong>کلاینت <bdi dir="ltr">API</bdi> با محدودیت نرخ:</strong> وقتی با <bdi dir="ltr">API</bdi>های خارجی کار می‌کنید که محدودیت درخواست دارند (مثلاً ۱۰۰ درخواست در دقیقه)، باید از الگوی <bdi dir="ltr">Rate-Limited Worker Pool</bdi> استفاده کنید. یک <bdi dir="ltr">ticker</bdi> نرخ ارسال را کنترل می‌کند و <bdi dir="ltr">Worker</bdi>ها فقط در صورت وجود <bdi dir="ltr">token</bdi> درخواست ارسال می‌کنند. در <bdi dir="ltr">PHP</bdi> این کار با <bdi dir="ltr">Redis Throttle</bdi> انجام می‌شود اما در <bdi dir="ltr">Go</bdi> با <bdi dir="ltr">time.Ticker</bdi> و <bdi dir="ltr">channel</bdi> بسیار ساده‌تر است.</li>
 <li><strong>پردازش موازی تصویر:</strong> وقتی کاربر چند تصویر آپلود می‌کند، هر تصویر باید تغییر اندازه، فشرده‌سازی و ذخیره شود. یک <bdi dir="ltr">Worker Pool</bdi> با تعداد <bdi dir="ltr">Worker</bdi> برابر تعداد هسته‌های <bdi dir="ltr">CPU</bdi> بهینه‌ترین عملکرد را دارد زیرا پردازش تصویر کار محاسباتی است. هر <bdi dir="ltr">Worker</bdi> یک تصویر را از <bdi dir="ltr">jobs</bdi> کانال می‌گیرد و نتیجه را در <bdi dir="ltr">results</bdi> کانال می‌فرستد.</li>
 <li><strong>ارسال دسته‌ای ایمیل:</strong> در سیستم‌های اطلاع‌رسانی که هزاران ایمیل باید ارسال شود، <bdi dir="ltr">Worker Pool</bdi> با <bdi dir="ltr">buffered channel</bdi> بهترین راه‌حل است. <bdi dir="ltr">Producer</bdi> ایمیل‌ها را در صف قرار می‌دهد و <bdi dir="ltr">Worker</bdi>ها به صورت موازی ارسال می‌کنند. اگر سرور <bdi dir="ltr">SMTP</bdi> محدودیت داشته باشد، <bdi dir="ltr">Rate Limiter</bdi> نرخ ارسال را کنترل می‌کند و از مسدود شدن اتصال جلوگیری می‌کند.</li>
 <li><strong>خزش وب همزمان با محدودیت نرخ:</strong> در ابزارهای <bdi dir="ltr">Web Scraping</bdi>، باید چندین صفحه را همزمان دانلود کنید اما نرخ درخواست محدود باشد تا سرور مقصد مسدودتان نکند. ترکیب <bdi dir="ltr">Worker Pool</bdi> با <bdi dir="ltr">time.Ticker</bdi> و <bdi dir="ltr">Context</bdi> با <bdi dir="ltr">timeout</bdi> راه‌حل ایده‌آل است. هر <bdi dir="ltr">Worker</bdi> قبل از ارسال درخواست جدید منتظر <bdi dir="ltr">token</bdi> از <bdi dir="ltr">ticker</bdi> می‌ماند.</li>
 </ul>
-
 <div class="tip"><strong>نکته درباره اندازه <bdi dir="ltr">Worker Pool</bdi>:</strong> تعداد <bdi dir="ltr">Worker</bdi>ها باید متناسب با نوع کار باشد. برای <bdi dir="ltr">CPU-bound</bdi> مثل پردازش تصویر یا رمزنگاری، از <code dir="ltr">runtime.NumCPU()</code> استفاده کنید — تعداد بیشتر فقط باعث <bdi dir="ltr">context switching</bdi> اضافی می‌شود. اما برای <bdi dir="ltr">I/O-bound</bdi> مثل درخواست <bdi dir="ltr">HTTP</bdi> یا کوئری دیتابیس، می‌توانید تعداد بسیار بیشتری <bdi dir="ltr">Worker</bdi> داشته باشید (مثلاً ۱۰۰ یا بیشتر) زیرا هر <bdi dir="ltr">Worker</bdi> بیشتر وقتش منتظر پاسخ شبکه است و <bdi dir="ltr">CPU</bdi> اشغال نمی‌کند. یک الگوی رایج شروع با <code dir="ltr">runtime.NumCPU() * 2</code> و تنظیم بر اساس نتایج بنچمارک است.</div>
-
 <div class="note"><strong>یادداشت:</strong> در سرورهای <bdi dir="ltr">HTTP</bdi> تولیدی، هرگز در <bdi dir="ltr">Handler</bdi> مستقیماً <code>go func(){...}</code> ننویسید بدون اینکه <bdi dir="ltr">Context</bdi> درخواست را به آن پاس بدهید. وقتی کاربر مرورگر را می‌بندد، <code>r.Context()</code> لغو می‌شود و اگر <bdi dir="ltr">Goroutine</bdi> پس‌زمینه آن را بررسی نکند، به‌جای توقف، منابع سرور را مصرف می‌کند و در نهایت نشت می‌دهد. الگوی امن: <code>go func(ctx context.Context){ select { case &lt;-ctx.Done(): return; case result := &lt;-ch: ... } }(r.Context())</code>. در <bdi dir="ltr">PHP</bdi> این مشکل رخ نمی‌دهد زیرا فرآیند <bdi dir="ltr">PHP-FPM</bdi> با تمام درخواست از بین می‌رود، اما در <bdi dir="ltr">Go</bdi> سرور طول‌عمر دارد و نشت‌ها تجمعی هستند.</div>
-
-</div>
+<div class="summary">
+<strong>خلاصه‌ی نکات کلیدی:</strong>
+<ul>
+<li>HTTP handler: هر درخواست یک goroutine</li>
+<li>batch processing: worker pool برای کنترل منابع</li>
+<li>background worker: long-running goroutine با context</li>
+<li>از goroutine بی‌رویه پرهیز کنید (GOMAXPROCS محدود است)</li>
+<li>rate limiting با ticker یا token bucket</li>
+</ul>
+</div></div>
 </main>
 </div>
-
 <!-- Footer -->
 <footer class="site-footer">
 <div class="footer-inner">
 <div class="footer-nav">
 <span class="nav-arrow">‹</span>
-<a href="05.07-concurrency-patterns.html" data-prev>۵.۷ Concurrency Patterns</a>
+<a data-prev="" href="05.07-concurrency-patterns.html">۵.۷ Concurrency Patterns</a>
 </div>
 <div class="footer-toc">
 <a href="00.01-contents.html">فهرست</a>
 </div>
 <div class="footer-nav">
-<a href="05.09-goroutine-leak.html" data-next>۵.۹ Goroutine Leak</a>
+<a data-next="" href="05.09-goroutine-leak.html">۵.۹ Goroutine Leak</a>
 <span class="nav-arrow">›</span>
 </div>
 </div>
 </footer>
-
 <!-- Back to Top -->
-<button class="back-to-top" aria-label="بازگشت به بالا">
-<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
+<button aria-label="بازگشت به بالا" class="back-to-top">
+<svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24"><polyline points="18 15 12 9 6 15"></polyline></svg>
 </button>
-
 <!-- Scripts -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/go.min.js"></script>
@@ -726,6 +617,7 @@ func (h *Hub) Run(ctx context.Context) {
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/xml.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/ini.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/plaintext.min.js"></script>
+<script src="assets/js/diagrams.js"></script>
 <script src="assets/js/main.js"></script>
 </body>
 </html>

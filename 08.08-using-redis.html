@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html dir="rtl" lang="fa">
 <head>
 <script>!function(){try{var t=localStorage.getItem('php2go-theme');if(t==='dark'||(!t&&window.matchMedia('(prefers-color-scheme:dark)').matches)){document.documentElement.setAttribute('data-theme','dark')}}catch(e){}}();</script>
@@ -6,26 +7,25 @@
 <meta content="ie=edge" http-equiv="x-ua-compatible"/>
 <title>۸.۸ استفاده از Redis — PHP to Go</title>
 <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport"/>
-<link rel="preconnect" href="https://fonts.googleapis.com"/>
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600;700&amp;family=Fira+Code:wght@400;500&amp;display=swap" rel="stylesheet"/>
 <link href="assets/css/main.css" rel="stylesheet" type="text/css"/>
 <link href="assets/img/favicon.ico" rel="icon" type="image/x-icon"/>
-<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" media="screen" class="hljs-light-theme" rel="stylesheet"/>
-<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css" media="not screen" class="hljs-dark-theme" rel="stylesheet"/>
+<link class="hljs-light-theme" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" media="screen" rel="stylesheet"/>
+<link class="hljs-dark-theme" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css" media="not screen" rel="stylesheet"/>
 </head>
 <body>
 <!-- Progress Bar -->
 <div class="progress-bar"><div class="progress-bar__fill"></div></div>
-
 <!-- Header -->
 <header class="site-header">
 <div class="header-inner">
 <div class="header-left">
-<button class="header-btn sidebar-toggle" aria-label="فهرست">
-<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+<button aria-label="فهرست" class="header-btn sidebar-toggle">
+<svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24"><line x1="3" x2="21" y1="6" y2="6"></line><line x1="3" x2="21" y1="12" y2="12"></line><line x1="3" x2="21" y1="18" y2="18"></line></svg>
 </button>
-<a href="00.00-front-matter.html" class="header-logo"><span class="logo-php">PHP</span> to <span class="logo-go">Go</span></a>
+<a class="header-logo" href="00.00-front-matter.html"><span class="logo-php">PHP</span> to <span class="logo-go">Go</span></a>
 <span class="header-crumbs">پایگاه داده › استفاده از Redis</span>
 </div>
 <div class="header-right">
@@ -36,138 +36,127 @@
 <a href="09.00-chapter-9.html"><span class="nav-label">۹. مانیتورینگ و Observability</span></a>
 <span class="nav-arrow">›</span>
 </nav>
-<button class="header-btn search-toggle" aria-label="جستجو">
-<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+<button aria-label="جستجو" class="header-btn search-toggle">
+<svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" x2="16.65" y1="21" y2="16.65"></line></svg>
 </button>
-<button class="header-btn theme-toggle" aria-label="تغییر تم">
-<svg class="theme-icon-light" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
-<svg class="theme-icon-dark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+<button aria-label="تغییر تم" class="header-btn theme-toggle">
+<svg class="theme-icon-light" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24"><circle cx="12" cy="12" r="5"></circle><line x1="12" x2="12" y1="1" y2="3"></line><line x1="12" x2="12" y1="21" y2="23"></line><line x1="4.22" x2="5.64" y1="4.22" y2="5.64"></line><line x1="18.36" x2="19.78" y1="18.36" y2="19.78"></line><line x1="1" x2="3" y1="12" y2="12"></line><line x1="21" x2="23" y1="12" y2="12"></line><line x1="4.22" x2="5.64" y1="19.78" y2="18.36"></line><line x1="18.36" x2="19.78" y1="5.64" y2="4.22"></line></svg>
+<svg class="theme-icon-dark" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
 </button>
 </div>
 </div>
 </header>
-
 <!-- Search Modal -->
 <div class="search-overlay">
 <div class="search-modal">
 <div class="search-input-wrap">
-<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-<input type="text" class="search-input" placeholder="جستجو... (Ctrl+K)" dir="rtl"/>
+<svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" x2="16.65" y1="21" y2="16.65"></line></svg>
+<input class="search-input" dir="rtl" placeholder="جستجو... (Ctrl+K)" type="text"/>
 </div>
 <div class="search-results"></div>
 </div>
 </div>
-
 <!-- Layout -->
 <div class="site-layout">
 <!-- Sidebar -->
 <aside class="sidebar"></aside>
 <div class="sidebar-overlay"></div>
-
 <!-- Main Content -->
 <main class="content-area">
 <div class="content-wrap text">
 <div class="chapter">فصل ۸.۸</div>
-<h2 id="استفاده-از-redis">استفاده از Redis</h2>
-
+<h2 id="استفاده-از-redis">استفاده از Redis</h2><div class="abstract">
+<strong>چکیده:</strong> این بخش کار با Redis در Go را پوشش می‌دهد: go-redis، connection و الگوهای رایج. تفاوت با predis در PHP و الگوی Go بررسی می‌شود. کاربردهای cache، pub/sub و rate limit پوشش داده می‌گردد.
+</div>
 <figure class="diagram" dir="ltr">
-<svg height="380" viewBox="0 0 580 380" width="580" xmlns="http://www.w3.org/2000/svg">
-<defs>
-<marker id="arrow2101" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#555" points="0 0, 10 3.5, 0 7"></polygon></marker>
-<filter height="104%" id="sh2101" width="104%" x="-2%" y="-2%"><fedropshadow dx="1" dy="1" flood-opacity="0.15" stddeviation="2"></fedropshadow></filter>
-</defs>
-<rect fill="#fafafa" height="380" rx="8" width="580" x="0" y="0"></rect>
-<text fill="#333" font-size="16" font-weight="bold" text-anchor="middle" x="290" y="28" direction="rtl" unicode-bidi="embed">الگوهای کشینگ و معماری <tspan direction="ltr" unicode-bidi="embed">Redis</tspan> در <tspan direction="ltr" unicode-bidi="embed">Go</tspan></text>
+<pre class="mermaid">flowchart TB
+    Title["الگوهای کشینگ و معماری Redis در Go"]
 
-<!-- Cache-Aside -->
-<rect fill="#4CAF50" filter="url(#sh2101)" height="65" rx="6" width="170" x="20" y="55"></rect>
-<text fill="#fff" font-size="11" text-anchor="middle" x="105" y="78" direction="ltr" unicode-bidi="embed">Cache-Aside</text>
-<text fill="#e8f5e9" font-size="8" text-anchor="middle" x="105" y="95" direction="ltr" unicode-bidi="embed">App → Cache → DB</text>
-<text fill="#e8f5e9" font-size="8" text-anchor="middle" x="105" y="108" direction="rtl" unicode-bidi="embed">ساده‌ترین الگو</text>
+    subgraph PATTERNS["الگوها"]
+        direction TB
+        P1["Cache-Aside<br/>App → Cache → DB<br/>ساده‌ترین الگو"]
+        P2["Write-Through<br/>Write → Cache + DB<br/>سازگاری تضمین‌شده"]
+        P3["Distributed Lock<br/>SetNX + TTL<br/>Redlock algorithm"]
+        P4["Pipeline: batch operations<br/>ارسال چند دستور در یک درخواست شبکه"]
+    end
 
-<!-- Write-Through -->
-<rect fill="#00ADD8" filter="url(#sh2101)" height="65" rx="6" width="170" x="205" y="55"></rect>
-<text fill="#fff" font-size="11" text-anchor="middle" x="290" y="78" direction="ltr" unicode-bidi="embed">Write-Through</text>
-<text fill="#e0f7fa" font-size="8" text-anchor="middle" x="290" y="95" direction="ltr" unicode-bidi="embed">Write → Cache + DB</text>
-<text fill="#e0f7fa" font-size="8" text-anchor="middle" x="290" y="108" direction="rtl" unicode-bidi="embed">سازگاری تضمین‌شده</text>
+    subgraph FLOW["Cache-Aside Flow"]
+        direction TB
+        F1["1. Get(key) → hit? return : miss"]
+        F2["2. Query DB → Set(key, value, TTL)"]
+        F3["3. Return value"]
+        F1 --&gt; F2 --&gt; F3
+    end
 
-<!-- Distributed Lock -->
-<rect fill="#e91e63" filter="url(#sh2101)" height="65" rx="6" width="170" x="390" y="55"></rect>
-<text fill="#fff" font-size="11" text-anchor="middle" x="475" y="78" direction="ltr" unicode-bidi="embed">Distributed Lock</text>
-<text fill="#fce4ec" font-size="8" text-anchor="middle" x="475" y="95" direction="ltr" unicode-bidi="embed">SetNX + TTL</text>
-<text fill="#fce4ec" font-size="8" text-anchor="middle" x="475" y="108" direction="ltr" unicode-bidi="embed">Redlock algorithm</text>
+    Title --&gt; PATTERNS
+    PATTERNS --&gt; FLOW
 
-<!-- Pipeline -->
-<rect fill="#9C27B0" filter="url(#sh2101)" height="50" rx="6" width="250" x="165" y="160"></rect>
-<text fill="#fff" font-size="11" text-anchor="middle" x="290" y="185" direction="ltr" unicode-bidi="embed">Pipeline: batch operations</text>
-<text fill="#e1bee7" font-size="9" text-anchor="middle" x="290" y="200" direction="rtl" unicode-bidi="embed">ارسال چند دستور در یک درخواست شبکه</text>
-
-<!-- Flow -->
-<rect fill="#E3F2FD" height="100" rx="6" stroke="#2196F3" width="500" x="40" y="230"></rect>
-<text fill="#1565C0" font-size="12" font-weight="bold" text-anchor="middle" x="290" y="255" direction="ltr" unicode-bidi="embed">Cache-Aside Flow</text>
-<text fill="#333" font-size="9" text-anchor="middle" x="290" y="278" direction="ltr" unicode-bidi="embed">1. Get(key) → hit? return : miss</text>
-<text fill="#333" font-size="9" text-anchor="middle" x="290" y="295" direction="ltr" unicode-bidi="embed">2. Query DB → Set(key, value, TTL)</text>
-<text fill="#333" font-size="9" text-anchor="middle" x="290" y="312" direction="ltr" unicode-bidi="embed">3. Return value</text>
-</svg>
+    classDef titleBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:2px,color:#1f2937,font-weight:bold;
+    classDef goBox   fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
+    classDef bothBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
+    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
+    classDef errBox  fill:#fef2f2,stroke:#ef4444,stroke-width:1.5px,color:#1f2937;
+    classDef neuBox  fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
+    class Title titleBox;
+    class P1,P2,P3 goBox;
+    class P4 bothBox;
+    class F1,F2,F3 goBox;</pre>
 <figcaption>شکل ۸-۸: الگوهای کشینگ و معماری <bdi dir="ltr">Redis</bdi> در <bdi dir="ltr">Go</bdi></figcaption>
 </figure>
-
 <figure class="diagram" dir="ltr">
-<svg height="300" viewBox="0 0 600 300" width="600" xmlns="http://www.w3.org/2000/svg">
-<defs><filter id="sh157" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
-<marker id="arrCache1" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#4caf50" points="0 0,10 3.5,0 7"></polygon></marker>
-<marker id="arrCache2" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#ff9800" points="0 0,10 3.5,0 7"></polygon></marker>
-<marker id="arrCache3" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#e91e63" points="0 0,10 3.5,0 7"></polygon></marker>
-</defs>
-<rect fill="#fafafa" height="300" rx="12" stroke="#ddd" stroke-width="1" width="600" x="0" y="0"></rect>
-<text fill="#333" font-size="15" font-weight="bold" text-anchor="middle" x="300" y="28" direction="rtl" unicode-bidi="embed">معماری سه‌لایه: <tspan direction="ltr" unicode-bidi="embed">Go</tspan> ← <tspan direction="ltr" unicode-bidi="embed">Redis</tspan> ← <tspan direction="ltr" unicode-bidi="embed">Database</tspan></text>
+<pre class="mermaid">flowchart TB
+    Title["معماری سه‌لایه: Go ← Redis ← Database"]
 
-<!-- Go App -->
-<rect fill="#00ADD8" height="60" rx="8" stroke="#00ADD8" stroke-width="2" width="130" x="30" y="60"></rect>
-<text fill="#fff" font-size="14" font-weight="bold" text-anchor="middle" x="95" y="85" direction="ltr" unicode-bidi="embed">Go App</text>
-<text fill="#e0f7fa" font-size="9" text-anchor="middle" x="95" y="105" direction="ltr" unicode-bidi="embed">go-redis client</text>
+    subgraph STACK["سه لایه"]
+        direction TB
+        Go["Go App<br/>go-redis client"]
+        Redis["Redis<br/>In-Memory Cache"]
+        DB["Database<br/>PostgreSQL / MySQL"]
+        Go -- "rdb.Get()" --&gt; Redis
+        Redis -- "MISS → Query" --&gt; DB
+    end
 
-<!-- Redis -->
-<rect fill="#e91e63" height="60" rx="8" stroke="#e91e63" stroke-width="2" width="130" x="235" y="60"></rect>
-<text fill="#fff" font-size="14" font-weight="bold" text-anchor="middle" x="300" y="85" direction="ltr" unicode-bidi="embed">Redis</text>
-<text fill="#fce4ec" font-size="9" text-anchor="middle" x="300" y="105" direction="ltr" unicode-bidi="embed">In-Memory Cache</text>
+    subgraph HIT["جریان Cache HIT ✓"]
+        direction TB
+        H1["1. App → Redis: Get(key)"]
+        H2["2. Redis → App: value (fast! ~1ms)"]
+        H1 --&gt; H2
+    end
 
-<!-- Database -->
-<rect fill="#777BB4" height="60" rx="8" stroke="#777BB4" stroke-width="2" width="130" x="440" y="60"></rect>
-<text fill="#fff" font-size="14" font-weight="bold" text-anchor="middle" x="505" y="85" direction="ltr" unicode-bidi="embed">Database</text>
-<text fill="#e8eaf6" font-size="9" text-anchor="middle" x="505" y="105" direction="ltr" unicode-bidi="embed">PostgreSQL / MySQL</text>
+    subgraph MISS["جریان Cache MISS"]
+        direction TB
+        M1["1. App → Redis: Get(key) → nil"]
+        M2["2. App → DB: Query → Set(key, val, TTL)"]
+        M1 --&gt; M2
+    end
 
-<!-- Arrow: App → Redis -->
-<line marker-end="url(#arrCache1)" stroke="#4caf50" stroke-width="2.5" x1="160" x2="235" y1="85" y2="85"></line>
-<text fill="#4caf50" font-size="8" text-anchor="middle" x="197" y="78" direction="ltr" unicode-bidi="embed">rdb.Get()</text>
+    Compare["مقایسه سرعت: Redis ~۱میلی‌ثانیه • DB ~۱۰-۱۰۰میلی‌ثانیه — کشینگ تا ۱۰۰× سریع‌تر"]
+    Note["الگوی Cache-Aside: ابتدا کش بررسی شود، در صورت نبود از دیتابیس خوانده و در کش ذخیره شود"]
 
-<!-- Arrow: Redis → DB -->
-<line marker-end="url(#arrCache2)" stroke="#ff9800" stroke-width="2" x1="365" x2="440" y1="85" y2="85"></line>
-<text fill="#ff9800" font-size="8" text-anchor="middle" x="402" y="78" direction="ltr" unicode-bidi="embed">MISS → Query</text>
+    Title --&gt; STACK
+    STACK --&gt; HIT
+    STACK --&gt; MISS
+    HIT --&gt; Compare
+    MISS --&gt; Compare
+    Compare --&gt; Note
 
-<!-- Cache HIT flow -->
-<rect fill="#e8f5e9" height="70" rx="6" stroke="#4caf50" stroke-width="1.5" width="250" x="30" y="150"></rect>
-<text fill="#4caf50" font-size="12" font-weight="bold" text-anchor="middle" x="155" y="172" direction="rtl" unicode-bidi="embed">جریان <tspan direction="ltr" unicode-bidi="embed">Cache HIT</tspan> ✓</text>
-<text fill="#333" font-size="9" text-anchor="middle" x="155" y="192" direction="ltr" unicode-bidi="embed">1. App → Redis: Get(key)</text>
-<text fill="#4caf50" font-size="9" text-anchor="middle" x="155" y="208" direction="ltr" unicode-bidi="embed">2. Redis → App: value (fast! ~1ms)</text>
-
-<!-- Cache MISS flow -->
-<rect fill="#fff3e0" height="70" rx="6" stroke="#ff9800" stroke-width="1.5" width="300" x="290" y="150"></rect>
-<text fill="#ff9800" font-size="12" font-weight="bold" text-anchor="middle" x="440" y="172" direction="rtl" unicode-bidi="embed">جریان <tspan direction="ltr" unicode-bidi="embed">Cache MISS</tspan></text>
-<text fill="#333" font-size="9" text-anchor="middle" x="440" y="192" direction="ltr" unicode-bidi="embed">1. App → Redis: Get(key) → nil</text>
-<text fill="#333" font-size="9" text-anchor="middle" x="440" y="208" direction="ltr" unicode-bidi="embed">2. App → DB: Query → Set(key, val, TTL)</text>
-
-<!-- Speed comparison -->
-<rect fill="#e3f2fd" height="40" rx="6" stroke="#00ADD8" stroke-width="1" width="560" x="20" y="240"></rect>
-<text fill="#1565c0" font-size="10" text-anchor="middle" x="300" y="258" direction="rtl" unicode-bidi="embed">مقایسه سرعت: <tspan direction="ltr" unicode-bidi="embed">Redis</tspan> ~۱میلی‌ثانیه • <tspan direction="ltr" unicode-bidi="embed">DB</tspan> ~۱۰-۱۰۰میلی‌ثانیه — کشینگ تا ۱۰۰× سریع‌تر</text>
-<text fill="#1565c0" font-size="9" text-anchor="middle" x="300" y="273" direction="rtl" unicode-bidi="embed">الگوی <tspan direction="ltr" unicode-bidi="embed">Cache-Aside</tspan>: ابتدا کش بررسی شود، در صورت نبود از دیتابیس خوانده و در کش ذخیره شود</text>
-</svg>
+    classDef titleBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:2px,color:#1f2937,font-weight:bold;
+    classDef goBox   fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
+    classDef bothBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
+    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
+    classDef errBox  fill:#fef2f2,stroke:#ef4444,stroke-width:1.5px,color:#1f2937;
+    classDef neuBox  fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
+    class Title titleBox;
+    class Go goBox;
+    class Redis errBox;
+    class DB neuBox;
+    class H1,H2 bothBox;
+    class M1,M2 warnBox;
+    class Compare,Note neuBox;</pre>
 <figcaption dir="rtl">شکل ۸-۹: معماری سه‌لایه کشینگ — جریان <bdi dir="ltr">Cache Hit</bdi> و <bdi dir="ltr">Cache Miss</bdi></figcaption>
 </figure>
-
 <p><bdi dir="ltr">Redis</bdi> یک <bdi dir="ltr">data structure key-value</bdi> سریع و درون حافظه‌ای است که در کشینگ، صف‌بندی پیام‌ها و ذخیره‌سازی داده‌های موقتی کاربرد دارد. در <bdi dir="ltr">Go</bdi> کتابخانه <bdi dir="ltr">go-redis</bdi> یکی از پرکاربردترین کلاینت‌های <bdi dir="ltr">Redis</bdi> است.</p>
-
-<h3 id="نصب-و-اتصال">نصب و اتصال</h3>
+<h3 id="نصب-و-اتصال">8.8.1 نصب و اتصال</h3>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">go get github.com/redis/go-redis/v9
 
@@ -191,8 +180,7 @@ func main() {
     fmt.Println("اتصال موفق:", pong)
 }</code></pre>
 </figure>
-
-<h3 id="cache-aside">الگوی Cache-Aside</h3>
+<h3 id="cache-aside">8.8.2 الگوی Cache-Aside</h3>
 <p>ساده‌ترین و رایج‌ترین الگوی کشینگ. برنامه ابتدا کش را بررسی می‌کند و در صورت نبود از دیتابیس می‌خواند:</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">func getUserByID(ctx context.Context, id int) (*User, error) {
@@ -222,8 +210,7 @@ func main() {
     return user, nil
 }</code></pre>
 </figure>
-
-<h3 id="write-through">الگوی Write-Through</h3>
+<h3 id="write-through">8.8.3 الگوی Write-Through</h3>
 <p>در این الگو هنگام نوشتن داده همزمان دیتابیس و کش به‌روز می‌شوند:</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">func updateUser(ctx context.Context, user *User) error {
@@ -238,10 +225,8 @@ func main() {
     return rdb.Set(ctx, cacheKey, data, 10*time.Minute).Err()
 }</code></pre>
 </figure>
-
 <div class="note"><strong>استراتژی بی‌اعتبارسازی کش برای مهاجران <bdi dir="ltr">Laravel</bdi>:</strong> در <bdi dir="ltr">Laravel</bdi> معمولاً <code>Cache::flush()</code> یا <code>Cache::forget('key')</code> به‌صورت دستی فراخوانی می‌شود؛ در <bdi dir="ltr">Go</bdi> هم می‌توانید <code>rdb.Del(ctx, key)</code> را صریحاً صدا بزنید، اما الگوی مقدم <bdi dir="ltr">TTL</bdi> کوتاه (۵–۱۵ دقیقه) به‌عنوان «بیمه‌ی نهایی» است. برای داده‌ی به‌شدت پویا، به‌جای <bdi dir="ltr">Write-Through</bdi> می‌توانید <bdi dir="ltr">Write-Around</bdi> را امتحان کنید: دیتابیس را به‌روز کنید و کش را به‌جای بازنویسی، <code>Del</code> کنید تا خواندن بعدی به‌صورت <bdi dir="ltr">cache miss</bdi> از دیتابیس بازخوانی شود. این الگو از نوشتن داده‌ی بلافاصله غیرقابل‌خواندن جلوگیری می‌کند و در بارهای نوشتاری سنگین کارآمدتر است.</div>
-
-<h3 id="distributed-lock">قفل توزیع‌شده با Redis</h3>
+<h3 id="distributed-lock">8.8.4 قفل توزیع‌شده با Redis</h3>
 <p>در سیستم‌های توزیع‌شده قفل توزیع‌شده از اجرای همزمان یک عملیات توسط چند نمونه جلوگیری می‌کند:</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">func withLock(ctx context.Context, key string, ttl time.Duration, fn func() error) error {
@@ -259,10 +244,8 @@ func main() {
     return fn()
 }</code></pre>
 </figure>
-
 <div class="warning"><strong>هشدار:</strong> این پیاده‌سازی ساده در محیط‌های توزیع‌شده امن نیست. اگر یک <bdi dir="ltr">instance</bdi> قفل را بگیرد و <bdi dir="ltr">crash</bdi> کند قفل تا انقضای <bdi dir="ltr">TTL</bdi> باقی می‌ماند. برای <bdi dir="ltr">production</bdi> از کتابخانه‌ی <code>github.com/go-redsync/redsync</code> استفاده کنید.</div>
-
-<h3 id="pipeline">Pipeline و عملیات دسته‌ای</h3>
+<h3 id="pipeline">8.8.5 Pipeline و عملیات دسته‌ای</h3>
 <p>با <bdi dir="ltr">Pipeline</bdi> چندین دستور <bdi dir="ltr">Redis</bdi> در یک درخواست شبکه ارسال می‌شود:</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">pipe := rdb.Pipeline()
@@ -277,8 +260,7 @@ fmt.Println(setCmd.Val()) // OK
 fmt.Println(getCmd.Val()) // value of key2
 fmt.Println(incrCmd.Val()) // 1</code></pre>
 </figure>
-
-<h3 id="pub-sub">Pub/Sub</h3>
+<h3 id="pub-sub">8.8.6 Pub/Sub</h3>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">// Publish message
 rdb.Publish(ctx, "notifications", "سلام جهان")
@@ -292,147 +274,101 @@ go func() {
     }
 }()</code></pre>
 </figure>
-
 <div class="comparison"><strong>مقایسه با PHP:</strong> در <bdi dir="ltr">Laravel</bdi> از <bdi dir="ltr">Redis Facade</bdi> یا <code>Cache</code> استفاده می‌شود. <bdi dir="ltr">phpredis</bdi> <bdi dir="ltr">Connection Pool</bdi> ندارد اما <bdi dir="ltr">go-redis</bdi> به صورت <bdi dir="ltr">built-in</bdi> <bdi dir="ltr">Connection Pool</bdi> و <bdi dir="ltr">Pipeline</bdi> دارد. <bdi dir="ltr">Pub/Sub</bdi> در <bdi dir="ltr">Go</bdi> به دلیل مدل <bdi dir="ltr">concurrency</bdi> بهتر بسیار ساده‌تر مدیریت می‌شود.</div>
-
-<h3 id="redis-connection-pipeline-architecture">معماری اتصال و خط لوله دستورات <bdi dir="ltr">Redis</bdi></h3>
-<p>درک معماری اتصال <bdi dir="ltr">Redis</bdi> در <bdi dir="ltr">Go</bdi> برای نوشتن برنامه‌های کارآمد و مقیاس‌پذیر ضروری است. کلاینت <bdi dir="ltr">go-redis</bdi> از یک <bdi dir="ltr">Connection Pool</bdi> داخلی استفاده می‌کند که چندین اتصال همزمان به سرور <bdi dir="ltr">Redis</bdi> برقرار می‌کند. هر درخواست از یک اتصال آزاد در استخر استفاده می‌کند و پس از اتمام آن را برمی‌گرداند. این مکانیزم در محیط‌های با بار بالا بسیار مهم است زیرا ایجاد و تخریب مکرر اتصال‌ها هزینه‌ی شبکه‌ی بالایی دارد. علاوه بر دستورات تک‌تکی، <bdi dir="ltr">Pipeline</bdi> امکان ارسال دسته‌ای چندین دستور در یک درخواست شبکه‌ای را فراهم می‌کند که تأخیر را به‌شدت کاهش می‌دهد.</p>
-
+<h3 id="redis-connection-pipeline-architecture">8.8.7 معماری اتصال و خط لوله دستوراتRedis</h3>
+<p>درک معماری اتصال <bdi dir="ltr">Redis</bdi> در <bdi dir="ltr">Go</bdi> برای نوشتن برنامه‌های کارآمد و مقیاس‌پذیر ضروری است. کلاینت <bdi dir="ltr">go-redis</bdi> از یک <bdi dir="ltr">Connection Pool</bdi> داخلی استفاده می‌کند که چندین اتصال همزمان به سرور <bdi dir="ltr">Redis</bdi> برقرار می‌کند. هر درخواست از یک اتصال آزاد در استخر استفاده می‌کند و پس از اتمام آن را برمی‌گرداند. </p><p>این مکانیزم در محیط‌های با بار بالا بسیار مهم است زیرا ایجاد و تخریب مکرر اتصال‌ها هزینه‌ی شبکه‌ی بالایی دارد. </p><p>علاوه بر دستورات تک‌تکی، <bdi dir="ltr">Pipeline</bdi> امکان ارسال دسته‌ای چندین دستور در یک درخواست شبکه‌ای را فراهم می‌کند که تأخیر را به‌شدت کاهش می‌دهد.</p>
 <figure class="diagram" dir="ltr">
-<svg font-family="sans-serif" viewBox="0 0 840 580" xmlns="http://www.w3.org/2000/svg" width="840" height="580">
-<defs><filter id="sh158" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
-<marker id="arrGoR" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#00ADD8" points="0 0, 10 3.5, 0 7"></polygon></marker>
-<marker id="arrRedisS" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#e91e63" points="0 0, 10 3.5, 0 7"></polygon></marker>
-<marker id="arrPat" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#4CAF50" points="0 0, 10 3.5, 0 7"></polygon></marker>
-</defs>
-<rect fill="#fafafa" height="580" rx="8" width="840" x="0" y="0"></rect>
+<pre class="mermaid">flowchart TB
+    Title["معماری اتصال و خط لوله دستورات Redis در Go"]
 
-<!-- Title -->
-<text fill="#333" font-size="16" font-weight="bold" text-anchor="middle" x="420" y="28" direction="rtl" unicode-bidi="embed">معماری اتصال و خط لوله دستورات <tspan direction="ltr" unicode-bidi="embed">Redis</tspan> در <tspan direction="ltr" unicode-bidi="embed">Go</tspan></text>
+    subgraph CLIENT["کلاینت Go"]
+        direction TB
+        GA["Go Application<br/>github.com/redis/go-redis/v9"]
+        CMDS["rdb.Set(ctx, k, v, TTL)<br/>rdb.Get(ctx, k)<br/>rdb.Del(ctx, k)<br/>rdb.Incr(ctx, k)"]
+        GA --&gt; CMDS
+    end
 
-<!-- Legend -->
-<rect fill="#00ADD8" height="12" rx="3" width="12" x="480" y="10"></rect>
-<text fill="#00ADD8" font-size="9" text-anchor="start" x="497" y="20" direction="rtl" unicode-bidi="embed">کلاینت <tspan direction="ltr" unicode-bidi="embed">Go</tspan></text>
-<rect fill="#e91e63" height="12" rx="3" width="12" x="590" y="10"></rect>
-<text fill="#e91e63" font-size="9" text-anchor="start" x="607" y="20" direction="rtl" unicode-bidi="embed">سرور <tspan direction="ltr" unicode-bidi="embed">Redis</tspan></text>
-<rect fill="#4CAF50" height="12" rx="3" width="12" x="700" y="10"></rect>
-<text fill="#4CAF50" font-size="9" text-anchor="start" x="717" y="20" direction="rtl" unicode-bidi="embed">الگوها</text>
+    subgraph POOL["Connection Pool — dial"]
+        direction TB
+        PS["PoolSize: 10 | MinIdle: 3"]
+        P1["conn 1 → 6379 (idle)"]
+        P2["conn 2 → 6379 (active)"]
+        P3["conn 3 → 6379 (active)"]
+        PN["... conn N"]
+    end
 
-<!-- ===== LEFT: Go Application ===== -->
-<rect fill="#00ADD8" height="180" rx="10" stroke="#00ADD8" stroke-width="2" width="180" x="30" y="50"></rect>
-<text fill="#fff" font-size="14" font-weight="bold" text-anchor="middle" x="120" y="75" direction="ltr" unicode-bidi="embed">Go Application</text>
-<text fill="#e0f7fa" font-size="10" text-anchor="middle" x="120" y="95" direction="ltr" unicode-bidi="embed">github.com/redis/go-redis/v9</text>
+    subgraph SERVER["سرور Redis — TCP"]
+        direction TB
+        RS["Redis Server<br/>localhost:6379"]
+        DT1["String: key → value"]
+        DT2["Hash: key → {field: val}"]
+        DT3["List: key → [v1, v2, ...]"]
+        DT4["Set / Sorted Set"]
+    end
 
-<!-- Client methods -->
-<rect fill="#fff" height="22" rx="4" stroke="#00ADD8" stroke-width="1" width="150" x="45" y="107"></rect>
-<text fill="#00ADD8" font-size="10" text-anchor="middle" x="120" y="122" direction="ltr" unicode-bidi="embed">rdb.Set(ctx, k, v, TTL)</text>
-<rect fill="#fff" height="22" rx="4" stroke="#00ADD8" stroke-width="1" width="150" x="45" y="135"></rect>
-<text fill="#00ADD8" font-size="10" text-anchor="middle" x="120" y="150" direction="ltr" unicode-bidi="embed">rdb.Get(ctx, k)</text>
-<rect fill="#fff" height="22" rx="4" stroke="#00ADD8" stroke-width="1" width="150" x="45" y="163"></rect>
-<text fill="#00ADD8" font-size="10" text-anchor="middle" x="120" y="178" direction="ltr" unicode-bidi="embed">rdb.Del(ctx, k)</text>
-<rect fill="#fff" height="22" rx="4" stroke="#00ADD8" stroke-width="1" width="150" x="45" y="191"></rect>
-<text fill="#00ADD8" font-size="10" text-anchor="middle" x="120" y="206" direction="ltr" unicode-bidi="embed">rdb.Incr(ctx, k)</text>
+    subgraph PIPELINE["Pipeline: batch commands — reduce RTT"]
+        direction TB
+        PL1["pipe.Set(k1,v1,0)"]
+        PL2["pipe.Get(k2)"]
+        PL3["pipe.Incr(k3)"]
+        PL4["pipe.Exec(ctx)"]
+        PLN["یک درخواست شبکه به جای N درخواست — سرعت تا ۱۰× بیشتر"]
+        PL1 --&gt; PL2 --&gt; PL3 --&gt; PL4 --&gt; PLN
+    end
 
-<!-- Arrow from Go to Pool -->
-<line marker-end="url(#arrGoR)" stroke="#00ADD8" stroke-width="2" x1="210" x2="278" y1="140" y2="140"></line>
-<text fill="#00ADD8" font-size="10" font-weight="bold" text-anchor="middle" x="244" y="133" direction="ltr" unicode-bidi="embed">dial</text>
+    subgraph PUBSUB["Pub/Sub: real-time messaging"]
+        direction TB
+        PS1["rdb.Publish(ctx, "ch", msg)"]
+        PS2["Redis"]
+        PS3["pubsub.Channel() ← msg"]
+        PS1 --&gt; PS2 --&gt; PS3
+    end
 
-<!-- ===== CENTER: Connection Pool ===== -->
-<rect fill="#fff3e0" height="180" rx="10" stroke="#FF9800" stroke-width="2" width="220" x="278" y="50"></rect>
-<text fill="#e65100" font-size="13" font-weight="bold" text-anchor="middle" x="388" y="73" direction="ltr" unicode-bidi="embed">Connection Pool</text>
-<text fill="#999" font-size="9" text-anchor="middle" x="388" y="88" direction="ltr" unicode-bidi="embed">PoolSize: 10 | MinIdle: 3</text>
+    subgraph PATTERNS["الگوهای عملیاتی Redis"]
+        direction TB
+        PT1["Cache-Aside<br/>Get → Miss → DB → Set+TTL"]
+        PT2["Session Storage<br/>SETEX session:id 3600 data"]
+        PT3["Rate Limiter<br/>INCR key + EXPIRE key 60"]
+        PT4["Distributed Lock<br/>SET lock:id val NX EX 30"]
+    end
 
-<!-- Pool connections -->
-<rect fill="#fff" height="20" rx="4" stroke="#FF9800" stroke-width="1" width="180" x="298" y="100"></rect>
-<text fill="#333" font-size="9" text-anchor="middle" x="388" y="114" direction="ltr" unicode-bidi="embed">conn 1 → 6379 (idle)</text>
-<rect fill="#fff" height="20" rx="4" stroke="#FF9800" stroke-width="1" width="180" x="298" y="125"></rect>
-<text fill="#333" font-size="9" text-anchor="middle" x="388" y="139" direction="ltr" unicode-bidi="embed">conn 2 → 6379 (active)</text>
-<rect fill="#fff" height="20" rx="4" stroke="#FF9800" stroke-width="1" width="180" x="298" y="150"></rect>
-<text fill="#333" font-size="9" text-anchor="middle" x="388" y="164" direction="ltr" unicode-bidi="embed">conn 3 → 6379 (active)</text>
-<text fill="#999" font-size="9" text-anchor="middle" x="388" y="190" direction="ltr" unicode-bidi="embed">... conn N</text>
+    subgraph CODE["کد نمونه"]
+        direction TB
+        C1["// Rate Limiter: INCR + EXPIRE (atomic)"]
+        C2["count, _ := rdb.Incr(ctx, "rate:"+ip).Result()"]
+        C3["if count == 1 { rdb.Expire(ctx, "rate:"+ip, time.Minute) }"]
+        C4["// Distributed Lock: SET NX EX (atomic)"]
+        C5["ok, _ := rdb.SetNX(ctx, "lock:"+id, uid, 30*time.Second).Result()"]
+        C1 --&gt; C2 --&gt; C3 --&gt; C4 --&gt; C5
+    end
 
-<!-- Arrow from Pool to Redis -->
-<line marker-end="url(#arrRedisS)" stroke="#e91e63" stroke-width="2" x1="498" x2="568" y1="140" y2="140"></line>
-<text fill="#e91e63" font-size="10" font-weight="bold" text-anchor="middle" x="533" y="133" direction="ltr" unicode-bidi="embed">TCP</text>
+    Title --&gt; CLIENT
+    CLIENT --&gt; POOL
+    POOL --&gt; SERVER
+    SERVER --&gt; PIPELINE
+    SERVER --&gt; PUBSUB
+    SERVER --&gt; PATTERNS
+    PATTERNS --&gt; CODE
 
-<!-- ===== RIGHT: Redis Server ===== -->
-<rect fill="#e91e63" height="180" rx="10" stroke="#e91e63" stroke-width="2" width="220" x="568" y="50"></rect>
-<text fill="#fff" font-size="14" font-weight="bold" text-anchor="middle" x="678" y="75" direction="ltr" unicode-bidi="embed">Redis Server</text>
-<text fill="#fce4ec" font-size="10" text-anchor="middle" x="678" y="95" direction="ltr" unicode-bidi="embed">localhost:6379</text>
-
-<!-- Redis data structures -->
-<rect fill="#fff" height="20" rx="4" stroke="#e91e63" stroke-width="1" width="180" x="588" y="107"></rect>
-<text fill="#333" font-size="9" text-anchor="middle" x="678" y="121" direction="ltr" unicode-bidi="embed">String: key → value</text>
-<rect fill="#fff" height="20" rx="4" stroke="#e91e63" stroke-width="1" width="180" x="588" y="132"></rect>
-<text fill="#333" font-size="9" text-anchor="middle" x="678" y="146" direction="ltr" unicode-bidi="embed">Hash: key → {field: val}</text>
-<rect fill="#fff" height="20" rx="4" stroke="#e91e63" stroke-width="1" width="180" x="588" y="157"></rect>
-<text fill="#333" font-size="9" text-anchor="middle" x="678" y="171" direction="ltr" unicode-bidi="embed">List: key → [v1, v2, ...]</text>
-<rect fill="#fff" height="20" rx="4" stroke="#e91e63" stroke-width="1" width="180" x="588" y="182"></rect>
-<text fill="#333" font-size="9" text-anchor="middle" x="678" y="196" direction="ltr" unicode-bidi="embed">Set / Sorted Set</text>
-
-<!-- ===== Pipeline Section ===== -->
-<rect fill="#e0f7fa" height="80" rx="8" stroke="#00ADD8" stroke-width="2" width="760" x="30" y="250"></rect>
-<text fill="#00ADD8" font-size="13" font-weight="bold" text-anchor="middle" x="410" y="273" direction="ltr" unicode-bidi="embed">Pipeline: batch commands — reduce RTT</text>
-
-<rect fill="#fff" height="20" rx="4" stroke="#00ADD8" stroke-width="1" width="120" x="50" y="290"></rect>
-<text fill="#333" font-size="9" text-anchor="middle" x="110" y="304" direction="ltr" unicode-bidi="embed">pipe.Set(k1,v1,0)</text>
-<line marker-end="url(#arrGoR)" stroke="#00ADD8" stroke-width="1" x1="170" x2="230" y1="300" y2="300"></line>
-<rect fill="#fff" height="20" rx="4" stroke="#00ADD8" stroke-width="1" width="120" x="230" y="290"></rect>
-<text fill="#333" font-size="9" text-anchor="middle" x="290" y="304" direction="ltr" unicode-bidi="embed">pipe.Get(k2)</text>
-<line marker-end="url(#arrGoR)" stroke="#00ADD8" stroke-width="1" x1="350" x2="400" y1="300" y2="300"></line>
-<rect fill="#fff" height="20" rx="4" stroke="#00ADD8" stroke-width="1" width="120" x="400" y="290"></rect>
-<text fill="#333" font-size="9" text-anchor="middle" x="460" y="304" direction="ltr" unicode-bidi="embed">pipe.Incr(k3)</text>
-<line marker-end="url(#arrGoR)" stroke="#00ADD8" stroke-width="1" x1="520" x2="570" y1="300" y2="300"></line>
-<rect fill="#4CAF50" height="20" rx="4" stroke="#4CAF50" stroke-width="1" width="120" x="570" y="290"></rect>
-<text fill="#fff" font-size="9" text-anchor="middle" x="630" y="304" direction="ltr" unicode-bidi="embed">pipe.Exec(ctx)</text>
-<text fill="#999" font-size="9" text-anchor="middle" x="410" y="325" direction="rtl" unicode-bidi="embed">یک درخواست شبکه به جای N درخواست — سرعت تا ۱۰× بیشتر</text>
-
-<!-- ===== Pub/Sub Section ===== -->
-<rect fill="#fce4ec" height="55" rx="8" stroke="#e91e63" stroke-width="2" width="760" x="30" y="340"></rect>
-<text fill="#e91e63" font-size="13" font-weight="bold" text-anchor="middle" x="410" y="363" direction="ltr" unicode-bidi="embed">Pub/Sub: real-time messaging</text>
-<text fill="#333" font-size="10" text-anchor="middle" x="260" y="385" direction="ltr" unicode-bidi="embed">rdb.Publish(ctx, "ch", msg)</text>
-<line marker-end="url(#arrRedisS)" stroke="#e91e63" stroke-width="1.5" x1="420" x2="480" y1="381" y2="381"></line>
-<text fill="#e91e63" font-size="11" font-weight="bold" text-anchor="middle" x="450" y="375" direction="ltr" unicode-bidi="embed">Redis</text>
-<line marker-end="url(#arrRedisS)" stroke="#e91e63" stroke-width="1.5" x1="480" x2="540" y1="381" y2="381"></line>
-<text fill="#333" font-size="10" text-anchor="middle" x="640" y="385" direction="ltr" unicode-bidi="embed">pubsub.Channel() ← msg</text>
-
-<!-- ===== Patterns Section ===== -->
-<rect fill="#e8f5e9" height="30" rx="6" width="760" x="30" y="410"></rect>
-<text fill="#2e7d32" font-size="13" font-weight="bold" text-anchor="middle" x="410" y="430" direction="rtl" unicode-bidi="embed">الگوهای عملیاتی <tspan direction="ltr" unicode-bidi="embed">Redis</tspan></text>
-
-<!-- Pattern 1: Cache-Aside -->
-<rect fill="#fff" height="40" rx="6" stroke="#4CAF50" stroke-width="1.5" width="170" x="30" y="450"></rect>
-<text fill="#4CAF50" font-size="11" font-weight="bold" text-anchor="middle" x="115" y="468" direction="ltr" unicode-bidi="embed">Cache-Aside</text>
-<text fill="#666" font-size="9" text-anchor="middle" x="115" y="483" direction="ltr" unicode-bidi="embed">Get → Miss → DB → Set+TTL</text>
-
-<!-- Pattern 2: Session Storage -->
-<rect fill="#fff" height="40" rx="6" stroke="#4CAF50" stroke-width="1.5" width="170" x="215" y="450"></rect>
-<text fill="#4CAF50" font-size="11" font-weight="bold" text-anchor="middle" x="300" y="468" direction="ltr" unicode-bidi="embed">Session Storage</text>
-<text fill="#666" font-size="9" text-anchor="middle" x="300" y="483" direction="ltr" unicode-bidi="embed">SETEX session:id 3600 data</text>
-
-<!-- Pattern 3: Rate Limiter -->
-<rect fill="#fff" height="40" rx="6" stroke="#4CAF50" stroke-width="1.5" width="170" x="400" y="450"></rect>
-<text fill="#4CAF50" font-size="11" font-weight="bold" text-anchor="middle" x="485" y="468" direction="ltr" unicode-bidi="embed">Rate Limiter</text>
-<text fill="#666" font-size="9" text-anchor="middle" x="485" y="483" direction="ltr" unicode-bidi="embed">INCR key + EXPIRE key 60</text>
-
-<!-- Pattern 4: Distributed Lock -->
-<rect fill="#fff" height="40" rx="6" stroke="#4CAF50" stroke-width="1.5" width="170" x="585" y="450"></rect>
-<text fill="#4CAF50" font-size="11" font-weight="bold" text-anchor="middle" x="670" y="468" direction="ltr" unicode-bidi="embed">Distributed Lock</text>
-<text fill="#666" font-size="9" text-anchor="middle" x="670" y="483" direction="ltr" unicode-bidi="embed">SET lock:id val NX EX 30</text>
-
-<!-- Code example bar -->
-<rect fill="#f5f5f5" height="65" rx="6" stroke="#ddd" stroke-width="1" width="760" x="30" y="500"></rect>
-<text fill="#555" font-size="10" text-anchor="start" x="45" y="518" direction="ltr" unicode-bidi="embed">// Rate Limiter: INCR + EXPIRE (atomic)</text>
-<text fill="#333" font-size="10" text-anchor="start" x="45" y="535" direction="ltr" unicode-bidi="embed">count, _ := rdb.Incr(ctx, "rate:"+ip).Result()</text>
-<text fill="#333" font-size="10" text-anchor="start" x="45" y="550" direction="ltr" unicode-bidi="embed">if count == 1 { rdb.Expire(ctx, "rate:"+ip, time.Minute) }</text>
-<text fill="#e91e63" font-size="10" text-anchor="start" x="45" y="562" direction="ltr" unicode-bidi="embed">// Distributed Lock: SET NX EX (atomic)</text>
-<text fill="#333" font-size="10" text-anchor="start" x="430" y="562" direction="ltr" unicode-bidi="embed">ok, _ := rdb.SetNX(ctx, "lock:"+id, uid, 30*time.Second).Result()</text>
-</svg>
+    classDef titleBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:2px,color:#1f2937,font-weight:bold;
+    classDef goBox   fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
+    classDef bothBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
+    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
+    classDef errBox  fill:#fef2f2,stroke:#ef4444,stroke-width:1.5px,color:#1f2937;
+    classDef neuBox  fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
+    class Title titleBox;
+    class GA,CMDS goBox;
+    class PS,P1,P2,P3,PN goBox;
+    class RS,DT1,DT2,DT3,DT4 errBox;
+    class PL1,PL2,PL3,PL4 bothBox;
+    class PLN warnBox;
+    class PS1,PS2,PS3 goBox;
+    class PT1,PT2,PT3,PT4 goBox;
+    class C1,C2,C3,C4,C5 goBox;</pre>
 <figcaption>شکل ۸-۸-ب — معماری اتصال <bdi dir="ltr">Redis</bdi>: کلاینت <bdi dir="ltr">Go</bdi>، استخر اتصال، خط لوله، <bdi dir="ltr">Pub/Sub</bdi> و الگوهای عملیاتی</figcaption>
 </figure>
-
-<h3 id="redis-سناریوهای-عملیاتی">سناریوهای عملیاتی</h3>
-<p>در سیستم‌های واقعی، <bdi dir="ltr">Redis</bdi> فراتر از یک کش ساده عمل می‌کند و نقش‌های متعددی در معماری نرم‌افزار ایفا می‌کند. شناخت الگوهای مختلف استفاده از <bdi dir="ltr">Redis</bdi> به شما کمک می‌کند راه‌حل‌های مقیاس‌پذیر و کارآمد طراحی کنید. هر الگوی استفاده مزایا و محدودیت‌های خاص خود را دارد و انتخاب الگوی مناسب به نیازهای عملیاتی و مشخصات بار سیستم بستگی دارد. در ادامه پنج سناریوی عملیاتی کلیدی بررسی می‌شوند که هر مهندس نرم‌افزار باید در ابزار خود داشته باشد.</p>
+<h3 id="redis-سناریوهای-عملیاتی">8.8.8 سناریوهای عملیاتی</h3>
+<p>در سیستم‌های واقعی، <bdi dir="ltr">Redis</bdi> فراتر از یک کش ساده عمل می‌کند و نقش‌های متعددی در معماری نرم‌افزار ایفا می‌کند. شناخت الگوهای مختلف استفاده از <bdi dir="ltr">Redis</bdi> به شما کمک می‌کند راه‌حل‌های مقیاس‌پذیر و کارآمد طراحی کنید. </p><p>هر الگوی استفاده مزایا و محدودیت‌های خاص خود را دارد و انتخاب الگوی مناسب به نیازهای عملیاتی و مشخصات بار سیستم بستگی دارد. </p><p>در ادامه پنج سناریوی عملیاتی کلیدی بررسی می‌شوند که هر مهندس نرم‌افزار باید در ابزار خود داشته باشد.</p>
 <ul>
 <li><strong>کش کردن نتایج پرس‌وجوی دیتابیس:</strong> الگوی <bdi dir="ltr">Cache-Aside</bdi> رایج‌ترین روش کشینگ است. ابتدا کلید کش بررسی می‌شود، در صورت عدم وجود از دیتابیس خوانده و با <bdi dir="ltr">TTL</bdi> مشخص در کش ذخیره می‌شود. همیشه <bdi dir="ltr">TTL</bdi> تعیین کنید تا داده‌ی کهنه انباشته نشود و در صورت تغییر دیتابیس، کش به‌طور خودکار منقضی شود. در <bdi dir="ltr">Go</bdi> کلید کش را با فرمت <code dir="ltr">entity:id</code> نام‌گذاری کنید تا قابل پیش‌بینی باشد.</li>
 <li><strong>محدود کردن نرخ درخواست با پنجره‌ی لغزان:</strong> با ترکیب <bdi dir="ltr">INCR</bdi> و <bdi dir="ltr">EXPIRE</bdi> یک شمارنده‌ی ساده می‌سازید. وقتی شمارنده برابر ۱ شود زمان انقضا تنظیم می‌شود. اگر شمارنده از حد مجاز بیشتر شد درخواست رد می‌شود. برای پنجره‌ی لغزان دقیق‌تر از <bdi dir="ltr">Sorted Set</bdi> با امتیاز زمان‌برچسب استفاده کنید تا درخواست‌ها در هر بازه‌ی زمانی دقیقاً شمرده شوند.</li>
@@ -440,39 +376,43 @@ go func() {
 <li><strong>اعلان بلادرنگ با <bdi dir="ltr">Pub/Sub</bdi>:</strong> برای ارسال پیام فوری به همه‌ی سرویس‌های فعال، <bdi dir="ltr">Pub/Sub</bdi> ایده‌آل است. سرویس منتشرکننده پیام را روی کانال ارسال می‌کند و همه‌ی مشترکان همزمان آن را دریافت می‌کنند. در <bdi dir="ltr">Go</bdi> از <bdi dir="ltr">goroutine</bdi> برای گوش دادن به کانال <bdi dir="ltr">pubsub.Channel()</bdi> استفاده کنید تا جریان اصلی مسدود نشود.</li>
 <li><strong>ذخیره‌سازی نشست با <bdi dir="ltr">TTL</bdi>:</strong> داده‌ی نشست کاربر را با <bdi dir="ltr">SETEX</bdi> و زمان انقضا ذخیره کنید. وقتی کاربر فعالیت کند <bdi dir="ltr">TTL</bdi> تمدید می‌شود. پس از انقضای خودکار نشست حذف می‌شود بدون نیاز به پاکسازی دستی. این روش بسیار کارآمدتر از ذخیره‌ی نشست در دیتابیس رابطه‌ای است و مقیاس‌پذیری بهتری دارد.</li>
 </ul>
-
 <div class="tip">
 <strong>نکته‌ی مهم:</strong> همیشه روی کلیدهای کش <bdi dir="ltr">TTL</bdi> تعیین کنید و برای قفل توزیع‌شده حتماً از <code dir="ltr">SET NX EX</code> اتمیک استفاده کنید. بدون <bdi dir="ltr">TTL</bdi> داده‌ی کهنه و بلااستفاده برای همیشه در <bdi dir="ltr">Redis</bdi> باقی می‌ماند و حافظه‌ی سرور به‌تدریج پر می‌شود. ترکیب <code dir="ltr">SET NX</code> و <code dir="ltr">EX</code> در یک دستور اتمیک تضمین می‌کند که هیچ شرایط مسابقه‌ای رخ نمی‌دهد — هرگز این دو عمل را به‌صورت جداگانه فراخوانی نکنید.
 </div>
-
 <div class="important">
 <strong>قانون طلایی:</strong> هرگز کلید کش بدون <bdi dir="ltr">TTL</bdi> نسازید و هرگز قفل توزیع‌شده بدون <bdi dir="ltr">TTL</bdi> نگیرید. داده‌ی بدون انقضا معادل نشت حافظه‌ی <bdi dir="ltr">Redis</bdi> است و در محیط عملیاتی فاجعه‌بار خواهد بود.
 </div>
-</div>
-</div>
-
+<div class="summary">
+<strong>خلاصه‌ی نکات کلیدی:</strong>
+<ul>
+<li>redis/go-redis/v9 client استاندارد</li>
+<li>connection pool توکار</li>
+<li>GET/SET با expir</li>
+<li>pub/sub با Subscribe</li>
+<li>distributed lock با SETNX</li>
+</ul>
+</div></div>
+</main></div>
 <!-- Footer -->
 <footer class="site-footer">
 <div class="footer-inner">
 <div class="footer-nav">
 <span class="nav-arrow">‹</span>
-<a href="08.07-working-with-json-arrays-and-timestamps.html" data-prev>۸.۷ کار با JSON، Array و Timestamp</a>
+<a data-prev="" href="08.07-working-with-json-arrays-and-timestamps.html">۸.۷ کار با JSON، Array و Timestamp</a>
 </div>
 <div class="footer-toc">
 <a href="00.01-contents.html">فهرست</a>
 </div>
 <div class="footer-nav">
-<a href="09.00-chapter-9.html" data-next>۹. مانیتورینگ و Observability</a>
+<a data-next="" href="09.00-chapter-9.html">۹. مانیتورینگ و Observability</a>
 <span class="nav-arrow">›</span>
 </div>
 </div>
 </footer>
-
 <!-- Back to Top -->
-<button class="back-to-top" aria-label="بازگشت به بالا">
-<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
+<button aria-label="بازگشت به بالا" class="back-to-top">
+<svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24"><polyline points="18 15 12 9 6 15"></polyline></svg>
 </button>
-
 <!-- Scripts -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/go.min.js"></script>
@@ -485,6 +425,7 @@ go func() {
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/xml.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/ini.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/plaintext.min.js"></script>
+<script src="assets/js/diagrams.js"></script>
 <script src="assets/js/main.js"></script>
 </body>
 </html>

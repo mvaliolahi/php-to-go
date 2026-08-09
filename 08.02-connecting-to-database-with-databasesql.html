@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html dir="rtl" lang="fa">
 <head>
 <script>!function(){try{var t=localStorage.getItem('php2go-theme');if(t==='dark'||(!t&&window.matchMedia('(prefers-color-scheme:dark)').matches)){document.documentElement.setAttribute('data-theme','dark')}}catch(e){}}();</script>
@@ -6,26 +7,25 @@
 <meta content="ie=edge" http-equiv="x-ua-compatible"/>
 <title>۸.۲ اتصال به دیتابیس با database/sql — PHP to Go</title>
 <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport"/>
-<link rel="preconnect" href="https://fonts.googleapis.com"/>
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600;700&amp;family=Fira+Code:wght@400;500&amp;display=swap" rel="stylesheet"/>
 <link href="assets/css/main.css" rel="stylesheet" type="text/css"/>
 <link href="assets/img/favicon.ico" rel="icon" type="image/x-icon"/>
-<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" media="screen" class="hljs-light-theme" rel="stylesheet"/>
-<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css" media="not screen" class="hljs-dark-theme" rel="stylesheet"/>
+<link class="hljs-light-theme" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" media="screen" rel="stylesheet"/>
+<link class="hljs-dark-theme" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css" media="not screen" rel="stylesheet"/>
 </head>
 <body>
 <!-- Progress Bar -->
 <div class="progress-bar"><div class="progress-bar__fill"></div></div>
-
 <!-- Header -->
 <header class="site-header">
 <div class="header-inner">
 <div class="header-left">
-<button class="header-btn sidebar-toggle" aria-label="فهرست">
-<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+<button aria-label="فهرست" class="header-btn sidebar-toggle">
+<svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24"><line x1="3" x2="21" y1="6" y2="6"></line><line x1="3" x2="21" y1="12" y2="12"></line><line x1="3" x2="21" y1="18" y2="18"></line></svg>
 </button>
-<a href="00.00-front-matter.html" class="header-logo"><span class="logo-php">PHP</span> to <span class="logo-go">Go</span></a>
+<a class="header-logo" href="00.00-front-matter.html"><span class="logo-php">PHP</span> to <span class="logo-go">Go</span></a>
 <span class="header-crumbs">پایگاه داده › اتصال به دیتابیس با database/sql</span>
 </div>
 <div class="header-right">
@@ -36,88 +36,72 @@
 <a href="08.03-executing-queries.html"><span class="nav-label">۸.۳ اجرای Query</span></a>
 <span class="nav-arrow">›</span>
 </nav>
-<button class="header-btn search-toggle" aria-label="جستجو">
-<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+<button aria-label="جستجو" class="header-btn search-toggle">
+<svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" x2="16.65" y1="21" y2="16.65"></line></svg>
 </button>
-<button class="header-btn theme-toggle" aria-label="تغییر تم">
-<svg class="theme-icon-light" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
-<svg class="theme-icon-dark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+<button aria-label="تغییر تم" class="header-btn theme-toggle">
+<svg class="theme-icon-light" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24"><circle cx="12" cy="12" r="5"></circle><line x1="12" x2="12" y1="1" y2="3"></line><line x1="12" x2="12" y1="21" y2="23"></line><line x1="4.22" x2="5.64" y1="4.22" y2="5.64"></line><line x1="18.36" x2="19.78" y1="18.36" y2="19.78"></line><line x1="1" x2="3" y1="12" y2="12"></line><line x1="21" x2="23" y1="12" y2="12"></line><line x1="4.22" x2="5.64" y1="19.78" y2="18.36"></line><line x1="18.36" x2="19.78" y1="5.64" y2="4.22"></line></svg>
+<svg class="theme-icon-dark" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
 </button>
 </div>
 </div>
 </header>
-
 <!-- Search Modal -->
 <div class="search-overlay">
 <div class="search-modal">
 <div class="search-input-wrap">
-<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-<input type="text" class="search-input" placeholder="جستجو... (Ctrl+K)" dir="rtl"/>
+<svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" x2="16.65" y1="21" y2="16.65"></line></svg>
+<input class="search-input" dir="rtl" placeholder="جستجو... (Ctrl+K)" type="text"/>
 </div>
 <div class="search-results"></div>
 </div>
 </div>
-
 <!-- Layout -->
 <div class="site-layout">
 <!-- Sidebar -->
 <aside class="sidebar"></aside>
 <div class="sidebar-overlay"></div>
-
 <!-- Main Content -->
 <main class="content-area">
 <div class="content-wrap text">
 <div class="chapter">فصل ۸.۲</div>
-<h2 id="اتصال-به-دیتابیس-با-databasesql">اتصال به دیتابیس با database/sql</h2>
-
+<h2 id="اتصال-به-دیتابیس-با-databasesql">اتصال به دیتابیس با database/sql</h2><div class="abstract">
+<strong>چکیده:</strong> این بخش اتصال به پایگاه داده با database/sql را پوشش می‌دهد: sql.Open، driver و connection pool. تفاوت با PDO در PHP و الگوی Go بررسی می‌شود. تنظیم pool و timeout پوشش داده می‌گردد.
+</div>
 <figure class="diagram" dir="ltr">
-<svg height="380" viewBox="0 0 600 380" width="600" xmlns="http://www.w3.org/2000/svg">
-<defs>
-<marker id="arrow1501" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#555" points="0 0, 10 3.5, 0 7"></polygon></marker>
-<filter height="104%" id="sh1501" width="104%" x="-2%" y="-2%"><fedropshadow dx="1" dy="1" flood-opacity="0.15" stddeviation="2"></fedropshadow></filter>
-</defs>
-<rect fill="#fafafa" height="380" rx="8" width="600" x="0" y="0"></rect>
-<text fill="#333" font-size="16" font-weight="bold" text-anchor="middle" x="300" y="28" direction="rtl" unicode-bidi="embed">ماشین حالت <tspan direction="ltr" unicode-bidi="embed">Connection</tspan> <tspan direction="ltr" unicode-bidi="embed">Pool</tspan> در <tspan direction="ltr" unicode-bidi="embed">database/sql</tspan></text>
+<pre class="mermaid">flowchart LR
+    Title["ماشین حالت Connection Pool در database/sql"]
 
-<!-- States -->
-<rect fill="#9C27B0" filter="url(#sh1501)" height="40" rx="6" width="120" x="240" y="55"></rect>
-<text fill="#fff" font-size="11" text-anchor="middle" x="300" y="80" direction="ltr" unicode-bidi="embed">Idle</text>
+    Idle["Idle"]
+    InUse["InUse"]
+    WaitQ["WaitQueue"]
+    Closed["Closed/Expired"]
 
-<rect fill="#4CAF50" filter="url(#sh1501)" height="40" rx="6" width="120" x="80" y="170"></rect>
-<text fill="#fff" font-size="11" text-anchor="middle" x="140" y="195" direction="ltr" unicode-bidi="embed">InUse</text>
+    Idle -- "Query()" --&gt; InUse
+    InUse -- "Release" --&gt; Idle
+    Idle -- "MaxLifetime" --&gt; Closed
+    InUse -- "Pool پر شد" --&gt; WaitQ
+    WaitQ -- "Conn freed" --&gt; InUse
 
-<rect fill="#e91e63" filter="url(#sh1501)" height="40" rx="6" width="120" x="400" y="170"></rect>
-<text fill="#fff" font-size="11" text-anchor="middle" x="460" y="195" direction="ltr" unicode-bidi="embed">WaitQueue</text>
+    Opener["openerCh → goroutine connectionOpener"]
 
-<rect fill="#FF9800" filter="url(#sh1501)" height="40" rx="6" width="120" x="240" y="290"></rect>
-<text fill="#fff" font-size="11" text-anchor="middle" x="300" y="315" direction="ltr" unicode-bidi="embed">Closed/Expired</text>
+    Idle ~~~ Opener
 
-<!-- Transitions -->
-<line marker-end="url(#arrow1501)" stroke="#4CAF50" stroke-width="2" x1="270" x2="170" y1="95" y2="170"></line>
-<text fill="#4CAF50" font-size="9" text-anchor="middle" x="205" y="125" direction="ltr" unicode-bidi="embed">Query()</text>
-
-<line marker-end="url(#arrow1501)" stroke="#9C27B0" stroke-width="2" x1="170" x2="270" y1="185" y2="95"></line>
-<text fill="#9C27B0" font-size="9" text-anchor="middle" x="205" y="155" direction="ltr" unicode-bidi="embed">Release</text>
-
-<line marker-end="url(#arrow1501)" stroke="#e91e63" stroke-width="2" x1="360" x2="400" y1="75" y2="170"></line>
-<text fill="#e91e63" font-size="9" text-anchor="middle" x="400" y="125" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">Pool</tspan> پر شد</text>
-
-<line marker-end="url(#arrow1501)" stroke="#4CAF50" stroke-width="2" x1="400" x2="200" y1="185" y2="185"></line>
-<text fill="#4CAF50" font-size="9" text-anchor="middle" x="300" y="180" direction="ltr" unicode-bidi="embed">Conn freed</text>
-
-<line marker-end="url(#arrow1501)" stroke="#FF9800" stroke-width="2" x1="300" x2="300" y1="210" y2="290"></line>
-<text fill="#FF9800" font-size="9" text-anchor="middle" x="330" y="260" direction="ltr" unicode-bidi="embed">MaxLifetime</text>
-
-<rect fill="#E3F2FD" height="30" rx="4" stroke="#2196F3" width="250" x="175" y="345"></rect>
-<text fill="#1565C0" font-size="9" text-anchor="middle" x="300" y="365" direction="rtl" unicode-bidi="embed">openerCh → goroutine connectionOpener</text>
-</svg>
+    classDef titleBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:2px,color:#1f2937,font-weight:bold;
+    classDef goBox   fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
+    classDef bothBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
+    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
+    classDef errBox  fill:#fef2f2,stroke:#ef4444,stroke-width:1.5px,color:#1f2937;
+    classDef neuBox  fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
+    class Title titleBox;
+    class Idle,InUse goBox;
+    class WaitQ warnBox;
+    class Closed errBox;
+    class Opener bothBox;</pre>
 <figcaption>شکل ۸-۲: ماشین حالت <bdi dir="ltr">Connection</bdi> <bdi dir="ltr">Pool</bdi> — رفتار اتصال‌ها در <bdi dir="ltr">Pool</bdi></figcaption>
 </figure>
-
 <div class="comparison"><strong>مقایسه با PHP:</strong> در Laravel اتصال به دیتابیس از طریق Eloquent ORM و Query Builder به‌صورت خودکار مدیریت می‌شود. اما در Go پکیج <code>database/sql</code> یک رابط سطح پایین‌تر ارائه می‌دهد که کنترل بیشتری بر عملکرد و مدیریت منابع به شما می‌دهد. اگر تجربه‌ی کار با PDO در PHP را دارید، <code>database/sql</code> بسیار شبیه به آن عمل می‌کند.</div>
-
 <figure class="code bash" dir="ltr"><pre><code class="language-bash">go get github.com/lib/pq</code></pre></figure>
-
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">import (
     "database/sql"
@@ -138,66 +122,64 @@ func main() {
     log.Println("اتصال موفق به دیتابیس برقرار شد")
 }</code></pre>
 </figure>
-
-<p>بعد از ساخت و اجرای Migration ها زمان اتصال به دیتابیس فرا می رسد. پکیج <bdi dir="ltr">database/sql</bdi> یک رابط استاندارد برای اتصال به پایگاه‌های داده رابطه‌ای فراهم می‌کند. برخلاف <bdi dir="ltr">Laravel</bdi> که از <bdi dir="ltr">ORM</bdi> قدرتمندی مانند <bdi dir="ltr">Eloquent</bdi> استفاده می‌کند این پکیج هیچ مدل یا ساختار جدایی ارائه نمی‌دهد و به‌جای آن تمرکز را بر کنترل کامل، سرعت و کارایی بالا قرار می‌دهد.</p>
-
+<p>بعد از ساخت و اجرای Migration ها زمان اتصال به دیتابیس فرا می رسد. پکیج <bdi dir="ltr">database/sql</bdi> یک رابط استاندارد برای اتصال به پایگاه‌های داده رابطه‌ای فراهم می‌کند. </p><p>برخلاف <bdi dir="ltr">Laravel</bdi> که از <bdi dir="ltr">ORM</bdi> قدرتمندی مانند <bdi dir="ltr">Eloquent</bdi> استفاده می‌کند این پکیج هیچ مدل یا ساختار جدایی ارائه نمی‌دهد و به‌جای آن تمرکز را بر کنترل کامل، سرعت و کارایی بالا قرار می‌دهد.</p>
 <p><bdi dir="ltr">sql.Open</bdi> صرفاً یک شیء اتصال را مقداردهی اولیه می‌کند و اتصال واقعی در لحظه‌ی اجرای <bdi dir="ltr">Ping</bdi> یا اولین کوئری برقرار می‌شود.</p>
-
 <div class="warning"><strong>تله‌ی رایج:</strong> <code dir="ltr">sql.Open()</code> اتصال واقعی برقرار نمی‌کند. اگر DSN اشتباه باشد، <code dir="ltr">sql.Open</code> خطایی نمی‌دهد. همیشه پس از <code dir="ltr">sql.Open</code> حتماً <code dir="ltr">db.Ping()</code> را فراخوانی کنید تا از صحت اتصال مطمئن شوید.</div>
-
-<div class="note"><strong>چرا <code dir="ltr">database/sql</code> به‌جای <bdi dir="ltr">ORM</bdi>؟</strong> مهاجران <bdi dir="ltr">Laravel/Eloquent</bdi> غالباً انتظار دارند <code>User::find($id)</code> یا <code>$model->save()</code> را در <bdi dir="ltr">Go</bdi> هم پیدا کنند. پکیج <code dir="ltr">database/sql</code> عمداً این انتزاع را ارائه نمی‌دهد تا کنترل دقیق کوئری، اتصال و خطا را در دست توسعه‌دهنده نگه دارد. اگر پروژه‌ی شما <bdi dir="ltr">CRUD</bdi> غالب و ساده دارد، کتابخانه‌هایی مثل <bdi dir="ltr">sqlc</bdi> (تولید کد از <bdi dir="ltr">SQL</bdi>) یا <bdi dir="ltr">GORM</bdi> (<bdi dir="ltr">ORM</bdi> کامل) گزینه‌های معقول‌اند؛ اما برای کوئری‌های پیچیده، گزارش‌گیری و عملیات حساس، همان <code dir="ltr">database/sql</code> + <code dir="ltr">sqlx</code> شفاف‌ترین و کارآمدترین انتخاب است.</div>
-
-<h3 id="مدیریت-اتصالها-و-منابع">مدیریت اتصال‌ها و منابع</h3>
+<div class="note"><strong>چرا <code dir="ltr">database/sql</code> به‌جای <bdi dir="ltr">ORM</bdi>؟</strong> مهاجران <bdi dir="ltr">Laravel/Eloquent</bdi> غالباً انتظار دارند <code>User::find($id)</code> یا <code>$model-&gt;save()</code> را در <bdi dir="ltr">Go</bdi> هم پیدا کنند. پکیج <code dir="ltr">database/sql</code> عمداً این انتزاع را ارائه نمی‌دهد تا کنترل دقیق کوئری، اتصال و خطا را در دست توسعه‌دهنده نگه دارد. اگر پروژه‌ی شما <bdi dir="ltr">CRUD</bdi> غالب و ساده دارد، کتابخانه‌هایی مثل <bdi dir="ltr">sqlc</bdi> (تولید کد از <bdi dir="ltr">SQL</bdi>) یا <bdi dir="ltr">GORM</bdi> (<bdi dir="ltr">ORM</bdi> کامل) گزینه‌های معقول‌اند؛ اما برای کوئری‌های پیچیده، گزارش‌گیری و عملیات حساس، همان <code dir="ltr">database/sql</code> + <code dir="ltr">sqlx</code> شفاف‌ترین و کارآمدترین انتخاب است.</div>
+<h3 id="مدیریت-اتصالها-و-منابع">8.2.1 مدیریت اتصال‌ها و منابع</h3>
 <p>در <bdi dir="ltr">Laravel</bdi> نیازی به بستن اتصال یا کنترل <bdi dir="ltr">connection pool</bdi> ندارید. اما در <bdi dir="ltr">Go</bdi> شما مسئول مدیریت دقیق منابع هستید. اگر یک <bdi dir="ltr">Query</bdi> انجام دهید و <span dir="ltr">rows.Close()</span> را فراخوانی نکنید برنامه ممکن است با مشکلات جدی در مصرف منابع مواجه شود.</p>
-
 <figure class="diagram" dir="ltr">
-<svg width="700" height="240" viewBox="0 0 700 240" xmlns="http://www.w3.org/2000/svg">
-<rect fill="#fafafa" height="240" rx="8" width="700" x="0" y="0"></rect>
-<defs><filter id="sh155" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
-<marker id="aDb1" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#00ADD8" points="0 0,10 3.5,0 7"></polygon></marker>
-<marker id="aDb2" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#27ae60" points="0 0,10 3.5,0 7"></polygon></marker>
-<marker id="aDb3" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#e74c3c" points="0 0,10 3.5,0 7"></polygon></marker>
-</defs>
-<text fill="#00ADD8" font-size="15" font-weight="bold" text-anchor="middle" x="350" y="22" direction="rtl" unicode-bidi="embed">استخر اتصال <tspan direction="ltr" unicode-bidi="embed">database/sql</tspan></text>
-<!-- Pool -->
-<rect fill="#00ADD8" height="100" opacity="0.08" rx="12" stroke="#00ADD8" stroke-width="2" width="360" x="170" y="40"></rect>
-<text fill="#00ADD8" font-size="12" font-weight="bold" text-anchor="middle" x="350" y="60" direction="ltr" unicode-bidi="embed">Connection Pool (*sql.DB)</text>
-<!-- Idle connections -->
-<rect fill="#9C27B0" height="30" opacity="0.12" rx="6" stroke="#9C27B0" stroke-width="1.5" width="80" x="190" y="70"></rect>
-<text fill="#9C27B0" font-size="9" text-anchor="middle" x="230" y="90" direction="ltr" unicode-bidi="embed">Idle</text>
-<rect fill="#9C27B0" height="30" opacity="0.12" rx="6" stroke="#9C27B0" stroke-width="1.5" width="80" x="280" y="70"></rect>
-<text fill="#9C27B0" font-size="9" text-anchor="middle" x="320" y="90" direction="ltr" unicode-bidi="embed">Idle</text>
-<!-- In-use connection -->
-<rect fill="#27ae60" height="30" opacity="0.12" rx="6" stroke="#27ae60" stroke-width="1.5" width="80" x="370" y="70"></rect>
-<text fill="#27ae60" font-size="9" text-anchor="middle" x="410" y="90" direction="ltr" unicode-bidi="embed">InUse</text>
-<text fill="#666" font-size="8" text-anchor="middle" x="350" y="130" direction="rtl" unicode-bidi="embed">حداکثر <tspan direction="ltr" unicode-bidi="embed">MaxOpenConns</tspan> اتصال همزمان</text>
-<!-- Goroutines -->
-<rect fill="#f39c12" height="30" opacity="0.12" rx="6" stroke="#f39c12" stroke-width="1.5" width="80" x="30" y="70"></rect>
-<text fill="#f39c12" font-size="9" text-anchor="middle" x="70" y="90" direction="ltr" unicode-bidi="embed">Goroutine</text>
-<rect fill="#f39c12" height="30" opacity="0.12" rx="6" stroke="#f39c12" stroke-width="1.5" width="80" x="30" y="110"></rect>
-<text fill="#f39c12" font-size="9" text-anchor="middle" x="70" y="130" direction="ltr" unicode-bidi="embed">Goroutine</text>
-<rect fill="#e74c3c" height="30" opacity="0.12" rx="6" stroke="#e74c3c" stroke-width="1.5" width="80" x="30" y="150"></rect>
-<text fill="#e74c3c" font-size="9" text-anchor="middle" x="70" y="170" direction="ltr" unicode-bidi="embed">Wait Queue</text>
-<!-- Arrows -->
-<line marker-end="url(#aDb1)" stroke="#00ADD8" stroke-width="1.5" x1="110" x2="190" y1="85" y2="85"></line>
-<line marker-end="url(#aDb2)" stroke="#27ae60" stroke-width="1.5" x1="110" x2="370" y1="125" y2="85"></line>
-<line stroke="#e74c3c" stroke-dasharray="4,3" stroke-width="1.5" x1="110" x2="110" y1="165" y2="140"></line>
-<text fill="#e74c3c" font-size="8" text-anchor="middle" x="140" y="155" direction="rtl" unicode-bidi="embed">صف انتظار</text>
-<!-- Database -->
-<rect fill="#27ae60" height="50" opacity="0.12" rx="8" stroke="#27ae60" stroke-width="2" width="120" x="570" y="70"></rect>
-<text fill="#27ae60" font-size="12" font-weight="bold" text-anchor="middle" x="630" y="95" direction="ltr" unicode-bidi="embed">PostgreSQL</text>
-<text fill="#27ae60" font-size="9" text-anchor="middle" x="630" y="112" direction="rtl" unicode-bidi="embed">سرور دیتابیس</text>
-<line marker-end="url(#aDb2)" stroke="#27ae60" stroke-width="2" x1="530" x2="570" y1="85" y2="90"></line>
-<!-- Settings -->
-<rect fill="#f5f5f5" height="55" rx="6" stroke="#ddd" stroke-width="1" width="620" x="40" y="180"></rect>
-<text fill="#555" font-size="10" text-anchor="middle" x="350" y="198" direction="ltr" unicode-bidi="embed">MaxOpenConns=25 | MaxIdleConns=10 | ConnMaxLifetime=5min | ConnMaxIdleTime=2min</text>
-<text fill="#888" font-size="9" text-anchor="middle" x="350" y="218" direction="rtl" unicode-bidi="embed">اتصال‌ها بین درخواست‌ها به اشتراک گذاشته می‌شوند — برخلاف <tspan direction="ltr" unicode-bidi="embed">PHP/PDO</tspan></text>
-</svg>
+<pre class="mermaid">flowchart TB
+    Title["استخر اتصال database/sql"]
+
+    Pool["Connection Pool (*sql.DB)"]
+
+    subgraph IDLE["Idle"]
+        direction LR
+        I1["Idle"]
+        I2["Idle"]
+    end
+
+    subgraph INUSE["InUse"]
+        direction LR
+        U1["Goroutine"]
+        U2["Goroutine"]
+    end
+
+    subgraph WAIT["Wait Queue — صف انتظار"]
+        direction LR
+        W1["query"]
+    end
+
+    DB["PostgreSQL<br/>سرور دیتابیس"]
+
+    Settings["MaxOpenConns=25 | MaxIdleConns=10 | ConnMaxLifetime=5min | ConnMaxIdleTime=2min"]
+    Note["اتصال‌ها بین درخواست‌ها به اشتراک گذاشته می‌شوند — برخلاف PHP/PDO"]
+
+    Title --&gt; Pool
+    Pool --&gt; IDLE
+    Pool --&gt; INUSE
+    INUSE --&gt; Wait_Q[WaitQueue]
+    Pool --&gt; Wait_Q
+    INUSE --&gt; DB
+    Pool ~~~ Settings
+    Settings ~~~ Note
+
+    classDef titleBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:2px,color:#1f2937,font-weight:bold;
+    classDef goBox   fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
+    classDef bothBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
+    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
+    classDef errBox  fill:#fef2f2,stroke:#ef4444,stroke-width:1.5px,color:#1f2937;
+    classDef neuBox  fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
+    class Title titleBox;
+    class Pool goBox;
+    class I1,I2 bothBox;
+    class U1,U2 warnBox;
+    class Wait_Q,W1 errBox;
+    class DB neuBox;
+    class Settings,Note neuBox;</pre>
 <figcaption dir="rtl">شکل ۸-۲-ب: استخر اتصال <bdi dir="ltr">database/sql</bdi> — مدیریت اتصال‌ها بین <bdi dir="ltr">Goroutine</bdi>‌ها</figcaption>
 </figure>
-
-
-
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">rows, err := db.Query("SELECT id, name FROM users")
 if err != nil {
@@ -214,30 +196,23 @@ for rows.Next() {
     log.Printf("User: %d - %s\n", id, name)
 }</code></pre>
 </figure>
-
 <p>همیشه <span dir="ltr">defer()</span> <bdi dir="ltr">rows.Close</bdi> را بلافاصله بعد از بررسی خطای <bdi dir="ltr">Query</bdi> بنویسید.</p>
-
-<h3 id="مدیریت-connection-pool">مدیریت Connection Pool</h3>
+<h3 id="مدیریت-connection-pool">8.2.2 مدیریت Connection Pool</h3>
 <p>مدیریت اتصال‌ها به دیتابیس از بخش‌های کلیدی هر برنامه تحت وب است. هر بار که برنامه شما به دیتابیس وصل می‌شود منابعی از سرور دیتابیس و اپلیکیشن مصرف می‌شود. باز کردن و بستن <bdi dir="ltr">connection</bdi> به دیتابیس در هر درخواست عملیاتی زمان‌بر و هزینه‌زا است.</p>
-
 <p>در <bdi dir="ltr">Go</bdi> متغیر از نوع <bdi dir="ltr">*sql.DB</bdi> در واقع نمایانگر یک <bdi dir="ltr">Connection Pool</bdi> است و نه فقط یک <bdi dir="ltr">connection</bdi> منفرد. شما هنگام ایجاد اتصال به دیتابیس در واقع یک استخر اتصال باز می‌کنید. این مکانیزم باعث کاهش تأخیر، کنترل تعداد اتصالات همزمان و استفاده بهینه از منابع می‌شود.</p>
-
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">db.SetMaxOpenConns(25)
 db.SetMaxIdleConns(10)
 db.SetConnMaxLifetime(time.Minute * 5)</code></pre>
 </figure>
-
 <h4 id="نکات-کلیدی-برای-بهینهسازی-connection-pool">نکات کلیدی برای بهینه‌سازی Connection Pool</h4>
 <p>راهنمای تفصیلی مقدار پیشنهادی هر پارامتر (<bdi dir="ltr">MaxOpenConns</bdi>، <bdi dir="ltr">MaxIdleConns</bdi>، <bdi dir="ltr">ConnMaxLifetime</bdi>) و جدول سناریوهای سبک/متوسط/سنگین را در بخش <a href="#تنظیم-دقیق-connection-pool-برای-production">بهینه‌سازی تنظیمات Connection Pool برای Production</a> در ادامه‌ی همین فصل پیدا می‌کنید. در اینجا تنها نکته‌ای را می‌آوریم که در آن بخش پوشش داده نشده است.</p>
 <p><strong>استفاده از <bdi dir="ltr">Context</bdi>:</strong> همیشه کوئری‌ها را با <bdi dir="ltr">Context</bdi> اجرا کنید تا امکان لغو عملیات فراهم شود:</p>
 <figure class="code go" dir="ltr"><pre><code class="language-go">ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 defer cancel()
 row := db.QueryRowContext(ctx, "SELECT * FROM users WHERE id = $1", 42)</code></pre></figure>
-
-<h3 id="prepared-statements-و-جلوگیری-از-sql-injection">Prepared Statements و جلوگیری از SQL Injection</h3>
+<h3 id="prepared-statements-و-جلوگیری-از-sql-injection">8.2.3 Prepared Statements و جلوگیری از SQL Injection</h3>
 <p>دلیل اصلی استفاده از پارامترهای <bdi dir="ltr">bind</bdi> شده، جلوگیری از حمله‌ی <bdi dir="ltr">SQL Injection</bdi> است. وقتی مقادیر مستقیماً در رشته‌ی <bdi dir="ltr">SQL</bdi> جایگذاری شوند مهاجم می‌تواند ساختار کوئری را تغییر دهد. اما وقتی از پارامترهای <bdi dir="ltr">bind</bdi> شده استفاده می‌کنید مقادیر هرگز بخشی از دستور <bdi dir="ltr">SQL</bdi> نمی‌شوند.</p>
-
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">// Bad: vulnerable to SQL Injection
 username := r.FormValue("username")
@@ -247,7 +222,6 @@ rows, err := db.Query(query) // dangerous!
 // Good: using bound parameters
 rows, err := db.Query("SELECT * FROM users WHERE name = $1", username)</code></pre>
 </figure>
-
 <p>علاوه بر امنیت <bdi dir="ltr">Prepared Statements</bdi> عملکرد را در کوئری‌های تکراری بهبود می‌بخشند:</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">stmt, err := db.Prepare("INSERT INTO users(name, email) VALUES ($1, $2)")
@@ -272,10 +246,8 @@ for _, u := range users {
     }
 }</code></pre>
 </figure>
-
 <div class="warning"><strong>هشدار امنیتی:</strong> هرگز مقادیر کاربر را با الحاق رشته در کوئری SQL قرار ندهید. حتی اگر اعتبارسنجی انجام می‌دهید استفاده از پارامترهای bind شده تنها راه مطمئن برای جلوگیری از SQL Injection است.</div>
-
-<h3 id="مدیریت-null-در-scan">مدیریت NULL در Scan</h3>
+<h3 id="مدیریت-null-در-scan">8.2.4 مدیریت NULL در Scan</h3>
 <p>اگر ستونی <bdi dir="ltr">nullable</bdi> باشد و شما آن را به متغیری از نوع <code>string</code> یا <code>int</code> اسکن کنید با خطا مواجه می‌شوید. پکیج <code>database/sql</code> انواع خاصی ارائه می‌دهد:</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">type User struct {
@@ -310,13 +282,11 @@ if user.Email != nil {
 }</code></pre>
 </figure>
 <div class="tip"><strong>کدام روش بهتر است؟</strong> <code>sql.Null*</code> صراحت بیشتری دارد اما در <bdi dir="ltr">JSON serialization</bdi> رفتار عجیبی نشان می‌دهد. <bdi dir="ltr">Pointer</bdi> ها در <bdi dir="ltr">JSON</bdi> به‌درستی <code>null</code> تولید می‌کنند اما خطر <bdi dir="ltr">nil dereference</bdi> وجود دارد. در پروژه‌های واقعی معمولاً از <code>sql.Null*</code> در لایه دیتابیس و <bdi dir="ltr">pointer</bdi> در لایه <bdi dir="ltr">domain</bdi> استفاده می‌شود.</div>
-
-<h3 id="تنظیم-دقیق-connection-pool-برای-production">بهینه‌سازی تنظیمات Connection Pool برای Production</h3>
+<h3 id="تنظیم-دقیق-connection-pool-برای-production">8.2.5 بهینه‌سازی تنظیمات Connection Pool برای Production</h3>
 <p><strong dir="ltr">SetMaxOpenConns(n)</strong> : مقدار ۰ یعنی بدون محدودیت. در <bdi dir="ltr">production</bdi> حتماً مقدار مشخص تعیین کنید. قانون تجربی: حدود ۲ تا ۴ برابر تعداد هسته‌های CPU.</p>
 <p><strong dir="ltr">SetMaxIdleConns(n)</strong> : مقدار پیشنهادی: نصف تا مساوی <bdi dir="ltr">MaxOpenConns</bdi>.</p>
 <p><strong dir="ltr">SetConnMaxLifetime(d)</strong> : دلیل اصلی تنظیم، جلوگیری از اتصال‌های <bdi dir="ltr">stale</bdi> است. تنظیم کمتر از <bdi dir="ltr">timeout</bdi> دیتابیس (مثلاً ۵ تا ۱۰ دقیقه).</p>
 <p><strong dir="ltr">SetConnMaxIdleTime(d)</strong> (از Go 1.15): حداکثر مدت زمانی که یک اتصال <bdi dir="ltr">idle</bdi> می‌تواند در <bdi dir="ltr">pool</bdi> بماند.</p>
-
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">// Recommended settings for production
 db.SetMaxOpenConns(25)
@@ -324,7 +294,6 @@ db.SetMaxIdleConns(10)
 db.SetConnMaxLifetime(5 * time.Minute)
 db.SetConnMaxIdleTime(2 * time.Minute)</code></pre>
 </figure>
-
 <table class="comparison-table" dir="rtl">
 <thead>
 <tr><th>سناریو</th><th dir="ltr">MaxOpenConns</th><th dir="ltr">MaxIdleConns</th><th dir="ltr">ConnMaxLifetime</th></tr>
@@ -336,8 +305,7 @@ db.SetConnMaxIdleTime(2 * time.Minute)</code></pre>
 <tr><td>اجرای batch/job</td><td>۵-۱۰</td><td>۲-۵</td><td>۱۰-۳۰ دقیقه</td></tr>
 </tbody>
 </table>
-
-<h3 id="مانیتورینگ-و-مشاهده-وضعیت-connection-pool">مانیتورینگ و مشاهده وضعیت Connection Pool</h3>
+<h3 id="مانیتورینگ-و-مشاهده-وضعیت-connection-pool">8.2.6 مانیتورینگ و مشاهده وضعیت Connection Pool</h3>
 <p>پکیج <code>database/sql</code> متد <code dir="ltr">db.Stats()</code> را برای نظارت ارائه می‌دهد:</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">stats := db.Stats()
@@ -349,11 +317,8 @@ stats.WaitCount,
 stats.WaitDuration,
 )</code></pre>
 </figure>
-
 <p>مقادیر کلیدی: <bdi dir="ltr">WaitCount</bdi> در حال افزایش یعنی باید <bdi dir="ltr">MaxOpenConns</bdi> را افزایش دهید. تعداد <bdi dir="ltr">Idle</bdi> همیشه صفر یعنی <bdi dir="ltr">MaxIdleConns</bdi> خیلی کم تنظیم شده.</p>
-
 <div class="tip"><strong>نکته پیشرفته:</strong> این آمار را به‌صورت متریک Prometheus ثبت کنید تا در Grafana قابل مشاهده باشند. همچنین health check endpoint اضافه کنید:</div>
-
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">http.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
     ctx, cancel := context.WithTimeout(r.Context(), 2*time.Second)
@@ -366,182 +331,137 @@ stats.WaitDuration,
     fmt.Fprint(w, "OK")
 })</code></pre>
 </figure>
-
-<h3 id="ساختار-داخلی-connection-pool">ساختار داخلی Connection Pool</h3>
+<h3 id="ساختار-داخلی-connection-pool">8.2.7 ساختار داخلی Connection Pool</h3>
 <p>برای درک بهتر نحوه‌ی عملکرد <bdi dir="ltr">Connection Pool</bdi> در <bdi dir="ltr">Go</bdi> آشنایی با ساختار داخلی <code>*sql.DB</code> مفید است:</p>
 <p><strong dir="ltr">freeConn</strong> : اتصال‌های آزاد (<bdi dir="ltr">idle</bdi>). <strong dir="ltr">maxOpen</strong> : حداکثر اتصال‌های همزمان. <strong dir="ltr">maxIdle</strong> : حداکثر اتصال‌های <bdi dir="ltr">idle</bdi>. <strong dir="ltr">maxLifetime</strong> : حداکثر عمر اتصال. <strong dir="ltr">openerCh</strong> : کانال داخلی برای درخواست ایجاد اتصال جدید.</p>
-
 <div class="tip"><strong>نکته‌ی پیشرفته:</strong> وقتی <code>SetMaxOpenConns</code> روی مقدار مثبت تنظیم شود حداکثر اتصال <bdi dir="ltr">idle</bdi> پیش‌فرض برابر با <code>MaxOpenConns</code> خواهد بود (از Go 1.14).</div>
-
 <div class="comparison"><strong>مقایسه با PDO در PHP:</strong> مقایسه‌ی کامل تفاوت‌های <bdi dir="ltr">PDO</bdi> (بدون <bdi dir="ltr">Connection Pool</bdi> داخلی، باز و بسته شدن اتصال در هر درخواست) با <code>*sql.DB</code> در <bdi dir="ltr">Go</bdi> را در <a href="08.00-chapter-8.html">مقدمه‌ی فصل ۸</a> بررسی کردیم — در اینجا فقط یادآوری می‌کنیم که در <bdi dir="ltr">Go</bdi> اتصال‌ها بین درخواست‌ها به اشتراک گذاشته می‌شوند و به همین دلیل تنظیم دقیق پارامترهای بالا اهمیت دارد.</div>
-
-<h3 id="ساختار-داخلی-connection-pool-بصری">ساختار داخلی Connection Pool (بصری)</h3>
-
+<h3 id="ساختار-داخلی-connection-pool-بصری">8.2.8 ساختار داخلی Connection Pool (بصری)</h3>
 <figure class="diagram" dir="ltr">
-<svg width="820" height="620" viewBox="0 0 820 620" xmlns="http://www.w3.org/2000/svg">
-<defs>
-<marker id="arrowPoolA" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#00ADD8" points="0 0, 10 3.5, 0 7"></polygon></marker>
-<marker id="arrowPoolG" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#4CAF50" points="0 0, 10 3.5, 0 7"></polygon></marker>
-<marker id="arrowPoolR" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#e91e63" points="0 0, 10 3.5, 0 7"></polygon></marker>
-<marker id="arrowPoolO" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#FF9800" points="0 0, 10 3.5, 0 7"></polygon></marker>
-<filter height="104%" id="shPoolV" width="104%" x="-2%" y="-2%"><fedropshadow dx="1" dy="1" flood-opacity="0.15" stddeviation="2"></fedropshadow></filter>
-</defs>
-<rect fill="#fafafa" height="620" rx="8" width="820" x="0" y="0"></rect>
+<pre class="mermaid">flowchart TB
+    Title["ساختار داخلی Connection Pool در database/sql"]
 
-<!-- Title -->
-<text fill="#333" font-size="16" font-weight="bold" text-anchor="middle" x="410" y="28" direction="rtl" unicode-bidi="embed">ساختار داخلی <tspan direction="ltr" unicode-bidi="embed">Connection Pool</tspan> در <tspan direction="ltr" unicode-bidi="embed">database/sql</tspan></text>
+    subgraph APP["اپلیکیشن — Goroutine‌ها درخواست کوئری می‌دهند"]
+        direction LR
+        Q1["Query()"]
+        Q2["Query()"]
+        Q3["Query()"]
+    end
 
-<!-- Application layer -->
-<rect fill="#E3F2FD" height="50" rx="6" stroke="#1565C0" stroke-width="1.5" width="730" x="45" y="45"></rect>
-<text fill="#1565C0" font-size="12" font-weight="bold" text-anchor="middle" x="410" y="75" direction="rtl" unicode-bidi="embed">اپلیکیشن — <tspan direction="ltr" unicode-bidi="embed">Goroutine</tspan>‌ها درخواست کوئری می‌دهند</text>
+    Pool["Connection Pool (*sql.DB)"]
 
-<!-- Query arrows going down -->
-<line marker-end="url(#arrowPoolA)" stroke="#00ADD8" stroke-width="2" x1="200" x2="200" y1="95" y2="140"></line>
-<line marker-end="url(#arrowPoolA)" stroke="#00ADD8" stroke-width="2" x1="410" x2="410" y1="95" y2="140"></line>
-<line marker-end="url(#arrowPoolA)" stroke="#00ADD8" stroke-width="2" x1="620" x2="620" y1="95" y2="140"></line>
-<text fill="#00ADD8" font-size="8" text-anchor="middle" x="200" y="120" direction="ltr" unicode-bidi="embed">Query()</text>
-<text fill="#00ADD8" font-size="8" text-anchor="middle" x="410" y="120" direction="ltr" unicode-bidi="embed">Query()</text>
-<text fill="#00ADD8" font-size="8" text-anchor="middle" x="620" y="120" direction="ltr" unicode-bidi="embed">Query()</text>
+    subgraph IDLEP["Idle Pool"]
+        direction LR
+        C1["conn-1"]
+        C2["conn-2"]
+        C3["conn-3"]
+    end
 
-<!-- Connection Pool main container -->
-<rect fill="#00ADD8" height="230" opacity="0.06" rx="12" stroke="#00ADD8" stroke-width="2.5" width="730" x="45" y="140"></rect>
-<text fill="#00ADD8" font-size="14" font-weight="bold" text-anchor="middle" x="410" y="163" direction="ltr" unicode-bidi="embed">Connection Pool (*sql.DB)</text>
+    subgraph INUSEP["In-Use"]
+        direction LR
+        C4["conn-4"]
+        C5["conn-5"]
+        C6["conn-6"]
+    end
 
-<!-- Idle connections section -->
-<text fill="#4CAF50" font-size="11" font-weight="bold" x="70" y="188" direction="ltr" unicode-bidi="embed">Idle Pool</text>
-<rect fill="#4CAF50" height="28" opacity="0.15" rx="5" stroke="#4CAF50" stroke-width="1.5" width="70" x="70" y="195"></rect>
-<text fill="#2E7D32" font-size="9" text-anchor="middle" x="105" y="213" direction="ltr" unicode-bidi="embed">conn-1</text>
-<rect fill="#4CAF50" height="28" opacity="0.15" rx="5" stroke="#4CAF50" stroke-width="1.5" width="70" x="150" y="195"></rect>
-<text fill="#2E7D32" font-size="9" text-anchor="middle" x="185" y="213" direction="ltr" unicode-bidi="embed">conn-2</text>
-<rect fill="#4CAF50" height="28" opacity="0.15" rx="5" stroke="#4CAF50" stroke-width="1.5" width="70" x="230" y="195"></rect>
-<text fill="#2E7D32" font-size="9" text-anchor="middle" x="265" y="213" direction="ltr" unicode-bidi="embed">conn-3</text>
+    subgraph WQ["Wait Queue"]
+        direction LR
+        WA["query-A"]
+        WB["query-B"]
+        WC["query-C"]
+    end
 
-<!-- In-use connections section -->
-<text fill="#FF9800" font-size="11" font-weight="bold" x="70" y="248" direction="ltr" unicode-bidi="embed">In-Use</text>
-<rect fill="#FF9800" height="28" opacity="0.15" rx="5" stroke="#FF9800" stroke-width="1.5" width="70" x="70" y="255"></rect>
-<text fill="#E65100" font-size="9" text-anchor="middle" x="105" y="273" direction="ltr" unicode-bidi="embed">conn-4</text>
-<rect fill="#FF9800" height="28" opacity="0.15" rx="5" stroke="#FF9800" stroke-width="1.5" width="70" x="150" y="255"></rect>
-<text fill="#E65100" font-size="9" text-anchor="middle" x="185" y="273" direction="ltr" unicode-bidi="embed">conn-5</text>
-<rect fill="#FF9800" height="28" opacity="0.15" rx="5" stroke="#FF9800" stroke-width="1.5" width="70" x="230" y="255"></rect>
-<text fill="#E65100" font-size="9" text-anchor="middle" x="265" y="273" direction="ltr" unicode-bidi="embed">conn-6</text>
+    subgraph SETTINGS["تنظیمات Pool"]
+        direction TB
+        S1["MaxOpenConns = 25 — حداکثر اتصال همزمان"]
+        S2["MaxIdleConns = 10 — حداکثر اتصال بیکار"]
+        S3["ConnMaxLifetime = 5min — حداکثر عمر اتصال"]
+        S4["ConnMaxIdleTime = 2min — حداکثر زمان بیکاری اتصال"]
+    end
 
-<!-- Waiting queries -->
-<text fill="#e91e63" font-size="11" font-weight="bold" x="70" y="308" direction="ltr" unicode-bidi="embed">Wait Queue</text>
-<rect fill="#e91e63" height="24" opacity="0.12" rx="4" stroke="#e91e63" stroke-width="1.5" width="60" x="70" y="315"></rect>
-<text fill="#c2185b" font-size="8" text-anchor="middle" x="100" y="331" direction="ltr" unicode-bidi="embed">query-A</text>
-<rect fill="#e91e63" height="24" opacity="0.12" rx="4" stroke="#e91e63" stroke-width="1.5" width="60" x="140" y="315"></rect>
-<text fill="#c2185b" font-size="8" text-anchor="middle" x="170" y="331" direction="ltr" unicode-bidi="embed">query-B</text>
-<rect fill="#e91e63" height="24" opacity="0.12" rx="4" stroke="#e91e63" stroke-width="1.5" width="60" x="210" y="315"></rect>
-<text fill="#c2185b" font-size="8" text-anchor="middle" x="240" y="331" direction="ltr" unicode-bidi="embed">query-C</text>
+    subgraph FLOW["جریان اختصاص اتصال به کوئری"]
+        direction TB
+        F1["1. Check idle pool"]
+        F2["2. Reuse idle conn? Yes ✓ / No ✗"]
+        F3["3. Under MaxOpen? Create new conn — Yes ✓ / No ✗"]
+        F4["4. Wait for conn until release"]
+        F5["→ Execute query / → Execute query / → Blocked ⏳"]
+        F1 --&gt; F2 --&gt; F3 --&gt; F4 --&gt; F5
+    end
 
-<!-- Settings panel (right side of pool) -->
-<rect fill="#f5f5f5" height="160" rx="6" stroke="#ccc" stroke-width="1" width="280" x="440" y="180"></rect>
-<text fill="#333" font-size="11" font-weight="bold" text-anchor="middle" x="580" y="200" direction="rtl" unicode-bidi="embed">تنظیمات <tspan direction="ltr" unicode-bidi="embed">Pool</tspan></text>
-<text fill="#00ADD8" font-size="10" text-anchor="start" x="460" y="220" direction="ltr" unicode-bidi="embed">MaxOpenConns = 25</text>
-<text fill="#888" font-size="8" text-anchor="start" x="460" y="232" direction="rtl" unicode-bidi="embed">حداکثر اتصال همزمان</text>
-<text fill="#4CAF50" font-size="10" text-anchor="start" x="460" y="252" direction="ltr" unicode-bidi="embed">MaxIdleConns = 10</text>
-<text fill="#888" font-size="8" text-anchor="start" x="460" y="264" direction="rtl" unicode-bidi="embed">حداکثر اتصال بیکار</text>
-<text fill="#FF9800" font-size="10" text-anchor="start" x="460" y="284" direction="ltr" unicode-bidi="embed">ConnMaxLifetime = 5min</text>
-<text fill="#888" font-size="8" text-anchor="start" x="460" y="296" direction="rtl" unicode-bidi="embed">حداکثر عمر اتصال</text>
-<text fill="#9C27B0" font-size="10" text-anchor="start" x="460" y="316" direction="ltr" unicode-bidi="embed">ConnMaxIdleTime = 2min</text>
-<text fill="#888" font-size="8" text-anchor="start" x="460" y="328" direction="rtl" unicode-bidi="embed">حداکثر زمان بیکاری اتصال</text>
+    Health["بررسی سلامت: db.Ping()"]
+    Recycle["بازیافت: اتصال‌های منقضی‌شده بسته و جایگزین می‌شوند"]
+    Opener["openerCh → connectionOpener goroutine"]
+    Golden["قانون طلایی: MaxOpenConns پیش‌فرض نامحدود است — حتماً در production مقدار مشخص تعیین کنید"]
 
-<!-- Flow: how query gets a connection -->
-<text fill="#333" font-size="13" font-weight="bold" text-anchor="middle" x="410" y="400" direction="rtl" unicode-bidi="embed">جریان اختصاص اتصال به کوئری</text>
+    Title --&gt; APP
+    APP --&gt; Pool
+    Pool --&gt; IDLEP
+    Pool --&gt; INUSEP
+    Pool --&gt; WQ
+    Pool ~~~ SETTINGS
+    SETTINGS ~~~ FLOW
+    FLOW ~~~ Health
+    Health --&gt; Recycle
+    Recycle --&gt; Opener
+    Opener --&gt; Golden
 
-<rect fill="#4CAF50" filter="url(#shPoolV)" height="34" rx="5" width="160" x="50" y="420"></rect>
-<text fill="#fff" font-size="9" text-anchor="middle" x="130" y="441" direction="ltr" unicode-bidi="embed">1. Check idle pool</text>
-
-<line marker-end="url(#arrowPoolG)" stroke="#4CAF50" stroke-width="2" x1="210" x2="240" y1="437" y2="437"></line>
-
-<rect fill="#00ADD8" filter="url(#shPoolV)" height="34" rx="5" width="160" x="240" y="420"></rect>
-<text fill="#fff" font-size="9" text-anchor="middle" x="320" y="441" direction="ltr" unicode-bidi="embed">2. Reuse idle conn?</text>
-
-<!-- Yes path (reuse) -->
-<line marker-end="url(#arrowPoolG)" stroke="#4CAF50" stroke-width="1.5" x1="320" x2="320" y1="454" y2="490"></line>
-<text fill="#4CAF50" font-size="8" text-anchor="middle" x="340" y="478" direction="ltr" unicode-bidi="embed">Yes ✓</text>
-
-<!-- No path (create new) -->
-<line marker-end="url(#arrowPoolO)" stroke="#FF9800" stroke-width="1.5" x1="400" x2="470" y1="437" y2="437"></line>
-<text fill="#FF9800" font-size="8" text-anchor="middle" x="435" y="430" direction="ltr" unicode-bidi="embed">No ✗</text>
-
-<rect fill="#FF9800" filter="url(#shPoolV)" height="34" rx="5" width="160" x="470" y="420"></rect>
-<text fill="#fff" font-size="9" text-anchor="middle" x="550" y="439" direction="ltr" unicode-bidi="embed">3. Under MaxOpen?</text>
-<text fill="#fff" font-size="8" text-anchor="middle" x="550" y="449" direction="ltr" unicode-bidi="embed">Create new conn</text>
-
-<!-- Yes create -->
-<line marker-end="url(#arrowPoolO)" stroke="#FF9800" stroke-width="1.5" x1="550" x2="550" y1="454" y2="490"></line>
-<text fill="#FF9800" font-size="8" text-anchor="middle" x="570" y="478" direction="ltr" unicode-bidi="embed">Yes ✓</text>
-
-<!-- No wait -->
-<line marker-end="url(#arrowPoolR)" stroke="#e91e63" stroke-width="1.5" x1="630" x2="660" y1="437" y2="437"></line>
-<text fill="#e91e63" font-size="8" text-anchor="middle" x="645" y="430" direction="ltr" unicode-bidi="embed">No ✗</text>
-
-<rect fill="#e91e63" filter="url(#shPoolV)" height="34" rx="5" width="130" x="660" y="420"></rect>
-<text fill="#fff" font-size="9" text-anchor="middle" x="725" y="439" direction="ltr" unicode-bidi="embed">4. Wait for conn</text>
-<text fill="#fff" font-size="8" text-anchor="middle" x="725" y="449" direction="ltr" unicode-bidi="embed">until release</text>
-
-<!-- Result boxes -->
-<rect fill="#e8f5e9" height="30" rx="4" stroke="#4CAF50" stroke-width="1" width="140" x="250" y="490"></rect>
-<text fill="#2E7D32" font-size="9" text-anchor="middle" x="320" y="510" direction="ltr" unicode-bidi="embed">→ Execute query</text>
-
-<rect fill="#fff3e0" height="30" rx="4" stroke="#FF9800" stroke-width="1" width="140" x="480" y="490"></rect>
-<text fill="#E65100" font-size="9" text-anchor="middle" x="550" y="510" direction="ltr" unicode-bidi="embed">→ Execute query</text>
-
-<rect fill="#fce4ec" height="30" rx="4" stroke="#e91e63" stroke-width="1" width="140" x="655" y="490"></rect>
-<text fill="#c2185b" font-size="9" text-anchor="middle" x="725" y="510" direction="ltr" unicode-bidi="embed">→ Blocked ⏳</text>
-
-<!-- Health check & recycling -->
-<rect fill="#f5f5f5" height="48" rx="6" stroke="#ddd" stroke-width="1" width="730" x="45" y="545"></rect>
-<text fill="#333" font-size="10" text-anchor="middle" x="200" y="567" direction="rtl" unicode-bidi="embed">بررسی سلامت: <tspan direction="ltr" unicode-bidi="embed">db.Ping()</tspan></text>
-<text fill="#333" font-size="10" text-anchor="middle" x="470" y="567" direction="rtl" unicode-bidi="embed">بازیافت: اتصال‌های منقضی‌شده بسته و جایگزین می‌شوند</text>
-<text fill="#333" font-size="10" text-anchor="middle" x="680" y="567" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">openerCh</tspan> → <tspan direction="ltr" unicode-bidi="embed">connectionOpener goroutine</tspan></text>
-
-<!-- Golden Rule bar -->
-<rect fill="#00ADD8" height="28" rx="4" width="730" x="45" y="598"></rect>
-<text fill="#fff" font-size="11" font-weight="bold" text-anchor="middle" x="410" y="617" direction="rtl" unicode-bidi="embed">قانون طلایی: <tspan direction="ltr" unicode-bidi="embed">MaxOpenConns</tspan> پیش‌فرض نامحدود است — حتماً در <tspan direction="ltr" unicode-bidi="embed">production</tspan> مقدار مشخص تعیین کنید</text>
-</svg>
+    classDef titleBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:2px,color:#1f2937,font-weight:bold;
+    classDef goBox   fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
+    classDef bothBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
+    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
+    classDef errBox  fill:#fef2f2,stroke:#ef4444,stroke-width:1.5px,color:#1f2937;
+    classDef neuBox  fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
+    class Title titleBox;
+    class Q1,Q2,Q3,Pool goBox;
+    class C1,C2,C3 bothBox;
+    class C4,C5,C6 warnBox;
+    class WA,WB,WC errBox;
+    class S1,S2,S3,S4,F1,F2,F3,F4,F5,Health,Recycle,Opener neuBox;
+    class Golden warnBox;</pre>
 <figcaption dir="rtl">شکل ۸-۲-ج: ساختار داخلی <bdi dir="ltr">Connection Pool</bdi> — اتصال‌های بیکار (سبز)، در حال استفاده (نارنجی)، صف انتظار (قرمز)</figcaption>
 </figure>
-
-<p>این نمودار ساختار داخلی <bdi dir="ltr">Connection Pool</bdi> در <bdi dir="ltr">database/sql</bdi> را به صورت بصری نشان می‌دهد. وقتی یک <bdi dir="ltr">Goroutine</bdi> کوئری اجرا می‌کند، ابتدا <bdi dir="ltr">Pool</bdi> اتصال‌های بیکار را بررسی می‌کند. اگر اتصال بیکاری موجود باشد مستقیماً استفاده می‌شود و نیازی به باز کردن اتصال جدید نیست. اگر اتصال بیکاری نباشد ولی تعداد کل اتصال‌ها کمتر از <bdi dir="ltr">MaxOpenConns</bdi> باشد، یک اتصال جدید ایجاد می‌شود. اما اگر تعداد اتصال‌ها به حداکثر رسیده باشد، کوئری وارد صف انتظار می‌شود تا یکی از اتصال‌ها آزاد شود.</p>
-
-<p>تنظیمات <bdi dir="ltr">ConnMaxLifetime</bdi> و <bdi dir="ltr">ConnMaxIdleTime</bdi> مکانیزم بازیافت اتصال‌ها را کنترل می‌کنند. اتصال‌هایی که عمرشان از <bdi dir="ltr">ConnMaxLifetime</bdi> بیشتر شود بسته می‌شوند و در فرصت مناسب جایگزین می‌شوند. این مکانیزم از بروز مشکل اتصال‌های <bdi dir="ltr">stale</bdi> (اتصال‌هایی که سرور دیتابیس قطع کرده ولی کلاینت هنوز نمی‌داند) جلوگیری می‌کند. همچنین <bdi dir="ltr">openerCh</bdi> یک کانال داخلی است که <bdi dir="ltr">goroutine</bdi> اختصاصی <code dir="ltr">connectionOpener</code> از آن برای ایجاد اتصال‌های جدید استفاده می‌کند.</p>
-
-<h3 id="سناریوهای-عملیاتی-connection-pool">سناریوهای عملیاتی</h3>
+<p>این نمودار ساختار داخلی <bdi dir="ltr">Connection Pool</bdi> در <bdi dir="ltr">database/sql</bdi> را به صورت بصری نشان می‌دهد. وقتی یک <bdi dir="ltr">Goroutine</bdi> کوئری اجرا می‌کند، ابتدا <bdi dir="ltr">Pool</bdi> اتصال‌های بیکار را بررسی می‌کند. اگر اتصال بیکاری موجود باشد مستقیماً استفاده می‌شود و نیازی به باز کردن اتصال جدید نیست. </p><p>اگر اتصال بیکاری نباشد ولی تعداد کل اتصال‌ها کمتر از <bdi dir="ltr">MaxOpenConns</bdi> باشد، یک اتصال جدید ایجاد می‌شود. اما اگر تعداد اتصال‌ها به حداکثر رسیده باشد، کوئری وارد صف انتظار می‌شود تا یکی از اتصال‌ها آزاد شود.</p>
+<p>تنظیمات <bdi dir="ltr">ConnMaxLifetime</bdi> و <bdi dir="ltr">ConnMaxIdleTime</bdi> مکانیزم بازیافت اتصال‌ها را کنترل می‌کنند. اتصال‌هایی که عمرشان از <bdi dir="ltr">ConnMaxLifetime</bdi> بیشتر شود بسته می‌شوند و در فرصت مناسب جایگزین می‌شوند. </p><p>این مکانیزم از بروز مشکل اتصال‌های <bdi dir="ltr">stale</bdi> (اتصال‌هایی که سرور دیتابیس قطع کرده ولی کلاینت هنوز نمی‌داند) جلوگیری می‌کند. </p><p>همچنین <bdi dir="ltr">openerCh</bdi> یک کانال داخلی است که <bdi dir="ltr">goroutine</bdi> اختصاصی <code dir="ltr">connectionOpener</code> از آن برای ایجاد اتصال‌های جدید استفاده می‌کند.</p>
+<h3 id="سناریوهای-عملیاتی-connection-pool">8.2.9 سناریوهای عملیاتی</h3>
 <ul>
 <li><strong>بهینه‌سازی اندازه‌ی <bdi dir="ltr">Pool</bdi> برای محیط تولید:</strong> اندازه‌ی <bdi dir="ltr">Pool</bdi> باید بر اساس ظرفیت دیتابیس و الگوی ترافیک برنامه تنظیم شود. یک نقطه‌ی شروع معقول <code dir="ltr">NumCPU * 2</code> برای <bdi dir="ltr">MaxOpenConns</bdi> و نصف آن برای <bdi dir="ltr">MaxIdleConns</bdi> است. سپس با مانیتورینگ متریک‌های <code dir="ltr">db.Stats()</code> مقادیر را تنظیم کنید. اگر <bdi dir="ltr">WaitCount</bdi> بالا می‌رود یعنی باید <bdi dir="ltr">MaxOpenConns</bdi> را افزایش دهید.</li>
 <li><strong>مدیریت فرسودگی اتصال‌ها (<bdi dir="ltr">Connection Exhaustion</bdi>):</strong> اگر اتصال‌ها به درستی آزاد نشوند <bdi dir="ltr">Pool</bdi> پر می‌شود و تمام درخواست‌های جدید در صف انتظار قرار می‌گیرند. همیشه <code dir="ltr">defer rows.Close()</code> را بلافاصله بعد از بررسی خطای <bdi dir="ltr">Query</bdi> فراخوانی کنید. همیشه <code dir="ltr">defer stmt.Close()</code> برای <bdi dir="ltr">Prepared Statements</bdi> استفاده کنید. از <bdi dir="ltr">Context</bdi> با <bdi dir="ltr">timeout</bdi> استفاده کنید تا کوئری‌های گیرکرده به‌طور خودکار لغو شوند.</li>
 <li><strong>تنظیم <bdi dir="ltr">MaxOpenConns</bdi> بر اساس محدودیت‌های دیتابیس:</strong> هر دیتابیس حداکثر تعداد اتصال همزمان مشخصی دارد. در <bdi dir="ltr">PostgreSQL</bdi> پیش‌فرض <code dir="ltr">max_connections = 100</code> است. اگر چند نمونه از برنامه اجرا می‌کنید مجموع <bdi dir="ltr">MaxOpenConns</bdi> همه نمونه‌ها باید کمتر از این مقدار باشد. مثلاً با ۴ نمونه برنامه هرکدام <code dir="ltr">MaxOpenConns = 20</code> با حفظ ۲۰ اتصال برای اتصال‌های مدیریتی.</li>
 <li><strong>عمر اتصال و راه‌اندازی مجدد دیتابیس:</strong> وقتی سرور دیتابیس راه‌اندازی مجدد می‌شود تمام اتصال‌های موجود قطع می‌شوند. اگر <bdi dir="ltr">ConnMaxLifetime</bdi> تنظیم نشده باشد برنامه ممکن است اتصال‌های قطع‌شده را در <bdi dir="ltr">Pool</bdi> نگه دارد و خطاهای <code dir="ltr">connection reset by peer</code> دریافت کند. تنظیم <code dir="ltr">ConnMaxLifetime = 5 * time.Minute</code> تضمین می‌کند اتصال‌ها قبل از اینکه سرور آنها را قطع کند جایگزین شوند.</li>
 </ul>
-
 <div class="tip"><strong>یادآوری قانون طلایی:</strong> مقدار پیش‌فرض <bdi dir="ltr">MaxOpenConns</bdi> در <bdi dir="ltr">database/sql</bdi> برابر صفر یعنی «بدون محدودیت» — در <bdi dir="ltr">production</bdi> هرگز این مقدار را روی صفر رها نکنید. راهنمای انتخاب عدد مناسب (<code dir="ltr">NumCPU * 2</code> به‌عنوان نقطه‌ی شروع، تنظیم بر اساس متریک‌های <code dir="ltr">db.Stats()</code>) را در بخش <a href="#تنظیم-دقیق-connection-pool-برای-production">بهینه‌سازی تنظیمات Connection Pool برای Production</a> و سناریوی اول همین بخش بررسی کردیم.</div>
-</div>
-</div>
-
+<div class="summary">
+<strong>خلاصه‌ی نکات کلیدی:</strong>
+<ul>
+<li>sql.Open با driver name و DSN</li>
+<li>sql.DB pool با SetMaxOpenConns</li>
+<li>driver به‌صورت blank import</li>
+<li>Ping برای تست اتصال</li>
+<li>defer db.Close() در پایان برنامه</li>
+</ul>
+</div></div>
+</main></div>
 <!-- Footer -->
 <footer class="site-footer">
 <div class="footer-inner">
 <div class="footer-nav">
 <span class="nav-arrow">‹</span>
-<a href="08.01-migration.html" data-prev>۸.۱ Migration</a>
+<a data-prev="" href="08.01-migration.html">۸.۱ Migration</a>
 </div>
 <div class="footer-toc">
 <a href="00.01-contents.html">فهرست</a>
 </div>
 <div class="footer-nav">
-<a href="08.03-executing-queries.html" data-next>۸.۳ اجرای Query</a>
+<a data-next="" href="08.03-executing-queries.html">۸.۳ اجرای Query</a>
 <span class="nav-arrow">›</span>
 </div>
 </div>
 </footer>
-
 <!-- Back to Top -->
-<button class="back-to-top" aria-label="بازگشت به بالا">
-<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
+<button aria-label="بازگشت به بالا" class="back-to-top">
+<svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24"><polyline points="18 15 12 9 6 15"></polyline></svg>
 </button>
-
 <!-- Scripts -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/go.min.js"></script>
@@ -554,6 +474,7 @@ stats.WaitDuration,
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/xml.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/ini.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/plaintext.min.js"></script>
+<script src="assets/js/diagrams.js"></script>
 <script src="assets/js/main.js"></script>
 </body>
 </html>
