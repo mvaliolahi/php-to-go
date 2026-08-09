@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html dir="rtl" lang="fa">
 <head>
 <script>!function(){try{var t=localStorage.getItem('php2go-theme');if(t==='dark'||(!t&&window.matchMedia('(prefers-color-scheme:dark)').matches)){document.documentElement.setAttribute('data-theme','dark')}}catch(e){}}();</script>
@@ -6,26 +7,25 @@
 <meta content="ie=edge" http-equiv="x-ua-compatible"/>
 <title>۵.۵ WaitGroup — PHP to Go</title>
 <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport"/>
-<link rel="preconnect" href="https://fonts.googleapis.com"/>
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600;700&amp;family=Fira+Code:wght@400;500&amp;display=swap" rel="stylesheet"/>
 <link href="assets/css/main.css" rel="stylesheet" type="text/css"/>
 <link href="assets/img/favicon.ico" rel="icon" type="image/x-icon"/>
-<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" media="screen" class="hljs-light-theme" rel="stylesheet"/>
-<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css" media="not screen" class="hljs-dark-theme" rel="stylesheet"/>
+<link class="hljs-light-theme" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" media="screen" rel="stylesheet"/>
+<link class="hljs-dark-theme" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css" media="not screen" rel="stylesheet"/>
 </head>
 <body>
 <!-- Progress Bar -->
 <div class="progress-bar"><div class="progress-bar__fill"></div></div>
-
 <!-- Header -->
 <header class="site-header">
 <div class="header-inner">
 <div class="header-left">
-<button class="header-btn sidebar-toggle" aria-label="فهرست">
-<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+<button aria-label="فهرست" class="header-btn sidebar-toggle">
+<svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24"><line x1="3" x2="21" y1="6" y2="6"></line><line x1="3" x2="21" y1="12" y2="12"></line><line x1="3" x2="21" y1="18" y2="18"></line></svg>
 </button>
-<a href="00.00-front-matter.html" class="header-logo"><span class="logo-php">PHP</span> to <span class="logo-go">Go</span></a>
+<a class="header-logo" href="00.00-front-matter.html"><span class="logo-php">PHP</span> to <span class="logo-go">Go</span></a>
 <span class="header-crumbs">همزمانی › WaitGroup</span>
 </div>
 <div class="header-right">
@@ -36,39 +36,38 @@
 <a href="05.06-race-condition.html"><span class="nav-label">۵.۶ Race Condition</span></a>
 <span class="nav-arrow">›</span>
 </nav>
-<button class="header-btn search-toggle" aria-label="جستجو">
-<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+<button aria-label="جستجو" class="header-btn search-toggle">
+<svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" x2="16.65" y1="21" y2="16.65"></line></svg>
 </button>
-<button class="header-btn theme-toggle" aria-label="تغییر تم">
-<svg class="theme-icon-light" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
-<svg class="theme-icon-dark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+<button aria-label="تغییر تم" class="header-btn theme-toggle">
+<svg class="theme-icon-light" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24"><circle cx="12" cy="12" r="5"></circle><line x1="12" x2="12" y1="1" y2="3"></line><line x1="12" x2="12" y1="21" y2="23"></line><line x1="4.22" x2="5.64" y1="4.22" y2="5.64"></line><line x1="18.36" x2="19.78" y1="18.36" y2="19.78"></line><line x1="1" x2="3" y1="12" y2="12"></line><line x1="21" x2="23" y1="12" y2="12"></line><line x1="4.22" x2="5.64" y1="19.78" y2="18.36"></line><line x1="18.36" x2="19.78" y1="5.64" y2="4.22"></line></svg>
+<svg class="theme-icon-dark" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
 </button>
 </div>
 </div>
 </header>
-
 <!-- Search Modal -->
 <div class="search-overlay">
 <div class="search-modal">
 <div class="search-input-wrap">
-<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-<input type="text" class="search-input" placeholder="جستجو... (Ctrl+K)" dir="rtl"/>
+<svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" x2="16.65" y1="21" y2="16.65"></line></svg>
+<input class="search-input" dir="rtl" placeholder="جستجو... (Ctrl+K)" type="text"/>
 </div>
 <div class="search-results"></div>
 </div>
 </div>
-
 <!-- Layout -->
 <div class="site-layout">
 <!-- Sidebar -->
 <aside class="sidebar"></aside>
 <div class="sidebar-overlay"></div>
-
 <!-- Main Content -->
 <main class="content-area">
 <div class="content-wrap text">
 <div class="chapter">فصل ۵.۵</div>
-<h2 id="waitgroup">WaitGroup</h2>
+<h2 id="waitgroup">WaitGroup</h2><div class="abstract">
+<strong>چکیده:</strong> sync.WaitGroup برای همگام‌سازی چند goroutine و انتظار برای اتمام آن‌ها استفاده می‌شود. این بخش الگوی Add/Done/Wait و خطرات رایج را پوشش می‌دهد. تفاوت با CountDownLatch و الگوهای PHP بررسی می‌شود.
+</div>
 <p>در برنامه‌نویسی موازی و هم‌زمان شما معمولاً تعدادی عملیات را به صورت موازی اجرا می‌کنید مثلاً چند goroutine و انتظار دارید همه آنها قبل از ادامه برنامه به پایان برسند. این مفهوم به نام همگام‌سازی شناخته می‌شود. </p>
 <p>اگر با PHP کار کرده باشید حتماً تجربه اجرای موازی را با چندین Process یا Worker داشته‌اید اما مدیریت همگام‌سازی دقیق بین آنها دشوار و اغلب وابسته به روش‌هایی مثل polling ذخیره وضعیت در دیتابیس یا صف‌ها است.</p>
 <p>اما در Go با وجود سبک‌وزنی goroutine‌ها و ابزارهای قدرتمندی مثل sync.WaitGroup می‌توانید به شکلی ساده و موثر منتظر پایان اجرای گروهی از goroutine‌ها بمانید.
@@ -82,13 +81,13 @@
     Wait["wg.Wait()<br/>تا صفر شدن منتظر می‌ماند"]
     Cont["ادامه"]
 
-    Add --> G1
-    Add --> G2
-    Add --> G3
-    G1 --> Wait
-    G2 --> Wait
-    G3 --> Wait
-    Wait --> Cont
+    Add --&gt; G1
+    Add --&gt; G2
+    Add --&gt; G3
+    G1 --&gt; Wait
+    G2 --&gt; Wait
+    G3 --&gt; Wait
+    Wait --&gt; Cont
 
     subgraph CNT["جریان شمارنده"]
         direction LR
@@ -97,7 +96,7 @@
         C1["counter=1"]
         C0["counter=0"]
         CW["Wait پایان"]
-        C3 --> C2 --> C1 --> C0 --> CW
+        C3 --&gt; C2 --&gt; C1 --&gt; C0 --&gt; CW
     end
 
     classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
@@ -109,7 +108,7 @@
     class Wait warnBox;
     class Cont neuBox;
     class CNT,C3,C2,C1,C0,CW neuBox;</pre>
-<figcaption>شکل ۵-۱۱: جریان <bdi dir="ltr">WaitGroup</bdi> - <bdi dir="ltr">Add</bdi> ، <bdi dir="ltr">Done</bdi> و <bdi dir="ltr">Wait</bdi></figcaption>
+<figcaption>شکل ۵-۱۱: جریان <bdi dir="ltr">WaitGroup</bdi> - <bdi dir="ltr">Add</bdi>، <bdi dir="ltr">Done</bdi> و <bdi dir="ltr">Wait</bdi></figcaption>
 </figure>
 <p>sync.WaitGroup یک ساختار داده است که شمارنده‌ای داخلی دارد. این شمارنده نشان می‌دهد که چند goroutine هنوز کارشان تمام نشده است. شما با افزودن تعداد goroutine‌ها به شمارنده، و هر goroutine با فراخوانی <span dir="ltr">Done()</span> شمارنده را کم می‌کند. وقتی شمارنده به صفر رسید، تابع <span dir="ltr">Wait()</span> پایان می‌یابد و برنامه می‌تواند ادامه دهد.</p>
 <div class="tip"><strong>جزئیات داخلی — ساختار WaitGroup:</strong> در سورس‌کد runtime زبان Go، ساختار <code dir="ltr">sync.WaitGroup</code> شامل یک فیلد به نام <code>state1</code> از نوع <code>[3]uint32</code> (در معماری 64-bit) است. این فیلد سه مقدار 32 بیتی را در خود ذخیره می‌کند:
@@ -174,10 +173,9 @@ for i := 0; i &lt; 5; i++ {
 }
 </code></pre>
 </figure>
-<p>این نکته بسیار مهم است تا از خطاهای همزمانی جلوگیری شود.</p>
-<h3 id="ترکیب-waitgroup-با-channel">ترکیب WaitGroup با Channel</h3>
+<p>این نکته بسیار مهم است تا از خطاهای هم‌روندی جلوگیری شود.</p>
+<h3 id="ترکیب-waitgroup-با-channel">5.5.1 ترکیب WaitGroup با Channel</h3>
 <p>گاهی لازم است نتایج کار goroutine‌ها را جمع‌آوری کنیم و سپس منتظر شویم همه تمام شوند:</p>
-
 <figure class="diagram" dir="ltr">
 <pre class="mermaid">flowchart LR
     A["Add(3)<br/>شمارنده = ۳<br/>3"]
@@ -186,7 +184,7 @@ for i := 0; i &lt; 5; i++ {
     D3["Done()<br/>شمارنده = ۰<br/>0"]
     W["Wait() — بلاک شده<br/>آزاد شد! ادامه برنامه"]
 
-    A --> D1 --> D2 --> D3 --> W
+    A --&gt; D1 --&gt; D2 --&gt; D3 --&gt; W
 
     Note["شمارنده منفی → panic |<br/>شمارنده صفر → Wait آزاد می‌شود"]
 
@@ -200,8 +198,6 @@ for i := 0; i &lt; 5; i++ {
     class Note neuBox;</pre>
 <figcaption dir="rtl">شکل ۵-۱۱-ب: خط زمانی <bdi dir="ltr">WaitGroup</bdi> — تغییرات شمارنده از <bdi dir="ltr">Add</bdi> تا آزاد شدن <bdi dir="ltr">Wait</bdi></figcaption>
 </figure>
-
-
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">results := make(chan int, 5)
 for i := 0; i &lt; 5; i++ {
@@ -221,9 +217,8 @@ for r := range results {
 </code></pre>
 </figure>
 <p>ابتدا تعداد goroutine‌ها با Add مشخص می‌شود. هر goroutine نتیجه‌ای در channel ارسال می‌کند. پس از اتمام همه channel بسته می‌شود و حلقه اصلی تمام نتایج را می‌خواند.</p>
-<h3 id="waitgroup-در-برابر-channel">WaitGroup در برابر Channel</h3>
+<h3 id="waitgroup-در-برابر-channel">5.5.2 WaitGroup در برابر Channel</h3>
 <p>هم <code>sync.WaitGroup</code> و هم <bdi dir="ltr">Channel</bdi> می‌توانند برای همگام‌سازی <bdi dir="ltr">Goroutine</bdi>‌ها استفاده شوند، اما هر کدام کاربرد خاص خود را دارند:</p>
-
 <table class="comparison-table" dir="rtl">
 <thead>
 <tr><th>ویژگی</th><th>WaitGroup</th><th>Channel</th></tr>
@@ -236,9 +231,7 @@ for r := range results {
 <tr><td>بهترین استفاده</td><td>وقتی فقط منتظر اتمام هستید</td><td>وقتی نیاز به داده یا سیگنال دارید</td></tr>
 </tbody>
 </table>
-
-<h3 id="اشتباهات-رایج">اشتباهات رایج با WaitGroup</h3>
-
+<h3 id="اشتباهات-رایج">5.5.3 اشتباهات رایج با WaitGroup</h3>
 <p><strong>اشتباه ۱: فراخوانی Add داخل Goroutine</strong></p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">// Wrong — incorrect: Add inside goroutine — Wait may execute first
@@ -261,7 +254,6 @@ for i := 0; i &lt; 5; i++ {
 }
 </code></pre>
 </figure>
-
 <p><strong>اشتباه ۲: عدم تطابق Add و Done</strong></p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">// Wrong — incorrect: Add(5) but only 3 Done → Deadlock!
@@ -278,7 +270,6 @@ for i := 0; i &lt; 3; i++ {
 }
 </code></pre>
 </figure>
-
 <p><strong>اشتباه ۳: عدم استفاده از defer برای Done</strong></p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">// Wrong — incorrect: if panic or early return occurs, Done is not called
@@ -294,15 +285,11 @@ go func() {
 }()
 </code></pre>
 </figure>
-
-<h3 id="قوانین-باز-use-کردن-waitgroup">قوانین باز‌استفاده از WaitGroup</h3>
-<p>پس از اینکه <code>Wait()</code> برگردد، <bdi dir="ltr">WaitGroup</bdi> قابل باز‌استفاده است. اما نباید در حین فعال بودن (<code>counter > 0</code>) آن را باز‌استفاده کنید. الگوی صحیح: <code>Add</code> → <code>go</code> → <code>Done</code> → <code>Wait</code> → (باز‌استفاده از صفر).</p>
-
+<h3 id="قوانین-باز-use-کردن-waitgroup">5.5.4 قوانین باز‌استفاده از WaitGroup</h3>
+<p>پس از اینکه <code>Wait()</code> برگردد، <bdi dir="ltr">WaitGroup</bdi> قابل باز‌استفاده است. اما نباید در حین فعال بودن (<code>counter &gt; 0</code>) آن را باز‌استفاده کنید. الگوی صحیح: <code>Add</code> → <code>go</code> → <code>Done</code> → <code>Wait</code> → (باز‌استفاده از صفر).</p>
 <div class="warning"><strong>نکته درباره Race Detection در WaitGroup:</strong> اگر برنامه را با فلگ <code>-race</code> اجرا کنید، WaitGroup به‌طور خودکار عملیات <code>Add</code> و <code>Done</code> را ردیابی می‌کند. فراخوانی <code>Add</code> باید قبل از راه‌اندازی Goroutine (قبل از <code>go</code>) انجام شود — این قانون طلایی در «اشتباه ۱» همین بخش و در نکته‌ی پایانی فصل توضیح داده شده است.</div>
-
-<h3 id="waitgroup-چرخه-حیات-شمارنده">چرخه حیات شمارنده <bdi dir="ltr">WaitGroup</bdi> — نمودار وضعیت</h3>
-<p>یکی از مهم‌ترین مفاهیم در کار با <bdi dir="ltr">WaitGroup</bdi> درک چرخه حیات شمارنده داخلی آن است. شمارنده <bdi dir="ltr">WaitGroup</bdi> از صفر شروع می‌شود، با هر فراخوانی <bdi dir="ltr">Add(delta)</bdi> به اندازه <bdi dir="ltr">delta</bdi> افزایش می‌یابد و با هر <bdi dir="ltr">Done()</bdi> یک واحد کاهش پیدا می‌کند. وقتی شمارنده به صفر برسد تمام <bdi dir="ltr">goroutine</bdi>هایی که در <bdi dir="ltr">Wait()</bdi> بلاک شده‌اند آزاد می‌شوند. اما اگر شمارنده منفی شود، برنامه بلافاصله <bdi dir="ltr">panic</bdi> می‌کند. این یعنی تعداد فراخوانی‌های <bdi dir="ltr">Done()</bdi> هرگز نباید از تعداد <bdi dir="ltr">Add()</bdi> بیشتر شود. همچنین اگر <bdi dir="ltr">Add()</bdi> با مقدار منفی فراخوانی شود که شمارنده را منفی کند، باز هم <bdi dir="ltr">panic</bdi> رخ می‌دهد. درک این چرخه برای جلوگیری از <bdi dir="ltr">deadlock</bdi> و <bdi dir="ltr">panic</bdi> در برنامه‌های واقعی حیاتی است.</p>
-
+<h3 id="waitgroup-چرخه-حیات-شمارنده">5.5.5 چرخه حیات شمارندهWaitGroup— نمودار وضعیت</h3>
+<p>یکی از مهم‌ترین مفاهیم در کار با <bdi dir="ltr">WaitGroup</bdi> درک چرخه حیات شمارنده داخلی آن است. شمارنده <bdi dir="ltr">WaitGroup</bdi> از صفر شروع می‌شود، با هر فراخوانی <bdi dir="ltr">Add(delta)</bdi> به اندازه <bdi dir="ltr">delta</bdi> افزایش می‌یابد و با هر <bdi dir="ltr">Done()</bdi> یک واحد کاهش پیدا می‌کند. وقتی شمارنده به صفر برسد تمام <bdi dir="ltr">goroutine</bdi>هایی که در <bdi dir="ltr">Wait()</bdi> بلاک شده‌اند آزاد می‌شوند. </p><p>اما اگر شمارنده منفی شود، برنامه بلافاصله <bdi dir="ltr">panic</bdi> می‌کند. این یعنی تعداد فراخوانی‌های <bdi dir="ltr">Done()</bdi> هرگز نباید از تعداد <bdi dir="ltr">Add()</bdi> بیشتر شود. همچنین اگر <bdi dir="ltr">Add()</bdi> با مقدار منفی فراخوانی شود که شمارنده را منفی کند، باز هم <bdi dir="ltr">panic</bdi> رخ می‌دهد. درک این چرخه برای جلوگیری از <bdi dir="ltr">deadlock</bdi> و <bdi dir="ltr">panic</bdi> در برنامه‌های واقعی حیاتی است.</p>
 <figure class="diagram" dir="ltr">
 <pre class="mermaid">flowchart TB
     subgraph OK["مسیر موفق — ماشین وضعیت شمارنده"]
@@ -314,12 +301,12 @@ go func() {
         S3["G3: Done()<br/>counter=0"]
         SW["Wait()<br/>آزاد شد! ✓"]
         SWB["Wait() در حال بلاک —<br/>منتظر صفر شدن شمارنده"]
-        S0 -- "Add(3)" --> SA
-        SA -- "G1: Done()" --> S1
-        S1 -- "G2: Done()" --> S2
-        S2 -- "G3: Done()" --> S3
-        S3 -- "Wait()" --> SW
-        SWB -. "منتظر" .-> SW
+        S0 -- "Add(3)" --&gt; SA
+        SA -- "G1: Done()" --&gt; S1
+        S1 -- "G2: Done()" --&gt; S2
+        S2 -- "G3: Done()" --&gt; S3
+        S3 -- "Wait()" --&gt; SW
+        SWB -. "منتظر" .-&gt; SW
     end
 
     subgraph BAR["نمودار میله‌ای شمارنده"]
@@ -328,7 +315,7 @@ go func() {
         B2["counter = 2  —  G1: Done()"]
         B1["counter = 1  —  G2: Done()"]
         B0["counter = 0  —  G3: Done() → Wait آزاد!"]
-        B3 --> B2 --> B1 --> B0
+        B3 --&gt; B2 --&gt; B1 --&gt; B0
     end
 
     subgraph ERR["حالت خطا: عدم تطابق Add و Done"]
@@ -338,7 +325,7 @@ go func() {
         E3["wg.Done()       // counter = 1"]
         E4["wg.Done()       // counter = 0"]
         E5["wg.Done()       // counter = -1 → panic!"]
-        E1 --> E2 --> E3 --> E4 --> E5
+        E1 --&gt; E2 --&gt; E3 --&gt; E4 --&gt; E5
     end
 
     subgraph RULES["قواعد استفاده"]
@@ -348,7 +335,7 @@ go func() {
         R3["Wait() تا صفر شدن بلاک می‌شود — صفر شد → آزاد می‌شود"]
         R4["شمارنده منفی → panic:<br/>sync: WaitGroup is reused before previous Wait has returned"]
         R5["همیشه تعداد Add و Done باید برابر باشند — از defer wg.Done() استفاده کنید"]
-        R1 --> R2 --> R3 --> R4 --> R5
+        R1 --&gt; R2 --&gt; R3 --&gt; R4 --&gt; R5
     end
 
     GOLD["قانون طلایی: Add() قبل از go، defer Done() داخل goroutine،<br/>و هرگز شمارنده منفی نشود"]
@@ -369,9 +356,7 @@ go func() {
     class NT neuBox;</pre>
 <figcaption dir="rtl">شکل ۵-۱۱-ج: چرخه حیات شمارنده <bdi dir="ltr">WaitGroup</bdi> — ماشین وضعیت از <bdi dir="ltr">Add</bdi> تا آزاد شدن <bdi dir="ltr">Wait</bdi> و حالت <bdi dir="ltr">panic</bdi></figcaption>
 </figure>
-
 <p>نمودار بالا چرخه کامل حیات شمارنده <bdi dir="ltr">WaitGroup</bdi> را نشان می‌دهد: خط زمانی تغییرات شمارنده از <bdi dir="ltr">Add(3)</bdi> تا آخرین <bdi dir="ltr">Done()</bdi>، و حالت خطا در صورتی که تعداد <bdi dir="ltr">Done()</bdi> از <bdi dir="ltr">Add()</bdi> بیشتر شود (<bdi dir="ltr">panic</bdi>).</p>
-
 <h4 id="سناریوهای-عملیاتی-waitgroup">سناریوهای عملیاتی <bdi dir="ltr">WaitGroup</bdi></h4>
 <ul>
 <li><strong>انتظار برای چند درخواست <bdi dir="ltr">HTTP</bdi> همزمان:</strong> وقتی نیاز دارید داده‌ها را از چند <bdi dir="ltr">API</bdi> مختلف به صورت موازی دریافت کنید، هر درخواست را در یک <bdi dir="ltr">goroutine</bdi> مجزا اجرا کنید و با <bdi dir="ltr">WaitGroup</bdi> منتظر بمانید تا همه پاسخ‌ها دریافت شوند. این الگو در <bdi dir="ltr">PHP</bdi> معمولاً با <bdi dir="ltr">curl_multi</bdi> یا <bdi dir="ltr">Promise</bdi> در <bdi dir="ltr">ReactPHP</bdi> پیاده‌سازی می‌شود اما در <bdi dir="ltr">Go</bdi> بسیار ساده‌تر و طبیعی‌تر است. نتایج هر درخواست را در یک <bdi dir="ltr">channel</bdi> یا <bdi dir="ltr">map</bdi> محافظت‌شده با <bdi dir="ltr">mutex</bdi> ذخیره کنید.</li>
@@ -379,7 +364,6 @@ go func() {
 <li><strong>دانلود موازی فایل‌ها:</strong> برای دانلود چندین فایل به صورت همزمان، هر دانلود را در یک <bdi dir="ltr">goroutine</bdi> مجزا اجرا کنید و با <bdi dir="ltr">WaitGroup</bdi> منتظر اتمام همه بمانید. پیشرفت هر دانلود را با <bdi dir="ltr">channel</bdi> گزارش دهید. این الگو به شدت سریع‌تر از دانلود ترتیبی است و در برنامه‌های <bdi dir="ltr">CLI</bdi> بسیار کاربردی است.</li>
 <li><strong>انتظار برای <bdi dir="ltr">goroutine</bdi>های راه‌اندازی:</strong> وقتی سرویسی دارید که باید چندین <bdi dir="ltr">goroutine</bdi> زمینه‌ای (مانند <bdi dir="ltr">health check</bdi>، <bdi dir="ltr">metrics collector</bdi>، <bdi dir="ltr">cache warmer</bdi>) را قبل از شروع به کار اصلی اجرا کند، <bdi dir="ltr">WaitGroup</bdi> تضمین می‌کند که همه آماده شوند و سپس سرویس ترافیک را قبول کند.</li>
 </ul>
-
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">// انتظار برای چند درخواست HTTP همزمان
 func fetchAll(urls []string) ([]string, error) {
@@ -411,36 +395,40 @@ func fetchAll(urls []string) ([]string, error) {
 }
 </code></pre>
 </figure>
-
 <div class="tip"><strong>فراخوانی <bdi dir="ltr">Add()</bdi> قبل از راه‌اندازی <bdi dir="ltr">goroutine</bdi>:</strong> یکی از اشتباهات رایج فراخوانی <bdi dir="ltr">wg.Add(1)</bdi> داخل <bdi dir="ltr">goroutine</bdi> است. این کار باعث <bdi dir="ltr">race condition</bdi> می‌شود زیرا ممکن است <bdi dir="ltr">wg.Wait()</bdi> قبل از اینکه هیچ <bdi dir="ltr">Add()</bdi> فراخوانی شود اجرا شود و برنامه پیش از اتمام <bdi dir="ltr">goroutine</bdi>ها ادامه پیدا کند. الگوی صحیح این است که <bdi dir="ltr">Add()</bdi> را قبل از کلمه کلیدی <bdi dir="ltr">go</bdi> فراخوانی کنید. اگر تعداد <bdi dir="ltr">goroutine</bdi>ها از قبل مشخص است، می‌توانید از <bdi dir="ltr">wg.Add(n)</bdi> یک‌بار قبل از حلقه استفاده کنید که کارایی بهتری دارد.</div>
-
 <div class="note"><strong>یادداشت:</strong> <bdi dir="ltr">sync.WaitGroup</bdi> هیچ مکانیزمی برای انتشار خطا از <bdi dir="ltr">Goroutine</bdi>‌های فرزند به فراخوان ارائه نمی‌دهد — <code>wg.Wait()</code> فقط منتظر اتمام می‌ماند و خطاها باید دستی جمع‌آوری شوند (مثلاً با کانال یا <code>sync.Mutex</code> روی متغیر <code>firstErr</code>). اگر لازم است خطای اول، بقیه <bdi dir="ltr">Goroutine</bdi>‌ها را لغو کند، به‌جای <bdi dir="ltr">WaitGroup</bdi> از <code>golang.org/x/sync/errgroup</code> استفاده کنید که ترکیب <bdi dir="ltr">WaitGroup + context.WithCancel</bdi> را با کد بسیار تمیزتر فراهم می‌کند (در فصل ۵.۷ معرفی شده است).</div>
-</div>
+<div class="summary">
+<strong>خلاصه‌ی نکات کلیدی:</strong>
+<ul>
+<li>Add(n) برای ثبت تعداد goroutine</li>
+<li>Done() در پایان هر goroutine</li>
+<li>Wait() برای انتظار تا اتمام همه</li>
+<li>Add باید قبل از go call شود</li>
+<li>WaitGroup با copy نباید منتقل شود</li>
+</ul>
+</div></div>
 </main>
 </div>
-
 <!-- Footer -->
 <footer class="site-footer">
 <div class="footer-inner">
 <div class="footer-nav">
 <span class="nav-arrow">‹</span>
-<a href="05.04-context.html" data-prev>۵.۴ Context</a>
+<a data-prev="" href="05.04-context.html">۵.۴ Context</a>
 </div>
 <div class="footer-toc">
 <a href="00.01-contents.html">فهرست</a>
 </div>
 <div class="footer-nav">
-<a href="05.06-race-condition.html" data-next>۵.۶ Race Condition</a>
+<a data-next="" href="05.06-race-condition.html">۵.۶ Race Condition</a>
 <span class="nav-arrow">›</span>
 </div>
 </div>
 </footer>
-
 <!-- Back to Top -->
-<button class="back-to-top" aria-label="بازگشت به بالا">
-<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
+<button aria-label="بازگشت به بالا" class="back-to-top">
+<svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24"><polyline points="18 15 12 9 6 15"></polyline></svg>
 </button>
-
 <!-- Scripts -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/go.min.js"></script>

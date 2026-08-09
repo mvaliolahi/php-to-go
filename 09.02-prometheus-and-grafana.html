@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html dir="rtl" lang="fa">
 <head>
 <script>!function(){try{var t=localStorage.getItem('php2go-theme');if(t==='dark'||(!t&&window.matchMedia('(prefers-color-scheme:dark)').matches)){document.documentElement.setAttribute('data-theme','dark')}}catch(e){}}();</script>
@@ -6,26 +7,25 @@
 <meta content="ie=edge" http-equiv="x-ua-compatible"/>
 <title>۹.۲ Prometheus و Grafana — PHP to Go</title>
 <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport"/>
-<link rel="preconnect" href="https://fonts.googleapis.com"/>
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600;700&amp;family=Fira+Code:wght@400;500&amp;display=swap" rel="stylesheet"/>
 <link href="assets/css/main.css" rel="stylesheet" type="text/css"/>
 <link href="assets/img/favicon.ico" rel="icon" type="image/x-icon"/>
-<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" media="screen" class="hljs-light-theme" rel="stylesheet"/>
-<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css" media="not screen" class="hljs-dark-theme" rel="stylesheet"/>
+<link class="hljs-light-theme" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" media="screen" rel="stylesheet"/>
+<link class="hljs-dark-theme" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css" media="not screen" rel="stylesheet"/>
 </head>
 <body>
 <!-- Progress Bar -->
 <div class="progress-bar"><div class="progress-bar__fill"></div></div>
-
 <!-- Header -->
 <header class="site-header">
 <div class="header-inner">
 <div class="header-left">
-<button class="header-btn sidebar-toggle" aria-label="فهرست">
-<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+<button aria-label="فهرست" class="header-btn sidebar-toggle">
+<svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24"><line x1="3" x2="21" y1="6" y2="6"></line><line x1="3" x2="21" y1="12" y2="12"></line><line x1="3" x2="21" y1="18" y2="18"></line></svg>
 </button>
-<a href="00.00-front-matter.html" class="header-logo"><span class="logo-php">PHP</span> to <span class="logo-go">Go</span></a>
+<a class="header-logo" href="00.00-front-matter.html"><span class="logo-php">PHP</span> to <span class="logo-go">Go</span></a>
 <span class="header-crumbs">مانیتورینگ و Observability › Prometheus و Grafana</span>
 </div>
 <div class="header-right">
@@ -36,40 +36,38 @@
 <a href="09.03-opentelemetry.html"><span class="nav-label">۹.۳ OpenTelemetry</span></a>
 <span class="nav-arrow">›</span>
 </nav>
-<button class="header-btn search-toggle" aria-label="جستجو">
-<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+<button aria-label="جستجو" class="header-btn search-toggle">
+<svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" x2="16.65" y1="21" y2="16.65"></line></svg>
 </button>
-<button class="header-btn theme-toggle" aria-label="تغییر تم">
-<svg class="theme-icon-light" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
-<svg class="theme-icon-dark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+<button aria-label="تغییر تم" class="header-btn theme-toggle">
+<svg class="theme-icon-light" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24"><circle cx="12" cy="12" r="5"></circle><line x1="12" x2="12" y1="1" y2="3"></line><line x1="12" x2="12" y1="21" y2="23"></line><line x1="4.22" x2="5.64" y1="4.22" y2="5.64"></line><line x1="18.36" x2="19.78" y1="18.36" y2="19.78"></line><line x1="1" x2="3" y1="12" y2="12"></line><line x1="21" x2="23" y1="12" y2="12"></line><line x1="4.22" x2="5.64" y1="19.78" y2="18.36"></line><line x1="18.36" x2="19.78" y1="5.64" y2="4.22"></line></svg>
+<svg class="theme-icon-dark" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
 </button>
 </div>
 </div>
 </header>
-
 <!-- Search Modal -->
 <div class="search-overlay">
 <div class="search-modal">
 <div class="search-input-wrap">
-<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-<input type="text" class="search-input" placeholder="جستجو... (Ctrl+K)" dir="rtl"/>
+<svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" x2="16.65" y1="21" y2="16.65"></line></svg>
+<input class="search-input" dir="rtl" placeholder="جستجو... (Ctrl+K)" type="text"/>
 </div>
 <div class="search-results"></div>
 </div>
 </div>
-
 <!-- Layout -->
 <div class="site-layout">
 <!-- Sidebar -->
 <aside class="sidebar"></aside>
 <div class="sidebar-overlay"></div>
-
 <!-- Main Content -->
 <main class="content-area">
 <div class="content-wrap text">
 <div class="chapter">فصل ۹.۲</div>
-<h2 id="prometheus-و-grafana">Prometheus و Grafana</h2>
-
+<h2 id="prometheus-و-grafana">Prometheus و Grafana</h2><div class="abstract">
+<strong>چکیده:</strong> این بخش Prometheus و Grafana را پوشش می‌دهد: counter، gauge، histogram و dashboard. الگوی instrument و exposition بررسی می‌شود. تفاوت با statsd در PHP و الگوی Go پوشش داده می‌گردد.
+</div>
 <figure class="diagram" dir="ltr">
 <pre class="mermaid">flowchart LR
     title(["خط لوله جمع‌آوری Metrics"])
@@ -77,8 +75,8 @@
     APP["Go App<br/>Counter/Gauge/Histogram"]
     PROM["Prometheus<br/>Scrape + TSDB<br/>PromQL"]
     GRAF["Grafana<br/>Dashboards<br/>Alerting"]
-    APP -- "/metrics" --> PROM
-    PROM -- "query" --> GRAF
+    APP -- "/metrics" --&gt; PROM
+    PROM -- "query" --&gt; GRAF
 
     subgraph TYPES["انواع متریک"]
         direction LR
@@ -89,7 +87,7 @@
     end
 
     ALERT(["Alerting → Slack / Email / Telegram"])
-    LABELS(["Labels: method=&quot;GET&quot;, path=&quot;/api/users&quot;, status=&quot;200&quot;"])
+    LABELS(["Labels: method="GET", path="/api/users", status="200""])
 
     title ~~~ APP
     GRAF ~~~ ALERT
@@ -116,32 +114,25 @@
     class LABELS noteBox;</pre>
 <figcaption>شکل ۹-۲: خط لوله جمع‌آوری Metrics — از <bdi dir="ltr">Go</bdi> <bdi dir="ltr">App</bdi> تا داشبورد <bdi dir="ltr">Grafana</bdi></figcaption>
 </figure>
-
 <p>در عمل زمانی که یک برنامه وارد محیط <bdi dir="ltr">Production</bdi> می‌شود موفقیت آن هم به درستی کد و هم به پایداری، کارایی و قابلیت <bdi dir="ltr">Observability</bdi> آن بستگی دارد. یکی از استانداردهای شناخته‌شده برای مانیتورینگ در اکوسیستم <bdi dir="ltr">cloud-native</bdi> استفاده از <bdi dir="ltr">Prometheus</bdi> برای جمع‌آوری Metrics و <bdi dir="ltr">Grafana</bdi> برای مصورسازی آن‌هاست.</p>
-
 <p>در هسته‌ی <bdi dir="ltr">Prometheus</bdi> داده‌ها به صورت <bdi dir="ltr">time series</bdi> ذخیره می‌شوند. هر <bdi dir="ltr">time series</bdi> شامل متریک، <bdi dir="ltr">Labels</bdi> (جفت‌های کلید-مقدار) و <bdi dir="ltr">Timestamp</bdi> است.</p>
-
-<h3 id="انواع-متریکها">انواع Metrics</h3>
-
+<h3 id="انواع-متریکها">9.2.1 انواع Metrics</h3>
 <div class="case-study">
-    <div class="case-study-header">
-        <span class="case-study-badge">مطالعه موردی</span>
-        <span class="case-study-title">Observability در SoundCloud با Prometheus</span>
-    </div>
-    <p>Prometheus در ابتدا توسط SoundCloud توسعه یافت تا نیازهای مانیتورینگ یک پلتفرم موسیقی با میلیون‌ها کاربر را برآورده کند. قبل از Prometheus، تیم SoundCloud از ابزارهای مانیتورینگ مبتنی بر push مانند Graphite و StatsD استفاده می‌کرد که در مقیاس بزرگ با مشکلاتی مواجه بودند: سرورهای مانیتورینگ بار زیادی تحمل می‌کردند، پیکربندی هر سرویس برای ارسال متریک‌ها پیچیده بود، و شناسایی سرویس‌های جدید به‌صورت خودکار انجام نمی‌شد.</p>
-    <p>مدل pull-based آن به این معناست که سرور Prometheus به‌صورت دوره‌ای متریک‌ها را از سرویس‌ها جمع‌آوری می‌کند، نه اینکه سرویس‌ها متریک‌ها را push کنند. این رویکرد مزایای کلیدی دارد: سرویس‌ها نیازی به دانستن آدرس سرور مانیتورینگ ندارند، service discovery به‌صورت خودکار انجام می‌شود، و سلامت سرویس با یک scrape ساده قابل بررسی است. اگر سرور Prometheus بتواند متریک‌های یک سرویس را scrape کند، یعنی سرویس سالم است — این یک built-in health check است که بدون پیکربندی اضافی کار می‌کند.</p>
-    <p>امروز Prometheus استاندارد واقعی مانیتورینگ در دنیای Cloud Native و عضو اصلی CNCF است. تقریباً هر پروژه Cloud Native از Kubernetes تا Istio متریک‌های Prometheus را به‌طور پیش‌فرض ارائه می‌دهند. اکوسیستم ابزارهای اطراف آن — شامل Alertmanager برای هشداردهی، Thanos برای مقیاس‌پذیری بلندمدت، و Grafana برای تجسم — آن را به کامل‌ترین راهکار مانیتورینگ تبدیل کرده است.</p>
-    <p class="case-study-source">
-        <span class="source-event">CloudNativeCon 2016</span>
-        <span class="source-year">، ۲۰۱۶</span>
-    </p>
+<div class="case-study-header">
+<span class="case-study-badge">مطالعه موردی</span>
+<span class="case-study-title">Observability در SoundCloud با Prometheus</span>
 </div>
-
+<p>Prometheus در ابتدا توسط SoundCloud توسعه یافت تا نیازهای مانیتورینگ یک پلتفرم موسیقی با میلیون‌ها کاربر را برآورده کند.</p><p>قبل از Prometheus، تیم SoundCloud از ابزارهای مانیتورینگ مبتنی بر push مانند Graphite و StatsD استفاده می‌کرد که در مقیاس بزرگ با مشکلاتی مواجه بودند: سرورهای مانیتورینگ بار زیادی تحمل می‌کردند، پیکربندی هر سرویس برای ارسال متریک‌ها پیچیده بود، و شناسایی سرویس‌های جدید به‌صورت خودکار انجام نمی‌شد.</p>
+<p>مدل pull-based آن به این معناست که سرور Prometheus به‌صورت دوره‌ای متریک‌ها را از سرویس‌ها جمع‌آوری می‌کند، نه اینکه سرویس‌ها متریک‌ها را push کنند.</p><p>این رویکرد مزایای کلیدی دارد: سرویس‌ها نیازی به دانستن آدرس سرور مانیتورینگ ندارند، service discovery به‌صورت خودکار انجام می‌شود، و سلامت سرویس با یک scrape ساده قابل بررسی است.</p><p>اگر سرور Prometheus بتواند متریک‌های یک سرویس را scrape کند، یعنی سرویس سالم است — این یک built-in health check است که بدون پیکربندی اضافی کار می‌کند.</p>
+<p>امروز Prometheus استاندارد واقعی مانیتورینگ در دنیای Cloud Native و عضو اصلی CNCF است. تقریباً هر پروژه Cloud Native از Kubernetes تا Istio متریک‌های Prometheus را به‌طور پیش‌فرض ارائه می‌دهند.</p><p>اکوسیستم ابزارهای اطراف آن — شامل Alertmanager برای هشداردهی، Thanos برای مقیاس‌پذیری بلندمدت، و Grafana برای تجسم — آن را به کامل‌ترین راهکار مانیتورینگ تبدیل کرده است.</p>
+<p class="case-study-source">
+<span class="source-event">CloudNativeCon 2016</span>
+<span class="source-year">، ۲۰۱۶</span>
+</p>
+</div>
 <p>Prometheus چهار نوع متریک اصلی دارد. انتخاب نوع مناسب برای هر سناریو، تفاوت بین داشبورد مفید و داده‌های بی‌فایده را رقم می‌زند. در ادامه هر نوع را با تصویر، مثال عملیاتی و کد Go بررسی می‌کنیم.</p>
-
 <!-- ===== Counter ===== -->
 <h4 id="metric-counter">Counter</h4>
-
 <figure class="diagram" dir="ltr">
 <pre class="mermaid">flowchart TB
     title(["Counter — فقط افزایش می‌یابد (Monotonically Increasing)"])
@@ -152,7 +143,7 @@
         T2["t2: ~500"]
         T3["t3: restart → reset to 0"]
         T4["t4: 1000"]
-        T1 --> T2 --> T3 --> T4
+        T1 --&gt; T2 --&gt; T3 --&gt; T4
     end
 
     subgraph INFO["api.RequestsTotal"]
@@ -179,9 +170,7 @@
     class RULE okBox;</pre>
 <figcaption>شکل ۹-۲-ب: رفتار <bdi dir="ltr">Counter</bdi> — فقط بالا می‌رود و هرگز کاهش نمی‌یابد (مگر در ریستارت)</figcaption>
 </figure>
-
-<p><bdi dir="ltr">Counter</bdi> ساده‌ترین و پرکاربردترین نوع متریک است. مقدار آن از صفر شروع شده و فقط افزایش می‌یابد — هرگز کاهش نمی‌یابد. وقتی برنامه ری‌استارت شود، Counter به صفر برمی‌گردد و <bdi dir="ltr">Prometheus</bdi> به‌طور خودکار این ریستارت را تشخیص داده و <bdi dir="ltr">rate()</bdi> را درست محاسبه می‌کند. به همین دلیل هیچ‌گاه نباید Counter را مستقیم روی داشبورد رسم کنید — فقط نرخ تغییر آن (<bdi dir="ltr">rate</bdi>) معنادار است.</p>
-
+<p><bdi dir="ltr">Counter</bdi> ساده‌ترین و پرکاربردترین نوع متریک است. مقدار آن از صفر شروع شده و فقط افزایش می‌یابد — هرگز کاهش نمی‌یابد. وقتی برنامه ری‌استارت شود، Counter به صفر برمی‌گردد و <bdi dir="ltr">Prometheus</bdi> به‌طور خودکار این ریستارت را تشخیص داده و <bdi dir="ltr">rate()</bdi> را درست محاسبه می‌کند. </p><p>به همین دلیل هیچ‌گاه نباید Counter را مستقیم روی داشبورد رسم کنید — فقط نرخ تغییر آن (<bdi dir="ltr">rate</bdi>) معنادار است.</p>
 <p><strong>سناریوهای عملیاتی Counter:</strong></p>
 <ul>
 <li><strong>شمارش درخواست‌ها:</strong> هر درخواست HTTP یک واحد به <code>http_requests_total</code> اضافه می‌شود. با <bdi dir="ltr">rate()</bdi> نرخ درخواست در ثانیه به‌دست می‌آید.</li>
@@ -189,7 +178,6 @@
 <li><strong>بایت‌های ارسالی:</strong> هر پاسخ HTTP حجم بایت خود را به <code>response_bytes_total</code> اضافه می‌کند. <bdi dir="ltr">rate()</bdi> پهنای باند مصرفی را نشان می‌دهد.</li>
 <li><strong>تعداد پرداخت‌ها:</strong> در یک سیستم مالی، هر تراکنش موفق یک واحد اضافه می‌شود. <bdi dir="ltr">increase()[24h]</bdi> تعداد تراکنش‌های روزانه را نشان می‌دهد.</li>
 </ul>
-
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">// Counter: شمارش درخواست‌های HTTP به تفکیک متد و مسیر و وضعیت
 var httpRequestsTotal = prometheus.NewCounterVec(
@@ -219,12 +207,9 @@ func metricsMiddleware(next http.Handler) http.Handler {
     })
 }</code></pre>
 </figure>
-
 <div class="tip"><strong>نکته عملی:</strong> همیشه Counter را با Labels تعریف کنید (<code>NewCounterVec</code>). مثلاً به‌جای یک Counter کلی، از Labels مثل <code>method</code> و <code>status</code> استفاده کنید تا بتوانید نرخ خطا را به تفکیک endpoint تحلیل کنید. بدون Labels، فقط یک عدد کلی دارید که برای عیب‌یابی بی‌فایده است.</div>
-
 <!-- ===== Gauge ===== -->
 <h4 id="metric-gauge">Gauge</h4>
-
 <figure class="diagram" dir="ltr">
 <pre class="mermaid">flowchart TB
     title(["Gauge — افزایش و کاهش (Current State)"])
@@ -234,7 +219,7 @@ func metricsMiddleware(next http.Handler) http.Handler {
         T1["Inc() +50"]
         T2["Dec() -35"]
         T3["Set(140)"]
-        T1 --> T2 --> T3
+        T1 --&gt; T2 --&gt; T3
     end
 
     subgraph INFO["app.ActiveConnections"]
@@ -258,9 +243,7 @@ func metricsMiddleware(next http.Handler) http.Handler {
     class RULE warnBox;</pre>
 <figcaption>شکل ۹-۲-ج: رفتار <bdi dir="ltr">Gauge</bdi> — هم بالا و هم پایین می‌رود (وضعیت لحظه‌ای)</figcaption>
 </figure>
-
 <p><bdi dir="ltr">Gauge</bdi> متریک وضعیت لحظه‌ای است. برعکس Counter، مقدار Gauge می‌تواند افزایش یا کاهش یابد و مقدار مطلق آن مهم است — نیازی به <bdi dir="ltr">rate()</bdi> ندارد. Gauge نشان‌دهنده‌ی «وضعیت الان» است: چند اتصال فعال داریم؟ چقدر حافظه مصرف شده؟ چند goroutine در حال اجراست؟</p>
-
 <p><strong>سناریوهای عملیاتی Gauge:</strong></p>
 <ul>
 <li><strong>اتصال‌های فعال:</strong> هر اتصال ورودی <code>Inc()</code> و هر قطع اتصال <code>Dec()</code> فراخوانی می‌شود. این عدد نشان می‌دهد سرور چقدر تحت بار است.</li>
@@ -268,7 +251,6 @@ func metricsMiddleware(next http.Handler) http.Handler {
 <li><strong>تعداد goroutine:</strong> <code>go_goroutines</code> به‌طور خودکار توسط کتابخانه Prometheus گزارش می‌شود. افزایش مداوم نشانه‌ی goroutine leak است.</li>
 <li><strong>دمای CPU / فضای دیسک:</strong> منابع سیستمی که مقدارشان بالا و پایین می‌رود. برای این موارد Gauge مناسب است چون مقدار مطلق مهم است.</li>
 </ul>
-
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">// Gauge: اندازه‌گیری وضعیت لحظه‌ای
 var (
@@ -297,10 +279,8 @@ defer activeConnections.Dec()
 // تنظیم مستقیم مقدار
 dbConnections.WithLabelValues("primary").Set(float64(dbPool.Stats().OpenConnections))</code></pre>
 </figure>
-
 <!-- ===== Histogram ===== -->
 <h4 id="metric-histogram">Histogram</h4>
-
 <figure class="diagram" dir="ltr">
 <pre class="mermaid">flowchart TB
     title(["Histogram — توزیع مقادیر در Bucket‌ها + محاسبه Percentile"])
@@ -314,7 +294,7 @@ dbConnections.WithLabelValues("primary").Set(float64(dbPool.Stats().OpenConnecti
         B5["le=0.1 → 92"]
         B6["le=0.25 → 98"]
         B7["le=+Inf → 100"]
-        B1 --> B2 --> B3 --> B4 --> B5 --> B6 --> B7
+        B1 --&gt; B2 --&gt; B3 --&gt; B4 --&gt; B5 --&gt; B6 --&gt; B7
     end
 
     subgraph PERCENTILES["Percentile lines"]
@@ -326,7 +306,7 @@ dbConnections.WithLabelValues("primary").Set(float64(dbPool.Stats().OpenConnecti
 
     subgraph SERIES["Histogram = 3 Time Series"]
         direction TB
-        S1["_bucket{le=&quot;0.05&quot;} 80<br/>تعداد نمونه‌های ≤ 50ms"]
+        S1["_bucket{le="0.05"} 80<br/>تعداد نمونه‌های ≤ 50ms"]
         S2["_sum 4.52<br/>مجموع تمام مقادیر"]
         S3["_count 100<br/>تعداد کل نمونه‌ها"]
     end
@@ -355,16 +335,13 @@ dbConnections.WithLabelValues("primary").Set(float64(dbPool.Stats().OpenConnecti
     class RULE noteBox;</pre>
 <figcaption>شکل ۹-۲-د: رفتار <bdi dir="ltr">Histogram</bdi> — توزیع تجمعی در Bucket‌ها و محاسبه Percentile</figcaption>
 </figure>
-
 <p><bdi dir="ltr">Histogram</bdi> سه سری زمانی تولید می‌کند: <code>_bucket</code> (توزیع تجمعی)، <code>_sum</code> (مجموع مقادیر) و <code>_count</code> (تعداد نمونه‌ها). مزیت اصلی Histogram این است که <bdi dir="ltr">percentile</bdi> ها سمت سرور (Prometheus) محاسبه می‌شوند — یعنی می‌توانید داده‌های چند instance را تجمیع کرده و p95 کلی سیستم را به‌دست آورید. این ویژگی در محیط‌های میکروسرویسی حیاتی است.</p>
-
 <p><strong>سناریوهای عملیاتی Histogram:</strong></p>
 <ul>
 <li><strong>زمان پاسخ HTTP:</strong> هر درخواست زمان <code>Observe(duration)</code> فراخوانی می‌شود. p95 و p99 latency از مهم‌ترین متریک‌های هر API هستند.</li>
 <li><strong>حجم پاسخ:</strong> <code>Observe(float64(len(responseBody)))</code> — توزیع حجم پاسخ‌ها کمک می‌کند بفهمید آیا برخی endpoint‌ها پاسخ‌های غیرعادی بزرگ برمی‌گردانند.</li>
 <li><strong>مدت کوئری دیتابیس:</strong> <code>Observe(queryDuration.Seconds())</code> — شناسایی کوئری‌های کند با بررسی p99 به تفکیک نام کوئری.</li>
 </ul>
-
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">// Histogram: اندازه‌گیری توزیع زمان پاسخ
 var httpDuration = prometheus.NewHistogramVec(
@@ -392,21 +369,18 @@ func durationMiddleware(next http.Handler) http.Handler {
 // نکته مهم: Bucketها را بر اساس SLA خود انتخاب کنید
 // اگر SLA شما "p99 &lt; 500ms" است، حتماً 0.5 در Buckets باشد</code></pre>
 </figure>
-
 <div class="important"><strong>انتخاب Bucket مناسب:</strong> Bucket پیش‌فرض Prometheus (<code>DefBuckets</code>) شامل بازه‌های <code>{0.005, 0.01, 0.025, 0.05, 0.1, 0.25, 0.5, 1, 2.5, 5, 10}</code> ثانیه است. این بازه‌ها برای اکثر API‌ها مناسب هستند، اما اگر SLA شما متفاوت است باید Bucket سفارشی تعریف کنید. مثلاً اگر SLA شما «p99 زیر 100ms» است، باید بازه‌های ریزتری مثل <code>{0.01, 0.025, 0.05, 0.075, 0.1, 0.15, 0.25}</code> داشته باشید تا دقت محاسبه percentile بالا باشد. Bucketها قابل تغییر پس از تعریف نیستند — فقط با ری‌استارت و از دست رفتن داده‌های قبلی قابل تغییر هستند.</div>
-
 <!-- ===== Summary ===== -->
 <h4 id="metric-summary">Summary</h4>
-
 <figure class="diagram" dir="ltr">
 <pre class="mermaid">flowchart TB
     title(["Summary — Percentile سمت کلاینت (بدون قابلیت تجمیع)"])
 
     APP["Go App (Client)"]
     OBS["Observe(value)<br/>ذخیره در حافظه محلی<br/>محاسبه percentile در سمت کلاینت"]
-    SERIES["_seconds{quantile=&quot;0.5&quot;}<br/>_seconds{quantile=&quot;0.9&quot;}<br/>_seconds{quantile=&quot;0.99&quot;}<br/>_seconds_sum / _seconds_count"]
+    SERIES["_seconds{quantile="0.5"}<br/>_seconds{quantile="0.9"}<br/>_seconds{quantile="0.99"}<br/>_seconds_sum / _seconds_count"]
     PROM["Prometheus"]
-    APP --> OBS --> SERIES --> PROM
+    APP --&gt; OBS --&gt; SERIES --&gt; PROM
 
     WARN(["مشکل: نمی‌توانید از چند نمونه تجمیع کنید!<br/>p95 نمونه A = 100ms + p95 نمونه B = 200ms ≠ p95 کل سیستم<br/>دلیل: percentile از روی percentile قابل ترکیب نیست — نیاز به داده‌های خام دارد"])
 
@@ -438,16 +412,13 @@ func durationMiddleware(next http.Handler) http.Handler {
     class RULE noteBox;</pre>
 <figcaption>شکل ۹-۲-ه: رفتار <bdi dir="ltr">Summary</bdi> — محاسبه percentile سمت کلاینت (بدون قابلیت تجمیع)</figcaption>
 </figure>
-
-<p><bdi dir="ltr">Summary</bdi> مشابه Histogram است اما percentile‌ها سمت کلاینت (برنامه Go) محاسبه می‌شوند. این یعنی هر instance عدد percentile خودش را گزارش می‌دهد و <bdi dir="ltr">Prometheus</bdi> فقط آن را ذخیره می‌کند. مشکل اصلی: نمی‌توانید percentile‌های چند instance را با هم ترکیب کنید. p95 نمونه A بعلاوه p95 نمونه B مساوی p95 کل سیستم نیست — percentile از روی percentile قابل محاسبه نیست.</p>
-
+<p><bdi dir="ltr">Summary</bdi> مشابه Histogram است اما percentile‌ها سمت کلاینت (برنامه Go) محاسبه می‌شوند. این یعنی هر instance عدد percentile خودش را گزارش می‌دهد و <bdi dir="ltr">Prometheus</bdi> فقط آن را ذخیره می‌کند. مشکل اصلی: نمی‌توانید percentile‌های چند instance را با هم ترکیب کنید. </p><p>p95 نمونه A بعلاوه p95 نمونه B مساوی p95 کل سیستم نیست — percentile از روی percentile قابل محاسبه نیست.</p>
 <p><strong>چه زمانی از Summary استفاده کنید؟</strong></p>
 <ul>
 <li><strong>پروسه‌ی تک‌نمونه‌ای:</strong> وقتی فقط یک instance از برنامه دارید و نیاز به تجمیع ندارید. مثلاً یک cron job که تعداد محدودی اجرا می‌شود.</li>
 <li><strong>لاگ توزیع‌شده نمی‌خواهید:</strong> Summary منابع کمتری نسبت به Histogram مصرف می‌کند چون bucketها را ذخیره نمی‌کند.</li>
 <li><strong>percentile دقیق‌تر:</strong> Summary percentile دقیق محاسبه می‌کند (نه تقریبی از bucketها). اگر دقت عدد مهم‌تر از تجمیع‌پذیری است، Summary بهتر است.</li>
 </ul>
-
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">// Summary: محاسبه percentile سمت کلاینت
 var rpcDuration = prometheus.NewSummaryVec(
@@ -469,12 +440,9 @@ rpcDuration.WithLabelValues("UserService", "GetUser").Observe(duration.Seconds()
 // rpc_duration_seconds{service="UserService",method="GetUser",quantile="0.9"} 0.045
 // rpc_duration_seconds{service="UserService",method="GetUser",quantile="0.99"} 0.120</code></pre>
 </figure>
-
 <div class="warning"><strong>هشدار:</strong> در اکثر پروژه‌های production، <bdi dir="ltr">Histogram</bdi> ترجیح داده می‌شود چون قابلیت تجمیع دارد. اگر 5 پاد از سرویس شما اجرا شده و بخواهید p95 کلی را بدانید، فقط Histogram این امکان را می‌دهد. Summary فقط زمانی مناسب است که دقیقاً یک نمونه دارید یا تجمیع برایتان مهم نیست. همچنین Summary حافظه بیشتری مصرف می‌کند چون باید تمام نمونه‌های اخیر را در حافظه نگه دارد.</div>
-
 <!-- ===== Comparison Table ===== -->
 <h4 id="مقایسه-انواع-متریک">مقایسه چهار نوع متریک</h4>
-
 <table class="comparison-table" dir="rtl">
 <thead>
 <tr><th>نوع</th><th>رفتار</th><th>percentile</th><th>تجمیع‌پذیری</th><th>بهترین کاربرد</th><th>کوئری رایج</th></tr>
@@ -486,10 +454,8 @@ rpcDuration.WithLabelValues("UserService", "GetUser").Observe(duration.Seconds()
 <tr><td><bdi dir="ltr">Summary</bdi></td><td>percentile کلاینت</td><td>سمت کلاینت ✓</td><td>غیرقابل تجمیع ✗</td><td>latency تک نمونه‌ای</td><td><bdi dir="ltr">rpc_duration{quantile="0.95"}</bdi></td></tr>
 </tbody>
 </table>
-
 <div class="note"><strong>راهنمای انتخاب سریع:</strong> اگر نمی‌دانید کدام را انتخاب کنید — <bdi dir="ltr">Histogram</bdi> انتخاب امنی است. Counter برای شمارش، Gauge برای وضعیت لحظه‌ای، و Histogram برای توزیع. فقط در موارد خاص (تک‌نمونه‌ای و دقت بالا) Summary را در نظر بگیرید.</div>
-
-<h3 id="افزودن-متریک-به-برنامه-go">افزودن متریک به برنامه Go</h3>
+<h3 id="افزودن-متریک-به-برنامه-go">9.2.2 افزودن متریک به برنامه Go</h3>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">package main
 
@@ -546,8 +512,7 @@ func main() {
     log.Fatal(http.ListenAndServe(":9000", nil))
 }</code></pre>
 </figure>
-
-<h3 id="فرمت-exposition">فرمت Exposition داخلی Prometheus</h3>
+<h3 id="فرمت-exposition">9.2.3 فرمت Exposition داخلی Prometheus</h3>
 <p>وقتی <bdi dir="ltr">Prometheus</bdi> متریک‌ها را از <bdi dir="ltr">endpoint</bdi> <code>/metrics</code> جمع‌آوری می‌کند داده‌ها به فرمت <bdi dir="ltr">Exposition Format</bdi> ارائه می‌شوند:</p>
 <figure class="code plain" dir="ltr">
 <pre><code class="language-plain"># HELP http_requests_total Total HTTP requests
@@ -562,12 +527,9 @@ http_request_duration_seconds_bucket{le="+Inf"} 100
 http_request_duration_seconds_sum 1.5
 http_request_duration_seconds_count 100</code></pre>
 </figure>
-
 <div class="tip"><strong>نکته داخلی:</strong> پکیج <code>prometheus/client_golang</code> از <code>sync/atomic</code> برای <bdi dir="ltr">Counter</bdi> استفاده می‌کند (بدون قفل) و از <code>sync.Mutex</code> برای <bdi dir="ltr">Gauge</bdi>. این تفاوت باعث عملکرد بالاتر <bdi dir="ltr">Counter</bdi> در محیط‌های همزمان می‌شود.</div>
-
-<div class="comparison"><strong>مقایسه با PHP:</strong> در PHP متریک‌ها باید در حافظه مشترک (<bdi dir="ltr">APCu</bdi> ، <bdi dir="ltr">Redis</bdi>) ذخیره شوند. اما در Go چون همه <bdi dir="ltr">goroutine</bdi> ها در یک <bdi dir="ltr">process</bdi> هستند متریک‌ها مستقیماً در حافظه برنامه نگهداری می‌شوند و عملکرد بسیار بالاتری دارند.</div>
-
-<h3 id="پیکربندی-prometheus">پیکربندی Prometheus</h3>
+<div class="comparison"><strong>مقایسه با PHP:</strong> در PHP متریک‌ها باید در حافظه مشترک (<bdi dir="ltr">APCu</bdi>، <bdi dir="ltr">Redis</bdi>) ذخیره شوند. اما در Go چون همه <bdi dir="ltr">goroutine</bdi> ها در یک <bdi dir="ltr">process</bdi> هستند متریک‌ها مستقیماً در حافظه برنامه نگهداری می‌شوند و عملکرد بسیار بالاتری دارند.</div>
+<h3 id="پیکربندی-prometheus">9.2.4 پیکربندی Prometheus</h3>
 <figure class="code yaml" dir="ltr">
 <pre><code class="language-yaml">global:
     scrape_interval: 5s
@@ -577,31 +539,22 @@ scrape_configs:
     static_configs:
     - targets: ['host.docker.internal:9000']</code></pre>
 </figure>
-
-<h3 id="اتصال-grafana">اتصال Grafana و ساخت داشبورد</h3>
+<h3 id="اتصال-grafana">9.2.5 اتصال Grafana و ساخت داشبورد</h3>
 <p><bdi dir="ltr">Grafana</bdi> پلتفرمی <bdi dir="ltr">open source</bdi> برای مصورسازی داده‌های سری زمانی است. <bdi dir="ltr">Prometheus</bdi> داده‌ها را جمع‌آوری و ذخیره می‌کند اما خود قابلیت نمایش گرافیکی ندارد. <bdi dir="ltr">Grafana</bdi> این نقش را پر می‌کند.</p>
-
 <p><strong>نصب:</strong></p>
 <figure class="code bash" dir="ltr"><pre><code class="language-bash">docker run -d -p 3000:3000 grafana/grafana
 # Username/password: admin / admin</code></pre></figure>
-
 <p><strong>کوئری‌های پرکاربرد <bdi dir="ltr">PromQL</bdi>:</strong></p>
 <p>نرخ درخواست‌ها: <bdi dir="ltr">rate(http_requests_total[5m])</bdi></p>
 <p>صدک ۹۵ زمان پاسخ: <bdi dir="ltr">histogram_quantile(0.95, sum(rate(http_request_duration_seconds_bucket[5m])) by (le))</bdi></p>
 <p>نرخ خطا: <bdi dir="ltr">sum(rate(http_requests_total{status=~"5.."}[5m])) / sum(rate(http_requests_total[5m]))</bdi></p>
-
 <div class="tip"><strong>نکته طراحی داشبورد:</strong> یک داشبورد <bdi dir="ltr">Grafana</bdi> مؤثر معمولاً چهار پنل کلیدی در ردیف بالایی دارد: <bdi dir="ltr">request rate</bdi>، <bdi dir="ltr">error rate</bdi>، <bdi dir="ltr">latency p95/p99</bdi> و <bdi dir="ltr">saturation</bdi> (الگوی <bdi dir="ltr">RED</bdi>). هر پنل باید یک عنوان واضح، <bdi dir="ltr">unit</bdi> صحیح (مثلاً <code>requests/sec</code> یا <code>milliseconds</code>) و <bdi dir="ltr">threshold</bdi>‌های رنگی داشته باشد. از تعداد زیاد پنل در یک داشبورد پرهیز کنید — به‌جای یک داشبورد شلوغ با ۲۰ پنل، چند داشبورد تخصصی بسازید (یکی برای <bdi dir="ltr">HTTP</bdi>، یکی برای دیتابیس، یکی برای <bdi dir="ltr">background jobs</bdi>). متغیرهای <bdi dir="ltr">$service</bdi> و <bdi dir="ltr">$env</bdi> را تعریف کنید تا بتوانید بین سرویس‌ها و محیط‌ها سوئیچ کنید.</div>
-
-<h3 id="alerting">تنظیم Alerting</h3>
-<p>یکی از قابلیت‌های مهم <bdi dir="ltr">Grafana</bdi> تعریف <bdi dir="ltr">Alert</bdi> روی متریک‌هاست. مثلاً وقتی نرخ خطا بیش از ۵ درصد شود یا زمان پاسخ بیشتر از ۲ ثانیه گردد اعلان به <bdi dir="ltr">Slack</bdi> ، ایمیل یا <bdi dir="ltr">Telegram</bdi> ارسال می‌شود.</p>
-
-<p>همچنین می‌توانید از <bdi dir="ltr">Alertmanager</bdi> (جزء جدانشدنی اکوسیستم <bdi dir="ltr">Prometheus</bdi>) برای مدیریت پیشرفته‌ی هشدارها شامل <bdi dir="ltr">grouping</bdi> ، <bdi dir="ltr">inhibition</bdi> و <bdi dir="ltr">silencing</bdi> استفاده کنید.</p>
-
+<h3 id="alerting">9.2.6 تنظیم Alerting</h3>
+<p>یکی از قابلیت‌های مهم <bdi dir="ltr">Grafana</bdi> تعریف <bdi dir="ltr">Alert</bdi> روی متریک‌هاست. مثلاً وقتی نرخ خطا بیش از ۵ درصد شود یا زمان پاسخ بیشتر از ۲ ثانیه گردد اعلان به <bdi dir="ltr">Slack</bdi>، ایمیل یا <bdi dir="ltr">Telegram</bdi> ارسال می‌شود.</p>
+<p>همچنین می‌توانید از <bdi dir="ltr">Alertmanager</bdi> (جزء جدانشدنی اکوسیستم <bdi dir="ltr">Prometheus</bdi>) برای مدیریت پیشرفته‌ی هشدارها شامل <bdi dir="ltr">grouping</bdi>، <bdi dir="ltr">inhibition</bdi> و <bdi dir="ltr">silencing</bdi> استفاده کنید.</p>
 <div class="important"><strong>نکته‌ی عملی:</strong> متریک‌های کلیدی که باید مانیتور کنید: <bdi dir="ltr">request rate</bdi>، <bdi dir="ltr">latency</bdi>، <bdi dir="ltr">error rate</bdi> و <bdi dir="ltr">saturation</bdi>. این چهار متریک به‌عنوان <bdi dir="ltr">USE/RED method</bdi> شناخته می‌شوند.</div>
-
-<h3 id="روش-red-و-use">روش‌های RED و USE: متریک‌های طلایی</h3>
+<h3 id="روش-red-و-use">9.2.7 روش‌های RED و USE: متریک‌های طلایی</h3>
 <p>دو چارچوب رایج برای انتخاب متریک‌های مناسب وجود دارد که هر توسعه‌دهنده‌ای باید بشناسد. این چارچوب‌ها به شما کمک می‌کنند بدانید دقیقاً چه چیزی را باید اندازه بگیرید:</p>
-
 <figure class="diagram" dir="ltr">
 <pre class="mermaid">flowchart LR
     title(["چارچوب‌های انتخاب متریک: RED (سرویس) و USE (منابع)"])
@@ -642,10 +595,8 @@ scrape_configs:
     class RULE goBox;</pre>
 <figcaption>شکل ۹-۲-الف: چارچوب‌های <bdi dir="ltr">RED</bdi> و <bdi dir="ltr">USE</bdi> — راهنمای انتخاب متریک‌های طلایی</figcaption>
 </figure>
-
-<h3 id="نامگذاری-متریکها">قرارداد نام‌گذاری متریک‌ها</h3>
+<h3 id="نامگذاری-متریکها">9.2.8 قرارداد نام‌گذاری متریک‌ها</h3>
 <p>رعایت استاندارد نام‌گذاری متریک‌ها برای قابلیت خواندن و فیلترینگ در <bdi dir="ltr">PromQL</bdi> ضروری است. فرمت پیشنهادی <bdi dir="ltr">Prometheus</bdi>:</p>
-
 <figure class="code plain" dir="ltr">
 <pre><code class="language-plain"># Format: namespace_subsystem_name_unit
 # Examples:
@@ -662,20 +613,18 @@ go_goroutines                 # Gauge: number of goroutines
 # 4. Use a common namespace prefix (app_, http_, db_)
 # 5. Avoid generic names (count, value, duration) — be specific</code></pre>
 </figure>
-
-<h3 id="قوانین-alerting">قوانین Alerting در Prometheus</h3>
+<h3 id="قوانین-alerting">9.2.9 قوانین Alerting در Prometheus</h3>
 <p>تعریف <bdi dir="ltr">Alert</bdi> به شما اطمینان می‌دهد که از مشکلات قبل از کاربران مطلع می‌شوید. در اینجا چند قانون پرکاربرد آورده شده است:</p>
-
 <figure class="code yaml" dir="ltr">
 <pre><code class="language-yaml"># prometheus_alerts.yml
 groups:
     - name: app_alerts
     rules:
-    # Alert: High error rate (>5% in last 5 minutes)
+    # Alert: High error rate (&gt;5% in last 5 minutes)
     - alert: HighErrorRate
         expr: |
         sum(rate(http_requests_total{status=~"5.."}[5m]))
-        / sum(rate(http_requests_total[5m])) > 0.05
+        / sum(rate(http_requests_total[5m])) &gt; 0.05
         for: 2m
         labels:
         severity: critical
@@ -683,12 +632,12 @@ groups:
         summary: "High error rate detected"
         description: "Error rate is {{ $value | humanizePercentage }}"
 
-    # Alert: High latency (p99 > 2 seconds)
+    # Alert: High latency (p99 &gt; 2 seconds)
     - alert: HighLatency
         expr: |
         histogram_quantile(0.99,
         sum(rate(http_request_duration_seconds_bucket[5m])) by (le)
-        ) > 2.0
+        ) &gt; 2.0
         for: 5m
         labels:
         severity: warning
@@ -697,7 +646,7 @@ groups:
 
     # Alert: Too many goroutines (potential leak)
     - alert: HighGoroutineCount
-        expr: go_goroutines > 1000
+        expr: go_goroutines &gt; 1000
         for: 10m
         labels:
         severity: warning
@@ -713,12 +662,9 @@ groups:
         annotations:
         summary: "Service {{ $labels.job }} is down"</code></pre>
 </figure>
-
 <div class="tip"><strong>نکته عملی:</strong> همیشه از <code>for</code> در قوانین <bdi dir="ltr">Alert</bdi> استفاده کنید تا از اعلان‌های ناشی از نوسانات لحظه‌ای جلوگیری شود. مثلاً <code>for: 2m</code> یعنی شرط باید حداقل ۲ دقیقه برقرار باشد تا اعلان ارسال شود. بدون <code>for</code> هر اسپایک لحظه‌ای یک اعلان تولید می‌کند.</div>
-
-<h3 id="کوئریهای-پرکاربرد-promql">کوئری‌های پرکاربرد PromQL با توضیح</h3>
+<h3 id="کوئریهای-پرکاربرد-promql">9.2.10 کوئری‌های پرکاربرد PromQL با توضیح</h3>
 <p><bdi dir="ltr">PromQL</bdi> زبان کوئری‌نویسی <bdi dir="ltr">Prometheus</bdi> است. درک این زبان برای تحلیل متریک‌ها ضروری است. هر کوئری از سه بخش تشکیل می‌شود: <strong>انتخاب متریک</strong>، <strong>فیلتر با Labels</strong> و <strong>توابع تجمیع</strong>:</p>
-
 <table class="comparison-table" dir="rtl">
 <thead>
 <tr><th>هدف</th><th>کوئری PromQL</th><th>توضیح</th></tr>
@@ -732,33 +678,38 @@ groups:
 <tr><td>مقایسه با هفته قبل</td><td><bdi dir="ltr">rate(http_requests_total[5m]) / rate(http_requests_total[5m] offset 7d)</bdi></td><td>رشد نسبت به هفته گذشته</td></tr>
 </tbody>
 </table>
-
 <div class="note"><strong>برای توسعه‌دهندگان تازه‌کار:</strong> یادگیری <bdi dir="ltr">PromQL</bdi> ممکن است در ابتدا دشوار به نظر برسد. پیشنهاد می‌کنیم ابتدا سه کوئری اول جدول بالا را در <bdi dir="ltr">Grafana Explore</bdi> امتحان کنید و نتایج را مشاهده نمایید. سپس به‌تدریج کوئری‌های پیچیده‌تر بنویسید. منبع کامل <bdi dir="ltr">PromQL</bdi> در <bdi dir="ltr">prometheus.io/docs/prometheus/latest/querying</bdi> موجود است.</div>
-</div>
-</div>
-
+<div class="summary">
+<strong>خلاصه‌ی نکات کلیدی:</strong>
+<ul>
+<li>Prometheus pull-based metrics</li>
+<li>counter: monotonic increasing</li>
+<li>gauge: up/down</li>
+<li>histogram: distribution</li>
+<li>Grafana برای dashboard و alerting</li>
+</ul>
+</div></div>
+</main></div>
 <!-- Footer -->
 <footer class="site-footer">
 <div class="footer-inner">
 <div class="footer-nav">
 <span class="nav-arrow">‹</span>
-<a href="09.01-logging.html" data-prev>۹.۱ Logging</a>
+<a data-prev="" href="09.01-logging.html">۹.۱ Logging</a>
 </div>
 <div class="footer-toc">
 <a href="00.01-contents.html">فهرست</a>
 </div>
 <div class="footer-nav">
-<a href="09.03-opentelemetry.html" data-next>۹.۳ OpenTelemetry</a>
+<a data-next="" href="09.03-opentelemetry.html">۹.۳ OpenTelemetry</a>
 <span class="nav-arrow">›</span>
 </div>
 </div>
 </footer>
-
 <!-- Back to Top -->
-<button class="back-to-top" aria-label="بازگشت به بالا">
-<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
+<button aria-label="بازگشت به بالا" class="back-to-top">
+<svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24"><polyline points="18 15 12 9 6 15"></polyline></svg>
 </button>
-
 <!-- Scripts -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/go.min.js"></script>

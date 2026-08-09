@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html dir="rtl" lang="fa">
 <head>
 <script>!function(){try{var t=localStorage.getItem('php2go-theme');if(t==='dark'||(!t&&window.matchMedia('(prefers-color-scheme:dark)').matches)){document.documentElement.setAttribute('data-theme','dark')}}catch(e){}}();</script>
@@ -6,26 +7,25 @@
 <meta content="ie=edge" http-equiv="x-ua-compatible"/>
 <title>۵.۹ Goroutine Leak — PHP to Go</title>
 <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport"/>
-<link rel="preconnect" href="https://fonts.googleapis.com"/>
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600;700&amp;family=Fira+Code:wght@400;500&amp;display=swap" rel="stylesheet"/>
 <link href="assets/css/main.css" rel="stylesheet" type="text/css"/>
 <link href="assets/img/favicon.ico" rel="icon" type="image/x-icon"/>
-<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" media="screen" class="hljs-light-theme" rel="stylesheet"/>
-<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css" media="not screen" class="hljs-dark-theme" rel="stylesheet"/>
+<link class="hljs-light-theme" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" media="screen" rel="stylesheet"/>
+<link class="hljs-dark-theme" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css" media="not screen" rel="stylesheet"/>
 </head>
 <body>
 <!-- Progress Bar -->
 <div class="progress-bar"><div class="progress-bar__fill"></div></div>
-
 <!-- Header -->
 <header class="site-header">
 <div class="header-inner">
 <div class="header-left">
-<button class="header-btn sidebar-toggle" aria-label="فهرست">
-<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+<button aria-label="فهرست" class="header-btn sidebar-toggle">
+<svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24"><line x1="3" x2="21" y1="6" y2="6"></line><line x1="3" x2="21" y1="12" y2="12"></line><line x1="3" x2="21" y1="18" y2="18"></line></svg>
 </button>
-<a href="00.00-front-matter.html" class="header-logo"><span class="logo-php">PHP</span> to <span class="logo-go">Go</span></a>
+<a class="header-logo" href="00.00-front-matter.html"><span class="logo-php">PHP</span> to <span class="logo-go">Go</span></a>
 <span class="header-crumbs">همزمانی › Goroutine Leak</span>
 </div>
 <div class="header-right">
@@ -36,53 +36,49 @@
 <a href="06.00-chapter-6.html"><span class="nav-label">۶. تعامل با دنیای بیرون</span></a>
 <span class="nav-arrow">›</span>
 </nav>
-<button class="header-btn search-toggle" aria-label="جستجو">
-<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+<button aria-label="جستجو" class="header-btn search-toggle">
+<svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" x2="16.65" y1="21" y2="16.65"></line></svg>
 </button>
-<button class="header-btn theme-toggle" aria-label="تغییر تم">
-<svg class="theme-icon-light" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
-<svg class="theme-icon-dark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+<button aria-label="تغییر تم" class="header-btn theme-toggle">
+<svg class="theme-icon-light" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24"><circle cx="12" cy="12" r="5"></circle><line x1="12" x2="12" y1="1" y2="3"></line><line x1="12" x2="12" y1="21" y2="23"></line><line x1="4.22" x2="5.64" y1="4.22" y2="5.64"></line><line x1="18.36" x2="19.78" y1="18.36" y2="19.78"></line><line x1="1" x2="3" y1="12" y2="12"></line><line x1="21" x2="23" y1="12" y2="12"></line><line x1="4.22" x2="5.64" y1="19.78" y2="18.36"></line><line x1="18.36" x2="19.78" y1="5.64" y2="4.22"></line></svg>
+<svg class="theme-icon-dark" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
 </button>
 </div>
 </div>
 </header>
-
 <!-- Search Modal -->
 <div class="search-overlay">
 <div class="search-modal">
 <div class="search-input-wrap">
-<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-<input type="text" class="search-input" placeholder="جستجو... (Ctrl+K)" dir="rtl"/>
+<svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" x2="16.65" y1="21" y2="16.65"></line></svg>
+<input class="search-input" dir="rtl" placeholder="جستجو... (Ctrl+K)" type="text"/>
 </div>
 <div class="search-results"></div>
 </div>
 </div>
-
 <!-- Layout -->
 <div class="site-layout">
 <!-- Sidebar -->
 <aside class="sidebar"></aside>
 <div class="sidebar-overlay"></div>
-
 <!-- Main Content -->
 <main class="content-area">
 <div class="content-wrap text">
 <div class="chapter">فصل ۵.۹</div>
-<h2 id="goroutine-leak">Goroutine Leak</h2>
-<p>درست مثل memory leak در زبان‌هایی مانند C یا جاوا در Go نیز ممکن است با مشکلی به‌نام <strong dir="ltr">Goroutine Leak</strong> روبه‌رو شوید. Leak به‌معنای باقی ماندن goroutineهایی است که هرگز به پایان نمی‌رسند و همچنان در پس‌زمینه بدون هیچ فایده‌ای اجرا می‌شوند یا در انتظار یک عملیات blocking باقی مانده‌اند.</p>
-
-<div class="quote-box">
-    <p class="quote-text">تخصیص و آزادسازی منابع باید متقارن و مشخص باشد. اگر آن را باز کردید، ببندید. اگر آن را شروع کردید، متوقف کنید. اگر آن را تخصیص دادید، آزاد کنید.</p>
-    <p class="quote-source">
-        <span class="quote-author">Uncle Bob</span>
-        <span class="quote-role">نویسنده و مشاور نرم‌افزار</span>
-        <span class="quote-separator">|</span>
-        <span class="quote-book">Clean Code</span>
-    </p>
+<h2 id="goroutine-leak">Goroutine Leak</h2><div class="abstract">
+<strong>چکیده:</strong> نشتی goroutine یکی از رایج‌ترین باگ‌های پنهان در برنامه‌های Go است. این بخش علل نشتی، تشخیص با pprof و راه‌حل‌ها را پوشش می‌دهد. الگوی context و done channel برای جلوگیری بررسی می‌شود.
 </div>
-
+<p>درست مثل memory leak در زبان‌هایی مانند C یا جاوا در Go نیز ممکن است با مشکلی به‌نام <strong dir="ltr">Goroutine Leak</strong> روبه‌رو شوید. Leak به‌معنای باقی ماندن goroutineهایی است که هرگز به پایان نمی‌رسند و همچنان در پس‌زمینه بدون هیچ فایده‌ای اجرا می‌شوند یا در انتظار یک عملیات blocking باقی مانده‌اند.</p>
+<div class="quote-box">
+<p class="quote-text">تخصیص و آزادسازی منابع باید متقارن و مشخص باشد. اگر آن را باز کردید، ببندید. اگر آن را شروع کردید، متوقف کنید. اگر آن را تخصیص دادید، آزاد کنید.</p>
+<p class="quote-source">
+<span class="quote-author">Uncle Bob</span>
+<span class="quote-role">نویسنده و مشاور نرم‌افزار</span>
+<span class="quote-separator">|</span>
+<span class="quote-book">Clean Code</span>
+</p>
+</div>
 <div class="tip"><strong>نکته‌ی حرفه‌ای:</strong> برای تشخیص نشت <bdi dir="ltr">Goroutine</bdi> در محیط تولید، از معیارهای <bdi dir="ltr">runtime</bdi> استفاده کنید: مانیتورینگ <bdi dir="ltr"><code>runtime.NumGoroutine()</code></bdi> و تنظیم هشدار برای رشد نامحدود. اگر نمودار تعداد <bdi dir="ltr">Goroutine</bdi>‌ها روند صعودی مداوم دارد و هرگز کاهش نمی‌یابد، نشت رخ داده است. ابزار <bdi dir="ltr"><code>pprof</code></bdi> نیز stack trace دقیق <bdi dir="ltr">Goroutine</bdi>‌های نشتی را ارائه می‌دهد.</div>
-
 <figure class="diagram" dir="ltr">
 <pre class="mermaid">flowchart LR
     subgraph LEAK["نشت (Leak)"]
@@ -90,7 +86,7 @@
         M1["main()"]
         L1["go leak()"]
         L2["&lt;-ch (بلاک برای همیشه)<br/>هیچ‌گاه تمام نمی‌شود!"]
-        M1 --> L1 --> L2
+        M1 --&gt; L1 --&gt; L2
     end
 
     subgraph FIXED["اصلاح‌شده (Fixed)"]
@@ -98,7 +94,7 @@
         M2["main()"]
         W1["go worker()"]
         W2["select + ctx.Done()<br/>خروج کنترل‌شده"]
-        M2 --> W1 --> W2
+        M2 --&gt; W1 --&gt; W2
     end
 
     subgraph TOOLS["ابزارهای تشخیص"]
@@ -106,7 +102,7 @@
         T1["runtime.NumGoroutine()"]
         T2["pprof (net/http/pprof)"]
         T3["مانیتورینگ + context timeout"]
-        T1 --> T2 --> T3
+        T1 --&gt; T2 --&gt; T3
     end
 
     classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
@@ -137,9 +133,8 @@ func main() {
 </figure>
 <p>&lt;-ch // منتظر دریافت از channel که هیچ‌گاه داده‌ای نمی‌آید</p>
 <p>چگونه از نشت جلوگیری کنیم؟ پاسخ کوتاه: همیشه <bdi dir="ltr">Goroutine</bdi>‌ها را با <bdi dir="ltr">Context</bdi> یا کانال‌های کنترل مدیریت کنید و <code>runtime.NumGoroutine()</code> را برای نظارت به‌کار ببرید. قوانین طلایی کامل در انتهای این فصل (بخش «خلاصه قوانین طلایی») آمده است.</p>
-<h3 id="علل-رایج-leak">علل رایج نشت Goroutine</h3>
+<h3 id="علل-رایج-leak">5.9.1 علل رایج نشت Goroutine</h3>
 <p>نشتی Goroutine معمولاً از یکی از دلایل زیر ناشی می‌شود:</p>
-
 <figure class="diagram" dir="ltr">
 <pre class="mermaid">flowchart LR
     subgraph LEAK["نشت: کانال بسته نمی‌شود"]
@@ -147,7 +142,7 @@ func main() {
         L1["go worker()"]
         L2["for val := range ch<br/>بلاک! close(ch) فراموش شده"]
         L3["نشت حافظه!<br/>گوریوتین تا ابد منتظر می‌ماند"]
-        L1 --> L2 --> L3
+        L1 --&gt; L2 --&gt; L3
     end
 
     subgraph FIXED["اصلاح: close(ch) + ctx.Done()"]
@@ -155,7 +150,7 @@ func main() {
         F1["go worker()"]
         F2["select + ctx.Done()<br/>خروج کنترل‌شده + close(ch)"]
         F3["منابع آزاد شدند"]
-        F1 --> F2 --> F3
+        F1 --&gt; F2 --&gt; F3
     end
 
     Note["راه‌حل: همیشه close(ch) فراخوانی کنید<br/>و از context برای لغو استفاده کنید"]
@@ -169,8 +164,6 @@ func main() {
     class Note neuBox;</pre>
 <figcaption dir="rtl">شکل ۵-۱۶-ب: نشت <bdi dir="ltr">Goroutine</bdi> از کانال بسته‌نشده و راه‌حل</figcaption>
 </figure>
-
-
 <p><strong>۱. انتظار روی کانالی که هرگز داده دریافت نمی‌کند:</strong> وقتی Goroutine منتظر دریافت از کانالی است که هیچ‌گاه داده‌ای نمی‌آید یا بسته نمی‌شود.</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">// Leak pattern: forgotten receiver
@@ -227,7 +220,7 @@ func leakPattern4() {
 }
 </code></pre>
 </figure>
-<h3 id="تشخیص-و-مانیتورینگ">تشخیص و مانیتورینگ</h3>
+<h3 id="تشخیص-و-مانیتورینگ">5.9.2 تشخیص و مانیتورینگ</h3>
 <p>Go ابزارهای قدرتمندی برای تشخیص نشت goroutine ارائه می‌دهد:</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">// Check number of active goroutines
@@ -247,7 +240,7 @@ go http.ListenAndServe(":6060", nil)
 </ul>
 نکته عملی: یک الگوی رایج در تولید، ثبت تعداد goroutineهای فعال به صورت دوره‌ای با <code dir="ltr">runtime.NumGoroutine()</code> و ارسال به سیستم مانیتورینگ (مثل Prometheus) است. اگر نمودار تعداد goroutineها روند صعودی مداوم داشته باشد، نشت رخ داده است.
 </div>
-<h3 id="راه-حل-leak-با-context">راه‌حل نشت با Context</h3>
+<h3 id="راه-حل-leak-با-context">5.9.3 راه‌حل نشت با Context</h3>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">func safeWorker(ctx context.Context, ch &lt;-chan int) {
     for {
@@ -276,10 +269,8 @@ func main() {
 </code></pre>
 </figure>
 <div class="tip"><strong>نکته:</strong> همیشه از <code>context</code> با timeout یا cancel برای هر Goroutine‌ای استفاده کنید که ممکن است مدت طولانی اجرا شود. این کار تضمین می‌کند که منابع سیستم بیهوده مصرف نشوند و Goroutineهای رها شده جمع‌آوری شوند.</div>
-
-<h3 id="نشت-در-سرور-http">نشت Goroutine در سرور HTTP</h3>
+<h3 id="نشت-در-سرور-http">5.9.4 نشت Goroutine در سرور HTTP</h3>
 <p>یکی از محل‌های رایج وقوع نشت <bdi dir="ltr">Goroutine</bdi> در سرورهای <bdi dir="ltr">HTTP</bdi> است. وقتی یک <bdi dir="ltr">Handler</bdi> <bdi dir="ltr">Goroutine</bdi> راه‌اندازی می‌کند اما از <bdi dir="ltr">Context</bdi> درخواست استفاده نمی‌کند، اگر کاربر ارتباط را قطع کند، <bdi dir="ltr">Goroutine</bdi> همچنان به کار خود ادامه می‌دهد:</p>
-
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">// Wrong — incorrect: goroutine leak when client disconnects
 func badHandler(w http.ResponseWriter, r *http.Request) {
@@ -307,10 +298,8 @@ func goodHandler(w http.ResponseWriter, r *http.Request) {
 }
 </code></pre>
 </figure>
-
-<h3 id="نظارت-تولید">نظارت بر تعداد Goroutine در تولید</h3>
+<h3 id="نظارت-تولید">5.9.5 نظارت بر تعداد Goroutine در تولید</h3>
 <p>در محیط تولید، نظارت بر تعداد <bdi dir="ltr">Goroutine</bdi>‌های فعال یک شاخص حیاتی است. الگوی رایج ثبت دوره‌ای این عدد و ارسال به سیستم مانیتورینگ است:</p>
-
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">func monitorGoroutines(ctx context.Context) {
     ticker := time.NewTicker(10 * time.Second)
@@ -334,7 +323,6 @@ func goodHandler(w http.ResponseWriter, r *http.Request) {
 }
 </code></pre>
 </figure>
-
 <div class="important"><strong>خلاصه قوانین طلایی جلوگیری از نشت Goroutine:</strong>
 <ul>
 <li>هر <bdi dir="ltr">Goroutine</bdi> باید مسیر خروج مشخصی داشته باشد.</li>
@@ -345,24 +333,23 @@ func goodHandler(w http.ResponseWriter, r *http.Request) {
 <li>در تست‌ها از <code>go test -race</code> و بررسی <code>runtime.NumGoroutine()</code> قبل و بعد از تست استفاده کنید.</li>
 </ul>
 </div>
-
-    <h3 id="goroutine-leak-profile-go-1.26">پروفایل نشتی گوروتین — Go 1.26 (آزمایشی)</h3>
-    <p>
-        Go 1.26 یک نوع پروفایل جدید را برای گزارش گوروتین‌های نشت‌کرده معرفی می‌کند.
-        این پروفایل که در بسته <code>runtime/pprof</code> با نام <code>goroutineleak</code>
-        در دسترس است، می‌تواند با تنظیم متغیر محیطی <code>GOEXPERIMENT=goroutineleakprofile</code>
-        فعال شود.
-    </p>
-    <p>
-        یک گوروتین «نشت‌کرده» گوروتینی است که روی یک primitive همزمانی (کانال، <code>sync.Mutex</code>،
-        <code>sync.Cond</code> و غیره) مسدود شده و به‌هیچ‌وجه نمی‌تواند از مسدودی خارج شود.
-        runtime گوروتین‌های نشت‌کرده را با استفاده از garbage collector شناسایی می‌کند: اگر گوروتین G
-        روی primitive همزمانی P مسدود باشد و P از هیچ گوروتین قابل اجرا یا گوروتینی که بتواند
-        G را از مسدودی خارج کند، قابل دسترسی نباشد، آنگاه P نمی‌تواند از مسدودی خارج شود
-        و گوروتین G هرگز بیدار نخواهد شد.
-    </p>
-    <figure class="code go" dir="ltr">
-        <pre><code class="language-go">// مثال: نشتی گوروتین که پروفایل جدید شناسایی میکند
+<h3 id="goroutine-leak-profile-go-1.26">5.9.6 پروفایل نشتی گوروتین — Go 1.26 (آزمایشی)</h3>
+<p>
+ Go 1.26 یک نوع پروفایل جدید را برای گزارش گوروتین‌های نشت‌کرده معرفی می‌کند.
+ این پروفایل که در بسته <code>runtime/pprof</code> با نام <code>goroutineleak</code>
+ در دسترس است، می‌تواند با تنظیم متغیر محیطی <code>GOEXPERIMENT=goroutineleakprofile</code>
+ فعال شود.
+ </p>
+<p>
+ یک گوروتین «نشت‌کرده» گوروتینی است که روی یک primitive هم‌روندی (کانال، <code>sync.Mutex</code>،
+ <code>sync.Cond</code> و غیره) مسدود شده و به‌هیچ‌وجه نمی‌تواند از مسدودی خارج شود.
+ </p><p>runtime گوروتین‌های نشت‌کرده را با استفاده از garbage collector شناسایی می‌کند: اگر گوروتین G
+ روی primitive هم‌روندی P مسدود باشد و P از هیچ گوروتین قابل اجرا یا گوروتینی که بتواند
+ G را از مسدودی خارج کند، قابل دسترسی نباشد، آنگاه P نمی‌تواند از مسدودی خارج شود
+ و گوروتین G هرگز بیدار نخواهد شد.
+ </p>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">// مثال: نشتی گوروتین که پروفایل جدید شناسایی میکند
 func processWorkItems(ws []workItem) ([]workResult, error) {
     ch := make(chan result)
     for _, w := range ws {
@@ -383,61 +370,53 @@ func processWorkItems(ws []workItem) ([]workResult, error) {
     }
     return results, nil
 }</code></pre>
-    </figure>
-    <figure class="code bash">
-        <pre><code class="language-bash"># فعال‌سازی پروفایل نشتی گوروتین
+</figure>
+<figure class="code bash">
+<pre><code class="language-bash"># فعال‌سازی پروفایل نشتی گوروتین
 GOEXPERIMENT=goroutineleakprofile go build -o myapp .
 ./myapp
 
 # دسترسی به پروفایل از طریق HTTP
-curl http://localhost:6060/debug/pprof/goroutineleak > leak.prof
+curl http://localhost:6060/debug/pprof/goroutineleak &gt; leak.prof
 
 # تحلیل پروفایل
 go tool pprof leak.prof</code></pre>
-    </figure>
-    <p>
-        این پیاده‌سازی آماده تولید است و فقط به‌دلیل جمع‌آوری بازخورد درباره API (به‌ویژه انتخاب
-        ایجاد یک پروفایل جدید) آزمایشی محسوب می‌شود. هدف فعال‌سازی پیش‌فرض این قابلیت در
-        Go 1.27 است. تشکر ویژه از Vlad Saioc از Uber برای این مشارکت.
-    </p>
-
-    <div class="case-study">
-        <div class="case-study-header">
-            <span class="case-study-badge">مطالعه موردی</span>
-            <span class="case-study-title">تشخیص نشتی گوروتین در Uber با تئوری GC</span>
-        </div>
-        <p>
-            Vlad Saioc از Uber در ارائه GopherCon 2025 نظریه و پیاده‌سازی پروفایل نشتی گوروتین
-            را ارائه داد. ایده اصلی استفاده از reachability analysis از garbage collector برای
-            شناسایی گوروتین‌های مسدودی بود که هیچ مسیری برای بیدار شدن ندارند. در عمل، این یعنی
-            GC می‌تواند تشخیص دهد که یک goroutine منتظر یک channel است که هیچ‌کس دیگر به آن ارجاع
-            نمی‌دهد، یا منتظر یک mutex است که هرگز آزاد نمی‌شود. این گوروتین‌ها عملاً «مرده» هستند
-            ولی حافظه‌اشغال‌شده توسط آن‌ها هرگز آزاد نمی‌شود چون runtime هنوز به آن‌ها ارجاع دارد.
-        </p>
-        <p>
-            این رویکرد در Uber بر روی بیش از ۱۰۰۰ میکروسرویس Go تست شد و توانست نشتی‌هایی را شناسایی کند
-            که با روش‌های سنتی (مانند <code>runtime.NumGoroutine()</code>) قابل تشخیص نبودند.
-            روش‌های سنتی فقط تعداد کل goroutine‌ها را نشان می‌دادند و نمی‌توانستند تشخیص دهند کدام
-            goroutine‌ها واقعاً در حال کارند و کدام‌ها نشت کرده‌اند. نتایج نشان داد که بیش از ۱۵ درصد
-            سرویس‌ها حداقل یک نشتی goroutine داشتند. در برخی موارد، نشتی‌ها به‌قدری پنهان بودند که
-            فقط بعد از روزها اجرا باعث افت عملکرد می‌شدند و با تست‌های عادی قابل شناسایی نبودند.
-        </p>
-        <p>
-            درس کلیدی: نشتی goroutine معمولاً نشانه‌های فوری ندارد. سرویس ممکن است ساعت‌ها یا حتی روزها
-            به‌درستی کار کند و سپس به‌دلیل کمبود حافظه فرو بریزد. بهترین راه مقابله، فعال‌سازی مانیتورینگ
-            تعداد goroutine به‌صورت مداوم و تعیین آستانه هشدار برای رشد غیرعادی است. ابزار جدید پروفایل
-            نشتی goroutine که در Go 1.26 به‌صورت آزمایشی اضافه شده، به‌طور خودکار این مشکل را شناسایی می‌کند.
-        </p>
-        <p class="case-study-source">
-            <span class="source-event">GopherCon 2025</span>
-            <span class="source-year">— ۲۰۲۵</span>
-        </p>
-    </div>
-
-<h3 id="فلوچارت-تشخیص-goroutine-leak">فلوچارت تشخیص نشت <bdi dir="ltr">Goroutine</bdi></h3>
-
+</figure>
+<p>
+ این پیاده‌سازی آماده تولید است و فقط به‌دلیل جمع‌آوری بازخورد درباره API (به‌ویژه انتخاب
+ ایجاد یک پروفایل جدید) آزمایشی محسوب می‌شود. هدف فعال‌سازی پیش‌فرض این قابلیت در
+ Go 1.27 است. تشکر ویژه از Vlad Saioc از Uber برای این مشارکت.
+ </p>
+<div class="case-study">
+<div class="case-study-header">
+<span class="case-study-badge">مطالعه موردی</span>
+<span class="case-study-title">تشخیص نشتی گوروتین در Uber با تئوری GC</span>
+</div>
+<p>Vlad Saioc از Uber در ارائه GopherCon 2025 نظریه و پیاده‌سازی پروفایل نشتی گوروتین
+ را ارائه داد. ایده اصلی استفاده از reachability analysis از garbage collector برای
+ شناسایی گوروتین‌های مسدودی بود که هیچ مسیری برای بیدار شدن ندارند.</p><p>در عمل، این یعنی
+ GC می‌تواند تشخیص دهد که یک goroutine منتظر یک channel است که هیچ‌کس دیگر به آن ارجاع
+ نمی‌دهد، یا منتظر یک mutex است که هرگز آزاد نمی‌شود.</p><p>این گوروتین‌ها عملاً «مرده» هستند
+ ولی حافظه‌اشغال‌شده توسط آن‌ها هرگز آزاد نمی‌شود چون runtime هنوز به آن‌ها ارجاع دارد.</p>
+<p>
+ این رویکرد در Uber بر روی بیش از ۱۰۰۰ میکروسرویس Go تست شد و توانست نشتی‌هایی را شناسایی کند
+ که با روش‌های سنتی (مانند <code>runtime.NumGoroutine()</code>) قابل تشخیص نبودند.
+ </p><p>روش‌های سنتی فقط تعداد کل goroutine‌ها را نشان می‌دادند و نمی‌توانستند تشخیص دهند کدام
+ goroutine‌ها واقعاً در حال کارند و کدام‌ها نشت کرده‌اند. </p><p>نتایج نشان داد که بیش از ۱۵ درصد
+ سرویس‌ها حداقل یک نشتی goroutine داشتند. در برخی موارد، نشتی‌ها به‌قدری پنهان بودند که
+ فقط بعد از روزها اجرا باعث افت عملکرد می‌شدند و با تست‌های عادی قابل شناسایی نبودند.
+ </p>
+<p>درس کلیدی: نشتی goroutine معمولاً نشانه‌های فوری ندارد. سرویس ممکن است ساعت‌ها یا حتی روزها
+ به‌درستی کار کند و سپس به‌دلیل کمبود حافظه فرو بریزد. بهترین راه مقابله، فعال‌سازی مانیتورینگ
+ تعداد goroutine به‌صورت مداوم و تعیین آستانه هشدار برای رشد غیرعادی است.</p><p>ابزار جدید پروفایل
+ نشتی goroutine که در Go 1.26 به‌صورت آزمایشی اضافه شده، به‌طور خودکار این مشکل را شناسایی می‌کند.</p>
+<p class="case-study-source">
+<span class="source-event">GopherCon 2025</span>
+<span class="source-year">— ۲۰۲۵</span>
+</p>
+</div>
+<h3 id="فلوچارت-تشخیص-goroutine-leak">5.9.7 فلوچارت تشخیص نشتGoroutine</h3>
 <p>تشخیص نشت <bdi dir="ltr">Goroutine</bdi> نیازمند یک رویکرد سیستماتیک است. فلوچارت زیر یک درخت تصمیم کامل ارائه می‌دهد که به شما کمک می‌کند به صورت مرحله‌ای تشخیص دهید آیا <bdi dir="ltr">goroutine</bdi> شما نشت کرده یا خیر. ابتدا بررسی می‌شود آیا <bdi dir="ltr">goroutine</bdi> مسدود شده است، سپس علت مسدود شدن مشخص می‌شود و در نهایت راه‌حل مناسب پیشنهاد می‌گردد. هر مسیر نشت با رنگ قرمز و هر مسیر صحیح با رنگ سبز نمایش داده شده است.</p>
-
 <figure class="diagram" dir="ltr">
 <pre class="mermaid">flowchart TB
     Start(["شروع: بررسی Goroutine"])
@@ -447,11 +426,11 @@ go tool pprof leak.prof</code></pre>
     OK["✓ OK"]
     Leak1["LEAK<br/>Fix: add ctx.Done() / break"]
 
-    Start --> Q1
-    Q1 -- "No" --> Q2
-    Q2 -- "Yes" --> OK
-    Q2 -- "No" --> Leak1
-    Q1 -- "Yes" --> Q3
+    Start --&gt; Q1
+    Q1 -- "No" --&gt; Q2
+    Q2 -- "Yes" --&gt; OK
+    Q2 -- "No" --&gt; Leak1
+    Q1 -- "Yes" --&gt; Q3
 
     CS["Channel Send<br/>ch &lt;- val<br/>گیرنده‌ای نیست"]
     CSF["LEAK!<br/>Fix: buffered chan / close(ch)"]
@@ -462,48 +441,48 @@ go tool pprof leak.prof</code></pre>
     LK["Lock<br/>mu.Lock()<br/>Unlock هرگز فراخوانی نمی‌شود"]
     LKF["LEAK!<br/>Fix: defer mu.Unlock() always"]
     HT["HTTP Request<br/>http.Get()<br/>بدون timeout"]
-    HTF["LEAK!<br/>Fix: ctx + http.Client&#123;Timeout&#125;"]
+    HTF["LEAK!<br/>Fix: ctx + http.Client{Timeout}"]
 
-    Q3 -- "Channel Send" --> CS --> CSF
-    Q3 -- "Channel Recv" --> CR --> CRF
-    Q3 -- "WaitGroup" --> WG --> WGF
-    Q3 -- "Lock" --> LK --> LKF
-    Q3 -- "HTTP Request" --> HT --> HTF
+    Q3 -- "Channel Send" --&gt; CS --&gt; CSF
+    Q3 -- "Channel Recv" --&gt; CR --&gt; CRF
+    Q3 -- "WaitGroup" --&gt; WG --&gt; WGF
+    Q3 -- "Lock" --&gt; LK --&gt; LKF
+    Q3 -- "HTTP Request" --&gt; HT --&gt; HTF
 
     subgraph CORRECT["الگوی صحیح هر Goroutine"]
         direction TB
-        CO1["select &#123;"]
+        CO1["select {"]
         CO2["case &lt;-ctx.Done(): return   // always check cancellation"]
         CO3["case job := &lt;-jobs: process(job)  // do work"]
-        CO1 --> CO2 --> CO3
+        CO1 --&gt; CO2 --&gt; CO3
     end
 
     subgraph TOOLS["ابزارهای تشخیص"]
         direction TB
         T1["runtime.NumGoroutine()"]
         T2["go tool pprof goroutine"]
-        T1 --> T2
+        T1 --&gt; T2
     end
 
     subgraph PREV["پیشگیری"]
         direction TB
         P1["context.WithCancel / WithTimeout"]
         P2["defer close(ch) / defer wg.Done()"]
-        P1 --> P2
+        P1 --&gt; P2
     end
 
     subgraph NEW["Go 1.26 New"]
         direction TB
         N1["goroutineleak profile"]
         N2["GOEXPERIMENT=goroutineleakprofile"]
-        N1 --> N2
+        N1 --&gt; N2
     end
 
     GOLD["قانون طلایی: هر Goroutine باید Context بپذیرد، select با ctx.Done() داشته باشد<br/>و مسیر خروج مشخصی داشته باشد"]
 
     LEG1["مسیر نشت"]
     LEG2["مسیر صحیح:<br/>select + ctx.Done() + close(ch)"]
-    LEG3["نشتی رایج:<br/>for &#123;&#125; without ctx.Done()"]
+    LEG3["نشتی رایج:<br/>for {} without ctx.Done()"]
 
     classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
     classDef bothBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
@@ -518,13 +497,9 @@ go tool pprof leak.prof</code></pre>
     class GOLD warnBox;</pre>
 <figcaption>شکل ۵-۱۸: فلوچارت تشخیص نشت <bdi dir="ltr">Goroutine</bdi> — درخت تصمیم با راه‌حل‌ها</figcaption>
 </figure>
-
-<p>این فلوچارت نشان می‌دهد که هر <bdi dir="ltr">goroutine</bdi> مسدود شده معمولاً یکی از پنج علت رایج را دارد: ارسال روی کانال بدون گیرنده، دریافت از کانال بدون فرستنده، انتظار روی <bdi dir="ltr">WaitGroup</bdi> که هرگز <bdi dir="ltr">Done</bdi> نمی‌شود، قفل شدن روی <bdi dir="ltr">Mutex</bdi> که هرگز آزاد نمی‌شود، یا درخواست <bdi dir="ltr">HTTP</bdi> بدون <bdi dir="ltr">timeout</bdi>. برای هر یک از این علت‌ها راه‌حل مشخصی وجود دارد که در بخش‌های راهنمایی کنار هر مسیر نشت نمایش داده شده است. نکته مهم این است که اگر <bdi dir="ltr">goroutine</bdi> مسدود نشده اما شرط خروج ندارد (مثلاً حلقه بی‌نهایت بدون بررسی <bdi dir="ltr">ctx.Done()</bdi>)، باز هم نشت رخ می‌دهد.</p>
-
-<h3 id="سناریوهای-عملیاتی-leak">سناریوهای عملیاتی نشت <bdi dir="ltr">Goroutine</bdi></h3>
-
-<p>در پروژه‌های واقعی، نشت <bdi dir="ltr">Goroutine</bdi> معمولاً در الگوهای خاصی رخ می‌دهد. شناخت این الگوها به شما کمک می‌کند قبل از وقوع نشت از آن جلوگیری کنید. هر یک از سناریوهای زیر بر اساس تجربه توسعه‌دهندگان <bdi dir="ltr">Go</bdi> در سیستم‌های تولیدی بزرگ شناسایی شده‌اند و راه‌حل مشخصی دارند. درک این سناریوها برای هر برنامه‌نویسی که از همزمانی استفاده می‌کند ضروری است.</p>
-
+<p>این فلوچارت نشان می‌دهد که هر <bdi dir="ltr">goroutine</bdi> مسدود شده معمولاً یکی از پنج علت رایج را دارد: ارسال روی کانال بدون گیرنده، دریافت از کانال بدون فرستنده، انتظار روی <bdi dir="ltr">WaitGroup</bdi> که هرگز <bdi dir="ltr">Done</bdi> نمی‌شود، قفل شدن روی <bdi dir="ltr">Mutex</bdi> که هرگز آزاد نمی‌شود، یا درخواست <bdi dir="ltr">HTTP</bdi> بدون <bdi dir="ltr">timeout</bdi>. </p><p>برای هر یک از این علت‌ها راه‌حل مشخصی وجود دارد که در بخش‌های راهنمایی کنار هر مسیر نشت نمایش داده شده است. </p><p>نکته مهم این است که اگر <bdi dir="ltr">goroutine</bdi> مسدود نشده اما شرط خروج ندارد (مثلاً حلقه بی‌نهایت بدون بررسی <bdi dir="ltr">ctx.Done()</bdi>)، باز هم نشت رخ می‌دهد.</p>
+<h3 id="سناریوهای-عملیاتی-leak">5.9.8 سناریوهای عملیاتی نشتGoroutine</h3>
+<p>در پروژه‌های واقعی، نشت <bdi dir="ltr">Goroutine</bdi> معمولاً در الگوهای خاصی رخ می‌دهد. شناخت این الگوها به شما کمک می‌کند قبل از وقوع نشت از آن جلوگیری کنید. هر یک از سناریوهای زیر بر اساس تجربه توسعه‌دهندگان <bdi dir="ltr">Go</bdi> در سیستم‌های تولیدی بزرگ شناسایی شده‌اند و راه‌حل مشخصی دارند. درک این سناریوها برای هر برنامه‌نویسی که از هم‌روندی استفاده می‌کند ضروری است.</p>
 <ul>
 <li><strong>گیرنده‌های کانال رها شده:</strong> وقتی یک <bdi dir="ltr">goroutine</bdi> منتظر دریافت از کانالی است که دیگر هیچ‌کس به آن ارسال نمی‌کند. مثلاً وقتی تابعی یک <bdi dir="ltr">goroutine</bdi> راه‌اندازی می‌کند که از کانال می‌خواند اما تابع بدون بستن کانال بازمی‌گردد. این الگو به‌ویژه در <bdi dir="ltr">handler</bdi>های <bdi dir="ltr">HTTP</bdi> رایج است که <bdi dir="ltr">goroutine</bdi> پس‌زمینه‌ای راه‌اندازی می‌کنند. راه‌حل: همیشه کانال را ببندید یا از <bdi dir="ltr">Context</bdi> استفاده کنید.</li>
 <li><strong>عدم لغو <bdi dir="ltr">Context</bdi> در فراخوان‌های <bdi dir="ltr">HTTP</bdi>:</strong> وقتی درخواست <bdi dir="ltr">HTTP</bdi> بدون <bdi dir="ltr">timeout</bdi> یا <bdi dir="ltr">Context</bdi> ارسال می‌شود و سرور پاسخ نمی‌دهد. <bdi dir="ltr">goroutine</bdi> برای همیشه منتظر می‌ماند. این مشکل در <bdi dir="ltr">PHP</bdi> وجود ندارد زیرا هر درخواست <bdi dir="ltr">PHP</bdi> <bdi dir="ltr">timeout</bdi> پیش‌فرض دارد اما در <bdi dir="ltr">Go</bdi> باید صراحتاً تنظیم شود. راه‌حل: همیشه از <code dir="ltr">http.Client{Timeout: ...}</code> و <code dir="ltr">http.NewRequestWithContext(ctx, ...)</code> استفاده کنید.</li>
@@ -532,37 +507,40 @@ go tool pprof leak.prof</code></pre>
 <li><strong>فراموش کردن <bdi dir="ltr">WaitGroup Done</bdi>:</strong> وقتی <bdi dir="ltr">wg.Add(1)</bdi> فراخوانی شده اما به دلیل <bdi dir="ltr">return</bdi> زودهنگام یا <bdi dir="ltr">panic</bdi>، <bdi dir="ltr">wg.Done()</bdi> هرگز اجرا نمی‌شود. <bdi dir="ltr">wg.Wait()</bdi> برای همیشه مسدود می‌ماند. این یکی از خطرناک‌ترین انواع نشت است زیرا نه تنها <bdi dir="ltr">goroutine</bdi> نشت شده بلکه <bdi dir="ltr">goroutine</bdi> منتظر را هم مسدود می‌کند. راه‌حل: همیشه <code dir="ltr">defer wg.Done()</code> را بلافاصله بعد از <code dir="ltr">wg.Add(1)</code> قرار دهید.</li>
 <li><strong><bdi dir="ltr">Goroutine</bdi>های منتظر روی کانال <bdi dir="ltr">nil</bdi>:</strong> ارسال یا دریافت روی کانال <bdi dir="ltr">nil</bdi> برای همیشه مسدود می‌شود. این معمولاً وقتی رخ می‌دهد که متغیر کانال به درستی مقداردهی نشده یا بعد از <code dir="ltr">close</code> دوباره استفاده می‌شود. <bdi dir="ltr">Go</bdi> هیچ خطایی در زمان کامپایل نمی‌دهد و فقط در زمان اجرا مسدود می‌شود. راه‌حل: همیشه کانال را با <code dir="ltr">make</code> بسازید و از استفاده از کانال <bdi dir="ltr">nil</bdi> اجتناب کنید.</li>
 </ul>
-
 <div class="tip"><strong>نکته درباره تشخیص نشت در تولید:</strong> برای شناسایی نشت <bdi dir="ltr">Goroutine</bdi> در محیط تولید، دو ابزار اصلی دارید: اول، <code dir="ltr">runtime.NumGoroutine()</code> که تعداد کل <bdi dir="ltr">goroutine</bdi>های فعال را برمی‌گرداند. ثبت دوره‌ای این عدد و ارسال به سیستم مانیتورینگ (مثل <bdi dir="ltr">Prometheus</bdi>) بهترین روش است. اگر نمودار روند صعودی مداوم داشت، نشت رخ داده است. دوم، <code dir="ltr">pprof</code> با مسیر <code dir="ltr">/debug/pprof/goroutine</code> که <bdi dir="ltr">stack trace</bdi> تمام <bdi dir="ltr">goroutine</bdi>ها را نشان می‌دهد. با مقایسه‌ی خروجی در زمان‌های مختلف می‌توان <bdi dir="ltr">goroutine</bdi>های نشتی را که <bdi dir="ltr">stack trace</bdi> یکسانی دارند و تعدادشان فقط افزایش می‌یابد شناسایی کرد. دستور <code dir="ltr">go tool pprof http://localhost:6060/debug/pprof/goroutine</code> پروفایل تعاملی ارائه می‌دهد.</div>
-
 <div class="note"><strong>یادداشت:</strong> برای اطمینان از عدم نشت در تست‌های خود، الگوی زیر را به‌کار ببرید: قبل و بعد از هر تست، <code>runtime.NumGoroutine()</code> را چک کنید و اگر اختلاف معناداری وجود داشت، تست را شکست‌خورده اعلام کنید. این کار با <code>go test -race</code> ترکیب شود تا علاوه بر <bdi dir="ltr">Data Race</bdi>، نشت‌های ظریف <bdi dir="ltr">Goroutine</bdi> نیز در CI شناسایی شوند. کتابخانه‌هایی مثل <code>go.uber.org/goleak</code> این کار را با چند خط کد ساده می‌کنند و در پروژه‌های تولیدی به‌عنوان استاندارد تلقی می‌شوند.</div>
-
-</div>
+<div class="summary">
+<strong>خلاصه‌ی نکات کلیدی:</strong>
+<ul>
+<li>goroutine بدون خروج = نشتی حافظه</li>
+<li>علل رایج: channel بدون receiver، فراموش کردن context</li>
+<li>pprof goroutine برای تشخیص نشتی</li>
+<li>context.WithCancel برای لغو goroutine طولانی</li>
+<li>done channel سیگنال پایان به goroutine</li>
+</ul>
+</div></div>
 </main>
 </div>
-
 <!-- Footer -->
 <footer class="site-footer">
 <div class="footer-inner">
 <div class="footer-nav">
 <span class="nav-arrow">‹</span>
-<a href="05.08-practical-concurrency-usage.html" data-prev>۵.۸ کاربردهای عملی Concurrency</a>
+<a data-prev="" href="05.08-practical-concurrency-usage.html">۵.۸ کاربردهای عملی Concurrency</a>
 </div>
 <div class="footer-toc">
 <a href="00.01-contents.html">فهرست</a>
 </div>
 <div class="footer-nav">
-<a href="06.00-chapter-6.html" data-next>۶. تعامل با دنیای بیرون</a>
+<a data-next="" href="06.00-chapter-6.html">۶. تعامل با دنیای بیرون</a>
 <span class="nav-arrow">›</span>
 </div>
 </div>
 </footer>
-
 <!-- Back to Top -->
-<button class="back-to-top" aria-label="بازگشت به بالا">
-<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
+<button aria-label="بازگشت به بالا" class="back-to-top">
+<svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24"><polyline points="18 15 12 9 6 15"></polyline></svg>
 </button>
-
 <!-- Scripts -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/go.min.js"></script>

@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html dir="rtl" lang="fa">
 <head>
 <script>!function(){try{var t=localStorage.getItem('php2go-theme');if(t==='dark'||(!t&&window.matchMedia('(prefers-color-scheme:dark)').matches)){document.documentElement.setAttribute('data-theme','dark')}}catch(e){}}();</script>
@@ -6,26 +7,25 @@
 <meta content="ie=edge" http-equiv="x-ua-compatible"/>
 <title>۵.۱ Goroutine — PHP to Go</title>
 <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport"/>
-<link rel="preconnect" href="https://fonts.googleapis.com"/>
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600;700&amp;family=Fira+Code:wght@400;500&amp;display=swap" rel="stylesheet"/>
 <link href="assets/css/main.css" rel="stylesheet" type="text/css"/>
 <link href="assets/img/favicon.ico" rel="icon" type="image/x-icon"/>
-<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" media="screen" class="hljs-light-theme" rel="stylesheet"/>
-<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css" media="not screen" class="hljs-dark-theme" rel="stylesheet"/>
+<link class="hljs-light-theme" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" media="screen" rel="stylesheet"/>
+<link class="hljs-dark-theme" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css" media="not screen" rel="stylesheet"/>
 </head>
 <body>
 <!-- Progress Bar -->
 <div class="progress-bar"><div class="progress-bar__fill"></div></div>
-
 <!-- Header -->
 <header class="site-header">
 <div class="header-inner">
 <div class="header-left">
-<button class="header-btn sidebar-toggle" aria-label="فهرست">
-<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+<button aria-label="فهرست" class="header-btn sidebar-toggle">
+<svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24"><line x1="3" x2="21" y1="6" y2="6"></line><line x1="3" x2="21" y1="12" y2="12"></line><line x1="3" x2="21" y1="18" y2="18"></line></svg>
 </button>
-<a href="00.00-front-matter.html" class="header-logo"><span class="logo-php">PHP</span> to <span class="logo-go">Go</span></a>
+<a class="header-logo" href="00.00-front-matter.html"><span class="logo-php">PHP</span> to <span class="logo-go">Go</span></a>
 <span class="header-crumbs">همزمانی › Goroutine</span>
 </div>
 <div class="header-right">
@@ -36,44 +36,40 @@
 <a href="05.02-channel.html"><span class="nav-label">۵.۲ Channel</span></a>
 <span class="nav-arrow">›</span>
 </nav>
-<button class="header-btn search-toggle" aria-label="جستجو">
-<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+<button aria-label="جستجو" class="header-btn search-toggle">
+<svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" x2="16.65" y1="21" y2="16.65"></line></svg>
 </button>
-<button class="header-btn theme-toggle" aria-label="تغییر تم">
-<svg class="theme-icon-light" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
-<svg class="theme-icon-dark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+<button aria-label="تغییر تم" class="header-btn theme-toggle">
+<svg class="theme-icon-light" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24"><circle cx="12" cy="12" r="5"></circle><line x1="12" x2="12" y1="1" y2="3"></line><line x1="12" x2="12" y1="21" y2="23"></line><line x1="4.22" x2="5.64" y1="4.22" y2="5.64"></line><line x1="18.36" x2="19.78" y1="18.36" y2="19.78"></line><line x1="1" x2="3" y1="12" y2="12"></line><line x1="21" x2="23" y1="12" y2="12"></line><line x1="4.22" x2="5.64" y1="19.78" y2="18.36"></line><line x1="18.36" x2="19.78" y1="5.64" y2="4.22"></line></svg>
+<svg class="theme-icon-dark" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
 </button>
 </div>
 </div>
 </header>
-
 <!-- Search Modal -->
 <div class="search-overlay">
 <div class="search-modal">
 <div class="search-input-wrap">
-<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-<input type="text" class="search-input" placeholder="جستجو... (Ctrl+K)" dir="rtl"/>
+<svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" x2="16.65" y1="21" y2="16.65"></line></svg>
+<input class="search-input" dir="rtl" placeholder="جستجو... (Ctrl+K)" type="text"/>
 </div>
 <div class="search-results"></div>
 </div>
 </div>
-
 <!-- Layout -->
 <div class="site-layout">
 <!-- Sidebar -->
 <aside class="sidebar"></aside>
 <div class="sidebar-overlay"></div>
-
 <!-- Main Content -->
 <main class="content-area">
 <div class="content-wrap text">
 <div class="chapter">فصل ۵.۱</div>
-<h2 id="goroutine">Goroutine</h2>
-
-<div class="note"><strong>یادداشت:</strong> مفهوم <bdi dir="ltr">Goroutine</bdi> یکی از ویژگی‌های کلیدی Go است که آن را از PHP متمایز می‌کند. در PHP همزمانی به‌صورت پیش‌فرض وجود ندارد و نیازمند ابزارهای جانبی مانند <bdi dir="ltr">Fiber</bdi> ، <bdi dir="ltr">parallel</bdi> یا <bdi dir="ltr">Swoole</bdi> است. اما در Go همزمانی بخشی ذاتی از زبان است و با یک کلمه‌ی کلیدی ساده (<code>go</code>) قابل دسترسی می‌باشد.</div>
-
-<p>در Go برای دستیابی به همزمانی کافی است فقط کلمه کلیدی <code>go</code> را قبل از فراخوانی تابع اضافه کنیم. همین کار کفایت می‌کند تا یک <bdi dir="ltr">Task</bdi> در یک مسیر مستقل هم‌زمان و سبک‌وزن اجرا شود. به این مسیر اجرایی جدید <bdi dir="ltr">Goroutine</bdi> گفته می‌شود. به بیان ساده <bdi dir="ltr">Goroutine</bdi> یک <bdi dir="ltr">Thread</bdi> بسیار سبک‌وزن است که نه از طریق سیستم‌عامل بلکه توسط <bdi dir="ltr">Runtime</bdi> زبان Go مدیریت می‌شود.</p>
-
+<h2 id="goroutine">Goroutine</h2><div class="abstract">
+<strong>چکیده:</strong> Goroutine واحد هم‌روندی Go است و بسیار سبک‌تر از thread سیستم‌عامل. این بخش ساختار داخلی، چرخه‌ی حیات و هزینه‌ی goroutine را با thread PHP مقایسه می‌کند. الگوهای صحیح استفاده و نشتی‌های رایج پوشش داده می‌شود.
+</div>
+<div class="note"><strong>یادداشت:</strong> مفهوم <bdi dir="ltr">Goroutine</bdi> یکی از ویژگی‌های کلیدی Go است که آن را از PHP متمایز می‌کند. در PHP هم‌روندی به‌صورت پیش‌فرض وجود ندارد و نیازمند ابزارهای جانبی مانند <bdi dir="ltr">Fiber</bdi>، <bdi dir="ltr">parallel</bdi> یا <bdi dir="ltr">Swoole</bdi> است. اما در Go هم‌روندی بخشی ذاتی از زبان است و با یک کلمه‌ی کلیدی ساده (<code>go</code>) قابل دسترسی می‌باشد.</div>
+<p>در Go برای دستیابی به هم‌روندی کافی است فقط کلمه کلیدی <code>go</code> را قبل از فراخوانی تابع اضافه کنیم. همین کار کفایت می‌کند تا یک <bdi dir="ltr">Task</bdi> در یک مسیر مستقل هم‌زمان و سبک‌وزن اجرا شود. به این مسیر اجرایی جدید <bdi dir="ltr">Goroutine</bdi> گفته می‌شود. </p><p>به بیان ساده <bdi dir="ltr">Goroutine</bdi> یک <bdi dir="ltr">Thread</bdi> بسیار سبک‌وزن است که نه از طریق سیستم‌عامل بلکه توسط <bdi dir="ltr">Runtime</bdi> زبان Go مدیریت می‌شود.</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">go sayHello() // run function in a new goroutine
 go func() { // run anonymous function in goroutine
@@ -81,21 +77,17 @@ go func() { // run anonymous function in goroutine
 }()
 </code></pre>
 </figure>
-
 <p>این کار یعنی <code>sayHello()</code> به‌صورت هم‌زمان اجرا خواهد شد و اجرای برنامه بدون آن‌که منتظر اتمام آن تابع بماند به خط بعدی ادامه می‌دهد. در واقع Go با الهام از مدل <bdi dir="ltr">CSP</bdi> سعی کرده به‌جای استفاده از <bdi dir="ltr">Memory Sharing</bdi> مسیر ارتباط بین <bdi dir="ltr">Task</bdi>‌ها را از طریق <bdi dir="ltr">Message Passing</bdi> فراهم کند.</p>
-
 <div class="quote-box">
-    <p class="quote-text">همزمانی سخت است. حالت مشترک ریشه‌ی بیشتر باگ‌های همزمانی است. بهترین راه برای اجتناب از حالت مشترک، اصلاً حالت مشترک نداشتن است — به‌جای آن از طریق پیام‌ها ارتباط برقرار کنید.</p>
-    <p class="quote-source">
-        <span class="quote-author">Andy Hunt و Dave Thomas</span>
-        <span class="quote-role">نویسندگان و مشاوران نرم‌افزار</span>
-        <span class="quote-separator">|</span>
-        <span class="quote-book">The Pragmatic Programmer</span>
-    </p>
+<p class="quote-text">هم‌روندی سخت است. حالت مشترک ریشه‌ی بیشتر باگ‌های هم‌روندی است. بهترین راه برای اجتناب از حالت مشترک، اصلاً حالت مشترک نداشتن است — به‌جای آن از طریق پیام‌ها ارتباط برقرار کنید.</p>
+<p class="quote-source">
+<span class="quote-author">Andy Hunt و Dave Thomas</span>
+<span class="quote-role">نویسندگان و مشاوران نرم‌افزار</span>
+<span class="quote-separator">|</span>
+<span class="quote-book">The Pragmatic Programmer</span>
+</p>
 </div>
-
 <div class="tip"><strong>نکته‌ی حرفه‌ای:</strong> مدیریت چرخه‌ی حیات <bdi dir="ltr">Goroutine</bdi> حیاتی است — هر <bdi dir="ltr">Goroutine</bdi> که شروع می‌کنید باید شرط خروج مشخصی داشته باشد، در غیر این صورت نشت <bdi dir="ltr">Goroutine</bdi> رخ می‌دهد (مبحث فصل ۵.۹). قاعده‌ی ساده: اگر <code>go func()</code> می‌نویسید، بلافاصله از خود بپرسید «این چه زمانی تمام می‌شود؟».</div>
-
 <figure class="diagram" dir="ltr">
 <pre class="mermaid">flowchart TB
     subgraph POOL["PHP-FPM / Apache Worker Pool"]
@@ -113,24 +105,21 @@ go func() { // run anonymous function in goroutine
     class Note warnBox;</pre>
 <figcaption>شکل ۵-۱: مدل پردازشی <bdi dir="ltr">PHP</bdi> - هر درخواست در یک <bdi dir="ltr">Process</bdi> مستقل اجرا می‌شود</figcaption>
 </figure>
-
-<h3 id="مقایسه-goroutine-و-thread-و-process">مقایسه <bdi dir="ltr">Goroutine</bdi> و <bdi dir="ltr">Thread</bdi> و فرآیند PHP</h3>
-
+<h3 id="مقایسه-goroutine-و-thread-و-process">5.1.1 مقایسهGoroutineوThreadو فرآیند PHP</h3>
 <div class="case-study">
-    <div class="case-study-header">
-        <span class="case-study-badge">مطالعه موردی</span>
-        <span class="case-study-title">تأثیر Goroutine در مقیاس Uber</span>
-    </div>
-    <p>Uber به‌طور گسترده از goroutine‌ها برای مدیریت صدها هزار درخواست همزمان استفاده می‌کند. در مقایسه با مدل thread-per-request جاوا که هر thread حدود ۱ مگابایت حافظه مصرف می‌کند، هر goroutine تنها حدود ۲ تا ۸ کیلوبایت حافظه استک اولیه دارد. این تفاوت به Uber اجازه می‌دهد میلیون‌ها goroutine را در یک سرور اجرا کند. در عمل، این یعنی یک سرور Go با ۸ گیگابایت حافظه می‌تواند حدود یک میلیون goroutine فعال داشته باشد، در حالی که همان سرور با مدل thread جاوا تنها حدود ۸ هزار thread می‌تواند نگه دارد.</p>
-    <p>مدل همزمانی goroutine مزیت مهم دیگری هم دارد: زمان ایجاد. ایجاد یک thread جدید در سیستم‌عامل حدود ۱ تا ۱۰ میکروسثانیه طول می‌کشد و شامل تخصیص حافظه، تنظیم stack و ثبت در scheduler سیستم‌عامل است. اما ایجاد یک goroutine تنها حدود ۳۰۰ نانوثانیه طول می‌کشد چون Go scheduler داخلی این کار را با کارایی بسیار بالاتری انجام می‌دهد. این تفاوت در مقیاس صدها هزار درخواست بر ثانیه، تفاوت بین یک سیستم پاسخگو و یک سیستم فروپاشیده است.</p>
-    <p>از چالش‌های اصلی: goroutine leak که در آن goroutine‌ها هرگز خاتمه نمی‌یابند و حافظه نشت می‌کند. این مشکل در سیستم‌های تولیدی بسیار شایع است و Uber ابزارهای مانیتورینگ مخصوصی برای ردیابی goroutine‌های زامبی توسعه داده است. این ابزارها تعداد goroutine فعال را به‌صورت مداوم مانیتور می‌کنند و اگر روند افزایشی غیرعادی مشاهده کنند، هشدار می‌دهند. بدون این مانیتورینگ، نشتی goroutine می‌تواند به تدریج منابع سرور را تخلیه کند و باعث قطعی سرویس شود.</p>
-    <p class="case-study-source">
-        <span class="source-event">GopherCon 2019</span>
-        <span class="source-year">، ۲۰۱۹</span>
-    </p>
+<div class="case-study-header">
+<span class="case-study-badge">مطالعه موردی</span>
+<span class="case-study-title">تأثیر Goroutine در مقیاس Uber</span>
 </div>
-<p>هر <bdi dir="ltr">Goroutine</bdi> در ابتدا با یک <bdi dir="ltr">Stack</bdi> بسیار کوچک معمولاً ۲ کیلوبایت شروع به کار می‌کند. این <bdi dir="ltr">Stack</bdi> به‌صورت پویا رشد می‌کند. یعنی شما می‌توانید بی‌آنکه فشار زیادی به حافظه وارد شود هزاران یا حتی صدها هزار <bdi dir="ltr">Goroutine</bdi> را به‌صورت هم‌زمان اجرا کنید. این سبک‌وزنی حاصل طراحی دقیق <bdi dir="ltr">Runtime</bdi> Go است که با استفاده از یک <bdi dir="ltr">Scheduler</bdi> داخلی تمام <bdi dir="ltr">Goroutine</bdi>‌ها را بر روی تعداد محدودی <bdi dir="ltr">Thread</bdi> سیستم‌عامل توزیع می‌کند.</p>
-
+<p>Uber به‌طور گسترده از goroutine‌ها برای مدیریت صدها هزار درخواست همزمان استفاده می‌کند. در مقایسه با مدل thread-per-request جاوا که هر thread حدود ۱ مگابایت حافظه مصرف می‌کند، هر goroutine تنها حدود ۲ تا ۸ کیلوبایت حافظه استک اولیه دارد. این تفاوت به Uber اجازه می‌دهد میلیون‌ها goroutine را در یک سرور اجرا کند.</p><p>در عمل، این یعنی یک سرور Go با ۸ گیگابایت حافظه می‌تواند حدود یک میلیون goroutine فعال داشته باشد، در حالی که همان سرور با مدل thread جاوا تنها حدود ۸ هزار thread می‌تواند نگه دارد.</p>
+<p>مدل هم‌روندی goroutine مزیت مهم دیگری هم دارد: زمان ایجاد. ایجاد یک thread جدید در سیستم‌عامل حدود ۱ تا ۱۰ میکروسثانیه طول می‌کشد و شامل تخصیص حافظه، تنظیم stack و ثبت در scheduler سیستم‌عامل است.</p><p>اما ایجاد یک goroutine تنها حدود ۳۰۰ نانوثانیه طول می‌کشد چون Go scheduler داخلی این کار را با کارایی بسیار بالاتری انجام می‌دهد.</p><p>این تفاوت در مقیاس صدها هزار درخواست بر ثانیه، تفاوت بین یک سیستم پاسخگو و یک سیستم فروپاشیده است.</p>
+<p>از چالش‌های اصلی: goroutine leak که در آن goroutine‌ها هرگز خاتمه نمی‌یابند و حافظه نشت می‌کند. این مشکل در سیستم‌های تولیدی بسیار شایع است و Uber ابزارهای مانیتورینگ مخصوصی برای ردیابی goroutine‌های زامبی توسعه داده است.</p><p>این ابزارها تعداد goroutine فعال را به‌صورت مداوم مانیتور می‌کنند و اگر روند افزایشی غیرعادی مشاهده کنند، هشدار می‌دهند.</p><p>بدون این مانیتورینگ، نشتی goroutine می‌تواند به تدریج منابع سرور را تخلیه کند و باعث قطعی سرویس شود.</p>
+<p class="case-study-source">
+<span class="source-event">GopherCon 2019</span>
+<span class="source-year">، ۲۰۱۹</span>
+</p>
+</div>
+<p>هر <bdi dir="ltr">Goroutine</bdi> در ابتدا با یک <bdi dir="ltr">Stack</bdi> بسیار کوچک معمولاً ۲ کیلوبایت شروع به کار می‌کند. این <bdi dir="ltr">Stack</bdi> به‌صورت پویا رشد می‌کند. یعنی شما می‌توانید بی‌آنکه فشار زیادی به حافظه وارد شود هزاران یا حتی صدها هزار <bdi dir="ltr">Goroutine</bdi> را به‌صورت هم‌زمان اجرا کنید. </p><p>این سبک‌وزنی حاصل طراحی دقیق <bdi dir="ltr">Runtime</bdi> Go است که با استفاده از یک <bdi dir="ltr">Scheduler</bdi> داخلی تمام <bdi dir="ltr">Goroutine</bdi>‌ها را بر روی تعداد محدودی <bdi dir="ltr">Thread</bdi> سیستم‌عامل توزیع می‌کند.</p>
 <table class="comparison-table" dir="rtl">
 <thead>
 <tr><th>ویژگی</th><th>فرآیند PHP</th><th><bdi dir="ltr">OS Thread</bdi></th><th><bdi dir="ltr">Goroutine</bdi></th></tr>
@@ -145,22 +134,18 @@ go func() { // run anonymous function in goroutine
 <tr><td>مقیاس‌پذیری</td><td>صدها</td><td>هزاران</td><td>صدها هزار تا میلیون‌ها</td></tr>
 </tbody>
 </table>
-
-<div class="tip"><strong>جزئیات داخلی — ساختار <code dir="ltr">runtime.g</code>:</strong> هر <bdi dir="ltr">Goroutine</bdi> در <bdi dir="ltr">Runtime</bdi> زبان Go توسط ساختار داده‌ای به نام <code dir="ltr">runtime.g</code> نمایش داده می‌شود. این ساختار شامل فیلدهای متعددی است: <code>stack</code> (اطلاعات <bdi dir="ltr">Stack</bdi> شامل پایین و بالای <bdi dir="ltr">Stack</bdi>)، <code>sched</code> (وضعیت ذخیره‌شده برای <bdi dir="ltr">Context Switch</bdi> شامل ثبت‌کننده‌ها)، <code>atomicstatus</code> (وضعیت <bdi dir="ltr">Goroutine</bdi> مثل <code>_Grunnable</code> ، <code>_Grunning</code> ، <code>_Gwaiting</code>)، <code>m</code> (اشاره‌گر به <bdi dir="ltr">M</bdi> که در حال اجرای این <bdi dir="ltr">G</bdi> است)، <code>preempt</code> (پرچم پیش‌گیرانه) و فیلدهای بسیاری دیگر. از آنجا که این ساختار حدود چند صد بایت حافظه مصرف می‌کند، هزینه‌ی ساخت هر <bdi dir="ltr">Goroutine</bdi> بسیار کم است. برای مقایسه، یک <bdi dir="ltr">Thread</bdi> سیستم‌عامل معمولاً حداقل ۱ مگابایت <bdi dir="ltr">Stack</bdi> اختصاصی دارد (در لینوکس پیش‌فرض ۸ مگابایت) و ساخت آن نیازمند <bdi dir="ltr">syscall</bdi> و تخصیص حافظه توسط OS است.</div>
-
-<h3 id="stack-management">مدیریت <bdi dir="ltr">Stack</bdi> و رشد پویا</h3>
-<p>مدیریت <bdi dir="ltr">Stack</bdi> در Go دو مرحله تکاملی داشته است. در نسخه‌های ابتدایی Go (تا قبل از Go 1.3) از مکانیزم <strong dir="ltr">Split Stacks</strong> استفاده می‌شد. در این روش وقتی <bdi dir="ltr">Stack</bdi> فعلی پر می‌شد یک بخش جدید <bdi dir="ltr">Stack</bdi> تخصیص داده می‌شد و به بخش قبلی متصل می‌گردید. اما این روش مشکلی داشت: فراخوانی‌های متوالی که در مرز بین دو بخش <bdi dir="ltr">Stack</bdi> قرار می‌گرفتند باعث <strong dir="ltr">Stack Thrashing</strong> می‌شدند یعنی تخصیص و آزادسازی مکرر بخش‌های <bdi dir="ltr">Stack</bdi> که به شدت کارایی را کاهش می‌داد.</p>
-
-<p>از Go 1.3 به بعد مکانیزم <strong dir="ltr">Contiguous Stacks</strong> جایگزین شد. در این روش وقتی <bdi dir="ltr">Stack</bdi> فعلی پر می‌شود یک <bdi dir="ltr">Block</bdi> جدید حافظه با اندازه‌ی دو برابر تخصیص داده می‌شود، محتویات <bdi dir="ltr">Stack</bdi> قدیمی به جای جدید کپی می‌شود و <bdi dir="ltr">Stack</bdi> قدیمی آزاد می‌شود. این کار توسط تابع <code dir="ltr">runtime.newstack</code> انجام می‌شود. مزیت اصلی این روش حذف مشکل <bdi dir="ltr">Thrashing</bdi> و سادگی پیاده‌سازی است. همچنین کوچک‌سازی <bdi dir="ltr">Stack</bdi> (<bdi dir="ltr">Shrinking</bdi>) در زمان <bdi dir="ltr">Garbage Collection</bdi> انجام می‌شود: اگر کمتر از یک‌چهارم <bdi dir="ltr">Stack</bdi> استفاده شده باشد، اندازه‌ی آن به نصف کاهش می‌یابد.</p>
-
+<div class="tip"><strong>جزئیات داخلی — ساختار <code dir="ltr">runtime.g</code>:</strong> هر <bdi dir="ltr">Goroutine</bdi> در <bdi dir="ltr">Runtime</bdi> زبان Go توسط ساختار داده‌ای به نام <code dir="ltr">runtime.g</code> نمایش داده می‌شود. این ساختار شامل فیلدهای متعددی است: <code>stack</code> (اطلاعات <bdi dir="ltr">Stack</bdi> شامل پایین و بالای <bdi dir="ltr">Stack</bdi>)، <code>sched</code> (وضعیت ذخیره‌شده برای <bdi dir="ltr">Context Switch</bdi> شامل ثبت‌کننده‌ها)، <code>atomicstatus</code> (وضعیت <bdi dir="ltr">Goroutine</bdi> مثل <code>_Grunnable</code>، <code>_Grunning</code>، <code>_Gwaiting</code>)، <code>m</code> (اشاره‌گر به <bdi dir="ltr">M</bdi> که در حال اجرای این <bdi dir="ltr">G</bdi> است)، <code>preempt</code> (پرچم پیش‌گیرانه) و فیلدهای بسیاری دیگر. از آنجا که این ساختار حدود چند صد بایت حافظه مصرف می‌کند، هزینه‌ی ساخت هر <bdi dir="ltr">Goroutine</bdi> بسیار کم است. برای مقایسه، یک <bdi dir="ltr">Thread</bdi> سیستم‌عامل معمولاً حداقل ۱ مگابایت <bdi dir="ltr">Stack</bdi> اختصاصی دارد (در لینوکس پیش‌فرض ۸ مگابایت) و ساخت آن نیازمند <bdi dir="ltr">syscall</bdi> و تخصیص حافظه توسط OS است.</div>
+<h3 id="stack-management">5.1.2 مدیریتStackو رشد پویا</h3>
+<p>مدیریت <bdi dir="ltr">Stack</bdi> در Go دو مرحله تکاملی داشته است. در نسخه‌های ابتدایی Go (تا قبل از Go 1.3) از مکانیزم <strong dir="ltr">Split Stacks</strong> استفاده می‌شد. در این روش وقتی <bdi dir="ltr">Stack</bdi> فعلی پر می‌شد یک بخش جدید <bdi dir="ltr">Stack</bdi> تخصیص داده می‌شد و به بخش قبلی متصل می‌گردید. </p><p>اما این روش مشکلی داشت: فراخوانی‌های متوالی که در مرز بین دو بخش <bdi dir="ltr">Stack</bdi> قرار می‌گرفتند باعث <strong dir="ltr">Stack Thrashing</strong> می‌شدند یعنی تخصیص و آزادسازی مکرر بخش‌های <bdi dir="ltr">Stack</bdi> که به شدت کارایی را کاهش می‌داد.</p>
+<p>از Go 1.3 به بعد مکانیزم <strong dir="ltr">Contiguous Stacks</strong> جایگزین شد. در این روش وقتی <bdi dir="ltr">Stack</bdi> فعلی پر می‌شود یک <bdi dir="ltr">Block</bdi> جدید حافظه با اندازه‌ی دو برابر تخصیص داده می‌شود، محتویات <bdi dir="ltr">Stack</bdi> قدیمی به جای جدید کپی می‌شود و <bdi dir="ltr">Stack</bdi> قدیمی آزاد می‌شود. این کار توسط تابع <code dir="ltr">runtime.newstack</code> انجام می‌شود. </p><p>مزیت اصلی این روش حذف مشکل <bdi dir="ltr">Thrashing</bdi> و سادگی پیاده‌سازی است. </p><p>همچنین کوچک‌سازی <bdi dir="ltr">Stack</bdi> (<bdi dir="ltr">Shrinking</bdi>) در زمان <bdi dir="ltr">Garbage Collection</bdi> انجام می‌شود: اگر کمتر از یک‌چهارم <bdi dir="ltr">Stack</bdi> استفاده شده باشد، اندازه‌ی آن به نصف کاهش می‌یابد.</p>
 <figure class="diagram" dir="ltr">
 <pre class="mermaid">flowchart LR
     S1["شروع<br/>2 KB"]
     S2["پر شد<br/>4 KB<br/>×2 رشد"]
     S3["پر شد<br/>8 KB<br/>×2 رشد"]
     S4["GC<br/>4 KB<br/>کوچک‌سازی"]
-    S1 --> S2 --> S3 --> S4
-    S4 -. "بازگشت به رشد" .-> S2
+    S1 --&gt; S2 --&gt; S3 --&gt; S4
+    S4 -. "بازگشت به رشد" .-&gt; S2
 
     Note1["مکانیزم Contiguous Stack (از Go 1.3):<br/>۱. وقتی Stack پر می‌شود → حافظه‌ی دو برابر تخصیص → کپی → آزادسازی قدیمی<br/>۲. کوچک‌سازی در GC: اگر کمتر از ¼ استفاده شده → نصف شدن<br/>حداکثر اندازه: ۱ گیگابایت (پیش‌فرض) |<br/>قابل تغییر با runtime/debug.SetMaxStack"]
 
@@ -171,20 +156,13 @@ go func() { // run anonymous function in goroutine
     class Note1 bothBox;</pre>
 <figcaption>شکل ۵-۲: رشد و کوچک‌سازی پویای <bdi dir="ltr">Stack</bdi> در <bdi dir="ltr">Goroutine</bdi></figcaption>
 </figure>
-
-<div class="note"><strong>مقایسه هزینه <bdi dir="ltr">Context Switch</bdi>:</strong> تعویض زمینه بین دو <bdi dir="ltr">Goroutine</bdi> در Go بسیار سبک‌تر از تعویض بین دو <bdi dir="ltr">Thread</bdi> سیستم‌عامل است. در یک <bdi dir="ltr">Thread Switch</bdi> ، OS باید وضعیت تمام ثبت‌کننده‌ها (شامل ثبت‌کننده‌های <bdi dir="ltr">SIMD</bdi>)، <bdi dir="ltr">TLB</bdi> (<bdi dir="ltr">Translation Lookaside Buffer</bdi>) و <bdi dir="ltr">Cache</bdi> لایه‌های CPU را احتمالاً <bdi dir="ltr">Invalidate</bdi> کند. اما در <bdi dir="ltr">Goroutine Switch</bdi> فقط چندین ثبت‌کننده (حدود ۱۶ عدد شامل <bdi dir="ltr">SP</bdi> ، <bdi dir="ltr">PC</bdi> ، <bdi dir="ltr">BP</bdi> و غیره) ذخیره و بازیابی می‌شوند. هزینه‌ی تقریبی <bdi dir="ltr">Goroutine Switch</bdi> حدود ۱۰۰-۲۰۰ نانوثانیه است در حالی که <bdi dir="ltr">Thread Switch</bdi> سیستم‌عامل معمولاً ۱-۲ میکروثانیه طول می‌کشد (یعنی ۵ تا ۱۰ برابر بیشتر).</div>
-
-<h3 id="scheduler">مدل <bdi dir="ltr">GMP Scheduler</bdi></h3>
+<div class="note"><strong>مقایسه هزینه <bdi dir="ltr">Context Switch</bdi>:</strong> تعویض زمینه بین دو <bdi dir="ltr">Goroutine</bdi> در Go بسیار سبک‌تر از تعویض بین دو <bdi dir="ltr">Thread</bdi> سیستم‌عامل است. در یک <bdi dir="ltr">Thread Switch</bdi>، OS باید وضعیت تمام ثبت‌کننده‌ها (شامل ثبت‌کننده‌های <bdi dir="ltr">SIMD</bdi>)، <bdi dir="ltr">TLB</bdi> (<bdi dir="ltr">Translation Lookaside Buffer</bdi>) و <bdi dir="ltr">Cache</bdi> لایه‌های CPU را احتمالاً <bdi dir="ltr">Invalidate</bdi> کند. اما در <bdi dir="ltr">Goroutine Switch</bdi> فقط چندین ثبت‌کننده (حدود ۱۶ عدد شامل <bdi dir="ltr">SP</bdi>، <bdi dir="ltr">PC</bdi>، <bdi dir="ltr">BP</bdi> و غیره) ذخیره و بازیابی می‌شوند. هزینه‌ی تقریبی <bdi dir="ltr">Goroutine Switch</bdi> حدود ۱۰۰-۲۰۰ نانوثانیه است در حالی که <bdi dir="ltr">Thread Switch</bdi> سیستم‌عامل معمولاً ۱-۲ میکروثانیه طول می‌کشد (یعنی ۵ تا ۱۰ برابر بیشتر).</div>
+<h3 id="scheduler">5.1.3 مدلGMP Scheduler</h3>
 <p>یکی از ویژگی‌های کلیدی زبان Go سیستم <bdi dir="ltr">Scheduler</bdi> آن است که تحت عنوان <bdi dir="ltr">M:N Scheduler</bdi> شناخته می‌شود. در این مدل <bdi dir="ltr">M</bdi> = تعداد <bdi dir="ltr">Thread</bdi>‌های سیستم‌عامل و <bdi dir="ltr">N</bdi> = تعداد <bdi dir="ltr">Goroutine</bdi>‌های فعال در برنامه است. <bdi dir="ltr">Scheduler</bdi> به گونه‌ای طراحی شده که بتواند بدون اینکه توسعه‌دهنده مجبور باشد مستقیماً با مفاهیم پیچیده‌ی مدیریت <bdi dir="ltr">Thread</bdi> سر و کار داشته باشد، تعداد بسیار زیادی <bdi dir="ltr">N</bdi> را به صورت بهینه و هوشمند روی تعداد محدودی <bdi dir="ltr">M</bdi> نگاشت کند.</p>
-
 <p><bdi dir="ltr">Scheduler</bdi> زبان Go بر اساس مدل سه‌وجهی <strong><bdi dir="ltr">G-M-P</bdi></strong> کار می‌کند:</p>
-
-<p><strong><bdi dir="ltr">G (Goroutine)</bdi>:</strong> هر <bdi dir="ltr">Goroutine</bdi> توسط ساختار <code dir="ltr">runtime.g</code> نمایش داده می‌شود. شامل <bdi dir="ltr">Stack</bdi> ، شمارنده برنامه، وضعیت و غیره است. هر <bdi dir="ltr">G</bdi> در یکی از وضعیت‌های <code>_Gidle</code> ، <code>_Grunnable</code> ، <code>_Grunning</code> ، <code>_Gsyscall</code> ، <code>_Gwaiting</code> یا <code>_Gdead</code> قرار دارد.</p>
-
+<p><strong><bdi dir="ltr">G (Goroutine)</bdi>:</strong> هر <bdi dir="ltr">Goroutine</bdi> توسط ساختار <code dir="ltr">runtime.g</code> نمایش داده می‌شود. شامل <bdi dir="ltr">Stack</bdi>، شمارنده برنامه، وضعیت و غیره است. هر <bdi dir="ltr">G</bdi> در یکی از وضعیت‌های <code>_Gidle</code>، <code>_Grunnable</code>، <code>_Grunning</code>، <code>_Gsyscall</code>، <code>_Gwaiting</code> یا <code>_Gdead</code> قرار دارد.</p>
 <p><strong><bdi dir="ltr">M (Machine)</bdi>:</strong> هر <bdi dir="ltr">M</bdi> نماینده‌ی یک <bdi dir="ltr">Thread</bdi> واقعی سیستم‌عامل است (<code dir="ltr">runtime.m</code>). تعداد <bdi dir="ltr">M</bdi>‌ها می‌تواند بیشتر از <bdi dir="ltr">P</bdi>‌ها باشد (مثلاً وقتی <bdi dir="ltr">Goroutine</bdi> در <bdi dir="ltr">Syscall</bdi> مسدود شده باشد). هر <bdi dir="ltr">M</bdi> بدون <bdi dir="ltr">P</bdi> نمی‌تواند <bdi dir="ltr">G</bdi> اجرا کند.</p>
-
 <p><strong><bdi dir="ltr">P (Processor)</bdi>:</strong> هر <bdi dir="ltr">P</bdi> نماینده‌ی یک منبع مجازی اجرایی است (<code dir="ltr">runtime.p</code>). تعداد <bdi dir="ltr">P</bdi>‌ها برابر با <code>GOMAXPROCS</code> (پیش‌فرض: تعداد هسته‌های <bdi dir="ltr">CPU</bdi>) است. هر <bdi dir="ltr">P</bdi> یک <bdi dir="ltr">Local Run Queue</bdi> با ظرفیت ۲۵۶ <bdi dir="ltr">Goroutine</bdi> دارد.</p>
-
 <figure class="diagram" dir="ltr">
 <pre class="mermaid">flowchart TB
     GRQ["Global Run Queue<br/>صف سراسری — همه Pها به آن دسترسی دارند"]
@@ -195,9 +173,9 @@ go func() { // run anonymous function in goroutine
         G1["G1"]
         G2["G2"]
         G3["G3"]
-        LQ1 --> G1
-        LQ1 --> G2
-        LQ1 --> G3
+        LQ1 --&gt; G1
+        LQ1 --&gt; G2
+        LQ1 --&gt; G3
     end
     M1["M1 (Thread)<br/>G (running)"]
 
@@ -206,16 +184,16 @@ go func() { // run anonymous function in goroutine
         LQ2["صف محلی (ظرفیت ۲۵۶)"]
         G4["G4"]
         G5["G5"]
-        LQ2 --> G4
-        LQ2 --> G5
+        LQ2 --&gt; G4
+        LQ2 --&gt; G5
     end
     M2["M2 (Thread)<br/>G (running)"]
 
-    GRQ --> P1G
-    GRQ --> P2G
-    P1G --> M1
-    P2G --> M2
-    M1 -. "Work Stealing" .-> M2
+    GRQ --&gt; P1G
+    GRQ --&gt; P2G
+    P1G --&gt; M1
+    P2G --&gt; M2
+    M1 -. "Work Stealing" .-&gt; M2
 
     Note1["مکانیزم Hand-off و Work-Stealing:<br/>Hand-off: وقتی G وارد Syscall مسدودکننده می‌شود، P از M جدا شده و به M دیگر داده می‌شود<br/>Work-Stealing: وقتی صف محلی P خالی شود، نیمی از Gها را از صف محلی P دیگر می‌دزدد<br/>تعداد P = GOMAXPROCS (پیش‌فرض: تعداد هسته‌های CPU) |<br/>Mها می‌توانند بیشتر از Pها باشند"]
 
@@ -226,29 +204,23 @@ go func() { // run anonymous function in goroutine
     class Note1 bothBox;</pre>
 <figcaption>شکل ۵-۳: مدل <bdi dir="ltr">GMP</bdi> <bdi dir="ltr">Scheduler</bdi> — G (<bdi dir="ltr">Goroutine</bdi>) و M (<bdi dir="ltr">Thread</bdi>) و P (<bdi dir="ltr">Processor</bdi>)</figcaption>
 </figure>
-
 <h4 id="work-stealing">الگوریتم <bdi dir="ltr">Work-Stealing</bdi></h4>
 <p>وقتی یک <bdi dir="ltr">P</bdi> صف محلی خود را خالی می‌یابد، به ترتیب زیر عمل می‌کند:</p>
 <p>۱. ابتدا صف محلی خود را بررسی می‌کند — اگر خالی بود، به مرحله بعد.</p>
 <p>۲. <bdi dir="ltr">Global Run Queue</bdi> را بررسی می‌کند — اگر <bdi dir="ltr">G</bdi>‌ای وجود داشت آن را می‌گیرد.</p>
 <p>۳. از صف محلی <bdi dir="ltr">P</bdi> دیگر نیمی از <bdi dir="ltr">Goroutine</bdi>‌ها را می‌دزدد (<bdi dir="ltr">Work-Stealing</bdi>) — این کار تضمین می‌کند که بار کار به‌صورت مساوی بین <bdi dir="ltr">P</bdi>‌ها توزیع شود.</p>
 <p>۴. اگر هیچ جا <bdi dir="ltr">G</bdi>‌ای یافت نشد، <bdi dir="ltr">M</bdi> خود را آزاد می‌کند و به استخر <bdi dir="ltr">Thread</bdi>‌های غیرفعال برمی‌گردد.</p>
-
 <p>مکانیزم <bdi dir="ltr">Hand-off</bdi> تضمین می‌کند که هیچ <bdi dir="ltr">P</bdi> بی‌کار نماند: وقتی <bdi dir="ltr">G</bdi> وارد <bdi dir="ltr">Syscall</bdi> مسدودکننده می‌شود، <bdi dir="ltr">P</bdi> از <bdi dir="ltr">M</bdi> جدا شده و به <bdi dir="ltr">M</bdi> دیگری داده می‌شود تا سایر <bdi dir="ltr">G</bdi>‌ها اجرا شوند. وقتی <bdi dir="ltr">Syscall</bdi> برگردد، <bdi dir="ltr">M</bdi> سعی می‌کند دوباره یک <bdi dir="ltr">P</bdi> بگیرد.</p>
-
-<h3 id="goroutine-lifecycle">چرخه‌ی حیات <bdi dir="ltr">Goroutine</bdi></h3>
+<h3 id="goroutine-lifecycle">5.1.4 چرخه‌ی حیاتGoroutine</h3>
 <p>هر <bdi dir="ltr">Goroutine</bdi> در طول عمر خود از چندین وضعیت عبور می‌کند. درک این وضعیت‌ها برای دیباگ و بهینه‌سازی حیاتی است:</p>
 <p><strong><code>_Gidle</code>:</strong> تازه ایجاد شده، هنوز مقداردهی نشده.</p>
 <p><strong><code>_Grunnable</code>:</strong> آماده اجرا، در صف محلی <bdi dir="ltr">P</bdi> یا صف سراسری منتظر است.</p>
 <p><strong><code>_Grunning</code>:</strong> در حال اجرا روی <bdi dir="ltr">M</bdi> با <bdi dir="ltr">P</bdi> مشخص.</p>
 <p><strong><code>_Gsyscall</code>:</strong> در حال اجرای <bdi dir="ltr">Syscall</bdi> مسدودکننده (مثل خواندن فایل یا شبکه).</p>
-<p><strong><code>_Gwaiting</code>:</strong> در حال انتظار — مثلاً منتظر عملیات <bdi dir="ltr">Channel</bdi> ، <bdi dir="ltr">Timer</bdi> ، یا <bdi dir="ltr">GC</bdi>.</p>
+<p><strong><code>_Gwaiting</code>:</strong> در حال انتظار — مثلاً منتظر عملیات <bdi dir="ltr">Channel</bdi>، <bdi dir="ltr">Timer</bdi>، یا <bdi dir="ltr">GC</bdi>.</p>
 <p><strong><code>_Gdead</code>:</strong> کارش تمام شده، ساختار <code>runtime.g</code> بازیافت شده است.</p>
-
 <div class="warning"><strong>نکته مهم:</strong> اگر تابع <code>main()</code> تمام شود، تمام <bdi dir="ltr">Goroutine</bdi>‌ها بلافاصله متوقف می‌شوند — صرف‌نظر از اینکه کارشان تمام شده یا نه. این تفاوت اساسی با <bdi dir="ltr">Thread</bdi>‌های Java یا Python است که متد <code>join()</code> دارند. در Go باید صراحتاً منتظر اتمام <bdi dir="ltr">Goroutine</bdi>‌ها بمانید.</div>
-
-<h3 id="مثال‌های-عملی">مثال‌های عملی</h3>
-
+<h3 id="مثال‌های-عملی">5.1.5 مثال‌های عملی</h3>
 <p><strong>مثال ۱: اولین <bdi dir="ltr">Goroutine</bdi></strong></p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">package main
@@ -269,8 +241,7 @@ func main() {
 }
 </code></pre>
 </figure>
-<p>در این مثال اگر <code>Sleep</code> را حذف کنید احتمالاً <code>sayHello</code> اصلاً اجرا نخواهد شد. چون <bdi dir="ltr">Goroutine</bdi> در پس‌زمینه اجرا می‌شود و اگر <code>main()</code> زودتر تمام شود کل برنامه خاتمه می‌یابد. این یک نکته‌ی بسیار کلیدی در مدیریت <bdi dir="ltr">Lifecycle</bdi> است — هرگز نباید از <code>time.Sleep</code> برای همگام‌سازی استفاده کنید، بلکه باید از <code>sync.WaitGroup</code> یا <bdi dir="ltr">Channel</bdi> استفاده نمایید.</p>
-
+<p>در این مثال اگر <code>Sleep</code> را حذف کنید احتمالاً <code>sayHello</code> اصلاً اجرا نخواهد شد. چون <bdi dir="ltr">Goroutine</bdi> در پس‌زمینه اجرا می‌شود و اگر <code>main()</code> زودتر تمام شود کل برنامه خاتمه می‌یابد. </p><p>این یک نکته‌ی بسیار کلیدی در مدیریت <bdi dir="ltr">Lifecycle</bdi> است — هرگز نباید از <code>time.Sleep</code> برای همگام‌سازی استفاده کنید، بلکه باید از <code>sync.WaitGroup</code> یا <bdi dir="ltr">Channel</bdi> استفاده نمایید.</p>
 <p><strong>مثال ۲: اجرای موازی پنج <bdi dir="ltr">Task</bdi></strong></p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">package main
@@ -300,7 +271,6 @@ func main() {
 </code></pre>
 </figure>
 <p>خروجی این برنامه به‌ترتیب اجرا نخواهد بود. بسته به زمان‌بندی و سرعت سیستم توزیع اجرا ممکن است تغییر کند. توجه کنید که در Go هیچ متد <code>join()</code> مثل <bdi dir="ltr">Thread</bdi> در Java یا Python نداریم، بنابراین باید از ابزارهایی مانند <code>sync.WaitGroup</code> یا <bdi dir="ltr">Channel</bdi> برای هماهنگی استفاده کرد.</p>
-
 <p><strong>مثال ۳: <bdi dir="ltr">Closure</bdi> و اشتباه رایج <bdi dir="ltr">Variable Capture</bdi></strong></p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">// Wrong: all goroutines may see final value of i
@@ -319,9 +289,7 @@ for i := 0; i &lt; 5; i++ {
 </code></pre>
 </figure>
 <p>این یکی از رایج‌ترین اشتباهات در کار با <bdi dir="ltr">Goroutine</bdi> است. در حلقه‌ی اول، تمام <bdi dir="ltr">Goroutine</bdi>‌ها به متغیر <code>i</code> یکسان ارجاع دارند و چون <bdi dir="ltr">Goroutine</bdi>‌ها ممکن است دیرتر اجرا شوند، مقدار نهایی <code>i</code> را خواهند دید. در حلقه‌ی دوم، <code>i</code> به عنوان پارامتر پاس داده می‌شود و هر <bdi dir="ltr">Goroutine</bdi> یک کپی مستقل از مقدار دارد.</p>
-
 <div class="note"><strong>یادداشت:</strong> در <bdi dir="ltr">PHP</bdi>، هر درخواست در فرآیند مستقل اجرا می‌شود و متغیرها به‌طور طبیعی ایزوله‌اند. اما در <bdi dir="ltr">Go</bdi>، تمام <bdi dir="ltr">Goroutine</bdi>‌ها داخل یک فرآیند حافظه مشترک دارند. به همین دلیل، حلقه‌های <code>for</code> که در آن‌ها <bdi dir="ltr">Goroutine</bdi> می‌سازید، باید متغیر حلقه را به‌صورت پارامتر به <bdi dir="ltr">Goroutine</bdi> پاس بدهید (<code>go func(n int){...}(i)</code>) تا هر <bdi dir="ltr">Goroutine</bdi> کپی مستقل خود را داشته باشد. این تله برای مهاجران <bdi dir="ltr">PHP</bdi> بسیار شایع است؛ همیشه قبل از <code>go</code> از خود بپرسید «آیا این متغیر بین <bdi dir="ltr">Goroutine</bdi>‌ها به‌اشتراک گذاشته می‌شود؟».</div>
-
 <p><strong>مثال ۴: شبیه‌سازی پردازش موازی درخواست‌ها</strong></p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">package main
@@ -379,8 +347,7 @@ func main() {
 }
 </code></pre>
 </figure>
-<p>در این مثال چهار درخواست <bdi dir="ltr">API</bdi> به‌صورت موازی اجرا می‌شوند. زمان کل اجرا تقریباً برابر با زمان طولانی‌ترین درخواست خواهد بود، نه مجموع همه. این همان مزیت عملی همزمانی است.</p>
-
+<p>در این مثال چهار درخواست <bdi dir="ltr">API</bdi> به‌صورت موازی اجرا می‌شوند. زمان کل اجرا تقریباً برابر با زمان طولانی‌ترین درخواست خواهد بود، نه مجموع همه. این همان مزیت عملی هم‌روندی است.</p>
 <p><strong>مثال ۵: استفاده از <code>runtime.Gosched</code> برای تسلیم اجرا</strong></p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">package main
@@ -410,7 +377,6 @@ func main() {
 </code></pre>
 </figure>
 <p>تابع <code>runtime.Gosched()</code> به <bdi dir="ltr">Scheduler</bdi> اعلام می‌کند که <bdi dir="ltr">Goroutine</bdi> فعلی مایل است اجرا را به <bdi dir="ltr">Goroutine</bdi> دیگری تسلیم کند. این تابع در عمل کمتر استفاده می‌شود چون <bdi dir="ltr">Scheduler</bdi> Go به‌صورت خودکار <bdi dir="ltr">Preemption</bdi> را مدیریت می‌کند، اما در برخی موارد خاص مثل حلقه‌های فشرده‌ی <bdi dir="ltr">CPU-bound</bdi> ممکن است مفید باشد.</p>
-
 <p><strong>مثال ۶: بررسی تعداد <bdi dir="ltr">Goroutine</bdi>‌های فعال</strong></p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">package main
@@ -441,39 +407,36 @@ func main() {
 </code></pre>
 </figure>
 <p>تابع <code>runtime.NumGoroutine()</code> تعداد <bdi dir="ltr">Goroutine</bdi>‌های فعال را برمی‌گرداند. این تابع برای نظارت بر سلامت برنامه و تشخیص نشت <bdi dir="ltr">Goroutine</bdi> بسیار مفید است. اگر تعداد <bdi dir="ltr">Goroutine</bdi>‌ها به‌صورت مداوم افزایش یابد و هرگز کاهش نیابد، نشت رخ داده است.</p>
-
 <table class="comparison-table" dir="rtl">
 <thead>
 <tr><th>ویژگی</th><th>PHP</th><th>Go</th></tr>
 </thead>
 <tbody>
-<tr><td>مدل همزمانی</td><td>فرآیند/Thread جداگانه برای هر درخواست</td><td><bdi dir="ltr">Goroutine</bdi> سبک‌وزن (~2KB) درون یک فرآیند</td></tr>
-<tr><td>ابزار همزمانی</td><td><bdi dir="ltr">Fiber</bdi> ، <bdi dir="ltr">Swoole</bdi> ، <bdi dir="ltr">parallel</bdi> (خارجی)</td><td><code>go</code> کلمه کلیدی داخلی</td></tr>
-<tr><td>ارتباط بین <bdi dir="ltr">Task</bdi>‌ها</td><td><bdi dir="ltr">Redis</bdi> ، دیتابیس، فایل</td><td><bdi dir="ltr">Channel</bdi> (داخلی و نوع‌دار)</td></tr>
+<tr><td>مدل هم‌روندی</td><td>فرآیند/Thread جداگانه برای هر درخواست</td><td><bdi dir="ltr">Goroutine</bdi> سبک‌وزن (~2KB) درون یک فرآیند</td></tr>
+<tr><td>ابزار هم‌روندی</td><td><bdi dir="ltr">Fiber</bdi>، <bdi dir="ltr">Swoole</bdi>، <bdi dir="ltr">parallel</bdi> (خارجی)</td><td><code>go</code> کلمه کلیدی داخلی</td></tr>
+<tr><td>ارتباط بین <bdi dir="ltr">Task</bdi>‌ها</td><td><bdi dir="ltr">Redis</bdi>، دیتابیس، فایل</td><td><bdi dir="ltr">Channel</bdi> (داخلی و نوع‌دار)</td></tr>
 <tr><td>مصرف حافظه هر واحد</td><td>~۸ مگابایت به ازای هر فرآیند</td><td>~۲ کیلوبایت به ازای هر <bdi dir="ltr">Goroutine</bdi> (رشد خودکار)</td></tr>
-<tr><td>مدیریت همزمانی</td><td>وابسته به وب‌سرور (<bdi dir="ltr">PHP-FPM</bdi>)</td><td><bdi dir="ltr">Runtime</bdi> داخلی Go (<bdi dir="ltr">GMP Scheduler</bdi>)</td></tr>
+<tr><td>مدیریت هم‌روندی</td><td>وابسته به وب‌سرور (<bdi dir="ltr">PHP-FPM</bdi>)</td><td><bdi dir="ltr">Runtime</bdi> داخلی Go (<bdi dir="ltr">GMP Scheduler</bdi>)</td></tr>
 <tr><td>مقیاس‌پذیری</td><td>محدود به تعداد فرآیندها</td><td>صدها هزار <bdi dir="ltr">Goroutine</bdi></td></tr>
 <tr><td><bdi dir="ltr">Scheduling</bdi></td><td>سیستم‌عامل (<bdi dir="ltr">O(1)</bdi> یا <bdi dir="ltr">CFS</bdi>)</td><td><bdi dir="ltr">Go Runtime</bdi> (<bdi dir="ltr">M:N Scheduler</bdi>)</td></tr>
 </tbody>
 </table>
-
-
-    <h3 id="container-aware-gomaxprocs">تنظیم خودکار GOMAXPROCS در کانتینرها — Go 1.25</h3>
-    <p>
-        رفتار پیش‌فرض <code>GOMAXPROCS</code> در Go 1.25 تغییر مهمی کرده است. در نسخه‌های قبلی،
-        <code>GOMAXPROCS</code> به تعداد CPU‌های منطقی در زمان شروع (<code>runtime.NumCPU</code>)
-        تنظیم می‌شد. اما در محیط‌های کانتینری مانند Kubernetes، این رفتار مشکل‌ساز بود چون
-        کانتینر ممکن است محدودیت CPU کمتری نسبت به کل CPU‌های سیستم داشته باشد.
-    </p>
-    <p>
-        Go 1.25 دو تغییر مهم معرفی می‌کند:
-    </p>
-    <ul>
-        <li>در لینوکس، runtime اکنون محدودیت پهنای باند CPU گروه cgroup CPU bandwidth limit را در نظر می‌گیرد. اگر این محدودیت کمتر از تعداد CPU‌های منطقی باشد، <code>GOMAXPROCS</code> به حد پایین‌تر تنظیم می‌شود.</li>
-        <li>در تمام سیستم‌عامل‌ها، runtime به‌صورت دوره‌ای <code>GOMAXPROCS</code> را به‌روزرسانی می‌کند اگر تعداد CPU‌های منطقی یا محدودیت cgroup تغییر کند.</li>
-    </ul>
-    <figure class="code go" dir="ltr">
-        <pre><code class="language-go">// مثال: تأثیر GOMAXPROCS خودکار در کانتینر
+<h3 id="container-aware-gomaxprocs">5.1.6 تنظیم خودکار GOMAXPROCS در کانتینرها — Go 1.25</h3>
+<p>
+ رفتار پیش‌فرض <code>GOMAXPROCS</code> در Go 1.25 تغییر مهمی کرده است. در نسخه‌های قبلی،
+ <code>GOMAXPROCS</code> به تعداد CPU‌های منطقی در زمان شروع (<code>runtime.NumCPU</code>)
+ تنظیم می‌شد. اما در محیط‌های کانتینری مانند Kubernetes، این رفتار مشکل‌ساز بود چون
+ کانتینر ممکن است محدودیت CPU کمتری نسبت به کل CPU‌های سیستم داشته باشد.
+ </p>
+<p>
+ Go 1.25 دو تغییر مهم معرفی می‌کند:
+ </p>
+<ul>
+<li>در لینوکس، runtime اکنون محدودیت پهنای باند CPU گروه cgroup CPU bandwidth limit را در نظر می‌گیرد. اگر این محدودیت کمتر از تعداد CPU‌های منطقی باشد، <code>GOMAXPROCS</code> به حد پایین‌تر تنظیم می‌شود.</li>
+<li>در تمام سیستم‌عامل‌ها، runtime به‌صورت دوره‌ای <code>GOMAXPROCS</code> را به‌روزرسانی می‌کند اگر تعداد CPU‌های منطقی یا محدودیت cgroup تغییر کند.</li>
+</ul>
+<figure class="code go" dir="ltr">
+<pre><code class="language-go">// مثال: تأثیر GOMAXPROCS خودکار در کانتینر
 // با محدودیت CPU: 2 core در Kubernetes
 // قبل از Go 1.25: GOMAXPROCS = 64 (تعداد CPU‌های میزبان!)
 // بعد از Go 1.25: GOMAXPROCS = 2 (محدودیت cgroup)
@@ -482,47 +445,43 @@ fmt.Println("GOMAXPROCS:", runtime.GOMAXPROCS(0))
 
 // غیرفعال کردن رفتار جدید (اگر نیاز بود)
 // تنظیم متغیر محیطی: GODEBUG=containermaxprocs=0</code></pre>
-    </figure>
-    <p>
-        هر دو رفتار جدید به‌طور خودکار غیرفعال می‌شوند اگر <code>GOMAXPROCS</code> به‌صورت دستی
-        تنظیم شده باشد. همچنین می‌توان آن‌ها را با تنظیمات GODEBUG (<code>containermaxprocs=0</code>
-        و <code>updatemaxprocs=0</code>) غیرفعال کرد.
-    </p>
-
-    <div class="case-study">
-        <div class="case-study-header">
-            <span class="case-study-badge">مطالعه موردی</span>
-            <span class="case-study-title">بهبود عملکرد Uber با GOMAXPROCS خودکار</span>
-        </div>
-        <p>
-            شرکت Uber در ارائه GopherCon 2023 توضیح داد که چگونه تنظیم نادرست GOMAXPROCS
-            در کانتینرهای Kubernetes منجر به کاهش ۴۰ درصدی عملکرد سرویس‌های Go شده بود.
-            سرویس‌هایی که روی گره‌های ۶۴ هسته‌ای اجرا می‌شدند اما فقط ۴ CPU محدودیت داشتند،
-            با ۶۴ نخ OS کار می‌کردند که باعث context switch شدید و کاهش عملکرد می‌شد.
-            این مشکل به این دلیل بود که Go runtime به‌طور پیش‌فرض <code>GOMAXPROCS</code> را
-            بر اساس تعداد هسته‌های فیزیکی ماشین تنظیم می‌کرد، نه محدودیت‌های کانتینر. نتیجه این
-            بود که Go سعی می‌کرد ۶۴ نخ همزمان اجرا کند در حالی که فقط ۴ هسته در دسترس بود و
-            این باعث افزایش شدید context switch و cache thrashing می‌شد.
-        </p>
-        <p>
-            با تنظیم صحیح <code>GOMAXPROCS</code>، عملکرد سرویس‌ها تا ۶۰ درصد بهبود یافت.
-            بسیاری از تیم‌ها قبل از این کشف، از ابزار <code>automaxprocs</code> استفاده می‌کردند
-            که یک بسته Go بود که <code>GOMAXPROCS</code> را با خواندن cgroup کانتینر تنظیم می‌کرد.
-            اما این بسته یک وابستگی اضافی بود و فراموش‌کردن آن در سرویس‌های جدید رایج بود.
-            این مشکل اکنون در Go 1.25 به‌طور خودکار حل شده است؛ runtime Go به‌طور پیش‌فرض
-            محدودیت‌های CPU کانتینر را می‌خواند و <code>GOMAXPROCS</code> را متناسب تنظیم می‌کند.
-            این تغییر ساده اما تأثیرگذار، یکی از مهم‌ترین بهبودهای عملکرد در اکوسیستم Go کانتینری بود.
-        </p>
-        <p class="case-study-source">
-            <span class="source-event">GopherCon 2023</span>
-            <span class="source-year">— سن‌دیگو، ۲۰۲۳</span>
-        </p>
-    </div>
-
-<h3 id="goroutine-lifecycle-diagram">نمودار وضعیت‌های چرخه‌ی حیات <bdi dir="ltr">Goroutine</bdi></h3>
-
-<p>همان‌طور که در بخش قبل دیدیم، هر <bdi dir="ltr">Goroutine</bdi> در طول اجرای خود از وضعیت‌های مختلفی عبور می‌کند. این <bdi dir="ltr">State Machine</bdi> به‌صورت بصری نشان می‌دهد که یک <bdi dir="ltr">Goroutine</bdi> چگونه از وضعیت ایجاد تا مرگ طی می‌کند و چه عواملی باعث انتقال بین وضعیت‌ها می‌شوند. درک این چرخه برای دیباگ مشکلاتی مثل نشت <bdi dir="ltr">Goroutine</bdi> و <bdi dir="ltr">Deadlock</bdi> بسیار حیاتی است. هر فلش در نمودار نشان‌دهنده‌ی یک رویداد یا عملیاتی است که باعث تغییر وضعیت می‌شود و هر جعبه رنگی نمایانگر یک وضعیت مشخص در <bdi dir="ltr">Runtime</bdi> Go است.</p>
-
+</figure>
+<p>
+ هر دو رفتار جدید به‌طور خودکار غیرفعال می‌شوند اگر <code>GOMAXPROCS</code> به‌صورت دستی
+ تنظیم شده باشد. همچنین می‌توان آن‌ها را با تنظیمات GODEBUG (<code>containermaxprocs=0</code>
+ و <code>updatemaxprocs=0</code>) غیرفعال کرد.
+ </p>
+<div class="case-study">
+<div class="case-study-header">
+<span class="case-study-badge">مطالعه موردی</span>
+<span class="case-study-title">بهبود عملکرد Uber با GOMAXPROCS خودکار</span>
+</div>
+<p>
+ شرکت Uber در ارائه GopherCon 2023 توضیح داد که چگونه تنظیم نادرست GOMAXPROCS
+ در کانتینرهای Kubernetes منجر به کاهش ۴۰ درصدی عملکرد سرویس‌های Go شده بود.
+ </p><p>سرویس‌هایی که روی گره‌های ۶۴ هسته‌ای اجرا می‌شدند اما فقط ۴ CPU محدودیت داشتند،
+ با ۶۴ نخ OS کار می‌کردند که باعث context switch شدید و کاهش عملکرد می‌شد.
+ </p><p>این مشکل به این دلیل بود که Go runtime به‌طور پیش‌فرض <code>GOMAXPROCS</code> را
+ بر اساس تعداد هسته‌های فیزیکی ماشین تنظیم می‌کرد، نه محدودیت‌های کانتینر. نتیجه این
+ بود که Go سعی می‌کرد ۶۴ نخ همزمان اجرا کند در حالی که فقط ۴ هسته در دسترس بود و
+ این باعث افزایش شدید context switch و cache thrashing می‌شد.
+ </p>
+<p>
+ با تنظیم صحیح <code>GOMAXPROCS</code>، عملکرد سرویس‌ها تا ۶۰ درصد بهبود یافت.
+ بسیاری از تیم‌ها قبل از این کشف، از ابزار <code>automaxprocs</code> استفاده می‌کردند
+ که یک بسته Go بود که <code>GOMAXPROCS</code> را با خواندن cgroup کانتینر تنظیم می‌کرد.
+ اما این بسته یک وابستگی اضافی بود و فراموش‌کردن آن در سرویس‌های جدید رایج بود.
+ </p><p>این مشکل اکنون در Go 1.25 به‌طور خودکار حل شده است؛ runtime Go به‌طور پیش‌فرض
+ محدودیت‌های CPU کانتینر را می‌خواند و <code>GOMAXPROCS</code> را متناسب تنظیم می‌کند.
+ این تغییر ساده اما تأثیرگذار، یکی از مهم‌ترین بهبودهای عملکرد در اکوسیستم Go کانتینری بود.
+ </p>
+<p class="case-study-source">
+<span class="source-event">GopherCon 2023</span>
+<span class="source-year">— سن‌دیگو، ۲۰۲۳</span>
+</p>
+</div>
+<h3 id="goroutine-lifecycle-diagram">5.1.7 نمودار وضعیت‌های چرخه‌ی حیاتGoroutine</h3>
+<p>همان‌طور که در بخش قبل دیدیم، هر <bdi dir="ltr">Goroutine</bdi> در طول اجرای خود از وضعیت‌های مختلفی عبور می‌کند. این <bdi dir="ltr">State Machine</bdi> به‌صورت بصری نشان می‌دهد که یک <bdi dir="ltr">Goroutine</bdi> چگونه از وضعیت ایجاد تا مرگ طی می‌کند و چه عواملی باعث انتقال بین وضعیت‌ها می‌شوند. درک این چرخه برای دیباگ مشکلاتی مثل نشت <bdi dir="ltr">Goroutine</bdi> و <bdi dir="ltr">Deadlock</bdi> بسیار حیاتی است. </p><p>هر فلش در نمودار نشان‌دهنده‌ی یک رویداد یا عملیاتی است که باعث تغییر وضعیت می‌شود و هر جعبه رنگی نمایانگر یک وضعیت مشخص در <bdi dir="ltr">Runtime</bdi> Go است.</p>
 <figure class="diagram" dir="ltr">
 <pre class="mermaid">flowchart TB
     Created["Created<br/>_Gidle"]
@@ -532,14 +491,14 @@ fmt.Println("GOMAXPROCS:", runtime.GOMAXPROCS(0))
     Syscall["Syscall<br/>_Gsyscall"]
     Dead["Dead<br/>_Gdead"]
 
-    Created -- "go f()" --> Runnable
-    Runnable -- "انتخاب توسط Scheduler" --> Running
-    Running -- "return" --> Dead
-    Running -- "ارسال روی Channel<br/>دریافت از Channel خالی<br/>I/O wait / select / Timer" --> Blocked
-    Blocked -- "بیدار شدن:<br/>داده رسید / I/O تمام شد / Timer سر رسید" --> Runnable
-    Running -- "Preemption / Gosched" --> Runnable
-    Running -- "blocking syscall" --> Syscall
-    Syscall -- "syscall returns" --> Runnable
+    Created -- "go f()" --&gt; Runnable
+    Runnable -- "انتخاب توسط Scheduler" --&gt; Running
+    Running -- "return" --&gt; Dead
+    Running -- "ارسال روی Channel<br/>دریافت از Channel خالی<br/>I/O wait / select / Timer" --&gt; Blocked
+    Blocked -- "بیدار شدن:<br/>داده رسید / I/O تمام شد / Timer سر رسید" --&gt; Runnable
+    Running -- "Preemption / Gosched" --&gt; Runnable
+    Running -- "blocking syscall" --&gt; Syscall
+    Syscall -- "syscall returns" --&gt; Runnable
 
     subgraph INFO["اطلاعات هر وضعیت — چه اتفاقی می‌افتد؟"]
         direction TB
@@ -551,7 +510,7 @@ fmt.Println("GOMAXPROCS:", runtime.GOMAXPROCS(0))
         I6["Dead (_Gdead): تابع برگشت — ساختار بازیافت و دوباره استفاده می‌شود"]
         I7["نمونه مسیر اجرا: go f() → Created → Runnable → Running → ch&lt;-v → Blocked → Runnable → Running → return → Dead"]
         I8["قانون طلایی: هر Goroutine باید شرط خروج مشخصی داشته باشد — Goroutine یتیم = نشت حافظه"]
-        I1 --> I2 --> I3 --> I4 --> I5 --> I6 --> I7 --> I8
+        I1 --&gt; I2 --&gt; I3 --&gt; I4 --&gt; I5 --&gt; I6 --&gt; I7 --&gt; I8
     end
 
     classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
@@ -564,47 +523,47 @@ fmt.Println("GOMAXPROCS:", runtime.GOMAXPROCS(0))
     class I8 warnBox;</pre>
 <figcaption>شکل ۵-۴: نمودار وضعیت چرخه‌ی حیات <bdi dir="ltr">Goroutine</bdi> — انتقال بین وضعیت‌های <code>_Gidle</code> تا <code>_Gdead</code></figcaption>
 </figure>
-
-<h3 id="سناریوهای-عملیاتی-goroutine">سناریوهای عملیاتی <bdi dir="ltr">Goroutine</bdi></h3>
-
-<p>در پروژه‌های واقعی، <bdi dir="ltr">Goroutine</bdi>‌ها نقش‌های متنوعی ایفا می‌کنند. شناخت این الگوهای عملیاتی به شما کمک می‌کند در هر موقعیت تصمیم درستی درباره نحوه استفاده از همزمانی بگیرید. هر الگو مزایا و معایب خاص خود را دارد و انتخاب صحیح بین آن‌ها می‌تواند تفاوت بین یک سیستم مقیاس‌پذیر و یک سیستم شکننده باشد. در ادامه رایج‌ترین سناریوهای عملیاتی آشنا می‌شویم.</p>
-
+<h3 id="سناریوهای-عملیاتی-goroutine">5.1.8 سناریوهای عملیاتیGoroutine</h3>
+<p>در پروژه‌های واقعی، <bdi dir="ltr">Goroutine</bdi>‌ها نقش‌های متنوعی ایفا می‌کنند. شناخت این الگوهای عملیاتی به شما کمک می‌کند در هر موقعیت تصمیم درستی درباره نحوه استفاده از هم‌روندی بگیرید. هر الگو مزایا و معایب خاص خود را دارد و انتخاب صحیح بین آن‌ها می‌تواند تفاوت بین یک سیستم مقیاس‌پذیر و یک سیستم شکننده باشد. در ادامه رایج‌ترین سناریوهای عملیاتی آشنا می‌شویم.</p>
 <ul>
 <li><strong>الگوی <bdi dir="ltr">HTTP Handler Per Request</bdi>:</strong> در سرورهای <bdi dir="ltr">HTTP</bdi> نوشته‌شده با Go (مثل <code>net/http</code>)، هر درخواست ورودی به‌صورت خودکار در یک <bdi dir="ltr">Goroutine</bdi> مجزا پردازش می‌شود. این مدل مشابه PHP-FPM است، اما با این تفاوت اساسی که هر درخواست تنها حدود ۲ کیلوبایت حافظه مصرف می‌کند نه ۸ مگابایت. به همین دلیل یک سرور Go می‌تواند ده‌ها هزار درخواست همزمان را بدون نیاز به تنظیم <bdi dir="ltr">Worker Pool</bdi> مدیریت کند. نکته مهم این است که باید مطمئن شوید هر <bdi dir="ltr">Handler</bdi> پس از ارسال پاسخ تمام شود و <bdi dir="ltr">Goroutine</bdi> یتیمی باقی نماند.</li>
 <li><strong>الگوی <bdi dir="ltr">Worker Goroutines</bdi> برای کارهای پس‌زمینه:</strong> بسیاری از برنامه‌ها نیاز به انجام کارهای غیرهمزمان دارند — مثلاً ارسال ایمیل، پردازش تصویر، یا نوشتن در دیتابیس. در این حالت مجموعه‌ای از <bdi dir="ltr">Worker Goroutine</bdi> ایجاد می‌کنید که از یک <bdi dir="ltr">Channel</bdi> کار دریافت می‌کنند. مزیت این الگو این است که تعداد <bdi dir="ltr">Worker</bdi>‌ها قابل کنترل است و از ایجاد تعداد بیش از حد <bdi dir="ltr">Goroutine</bdi> جلوگیری می‌شود. در PHP این کار معمولاً با صف‌هایی مثل Laravel Queue و Redis انجام می‌شود.</li>
 <li><strong>الگوی <bdi dir="ltr">Fan-out</bdi> برای فراخوانی‌های موازی <bdi dir="ltr">API</bdi>:</strong> وقتی نیاز دارید چند سرویس خارجی را همزمان فراخوانی کنید، برای هر فراخوانی یک <bdi dir="ltr">Goroutine</bdi> ایجاد می‌کنید (<bdi dir="ltr">Fan-out</bdi>) و نتایج را از طریق <bdi dir="ltr">Channel</bdi> جمع‌آوری می‌کنید (<bdi dir="ltr">Fan-in</bdi>). زمان کل اجرا برابر با طولانی‌ترین فراخوانی خواهد بود، نه مجموع همه. این الگو در میکروسرویس‌ها بسیار رایج است و تفاوت عملکرد چشمگیری ایجاد می‌کند.</li>
 <li><strong>الگوی <bdi dir="ltr">Pipeline</bdi> با مراحل به‌عنوان <bdi dir="ltr">Goroutine</bdi>:</strong> در پردازش داده‌ها می‌توان هر مرحله از خط لوله (<bdi dir="ltr">Pipeline</bdi>) را به یک <bdi dir="ltr">Goroutine</bdi> اختصاص داد. مثلاً مرحله خواندن داده، مرحله تبدیل، مرحله فیلتر و مرحله نوشتن خروجی هر کدام یک <bdi dir="ltr">Goroutine</bdi> مستقل هستند که از طریق <bdi dir="ltr">Channel</bdi> به هم متصل شده‌اند. این الگو شبیه <bdi dir="ltr">Unix Pipe</bdi> عمل می‌کند و مزیتش این است که هر مرحله می‌تواند با سرعت مستقل خود کار کند.</li>
 </ul>
-
 <div class="tip"><strong>نکته عملی — شرط خروج مشخص برای هر <bdi dir="ltr">Goroutine</bdi>:</strong> مهم‌ترین قاعده در کار با <bdi dir="ltr">Goroutine</bdi> این است: هر <bdi dir="ltr">Goroutine</bdi> باید شرط خروج مشخصی داشته باشد. بهترین روش این است که هر <bdi dir="ltr">Goroutine</bdi> یا از یک <bdi dir="ltr">Channel</bdi> سیگنال توقف دریافت کند، یا از <code>context.Context</code> برای لغو استفاده نماید، یا در یک حلقه <code>for</code> با شرط خروج واضح کار کند. هرگز <bdi dir="ltr">Goroutine</bdi>‌ای نسازید که نتوانید آن را متوقف کنید — جزئیات کامل عوامل نشت و راه‌حل‌های تشخیصی آن‌ها در بخش ۵.۹ (<a href="05.09-goroutine-leak.html#goroutine-leak">Goroutine Leak</a>) بررسی شده است.</div>
-
-
-</div>
+<div class="summary">
+<strong>خلاصه‌ی نکات کلیدی:</strong>
+<ul>
+<li>goroutine با go keyword راه‌اندازی می‌شود</li>
+<li>هزینه‌ی goroutine: ~2KB stack اولیه، در برابر MBها thread</li>
+<li>GMP scheduler: Goroutine + Machine + Processor</li>
+<li>goroutine روی thread سیستم‌عامل multiplex می‌شود</li>
+<li>نشتی goroutine با context یا done channel جلوگیری می‌شود</li>
+</ul>
+</div></div>
 </main>
 </div>
-
 <!-- Footer -->
 <footer class="site-footer">
 <div class="footer-inner">
 <div class="footer-nav">
 <span class="nav-arrow">‹</span>
-<a href="05.00-chapter-5.html" data-prev>۵. همزمانی</a>
+<a data-prev="" href="05.00-chapter-5.html">۵. همزمانی</a>
 </div>
 <div class="footer-toc">
 <a href="00.01-contents.html">فهرست</a>
 </div>
 <div class="footer-nav">
-<a href="05.02-channel.html" data-next>۵.۲ Channel</a>
+<a data-next="" href="05.02-channel.html">۵.۲ Channel</a>
 <span class="nav-arrow">›</span>
 </div>
 </div>
 </footer>
-
 <!-- Back to Top -->
-<button class="back-to-top" aria-label="بازگشت به بالا">
-<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
+<button aria-label="بازگشت به بالا" class="back-to-top">
+<svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24"><polyline points="18 15 12 9 6 15"></polyline></svg>
 </button>
-
 <!-- Scripts -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/go.min.js"></script>

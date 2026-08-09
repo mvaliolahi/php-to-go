@@ -1522,6 +1522,61 @@ figure.diagram:hover .diagram-zoom-btn { opacity: 1; }
 .text .note { background: var(--color-note-bg); border-color: var(--color-note-border); }
 .text .warning { background: var(--color-warning-bg); border-color: var(--color-warning-border); }
 .text .important { background: var(--color-important-bg); border-color: var(--color-important-border); }
+/* --- Abstract & Summary Blocks (Editorial) --- */
+.text .abstract,
+.text .summary {
+  padding: var(--spacing-md) var(--spacing-lg);
+  margin: var(--spacing-lg) 0;
+  border-radius: var(--radius-md);
+  font-size: 0.93em;
+  line-height: 1.75;
+  border-right: 4px solid;
+}
+.text .abstract {
+  background: linear-gradient(135deg, rgba(0,173,216,0.06), rgba(0,173,216,0.02));
+  border-color: var(--color-accent-blue, #00ADD8);
+}
+.text .abstract strong {
+  color: var(--color-accent-blue, #00ADD8);
+  font-weight: 700;
+}
+.text .summary {
+  background: linear-gradient(135deg, rgba(16,185,129,0.06), rgba(16,185,129,0.02));
+  border-color: #10b981;
+  margin-top: var(--spacing-xl, 2.5rem);
+}
+.text .summary strong {
+  color: #10b981;
+  font-weight: 700;
+  display: block;
+  margin-bottom: var(--spacing-xs, 0.5rem);
+}
+.text .summary ul {
+  margin: var(--spacing-xs, 0.5rem) 0 0;
+  padding-right: var(--spacing-lg, 1.5rem);
+  list-style: none;
+}
+.text .summary li {
+  position: relative;
+  padding-right: var(--spacing-md, 1rem);
+  margin-bottom: var(--spacing-xs, 0.5rem);
+  line-height: 1.7;
+}
+.text .summary li::before {
+  content: '◆';
+  position: absolute;
+  right: -0.5em;
+  color: #10b981;
+  font-size: 0.75em;
+  top: 0.5em;
+}
+[data-theme="dark"] .text .abstract {
+  background: linear-gradient(135deg, rgba(0,173,216,0.10), rgba(0,173,216,0.03));
+}
+[data-theme="dark"] .text .summary {
+  background: linear-gradient(135deg, rgba(16,185,129,0.10), rgba(16,185,129,0.03));
+}
+
 .text .comparison {
   background: var(--color-comparison-bg);
   border-color: var(--color-comparison-border);

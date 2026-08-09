@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html dir="rtl" lang="fa">
 <head>
 <script>!function(){try{var t=localStorage.getItem('php2go-theme');if(t==='dark'||(!t&&window.matchMedia('(prefers-color-scheme:dark)').matches)){document.documentElement.setAttribute('data-theme','dark')}}catch(e){}}();</script>
@@ -6,26 +7,25 @@
 <meta content="ie=edge" http-equiv="x-ua-compatible"/>
 <title>۳.۷ Constructor و Factory — PHP to Go</title>
 <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport"/>
-<link rel="preconnect" href="https://fonts.googleapis.com"/>
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600;700&amp;family=Fira+Code:wght@400;500&amp;display=swap" rel="stylesheet"/>
 <link href="assets/css/main.css" rel="stylesheet" type="text/css"/>
 <link href="assets/img/favicon.ico" rel="icon" type="image/x-icon"/>
-<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" media="screen" class="hljs-light-theme" rel="stylesheet"/>
-<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css" media="not screen" class="hljs-dark-theme" rel="stylesheet"/>
+<link class="hljs-light-theme" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" media="screen" rel="stylesheet"/>
+<link class="hljs-dark-theme" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css" media="not screen" rel="stylesheet"/>
 </head>
 <body>
 <!-- Progress Bar -->
 <div class="progress-bar"><div class="progress-bar__fill"></div></div>
-
 <!-- Header -->
 <header class="site-header">
 <div class="header-inner">
 <div class="header-left">
-<button class="header-btn sidebar-toggle" aria-label="فهرست">
-<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+<button aria-label="فهرست" class="header-btn sidebar-toggle">
+<svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24"><line x1="3" x2="21" y1="6" y2="6"></line><line x1="3" x2="21" y1="12" y2="12"></line><line x1="3" x2="21" y1="18" y2="18"></line></svg>
 </button>
-<a href="00.00-front-matter.html" class="header-logo"><span class="logo-php">PHP</span> to <span class="logo-go">Go</span></a>
+<a class="header-logo" href="00.00-front-matter.html"><span class="logo-php">PHP</span> to <span class="logo-go">Go</span></a>
 <span class="header-crumbs">پکیج‌ها، ماژول‌ها و شی‌گرایی › Constructor و Factory</span>
 </div>
 <div class="header-right">
@@ -36,39 +36,38 @@
 <a href="04.00-chapter-4.html"><span class="nav-label">۴. مدیریت خطا</span></a>
 <span class="nav-arrow">›</span>
 </nav>
-<button class="header-btn search-toggle" aria-label="جستجو">
-<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+<button aria-label="جستجو" class="header-btn search-toggle">
+<svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" x2="16.65" y1="21" y2="16.65"></line></svg>
 </button>
-<button class="header-btn theme-toggle" aria-label="تغییر تم">
-<svg class="theme-icon-light" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
-<svg class="theme-icon-dark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+<button aria-label="تغییر تم" class="header-btn theme-toggle">
+<svg class="theme-icon-light" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24"><circle cx="12" cy="12" r="5"></circle><line x1="12" x2="12" y1="1" y2="3"></line><line x1="12" x2="12" y1="21" y2="23"></line><line x1="4.22" x2="5.64" y1="4.22" y2="5.64"></line><line x1="18.36" x2="19.78" y1="18.36" y2="19.78"></line><line x1="1" x2="3" y1="12" y2="12"></line><line x1="21" x2="23" y1="12" y2="12"></line><line x1="4.22" x2="5.64" y1="19.78" y2="18.36"></line><line x1="18.36" x2="19.78" y1="5.64" y2="4.22"></line></svg>
+<svg class="theme-icon-dark" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
 </button>
 </div>
 </div>
 </header>
-
 <!-- Search Modal -->
 <div class="search-overlay">
 <div class="search-modal">
 <div class="search-input-wrap">
-<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-<input type="text" class="search-input" placeholder="جستجو... (Ctrl+K)" dir="rtl"/>
+<svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" x2="16.65" y1="21" y2="16.65"></line></svg>
+<input class="search-input" dir="rtl" placeholder="جستجو... (Ctrl+K)" type="text"/>
 </div>
 <div class="search-results"></div>
 </div>
 </div>
-
 <!-- Layout -->
 <div class="site-layout">
 <!-- Sidebar -->
 <aside class="sidebar"></aside>
 <div class="sidebar-overlay"></div>
-
 <!-- Main Content -->
 <main class="content-area">
 <div class="content-wrap text">
 <div class="chapter">فصل ۳.۷</div>
-<h2 id="constructor-و-factory">Constructor و Factory</h2>
+<h2 id="constructor-و-factory">Constructor و Factory</h2><div class="abstract">
+<strong>چکیده:</strong> Go constructor با تابع New ساده پیاده می‌شود و الگوهای پیشرفته‌تر factory و builder را شامل می‌شود. این بخش الگوهای رایج، option pattern و هشدار درباره‌ی over-engineering را پوشش می‌دهد. تفاوت با constructorهای PHP و static factory methods بررسی می‌شود.
+</div>
 <table class="comparison-table" dir="rtl">
 <thead>
 <tr><th>الگو</th><th>PHP</th><th>Go</th></tr>
@@ -83,15 +82,15 @@
 <tr><td dir="ltr">Observer</td><td dir="ltr">Event Dispatcher / SplSubject</td><td dir="ltr">Channel + Select</td></tr>
 </tbody>
 </table>
-<p>در زبان‌هایی مانند PHP برای ساخت اشیاء معمولاً از متد ویژه‌ای به نام <span dir="ltr">__construct()</span> استفاده می‌شود که به‌طور صریح به عنوان سازنده شناخته می‌شود. اما در زبان Go هیچ سازنده از پیش تعریف‌شده‌ای برای structها وجود ندارد. با این حال رویکرد رایج در Go برای ساختن و مقداردهی اولیه به structها تعریف توابع معمولی با نامی استاندارد مانند NewTypeName است. این توابع نقش سازنده یا Factory Function را بازی می‌کنند و می‌توانند منطق مقداردهی اولیه، اعتبارسنجی یا تنظیم مقادیر پیش‌فرض را در خود جای دهند.</p>
+<p>در زبان‌هایی مانند PHP برای ساخت اشیاء معمولاً از متد ویژه‌ای به نام <span dir="ltr">__construct()</span> استفاده می‌شود که به‌طور صریح به عنوان سازنده شناخته می‌شود. اما در زبان Go هیچ سازنده از پیش تعریف‌شده‌ای برای structها وجود ندارد. </p><p>با این حال رویکرد رایج در Go برای ساختن و مقداردهی اولیه به structها تعریف توابع معمولی با نامی استاندارد مانند NewTypeName است. </p><p>این توابع نقش سازنده یا Factory Function را بازی می‌کنند و می‌توانند منطق مقداردهی اولیه، اعتبارسنجی یا تنظیم مقادیر پیش‌فرض را در خود جای دهند.</p>
 <div class="quote-box">
-    <p class="quote-text">سازنده فقط باید مقادیر فیلدها را تنظیم کند و هیچ کار دیگری انجام ندهد. اگر نیاز به کار بیشتری دارید، یک متد کارخانه بسازید که سازنده را فراخوانی و سپس کار اضافی را انجام دهد.</p>
-    <p class="quote-source">
-        <span class="quote-author">Uncle Bob</span>
-        <span class="quote-role">مهندس نرم‌افزار و نویسنده</span>
-        <span class="quote-separator">|</span>
-        <span class="quote-book">Clean Code</span>
-    </p>
+<p class="quote-text">سازنده فقط باید مقادیر فیلدها را تنظیم کند و هیچ کار دیگری انجام ندهد. اگر نیاز به کار بیشتری دارید، یک متد کارخانه بسازید که سازنده را فراخوانی و سپس کار اضافی را انجام دهد.</p>
+<p class="quote-source">
+<span class="quote-author">Uncle Bob</span>
+<span class="quote-role">مهندس نرم‌افزار و نویسنده</span>
+<span class="quote-separator">|</span>
+<span class="quote-book">Clean Code</span>
+</p>
 </div>
 <div class="tip">
 <strong>نکته‌ی حرفه‌ای:</strong> الگوی <bdi dir="ltr">NewX()</bdi> در <bdi dir="ltr">Go</bdi> نسبت به <code>__construct()</code> در <bdi dir="ltr">PHP</bdi> برای تزریق وابستگی برتر است. در <bdi dir="ltr">PHP</bdi> سازنده مستقیماً در کلاس تعریف می‌شود و تغییر امضای آن شکستن تمام زیرکلاس‌هاست. اما در <bdi dir="ltr">Go</bdi> تابع <code>NewUser(repo Repository, mailer Mailer) *User</code> یک تابع مستقل است: می‌توان چندین سازنده با امضاهای مختلف داشت (<code>NewUser</code>، <code>NewAdminUser</code>، <code>NewGuestUser</code>) بدون اینکه ساختار <bdi dir="ltr">struct</bdi> تغییر کند. ضمناً وابستگی‌ها صریح هستند — با نگاه به امضای تابع فوراً می‌دانید چه چیزهایی لازم است، برخلاف <bdi dir="ltr">Service Container</bdi> در <bdi dir="ltr">Laravel</bdi> که وابستگی‌ها در پشت‌صحنه حل می‌شوند.
@@ -117,28 +116,27 @@ func NewUser(name string) *User {
 }
 </code></pre>
 </figure>
-<p>تابع NewUser هم شیء را ایجاد می‌کند یعنی در واقع struct را مقداردهی می‌کند و هم مقادیر اولیه را تعیین می‌نماید. در این توابع بازگرداندن خروجی به عنوان یک اشاره‌گر (User*) کاری رایج است چون معمولاً structها برای کارایی و قابلیت تغییر با اشاره‌گر جابه‌جا می‌شوند. لازم به ذکر است شما حتی می‌توانید چندین تابع سازنده با رفتارهای متفاوت مثلاً NewAdminUser یا NewGuestUser بنویسید.</p>
-<h3 id="ترکیب-interface">ترکیب Interface و Duck Typing</h3>
-<p>همانطور که در بخش ۳.۶ توضیح داده شد، <bdi dir="ltr">interface</bdi>ها در Go به‌صورت ضمنی پیاده‌سازی می‌شوند (<bdi dir="ltr">Duck Typing</bdi>) و می‌توان آن‌ها را با هم ترکیب کرد. این ویژگی‌ها نقش مهمی در طراحی سازنده‌ها ایفا می‌کنند: وقتی تابع سازنده‌ی شما یک <bdi dir="ltr">interface</bdi> برمی‌گرداند (نه <bdi dir="ltr">struct</bdi>)، مصرف‌کننده فقط به رفتار دسترسی دارد و پیاده‌سازی داخلی مخفی می‌ماند. این الگو به‌عنوان <bdi dir="ltr">Factory Pattern</bdi> شناخته می‌شود و در ادامه‌ی همین فصل بررسی خواهد شد.</p>
-<h3 id="functional-options">الگوی Functional Options</h3>
-<p>وقتی struct شما تعداد زیادی فیلد اختیاری دارد، تعریف چندین تابع سازنده (مثل <code>NewServer</code> ، <code>NewServerWithTimeout</code> ، <code>NewServerWithTLS</code>) به سرعت غیرقابل مدیریت می‌شود. الگوی <strong dir="ltr">Functional Options</strong> راه‌حل Idiomatic Go برای این مشکل است:</p>
-
+<p>تابع NewUser هم شیء را ایجاد می‌کند یعنی در واقع struct را مقداردهی می‌کند و هم مقادیر اولیه را تعیین می‌نماید. در این توابع بازگرداندن خروجی به عنوان یک اشاره‌گر (User*) کاری رایج است چون معمولاً structها برای کارایی و قابلیت تغییر با اشاره‌گر جابه‌جا می‌شوند.</p><p>لازم به ذکر است شما حتی می‌توانید چندین تابع سازنده با رفتارهای متفاوت مثلاً NewAdminUser یا NewGuestUser بنویسید.</p>
+<h3 id="ترکیب-interface">3.7.1 ترکیب Interface و Duck Typing</h3>
+<p>همانطور که در بخش ۳.۶ توضیح داده شد، <bdi dir="ltr">interface</bdi>ها در Go به‌صورت ضمنی پیاده‌سازی می‌شوند (<bdi dir="ltr">Duck Typing</bdi>) و می‌توان آن‌ها را با هم ترکیب کرد. </p><p>این ویژگی‌ها نقش مهمی در طراحی سازنده‌ها ایفا می‌کنند: وقتی تابع سازنده‌ی شما یک <bdi dir="ltr">interface</bdi> برمی‌گرداند (نه <bdi dir="ltr">struct</bdi>)، مصرف‌کننده فقط به رفتار دسترسی دارد و پیاده‌سازی داخلی مخفی می‌ماند. این الگو به‌عنوان <bdi dir="ltr">Factory Pattern</bdi> شناخته می‌شود و در ادامه‌ی همین فصل بررسی خواهد شد.</p>
+<h3 id="functional-options">3.7.2 الگوی Functional Options</h3>
+<p>وقتی struct شما تعداد زیادی فیلد اختیاری دارد، تعریف چندین تابع سازنده (مثل <code>NewServer</code>، <code>NewServerWithTimeout</code>، <code>NewServerWithTLS</code>) به سرعت غیرقابل مدیریت می‌شود. الگوی <strong dir="ltr">Functional Options</strong> راه‌حل Idiomatic Go برای این مشکل است:</p>
 <figure class="diagram" dir="ltr">
 <pre class="mermaid">flowchart TB
     title(["جریان الگوی Functional Options"])
     NEW["NewServer()<br/>مقادیر پیش‌فرض"]
-    WH["WithHost(&quot;0.0.0.0&quot;)"]
+    WH["WithHost("0.0.0.0")"]
     WP["WithPort(443)"]
     WT["WithTLS()"]
     WTO["WithTimeout(10s)"]
     LOOP["for _, opt := range opts { opt(s) }"]
     RESULT["*Server { ... }"]
-    NEW --> LOOP
-    WH --> LOOP
-    WP --> LOOP
-    WT --> LOOP
-    WTO --> LOOP
-    LOOP --> RESULT
+    NEW --&gt; LOOP
+    WH --&gt; LOOP
+    WP --&gt; LOOP
+    WT --&gt; LOOP
+    WTO --&gt; LOOP
+    LOOP --&gt; RESULT
 
     TYPE1["type Option func(*Server)"]
     TYPE2["func WithX(x T) Option { return func(s *Server) { s.x = x } }"]
@@ -159,8 +157,6 @@ func NewUser(name string) *User {
     class TYPE1,TYPE2 phpBox;</pre>
 <figcaption dir="rtl">شکل ۷-۳-ب: جریان الگوی <bdi dir="ltr">Functional Options</bdi> — هر تابع <bdi dir="ltr">WithX</bdi> یک <bdi dir="ltr">Option</bdi> برمی‌گرداند</figcaption>
 </figure>
-
-
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">package server
 
@@ -239,7 +235,7 @@ WithTimeout(10*time.Second),
 </code></pre>
 </figure>
 <div class="comparison"><strong>مقایسه با PHP:</strong> در PHP الگوی مشابه با associative array به‌عنوان آرگومان تابع یا با Builder Pattern پیاده‌سازی می‌شود. اما Functional Options در Go سه مزیت دارد: ۱) نوع‌داری ایستا — هر option نوع مشخصی دارد، ۲) مستندسازی خودکار — هر تابع <code>WithX</code> مستندات خود را دارد، ۳) بسط‌پذیری — اضافه‌کردن option جدید بدون تغییر رابط سازنده.</div>
-<h3 id="builder-pattern">الگوی Builder</h3>
+<h3 id="builder-pattern">3.7.3 الگوی Builder</h3>
 <p>وقتی ساخت شیء شما شامل مراحل پیچیده، اعتبارسنجی چندمرحله‌ای یا ساخت تدریجی است، الگوی Builder مناسب‌تر از Functional Options است:</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">package httpclient
@@ -327,7 +323,7 @@ if err != nil {
 </code></pre>
 </figure>
 <div class="tip"><strong>چه زمانی از کدام الگو استفاده کنیم؟</strong> از <strong>سازنده‌ی ساده <code dir="ltr">NewX()</code></strong> وقتی استفاده کنید که struct کمتر از ۳ فیلد اختیاری دارد. از <strong dir="ltr">Functional Options</strong> وقتی استفاده کنید که فیلدهای اختیاری زیاد اما مستقل هستند. از <strong dir="ltr">Builder</strong> وقتی استفاده کنید که مراحل ساخت وابسته به هم هستند، اعتبارسنجی پیچیده لازم است یا ساخت باید تدریجی باشد (مثل SQL builder یا HTTP request builder).</div>
-<h3 id="چه-زمانی-سازنده-بنویسیم">چه زمانی در Go سازنده بنویسیم؟</h3>
+<h3 id="چه-زمانی-سازنده-بنویسیم">3.7.4 چه زمانی در Go سازنده بنویسیم؟</h3>
 <p>در PHP هر کلاس همیشه یک constructor دارد (حتی اگر صریحاً تعریف نشده باشد). اما در Go ساخت <code>struct</code> بدون سازنده کاملاً معتبر است. پس چه زمانی باید تابع <code dir="ltr">NewX()</code> بنویسیم؟</p>
 <p><strong>بنویسید وقتی:</strong></p>
 <p>۱. struct مقادیر اولیه‌ی پیچیده نیاز دارد (اتصال به دیتابیس، خواندن تنظیمات).</p>
@@ -360,8 +356,8 @@ func NewStorage(config Config) Storage {
 p := Point{X: 1, Y: 2} // create directly
 </code></pre>
 </figure>
-<h3 id="singleton-با-synconce">Singleton با sync.Once</h3>
-<p>در PHP الگوی Singleton با متد استاتیک <code dir="ltr">getInstance()</code> پیاده‌سازی می‌شود. در Go از <code dir="ltr">sync.Once</code> استفاده می‌شود که امن از نظر همزمانی و بسیار ساده‌تر است:</p>
+<h3 id="singleton-با-synconce">3.7.5 Singleton با sync.Once</h3>
+<p>در PHP الگوی Singleton با متد استاتیک <code dir="ltr">getInstance()</code> پیاده‌سازی می‌شود. در Go از <code dir="ltr">sync.Once</code> استفاده می‌شود که امن از نظر هم‌روندی و بسیار ساده‌تر است:</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">package database
 
@@ -387,8 +383,7 @@ func GetDB() *DB {
 </code></pre>
 </figure>
 <div class="warning"><strong>هشدار:</strong> <code dir="ltr">sync.Once</code> فقط تضمین می‌کند که تابع یک‌بار اجرا می‌شود. اگر تابع panic کند، <code dir="ltr">sync.Once</code> آن را به‌عنوان «اجرا نشده» در نظر نمی‌گیرد و فراخوانی‌های بعدی همان panic را تکرار نخواهند کرد. همچنین اگر مقدار بازگشتی nil باشد، فراخوانی‌های بعدی همان nil را برمی‌گردانند.</div>
-
-<h3 id="must-constructors">الگوی MustXxx: سازنده‌های بدون خطا</h3>
+<h3 id="must-constructors">3.7.6 الگوی MustXxx: سازنده‌های بدون خطا</h3>
 <p>گاهی اوقات خطای سازنده‌ی یک شیء غیرقابل‌قبول است و به‌جای برگرداندن خطا ترجیح می‌دهیم برنامه متوقف شود. در این موارد از الگوی <bdi dir="ltr">MustXxx</bdi> استفاده می‌شود — نامی که در کتابخانه استاندارد Go رایج است:</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">// From the template package in standard library
@@ -410,8 +405,7 @@ func MustParseConfig(path string) *Config {
 </code></pre>
 </figure>
 <div class="warning"><strong>هشدار:</strong> الگوی <bdi dir="ltr">MustXxx</bdi> فقط برای مقادیری استفاده کنید که در زمان کامپایل یا راه‌اندازی مشخص هستند (مثل template‌ها و regex‌ها). هرگز از آن برای مقادیری که از ورودی کاربر یا شبکه می‌آیند استفاده نکنید.</div>
-
-<h3 id="dependency-injection">تزریق وابستگی با Constructorها</h3>
+<h3 id="dependency-injection">3.7.7 تزریق وابستگی با Constructorها</h3>
 <p>در PHP تزریق وابستگی (<bdi dir="ltr">DI</bdi>) معمولاً به‌صورت خودکار توسط Service Container انجام می‌شود. اما در Go تزریق وابستگی صریح و دستی است — و این یک مزیت محسوب می‌شود:</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">// Define dependencies as interfaces
@@ -445,9 +439,7 @@ func main() {
 </code></pre>
 </figure>
 <div class="tip"><strong>نکته:</strong> اگر تزریق وابستگی صریح بیش از حد طولانی شد، از الگوی <bdi dir="ltr">Functional Options</bdi> یا <bdi dir="ltr">Builder</bdi> استفاده کنید. اما هرگز یک Container/DI framework خودکار اضافه نکنید — این ضد الگوی Go است. شفافیت وابستگی‌ها یک مزیت است نه مشکل.</div>
-
 <div class="note"><strong>نکته‌ی حرفه‌ای — قرارداد نام‌گذاری <code dir="ltr">NewX()</code> و قانون zero-value:</strong> در Go برخلاف PHP که <code>__construct()</code> یک قرارداد زبانی است، نام <code dir="ltr">NewX()</code> فقط یک قرارداد نوشتاری است که در کتابخانه استاندارد ریشه دارد (مثل <code>errors.New</code>، <code>http.NewServeMux</code>، <code>time.NewTimer</code>). همیشه از پیشوند <code>New</code> استفاده کنید، نه <code>Create</code>، <code>Make</code> یا <code>Build</code>. دو استثنای مهم وجود دارد: ۱) وقتی zero value معتبر است، سازنده ننویسید (مثل <code>sync.Mutex{}</code> یا <code>bytes.Buffer{}</code> که کاملاً کاربردی هستند)؛ ۲) وقتی چند سازنده با رفتار متفاوت لازم دارید، از پیشوندهای توصیفی استفاده کنید (مثل <code>NewAdminUser</code>، <code>NewGuestUser</code>). رعایت این قراردادها باعث می‌شود کد شما برای دیگر Go کارها آشنا و قابل پیش‌بینی باشد.</div>
-
 <figure class="diagram" dir="ltr">
 <pre class="mermaid">flowchart TB
     title(["الگوهای Constructor در Go"])
@@ -484,17 +476,15 @@ func main() {
     class GO goBox;</pre>
 <figcaption>شکل ۷-۳: مقایسه‌ی الگوهای <bdi dir="ltr">Constructor</bdi> در <bdi dir="ltr">PHP</bdi> و <bdi dir="ltr">Go</bdi></figcaption>
 </figure>
-
-<h3 id="مقایسه-newx-و-zero-value">مقایسه‌ی الگوی <bdi dir="ltr">NewX()</bdi> و مقدار صفر</h3>
-<p>یکی از مهم‌ترین تصمیماتی که در طراحی <bdi dir="ltr">API</bdi> یک پکیج Go باید بگیرید این است که آیا کاربر باید شیء را با <bdi dir="ltr">NewX()</bdi> بسازد یا مستقیماً با <bdi dir="ltr">X{}</bdi> مقداردهی اولیه کند. این تصمیم به ماهیت <bdi dir="ltr">struct</bdi> و نوع استفاده‌ی مورد انتظار بستگی دارد. برخی <bdi dir="ltr">struct</bdi>ها مانند <bdi dir="ltr">sync.Mutex</bdi> و <bdi dir="ltr">bytes.Buffer</bdi> بدون هیچ مقداردهی اولیه‌ای کاملاً کاربردی هستند و مقدار صفر (<bdi dir="ltr">zero value</bdi>) آن‌ها معتبر و مفید است. اما اکثر <bdi dir="ltr">struct</bdi>ها به مقداردهی اولیه نیاز دارند و استفاده از <bdi dir="ltr">NewX()</bdi> بهترین روش برای اطمینان از صحت وضعیت اولیه شیء است.</p>
-
+<h3 id="مقایسه-newx-و-zero-value">3.7.8 مقایسه‌ی الگویNewX()و مقدار صفر</h3>
+<p>یکی از مهم‌ترین تصمیماتی که در طراحی <bdi dir="ltr">API</bdi> یک پکیج Go باید بگیرید این است که آیا کاربر باید شیء را با <bdi dir="ltr">NewX()</bdi> بسازد یا مستقیماً با <bdi dir="ltr">X{}</bdi> مقداردهی اولیه کند. این تصمیم به ماهیت <bdi dir="ltr">struct</bdi> و نوع استفاده‌ی مورد انتظار بستگی دارد. </p><p>برخی <bdi dir="ltr">struct</bdi>ها مانند <bdi dir="ltr">sync.Mutex</bdi> و <bdi dir="ltr">bytes.Buffer</bdi> بدون هیچ مقداردهی اولیه‌ای کاملاً کاربردی هستند و مقدار صفر (<bdi dir="ltr">zero value</bdi>) آن‌ها معتبر و مفید است. </p><p>اما اکثر <bdi dir="ltr">struct</bdi>ها به مقداردهی اولیه نیاز دارند و استفاده از <bdi dir="ltr">NewX()</bdi> بهترین روش برای اطمینان از صحت وضعیت اولیه شیء است.</p>
 <figure class="diagram" dir="ltr">
 <pre class="mermaid">flowchart TB
     title(["مقایسه‌ی الگوهای مقداردهی اولیه در Go"])
 
     subgraph NEWX["NewX() — Constructor Pattern"]
         direction TB
-        NX_CODE["func NewServer(addr string) (*Server, error) {<br/>  if addr == &quot;&quot; {<br/>    return nil, errors.New(&quot;addr required&quot;)<br/>  }<br/>  return &amp;Server{addr: addr}, nil<br/>}"]
+        NX_CODE["func NewServer(addr string) (*Server, error) {<br/>  if addr == "" {<br/>    return nil, errors.New("addr required")<br/>  }<br/>  return &amp;Server{addr: addr}, nil<br/>}"]
         NX_F1["✓ می‌تواند error برگرداند — مدیریت خطای صریح"]
         NX_F2["✓ مقادیر پیش‌فرض و اعتبارسنجی انجام می‌دهد"]
         NX_F3["✓ فراخوانی صریح — کنترل کامل روی زمان ساخت"]
@@ -503,7 +493,7 @@ func main() {
 
     subgraph ZERO["X{} + Initialize() — Zero-value Pattern"]
         direction TB
-        Z_CODE["var buf bytes.Buffer<br/>buf.Write([]byte(&quot;hello&quot;))<br/><br/>var mu sync.Mutex<br/>mu.Lock()<br/>defer mu.Unlock()"]
+        Z_CODE["var buf bytes.Buffer<br/>buf.Write([]byte("hello"))<br/><br/>var mu sync.Mutex<br/>mu.Lock()<br/>defer mu.Unlock()"]
         Z_F1["✓ بدون نیاز به سازنده — مقدار صفر معتبر است"]
         Z_F2["✓ ساده و سبک — بدون تخصیص اضافی"]
         Z_F3["⚠ فقط وقتی zero value مفید باشد"]
@@ -513,7 +503,7 @@ func main() {
     subgraph FACTORY["Factory Pattern — NewStorage(type) Storage"]
         direction TB
         F_CODE1["type Storage interface {<br/>  Save(key string, value []byte) error<br/>  Load(key string) ([]byte, error)<br/>}"]
-        F_CODE2["func NewStorage(t string) Storage {<br/>  switch t {<br/>  case &quot;redis&quot;: return &amp;redisStorage{...}<br/>  default:     return &amp;memStorage{}<br/>  }<br/>}"]
+        F_CODE2["func NewStorage(t string) Storage {<br/>  switch t {<br/>  case "redis": return &amp;redisStorage{...}<br/>  default:     return &amp;memStorage{}<br/>  }<br/>}"]
     end
 
     subgraph CMP["مقایسه"]
@@ -542,10 +532,8 @@ func main() {
     class GO goBox;</pre>
 <figcaption>مقایسه‌ی الگوی <bdi dir="ltr">NewX()</bdi>، مقدار صفر و <bdi dir="ltr">Factory</bdi> — هر الگو برای شرایط خاصی مناسب است</figcaption>
 </figure>
-
-<p>نمودار بالا سه الگوی اصلی مقداردهی اولیه در Go را مقایسه می‌کند. الگوی <bdi dir="ltr">NewX()</bdi> در سمت چپ با رنگ سبز نمایش داده شده و مناسب مواردی است که اعتبارسنجی، مقدار پیش‌فرض یا مدیریت خطا نیاز دارید. الگوی مقدار صفر در سمت راست با رنگ نارنجی نشان داده شده و فقط برای <bdi dir="ltr">struct</bdi>هایی مناسب است که مقدار صفر آن‌ها معتبر و مفید است مانند <bdi dir="ltr">sync.Mutex</bdi> و <bdi dir="ltr">bytes.Buffer</bdi>. الگوی <bdi dir="ltr">Factory</bdi> در پایین با رنگ آبی مشخص شده و وقتی استفاده می‌شود که بخواهید بر اساس یک پارامتر پیاده‌سازی متفاوتی از یک <bdi dir="ltr">interface</bdi> برگردانید. در PHP فقط یک سازنده <bdi dir="ltr">__construct()</bdi> اجباری دارید اما در Go آزادی انتخاب بین این الگوها وجود دارد و باید بر اساس نیاز پروژه تصمیم بگیرید.</p>
-
-<h3 id="سناریوهای-عملیاتی-سازنده">سناریوهای عملیاتی</h3>
+<p>نمودار بالا سه الگوی اصلی مقداردهی اولیه در Go را مقایسه می‌کند. الگوی <bdi dir="ltr">NewX()</bdi> در سمت چپ با رنگ سبز نمایش داده شده و مناسب مواردی است که اعتبارسنجی، مقدار پیش‌فرض یا مدیریت خطا نیاز دارید. </p><p>الگوی مقدار صفر در سمت راست با رنگ نارنجی نشان داده شده و فقط برای <bdi dir="ltr">struct</bdi>هایی مناسب است که مقدار صفر آن‌ها معتبر و مفید است مانند <bdi dir="ltr">sync.Mutex</bdi> و <bdi dir="ltr">bytes.Buffer</bdi>. </p><p>الگوی <bdi dir="ltr">Factory</bdi> در پایین با رنگ آبی مشخص شده و وقتی استفاده می‌شود که بخواهید بر اساس یک پارامتر پیاده‌سازی متفاوتی از یک <bdi dir="ltr">interface</bdi> برگردانید. </p><p>در PHP فقط یک سازنده <bdi dir="ltr">__construct()</bdi> اجباری دارید اما در Go آزادی انتخاب بین این الگوها وجود دارد و باید بر اساس نیاز پروژه تصمیم بگیرید.</p>
+<h3 id="سناریوهای-عملیاتی-سازنده">3.7.9 سناریوهای عملیاتی</h3>
 <ul>
 <li><strong>سازنده با اعتبارسنجی:</strong> وقتی <bdi dir="ltr">struct</bdi> شما فیلدهایی دارد که باید حتماً مقدار معتبر داشته باشند از <bdi dir="ltr">NewX()</bdi> استفاده کنید. تابع سازنده ورودی‌ها را بررسی می‌کند و در صورت نامعتبر بودن خطا برمی‌گرداند. این الگو تضمین می‌کند که هیچ شیء نامعتبری ساخته نمی‌شود و مصرف‌کننده مجبور است خطا را مدیریت کند. مثلاً <bdi dir="ltr">NewServer(addr string) (*Server, error)</bdi> تضمین می‌کند که سرور همیشه یک آدرس معتبر دارد.</li>
 <li><strong>الگوی <bdi dir="ltr">Factory</bdi> برای برگرداندن <bdi dir="ltr">interface</bdi>:</strong> وقتی می‌خواهید پیاده‌سازی داخلی را مخفی کنید و فقط <bdi dir="ltr">interface</bdi> را آشکار کنید از الگوی <bdi dir="ltr">Factory</bdi> استفاده کنید. تابع <bdi dir="ltr">NewStorage(config Config) Storage</bdi> بسته به تنظیمات ممکن است یک <bdi dir="ltr">redisStorage</bdi> یا <bdi dir="ltr">memStorage</bdi> برگرداند اما مصرف‌کننده فقط با <bdi dir="ltr">Storage</bdi> کار می‌کند و نیازی ندارد بداند کدام پیاده‌سازی استفاده شده. این الگو <bdi dir="ltr">encapsulation</bdi> قوی‌ای فراهم می‌کند.</li>
@@ -553,34 +541,39 @@ func main() {
 <li><strong>الگوی <bdi dir="ltr">struct</bdi> خصوصی + <bdi dir="ltr">interface</bdi> عمومی:</strong> یکی از قوی‌ترین الگوهای <bdi dir="ltr">Go</bdi> این است که <bdi dir="ltr">struct</bdi> را <bdi dir="ltr">unexported</bdi> (حرف کوچک) تعریف کنید اما <bdi dir="ltr">interface</bdi> آن <bdi dir="ltr">exported</bdi> باشد. این کار به شما اجازه می‌دهد پیاده‌سازی داخلی را آزادانه تغییر دهید بدون اینکه مصرف‌کنندگان خارجی متوجه شوند. تابع سازنده <bdi dir="ltr">interface</bdi> برمی‌گرداند نه <bdi dir="ltr">struct</bdi> و مصرف‌کننده فقط به رفتار وابسته است نه ساختار.</li>
 <li><strong>الگوی <bdi dir="ltr">Builder</bdi> برای ساخت چندمرحله‌ای:</strong> وقتی ساخت شیء شامل مراحل وابسته به هم یا اعتبارسنجی پیچیده است از الگوی <bdi dir="ltr">Builder</bdi> استفاده کنید. مثلاً ساخت <bdi dir="ltr">HTTP client</bdi> با <bdi dir="ltr">base URL</bdi>، <bdi dir="ltr">timeout</bdi>، <bdi dir="ltr">retry</bdi> و <bdi dir="ltr">header</bdi>های سفارشی. الگوی <bdi dir="ltr">Builder</bdi> اجازه می‌دهد هر مرحله به‌صورت تدریجی اضافه شود و در نهایت تابع <bdi dir="ltr">Build()</bdi> تمام اعتبارسنجی‌ها را انجام دهد.</li>
 </ul>
-
 <div class="tip"><strong>قانون طلایی سازنده‌های پیچیده:</strong> وقتی تعداد پارامترهای اختیاری زیاد است از الگوی <bdi dir="ltr">Functional Options</bdi> استفاده کنید: <bdi dir="ltr">NewServer(WithPort(8080), WithTimeout(30*time.Second))</bdi>. این الگو سه مزیت کلیدی دارد: اول اینکه هر <bdi dir="ltr">option</bdi> مستندات خود را دارد و <bdi dir="ltr">IDE</bdi> آن‌ها را نشان می‌دهد. دوم اینکه اضافه‌کردن <bdi dir="ltr">option</bdi> جدید بدون تغییر رابط سازنده امکان‌پذیر است و سازگاری عقب‌ (<bdi dir="ltr">backward compatibility</bdi>) حفظ می‌شود. سوم اینکه مقادیر پیش‌فرض در خود تابع سازنده تعریف می‌شوند و مصرف‌کننده فقط مواردی را که می‌خواهد تغییر دهد مشخص می‌کند. این الگو در کتابخانه استاندارد Go و پروژه‌های بزرگ مانند <bdi dir="ltr">gRPC</bdi> و <bdi dir="ltr">Kubernetes</bdi> به‌وفور استفاده شده است.</div>
-</div>
+<div class="summary">
+<strong>خلاصه‌ی نکات کلیدی:</strong>
+<ul>
+<li>NewType الگوی استاندارد constructor در Go است</li>
+<li>option pattern برای constructor با پارامترهای اختیاری</li>
+<li>factory function برای ایجاد انواع مختلف واسط مشترک</li>
+<li>builder pattern برای ساخت شیء پیچیده مرحله‌به‌مرحله</li>
+<li>از over-engineering با الگوهای Java-style پرهیز کنید</li>
+</ul>
+</div></div>
 </main>
 </div>
-
 <!-- Footer -->
 <footer class="site-footer">
 <div class="footer-inner">
 <div class="footer-nav">
 <span class="nav-arrow">‹</span>
-<a href="03.06-interface.html" data-prev>۳.۶ Interface</a>
+<a data-prev="" href="03.06-interface.html">۳.۶ Interface</a>
 </div>
 <div class="footer-toc">
 <a href="00.01-contents.html">فهرست</a>
 </div>
 <div class="footer-nav">
-<a href="04.00-chapter-4.html" data-next>۴. مدیریت خطا</a>
+<a data-next="" href="04.00-chapter-4.html">۴. مدیریت خطا</a>
 <span class="nav-arrow">›</span>
 </div>
 </div>
 </footer>
-
 <!-- Back to Top -->
-<button class="back-to-top" aria-label="بازگشت به بالا">
-<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
+<button aria-label="بازگشت به بالا" class="back-to-top">
+<svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24"><polyline points="18 15 12 9 6 15"></polyline></svg>
 </button>
-
 <!-- Scripts -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/go.min.js"></script>

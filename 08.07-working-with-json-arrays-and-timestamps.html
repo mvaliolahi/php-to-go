@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html dir="rtl" lang="fa">
 <head>
 <script>!function(){try{var t=localStorage.getItem('php2go-theme');if(t==='dark'||(!t&&window.matchMedia('(prefers-color-scheme:dark)').matches)){document.documentElement.setAttribute('data-theme','dark')}}catch(e){}}();</script>
@@ -6,26 +7,25 @@
 <meta content="ie=edge" http-equiv="x-ua-compatible"/>
 <title>۸.۷ کار با JSON، Array و Timestamp — PHP to Go</title>
 <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport"/>
-<link rel="preconnect" href="https://fonts.googleapis.com"/>
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600;700&amp;family=Fira+Code:wght@400;500&amp;display=swap" rel="stylesheet"/>
 <link href="assets/css/main.css" rel="stylesheet" type="text/css"/>
 <link href="assets/img/favicon.ico" rel="icon" type="image/x-icon"/>
-<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" media="screen" class="hljs-light-theme" rel="stylesheet"/>
-<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css" media="not screen" class="hljs-dark-theme" rel="stylesheet"/>
+<link class="hljs-light-theme" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" media="screen" rel="stylesheet"/>
+<link class="hljs-dark-theme" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css" media="not screen" rel="stylesheet"/>
 </head>
 <body>
 <!-- Progress Bar -->
 <div class="progress-bar"><div class="progress-bar__fill"></div></div>
-
 <!-- Header -->
 <header class="site-header">
 <div class="header-inner">
 <div class="header-left">
-<button class="header-btn sidebar-toggle" aria-label="فهرست">
-<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+<button aria-label="فهرست" class="header-btn sidebar-toggle">
+<svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24"><line x1="3" x2="21" y1="6" y2="6"></line><line x1="3" x2="21" y1="12" y2="12"></line><line x1="3" x2="21" y1="18" y2="18"></line></svg>
 </button>
-<a href="00.00-front-matter.html" class="header-logo"><span class="logo-php">PHP</span> to <span class="logo-go">Go</span></a>
+<a class="header-logo" href="00.00-front-matter.html"><span class="logo-php">PHP</span> to <span class="logo-go">Go</span></a>
 <span class="header-crumbs">پایگاه داده › کار با JSON، Array و Timestamp</span>
 </div>
 <div class="header-right">
@@ -36,40 +36,38 @@
 <a href="08.08-using-redis.html"><span class="nav-label">۸.۸ استفاده از Redis</span></a>
 <span class="nav-arrow">›</span>
 </nav>
-<button class="header-btn search-toggle" aria-label="جستجو">
-<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+<button aria-label="جستجو" class="header-btn search-toggle">
+<svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" x2="16.65" y1="21" y2="16.65"></line></svg>
 </button>
-<button class="header-btn theme-toggle" aria-label="تغییر تم">
-<svg class="theme-icon-light" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
-<svg class="theme-icon-dark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+<button aria-label="تغییر تم" class="header-btn theme-toggle">
+<svg class="theme-icon-light" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24"><circle cx="12" cy="12" r="5"></circle><line x1="12" x2="12" y1="1" y2="3"></line><line x1="12" x2="12" y1="21" y2="23"></line><line x1="4.22" x2="5.64" y1="4.22" y2="5.64"></line><line x1="18.36" x2="19.78" y1="18.36" y2="19.78"></line><line x1="1" x2="3" y1="12" y2="12"></line><line x1="21" x2="23" y1="12" y2="12"></line><line x1="4.22" x2="5.64" y1="19.78" y2="18.36"></line><line x1="18.36" x2="19.78" y1="5.64" y2="4.22"></line></svg>
+<svg class="theme-icon-dark" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
 </button>
 </div>
 </div>
 </header>
-
 <!-- Search Modal -->
 <div class="search-overlay">
 <div class="search-modal">
 <div class="search-input-wrap">
-<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-<input type="text" class="search-input" placeholder="جستجو... (Ctrl+K)" dir="rtl"/>
+<svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" x2="16.65" y1="21" y2="16.65"></line></svg>
+<input class="search-input" dir="rtl" placeholder="جستجو... (Ctrl+K)" type="text"/>
 </div>
 <div class="search-results"></div>
 </div>
 </div>
-
 <!-- Layout -->
 <div class="site-layout">
 <!-- Sidebar -->
 <aside class="sidebar"></aside>
 <div class="sidebar-overlay"></div>
-
 <!-- Main Content -->
 <main class="content-area">
 <div class="content-wrap text">
 <div class="chapter">فصل ۸.۷</div>
-<h2 id="کار-با-json-array-و-timestamp">کار با JSON، Array و Timestamp</h2>
-
+<h2 id="کار-با-json-array-و-timestamp">کار با JSON، Array و Timestamp</h2><div class="abstract">
+<strong>چکیده:</strong> این بخش کار با JSON array و timestamp در Go را پوشش می‌دهد: json.Marshal، time.Time و timezone. الگوی custom type و scanner بررسی می‌شود. تفاوت با Carbon در PHP مشخص می‌گردد.
+</div>
 <figure class="diagram" dir="ltr">
 <pre class="mermaid">flowchart TB
     Title["نگاشت JSON، Array و Timestamp بین Go و PostgreSQL"]
@@ -81,12 +79,12 @@
         M3["Timestamp → time.Time<br/>UTC + timezone"]
     end
 
-    Struct["Go Struct with db + json tags<br/>json:&quot;...&quot; db:&quot;...&quot;"]
-    Laravel["در Laravel: $casts = ['settings' =>'json', 'tags' =>'array']"]
+    Struct["Go Struct with db + json tags<br/>json:"..." db:"...""]
+    Laravel["در Laravel: $casts = ['settings' =&gt;'json', 'tags' =&gt;'array']"]
 
-    Title --> MAPPINGS
-    MAPPINGS --> Struct
-    Struct --> Laravel
+    Title --&gt; MAPPINGS
+    MAPPINGS --&gt; Struct
+    Struct --&gt; Laravel
 
     classDef titleBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:2px,color:#1f2937,font-weight:bold;
     classDef goBox   fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
@@ -97,12 +95,10 @@
     class M1,M2,M3 goBox;
     class Struct goBox;
     class Laravel phpBox;</pre>
-<figcaption>شکل ۸-۷: نگاشت <bdi dir="ltr">JSON</bdi> ، <bdi dir="ltr">Array</bdi> و <bdi dir="ltr">Timestamp</bdi> بین <bdi dir="ltr">Go</bdi> و <bdi dir="ltr">PostgreSQL</bdi></figcaption>
+<figcaption>شکل ۸-۷: نگاشت <bdi dir="ltr">JSON</bdi>، <bdi dir="ltr">Array</bdi> و <bdi dir="ltr">Timestamp</bdi> بین <bdi dir="ltr">Go</bdi> و <bdi dir="ltr">PostgreSQL</bdi></figcaption>
 </figure>
-
-<p>در کاربرد واقعی داده‌های ذخیره شده در دیتابیس‌ها فقط محدود به انواع ساده مثل اعداد و رشته‌ها نیستند. معمولاً نیاز داریم با داده‌های پیچیده‌تری مثل ساختارهای <bdi dir="ltr">JSON</bdi> ، آرایه‌ها یا تایم‌استمپ‌ها کار کنیم.</p>
-
-<h3 id="jsonb">کار با JSONB در PostgreSQL</h3>
+<p>در کاربرد واقعی داده‌های ذخیره شده در دیتابیس‌ها فقط محدود به انواع ساده مثل اعداد و رشته‌ها نیستند. معمولاً نیاز داریم با داده‌های پیچیده‌تری مثل ساختارهای <bdi dir="ltr">JSON</bdi>، آرایه‌ها یا تایم‌استمپ‌ها کار کنیم.</p>
+<h3 id="jsonb">8.7.1 کار با JSONB در PostgreSQL</h3>
 <p><bdi dir="ltr">PostgreSQL</bdi> از نوع <bdi dir="ltr">JSONB</bdi> پشتیبانی می‌کند که امکان ذخیره‌سازی و کوئری‌های کارآمد روی داده‌های ساختاریافته را فراهم می‌کند:</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">type Settings struct {
@@ -122,10 +118,9 @@ err := db.QueryRow("SELECT settings FROM user_settings WHERE user_id = $1", user
 var settings Settings
 json.Unmarshal(jsonData, &amp;settings)</code></pre>
 </figure>
-
 <p><strong>کوئری‌های JSONB:</strong> می‌توانید مستقیماً روی فیلدهای <bdi dir="ltr">JSONB</bdi> کوئری بزنید:</p>
 <figure class="code sql" dir="ltr"><pre><code class="language-sql">-- یافتن کاربران با تم تیره
-SELECT * FROM user_settings WHERE settings->>'theme' = 'dark';
+SELECT * FROM user_settings WHERE settings-&gt;&gt;'theme' = 'dark';
 
 -- بررسی وجود کلید
 SELECT * FROM user_settings WHERE settings ? 'language';
@@ -134,8 +129,7 @@ SELECT * FROM user_settings WHERE settings ? 'language';
 UPDATE user_settings
 SET settings = jsonb_set(settings, '{theme}', '"light"')
 WHERE user_id = 42;</code></pre></figure>
-
-<h3 id="arrays">کار با آرایه‌ها در PostgreSQL</h3>
+<h3 id="arrays">8.7.2 کار با آرایه‌ها در PostgreSQL</h3>
 <p>در <bdi dir="ltr">PostgreSQL</bdi> از آرایه‌ها به صورت بومی پشتیبانی می‌شود. درایور <bdi dir="ltr">lib/pq</bdi> تابع <bdi dir="ltr">pq.Array</bdi> را برای این منظور ارائه می‌دهد:</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">// Save array
@@ -146,8 +140,7 @@ _, err := db.Exec("INSERT INTO articles(title, tags) VALUES($1, $2)", title, pq.
 var tags []string
 err := db.QueryRow("SELECT tags FROM articles WHERE id=$1", articleID).Scan(pq.Array(&amp;tags))</code></pre>
 </figure>
-
-<h3 id="timestamps">مدیریت زمان با time.Time</h3>
+<h3 id="timestamps">8.7.3 مدیریت زمان با time.Time</h3>
 <p>در <bdi dir="ltr">Go</bdi> زمان با <bdi dir="ltr">time.Time</bdi> مدیریت می‌شود. بیشتر درایورها تبدیل خودکار را پشتیبانی می‌کنند:</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">// Save time
@@ -163,10 +156,8 @@ loc, _ := time.LoadLocation("Asia/Tehran")
 localTime := eventTime.In(loc)
 fmt.Println("زمان:", localTime.Format("2006-01-02 15:04:05"))</code></pre>
 </figure>
-
 <div class="important"><strong>نکته مهم درباره زمان:</strong> همیشه زمان‌ها را به <bdi dir="ltr">UTC</bdi> در دیتابیس ذخیره کنید و فقط هنگام نمایش به <bdi dir="ltr">timezone</bdi> محلی تبدیل کنید. برای MySQL حتماً پارامتر <bdi dir="ltr">parseTime=true</bdi> را در <bdi dir="ltr">DSN</bdi> تنظیم کنید. برای زمان‌های <bdi dir="ltr">nullable</bdi> از <code>sql.NullTime</code> (Go 1.17+) یا <code>*time.Time</code> استفاده کنید.</div>
-
-<h3 id="custom-types">تبدیل سفارشی با sql.Scanner و driver.Valuer</h3>
+<h3 id="custom-types">8.7.4 تبدیل سفارشی با sql.Scanner و driver.Valuer</h3>
 <p>با پیاده‌سازی این دو رابط می‌توانید هر نوع پیچیده‌ای را به صورت شفاف با دیتابیس تبادل کنید. این رابط‌ها قبلاً در بخش «نگاشت داده‌ها به <bdi dir="ltr">Struct</bdi>» (فصل ۸.۴) معرفی شدند؛ در اینجا مثال عملیاتی‌تری مخصوص ستون‌های <bdi dir="ltr">JSONB</bdi> ارائه می‌دهیم:</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">// JSONBColumn wraps a Go value for seamless JSONB storage
@@ -198,15 +189,10 @@ type Product struct {
     Metadata JSONBColumn `db:"metadata" json:"metadata"`
 }</code></pre>
 </figure>
-
 <p>با این پیاده‌سازی، هنگام خواندن از دیتابیس متد <code dir="ltr">Scan()</code> به‌طور خودکار مقدار <bdi dir="ltr">JSONB</bdi> را به <bdi dir="ltr">Go</bdi> تبدیل می‌کند و هنگام نوشتن متد <code dir="ltr">Value()</code> تبدیل معکوس را انجام می‌دهد. این الگو خوانایی کد مصرف‌کننده را به‌شدت بهبود می‌بخشد.</p>
-
-<div class="comparison"><strong>مقایسه با Laravel/Eloquent:</strong> در <bdi dir="ltr">Laravel</bdi> ستون‌های <code>timestamp</code> به‌صورت خودکار به <code>Carbon</code> تبدیل می‌شوند و <code>$casts</code> امکان تبدیل سفارشی را فراهم می‌کند (<code>'settings' => 'json'</code>، <code>'tags' => 'array'</code>). در <bdi dir="ltr">Go</bdi> باید تبدیل را دستی انجام دهید: <bdi dir="ltr">JSONB</bdi> با <code>json.Marshal/Unmarshal</code>، آرایه‌ها با <code>pq.Array()</code> و زمان با <code>time.Time</code>. اگرچه کد بیشتری نیاز است اما شفافیت و کنترل کاملی روی نحوه‌ی تبدیل داده‌ها دارید و رفتار غیرمنتظره‌ای در تولید <bdi dir="ltr">JSON</bdi> یا مدیریت مقادیر <bdi dir="ltr">NULL</bdi> مشاهده نخواهید کرد.</div>
-
-<h3 id="ماتریس-تبدیل-نوع-sql-به-go">ماتریس تبدیل نوع SQL به Go</h3>
-
-<p>یکی از چالش‌های اصلی در کار با دیتابیس در <bdi dir="ltr">Go</bdi> نگاشت صحیح انواع داده‌ای <bdi dir="ltr">SQL</bdi> به انواع <bdi dir="ltr">Go</bdi> است. برخلاف <bdi dir="ltr">PHP</bdi> که نوع‌گذاری پویا دارد و تبدیل‌ها عموماً خودکار هستند، در <bdi dir="ltr">Go</bdi> باید دقیقاً بدانید هر نوع <bdi dir="ltr">SQL</bdi> به کدام نوع <bdi dir="ltr">Go</bdi> نگاشت می‌شود. شکل زیر ماتریس کامل این نگاشت‌ها را نشان می‌دهد. رنگ سبز نشان‌دهنده‌ی نگاشت مستقیم و بی‌خطر، رنگ نارنجی نشان‌دهنده‌ی تبدیل با احتمال از دست رفتن دقت و رنگ قرمز نشان‌دهنده‌ی مواردی است که نیاز به توجه ویژه دارند.</p>
-
+<div class="comparison"><strong>مقایسه با Laravel/Eloquent:</strong> در <bdi dir="ltr">Laravel</bdi> ستون‌های <code>timestamp</code> به‌صورت خودکار به <code>Carbon</code> تبدیل می‌شوند و <code>$casts</code> امکان تبدیل سفارشی را فراهم می‌کند (<code>'settings' =&gt; 'json'</code>، <code>'tags' =&gt; 'array'</code>). در <bdi dir="ltr">Go</bdi> باید تبدیل را دستی انجام دهید: <bdi dir="ltr">JSONB</bdi> با <code>json.Marshal/Unmarshal</code>، آرایه‌ها با <code>pq.Array()</code> و زمان با <code>time.Time</code>. اگرچه کد بیشتری نیاز است اما شفافیت و کنترل کاملی روی نحوه‌ی تبدیل داده‌ها دارید و رفتار غیرمنتظره‌ای در تولید <bdi dir="ltr">JSON</bdi> یا مدیریت مقادیر <bdi dir="ltr">NULL</bdi> مشاهده نخواهید کرد.</div>
+<h3 id="ماتریس-تبدیل-نوع-sql-به-go">8.7.5 ماتریس تبدیل نوع SQL به Go</h3>
+<p>یکی از چالش‌های اصلی در کار با دیتابیس در <bdi dir="ltr">Go</bdi> نگاشت صحیح انواع داده‌ای <bdi dir="ltr">SQL</bdi> به انواع <bdi dir="ltr">Go</bdi> است. برخلاف <bdi dir="ltr">PHP</bdi> که نوع‌گذاری پویا دارد و تبدیل‌ها عموماً خودکار هستند، در <bdi dir="ltr">Go</bdi> باید دقیقاً بدانید هر نوع <bdi dir="ltr">SQL</bdi> به کدام نوع <bdi dir="ltr">Go</bdi> نگاشت می‌شود. شکل زیر ماتریس کامل این نگاشت‌ها را نشان می‌دهد. </p><p>رنگ سبز نشان‌دهنده‌ی نگاشت مستقیم و بی‌خطر، رنگ نارنجی نشان‌دهنده‌ی تبدیل با احتمال از دست رفتن دقت و رنگ قرمز نشان‌دهنده‌ی مواردی است که نیاز به توجه ویژه دارند.</p>
 <figure class="diagram" dir="ltr">
 <pre class="mermaid">flowchart TB
     Title["ماتریس تبدیل نوع SQL به Go"]
@@ -226,9 +212,9 @@ type Product struct {
 
     subgraph NULLMGMT["مدیریت مقادیر NULL در Go"]
         direction TB
-        N1["sql.NullString&#123;String: &quot;value&quot;, Valid: true&#125;"]
-        N2["sql.NullInt64&#123;Int64: 42, Valid: true&#125;"]
-        N3["sql.NullTime&#123;Time: time.Now(), Valid: true&#125;"]
+        N1["sql.NullString{String: "value", Valid: true}"]
+        N2["sql.NullInt64{Int64: 42, Valid: true}"]
+        N3["sql.NullTime{Time: time.Now(), Valid: true}"]
         N4["یا از اشاره‌گر استفاده کنید:<br/>*string, *int64, *time.Time<br/>nil = NULL در دیتابیس"]
     end
 
@@ -241,10 +227,10 @@ type Product struct {
 
     Golden["قانون طلایی: برای داده‌های مالی هرگز از float64 استفاده نکنید — از shopspring/decimal یا نوع سفارشی استفاده کنید"]
 
-    Title --> MATRIX
-    MATRIX --> NULLMGMT
-    NULLMGMT --> LEGEND
-    LEGEND --> Golden
+    Title --&gt; MATRIX
+    MATRIX --&gt; NULLMGMT
+    NULLMGMT --&gt; LEGEND
+    LEGEND --&gt; Golden
 
     classDef titleBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:2px,color:#1f2937,font-weight:bold;
     classDef goBox   fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
@@ -264,48 +250,48 @@ type Product struct {
     class Golden warnBox;</pre>
 <figcaption dir="rtl">شکل ۸-۷-ب: ماتریس تبدیل انواع <bdi dir="ltr">SQL</bdi> به <bdi dir="ltr">Go</bdi> — سبز: مستقیم، نارنجی: سفارشی، قرمز: خطرناک</figcaption>
 </figure>
-
-<p>همان‌طور که در ماتریس بالا مشاهده می‌کنید، بیشتر انواع پایه‌ای <bdi dir="ltr">SQL</bdi> نگاشت مستقیمی به انواع <bdi dir="ltr">Go</bdi> دارند. اما سه مورد نیاز به توجه ویژه دارند: نوع <bdi dir="ltr">JSON/JSONB</bdi> که نیاز به <bdi dir="ltr">json.RawMessage</bdi> یا پیاده‌سازی <code>sql.Scanner</code> دارد، نوع <bdi dir="ltr">DECIMAL/NUMERIC</bdi> که تبدیل آن به <code>float64</code> با خطر از دست رفتن دقت همراه است، و مقادیر <bdi dir="ltr">NULL</bdi> که باید با انواع <code>sql.Null*</code> یا اشاره‌گرها مدیریت شوند. درک این تفاوت‌ها برای جلوگیری از باگ‌های پنهان در اپلیکیشن‌های واقعی بسیار مهم است.</p>
-
+<p>همان‌طور که در ماتریس بالا مشاهده می‌کنید، بیشتر انواع پایه‌ای <bdi dir="ltr">SQL</bdi> نگاشت مستقیمی به انواع <bdi dir="ltr">Go</bdi> دارند. </p><p>اما سه مورد نیاز به توجه ویژه دارند: نوع <bdi dir="ltr">JSON/JSONB</bdi> که نیاز به <bdi dir="ltr">json.RawMessage</bdi> یا پیاده‌سازی <code>sql.Scanner</code> دارد، نوع <bdi dir="ltr">DECIMAL/NUMERIC</bdi> که تبدیل آن به <code>float64</code> با خطر از دست رفتن دقت همراه است، و مقادیر <bdi dir="ltr">NULL</bdi> که باید با انواع <code>sql.Null*</code> یا اشاره‌گرها مدیریت شوند. درک این تفاوت‌ها برای جلوگیری از باگ‌های پنهان در اپلیکیشن‌های واقعی بسیار مهم است.</p>
 <div class="note"><strong>چرا <bdi dir="ltr">Go</bdi> خطاهای نوع را زودتر از <bdi dir="ltr">PHP</bdi> نشان می‌دهد:</strong> در <bdi dir="ltr">PHP</bdi> تبدیل <code>string</code> به <code>int</code> یا <code>float</code> به‌صورت ضمنی انجام می‌شود و حتی اگر ستون <bdi dir="ltr">SQL</bdi> از نوع <bdi dir="ltr">NUMERIC</bdi> باشد، مقدار بدون خطا در متغیر عددی قرار می‌گیرد — البته با احتمال از دست رفتن دقت. در <bdi dir="ltr">Go</bdi> این خطا در زمان <code>Scan()</code> فوراً اعلام می‌شود. برای داده‌های مالی به‌جای مبارزه با <code>float64</code>، یا مقدار را به‌صورت <code>int64</code> در کوچک‌ترین واحد (ریال/سنت) ذخیره کنید یا از <code>github.com/shopspring/decimal</code> با پیاده‌سازی <code>sql.Scanner</code> استفاده کنید. این سخت‌گیری در نگاه اول آزاردهنده است اما جلوی باگ‌های مالی خاموش را می‌گیرد.</div>
-
-<h3 id="سناریوهای-عملیاتی-تبدیل-نوع">سناریوهای عملیاتی تبدیل نوع</h3>
-
-<p>در پروژه‌های واقعی تبدیل نوع بین <bdi dir="ltr">SQL</bdi> و <bdi dir="ltr">Go</bdi> فراتر از نگاشت‌های ساده است. هر سناریو چالش‌های خاص خود را دارد و نیاز به آشنایی با الگوهای رایج و تله‌های احتمالی دارد. در ادامه چهار سناریوی عملیاتی کلیدی را بررسی می‌کنیم که در پروژه‌های <bdi dir="ltr">Go</bdi> مبتنی بر دیتابیس مکرراً با آن‌ها مواجه می‌شوید. این سناریوها شامل نکات مهمی هستند که در مستندات رسمی کمتر به آن‌ها پرداخته شده ولی در عمل بسیار کاربردی هستند.</p>
-
+<h3 id="سناریوهای-عملیاتی-تبدیل-نوع">8.7.6 سناریوهای عملیاتی تبدیل نوع</h3>
+<p>در پروژه‌های واقعی تبدیل نوع بین <bdi dir="ltr">SQL</bdi> و <bdi dir="ltr">Go</bdi> فراتر از نگاشت‌های ساده است. هر سناریو چالش‌های خاص خود را دارد و نیاز به آشنایی با الگوهای رایج و تله‌های احتمالی دارد. در ادامه چهار سناریوی عملیاتی کلیدی را بررسی می‌کنیم که در پروژه‌های <bdi dir="ltr">Go</bdi> مبتنی بر دیتابیس مکرراً با آن‌ها مواجه می‌شوید. </p><p>این سناریوها شامل نکات مهمی هستند که در مستندات رسمی کمتر به آن‌ها پرداخته شده ولی در عمل بسیار کاربردی هستند.</p>
 <ul>
-<li><strong>مدیریت ستون‌های <bdi dir="ltr">JSONB</bdi> در <bdi dir="ltr">PostgreSQL</bdi>:</strong> ستون‌های <bdi dir="ltr">JSONB</bdi> برای ذخیره‌سازی داده‌های نیمه‌ساختاریافته مثل تنظیمات کاربر، پیکربندی پویا یا پاسخ فرم‌ها ایده‌آل هستند. برای خواندن این ستون‌ها در <bdi dir="ltr">Go</bdi> دو رویکرد دارید: اول <code>json.RawMessage</code> برای تأخیر در <bdi dir="ltr">parsing</bdi> (مناسب وقتی لازم نیست فوراً ساختار را بررسی کنید)، و دوم پیاده‌سازی <code>sql.Scanner</code> سفارشی برای تبدیل خودکار به <bdi dir="ltr">struct</bdi>. نکته مهم این است که <bdi dir="ltr">JSONB</bdi> در <bdi dir="ltr">PostgreSQL</bdi> ایندکس‌پذیر است و می‌توانید با عملگرهای <code>->></code> و <code>?</code> مستقیماً روی فیلدهای داخلی کوئری بزنید.</li>
+<li><strong>مدیریت ستون‌های <bdi dir="ltr">JSONB</bdi> در <bdi dir="ltr">PostgreSQL</bdi>:</strong> ستون‌های <bdi dir="ltr">JSONB</bdi> برای ذخیره‌سازی داده‌های نیمه‌ساختاریافته مثل تنظیمات کاربر، پیکربندی پویا یا پاسخ فرم‌ها ایده‌آل هستند. برای خواندن این ستون‌ها در <bdi dir="ltr">Go</bdi> دو رویکرد دارید: اول <code>json.RawMessage</code> برای تأخیر در <bdi dir="ltr">parsing</bdi> (مناسب وقتی لازم نیست فوراً ساختار را بررسی کنید)، و دوم پیاده‌سازی <code>sql.Scanner</code> سفارشی برای تبدیل خودکار به <bdi dir="ltr">struct</bdi>. نکته مهم این است که <bdi dir="ltr">JSONB</bdi> در <bdi dir="ltr">PostgreSQL</bdi> ایندکس‌پذیر است و می‌توانید با عملگرهای <code>-&gt;&gt;</code> و <code>?</code> مستقیماً روی فیلدهای داخلی کوئری بزنید.</li>
 <li><strong>ذخیره‌سازی و بازیابی <bdi dir="ltr">Timestamp</bdi> با <bdi dir="ltr">Timezone</bdi>:</strong> مهم‌ترین قانون: همیشه زمان را به صورت <bdi dir="ltr">UTC</bdi> در دیتابیس ذخیره کنید. نوع <code>timestamptz</code> در <bdi dir="ltr">PostgreSQL</bdi> زمان را به <bdi dir="ltr">UTC</bdi> تبدیل و ذخیره می‌کند و هنگام خواندن <bdi dir="ltr">timezone</bdi> نشست را اعمال می‌کند. در <bdi dir="ltr">Go</bdi> مقدار <code>time.Time</code> همراه با اطلاعات <bdi dir="ltr">timezone</bdi> است و برای نمایش به کاربر باید با <code>time.In(loc)</code> به منطقه زمانی محلی تبدیل شود. برای <bdi dir="ltr">MySQL</bdi> حتماً پارامتر <code>parseTime=true</code> را در <bdi dir="ltr">DSN</bdi> تنظیم کنید.</li>
 <li><strong>برخورد با <bdi dir="ltr">NUMERIC/DECIMAL</bdi> برای داده‌های مالی:</strong> تبدیل <bdi dir="ltr">DECIMAL</bdi> به <code>float64</code> خطری جدی برای داده‌های مالی است. مثلاً <code>0.1 + 0.2</code> در <code>float64</code> برابر <code>0.30000000000000004</code> می‌شود. برای محاسبات مالی از کتابخانه‌ی <code>github.com/shopspring/decimal</code> استفاده کنید و یک نوع سفارشی با <code>sql.Scanner</code> و <code>driver.Valuer</code> پیاده‌سازی کنید. همچنین می‌توانید مبلغ را به صورت <code>int64</code> (به واحد کوچک‌تر مثل ریال یا سنت) ذخیره کنید تا مشکل دقت اعشاری اصلاً پیش نیاید.</li>
 <li><strong>الگوهای ذخیره‌سازی داده‌های باینری:</strong> نوع <bdi dir="ltr">BYTEA</bdi> در <bdi dir="ltr">PostgreSQL</bdi> و <bdi dir="ltr">BLOB</bdi> در <bdi dir="ltr">MySQL</bdi> برای ذخیره‌سازی داده‌های باینری مثل هش رمز عبور، تصاویر کوچک یا گواهی‌نامه‌ها استفاده می‌شوند. در <bdi dir="ltr">Go</bdi> این داده‌ها به <code>[]byte</code> نگاشت می‌شوند. اما نکته مهم این است که فایل‌های بزرگ (بیشتر از ۱ مگابایت) را مستقیماً در دیتابیس ذخیره نکنید — آن‌ها را در فضای ابری (<bdi dir="ltr">S3</bdi> یا <bdi dir="ltr">MinIO</bdi>) قرار دهید و فقط <bdi dir="ltr">URL</bdi> را در دیتابیس نگه دارید.</li>
 </ul>
-
 <div class="tip"><strong>نکته عملی درباره <code>json.RawMessage</code> و رابط‌های سفارشی:</strong> از <code>json.RawMessage</code> زمانی استفاده کنید که بخواهید <bdi dir="ltr">parsing</bdi> <bdi dir="ltr">JSON</bdi> را به تأخیر بیندازید — مثلاً وقتی ساختار <bdi dir="ltr">JSON</bdi> متغیر است یا لازم نیست فوراً پردازش شود. این کار هم عملکرد بهتری دارد (چون از <bdi dir="ltr">Unmarshal</bdi> مضاعف جلوگیری می‌کند) و هم انعطاف‌پذیری بیشتری می‌دهد. برای انواع پیچیده‌تر مثل <bdi dir="ltr">PostgreSQL Array</bdi> یا <bdi dir="ltr">HSTORE</bdi> حتماً رابط‌های <code>sql.Scanner</code> و <code>driver.Valuer</code> را پیاده‌سازی کنید تا کد مصرف‌کننده تمیز و خوانا بماند. این رابط‌ها لایه‌ی انتزاعی بین دیتابیس و منطق کسب‌وکار شما ایجاد می‌کنند و تغییر دیتابیس در آینده را بسیار ساده‌تر می‌کنند.</div>
-</div>
-</div>
-
+<div class="summary">
+<strong>خلاصه‌ی نکات کلیدی:</strong>
+<ul>
+<li>json.Marshal/Unmarshal برای JSON column</li>
+<li>time.Time برای timestamp</li>
+<li>timezone با time.LoadLocation</li>
+<li>custom type با Valuer/Scanner</li>
+<li>duration با time.Duration</li>
+</ul>
+</div></div>
+</main></div>
 <!-- Footer -->
 <footer class="site-footer">
 <div class="footer-inner">
 <div class="footer-nav">
 <span class="nav-arrow">‹</span>
-<a href="08.06-database-error-handling.html" data-prev>۸.۶ مدیریت خطاهای دیتابیس</a>
+<a data-prev="" href="08.06-database-error-handling.html">۸.۶ مدیریت خطاهای دیتابیس</a>
 </div>
 <div class="footer-toc">
 <a href="00.01-contents.html">فهرست</a>
 </div>
 <div class="footer-nav">
-<a href="08.08-using-redis.html" data-next>۸.۸ استفاده از Redis</a>
+<a data-next="" href="08.08-using-redis.html">۸.۸ استفاده از Redis</a>
 <span class="nav-arrow">›</span>
 </div>
 </div>
 </footer>
-
 <!-- Back to Top -->
-<button class="back-to-top" aria-label="بازگشت به بالا">
-<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
+<button aria-label="بازگشت به بالا" class="back-to-top">
+<svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24"><polyline points="18 15 12 9 6 15"></polyline></svg>
 </button>
-
 <!-- Scripts -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/go.min.js"></script>

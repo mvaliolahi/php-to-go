@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html dir="rtl" lang="fa">
 <head>
 <script>!function(){try{var t=localStorage.getItem('php2go-theme');if(t==='dark'||(!t&&window.matchMedia('(prefers-color-scheme:dark)').matches)){document.documentElement.setAttribute('data-theme','dark')}}catch(e){}}();</script>
@@ -6,26 +7,25 @@
 <meta content="ie=edge" http-equiv="x-ua-compatible"/>
 <title>۵.۸ کاربردهای عملی Concurrency — PHP to Go</title>
 <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport"/>
-<link rel="preconnect" href="https://fonts.googleapis.com"/>
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600;700&amp;family=Fira+Code:wght@400;500&amp;display=swap" rel="stylesheet"/>
 <link href="assets/css/main.css" rel="stylesheet" type="text/css"/>
 <link href="assets/img/favicon.ico" rel="icon" type="image/x-icon"/>
-<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" media="screen" class="hljs-light-theme" rel="stylesheet"/>
-<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css" media="not screen" class="hljs-dark-theme" rel="stylesheet"/>
+<link class="hljs-light-theme" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" media="screen" rel="stylesheet"/>
+<link class="hljs-dark-theme" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css" media="not screen" rel="stylesheet"/>
 </head>
 <body>
 <!-- Progress Bar -->
 <div class="progress-bar"><div class="progress-bar__fill"></div></div>
-
 <!-- Header -->
 <header class="site-header">
 <div class="header-inner">
 <div class="header-left">
-<button class="header-btn sidebar-toggle" aria-label="فهرست">
-<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+<button aria-label="فهرست" class="header-btn sidebar-toggle">
+<svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24"><line x1="3" x2="21" y1="6" y2="6"></line><line x1="3" x2="21" y1="12" y2="12"></line><line x1="3" x2="21" y1="18" y2="18"></line></svg>
 </button>
-<a href="00.00-front-matter.html" class="header-logo"><span class="logo-php">PHP</span> to <span class="logo-go">Go</span></a>
+<a class="header-logo" href="00.00-front-matter.html"><span class="logo-php">PHP</span> to <span class="logo-go">Go</span></a>
 <span class="header-crumbs">همزمانی › کاربردهای عملی Concurrency</span>
 </div>
 <div class="header-right">
@@ -36,41 +36,40 @@
 <a href="05.09-goroutine-leak.html"><span class="nav-label">۵.۹ Goroutine Leak</span></a>
 <span class="nav-arrow">›</span>
 </nav>
-<button class="header-btn search-toggle" aria-label="جستجو">
-<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+<button aria-label="جستجو" class="header-btn search-toggle">
+<svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" x2="16.65" y1="21" y2="16.65"></line></svg>
 </button>
-<button class="header-btn theme-toggle" aria-label="تغییر تم">
-<svg class="theme-icon-light" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
-<svg class="theme-icon-dark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+<button aria-label="تغییر تم" class="header-btn theme-toggle">
+<svg class="theme-icon-light" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24"><circle cx="12" cy="12" r="5"></circle><line x1="12" x2="12" y1="1" y2="3"></line><line x1="12" x2="12" y1="21" y2="23"></line><line x1="4.22" x2="5.64" y1="4.22" y2="5.64"></line><line x1="18.36" x2="19.78" y1="18.36" y2="19.78"></line><line x1="1" x2="3" y1="12" y2="12"></line><line x1="21" x2="23" y1="12" y2="12"></line><line x1="4.22" x2="5.64" y1="19.78" y2="18.36"></line><line x1="18.36" x2="19.78" y1="5.64" y2="4.22"></line></svg>
+<svg class="theme-icon-dark" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
 </button>
 </div>
 </div>
 </header>
-
 <!-- Search Modal -->
 <div class="search-overlay">
 <div class="search-modal">
 <div class="search-input-wrap">
-<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-<input type="text" class="search-input" placeholder="جستجو... (Ctrl+K)" dir="rtl"/>
+<svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" x2="16.65" y1="21" y2="16.65"></line></svg>
+<input class="search-input" dir="rtl" placeholder="جستجو... (Ctrl+K)" type="text"/>
 </div>
 <div class="search-results"></div>
 </div>
 </div>
-
 <!-- Layout -->
 <div class="site-layout">
 <!-- Sidebar -->
 <aside class="sidebar"></aside>
 <div class="sidebar-overlay"></div>
-
 <!-- Main Content -->
 <main class="content-area">
 <div class="content-wrap text">
 <div class="chapter">فصل ۵.۸</div>
-<h2 id="کاربردهای-عملی-concurrency">کاربردهای عملی Concurrency</h2>
+<h2 id="کاربردهای-عملی-concurrency">کاربردهای عملی Concurrency</h2><div class="abstract">
+<strong>چکیده:</strong> این بخش کاربردهای عملی هم‌روندی Go در سناریوهای واقعی را پوشش می‌دهد: HTTP handler، batch processing و background worker. الگوهای انتخاب بین goroutine، pool و channel بررسی می‌شود. هشدار درباره‌ی over-concurrency ارائه می‌شود.
+</div>
 <figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart LR
+<pre class="mermaid"><code>flowchart LR
     subgraph PHP["PHP: ترتیبی (Sequential)"]
         direction TB
         E1["Email 1"]
@@ -78,7 +77,7 @@
         E3["Email 3"]
         E4["Email 4"]
         PN["زمان کل = مجموع همه = ~4s"]
-        E1 --> E2 --> E3 --> E4 --> PN
+        E1 --&gt; E2 --&gt; E3 --&gt; E4 --&gt; PN
     end
     subgraph GO["Go: همزمان (Concurrent)"]
         direction TB
@@ -86,22 +85,22 @@
         G2["E2"]
         G3["E3"]
         G4["E4"]
-        GN["همه همزمان<br/>زمان کل = max = ~1s"]
-        G1 --> GN
-        G2 --> GN
-        G3 --> GN
-        G4 --> GN
+        GN["همه همزمانزمان کل = max = ~1s"]
+        G1 --&gt; GN
+        G2 --&gt; GN
+        G3 --&gt; GN
+        G4 --&gt; GN
     end
 
-    subgraph USES["کاربردهای عملی همزمانی در Go"]
+    subgraph USES["کاربردهای عملی هم‌روندی در Go"]
         direction TB
         U1["ارسال موازی ایمیل — goroutine + WaitGroup"]
         U2["Crawl موازی API — goroutine + channel"]
         U3["کوئری موازی DB — goroutine + channel + WaitGroup"]
-        U1 --> U2 --> U3
+        U1 --&gt; U2 --&gt; U3
     end
 
-    Note["PHP: Queue + Worker خارجی |<br/>Go: همه درون یک Process با هزینه کم"]
+    Note["PHP: Queue + Worker خارجی |Go: همه درون یک Process با هزینه کم"]
 
     classDef phpBox fill:#f5f0fb,stroke:#777BB4,stroke-width:1.5px,color:#1f2937;
     classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
@@ -110,11 +109,11 @@
     class PHP,E1,E2,E3,E4,PN phpBox;
     class GO,G1,G2,G3,G4,GN goBox;
     class USES,U1,U2,U3 bothBox;
-    class Note neuBox;</pre>
+    class Note neuBox;</code></pre>
 <figcaption>شکل ۵-۱۵: مقایسه پردازش ترتیبی <bdi dir="ltr">PHP</bdi> با پردازش همزمان <bdi dir="ltr">Go</bdi></figcaption>
 </figure>
-<h3 id="ارسال-موازی-ایمیل-یا-نوتیفیکیشن">ارسال موازی ایمیل‌ یا نوتیفیکیشن‌</h3>
-<p>در Laravel وقتی می‌خواهید چند ایمیل یا نوتیفیکیشن را بفرستید معمولا این کارها را به Queue می‌فرستید و Workerها به ترتیب آن‌ها را پردازش می‌کنند. این کار باعث می‌شود ارسال ایمیل‌ها async شود و کاربر سریع پاسخ بگیرد. اما اگر بخواهید مثلا در یک فرآیند واحد چند ایمیل را همزمان و سریع ارسال کنید باید منتظر تکمیل هر ایمیل بمانید یا پیچیدگی بیشتری به صف اضافه کنید.</p>
+<h3 id="ارسال-موازی-ایمیل-یا-نوتیفیکیشن">5.8.1 ارسال موازی ایمیل‌ یا نوتیفیکیشن‌</h3>
+<p>در Laravel وقتی می‌خواهید چند ایمیل یا نوتیفیکیشن را بفرستید معمولا این کارها را به Queue می‌فرستید و Workerها به ترتیب آن‌ها را پردازش می‌کنند. این کار باعث می‌شود ارسال ایمیل‌ها async شود و کاربر سریع پاسخ بگیرد.</p><p>اما اگر بخواهید مثلا در یک فرآیند واحد چند ایمیل را همزمان و سریع ارسال کنید باید منتظر تکمیل هر ایمیل بمانید یا پیچیدگی بیشتری به صف اضافه کنید.</p>
 <p><strong>راه حل در</strong> <strong dir="ltr">Go با goroutine و channel</strong></p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">package main
@@ -147,7 +146,7 @@ func main() {
 <p>برخلاف PHP که باید worker جداگانه بسازید یا از صف استفاده کنید اینجا در یک پروسه و با هزینه‌ی بسیار کم ارسال‌ها همزمان انجام می‌شوند.</p>
 <p>مزیت اصلی سرعت بالاتر و پیچیدگی کمتر در توسعه.
 </p>
-<h3 id="crawl-داده-از-چند-api-به-طور-همزمان">Crawl داده از چند API به طور همزمان</h3>
+<h3 id="crawl-داده-از-چند-api-به-طور-همزمان">5.8.2 Crawl داده از چند API به طور همزمان</h3>
 <figure class="diagram" dir="ltr">
 <pre class="mermaid">flowchart TB
     Src["Source<br/>منبع داده / تولیدکننده"]
@@ -159,29 +158,29 @@ func main() {
     FI["▼ Fan-In"]
     Coll["Collector<br/>جمع‌آوری نتایج"]
 
-    Src --> FO
-    FO --> W1
-    FO --> W2
-    FO --> W3
-    W1 --> Res
-    W2 --> Res
-    W3 --> Res
-    Res --> FI
-    FI --> Coll
+    Src --&gt; FO
+    FO --&gt; W1
+    FO --&gt; W2
+    FO --&gt; W3
+    W1 --&gt; Res
+    W2 --&gt; Res
+    W3 --&gt; Res
+    Res --&gt; FI
+    FI --&gt; Coll
 
     subgraph PHP["معادل در PHP"]
         direction TB
         P1["Queue + Multiple Workers"]
         P2["نیاز به Redis / RabbitMQ"]
         P3["پیچیدگی بیشتر و هزینه بیشتر"]
-        P1 --> P2 --> P3
+        P1 --&gt; P2 --&gt; P3
     end
 
     subgraph GO["در Go"]
         direction TB
         G1["همه درون یک Process"]
         G2["goroutine + channel"]
-        G1 --> G2
+        G1 --&gt; G2
     end
 
     classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
@@ -232,7 +231,7 @@ func main() {
 <p>timeout روی کلاینت HTTP تضمین می‌کند که اگر API دیر پاسخ دهد goroutine بلاک نشود.</p>
 <p>مشابه اما ساده‌تر و مقیاس‌پذیرتر از راهکارهای multi-curl در PHP.
 </p>
-<h3 id="ترکیب-با-context-در-کاربردهای-عملی">ترکیب با Context در کاربردهای عملی</h3>
+<h3 id="ترکیب-با-context-در-کاربردهای-عملی">5.8.3 ترکیب با Context در کاربردهای عملی</h3>
 <p>در کاربردهای واقعی، هرگز نباید goroutineها را بدون Context راه‌اندازی کرد. در اینجا مثال fetch موازی را با مدیریت timeout و cancellation بازنویسی می‌کنیم:</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">func fetchURLs(ctx context.Context, urls []string) ([]string, error) {
@@ -282,9 +281,8 @@ func main() {
 </code></pre>
 </figure>
 <p>نکته‌ی مهم: <code dir="ltr">http.NewRequestWithContext</code> تضمین می‌کند که اگر Context لغو شود، درخواست HTTP بلافاصله متوقف می‌شود و اتصال آزاد می‌گردد. بدون Context، حتی اگر timeout تعریف کرده باشید، goroutine ممکن است مدت طولانی منتظر پاسخ بماند.</p>
-<h3 id="اجرای-موازی-queryهای-سنگین">اجرای موازی Queryهای سنگین</h3>
+<h3 id="اجرای-موازی-queryهای-سنگین">5.8.4 اجرای موازی Queryهای سنگین</h3>
 <p>در PHP وقتی چند query سنگین دارید که مستقل هستند معمولاً پشت سر هم اجرا می‌کنید و منتظر هر query می‌مانید که تمام شود. این باعث اتلاف زمان می‌شود. در Go می‌توانید این query‌ها را همزمان اجرا کنید:</p>
-
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">package main
 
@@ -336,10 +334,8 @@ func main() {
 }
 </code></pre>
 </figure>
-
-<h3 id="پردازنده-کار-پس‌زمینه">پردازنده کارهای پس‌زمینه</h3>
+<h3 id="پردازنده-کار-پس‌زمینه">5.8.5 پردازنده کارهای پس‌زمینه</h3>
 <p>یکی از الگوهای رایج در سیستم‌های واقعی، <bdi dir="ltr">Background Job Processor</bdi> است. در Laravel این کار با <bdi dir="ltr">Queue</bdi> و <bdi dir="ltr">Worker</bdi> انجام می‌شود. در Go می‌توانید یک <bdi dir="ltr">Worker Pool</bdi> با <bdi dir="ltr">Context</bdi> و <bdi dir="ltr">Graceful Shutdown</bdi> بسازید:</p>
-
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">package main
 
@@ -433,10 +429,8 @@ func main() {
 }
 </code></pre>
 </figure>
-
-<h3 id="مدیریت-اتصال-websocket">مدیریت اتصال WebSocket</h3>
+<h3 id="مدیریت-اتصال-websocket">5.8.6 مدیریت اتصال WebSocket</h3>
 <p>در PHP مدیریت <bdi dir="ltr">WebSocket</bdi> معمولاً به سرورهای خاصی مثل <bdi dir="ltr">Ratchet</bdi> یا <bdi dir="ltr">Swoole</bdi> نیاز دارد. اما در Go مدیریت <bdi dir="ltr">WebSocket</bdi> با <bdi dir="ltr">Goroutine</bdi> طبیعی و ساده است. هر اتصال <bdi dir="ltr">WebSocket</bdi> در یک <bdi dir="ltr">Goroutine</bdi> مستقل مدیریت می‌شود:</p>
-
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">type Hub struct {
     clients map[*Client]bool
@@ -485,13 +479,9 @@ func (h *Hub) Run(ctx context.Context) {
 </code></pre>
 </figure>
 <p>این الگو یک <bdi dir="ltr">Hub</bdi> مرکزی برای مدیریت اتصالات <bdi dir="ltr">WebSocket</bdi> ارائه می‌دهد. اتصال جدید در <code>register</code> ثبت، اتصال قطع‌شده در <code>unregister</code> حذف، و پیام‌ها از طریق <code>broadcast</code> به تمام اتصالات ارسال می‌شوند. استفاده از <code>RWMutex</code> اجازه می‌دهد خواندن لیست اتصالات و ارسال پیام به‌صورت همزمان انجام شود.</p>
-
 <div class="tip"><strong>نکته عملی:</strong> در سیستم‌های واقعی باید محدودیت تعداد اتصالات، <bdi dir="ltr">Rate Limiting</bdi> پیام‌ها، <bdi dir="ltr">Ping/Pong</bdi> برای تشخیص اتصالات قطع‌شده، و <bdi dir="ltr">Graceful Shutdown</bdi> را نیز پیاده‌سازی کنید. هر یک از این موارد با ترکیب الگوهایی که در این فصل آموختید قابل پیاده‌سازی است.</div>
-
-<h3 id="معماری-worker-pool-با-اتصال-کانال‌ها">معماری <bdi dir="ltr">Worker Pool</bdi> با اتصال کانال‌ها</h3>
-
-<p>یکی از مهم‌ترین الگوهای همزمانی در <bdi dir="ltr">Go</bdi>، الگوی <bdi dir="ltr">Worker Pool</bdi> است. این الگو به شما اجازه می‌دهد تعداد مشخصی <bdi dir="ltr">goroutine</bdi> برای پردازش موازی کارها ایجاد کنید و از طریق <bdi dir="ltr">channel</bdi>‌ها ورودی و خروجی آن‌ها را مدیریت کنید. برخلاف <bdi dir="ltr">PHP</bdi> که برای هر <bdi dir="ltr">Worker</bdi> نیاز به <bdi dir="ltr">Process</bdi> جداگانه دارید، در <bdi dir="ltr">Go</bdi> تمام <bdi dir="ltr">Worker</bdi>ها درون یک <bdi dir="ltr">Process</bdi> با حافظه مشترک اجرا می‌شوند. ترکیب <bdi dir="ltr">Worker Pool</bdi> با <bdi dir="ltr">Context</bdi> برای لغو عملیات و <bdi dir="ltr">WaitGroup</bdi> برای انتظار روی اتمام تمام <bdi dir="ltr">Worker</bdi>ها، یک سیستم مقیاس‌پذیر و امن ایجاد می‌کند.</p>
-
+<h3 id="معماری-worker-pool-با-اتصال-کانال‌ها">5.8.7 معماریWorker Poolبا اتصال کانال‌ها</h3>
+<p>یکی از مهم‌ترین الگوهای هم‌روندی در <bdi dir="ltr">Go</bdi>، الگوی <bdi dir="ltr">Worker Pool</bdi> است. این الگو به شما اجازه می‌دهد تعداد مشخصی <bdi dir="ltr">goroutine</bdi> برای پردازش موازی کارها ایجاد کنید و از طریق <bdi dir="ltr">channel</bdi>‌ها ورودی و خروجی آن‌ها را مدیریت کنید. </p><p>برخلاف <bdi dir="ltr">PHP</bdi> که برای هر <bdi dir="ltr">Worker</bdi> نیاز به <bdi dir="ltr">Process</bdi> جداگانه دارید، در <bdi dir="ltr">Go</bdi> تمام <bdi dir="ltr">Worker</bdi>ها درون یک <bdi dir="ltr">Process</bdi> با حافظه مشترک اجرا می‌شوند. </p><p>ترکیب <bdi dir="ltr">Worker Pool</bdi> با <bdi dir="ltr">Context</bdi> برای لغو عملیات و <bdi dir="ltr">WaitGroup</bdi> برای انتظار روی اتمام تمام <bdi dir="ltr">Worker</bdi>ها، یک سیستم مقیاس‌پذیر و امن ایجاد می‌کند.</p>
 <figure class="diagram" dir="ltr">
 <pre class="mermaid">flowchart TB
     Prod["Job Producer<br/>تولیدکننده کارها<br/>jobs &lt;- Job{}"]
@@ -504,21 +494,21 @@ func (h *Hub) Run(ctx context.Context) {
     ResC["results chan Result<br/>cap: 100"]
     Coll["Result Collector<br/>جمع‌آوری نتایج<br/>&lt;-results"]
 
-    Prod -- "jobs &lt;- Job{}" --> JobsC
-    JobsC -- "&lt;-jobs" --> W1
-    JobsC -- "&lt;-jobs" --> W2
-    JobsC -- "&lt;-jobs" --> W3
-    W1 -- "results &lt;- res" --> ResC
-    W2 -- "results &lt;- res" --> ResC
-    W3 -- "results &lt;- res" --> ResC
-    ResC -- "&lt;-results" --> Coll
+    Prod -- "jobs &lt;- Job{}" --&gt; JobsC
+    JobsC -- "&lt;-jobs" --&gt; W1
+    JobsC -- "&lt;-jobs" --&gt; W2
+    JobsC -- "&lt;-jobs" --&gt; W3
+    W1 -- "results &lt;- res" --&gt; ResC
+    W2 -- "results &lt;- res" --&gt; ResC
+    W3 -- "results &lt;- res" --&gt; ResC
+    ResC -- "&lt;-results" --&gt; Coll
 
     subgraph CTX["Context"]
         direction TB
         CTX1["ctx.Done() — لغو عملیات"]
         CTX2["cancel()"]
         CTX3["context.WithCancel(bg)"]
-        CTX1 --> CTX2 --> CTX3
+        CTX1 --&gt; CTX2 --&gt; CTX3
     end
 
     subgraph WG["WaitGroup (sync.WaitGroup)"]
@@ -526,34 +516,34 @@ func (h *Hub) Run(ctx context.Context) {
         WG1["wg.Add(3)"]
         WG2["wg.Wait()"]
         WG3["wg.Done()"]
-        WG1 --> WG2 --> WG3
+        WG1 --&gt; WG2 --&gt; WG3
     end
 
-    CTX -. "ctx به Worker‌ها" .-> W1
-    WG -. "wg به Worker‌ها" .-> W2
+    CTX -. "ctx به Worker‌ها" .-&gt; W1
+    WG -. "wg به Worker‌ها" .-&gt; W2
 
     subgraph CODE["کد نمونه Worker Pool"]
         direction TB
-        C1["for i := 0; i &lt; numWorkers; i++ &#123;"]
+        C1["for i := 0; i &lt; numWorkers; i++ {"]
         C2["    wg.Add(1)"]
         C3["    go worker(ctx, jobs, results, &amp;wg)"]
-        C4["&#125;"]
+        C4["}"]
         C5["wg.Wait()  // wait for all workers"]
-        C1 --> C2 --> C3 --> C4 --> C5
+        C1 --&gt; C2 --&gt; C3 --&gt; C4 --&gt; C5
     end
 
     subgraph CHAN["اتصال کانال‌ها"]
         direction TB
         CH1["jobs: chan&lt;- Job (send-only)"]
         CH2["results: &lt;-chan Result (recv)"]
-        CH1 --> CH2
+        CH1 --&gt; CH2
     end
 
     subgraph SEL["الگوی select در Worker"]
         direction TB
-        SL1["select &#123;"]
+        SL1["select {"]
         SL2["case &lt;-ctx.Done(): return"]
-        SL1 --> SL2
+        SL1 --&gt; SL2
     end
 
     GOLD["قانون طلایی: همیشه Worker Pool + Context + WaitGroup را با هم استفاده کنید —<br/>هرگز goroutine رها شده نسازید"]
@@ -572,50 +562,49 @@ func (h *Hub) Run(ctx context.Context) {
     class LEG neuBox;</pre>
 <figcaption>شکل ۵-۱۷: معماری کامل <bdi dir="ltr">Worker Pool</bdi> با اتصال <bdi dir="ltr">Channel</bdi>، <bdi dir="ltr">Context</bdi> برای لغو و <bdi dir="ltr">WaitGroup</bdi> برای همگام‌سازی</figcaption>
 </figure>
-
-<p>در این معماری، <bdi dir="ltr">Job Producer</bdi> کارها را در <bdi dir="ltr">jobs</bdi> کانال قرار می‌دهد و هر <bdi dir="ltr">Worker</bdi> از کانال می‌خواند، پردازش می‌کند و نتیجه را در <bdi dir="ltr">results</bdi> کانال می‌نویسد. <bdi dir="ltr">Result Collector</bdi> نتایج را جمع‌آوری می‌کند. <bdi dir="ltr">Context</bdi> مسیر لغو فراهم می‌کند و <bdi dir="ltr">WaitGroup</bdi> تضمین می‌کند که تمام <bdi dir="ltr">Worker</bdi>ها قبل از بسته شدن برنامه به پایان برسند. این الگو شبیه به سیستم <bdi dir="ltr">Queue</bdi> در <bdi dir="ltr">Laravel</bdi> است اما بدون نیاز به <bdi dir="ltr">Redis</bdi> یا <bdi dir="ltr">RabbitMQ</bdi> و با هزینه بسیار کمتر.</p>
-
-<h3 id="سناریوهای-عملیاتی-concurrency">سناریوهای عملیاتی</h3>
-
-<p>در پروژه‌های واقعی، الگوهای همزمانی در سناریوهای متنوعی کاربرد دارند. هر سناریو نیازمند ترکیب متفاوتی از الگوهای <bdi dir="ltr">Worker Pool</bdi>، <bdi dir="ltr">Rate Limiting</bdi>، <bdi dir="ltr">Context</bdi> و <bdi dir="ltr">Channel</bdi> است. در ادامه رایج‌ترین سناریوهای عملیاتی را بررسی می‌کنیم که هر توسعه‌دهنده‌ای در پروژه‌های واقعی با آن‌ها روبه‌رو خواهد شد. این سناریوها نشان می‌دهند که چگونه مفاهیم تئوری این فصل در عمل پیاده‌سازی می‌شوند.</p>
-
+<p>در این معماری، <bdi dir="ltr">Job Producer</bdi> کارها را در <bdi dir="ltr">jobs</bdi> کانال قرار می‌دهد و هر <bdi dir="ltr">Worker</bdi> از کانال می‌خواند، پردازش می‌کند و نتیجه را در <bdi dir="ltr">results</bdi> کانال می‌نویسد. <bdi dir="ltr">Result Collector</bdi> نتایج را جمع‌آوری می‌کند. <bdi dir="ltr">Context</bdi> مسیر لغو فراهم می‌کند و <bdi dir="ltr">WaitGroup</bdi> تضمین می‌کند که تمام <bdi dir="ltr">Worker</bdi>ها قبل از بسته شدن برنامه به پایان برسند. </p><p>این الگو شبیه به سیستم <bdi dir="ltr">Queue</bdi> در <bdi dir="ltr">Laravel</bdi> است اما بدون نیاز به <bdi dir="ltr">Redis</bdi> یا <bdi dir="ltr">RabbitMQ</bdi> و با هزینه بسیار کمتر.</p>
+<h3 id="سناریوهای-عملیاتی-concurrency">5.8.8 سناریوهای عملیاتی</h3>
+<p>در پروژه‌های واقعی، الگوهای هم‌روندی در سناریوهای متنوعی کاربرد دارند. هر سناریو نیازمند ترکیب متفاوتی از الگوهای <bdi dir="ltr">Worker Pool</bdi>، <bdi dir="ltr">Rate Limiting</bdi>، <bdi dir="ltr">Context</bdi> و <bdi dir="ltr">Channel</bdi> است. در ادامه رایج‌ترین سناریوهای عملیاتی را بررسی می‌کنیم که هر توسعه‌دهنده‌ای در پروژه‌های واقعی با آن‌ها روبه‌رو خواهد شد. این سناریوها نشان می‌دهند که چگونه مفاهیم تئوری این فصل در عمل پیاده‌سازی می‌شوند.</p>
 <ul>
 <li><strong>کلاینت <bdi dir="ltr">API</bdi> با محدودیت نرخ:</strong> وقتی با <bdi dir="ltr">API</bdi>های خارجی کار می‌کنید که محدودیت درخواست دارند (مثلاً ۱۰۰ درخواست در دقیقه)، باید از الگوی <bdi dir="ltr">Rate-Limited Worker Pool</bdi> استفاده کنید. یک <bdi dir="ltr">ticker</bdi> نرخ ارسال را کنترل می‌کند و <bdi dir="ltr">Worker</bdi>ها فقط در صورت وجود <bdi dir="ltr">token</bdi> درخواست ارسال می‌کنند. در <bdi dir="ltr">PHP</bdi> این کار با <bdi dir="ltr">Redis Throttle</bdi> انجام می‌شود اما در <bdi dir="ltr">Go</bdi> با <bdi dir="ltr">time.Ticker</bdi> و <bdi dir="ltr">channel</bdi> بسیار ساده‌تر است.</li>
 <li><strong>پردازش موازی تصویر:</strong> وقتی کاربر چند تصویر آپلود می‌کند، هر تصویر باید تغییر اندازه، فشرده‌سازی و ذخیره شود. یک <bdi dir="ltr">Worker Pool</bdi> با تعداد <bdi dir="ltr">Worker</bdi> برابر تعداد هسته‌های <bdi dir="ltr">CPU</bdi> بهینه‌ترین عملکرد را دارد زیرا پردازش تصویر کار محاسباتی است. هر <bdi dir="ltr">Worker</bdi> یک تصویر را از <bdi dir="ltr">jobs</bdi> کانال می‌گیرد و نتیجه را در <bdi dir="ltr">results</bdi> کانال می‌فرستد.</li>
 <li><strong>ارسال دسته‌ای ایمیل:</strong> در سیستم‌های اطلاع‌رسانی که هزاران ایمیل باید ارسال شود، <bdi dir="ltr">Worker Pool</bdi> با <bdi dir="ltr">buffered channel</bdi> بهترین راه‌حل است. <bdi dir="ltr">Producer</bdi> ایمیل‌ها را در صف قرار می‌دهد و <bdi dir="ltr">Worker</bdi>ها به صورت موازی ارسال می‌کنند. اگر سرور <bdi dir="ltr">SMTP</bdi> محدودیت داشته باشد، <bdi dir="ltr">Rate Limiter</bdi> نرخ ارسال را کنترل می‌کند و از مسدود شدن اتصال جلوگیری می‌کند.</li>
 <li><strong>خزش وب همزمان با محدودیت نرخ:</strong> در ابزارهای <bdi dir="ltr">Web Scraping</bdi>، باید چندین صفحه را همزمان دانلود کنید اما نرخ درخواست محدود باشد تا سرور مقصد مسدودتان نکند. ترکیب <bdi dir="ltr">Worker Pool</bdi> با <bdi dir="ltr">time.Ticker</bdi> و <bdi dir="ltr">Context</bdi> با <bdi dir="ltr">timeout</bdi> راه‌حل ایده‌آل است. هر <bdi dir="ltr">Worker</bdi> قبل از ارسال درخواست جدید منتظر <bdi dir="ltr">token</bdi> از <bdi dir="ltr">ticker</bdi> می‌ماند.</li>
 </ul>
-
 <div class="tip"><strong>نکته درباره اندازه <bdi dir="ltr">Worker Pool</bdi>:</strong> تعداد <bdi dir="ltr">Worker</bdi>ها باید متناسب با نوع کار باشد. برای <bdi dir="ltr">CPU-bound</bdi> مثل پردازش تصویر یا رمزنگاری، از <code dir="ltr">runtime.NumCPU()</code> استفاده کنید — تعداد بیشتر فقط باعث <bdi dir="ltr">context switching</bdi> اضافی می‌شود. اما برای <bdi dir="ltr">I/O-bound</bdi> مثل درخواست <bdi dir="ltr">HTTP</bdi> یا کوئری دیتابیس، می‌توانید تعداد بسیار بیشتری <bdi dir="ltr">Worker</bdi> داشته باشید (مثلاً ۱۰۰ یا بیشتر) زیرا هر <bdi dir="ltr">Worker</bdi> بیشتر وقتش منتظر پاسخ شبکه است و <bdi dir="ltr">CPU</bdi> اشغال نمی‌کند. یک الگوی رایج شروع با <code dir="ltr">runtime.NumCPU() * 2</code> و تنظیم بر اساس نتایج بنچمارک است.</div>
-
 <div class="note"><strong>یادداشت:</strong> در سرورهای <bdi dir="ltr">HTTP</bdi> تولیدی، هرگز در <bdi dir="ltr">Handler</bdi> مستقیماً <code>go func(){...}</code> ننویسید بدون اینکه <bdi dir="ltr">Context</bdi> درخواست را به آن پاس بدهید. وقتی کاربر مرورگر را می‌بندد، <code>r.Context()</code> لغو می‌شود و اگر <bdi dir="ltr">Goroutine</bdi> پس‌زمینه آن را بررسی نکند، به‌جای توقف، منابع سرور را مصرف می‌کند و در نهایت نشت می‌دهد. الگوی امن: <code>go func(ctx context.Context){ select { case &lt;-ctx.Done(): return; case result := &lt;-ch: ... } }(r.Context())</code>. در <bdi dir="ltr">PHP</bdi> این مشکل رخ نمی‌دهد زیرا فرآیند <bdi dir="ltr">PHP-FPM</bdi> با تمام درخواست از بین می‌رود، اما در <bdi dir="ltr">Go</bdi> سرور طول‌عمر دارد و نشت‌ها تجمعی هستند.</div>
-
-</div>
+<div class="summary">
+<strong>خلاصه‌ی نکات کلیدی:</strong>
+<ul>
+<li>HTTP handler: هر درخواست یک goroutine</li>
+<li>batch processing: worker pool برای کنترل منابع</li>
+<li>background worker: long-running goroutine با context</li>
+<li>از goroutine بی‌رویه پرهیز کنید (GOMAXPROCS محدود است)</li>
+<li>rate limiting با ticker یا token bucket</li>
+</ul>
+</div></div>
 </main>
 </div>
-
 <!-- Footer -->
 <footer class="site-footer">
 <div class="footer-inner">
 <div class="footer-nav">
 <span class="nav-arrow">‹</span>
-<a href="05.07-concurrency-patterns.html" data-prev>۵.۷ Concurrency Patterns</a>
+<a data-prev="" href="05.07-concurrency-patterns.html">۵.۷ Concurrency Patterns</a>
 </div>
 <div class="footer-toc">
 <a href="00.01-contents.html">فهرست</a>
 </div>
 <div class="footer-nav">
-<a href="05.09-goroutine-leak.html" data-next>۵.۹ Goroutine Leak</a>
+<a data-next="" href="05.09-goroutine-leak.html">۵.۹ Goroutine Leak</a>
 <span class="nav-arrow">›</span>
 </div>
 </div>
 </footer>
-
 <!-- Back to Top -->
-<button class="back-to-top" aria-label="بازگشت به بالا">
-<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
+<button aria-label="بازگشت به بالا" class="back-to-top">
+<svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24"><polyline points="18 15 12 9 6 15"></polyline></svg>
 </button>
-
 <!-- Scripts -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/go.min.js"></script>

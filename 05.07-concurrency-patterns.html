@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html dir="rtl" lang="fa">
 <head>
 <script>!function(){try{var t=localStorage.getItem('php2go-theme');if(t==='dark'||(!t&&window.matchMedia('(prefers-color-scheme:dark)').matches)){document.documentElement.setAttribute('data-theme','dark')}}catch(e){}}();</script>
@@ -6,26 +7,25 @@
 <meta content="ie=edge" http-equiv="x-ua-compatible"/>
 <title>۵.۷ Concurrency Patterns — PHP to Go</title>
 <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport"/>
-<link rel="preconnect" href="https://fonts.googleapis.com"/>
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600;700&amp;family=Fira+Code:wght@400;500&amp;display=swap" rel="stylesheet"/>
 <link href="assets/css/main.css" rel="stylesheet" type="text/css"/>
 <link href="assets/img/favicon.ico" rel="icon" type="image/x-icon"/>
-<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" media="screen" class="hljs-light-theme" rel="stylesheet"/>
-<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css" media="not screen" class="hljs-dark-theme" rel="stylesheet"/>
+<link class="hljs-light-theme" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" media="screen" rel="stylesheet"/>
+<link class="hljs-dark-theme" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css" media="not screen" rel="stylesheet"/>
 </head>
 <body>
 <!-- Progress Bar -->
 <div class="progress-bar"><div class="progress-bar__fill"></div></div>
-
 <!-- Header -->
 <header class="site-header">
 <div class="header-inner">
 <div class="header-left">
-<button class="header-btn sidebar-toggle" aria-label="فهرست">
-<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+<button aria-label="فهرست" class="header-btn sidebar-toggle">
+<svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24"><line x1="3" x2="21" y1="6" y2="6"></line><line x1="3" x2="21" y1="12" y2="12"></line><line x1="3" x2="21" y1="18" y2="18"></line></svg>
 </button>
-<a href="00.00-front-matter.html" class="header-logo"><span class="logo-php">PHP</span> to <span class="logo-go">Go</span></a>
+<a class="header-logo" href="00.00-front-matter.html"><span class="logo-php">PHP</span> to <span class="logo-go">Go</span></a>
 <span class="header-crumbs">همزمانی › Concurrency Patterns</span>
 </div>
 <div class="header-right">
@@ -36,47 +36,43 @@
 <a href="05.08-practical-concurrency-usage.html"><span class="nav-label">۵.۸ کاربردهای عملی Concurrency</span></a>
 <span class="nav-arrow">›</span>
 </nav>
-<button class="header-btn search-toggle" aria-label="جستجو">
-<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+<button aria-label="جستجو" class="header-btn search-toggle">
+<svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" x2="16.65" y1="21" y2="16.65"></line></svg>
 </button>
-<button class="header-btn theme-toggle" aria-label="تغییر تم">
-<svg class="theme-icon-light" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
-<svg class="theme-icon-dark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+<button aria-label="تغییر تم" class="header-btn theme-toggle">
+<svg class="theme-icon-light" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24"><circle cx="12" cy="12" r="5"></circle><line x1="12" x2="12" y1="1" y2="3"></line><line x1="12" x2="12" y1="21" y2="23"></line><line x1="4.22" x2="5.64" y1="4.22" y2="5.64"></line><line x1="18.36" x2="19.78" y1="18.36" y2="19.78"></line><line x1="1" x2="3" y1="12" y2="12"></line><line x1="21" x2="23" y1="12" y2="12"></line><line x1="4.22" x2="5.64" y1="19.78" y2="18.36"></line><line x1="18.36" x2="19.78" y1="5.64" y2="4.22"></line></svg>
+<svg class="theme-icon-dark" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
 </button>
 </div>
 </div>
 </header>
-
 <!-- Search Modal -->
 <div class="search-overlay">
 <div class="search-modal">
 <div class="search-input-wrap">
-<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-<input type="text" class="search-input" placeholder="جستجو... (Ctrl+K)" dir="rtl"/>
+<svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" x2="16.65" y1="21" y2="16.65"></line></svg>
+<input class="search-input" dir="rtl" placeholder="جستجو... (Ctrl+K)" type="text"/>
 </div>
 <div class="search-results"></div>
 </div>
 </div>
-
 <!-- Layout -->
 <div class="site-layout">
 <!-- Sidebar -->
 <aside class="sidebar"></aside>
 <div class="sidebar-overlay"></div>
-
 <!-- Main Content -->
 <main class="content-area">
 <div class="content-wrap text">
 <div class="chapter">فصل ۵.۷</div>
-<h2 id="concurrency-patterns">Concurrency Patterns</h2>
-
-<p>الگوهای همزمانی ابزارهای ساختمانی هستند که با ترکیب <bdi dir="ltr">Goroutine</bdi> ، <bdi dir="ltr">Channel</bdi> ، <bdi dir="ltr">Select</bdi> و <bdi dir="ltr">Context</bdi> مسائل پیچیده‌ی همزمانی را به راه‌حل‌های ساده، خوانا و قابل اعتماد تبدیل می‌کنند. این الگوها سنگ‌بنای بسیاری از سرویس‌های مدرن در Go هستند — چه قصد ساخت <bdi dir="ltr">API</bdi> داشته باشید، چه <bdi dir="ltr">Worker</bdi> ، چه سیستم‌های پردازش داده. تسلط به این الگوها تفاوت اصلی بین نوشتن کد همزمانِ کارآمد و کد پر از باگ و نشت حافظه است.</p>
-
+<h2 id="concurrency-patterns">Concurrency Patterns</h2><div class="abstract">
+<strong>چکیده:</strong> این بخش الگوهای رایج هم‌روندی Go را جمع‌آوری می‌کند: fan-in/fan-out، pipeline، worker pool و generator. هر الگو با مثال کامل و کاربرد عملی توضیح داده می‌شود. انتخاب الگوی مناسب بر اساس سناریو بررسی می‌شود.
+</div>
+<p>الگوهای هم‌روندی ابزارهای ساختمانی هستند که با ترکیب <bdi dir="ltr">Goroutine</bdi>، <bdi dir="ltr">Channel</bdi>، <bdi dir="ltr">Select</bdi> و <bdi dir="ltr">Context</bdi> مسائل پیچیده‌ی هم‌روندی را به راه‌حل‌های ساده، خوانا و قابل اعتماد تبدیل می‌کنند. این الگوها سنگ‌بنای بسیاری از سرویس‌های مدرن در Go هستند — چه قصد ساخت <bdi dir="ltr">API</bdi> داشته باشید، چه <bdi dir="ltr">Worker</bdi>، چه سیستم‌های پردازش داده. تسلط به این الگوها تفاوت اصلی بین نوشتن کد همزمانِ کارآمد و کد پر از باگ و نشت حافظه است.</p>
 <p>در PHP الگوهای مشابهی وجود دارند اما معمولاً به ابزارهای خارجی وابسته‌اند. مثلاً <bdi dir="ltr">Worker Pool</bdi> در Laravel با <bdi dir="ltr">Queue</bdi> و <bdi dir="ltr">Supervisor</bdi> پیاده‌سازی می‌شود، <bdi dir="ltr">Rate Limiting</bdi> با <bdi dir="ltr">Redis</bdi> و <bdi dir="ltr">Middleware</bdi> انجام می‌شود، و <bdi dir="ltr">Pipeline</bdi> با زنجیره‌ی <bdi dir="ltr">Job</bdi>‌ها ساخته می‌شود. در Go همه‌ی این الگوها با ابزارهای داخلی زبان و تنها با چند خط کد قابل پیاده‌سازی هستند.</p>
-
 <figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-    subgraph PAT["الگوهای همزمانی در Go"]
+<pre class="mermaid"><code>flowchart TB
+    subgraph PAT["الگوهای هم‌روندی در Go"]
         direction LR
         P1["Worker Pool"]
         P2["Fan-out / Fan-in"]
@@ -88,47 +84,41 @@
         P8["Tee / Split"]
     end
 
-    BLOCKS["بلوک‌های ساختمانی:<br/>Goroutine + Channel + Select + Context + WaitGroup"]
-    NOTE["هر الگو ترکیبی از این بلوک‌هاست —<br/>مانند لگوهایی که ساختمان‌های پیچیده می‌سازند"]
+    BLOCKS["بلوک‌های ساختمانی:Goroutine + Channel + Select + Context + WaitGroup"]
+    NOTE["هر الگو ترکیبی از این بلوک‌هاست —مانند لگوهایی که ساختمان‌های پیچیده می‌سازند"]
 
-    PAT --> BLOCKS --> NOTE
+    PAT --&gt; BLOCKS --&gt; NOTE
 
     classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
     classDef bothBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
     classDef neuBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
     class PAT,P1,P2,P3,P4,P5,P6,P7,P8 goBox;
     class BLOCKS bothBox;
-    class NOTE neuBox;</pre>
-<figcaption>شکل ۵-۱۳: الگوهای همزمانی <bdi dir="ltr">Go</bdi> و بلوک‌های ساختمانی آن‌ها</figcaption>
+    class NOTE neuBox;</code></pre>
+<figcaption>شکل ۵-۱۳: الگوهای هم‌روندی <bdi dir="ltr">Go</bdi> و بلوک‌های ساختمانی آن‌ها</figcaption>
 </figure>
-
 <div class="quote-box">
-    <p class="quote-text">از ابتدا برای همزمانی طراحی کنید. اضافه کردن همزمانی به یک طراحی موجود بسیار سخت‌تر از طراحی برای آن از همان ابتداست.</p>
-    <p class="quote-source">
-        <span class="quote-author">Andy Hunt و Dave Thomas</span>
-        <span class="quote-role">نویسندگان و مشاوران نرم‌افزار</span>
-        <span class="quote-separator">|</span>
-        <span class="quote-book">The Pragmatic Programmer</span>
-    </p>
+<p class="quote-text">از ابتدا برای هم‌روندی طراحی کنید. اضافه کردن هم‌روندی به یک طراحی موجود بسیار سخت‌تر از طراحی برای آن از همان ابتداست.</p>
+<p class="quote-source">
+<span class="quote-author">Andy Hunt و Dave Thomas</span>
+<span class="quote-role">نویسندگان و مشاوران نرم‌افزار</span>
+<span class="quote-separator">|</span>
+<span class="quote-book">The Pragmatic Programmer</span>
+</p>
 </div>
-
 <div class="tip"><strong>نکته‌ی حرفه‌ای:</strong> الگوهای ضد رایج در کد همزمان Go: ۱) شروع <bdi dir="ltr">Goroutine</bdi> بدون لغو <bdi dir="ltr">Context</bdi> — وقتی کاربر ارتباط را قطع می‌کند <bdi dir="ltr">Goroutine</bdi> همچنان اجرا می‌شود؛ ۲) نوشتن بدون محدودیت روی کانال بافر‌دار — اگر تولید سریع‌تر از مصرف باشد، حافظه نشت می‌کند؛ ۳) مشکل «<bdi dir="ltr">fan-out</bdi> بدون <bdi dir="ltr">fan-in</bdi>» — شروع چندین <bdi dir="ltr">Goroutine</bdi> بدون جمع‌آوری نتایج آن‌ها باعث نشت می‌شود.</div>
-
-<h3 id="worker-pool">Worker Pool</h3>
-
+<h3 id="worker-pool">5.7.1 Worker Pool</h3>
 <div class="quote-box">
-    <p class="quote-text">استخر کارگر الگویی است که در آن تعداد ثابتی از گوروتین‌ها (کارگران) از یک کانال ورودی مشترک می‌خوانند و نتایج را در یک کانال خروجی مشترک می‌نویسند. این الگو تعداد عملیات همزمان را محدود می‌کند و از تخلیه منابع جلوگیری می‌کند.</p>
-    <p class="quote-source">
-        <span class="quote-author">Sameer Ajmani</span>
-        <span class="quote-role">توسعه‌دهنده ارشد Go در Google</span>
-        <span class="quote-separator">|</span>
-        <span class="quote-book">GopherCon 2014 — Go Concurrency Patterns</span>
-    </p>
+<p class="quote-text">استخر کارگر الگویی است که در آن تعداد ثابتی از گوروتین‌ها (کارگران) از یک کانال ورودی مشترک می‌خوانند و نتایج را در یک کانال خروجی مشترک می‌نویسند. این الگو تعداد عملیات همزمان را محدود می‌کند و از تخلیه منابع جلوگیری می‌کند.</p>
+<p class="quote-source">
+<span class="quote-author">Sameer Ajmani</span>
+<span class="quote-role">توسعه‌دهنده ارشد Go در Google</span>
+<span class="quote-separator">|</span>
+<span class="quote-book">GopherCon 2014 — Go Concurrency Patterns</span>
+</p>
 </div>
-<p>در نظر بگیرید شما ۱۰۰۰ درخواست دارید که باید آن‌ها را پردازش کنید اما می‌خواهید فقط به اندازه‌ی محدود مثلاً ۱۰ <bdi dir="ltr">Worker</bdi> همزمان داشته باشید تا هم از منابع بهینه استفاده شود و هم سرعت کنترل شود. این همان چیزی است که در Laravel با صف و <bdi dir="ltr">Worker</bdi> انجام می‌دهید. در Go با استفاده از <bdi dir="ltr">Goroutine</bdi>‌ها و <bdi dir="ltr">Channel</bdi> می‌توانید یک <bdi dir="ltr">Pool</bdi> از <bdi dir="ltr">Worker</bdi>‌های <bdi dir="ltr">Goroutine</bdi> بسازید که به صف <bdi dir="ltr">Channel</bdi> متصل می‌شوند و کارها را از آن می‌خوانند.</p>
-
-<p><strong>چرا <bdi dir="ltr">Worker Pool</bdi> مهم است؟</strong> جلوگیری از مصرف بیش از حد منابع سرور (<bdi dir="ltr">CPU</bdi> ، <bdi dir="ltr">RAM</bdi>)، مدیریت بهتر خطاها، بهینه‌سازی <bdi dir="ltr">Throughput</bdi> ، و کنترل تعداد <bdi dir="ltr">Goroutine</bdi>‌ها. بدون <bdi dir="ltr">Worker Pool</bdi> اگر ۱۰۰۰۰ کار داشته باشید و برای هر کدام یک <bdi dir="ltr">Goroutine</bdi> بسازید، ممکن است منابع سیستم تمام شود یا اتصالات دیتابیس بیش از حد باز شود.</p>
-
+<p>در نظر بگیرید شما ۱۰۰۰ درخواست دارید که باید آن‌ها را پردازش کنید اما می‌خواهید فقط به اندازه‌ی محدود مثلاً ۱۰ <bdi dir="ltr">Worker</bdi> همزمان داشته باشید تا هم از منابع بهینه استفاده شود و هم سرعت کنترل شود. این همان چیزی است که در Laravel با صف و <bdi dir="ltr">Worker</bdi> انجام می‌دهید. </p><p>در Go با استفاده از <bdi dir="ltr">Goroutine</bdi>‌ها و <bdi dir="ltr">Channel</bdi> می‌توانید یک <bdi dir="ltr">Pool</bdi> از <bdi dir="ltr">Worker</bdi>‌های <bdi dir="ltr">Goroutine</bdi> بسازید که به صف <bdi dir="ltr">Channel</bdi> متصل می‌شوند و کارها را از آن می‌خوانند.</p>
+<p><strong>چرا <bdi dir="ltr">Worker Pool</bdi> مهم است؟</strong> جلوگیری از مصرف بیش از حد منابع سرور (<bdi dir="ltr">CPU</bdi>، <bdi dir="ltr">RAM</bdi>)، مدیریت بهتر خطاها، بهینه‌سازی <bdi dir="ltr">Throughput</bdi>، و کنترل تعداد <bdi dir="ltr">Goroutine</bdi>‌ها. بدون <bdi dir="ltr">Worker Pool</bdi> اگر ۱۰۰۰۰ کار داشته باشید و برای هر کدام یک <bdi dir="ltr">Goroutine</bdi> بسازید، ممکن است منابع سیستم تمام شود یا اتصالات دیتابیس بیش از حد باز شود.</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">package main
 
@@ -218,12 +208,9 @@ func main() {
 }
 </code></pre>
 </figure>
-
 <p>نکات کلیدی این پیاده‌سازی: ابتدا تعداد <bdi dir="ltr">Worker</bdi>‌ها با <code>wg.Add(1)</code> ثبت می‌شود. هر <bdi dir="ltr">Worker</bdi> با <code>select</code> هم‌زمان کانال کارها و سیگنال لغو <bdi dir="ltr">Context</bdi> را گوش می‌دهد. وقتی کانال <code>jobs</code> بسته شود (<code>ok == false</code>)، <bdi dir="ltr">Worker</bdi> خروج می‌شود. <bdi dir="ltr">Goroutine</bdi> جداگانه‌ای پس از اتمام همه <bdi dir="ltr">Worker</bdi>‌ها کانال نتایج را می‌بندد. خطاها به‌صورت ساختاریافته در <code>Result.Err</code> ذخیره می‌شوند و در بخش جمع‌آوری مدیریت می‌گردند.</p>
-
-<h3 id="fan-out-fan-in">Fan-out / Fan-in</h3>
-<p>گاهی لازم است یک کار را به چند <bdi dir="ltr">Goroutine</bdi> تقسیم کنیم (<bdi dir="ltr">Fan-out</bdi>) که موازی روی بخش‌های مختلف داده کار کنند و بعد نتایج همه را جمع کنیم (<bdi dir="ltr">Fan-in</bdi>). مثلاً اگر بخواهید چند <bdi dir="ltr">API</bdi> را همزمان صدا بزنید و نتایجشان را تجمیع کنید. تفاوت با <bdi dir="ltr">Worker Pool</bdi> در این است که هر <bdi dir="ltr">Goroutine</bdi> کار متفاوتی انجام می‌دهد، نه اینکه همه از یک صف کار بکشند.</p>
-
+<h3 id="fan-out-fan-in">5.7.2 Fan-out / Fan-in</h3>
+<p>گاهی لازم است یک کار را به چند <bdi dir="ltr">Goroutine</bdi> تقسیم کنیم (<bdi dir="ltr">Fan-out</bdi>) که موازی روی بخش‌های مختلف داده کار کنند و بعد نتایج همه را جمع کنیم (<bdi dir="ltr">Fan-in</bdi>). مثلاً اگر بخواهید چند <bdi dir="ltr">API</bdi> را همزمان صدا بزنید و نتایجشان را تجمیع کنید. </p><p>تفاوت با <bdi dir="ltr">Worker Pool</bdi> در این است که هر <bdi dir="ltr">Goroutine</bdi> کار متفاوتی انجام می‌دهد، نه اینکه همه از یک صف کار بکشند.</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">package main
 
@@ -296,12 +283,9 @@ func main() {
 }
 </code></pre>
 </figure>
-
 <p>تابع <code>merge</code> الگوی استاندارد <bdi dir="ltr">Fan-in</bdi> در Go است. این تابع تعدادی کانال ورودی می‌گیرد و یک کانال خروجی برمی‌گرداند. برای هر کانال ورودی یک <bdi dir="ltr">Goroutine</bdi> شروع می‌شود که مقادیر را به کانال خروجی هدایت می‌کند. وقتی تمام کانال‌های ورودی بسته شوند، کانال خروجی نیز بسته می‌شود. این الگو در کتابخانه‌های استاندارد Go و بسیاری از پروژه‌های متن‌باز استفاده می‌شود.</p>
-
-<h3 id="pipeline">Pipeline</h3>
-<p>در این الگو خروجی یک مرحله به ورودی مرحله بعد می‌رود. هر مرحله یک <bdi dir="ltr">Goroutine</bdi> دارد که داده را می‌گیرد، پردازش می‌کند و به مرحله بعد می‌فرستد. این روش برای پردازش داده‌های زنجیره‌ای و چندمرحله‌ای فوق‌العاده مؤثر است — پاک‌سازی، نرمال‌سازی و اعتبارسنجی داده‌ها، تحلیل <bdi dir="ltr">Stream</bdi> ، سیستم‌های <bdi dir="ltr">ETL</bdi> و پردازش تصویری.</p>
-
+<h3 id="pipeline">5.7.3 Pipeline</h3>
+<p>در این الگو خروجی یک مرحله به ورودی مرحله بعد می‌رود. هر مرحله یک <bdi dir="ltr">Goroutine</bdi> دارد که داده را می‌گیرد، پردازش می‌کند و به مرحله بعد می‌فرستد. </p><p>این روش برای پردازش داده‌های زنجیره‌ای و چندمرحله‌ای فوق‌العاده مؤثر است — پاک‌سازی، نرمال‌سازی و اعتبارسنجی داده‌ها، تحلیل <bdi dir="ltr">Stream</bdi>، سیستم‌های <bdi dir="ltr">ETL</bdi> و پردازش تصویری.</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">package main
 
@@ -375,12 +359,9 @@ func main() {
 }
 </code></pre>
 </figure>
-
 <p>نکته‌ی مهم در <bdi dir="ltr">Pipeline</bdi> پشتیبانی از لغو است. هر مرحله <code>ctx.Done()</code> را بررسی می‌کند و اگر سیگنال لغو رسید بلافاصله خروج می‌شود. بدون این بررسی، اگر <bdi dir="ltr">Context</bdi> لغو شود مراحل بالادست ممکن است برای همیشه مسدود بمانند و باعث نشت <bdi dir="ltr">Goroutine</bdi> شوند.</p>
-
-<h3 id="rate-limiting">الگوی Rate Limiting</h3>
+<h3 id="rate-limiting">5.7.4 الگوی Rate Limiting</h3>
 <p>بسیاری از <bdi dir="ltr">API</bdi>‌ها محدودیت نرخ درخواست دارند. مثلاً <bdi dir="ltr">GitHub API</bdi> اجازه می‌دهد ۵۰۰۰ درخواست در ساعت بفرستید. در Laravel این محدودیت معمولاً با <bdi dir="ltr">Redis</bdi> و <bdi dir="ltr">Middleware</bdi> مدیریت می‌شود. در Go دو رویکرد اصلی برای <bdi dir="ltr">Rate Limiting</bdi> وجود دارد: استفاده از <code>time.Ticker</code> (ساده) و <bdi dir="ltr">Token Bucket</bdi> (پیشرفته).</p>
-
 <figure class="diagram" dir="ltr">
 <pre class="mermaid">flowchart LR
     Req["درخواست‌ها"]
@@ -389,14 +370,14 @@ func main() {
     Allow["مجاز<br/>توکن موجود"]
     Block["مسدود<br/>توکن تمام"]
 
-    Req --> RL
-    RL --> TB
-    TB -- "توکن موجود" --> Allow
-    TB -- "توکن تمام" --> Block
+    Req --&gt; RL
+    RL --&gt; TB
+    TB -- "توکن موجود" --&gt; Allow
+    TB -- "توکن تمام" --&gt; Block
 
     Note1["time.Ticker: هر N میلی‌ثانیه یک توکن جدید اضافه می‌شود"]
     Note2["مثال: ۱۰۰ درخواست در ثانیه =<br/>time.NewTicker(10 * time.Millisecond)"]
-    Note1 --> Note2
+    Note1 --&gt; Note2
 
     classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
     classDef bothBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
@@ -409,7 +390,6 @@ func main() {
     class Note1,Note2 neuBox;</pre>
 <figcaption>شکل ۵-۱۴: الگوی <bdi dir="ltr">Rate</bdi> <bdi dir="ltr">Limiter</bdi> — کنترل نرخ درخواست با <bdi dir="ltr">Token</bdi> <bdi dir="ltr">Bucket</bdi></figcaption>
 </figure>
-
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">package main
 
@@ -446,12 +426,9 @@ func advancedRateLimit(ctx context.Context) {
 }
 </code></pre>
 </figure>
-
 <p>بسته‌ی <code>golang.org/x/time/rate</code> یک <bdi dir="ltr">Token Bucket Limiter</bdi> کامل ارائه می‌دهد. پارامتر اول نرخ تولید توکن (تعداد توکن در ثانیه) و پارامتر دوم حداکثر تعداد توکن‌های ذخیره‌شده (<bdi dir="ltr">Burst</bdi>) است. متد <code>Wait()</code> تا زمان دسترسی به توکن منتظر می‌ماند و از <bdi dir="ltr">Context</bdi> پشتیبانی می‌کند. متد <code>Allow()</code> بلافاصله برمی‌گردد و نشان می‌دهد آیا توکن موجود است یا نه.</p>
-
-<h3 id="semaphore">الگوی Semaphore</h3>
+<h3 id="semaphore">5.7.5 الگوی Semaphore</h3>
 <p>سمافور الگویی برای محدود کردن <bdi dir="ltr">Concurrency</bdi> است. در Go می‌توان از کانال بافر‌دار به‌عنوان سمافور استفاده کرد. این الگو شبیه <bdi dir="ltr">Worker Pool</bdi> است اما ساده‌تر — به‌جای ساخت <bdi dir="ltr">Worker</bdi>‌های ثابت، فقط تعداد <bdi dir="ltr">Goroutine</bdi>‌های همزمان را محدود می‌کند.</p>
-
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">package main
 
@@ -483,12 +460,9 @@ func main() {
 }
 </code></pre>
 </figure>
-
 <p>در هر لحظه فقط ۳ <bdi dir="ltr">Goroutine</bdi> می‌توانند بخش بحرانی را اجرا کنند. بقیه در خط <code>sem &lt;- struct{}{}</code> مسدود می‌شوند تا یک جای خالی آزاد شود. این الگو برای محدود کردن تعداد اتصالات دیتابیس همزمان، درخواست‌های <bdi dir="ltr">HTTP</bdi> همزمان، یا عملیات <bdi dir="ltr">I/O</bdi> سنگین بسیار مفید است.</p>
-
-<h3 id="graceful-shutdown">الگوی Graceful Shutdown</h3>
+<h3 id="graceful-shutdown">5.7.6 الگوی Graceful Shutdown</h3>
 <p>یکی از الگوهای کلیدی در سیستم‌های واقعی، <bdi dir="ltr">Graceful Shutdown</bdi> است. وقتی سیگنال توقف (<bdi dir="ltr">SIGTERM</bdi>) به برنامه ارسال می‌شود، باید تمام <bdi dir="ltr">Goroutine</bdi>‌های فعال به‌صورت تمیز متوقف شوند، اتصالات دیتابیس بسته شوند، و داده‌های در حال پردازش ذخیره گردند.</p>
-
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">package main
 
@@ -554,12 +528,9 @@ func main() {
 }
 </code></pre>
 </figure>
-
 <p>این الگو از <code>signal.NotifyContext</code> استفاده می‌کند که یک <bdi dir="ltr">Context</bdi> می‌سازد که به‌طور خودکار با دریافت سیگنال سیستم‌عامل لغو می‌شود. تمام <bdi dir="ltr">Worker</bdi>‌ها <code>ctx.Done()</code> را بررسی می‌کنند و به‌صورت کنترل‌شده خروج می‌کنند. تایم‌اوت اضطراری تضمین می‌کند که اگر <bdi dir="ltr">Worker</bdi>‌ای گیر کند، برنامه نهایتاً متوقف شود.</p>
-
-<h3 id="tee">الگوی Tee</h3>
+<h3 id="tee">5.7.7 الگوی Tee</h3>
 <p>گاهی نیاز دارید داده‌های یک کانال را به دو یا چند کانال مستقل تقسیم کنید. مثلاً داده‌های یک سنسور را همزمان به سیستم پردازش و سیستم Logging بفرستید.</p>
-
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">// tee: split one channel into two independent channels
 func tee(ctx context.Context, in &lt;-chan int) (&lt;-chan int, &lt;-chan int) {
@@ -617,10 +588,8 @@ func main() {
 }
 </code></pre>
 </figure>
-
-<h3 id="errgroup">مدیریت خطا با errgroup</h3>
-<p>یکی از چالش‌های الگوهای همزمانی مدیریت خطاهاست. وقتی چند <bdi dir="ltr">Goroutine</bdi> به صورت موازی کار می‌کنند و یکی از آن‌ها خطا می‌دهد، چگونه باید سایر <bdi dir="ltr">Goroutine</bdi>‌ها را متوقف کرد و خطا را به <bdi dir="ltr">Caller</bdi> برگرداند؟ پکیج <code>golang.org/x/sync/errgroup</code> به‌طور خاص برای حل این مشکل طراحی شده است.</p>
-
+<h3 id="errgroup">5.7.8 مدیریت خطا با errgroup</h3>
+<p>یکی از چالش‌های الگوهای هم‌روندی مدیریت خطاهاست. وقتی چند <bdi dir="ltr">Goroutine</bdi> به صورت موازی کار می‌کنند و یکی از آن‌ها خطا می‌دهد، چگونه باید سایر <bdi dir="ltr">Goroutine</bdi>‌ها را متوقف کرد و خطا را به <bdi dir="ltr">Caller</bdi> برگرداند؟ پکیج <code>golang.org/x/sync/errgroup</code> به‌طور خاص برای حل این مشکل طراحی شده است.</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">import (
 "context"
@@ -663,9 +632,7 @@ func fetchAll(ctx context.Context, urls []string) ([]string, error) {
 }
 </code></pre>
 </figure>
-
 <p><code dir="ltr">errgroup.Group</code> ترکیبی از <bdi dir="ltr">WaitGroup</bdi> و <bdi dir="ltr">Context</bdi> است. وقتی یکی از <bdi dir="ltr">Goroutine</bdi>‌ها خطا برمی‌گرداند، <bdi dir="ltr">Context</bdi> داخلی لغو می‌شود و سایر <bdi dir="ltr">Goroutine</bdi>‌ها از طریق <code dir="ltr">ctx.Done()</code> مطلع می‌شوند. این الگو در عمل معادل استفاده همزمان از <code dir="ltr">sync.WaitGroup</code> + <code dir="ltr">context.WithCancel</code> است اما با کد بسیار تمیزتر و مدیریت خودکار خطا.</p>
-
 <div class="tip"><strong>مقایسه errgroup با WaitGroup:</strong>
 <ul>
 <li><strong dir="ltr">WaitGroup:</strong> فقط منتظر اتمام می‌ماند. خطاها باید دستی جمع‌آوری شوند.</li>
@@ -674,9 +641,7 @@ func fetchAll(ctx context.Context, urls []string) ([]string, error) {
 </ul>
 برای عملیات‌هایی که همه باید موفق شوند (مثل فراخوانی همزمان چند API)، errgroup بهترین انتخاب است. برای عملیات‌هایی که خطای یکی مانع ادامه دیگران نیست، از WaitGroup با Channel خطا استفاده کنید.
 </div>
-
-<h3 id="انتخاب-الگوی-مناسب">انتخاب الگوی مناسب</h3>
-
+<h3 id="انتخاب-الگوی-مناسب">5.7.9 انتخاب الگوی مناسب</h3>
 <table class="comparison-table" dir="rtl">
 <thead>
 <tr><th>الگو</th><th>چه زمانی استفاده کنیم</th><th>مقابل PHP</th></tr>
@@ -686,54 +651,52 @@ func fetchAll(ctx context.Context, urls []string) ([]string, error) {
 <tr><td><bdi dir="ltr">Fan-out/Fan-in</bdi></td><td>اجرای موازی کارهای متفاوت و تجمیع نتایج</td><td><bdi dir="ltr">dispatch()</bdi> چند Job + تجمیع</td></tr>
 <tr><td><bdi dir="ltr">Pipeline</bdi></td><td>پردازش چندمرحله‌ای داده</td><td>زنجیره Job‌ها / Middleware</td></tr>
 <tr><td><bdi dir="ltr">Rate Limiting</bdi></td><td>کنترل نرخ درخواست به API خارجی</td><td><bdi dir="ltr">Redis + Middleware</bdi></td></tr>
-<tr><td><bdi dir="ltr">Semaphore</bdi></td><td>محدود کردن همزمانی بدون Worker ثابت</td><td>—</td></tr>
+<tr><td><bdi dir="ltr">Semaphore</bdi></td><td>محدود کردن هم‌روندی بدون Worker ثابت</td><td>—</td></tr>
 <tr><td><bdi dir="ltr">Graceful Shutdown</bdi></td><td>خاموش کردن کنترل‌شده سرور</td><td><bdi dir="ltr">Supervisor + signal</bdi></td></tr>
 <tr><td><bdi dir="ltr">Tee</bdi></td><td>تقسیم داده به چند مسیر پردازش</td><td><bdi dir="ltr">Event Dispatcher</bdi></td></tr>
 <tr><td><bdi dir="ltr">errgroup</bdi></td><td>مدیریت خطا در عملیات موازی</td><td>—</td></tr>
 </tbody>
 </table>
-
 <h2 id="نمودار-fan-out-fan-in">نمودار الگوی <bdi dir="ltr">Fan-Out / Fan-In</bdi></h2>
 <p>الگوی <bdi dir="ltr">Fan-Out / Fan-In</bdi> که در بخش قبل معرفی شد، شبیه سیستم صف در <bdi dir="ltr">Laravel</bdi> است اما با این تفاوت مهم که در Go همه چیز در داخل یک فرآیند انجام می‌شود و نیاز به سیستم خارجی مثل <bdi dir="ltr">Redis</bdi> یا <bdi dir="ltr">Supervisor</bdi> ندارد. نمودار زیر ساختار این الگو را به همراه واریانت <bdi dir="ltr">Worker Pool</bdi> نشان می‌دهد.</p>
-
 <figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
-    In["in chan<br/>کانال ورودی"]
+<pre class="mermaid"><code>flowchart TB
+    In["in chanکانال ورودی"]
     FO["▼ Fan-Out: توزیع کار"]
-    W1["Worker 1<br/>پردازش item 1<br/>goroutine"]
-    W2["Worker 2<br/>پردازش item 2<br/>goroutine"]
-    W3["Worker 3<br/>پردازش item 3<br/>goroutine"]
-    FI["▼ Fan-In: تجمیع نتایج<br/>merge() — جمع‌آوری نتایج"]
-    Out["out chan<br/>کانال خروجی"]
+    W1["Worker 1پردازش item 1goroutine"]
+    W2["Worker 2پردازش item 2goroutine"]
+    W3["Worker 3پردازش item 3goroutine"]
+    FI["▼ Fan-In: تجمیع نتایجmerge() — جمع‌آوری نتایج"]
+    Out["out chanکانال خروجی"]
 
-    In --> FO
-    FO --> W1
-    FO --> W2
-    FO --> W3
-    W1 --> FI
-    W2 --> FI
-    W3 --> FI
-    FI --> Out
+    In --&gt; FO
+    FO --&gt; W1
+    FO --&gt; W2
+    FO --&gt; W3
+    W1 --&gt; FI
+    W2 --&gt; FI
+    W3 --&gt; FI
+    FI --&gt; Out
 
     subgraph VARIANT["واریانت: Worker Pool — Worker‌های ثابت از یک کانال مشترک می‌خوانند"]
         direction LR
-        Jobs["jobs chan<br/>صف مشترک"]
+        Jobs["jobs chanصف مشترک"]
         V1["Worker 1"]
         V2["Worker 2"]
         V3["Worker 3"]
-        Res["results chan<br/>نتایج تجمیعی"]
-        Jobs --> V1
-        Jobs --> V2
-        Jobs --> V3
-        V1 --> Res
-        V2 --> Res
-        V3 --> Res
+        Res["results chanنتایج تجمیعی"]
+        Jobs --&gt; V1
+        Jobs --&gt; V2
+        Jobs --&gt; V3
+        V1 --&gt; Res
+        V2 --&gt; Res
+        V3 --&gt; Res
     end
 
-    N1["تعداد ثابت Worker — محدودیت همزمانی — کنترل منابع"]
+    N1["تعداد ثابت Worker — محدودیت هم‌روندی — کنترل منابع"]
     N2["ترتیب نتایج تضمین نمی‌شود — اول آمده اول پرداخت می‌شود"]
-    N1 --> N2
-    GOLD["قاعده طلایی: Fan-Out = توزیع کار بین Goroutine‌ها |<br/>Fan-In = تجمیع نتایج در یک کانال واحد"]
+    N1 --&gt; N2
+    GOLD["قاعده طلایی: Fan-Out = توزیع کار بین Goroutine‌ها |Fan-In = تجمیع نتایج در یک کانال واحد"]
 
     classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
     classDef bothBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
@@ -742,15 +705,12 @@ func fetchAll(ctx context.Context, urls []string) ([]string, error) {
     class In,Out goBox;
     class FO,FI,W1,W2,W3,VARIANT,Jobs,V1,V2,V3,Res bothBox;
     class N1,N2 neuBox;
-    class GOLD warnBox;</pre>
+    class GOLD warnBox;</code></pre>
 <figcaption>شکل ۵-۱۵: الگوی <bdi dir="ltr">Fan-Out / Fan-In</bdi> — توزیع کار بین <bdi dir="ltr">Worker</bdi>‌ها و تجمیع نتایج</figcaption>
 </figure>
-
-<p>در نمودار بالا دو مدل از توزیع کار را مشاهده می‌کنید. مدل اول <bdi dir="ltr">Fan-Out / Fan-In</bdi> ساده است که هر <bdi dir="ltr">Goroutine</bdi> کانال خروجی مستقل خود را دارد و تابع <bdi dir="ltr">merge()</bdi> نتایج را تجمیع می‌کند. مدل دوم <bdi dir="ltr">Worker Pool</bdi> است که در آن تمام <bdi dir="ltr">Worker</bdi>‌ها از یک کانال ورودی مشترک می‌خوانند و به یک کانال خروجی مشترک می‌نویسند. تفاوت اصلی این است که در <bdi dir="ltr">Worker Pool</bdi> تعداد <bdi dir="ltr">Goroutine</bdi>‌ها ثابت و محدود است اما در <bdi dir="ltr">Fan-Out</bdi> ساده ممکن است به تعداد کارها <bdi dir="ltr">Goroutine</bdi> ساخته شود. انتخاب بین این دو مدل به ماهیت کار و محدودیت‌های منابع سیستم بستگی دارد.</p>
-
+<p>در نمودار بالا دو مدل از توزیع کار را مشاهده می‌کنید. مدل اول <bdi dir="ltr">Fan-Out / Fan-In</bdi> ساده است که هر <bdi dir="ltr">Goroutine</bdi> کانال خروجی مستقل خود را دارد و تابع <bdi dir="ltr">merge()</bdi> نتایج را تجمیع می‌کند. مدل دوم <bdi dir="ltr">Worker Pool</bdi> است که در آن تمام <bdi dir="ltr">Worker</bdi>‌ها از یک کانال ورودی مشترک می‌خوانند و به یک کانال خروجی مشترک می‌نویسند. </p><p>تفاوت اصلی این است که در <bdi dir="ltr">Worker Pool</bdi> تعداد <bdi dir="ltr">Goroutine</bdi>‌ها ثابت و محدود است اما در <bdi dir="ltr">Fan-Out</bdi> ساده ممکن است به تعداد کارها <bdi dir="ltr">Goroutine</bdi> ساخته شود. انتخاب بین این دو مدل به ماهیت کار و محدودیت‌های منابع سیستم بستگی دارد.</p>
 <h2 id="نمودار-pipeline">نمودار الگوی <bdi dir="ltr">Pipeline</bdi></h2>
 <p>الگوی <bdi dir="ltr">Pipeline</bdi> که در بخش قبل معرفی شد، مزیت کلیدی دارد که هر مرحله به صورت مستقل و همزمان با مراحل دیگر اجرا می‌شود. مکانیزم <bdi dir="ltr">Backpressure</bdi> از طریق مسدود شدن کانال‌ها به صورت طبیعی پیاده‌سازی می‌شود — اگر مرحله پایین‌دست کند باشد، مرحله بالادست به صورت خودکند کندتر می‌شود. در نمودار زیر این الگو را به‌تفصیل مشاهده می‌کنید.</p>
-
 <figure class="diagram" dir="ltr">
 <pre class="mermaid">flowchart LR
     Input["Input<br/>داده خام"]
@@ -763,14 +723,14 @@ func fetchAll(ctx context.Context, urls []string) ([]string, error) {
     Chan4["chan"]
     Out["Out<br/>نتیجه"]
 
-    Input --> Chan1 --> S1 --> Chan2 --> S2 --> Chan3 --> S3 --> Chan4 --> Out
+    Input --&gt; Chan1 --&gt; S1 --&gt; Chan2 --&gt; S2 --&gt; Chan3 --&gt; S3 --&gt; Chan4 --&gt; Out
 
     subgraph PROS["مزایای الگوی Pipeline"]
         direction TB
         P1["اجرای همزمان مراحل — هر مرحله Goroutine مستقل — بدون انتظار"]
         P2["Backpressure طبیعی — مسدود شدن کانال = خودکندی بالادست"]
         P3["ترکیب‌پذیری — مراحل مانند لگو قابل اضافه/حذف"]
-        P1 --> P2 --> P3
+        P1 --&gt; P2 --&gt; P3
     end
 
     subgraph CODE["کد نمونه"]
@@ -778,7 +738,7 @@ func fetchAll(ctx context.Context, urls []string) ([]string, error) {
         C1["nums := generate(ctx, 1,2,3,4,5)"]
         C2["squares := square(ctx, nums)"]
         C3["evens := filterEven(ctx, squares)<br/>// each stage = 1 goroutine + 1 channel"]
-        C1 --> C2 --> C3
+        C1 --&gt; C2 --&gt; C3
     end
 
     GOLD["قاعده طلایی: هر مرحله یک Goroutine + یک کانال ورودی + یک کانال خروجی |<br/>Backpressure از طریق مسدود شدن کانال"]
@@ -794,47 +754,48 @@ func fetchAll(ctx context.Context, urls []string) ([]string, error) {
     class GOLD warnBox;</pre>
 <figcaption>شکل ۵-۱۶: الگوی <bdi dir="ltr">Pipeline</bdi> — هر مرحله به صورت همزمان اجرا می‌شود و <bdi dir="ltr">Backpressure</bdi> از طریق کانال‌ها مدیریت می‌شود</figcaption>
 </figure>
-
-<p>نکته مهم در نمودار بالا این است که هر مرحله به صورت مستقل اجرا می‌شود و فقط از طریق کانال‌ها با مراحل دیگر ارتباط دارد. این یعنی اگر مرحله دوم کند باشد مرحله اول به صورت خودکار کندتر می‌شود چون کانال بین آن‌ها پر می‌شود و ارسال جدید مسدود می‌گردد. این رفتار همان <bdi dir="ltr">Backpressure</bdi> است که بدون هیچ کد اضافی فقط با استفاده از کانال‌های بافر‌دار یا بدون بافر پیاده‌سازی می‌شود. همچنین هر مرحله مستقل است و می‌تواند بدون تأثیر روی دیگران تغییر کند یا جایگزین شود.</p>
-
-<h3 id="سناریوهای-عملیاتی-concurrency-patterns">سناریوهای عملیاتی الگوهای همزمانی</h3>
-<p>الگوهای همزمانی در موقعیت‌های مختلف عملیاتی کاربرد دارند. در ادامه چهار سناریوی واقعی را بررسی می‌کنیم که هر کدام ترکیبی از چندین الگو را برای حل مسائل پیچیده به کار می‌گیرند. این سناریوها نشان می‌دهند که در عمل معمولاً یک الگو به تنهایی کافی نیست و باید الگوها را به صورت خلاقانه ترکیب کرد تا بهترین نتیجه حاصل شود. همچنین مقایسه با PHP کمک می‌کند درک بهتری از مزایای این الگوها در Go داشته باشید.</p>
-
+<p>نکته مهم در نمودار بالا این است که هر مرحله به صورت مستقل اجرا می‌شود و فقط از طریق کانال‌ها با مراحل دیگر ارتباط دارد. این یعنی اگر مرحله دوم کند باشد مرحله اول به صورت خودکار کندتر می‌شود چون کانال بین آن‌ها پر می‌شود و ارسال جدید مسدود می‌گردد. </p><p>این رفتار همان <bdi dir="ltr">Backpressure</bdi> است که بدون هیچ کد اضافی فقط با استفاده از کانال‌های بافر‌دار یا بدون بافر پیاده‌سازی می‌شود. همچنین هر مرحله مستقل است و می‌تواند بدون تأثیر روی دیگران تغییر کند یا جایگزین شود.</p>
+<h3 id="سناریوهای-عملیاتی-concurrency-patterns">5.7.10 سناریوهای عملیاتی الگوهای هم‌روندی</h3>
+<p>الگوهای هم‌روندی در موقعیت‌های مختلف عملیاتی کاربرد دارند. در ادامه چهار سناریوی واقعی را بررسی می‌کنیم که هر کدام ترکیبی از چندین الگو را برای حل مسائل پیچیده به کار می‌گیرند. </p><p>این سناریوها نشان می‌دهند که در عمل معمولاً یک الگو به تنهایی کافی نیست و باید الگوها را به صورت خلاقانه ترکیب کرد تا بهترین نتیجه حاصل شود.</p><p>همچنین مقایسه با PHP کمک می‌کند درک بهتری از مزایای این الگوها در Go داشته باشید.</p>
 <ul>
 <li><strong>فراخوانی موازی <tspan direction="ltr" unicode-bidi="embed">HTTP</tspan> با <tspan direction="ltr" unicode-bidi="embed">Fan-Out</tspan>:</strong> وقتی باید چند <tspan direction="ltr" unicode-bidi="embed">API</tspan> خارجی را همزمان فراخوانی کنید الگوی <tspan direction="ltr" unicode-bidi="embed">Fan-Out / Fan-In</tspan> بهترین انتخاب است. هر فراخوانی <tspan direction="ltr" unicode-bidi="embed">API</tspan> در یک <tspan direction="ltr" unicode-bidi="embed">Goroutine</tspan> مستقل اجرا می‌شود و نتایج با <tspan direction="ltr" unicode-bidi="embed">merge()</tspan> تجمیع می‌شوند. در <tspan direction="ltr" unicode-bidi="embed">PHP</tspan> باید از <tspan direction="ltr" unicode-bidi="embed">curl_multi</tspan> یا <tspan direction="ltr" unicode-bidi="embed">Promise</tspan>‌ها در <tspan direction="ltr" unicode-bidi="embed">ReactPHP</tspan> استفاده کنید اما در Go این الگو به صورت بومی و با کد بسیار ساده‌تر پیاده‌سازی می‌شود. با <tspan direction="ltr" unicode-bidi="embed">errgroup</tspan> حتی می‌توانید مدیریت خطا را نیز اضافه کنید.</li>
 <li><strong>خط لوله پردازش لاگ (<tspan direction="ltr" unicode-bidi="embed">Read → Parse → Filter → Write</tspan>):</strong> پردازش لاگ یک مثال کلاسیک الگوی <tspan direction="ltr" unicode-bidi="embed">Pipeline</tspan> است. مرحله اول لاگ‌ها را از فایل یا شبکه می‌خواند، مرحله دوم آن‌ها را <tspan direction="ltr" unicode-bidi="embed">Parse</tspan> می‌کند، مرحله سوم بر اساس فیلترها فیلتر می‌کند و مرحله آخر نتایج را در دیتابیس یا فایل می‌نویسد. هر مرحله به صورت همزمان اجرا می‌شود و <tspan direction="ltr" unicode-bidi="embed">Backpressure</tspan> تضمین می‌کند که اگر دیتابیس کند باشد کل سیستم از هم نمی‌پاشد. در <tspan direction="ltr" unicode-bidi="embed">Laravel</tspan> این کار با زنجیره <tspan direction="ltr" unicode-bidi="embed">Job</tspan>‌ها و <tspan direction="ltr" unicode-bidi="embed">Queue</tspan> انجام می‌شود اما با تأخیر بیشتر و پیچیدگی بالاتر.</li>
 <li><strong><tspan direction="ltr" unicode-bidi="embed">Worker Pool</tspan> برای کارهای فشرد <tspan direction="ltr" unicode-bidi="embed">CPU</tspan>:</strong> وقتی کارهای پردازشی سنگین مثل رمزنگاری، فشرده‌سازی تصویر یا محاسبات آماری دارید <tspan direction="ltr" unicode-bidi="embed">Worker Pool</tspan> بهترین الگو است. تعداد <tspan direction="ltr" unicode-bidi="embed">Worker</tspan>‌ها را بر اساس تعداد هسته‌های <tspan direction="ltr" unicode-bidi="embed">CPU</tspan> تنظیم می‌کنید تا از <tspan direction="ltr" unicode-bidi="embed">Context Switch</tspan> اضافی جلوگیری شود. در <tspan direction="ltr" unicode-bidi="embed">PHP</tspan> این کار با <tspan direction="ltr" unicode-bidi="embed">Process</tspan>‌های فرزند یا <tspan direction="ltr" unicode-bidi="embed">Fork</tspan> انجام می‌شود که هزینه حافظه بسیار بالاتری دارد.</li>
-<li><strong>مرتب‌سازی ادغامی همزمان (<tspan direction="ltr" unicode-bidi="embed">Merge Sort</tspan>):</strong> الگوی <tspan direction="ltr" unicode-bidi="embed">Fan-Out / Fan-In</tspan> به صورت طبیعی با الگوریتم <tspan direction="ltr" unicode-bidi="embed">Merge Sort</tspan> هماهنگ است. در هر سطح از بازگشت آرایه به دو نیمه تقسیم می‌شود که هر کدام در یک <tspan direction="ltr" unicode-bidi="embed">Goroutine</tspan> مستقل مرتب می‌شوند و سپس نتایج <tspan direction="ltr" unicode-bidi="embed">Merge</tspan> می‌شوند. این الگو برای مجموعه‌داده‌های بزرگ بسیار مؤثر است اما باید مراقب باشید که تعداد <tspan direction="ltr" unicode-bidi="embed">Goroutine</tspan>‌ها از حد مجاز فراتر نرود و از <tspan direction="ltr" unicode-bidi="embed">Semaphore</tspan> یا <tspan direction="ltr" unicode-bidi="embed">Worker Pool</tspan> برای محدود کردن عمق همزمانی استفاده کنید.</li>
+<li><strong>مرتب‌سازی ادغامی همزمان (<tspan direction="ltr" unicode-bidi="embed">Merge Sort</tspan>):</strong> الگوی <tspan direction="ltr" unicode-bidi="embed">Fan-Out / Fan-In</tspan> به صورت طبیعی با الگوریتم <tspan direction="ltr" unicode-bidi="embed">Merge Sort</tspan> هماهنگ است. در هر سطح از بازگشت آرایه به دو نیمه تقسیم می‌شود که هر کدام در یک <tspan direction="ltr" unicode-bidi="embed">Goroutine</tspan> مستقل مرتب می‌شوند و سپس نتایج <tspan direction="ltr" unicode-bidi="embed">Merge</tspan> می‌شوند. این الگو برای مجموعه‌داده‌های بزرگ بسیار مؤثر است اما باید مراقب باشید که تعداد <tspan direction="ltr" unicode-bidi="embed">Goroutine</tspan>‌ها از حد مجاز فراتر نرود و از <tspan direction="ltr" unicode-bidi="embed">Semaphore</tspan> یا <tspan direction="ltr" unicode-bidi="embed">Worker Pool</tspan> برای محدود کردن عمق هم‌روندی استفاده کنید.</li>
 </ul>
-
-<div class="important"><strong>نکته عملی — ابتدا راه‌حل ترتیبی بنویسید سپس همزمانی اضافه کنید:</strong> یکی از اشتباهات رایج در بین توسعه‌دهندگان Go این است که از همان ابتدا کد همزمان می‌نویسند. رویکرد صحیح این است که ابتدا یک راه‌حل ترتیبی ساده و درست بنویسید آن را تست کنید و مطمئن شوید که از نظر منطقی کار می‌کند. سپس با استفاده از ابزارهای <tspan direction="ltr" unicode-bidi="embed">Profiling</tspan> مثل <tspan direction="ltr" unicode-bidi="embed">go tool pprof</tspan> بررسی کنید که گلوگاه (<tspan direction="ltr" unicode-bidi="embed">Bottleneck</tspan>) کجاست. فقط وقتی <tspan direction="ltr" unicode-bidi="embed">Profiling</tspan> نشان داد که عملیات <tspan direction="ltr" unicode-bidi="embed">I/O</tspan> یا <tspan direction="ltr" unicode-bidi="embed">CPU</tspan> گلوگاه است همزمانی اضافه کنید. این رویکرد دلایل مهمی دارد: اولاً کد ترتیبی بسیار ساده‌تر دیباگ و تست می‌شود. ثانیاً اضافه کردن همزمانی بدون نیاز فقط پیچیدگی و احتمال خطا را افزایش می‌دهد. ثالثاً همزمانی سرعت کد کند را چند برابر نمی‌کند بلکه فقط زمان انتظار را کاهش می‌دهد. اگر الگوریتم شما از نظر پیچیدگی زمانی ناکارآمد است همزمانی مشکل را حل نمی‌کند.</div>
-
-</div>
+<div class="important"><strong>نکته عملی — ابتدا راه‌حل ترتیبی بنویسید سپس هم‌روندی اضافه کنید:</strong> یکی از اشتباهات رایج در بین توسعه‌دهندگان Go این است که از همان ابتدا کد همزمان می‌نویسند. رویکرد صحیح این است که ابتدا یک راه‌حل ترتیبی ساده و درست بنویسید آن را تست کنید و مطمئن شوید که از نظر منطقی کار می‌کند. سپس با استفاده از ابزارهای <tspan direction="ltr" unicode-bidi="embed">Profiling</tspan> مثل <tspan direction="ltr" unicode-bidi="embed">go tool pprof</tspan> بررسی کنید که گلوگاه (<tspan direction="ltr" unicode-bidi="embed">Bottleneck</tspan>) کجاست. فقط وقتی <tspan direction="ltr" unicode-bidi="embed">Profiling</tspan> نشان داد که عملیات <tspan direction="ltr" unicode-bidi="embed">I/O</tspan> یا <tspan direction="ltr" unicode-bidi="embed">CPU</tspan> گلوگاه است هم‌روندی اضافه کنید. این رویکرد دلایل مهمی دارد: اولاً کد ترتیبی بسیار ساده‌تر دیباگ و تست می‌شود. ثانیاً اضافه کردن هم‌روندی بدون نیاز فقط پیچیدگی و احتمال خطا را افزایش می‌دهد. ثالثاً هم‌روندی سرعت کد کند را چند برابر نمی‌کند بلکه فقط زمان انتظار را کاهش می‌دهد. اگر الگوریتم شما از نظر پیچیدگی زمانی ناکارآمد است هم‌روندی مشکل را حل نمی‌کند.</div>
+<div class="summary">
+<strong>خلاصه‌ی نکات کلیدی:</strong>
+<ul>
+<li>fan-in: چند ورودی به یک خروجی</li>
+<li>fan-out: یک ورودی به چند worker</li>
+<li>pipeline: مراحل متوالی با channel</li>
+<li>worker pool: تعداد ثابت goroutine برای پردازش صف</li>
+<li>generator: تولید مقادیر با channel</li>
+</ul>
+</div></div>
 </main>
 </div>
-
 <!-- Footer -->
 <footer class="site-footer">
 <div class="footer-inner">
 <div class="footer-nav">
 <span class="nav-arrow">‹</span>
-<a href="05.06-race-condition.html" data-prev>۵.۶ Race Condition</a>
+<a data-prev="" href="05.06-race-condition.html">۵.۶ Race Condition</a>
 </div>
 <div class="footer-toc">
 <a href="00.01-contents.html">فهرست</a>
 </div>
 <div class="footer-nav">
-<a href="05.08-practical-concurrency-usage.html" data-next>۵.۸ کاربردهای عملی Concurrency</a>
+<a data-next="" href="05.08-practical-concurrency-usage.html">۵.۸ کاربردهای عملی Concurrency</a>
 <span class="nav-arrow">›</span>
 </div>
 </div>
 </footer>
-
 <!-- Back to Top -->
-<button class="back-to-top" aria-label="بازگشت به بالا">
-<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
+<button aria-label="بازگشت به بالا" class="back-to-top">
+<svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24"><polyline points="18 15 12 9 6 15"></polyline></svg>
 </button>
-
 <!-- Scripts -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/go.min.js"></script>

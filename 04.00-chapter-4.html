@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html dir="rtl" lang="fa">
 <head>
 <script>!function(){try{var t=localStorage.getItem('php2go-theme');if(t==='dark'||(!t&&window.matchMedia('(prefers-color-scheme:dark)').matches)){document.documentElement.setAttribute('data-theme','dark')}}catch(e){}}();</script>
@@ -6,26 +7,25 @@
 <meta content="ie=edge" http-equiv="x-ua-compatible"/>
 <title>۴. مدیریت خطا — PHP to Go</title>
 <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport"/>
-<link rel="preconnect" href="https://fonts.googleapis.com"/>
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600;700&amp;family=Fira+Code:wght@400;500&amp;display=swap" rel="stylesheet"/>
 <link href="assets/css/main.css" rel="stylesheet" type="text/css"/>
 <link href="assets/img/favicon.ico" rel="icon" type="image/x-icon"/>
-<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" media="screen" class="hljs-light-theme" rel="stylesheet"/>
-<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css" media="not screen" class="hljs-dark-theme" rel="stylesheet"/>
+<link class="hljs-light-theme" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" media="screen" rel="stylesheet"/>
+<link class="hljs-dark-theme" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css" media="not screen" rel="stylesheet"/>
 </head>
 <body>
 <!-- Progress Bar -->
 <div class="progress-bar"><div class="progress-bar__fill"></div></div>
-
 <!-- Header -->
 <header class="site-header">
 <div class="header-inner">
 <div class="header-left">
-<button class="header-btn sidebar-toggle" aria-label="فهرست">
-<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+<button aria-label="فهرست" class="header-btn sidebar-toggle">
+<svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24"><line x1="3" x2="21" y1="6" y2="6"></line><line x1="3" x2="21" y1="12" y2="12"></line><line x1="3" x2="21" y1="18" y2="18"></line></svg>
 </button>
-<a href="00.00-front-matter.html" class="header-logo"><span class="logo-php">PHP</span> to <span class="logo-go">Go</span></a>
+<a class="header-logo" href="00.00-front-matter.html"><span class="logo-php">PHP</span> to <span class="logo-go">Go</span></a>
 <span class="header-crumbs">مدیریت خطا</span>
 </div>
 <div class="header-right">
@@ -36,51 +36,48 @@
 <a href="04.01-understanding-errors-in-go.html"><span class="nav-label">۴.۱ درک error در Go</span></a>
 <span class="nav-arrow">›</span>
 </nav>
-<button class="header-btn search-toggle" aria-label="جستجو">
-<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+<button aria-label="جستجو" class="header-btn search-toggle">
+<svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" x2="16.65" y1="21" y2="16.65"></line></svg>
 </button>
-<button class="header-btn theme-toggle" aria-label="تغییر تم">
-<svg class="theme-icon-light" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
-<svg class="theme-icon-dark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+<button aria-label="تغییر تم" class="header-btn theme-toggle">
+<svg class="theme-icon-light" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24"><circle cx="12" cy="12" r="5"></circle><line x1="12" x2="12" y1="1" y2="3"></line><line x1="12" x2="12" y1="21" y2="23"></line><line x1="4.22" x2="5.64" y1="4.22" y2="5.64"></line><line x1="18.36" x2="19.78" y1="18.36" y2="19.78"></line><line x1="1" x2="3" y1="12" y2="12"></line><line x1="21" x2="23" y1="12" y2="12"></line><line x1="4.22" x2="5.64" y1="19.78" y2="18.36"></line><line x1="18.36" x2="19.78" y1="5.64" y2="4.22"></line></svg>
+<svg class="theme-icon-dark" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
 </button>
 </div>
 </div>
 </header>
-
 <!-- Search Modal -->
 <div class="search-overlay">
 <div class="search-modal">
 <div class="search-input-wrap">
-<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-<input type="text" class="search-input" placeholder="جستجو... (Ctrl+K)" dir="rtl"/>
+<svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" x2="16.65" y1="21" y2="16.65"></line></svg>
+<input class="search-input" dir="rtl" placeholder="جستجو... (Ctrl+K)" type="text"/>
 </div>
 <div class="search-results"></div>
 </div>
 </div>
-
 <!-- Layout -->
 <div class="site-layout">
 <!-- Sidebar -->
 <aside class="sidebar"></aside>
 <div class="sidebar-overlay"></div>
-
 <!-- Main Content -->
 <main class="content-area">
 <div class="content-wrap text">
 <div class="chapter-label">فصل ۴</div>
-<h2 id="فصل-چهارم">فصل چهارم</h2>
-
-<div class="quote-box">
-    <p class="quote-text">خطاها مقدار هستند. برخورد با خطاها به‌عنوان مقدار — نه استثنا — به این معناست که مدیریت خطا فقط کد عادی است، با جریان کنترل عادی. این کار قدرت کامل زبان را برای ساختاردهی مدیریت خطا به شما می‌دهد، به جای اینکه به بلوک‌های try/catch محدود شوید که جریان برنامه را مبهم می‌کنند.</p>
-    <p class="quote-source">
-        <span class="quote-author">Rob Pike</span>
-        <span class="quote-role">طراح‌ارشد زبان Go</span>
-        <span class="quote-separator">|</span>
-        <span class="quote-book">The Go Blog — Errors are Values</span>
-    </p>
+<h2 id="فصل-چهارم">فصل چهارم</h2><div class="abstract">
+<strong>چکیده:</strong> این فصل فلسفه‌ی مدیریت خطای Go را که بنیاداً با PHP متفاوت است، باز می‌کند. خطا در Go مقدار است نه استثنا. الگوهای error wrapping، custom error و مدیریت panic بررسی می‌شود. درک این فصل برای نوشتن کد مقاوم ضروری است.
 </div>
-<p>مدیریت خطا — از مهم‌ترین تفاوت‌های فلسفی بین Go و PHP. در PHP خطاها به‌صورت <bdi dir="ltr">Exception</bdi> پرتاب می‌شوند و جریان اجرا به‌صورت غیرمستقیم تغییر می‌کند. در Go خطاها مقادیر عادی هستند که صراحتاً بازگردانده و بررسی می‌شوند. این تفاوت ظاهراً ساده، تأثیر عمیقی بر نحوه‌ی طراحی، تست و نگهداری کد دارد. در این فصل از مفهوم پایه‌ی <code>error</code> شروع می‌کنیم و تا ساخت خطاهای سفارشی، زنجیره‌ی خطاها و مکانیزم <code>panic/recover</code> پیش می‌رویم.</p>
-
+<div class="quote-box">
+<p class="quote-text">خطاها مقدار هستند. برخورد با خطاها به‌عنوان مقدار — نه استثنا — به این معناست که مدیریت خطا فقط کد عادی است، با جریان کنترل عادی. این کار قدرت کامل زبان را برای ساختاردهی مدیریت خطا به شما می‌دهد، به جای اینکه به بلوک‌های try/catch محدود شوید که جریان برنامه را مبهم می‌کنند.</p>
+<p class="quote-source">
+<span class="quote-author">Rob Pike</span>
+<span class="quote-role">طراح‌ارشد زبان Go</span>
+<span class="quote-separator">|</span>
+<span class="quote-book">The Go Blog — Errors are Values</span>
+</p>
+</div>
+<p>مدیریت خطا — از مهم‌ترین تفاوت‌های فلسفی بین Go و PHP. در PHP خطاها به‌صورت <bdi dir="ltr">Exception</bdi> پرتاب می‌شوند و جریان اجرا به‌صورت غیرمستقیم تغییر می‌کند. در Go خطاها مقادیر عادی هستند که صراحتاً بازگردانده و بررسی می‌شوند. این تفاوت ظاهراً ساده، تأثیر عمیقی بر نحوه‌ی طراحی، تست و نگهداری کد دارد. </p><p>در این فصل از مفهوم پایه‌ی <code>error</code> شروع می‌کنیم و تا ساخت خطاهای سفارشی، زنجیره‌ی خطاها و مکانیزم <code>panic/recover</code> پیش می‌رویم.</p>
 <p>در این فصل خواننده با مفاهیم زیر آشنا خواهد شد:</p>
 <ul>
 <li>مفهوم نوع داده‌ی <code>error</code> در Go به‌عنوان یک interface و تفاوت آن با سیستم exception در PHP</li>
@@ -93,7 +90,6 @@
 <li>تفاوت‌های فلسفی مدیریت خطا در Go در مقایسه با PHP و <bdi dir="ltr">anti-patterns</bdi></li>
 <li>مدیریت چندخطایی با <code dir="ltr">errors.Join</code> (Go 1.20+)</li>
 </ul>
-
 <figure class="diagram" dir="ltr">
 <pre class="mermaid">flowchart TB
     TITLE["مدیریت خطا: PHP vs Go"]
@@ -109,8 +105,8 @@
         G2["panic/recover ≈ throw/catch<br/>فقط برای شرایط بحرانی"]
     end
 
-    TITLE --> PHP
-    TITLE --> GO
+    TITLE --&gt; PHP
+    TITLE --&gt; GO
 
     classDef titleBox fill:#ecfdf5,stroke:#10b981,stroke-width:2px,color:#1f2937;
     classDef phpBox fill:#f5f0fb,stroke:#777BB4,stroke-width:1.5px,color:#1f2937;
@@ -122,39 +118,44 @@
     class G2 warnBox;</pre>
 <figcaption>مقایسه مدیریت خطا در <bdi dir="ltr">PHP</bdi> و <bdi dir="ltr">Go</bdi></figcaption>
 </figure>
-
 <div class="comparison"><strong>تفاوت فلسفی: Exception در برابر Value</strong>
 <p>در PHP خطاها به‌صورت <strong dir="ltr">Exception</strong> مدل شده‌اند: یک شیء ساخته می‌شود، پشته فراخوانی ثبت می‌گردد و جریان اجرا به‌صورت غیرمستقیم به بلوک <code>catch</code> پرش می‌کند. این مدل <em>control flow via exceptions</em> نامیده می‌شود.</p>
 <p>در Go خطاها صرفاً <strong dir="ltr">value</strong> هستند — مانند هر مقدار دیگری در برنامه. تابع خطا را برمی‌گرداند و فراخوانی‌کننده تصمیم می‌گیرد چه‌کار با آن بکند. هیچ پرش خودکار، هیچ پشته فراخوانی پنهان و هیچ سلسله‌مراتب ارث‌بری اجباری وجود ندارد. این مدل <em>control flow via return values</em> نامیده می‌شود.</p>
 </div>
 <div class="note"><strong>نکته:</strong> هنگام مهاجرت از PHP به Go، مهم‌ترین تغییر ذهنی این است که خطا دیگر رویداد استثنایی نیست که «بالا برود»، بلکه یک مقدار بازگشتی است که باید صریحاً بازگردانده و بررسی شود. در PHP یک <code>throw</code> می‌تواند چندین لایه را بی‌صدا طی کند؛ در Go هر تابع تصمیم می‌گیرد آیا خطا را بپذیرد، با زمینه بپیچد، یا به‌صورت <code>panic</code> به شرایط بحرانی تبدیل کند. این صراحت در ابتدا پرحرف به‌نظر می‌رسد، اما جریان کنترل را قابل پیش‌بینی می‌کند.</div>
 <div class="tip"><strong>نکته‌ی عملی:</strong> در PHP وقتی <code>catch</code> فراموش شود، برنامه با <code>Uncaught Exception</code> متوقف می‌شود و خطا آشکار است. اما در Go اگر <code>err</code> بررسی نشود، خطا بی‌صدا نادیده گرفته می‌شود. ابزارهایی مثل <code>errcheck</code> و <code>staticcheck</code> برای شناسایی این مورد طراحی شده‌اند. حتماً از آن‌ها در CI خود استفاده کنید.</div>
-</div>
+<div class="summary">
+<strong>خلاصه‌ی نکات کلیدی:</strong>
+<ul>
+<li>خطا در Go مقدار بازگشتی است، نه exception</li>
+<li>if err != nil الگوی رایج بررسی خطا</li>
+<li>error wrapping با %w زنجیره‌ی خطاها را حفظ می‌کند</li>
+<li>panic برای خطاهای غیرقابل بازیافت</li>
+<li>custom error با نوع یا متد Error() ساخته می‌شود</li>
+</ul>
+</div></div>
 </main>
 </div>
-
 <!-- Footer -->
 <footer class="site-footer">
 <div class="footer-inner">
 <div class="footer-nav">
 <span class="nav-arrow">‹</span>
-<a href="03.07-constructor-and-factory.html" data-prev>۳.۷ Constructor و Factory</a>
+<a data-prev="" href="03.07-constructor-and-factory.html">۳.۷ Constructor و Factory</a>
 </div>
 <div class="footer-toc">
 <a href="00.01-contents.html">فهرست</a>
 </div>
 <div class="footer-nav">
-<a href="04.01-understanding-errors-in-go.html" data-next>۴.۱ درک error در Go</a>
+<a data-next="" href="04.01-understanding-errors-in-go.html">۴.۱ درک error در Go</a>
 <span class="nav-arrow">›</span>
 </div>
 </div>
 </footer>
-
 <!-- Back to Top -->
-<button class="back-to-top" aria-label="بازگشت به بالا">
-<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
+<button aria-label="بازگشت به بالا" class="back-to-top">
+<svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24"><polyline points="18 15 12 9 6 15"></polyline></svg>
 </button>
-
 <!-- Scripts -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/go.min.js"></script>

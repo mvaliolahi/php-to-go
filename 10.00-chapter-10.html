@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html dir="rtl" lang="fa">
 <head>
 <script>!function(){try{var t=localStorage.getItem('php2go-theme');if(t==='dark'||(!t&&window.matchMedia('(prefers-color-scheme:dark)').matches)){document.documentElement.setAttribute('data-theme','dark')}}catch(e){}}();</script>
@@ -6,26 +7,25 @@
 <meta content="ie=edge" http-equiv="x-ua-compatible"/>
 <title>۱۰. دیباگ و ریشه‌یابی — PHP to Go</title>
 <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport"/>
-<link rel="preconnect" href="https://fonts.googleapis.com"/>
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600;700&amp;family=Fira+Code:wght@400;500&amp;display=swap" rel="stylesheet"/>
 <link href="assets/css/main.css" rel="stylesheet" type="text/css"/>
 <link href="assets/img/favicon.ico" rel="icon" type="image/x-icon"/>
-<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" media="screen" class="hljs-light-theme" rel="stylesheet"/>
-<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css" media="not screen" class="hljs-dark-theme" rel="stylesheet"/>
+<link class="hljs-light-theme" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" media="screen" rel="stylesheet"/>
+<link class="hljs-dark-theme" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css" media="not screen" rel="stylesheet"/>
 </head>
 <body>
 <!-- Progress Bar -->
 <div class="progress-bar"><div class="progress-bar__fill"></div></div>
-
 <!-- Header -->
 <header class="site-header">
 <div class="header-inner">
 <div class="header-left">
-<button class="header-btn sidebar-toggle" aria-label="فهرست">
-<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+<button aria-label="فهرست" class="header-btn sidebar-toggle">
+<svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24"><line x1="3" x2="21" y1="6" y2="6"></line><line x1="3" x2="21" y1="12" y2="12"></line><line x1="3" x2="21" y1="18" y2="18"></line></svg>
 </button>
-<a href="00.00-front-matter.html" class="header-logo"><span class="logo-php">PHP</span> to <span class="logo-go">Go</span></a>
+<a class="header-logo" href="00.00-front-matter.html"><span class="logo-php">PHP</span> to <span class="logo-go">Go</span></a>
 <span class="header-crumbs">دیباگ و ریشه‌یابی</span>
 </div>
 <div class="header-right">
@@ -36,59 +36,53 @@
 <a href="10.01-debugging-and-troubleshooting.html"><span class="nav-label">۱۰.۱ دیباگ و ریشه‌یابی خطاها</span></a>
 <span class="nav-arrow">›</span>
 </nav>
-<button class="header-btn search-toggle" aria-label="جستجو">
-<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+<button aria-label="جستجو" class="header-btn search-toggle">
+<svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" x2="16.65" y1="21" y2="16.65"></line></svg>
 </button>
-<button class="header-btn theme-toggle" aria-label="تغییر تم">
-<svg class="theme-icon-light" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
-<svg class="theme-icon-dark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+<button aria-label="تغییر تم" class="header-btn theme-toggle">
+<svg class="theme-icon-light" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24"><circle cx="12" cy="12" r="5"></circle><line x1="12" x2="12" y1="1" y2="3"></line><line x1="12" x2="12" y1="21" y2="23"></line><line x1="4.22" x2="5.64" y1="4.22" y2="5.64"></line><line x1="18.36" x2="19.78" y1="18.36" y2="19.78"></line><line x1="1" x2="3" y1="12" y2="12"></line><line x1="21" x2="23" y1="12" y2="12"></line><line x1="4.22" x2="5.64" y1="19.78" y2="18.36"></line><line x1="18.36" x2="19.78" y1="5.64" y2="4.22"></line></svg>
+<svg class="theme-icon-dark" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
 </button>
 </div>
 </div>
 </header>
-
 <!-- Search Modal -->
 <div class="search-overlay">
 <div class="search-modal">
 <div class="search-input-wrap">
-<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-<input type="text" class="search-input" placeholder="جستجو... (Ctrl+K)" dir="rtl"/>
+<svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" x2="16.65" y1="21" y2="16.65"></line></svg>
+<input class="search-input" dir="rtl" placeholder="جستجو... (Ctrl+K)" type="text"/>
 </div>
 <div class="search-results"></div>
 </div>
 </div>
-
 <!-- Layout -->
 <div class="site-layout">
 <!-- Sidebar -->
 <aside class="sidebar"></aside>
 <div class="sidebar-overlay"></div>
-
 <!-- Main Content -->
 <main class="content-area">
 <div class="content-wrap text">
 <div class="chapter-label">فصل ۱۰</div>
-<h2 id="فصل-دهم">فصل دهم</h2>
-
-<div class="quote-box">
-    <p class="quote-text">دیباگ دو برابر نوشتن کد سخت است. بنابراین، اگر کد را تا حد امکان هوشمندانه بنویسید، بر اساس تعریف، به اندازه کافی هوشمند نیستید که آن را دیباگ کنید.</p>
-    <p class="quote-source">
-        <span class="quote-author">Brian Kernighan</span>
-        <span class="quote-role">خالق زبان C و هم‌نویسنده The C Programming Language</span>
-    </p>
+<h2 id="فصل-دهم">فصل دهم</h2><div class="abstract">
+<strong>چکیده:</strong> این فصل دیباگ و troubleshooting در Go را باز می‌کند: Delve، VSCode و pprof. تفاوت با Xdebug در PHP و الگوی Go بررسی می‌شود. کاربردهای production debug و profiling پوشش داده می‌گردد.
 </div>
-<p>از مهارت‌های کلیدی که هر برنامه‌نویس حرفه‌ای باید داشته باشد، توانایی Debugging کد است. تجربه نشان داده که برنامه‌نویسان معمولاً بیشتر زمان توسعه‌ی خود را صرف دیباگ و رفع مشکلات می‌کنند تا نوشتن کد جدید. وقتی از محیط PHP به Go مهاجرت می‌کنید، ابزارها و روش‌های دیباگ کاملاً متفاوتی خواهید یافت. در PHP با ابزارهای ساده‌ای مثل <bdi dir="ltr">var_dump()</bdi> و <bdi dir="ltr">dd()</bdi> می‌توانستید به‌سرعت مقادیر متغیرها را بررسی کنید، اما در Go به دلیل ماهیت کامپایل‌شده و مدل همزمانی متفاوت، نیاز به ابزارهای تخصصی‌تری دارید.</p>
-
-<h3 id="چرا-دیباگ-در-go-متفاوت-است">چرا دیباگ در Go متفاوت از PHP است؟</h3>
-<p>تفاوت بنیادین بین PHP و Go در فرآیند اجرای کد نهفته است. PHP یک زبان Interpreted است که کد شما را خط به خط در زمان اجرا می‌خواند و اجرا می‌کند. این یعنی هر زمان که خطایی رخ دهد، می‌توانید بلافاصله کد را تغییر دهید و بدون نیاز به کامپایل مجدد، نتیجه را ببینید. در مقابل، Go یک زبان Compiled است که ابتدا کد شما را به باینری ماشین تبدیل می‌کند و سپس آن باینری اجرا می‌شود. این تفاوت باعث می‌شود چرخه‌ی «تغییر-اجرا-بررسی» در Go کمی طولانی‌تر باشد، اما در عوض عملکرد بسیار بالاتری در تولید ارائه می‌دهد.</p>
-<p>اما تفاوت فقط در کامپایل نیست. Go از مدل همزمانی مبتنی بر <bdi dir="ltr">goroutine</bdi> و <bdi dir="ltr">channel</bdi> استفاده می‌کند که هیچ معادلی در PHP ندارد. وقتی صدها goroutine به‌صورت همزمان در حال اجرا هستند، دیباگ کردن با <bdi dir="ltr">fmt.Println()</bdi> عملاً بی‌فایده است چون خروجی‌ها درهم‌ریخته خواهند بود و نمی‌توانید تشخیص دهید کدام goroutine کدام پیام را تولید کرده است. ابزارهای تخصصی مانند <bdi dir="ltr">Delve</bdi> و <bdi dir="ltr">pprof</bdi> برای حل همین چالش‌ها طراحی شده‌اند.</p>
-<p>همچنین در PHP مفهوم Memory Leak به همان معنای Go وجود ندارد، چون هر درخواست PHP پس از اتمام، تمام حافظه‌ی خود را آزاد می‌کند. اما در Go برنامه‌ها معمولاً به‌عنوان پروسه‌های Long-running اجرا می‌شوند و حتی یک نشت کوچک حافظه می‌تواند در طول زمان باعث مصرف بیش از حد منابع و در نهایت از کار افتادن سرور شود. این مسئله نیاز به ابزارهای پروفایلینگ حافظه مانند <bdi dir="ltr">pprof</bdi> را دوچندان می‌کند.</p>
-
+<div class="quote-box">
+<p class="quote-text">دیباگ دو برابر نوشتن کد سخت است. بنابراین، اگر کد را تا حد امکان هوشمندانه بنویسید، بر اساس تعریف، به اندازه کافی هوشمند نیستید که آن را دیباگ کنید.</p>
+<p class="quote-source">
+<span class="quote-author">Brian Kernighan</span>
+<span class="quote-role">خالق زبان C و هم‌نویسنده The C Programming Language</span>
+</p>
+</div>
+<p>از مهارت‌های کلیدی که هر برنامه‌نویس حرفه‌ای باید داشته باشد، توانایی Debugging کد است. تجربه نشان داده که برنامه‌نویسان معمولاً بیشتر زمان توسعه‌ی خود را صرف دیباگ و رفع مشکلات می‌کنند تا نوشتن کد جدید. وقتی از محیط PHP به Go مهاجرت می‌کنید، ابزارها و روش‌های دیباگ کاملاً متفاوتی خواهید یافت. </p><p>در PHP با ابزارهای ساده‌ای مثل <bdi dir="ltr">var_dump()</bdi> و <bdi dir="ltr">dd()</bdi> می‌توانستید به‌سرعت مقادیر متغیرها را بررسی کنید، اما در Go به دلیل ماهیت کامپایل‌شده و مدل هم‌روندی متفاوت، نیاز به ابزارهای تخصصی‌تری دارید.</p>
+<h3 id="چرا-دیباگ-در-go-متفاوت-است">10.0.1 چرا دیباگ در Go متفاوت از PHP است؟</h3>
+<p>تفاوت بنیادین بین PHP و Go در فرآیند اجرای کد نهفته است. PHP یک زبان Interpreted است که کد شما را خط به خط در زمان اجرا می‌خواند و اجرا می‌کند. این یعنی هر زمان که خطایی رخ دهد، می‌توانید بلافاصله کد را تغییر دهید و بدون نیاز به کامپایل مجدد، نتیجه را ببینید.</p><p>در مقابل، Go یک زبان Compiled است که ابتدا کد شما را به باینری ماشین تبدیل می‌کند و سپس آن باینری اجرا می‌شود.</p><p>این تفاوت باعث می‌شود چرخه‌ی «تغییر-اجرا-بررسی» در Go کمی طولانی‌تر باشد، اما در عوض عملکرد بسیار بالاتری در تولید ارائه می‌دهد.</p>
+<p>اما تفاوت فقط در کامپایل نیست. Go از مدل هم‌روندی مبتنی بر <bdi dir="ltr">goroutine</bdi> و <bdi dir="ltr">channel</bdi> استفاده می‌کند که هیچ معادلی در PHP ندارد. </p><p>وقتی صدها goroutine به‌صورت همزمان در حال اجرا هستند، دیباگ کردن با <bdi dir="ltr">fmt.Println()</bdi> عملاً بی‌فایده است چون خروجی‌ها درهم‌ریخته خواهند بود و نمی‌توانید تشخیص دهید کدام goroutine کدام پیام را تولید کرده است. ابزارهای تخصصی مانند <bdi dir="ltr">Delve</bdi> و <bdi dir="ltr">pprof</bdi> برای حل همین چالش‌ها طراحی شده‌اند.</p>
+<p>همچنین در PHP مفهوم Memory Leak به همان معنای Go وجود ندارد، چون هر درخواست PHP پس از اتمام، تمام حافظه‌ی خود را آزاد می‌کند. </p><p>اما در Go برنامه‌ها معمولاً به‌عنوان پروسه‌های Long-running اجرا می‌شوند و حتی یک نشت کوچک حافظه می‌تواند در طول زمان باعث مصرف بیش از حد منابع و در نهایت از کار افتادن سرور شود. این مسئله نیاز به ابزارهای پروفایلینگ حافظه مانند <bdi dir="ltr">pprof</bdi> را دوچندان می‌کند.</p>
 <div class="important"><strong>نکته کلیدی:</strong> اشتباه رایج برنامه‌نویسان PHP هنگام مهاجرت به Go، تلاش برای استفاده از روش‌های دیباگ PHP در Go است. ابزارهایی مثل <bdi dir="ltr">fmt.Println()</bdi> معادل <bdi dir="ltr">var_dump()</bdi> نیستند و برای مشکلات واقعی Go کافی نیستند. باید ابزارهای تخصصی Go را یاد بگیرید.</div>
-
-<h3 id="مقایسه-xdebug-و-ابزارهای-go">مقایسه Xdebug و ابزارهای Go</h3>
+<h3 id="مقایسه-xdebug-و-ابزارهای-go">10.0.2 مقایسه Xdebug و ابزارهای Go</h3>
 <p>در اکوسیستم PHP، <bdi dir="ltr">Xdebug</bdi> ابزار اصلی دیباگ است. این ابزار یک extension بومی PHP است که breakpoint، step debugging، stack trace و profiling را در اختیار شما قرار می‌دهد. Xdebug به‌طور خودکار با هر درخواست PHP فعال می‌شود و نیازی به پیکربندی پیچیده ندارد. در مقابل، ابزارهای دیباگ Go رویکرد متفاوتی دارند:</p>
-
 <table class="comparison-table" dir="rtl">
 <thead>
 <tr><th>ویژگی</th><th>PHP (Xdebug)</th><th>Go (Delve + pprof)</th></tr>
@@ -99,37 +93,29 @@
 <tr><td>تأثیر عملکرد</td><td>۲۰-۴۰٪ کندتر در حالت فعال</td><td>بدون overhead در production</td></tr>
 <tr><td>پروفایلینگ CPU</td><td dir="ltr">Xdebug Profiler / Blackfire</td><td dir="ltr">pprof</td></tr>
 <tr><td>پروفایلینگ حافظه</td><td>محدود (GC خودکار هر درخواست)</td><td dir="ltr">pprof heap/allocs</td></tr>
-<tr><td>دیباگ همزمانی</td><td>محدود (تک‌نخی)</td><td>پشتیبانی کامل از goroutine و channel</td></tr>
+<tr><td>دیباگ هم‌روندی</td><td>محدود (تک‌نخی)</td><td>پشتیبانی کامل از goroutine و channel</td></tr>
 <tr><td>پروتکل دیباگ</td><td dir="ltr">DBGP</td><td dir="ltr">DAP / JSON-RPC</td></tr>
 <tr><td>رابط گرافیکی</td><td dir="ltr">PhpStorm</td><td dir="ltr">VS Code + Go Extension</td></tr>
 <tr><td>Remote Debugging</td><td dir="ltr">Xdebug + PhpStorm</td><td dir="ltr">Delve headless + VS Code</td></tr>
 <tr><td>Execution Tracing</td><td>ندارد</td><td dir="ltr">go tool trace</td></tr>
 </tbody>
 </table>
-
-<p>همان‌طور که مشاهده می‌کنید، هرچند Xdebug تجربه دیباگ ساده‌تری ارائه می‌دهد، اما ابزارهای Go قابلیت‌هایی دارند که در PHP قابل دستیابی نیست. به‌ویژه <bdi dir="ltr">go tool trace</bdi> برای تحلیل همزمانی و <bdi dir="ltr">pprof</bdi> برای پروفایلینگ حافظه، ابزارهایی هستند که در اکوسیستم PHP معادل واقعی ندارند.</p>
-
-<h3 id="نمای-کلی-ابزارهای-دیباگ-go">نمای کلی ابزارهای دیباگ Go</h3>
+<p>همان‌طور که مشاهده می‌کنید، هرچند Xdebug تجربه دیباگ ساده‌تری ارائه می‌دهد، اما ابزارهای Go قابلیت‌هایی دارند که در PHP قابل دستیابی نیست. به‌ویژه <bdi dir="ltr">go tool trace</bdi> برای تحلیل هم‌روندی و <bdi dir="ltr">pprof</bdi> برای پروفایلینگ حافظه، ابزارهایی هستند که در اکوسیستم PHP معادل واقعی ندارند.</p>
+<h3 id="نمای-کلی-ابزارهای-دیباگ-go">10.0.3 نمای کلی ابزارهای دیباگ Go</h3>
 <p>Go ابزارهای متنوعی برای دیباگ و ریشه‌یابی در اختیار توسعه‌دهندگان قرار می‌دهد که هر کدام برای نوع خاصی از مشکلات مناسب هستند. شناخت ابزار مناسب برای هر مشکل، کلید دیباگ مؤثر است:</p>
-
-<p><strong>ابزارهای پروفایلینگ و مانیتورینگ:</strong> ابزار <bdi dir="ltr">pprof</bdi> برای تحلیل مصرف CPU و حافظه، <bdi dir="ltr">go tool trace</bdi> برای تحلیل همزمانی و رویدادهای scheduler، و متغیر محیطی <bdi dir="ltr">GODEBUG</bdi> برای کنترل رفتار runtime بدون تغییر کد. این ابزارها بدون توقف برنامه قابل استفاده هستند و برای محیط production ایده‌آل می‌باشند.</p>
-
+<p><strong>ابزارهای پروفایلینگ و مانیتورینگ:</strong> ابزار <bdi dir="ltr">pprof</bdi> برای تحلیل مصرف CPU و حافظه، <bdi dir="ltr">go tool trace</bdi> برای تحلیل هم‌روندی و رویدادهای scheduler، و متغیر محیطی <bdi dir="ltr">GODEBUG</bdi> برای کنترل رفتار runtime بدون تغییر کد. این ابزارها بدون توقف برنامه قابل استفاده هستند و برای محیط production ایده‌آل می‌باشند.</p>
 <p><strong>ابزارهای دیباگ تعاملی:</strong> <bdi dir="ltr">Delve</bdi> دیباگر تخصصی Go است که امکان اجرای خط‌به‌خط، تعیین breakpoint، بررسی متغیرها و تحلیل goroutine‌ها را فراهم می‌کند. برخلاف GDB که دیباگر عمومی است، Delve ساختارهای داخلی Go را به‌درستی پشتیبانی می‌کند.</p>
-
 <p><strong>ابزارهای تحلیل ایستا:</strong> <bdi dir="ltr">go vet</bdi> برای شناسایی مشکلات رایج کد، <bdi dir="ltr">staticcheck</bdi> برای تحلیل عمیق‌تر ایستا، و <bdi dir="ltr">race detector</bdi> (<bdi dir="ltr">go test -race</bdi>) برای شناسایی race condition‌ها. این ابزارها قبل از اجرای کد مشکلات احتمالی را شناسایی می‌کنند.</p>
-
 <p><strong>ابزارهای تحلیل در زمان کامپایل:</strong> فلگ <bdi dir="ltr">-gcflags="-m"</bdi> برای مشاهده تصمیمات کامپایلر درباره escape analysis و inlining، و <bdi dir="ltr">-race</bdi> برای فعال‌سازی race detector در زمان کامپایل.</p>
-
 <div class="note"><strong>نکته:</strong> ابزارهای دیباگ Go به دو دسته اصلی تقسیم می‌شوند: ابزارهای بدون توقف مانند <bdi dir="ltr">pprof</bdi>، <bdi dir="ltr">go tool trace</bdi> و <bdi dir="ltr">GODEBUG</bdi> که حتی در محیط production هم قابل استفاده‌اند، و ابزارهای تعاملی مانند <bdi dir="ltr">Delve</bdi> که مختص توسعه‌اند. در PHP این تفکیک وجود ندارد چون <bdi dir="ltr">Xdebug</bdi> هر دو کار را در یک extension انجام می‌دهد اما به‌سبب overhead دائمی ۲۰-۴۰٪، عملاً در production قابل استفاده نیست. این تفاوت معماری یکی از اولین چیزهایی است که باید هنگام مهاجرت در ذهن نگه دارید.</div>
-
 <figure class="diagram" dir="ltr">
-<pre class="mermaid">flowchart TB
+<pre class="mermaid"><code>flowchart TB
     subgraph HEADER["نقشه فصل ۱۰: دیباگ و ریشه‌یابی"]
         direction LR
-        S1["۱۰.۱ مقدمه دیباگ<br/>مفاهیم پایه و ابزارها<br/>pprof, trace, race detector"]
-        S2["۱۰.۲ Delve<br/>دیباگر تخصصی Go<br/>break, step, goroutines, remote"]
-        S3["۱۰.۳ VS Code<br/>دیباگ گرافیکی<br/>launch.json, Docker, tests"]
-        S1 --> S2 --> S3
+        S1["۱۰.۱ مقدمه دیباگمفاهیم پایه و ابزارهاpprof, trace, race detector"]
+        S2["۱۰.۲ Delveدیباگر تخصصی Gobreak, step, goroutines, remote"]
+        S3["۱۰.۳ VS Codeدیباگ گرافیکیlaunch.json, Docker, tests"]
+        S1 --&gt; S2 --&gt; S3
     end
 
     subgraph CATS["دسته‌بندی مشکلات و ابزارهای مربوطه"]
@@ -141,7 +127,7 @@
             PA3["go tool trace"]
             PA4["runtime.ReadMemStats"]
         end
-        subgraph P2["مشکلات همزمانی"]
+        subgraph P2["مشکلات هم‌روندی"]
             direction TB
             PB1["go test -race"]
             PB2["pprof goroutine"]
@@ -188,38 +174,42 @@
     class S1,S2,S3 hdrBox;
     class P1,P2,P3,P4,P5,P6 catBox;
     class PA1,PA2,PA3,PA4,PB1,PB2,PB3,PB4,PC1,PC2,PC3,PC4,PD1,PD2,PD3,PD4,PE1,PE2,PE3,PE4,PF1,PF2,PF3,PF4 itemBox;
-    class note1,note2 noteBox;</pre>
+    class note1,note2 noteBox;</code></pre>
 <figcaption>شکل ۱۰-۱: نقشه فصل ۱۰ — دسته‌بندی مشکلات و ابزارهای دیباگ <bdi dir="ltr">Go</bdi></figcaption>
 </figure>
-
-<div class="note"><strong>نکته:</strong> در این فصل فرض بر این است که شما با مفاهیم پایه Go مانند goroutine، channel، interface و error handling آشنا هستید. اگر نیاز به مرور دارید، فصل‌های ۴ (خطایابی) و ۶ (همزمانی) را مراجعه کنید.</div>
-
-</div>
+<div class="note"><strong>نکته:</strong> در این فصل فرض بر این است که شما با مفاهیم پایه Go مانند goroutine، channel، interface و error handling آشنا هستید. اگر نیاز به مرور دارید، فصل‌های ۴ (خطایابی) و ۶ (هم‌روندی) را مراجعه کنید.</div>
+<div class="summary">
+<strong>خلاصه‌ی نکات کلیدی:</strong>
+<ul>
+<li>Delve debugger اختصاصی Go</li>
+<li>VSCode و Go extension برای IDE</li>
+<li>pprof برای CPU و memory profiling</li>
+<li>trace برای هم‌روندی debug</li>
+<li>runtime.ReadMemStats برای حافظه</li>
+</ul>
+</div></div>
 </main>
 </div>
-
 <!-- Footer -->
 <footer class="site-footer">
 <div class="footer-inner">
 <div class="footer-nav">
 <span class="nav-arrow">‹</span>
-<a href="09.03-opentelemetry.html" data-prev>۹.۳ OpenTelemetry</a>
+<a data-prev="" href="09.03-opentelemetry.html">۹.۳ OpenTelemetry</a>
 </div>
 <div class="footer-toc">
 <a href="00.01-contents.html">فهرست</a>
 </div>
 <div class="footer-nav">
-<a href="10.01-debugging-and-troubleshooting.html" data-next>۱۰.۱ دیباگ و ریشه‌یابی خطاها</a>
+<a data-next="" href="10.01-debugging-and-troubleshooting.html">۱۰.۱ دیباگ و ریشه‌یابی خطاها</a>
 <span class="nav-arrow">›</span>
 </div>
 </div>
 </footer>
-
 <!-- Back to Top -->
-<button class="back-to-top" aria-label="بازگشت به بالا">
-<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
+<button aria-label="بازگشت به بالا" class="back-to-top">
+<svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24"><polyline points="18 15 12 9 6 15"></polyline></svg>
 </button>
-
 <!-- Scripts -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/go.min.js"></script>
