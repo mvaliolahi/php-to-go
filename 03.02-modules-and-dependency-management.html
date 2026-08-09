@@ -128,7 +128,7 @@ golang.org/x/text v0.12.0
 <p dir="ltr">4. go get </p>
 <p>دستور go get برای افزودن یا به‌روزرسانی یک بسته یا ماژول استفاده می‌شود. این دستور نسخه مناسب بسته را دانلود می‌کند و در فایل go.mod ثبت می‌کند، به طوری که پروژه همیشه بتواند نسخه مشخصی از هر dependency را بازتولید کند.</p>
 <figure class="diagram" dir="ltr">
-<svg height="300" viewBox="0 0 600 300" width="600" xmlns="http://www.w3.org/2000/svg">
+<svg height="300" viewBox="0 0 600 300" width="600" xmlns="http://www.w3.org/2000/svg"><defs><filter id="sh54" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter></defs>
 <text fill="#00ADD8" font-size="15" font-weight="bold" text-anchor="middle" x="300" y="25" direction="ltr" unicode-bidi="embed">Go Modules vs Composer</text>
 <!-- Go side -->
 <rect fill="#e0f7fa" height="250" rx="12" stroke="#00ADD8" stroke-width="2" width="280" x="10" y="40"></rect>
@@ -273,10 +273,12 @@ use (
 </figure>
 <p>بدون <code>go.work</code> برای کار همزمان روی چند ماژول باید از <code>replace</code> در <code>go.mod</code> استفاده می‌کردید. اما <code>go.work</code> این کار را متمرکز و موقت می‌کند — فایل <code>go.work</code> نباید در repository کامیت شود و فقط برای توسعه‌ی محلی است.</p>
 
+<div class="note"><strong>نکته‌ی حرفه‌ای — راهنمای انتخاب بین <code dir="ltr">replace</code>، <code dir="ltr">vendor</code> و <code dir="ltr">go.work</code>:</strong> این سه ابزار برای سه سناریوی متفاوت طراحی شده‌اند و اشتباه گرفتن آن‌ها عامل رایج دردسر در تیم‌هاست. از <code>replace</code> فقط برای رفع موقت یک باگ در وابستگی خارجی استفاده کنید و حتماً قبل از <code>commit</code> آن را حذف کنید. از <code>vendor</code> برای تضمین تکرارپذیری <code>build</code> در محیط‌های ایزوله‌ی CI/CD بدون دسترسی اینترنت استفاده کنید. از <code>go.work</code> (Go 1.18+) برای توسعه‌ی هم‌زمان روی چند ماژول وابسته در همان ماشین استفاده کنید و هرگز آن را در <code>repository</code> قرار ندهید. این طبقه‌بندی ساده از ترکیب شدن این ابزارها و ایجاد وضعیت غیرقابل تکرار در <code>build</code> جلوگیری می‌کند.</div>
+
 <figure class="diagram" dir="ltr">
 <svg height="250" viewBox="0 0 650 250" width="650" xmlns="http://www.w3.org/2000/svg">
 <rect fill="#fafafa" height="250" rx="8" width="650" x="0" y="0"></rect>
-<defs><marker id="arrWs" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#00ADD8" points="0 0, 10 3.5, 0 7"></polygon></marker></defs>
+<defs><filter id="sh55" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter><marker id="arrWs" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#00ADD8" points="0 0, 10 3.5, 0 7"></polygon></marker></defs>
 <text fill="#00ADD8" font-size="15" font-weight="bold" text-anchor="middle" x="325" y="28" direction="rtl" unicode-bidi="embed">چرخه‌ی حیات ماژول <tspan direction="ltr" unicode-bidi="embed">Go</tspan></text>
 <rect fill="#e3f2fd" height="45" rx="8" stroke="#2196f3" stroke-width="2" width="120" x="20" y="60"></rect>
 <text fill="#1565c0" font-size="12" font-weight="bold" text-anchor="middle" x="80" y="87" direction="ltr" unicode-bidi="embed">go mod init</text>
@@ -427,7 +429,7 @@ ignore (
 
 <figure class="diagram" dir="ltr">
 <svg height="700" viewBox="0 0 900 700" width="900" xmlns="http://www.w3.org/2000/svg">
-<defs>
+<defs><filter id="sh56" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
 <marker id="arrChecksum" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#666" points="0 0, 10 3.5, 0 7"></polygon></marker>
 <marker id="arrGoTool" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#00ADD8" points="0 0, 10 3.5, 0 7"></polygon></marker>
 <marker id="arrVerified" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#4CAF50" points="0 0, 10 3.5, 0 7"></polygon></marker>

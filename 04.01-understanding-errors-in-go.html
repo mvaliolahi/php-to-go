@@ -177,6 +177,7 @@ if errors.As(err, &amp;nf) {
 </figure>
 <p><code dir="ltr">errors.Is</code> زنجیره‌ی خطا را با فراخوانی متد <code dir="ltr">Unwrap()</code> پیمایش می‌کند و هر حلقه را با خطای هدف مقایسه می‌کند. <code dir="ltr">errors.As</code> نیز همان مسیر را طی می‌کند اما به‌جای مقایسه‌ی برابری، از <code>interface</code> matching استفاده می‌کند.</p>
 <div class="important"><strong>مهم:</strong> به <code dir="ltr">errors.As</code> باید <strong>اشاره‌گر</strong> به متغیر از نوع موردنظر بدهید، نه خود نوع را. این‌گونه اگر تطبیق پیدا شود، مقدار خطا در متغیر قرار می‌گیرد و به فیلدهای آن دسترسی دارید.</div>
+<div class="note"><strong>قانون تصمیم‌گیری <code dir="ltr">errors.Is</code> در برابر <code dir="ltr">errors.As</code>:</strong> اگر می‌خواهید بدانید «آیا این خطا (یا خطای پنهان‌شده در زنجیره) همان خطای از پیش تعریف‌شده‌ی فلان است؟» از <code dir="ltr">errors.Is</code> استفاده کنید — معادل <code>err == sentinel</code> اما در کل زنجیره. اگر می‌خواهید فیلدهای یک نوع خطای سفارشی (مثل <code>Path</code> در <code>NotFoundError</code>) را استخراج کنید، از <code dir="ltr">errors.As</code> استفاده کنید — معادل <code>instanceof</code> در PHP. به‌طور خلاصه: <strong>Is برای مقدار، As برای نوع و استخراج داده.</strong></div>
 <h3 id="عملکرد-خطاها">عملکرد Performance خطاها در Go</h3>
 <p>برخلاف PHP Exception که در زمان ساخت به‌طور خودکار stack trace ثبت می‌کند، <code>error</code> در Go فقط یک رشته ذخیره می‌کند. این یعنی ساخت یک مقدار <code>error</code> بسیار سبک‌تر از ساختن یک Exception در PHP است:</p>
 <table class="comparison-table" dir="rtl">
@@ -240,7 +241,7 @@ func withStack(err error) error {
 <text fill="#333" font-size="13" text-anchor="middle" x="490" y="288" direction="rtl" unicode-bidi="embed">بررسی صریح خطا</text>
 <line marker-end="url(#arrowGreen)" stroke="#27ae60" stroke-width="2" x1="490" x2="490" y1="235" y2="260"></line>
 <!-- Arrow markers -->
-<defs>
+<defs><filter id="sh76" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
 <marker id="arrowPHP" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5">
 <polygon fill="#777BB4" points="0 0, 10 3.5, 0 7"></polygon>
 </marker>
@@ -334,7 +335,7 @@ if err != nil {
 <figure class="diagram" dir="ltr">
 <svg height="220" viewBox="0 0 600 220" width="600" xmlns="http://www.w3.org/2000/svg">
 <rect fill="#fafafa" height="220" rx="8" width="600" x="0" y="0"></rect>
-<defs><marker id="arrWrap" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#00ADD8" points="0 0, 10 3.5, 0 7"></polygon></marker></defs>
+<defs><filter id="sh77" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter><marker id="arrWrap" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#00ADD8" points="0 0, 10 3.5, 0 7"></polygon></marker></defs>
 <text fill="#00ADD8" font-size="14" font-weight="bold" text-anchor="middle" x="300" y="25" direction="rtl" unicode-bidi="embed">زنجیره‌ی <tspan direction="ltr" unicode-bidi="embed">Error</tspan> <tspan direction="ltr" unicode-bidi="embed">Wrapping</tspan></text>
 <rect fill="#e0f7fa" height="50" rx="8" stroke="#00ADD8" stroke-width="2" width="180" x="30" y="55"></rect>
 <text fill="#00ADD8" font-size="12" font-weight="bold" text-anchor="middle" x="120" y="75" direction="rtl" unicode-bidi="embed">خطای سطح ۳ (<tspan direction="ltr" unicode-bidi="embed">API</tspan>)</text>
@@ -358,7 +359,7 @@ if err != nil {
 </figure>
 
 <h3 id="error-anti-patterns">الگوهای ضد در مدیریت خطا</h3>
-<p>برنامه‌نویسان PHP هنگام مهاجرت به Go معمولاً الگوهای زیر را تکرار می‌کنند که همگی ضدالگوی (<bdi dir="ltr">anti-pattern</bdi>) محسوب می‌شوند:</p>
+<p>برنامه‌نویسان PHP هنگام مهاجرت به Go معمولاً الگوهای زیر را تکرار می‌کنند که همگی <bdi dir="ltr">anti-pattern</bdi> محسوب می‌شوند:</p>
 <p><strong>۱. نادیده گرفتن خطا:</strong> بدترین الگوی ممکن — خطا را کلاً بررسی نکردن.</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">// Wrong — never do this
@@ -480,7 +481,7 @@ if code, ok := errors.AsType[ErrorCode](err); ok {
 <figure class="diagram" dir="ltr">
 <svg height="720" viewBox="0 0 800 720" width="800" xmlns="http://www.w3.org/2000/svg">
 <rect fill="#fafafa" height="720" rx="8" width="800" x="0" y="0"></rect>
-<defs>
+<defs><filter id="sh78" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
 <marker id="arrFlowDown" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#4CAF50" points="0 0, 10 3.5, 0 7"></polygon></marker>
 <marker id="arrFlowUp" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#e91e63" points="0 0, 10 3.5, 0 7"></polygon></marker>
 <marker id="arrChain" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#00ADD8" points="0 0, 10 3.5, 0 7"></polygon></marker>

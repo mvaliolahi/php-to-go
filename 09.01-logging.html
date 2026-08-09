@@ -187,6 +187,8 @@ func main() {
 // log.Lmicroseconds // Higher time precision</code></pre>
 </figure>
 
+<div class="tip"><strong>slog یا log؟</strong> پکیج <code>log</code> برای اسکریپت‌های کوچک، <bdi dir="ltr">CLI</bdi>‌های ساده یا نمونه‌های اولیه کافی است؛ اما برای هر سرویس‌ Production که قرار است خروجی‌اش توسط <bdi dir="ltr">Loki</bdi>/<bdi dir="ltr">ELK</bdi> پردازش شود، حتماً از <code>slog</code> استفاده کنید. تفاوت کلیدی این است که <code>log</code> فقط پیام متنی تولید می‌کند (غیرقابل فیلترینگ)، اما <code>slog</code> خروجی ساختاریافته با <bdi dir="ltr">key-value</bdi> می‌دهد که قابل جستجو، نمایه‌سازی و تجمیع است. همچنین <code>slog</code> از <bdi dir="ltr">context.Context</bdi> پشتیبانی می‌کند که برای انتشار <bdi dir="ltr">trace_id</bdi> ضروری است.</div>
+
 <h3 id="slog-لاگگیری-ساختاریافته-در-go-1.21">slog: Logging ساخت‌یافته در Go 1.21+</h3>
 
 <div class="quote-box">
@@ -203,7 +205,7 @@ func main() {
 <strong>نکته‌ی حرفه‌ای:</strong> در سرویس‌های <bdi dir="ltr">Go</bdi> تولیدی، از لاگ‌گیری ساخت‌یافته (<bdi dir="ltr">slog</bdi>) با جفت‌های کلید-مقدار استفاده کنید به‌جای پیام‌های <bdi dir="ltr">printf</bdi>-محور. لاگ‌های ساخت‌یافته توسط ابزارهایی مثل <bdi dir="ltr">ELK</bdi> یا <bdi dir="ltr">Loki</bdi> قابل نمایه‌سازی، جستجو و تحلیل هستند، در حالی که لاگ‌های بدون ساختار فقط متنی هستند که کسی نمی‌خواند.
 </div>
 
-<p>از نسخه <bdi dir="ltr">Go 1.21</bdi> پکیج <code>log/slog</code> به پکیج استاندارد اضافه شد. این پکیج Logging ساخت‌یافته (<bdi dir="ltr">structured logging</bdi>) را به‌صورت بومی فراهم می‌کند و جایگزین بهتری برای ترکیب <bdi dir="ltr">log</bdi> با کتابخانه‌های جانبی است. <bdi dir="ltr">slog</bdi> بر اساس رابط <bdi dir="ltr">slog.Handler</bdi> طراحی شده که به شما امکان می‌دهد فرمت خروجی لاگ را بدون تغییر کد برنامه عوض کنید.</p>
+<p>از نسخه <bdi dir="ltr">Go 1.21</bdi> پکیج <code>log/slog</code> به پکیج استاندارد اضافه شد. این پکیج <bdi dir="ltr">structured logging</bdi> را به‌صورت بومی فراهم می‌کند و جایگزین بهتری برای ترکیب <bdi dir="ltr">log</bdi> با کتابخانه‌های جانبی است. <bdi dir="ltr">slog</bdi> بر اساس رابط <bdi dir="ltr">slog.Handler</bdi> طراحی شده که به شما امکان می‌دهد فرمت خروجی لاگ را بدون تغییر کد برنامه عوض کنید.</p>
 
 <p><strong>معماری داخلی slog:</strong> هر پیام لاگ ابتدا توسط <bdi dir="ltr">slog.Logger</bdi> به یک <bdi dir="ltr">slog.Record</bdi> تبدیل می‌شود و سپس به <bdi dir="ltr">slog.Handler</bdi> ارسال می‌شود. <bdi dir="ltr">Handler</bdi> مسئول تعیین فرمت خروجی (<bdi dir="ltr">JSON</bdi> ، <bdi dir="ltr">Text</bdi> یا سفارشی) و مقصد (<bdi dir="ltr">stdout</bdi> ، فایل و غیره) است.</p>
 
@@ -242,7 +244,7 @@ func main() {
 <div class="tip"><strong>نکته عملی:</strong> در پروژه‌های واقعی می‌توانید <bdi dir="ltr">Handler</bdi> سفارشی بنویسید که لاگ‌ها را هم‌زمان به <bdi dir="ltr">stdout</bdi> و به یک سرویس مرکزی ارسال کند. همچنین با <bdi dir="ltr">slog.HandlerOptions</bdi> می‌توانید سطوح لاگ و افزودن <bdi dir="ltr">source</bdi> (فایل و شماره خط) را کنترل کنید.</div>
 
 <h3 id="log-correlation">همبستگی لاگ با Trace</h3>
-<p>در سیستم‌های توزیع‌شده از الگوهای مهم اضافه کردن <bdi dir="ltr">trace_id</bdi> و <bdi dir="ltr">span_id</bdi> به هر رکورد لاگ است. این کار به شما امکان می‌دهد لاگ‌ها را با <bdi dir="ltr">Trace</bdi> ها در <bdi dir="ltr">Grafana</bdi> همبسته کنید:</p>
+<p>در سیستم‌های توزیع‌شده یکی از الگوهای مهم، اضافه‌کردن <bdi dir="ltr">trace_id</bdi> و <bdi dir="ltr">span_id</bdi> به هر رکورد لاگ است. این کار به شما اجازه می‌دهد لاگ‌ها را با <bdi dir="ltr">Trace</bdi>‌ها در <bdi dir="ltr">Grafana</bdi> همبسته کنید (پیاده‌سازی کامل <bdi dir="ltr">OpenTelemetry</bdi> و انتشار <bdi dir="ltr">Context</bdi> بین سرویس‌ها را در بخش ۹.۳ می‌بینید):</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">// Add trace_id to context and logger
 func withTraceLogger(ctx context.Context) *slog.Logger {
@@ -288,7 +290,7 @@ logger := slog.New(slog.NewJSONHandler(os.Stdout, &amp;slog.HandlerOptions{
 <h3 id="تجمیع-لاگها">الگوی تجمیع لاگ‌ها</h3>
 <figure class="diagram" dir="ltr">
 <svg height="300" viewBox="0 0 650 300" width="650" xmlns="http://www.w3.org/2000/svg">
-<defs>
+<defs><filter id="sh159" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
 <marker id="arrLog1" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#00ADD8" points="0 0,10 3.5,0 7"></polygon></marker>
 <marker id="arrLog2" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#4caf50" points="0 0,10 3.5,0 7"></polygon></marker>
 <marker id="arrLog3" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#ff9800" points="0 0,10 3.5,0 7"></polygon></marker>
@@ -629,7 +631,7 @@ func setupFileLogger() *slog.Logger {
 }</code></pre>
 </figure>
 
-<p>توجه کنید که <code>request_id</code> و <code>trace_id</code> در هر دو رکورد یکسان هستند — این همبستگی (<bdi dir="ltr">correlation</bdi>) امکان جستجوی تمام لاگ‌های مربوط به یک درخواست خاص را فراهم می‌کند.</p>
+<p>توجه کنید که <code>request_id</code> و <code>trace_id</code> در هر دو رکورد یکسان هستند — این <bdi dir="ltr">correlation</bdi> امکان جستجوی تمام لاگ‌های مربوط به یک درخواست خاص را فراهم می‌کند.</p>
 
 <h3 id="log-rotation">چرخش و مدیریت فایل لاگ</h3>
 <p>در محیط <bdi dir="ltr">production</bdi> فایل‌های لاگ نباید بی‌نهایت بزرگ شوند. سه رویکرد رایج برای مدیریت حجم Logs وجود دارد:</p>
@@ -658,7 +660,7 @@ func setupRotatingLogger() *slog.Logger {
 }</code></pre>
 </figure>
 
-<div class="note"><strong>بهترین رویکرد:</strong> در محیط‌های ابری و <bdi dir="ltr">Kubernetes</bdi> بهتر است برنامه فقط به <bdi dir="ltr">stdout/stderr</bdi> بنویسد و جمع‌آوری و چرخش لاگ‌ها را به <bdi dir="ltr">Fluentd</bdi> یا <bdi dir="ltr">Promtail</bdi> بسپارید. این رویکرد جداسازی مسئولیت (<bdi dir="ltr">separation of concerns</bdi>) را رعایت می‌کند و برنامه شما را از جزئیات زیرساخت مستقل می‌کند.</div>
+<div class="note"><strong>بهترین رویکرد:</strong> در محیط‌های ابری و <bdi dir="ltr">Kubernetes</bdi> بهتر است برنامه فقط به <bdi dir="ltr">stdout/stderr</bdi> بنویسد و جمع‌آوری و چرخش لاگ‌ها را به <bdi dir="ltr">Fluentd</bdi> یا <bdi dir="ltr">Promtail</bdi> بسپارید. این رویکرد <bdi dir="ltr">separation of concerns</bdi> را رعایت می‌کند و برنامه شما را از جزئیات زیرساخت مستقل می‌کند.</div>
 <h3 id="slog-multi-handler">تابع slog.NewMultiHandler — Go 1.26</h3>
 <p>
     تابع جدید <code>slog.NewMultiHandler</code> یک <code>MultiHandler</code> ایجاد می‌کند
@@ -731,7 +733,7 @@ func setupLogging() *slog.Logger {
 
 <h3 id="هرم-سطوح-لاگ-و-خط-لوله-ساختاریافته">هرم سطوح لاگ و خط لوله ساختاریافته</h3>
 
-<p>درک بصری سطوح لاگ و جریان داده در خط لوله ساختاریافته (<bdi dir="ltr">structured logging pipeline</bdi>) برای طراحی سیستم لاگ‌گیری مؤثر ضروری است. هر سطح لاگ هدف مشخصی دارد و باید با دقت انتخاب شود. سطح <bdi dir="ltr">DEBUG</bdi> بیشترین حجم خروجی را تولید می‌کند و فقط در محیط توسعه باید فعال باشد. سطح <bdi dir="ltr">FATAL</bdi> کمترین فراوانی را دارد اما بیشترین اهمیت را در <bdi dir="ltr">production</bdi>. درخواست‌های <bdi dir="ltr">HTTP</bdi> معمولاً در سطح <bdi dir="ltr">INFO</bdi> لاگ می‌شوند اما جزئیات هدرها و بدنه درخواست در سطح <bdi dir="ltr">DEBUG</bdi>. خط لوله ساختاریافته تضمین می‌کند که هر رکورد لاگ از منبع تا مقصد با کلید-مقدارهای (<bdi dir="ltr">key-value pairs</bdi>) ثابت حفظ شود و قابلیت جستجو و فیلترینگ در سیستم‌هایی مثل <bdi dir="ltr">ELK</bdi> یا <bdi dir="ltr">Loki</bdi> را داشته باشد.</p>
+<p>درک بصری سطوح لاگ و جریان داده در <bdi dir="ltr">structured logging pipeline</bdi> برای طراحی سیستم لاگ‌گیری مؤثر ضروری است. هر سطح لاگ هدف مشخصی دارد و باید با دقت انتخاب شود. سطح <bdi dir="ltr">DEBUG</bdi> بیشترین حجم خروجی را تولید می‌کند و فقط در محیط توسعه باید فعال باشد. سطح <bdi dir="ltr">FATAL</bdi> کمترین فراوانی را دارد اما بیشترین اهمیت را در <bdi dir="ltr">production</bdi>. درخواست‌های <bdi dir="ltr">HTTP</bdi> معمولاً در سطح <bdi dir="ltr">INFO</bdi> لاگ می‌شوند اما جزئیات هدرها و بدنه درخواست در سطح <bdi dir="ltr">DEBUG</bdi>. این خط لوله تضمین می‌کند که هر رکورد لاگ از منبع تا مقصد با <bdi dir="ltr">key-value pairs</bdi> ثابت حفظ شود و قابلیت جستجو و فیلترینگ در سیستم‌هایی مثل <bdi dir="ltr">ELK</bdi> یا <bdi dir="ltr">Loki</bdi> را داشته باشد.</p>
 
 <figure class="diagram" dir="ltr">
 <svg height="520" viewBox="0 0 720 520" width="720" xmlns="http://www.w3.org/2000/svg">
@@ -831,19 +833,19 @@ func setupLogging() *slog.Logger {
 <figcaption>شکل ۹-۳: هرم سطوح لاگ (چپ) و خط لوله <bdi dir="ltr">Structured Logging</bdi> با <bdi dir="ltr">slog.NewMultiHandler</bdi> (راست) — مقایسه <bdi dir="ltr">PHP Monolog</bdi> با <bdi dir="ltr">Go slog</bdi></figcaption>
 </figure>
 
-<p>در خط لوله ساختاریافته هر رکورد لاگ با فیلدهای کلید-مقداری (<bdi dir="ltr">key-value fields</bdi>) تولید می‌شود و سپس از طریق <bdi dir="ltr">slog.Handler</bdi> به فرمت مورد نظر تبدیل و به مقصد ارسال می‌شود. تابع <bdi dir="ltr">slog.NewMultiHandler</bdi> امکان ارسال همزمان یک رکورد لاگ به چندین <bdi dir="ltr">Handler</bdi> (و در نتیجه چندین مقصد) را بدون نیاز به لاگرهای جداگانه فراهم می‌کند. این الگو تضمین می‌کند که تمام مقاصد دقیقاً همان رکورد لاگ را با همان فیلدها و ترتیب دریافت کنند. در مقایسه با <bdi dir="ltr">PHP Monolog</bdi> که در هر درخواست یک نمونه جدید می‌سازد، <bdi dir="ltr">slog</bdi> یک‌بار در شروع برنامه مقداردهی می‌شود و به‌صورت <bdi dir="ltr">goroutine-safe</bdi> بین تمام <bdi dir="ltr">goroutine</bdi>‌ها به اشتراک گذاشته می‌شود. این تفاوت معماری در سیستم‌های با بار بالا اهمیت ویژه‌ای پیدا می‌کند.</p>
+<p>در این خط لوله هر رکورد لاگ با <bdi dir="ltr">key-value fields</bdi> تولید می‌شود و سپس از طریق <bdi dir="ltr">slog.Handler</bdi> به فرمت مورد نظر تبدیل و به مقصد ارسال می‌شود. تابع <bdi dir="ltr">slog.NewMultiHandler</bdi> امکان ارسال همزمان یک رکورد لاگ به چندین <bdi dir="ltr">Handler</bdi> (و در نتیجه چندین مقصد) را بدون نیاز به لاگرهای جداگانه فراهم می‌کند. این الگو تضمین می‌کند که تمام مقاصد دقیقاً همان رکورد لاگ را با همان فیلدها و ترتیب دریافت کنند. در مقایسه با <bdi dir="ltr">PHP Monolog</bdi> که در هر درخواست یک نمونه جدید می‌سازد، <bdi dir="ltr">slog</bdi> یک‌بار در شروع برنامه مقداردهی می‌شود و به‌صورت <bdi dir="ltr">goroutine-safe</bdi> بین تمام <bdi dir="ltr">goroutine</bdi>‌ها به اشتراک گذاشته می‌شود. این تفاوت معماری در سیستم‌های با بار بالا اهمیت ویژه‌ای پیدا می‌کند.</p>
 
 <h3 id="سناریوهای-عملیاتی-لاگ">سناریوهای عملیاتی</h3>
 
 <ul>
 <li><strong>انتخاب سطح لاگ در عمل:</strong> تصمیم بین <bdi dir="ltr">INFO</bdi> و <bdi dir="ltr">DEBUG</bdi> یکی از رایج‌ترین چالش‌هاست. قانون تجربی: اگر اطلاعات فقط برای عیب‌یابی فعلی مفید است از <bdi dir="ltr">DEBUG</bdi> استفاده کنید. اگر برای نظارت بلندمدت و تحلیل روندها لازم است <bdi dir="ltr">INFO</bdi> را برگزینید. مثلاً لاگ «درخواست دریافتی» در سطح <bdi dir="ltr">INFO</bdi> مناسب است اما «محتوای <bdi dir="ltr">JSON</bdi> بدنه درخواست» در سطح <bdi dir="ltr">DEBUG</bdi>.</li>
 <li><strong>لاگ ساختاریافته برای <bdi dir="ltr">ELK/Loki</bdi>:</strong> برای جستجوی مؤثر در <bdi dir="ltr">Loki</bdi> یا <bdi dir="ltr">Elasticsearch</bdi> هر فیلد باید کلید مشخصی داشته باشد. از <code>slog.String("user_id", uid)</code> به‌جای <bdi dir="ltr">fmt.Sprintf</bdi> در پیام لاگ استفاده کنید. فیلدهای ساختاریافته امکان فیلترینگ دقیق مانند <code>{service="order-api"} |~ "status=500"</code> را فراهم می‌کنند.</li>
-<li><strong>نمونه‌برداری لاگ (<bdi dir="ltr">log sampling</bdi>) در سرویس‌های پرترافیک:</strong> در سرویس‌هایی با هزاران درخواست در ثانیه، ثبت تمام لاگ‌ها غیرعملی است. با <bdi dir="ltr">slog</bdi> می‌توانید <bdi dir="ltr">Handler</bdi> سفارشی بنویسید که فقط هر N رکورد را ثبت کند یا از الگوریتم <bdi dir="ltr">leaky bucket</bdi> برای محدودسازی نرخ لاگ استفاده نماید.</li>
-<li><strong>لاگ‌گیری چندمقصدی (<bdi dir="ltr">multi-output</bdi>):</strong> با <bdi dir="ltr">slog.NewMultiHandler</bdi> می‌توانید همزمان به <bdi dir="ltr">stdout</bdi> (برای <bdi dir="ltr">Fluentd</bdi>)، فایل محلی (برای دیباگ فوری) و یک سرویس ابری (برای هشداردهی) لاگ ارسال کنید. هر <bdi dir="ltr">Handler</bdi> فرمت و سطح خود را دارد: فایل با <bdi dir="ltr">TextHandler</bdi> و سطح <bdi dir="ltr">DEBUG</bdi>، سرویس ابری با <bdi dir="ltr">JSONHandler</bdi> و سطح <bdi dir="ltr">ERROR</bdi>.</li>
-<li><strong>شناسه‌های همبستگی (<bdi dir="ltr">correlation IDs</bdi>) برای ردیابی درخواست:</strong> در سیستم‌های توزیع‌شده هر درخواست باید <bdi dir="ltr">correlation ID</bdi> منحصربه‌فردی داشته باشد که در تمام لاگ‌های مربوط به همان درخواست تکرار شود. این الگو با <code dir="ltr">slog.With("correlation_id", id)</code> به‌سادگی قابل پیاده‌سازی است و امکان دنبال‌کردن مسیر یک درخواست از <bdi dir="ltr">gateway</bdi> تا دیتابیس را فراهم می‌کند.</li>
+<li><strong><bdi dir="ltr">log sampling</bdi> در سرویس‌های پرترافیک:</strong> در سرویس‌هایی با هزاران درخواست در ثانیه، ثبت تمام لاگ‌ها غیرعملی است. با <bdi dir="ltr">slog</bdi> می‌توانید <bdi dir="ltr">Handler</bdi> سفارشی بنویسید که فقط هر N رکورد را ثبت کند یا از الگوریتم <bdi dir="ltr">leaky bucket</bdi> برای محدودسازی نرخ لاگ استفاده نماید.</li>
+<li><strong><bdi dir="ltr">multi-output</bdi>:</strong> با <bdi dir="ltr">slog.NewMultiHandler</bdi> می‌توانید همزمان به <bdi dir="ltr">stdout</bdi> (برای <bdi dir="ltr">Fluentd</bdi>)، فایل محلی (برای دیباگ فوری) و یک سرویس ابری (برای هشداردهی) لاگ ارسال کنید. هر <bdi dir="ltr">Handler</bdi> فرمت و سطح خود را دارد: فایل با <bdi dir="ltr">TextHandler</bdi> و سطح <bdi dir="ltr">DEBUG</bdi>، سرویس ابری با <bdi dir="ltr">JSONHandler</bdi> و سطح <bdi dir="ltr">ERROR</bdi>.</li>
+<li><strong><bdi dir="ltr">correlation IDs</bdi> برای ردیابی درخواست:</strong> در سیستم‌های توزیع‌شده هر درخواست باید <bdi dir="ltr">correlation ID</bdi> منحصربه‌فردی داشته باشد که در تمام لاگ‌های مربوط به همان درخواست تکرار شود. این الگو با <code dir="ltr">slog.With("correlation_id", id)</code> به‌سادگی قابل پیاده‌سازی است و امکان دنبال‌کردن مسیر یک درخواست از <bdi dir="ltr">gateway</bdi> تا دیتابیس را فراهم می‌کند.</li>
 </ul>
 
-<div class="tip"><strong>نکته کلیدی درباره لاگ ساختاریافته:</strong> همیشه از فیلدهای ساختاریافته (<bdi dir="ltr">structured fields</bdi>) با کلید-مقدار استفاده کنید و از <bdi dir="ltr">fmt.Sprintf</bdi> در پیام لاگ پرهیز کنید. تفاوت را ببینید: ❌ <code>slog.Info(fmt.Sprintf("User %s logged in from %s", user, ip))</code> — این لاگ قابل جستجو نیست. ✅ <code>slog.Info("User logged in", slog.String("user_id", user), slog.String("ip", ip))</code> — این لاگ با <code>{user_id="alice"}</code> در <bdi dir="ltr">Loki</bdi> قابل فیلترینگ است. لاگ‌های ساختاریافته به شما امکان می‌دهند دقیقاً رکوردهایی که یک فیلد خاص دارند را پیدا کنید، در حالی که لاگ‌های متنی فقط جستجوی متنی ساده را پشتیبانی می‌کنند.</div>
+<div class="tip"><strong>نکته کلیدی درباره لاگ ساختاریافته:</strong> همیشه از <bdi dir="ltr">structured fields</bdi> با کلید-مقدار استفاده کنید و از <bdi dir="ltr">fmt.Sprintf</bdi> در پیام لاگ پرهیز کنید. تفاوت را ببینید: ❌ <code>slog.Info(fmt.Sprintf("User %s logged in from %s", user, ip))</code> — این لاگ قابل جستجو نیست. ✅ <code>slog.Info("User logged in", slog.String("user_id", user), slog.String("ip", ip))</code> — این لاگ با <code>{user_id="alice"}</code> در <bdi dir="ltr">Loki</bdi> قابل فیلترینگ است. لاگ‌های ساختاریافته به شما امکان می‌دهند دقیقاً رکوردهایی که یک فیلد خاص دارند را پیدا کنید، در حالی که لاگ‌های متنی فقط جستجوی متنی ساده را پشتیبانی می‌کنند.</div>
 
 </div>
 </div>

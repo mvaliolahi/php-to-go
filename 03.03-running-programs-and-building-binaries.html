@@ -71,7 +71,7 @@
 <h2 id="اجرای-برنامه-و--ساخت-فایل-خروجی">اجرای برنامه و ساخت فایل خروجی</h2>
 <figure class="diagram" dir="ltr">
 <svg height="200" viewBox="0 0 650 200" width="650" xmlns="http://www.w3.org/2000/svg">
-<defs><marker id="arr33" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#00ADD8" points="0 0, 10 3.5, 0 7"></polygon></marker></defs>
+<defs><filter id="sh57" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter><marker id="arr33" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#00ADD8" points="0 0, 10 3.5, 0 7"></polygon></marker></defs>
 <text fill="#00ADD8" font-size="15" font-weight="bold" text-anchor="middle" x="325" y="25" direction="rtl" unicode-bidi="embed">فرآیند ساخت و اجرا در <tspan direction="ltr" unicode-bidi="embed">Go</tspan></text>
 <rect fill="#e3f2fd" height="45" rx="8" stroke="#2196f3" stroke-width="1.5" width="130" x="10" y="45"></rect>
 <text fill="#1565c0" font-size="13" text-anchor="middle" x="75" y="72" direction="rtl" unicode-bidi="embed">کد .<tspan direction="ltr" unicode-bidi="embed">go</tspan></text>
@@ -269,7 +269,7 @@ go build -ldflags="\
 <div class="tip"><strong>نکته عملی:</strong> این الگو در پروژه‌های واقعی بسیار رایج است. اکثر ابزارهای Go (مثل <code>go version</code>) از همین روش برای نمایش اطلاعات نسخه استفاده می‌کنند. در CI/CD خود حتماً این مقادیر را تزریق کنید تا بدانید هر باینری دقیقاً از کدام commit ساخته شده.</div>
 
 <h3 id="race-detector">Race Detector</h3>
-<p>Go ابزار داخلی قدرتمندی برای شناسایی <strong>مسابقه داده</strong> (<bdi dir="ltr">data race</bdi>) دارد. مسابقه داده زمانی رخ می‌دهد که دو goroutine همزمان به یک حافظه دسترسی داشته باشند و حداقل یکی از آن‌ها عمل نوشتن انجام دهد. این باگ‌ها به‌سختی قابل تشخیص هستند چون ممکن است فقط در شرایط خاص تکرار شوند.</p>
+<p>Go ابزار داخلی قدرتمندی برای شناسایی <strong dir="ltr">data race</strong> دارد. data race زمانی رخ می‌دهد که دو goroutine همزمان به یک حافظه دسترسی داشته باشند و حداقل یکی از آن‌ها عمل نوشتن انجام دهد. این باگ‌ها به‌سختی قابل تشخیص هستند چون ممکن است فقط در شرایط خاص تکرار شوند.</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">// Build and run with race detector
 go build -race -o myapp
@@ -319,7 +319,7 @@ upx --best myapp
 <figure class="diagram" dir="ltr">
 <svg height="250" viewBox="0 0 650 250" width="650" xmlns="http://www.w3.org/2000/svg">
 <rect fill="#fafafa" height="250" rx="8" width="650" x="0" y="0"></rect>
-<defs><marker id="arrBuild" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#00ADD8" points="0 0, 10 3.5, 0 7"></polygon></marker></defs>
+<defs><filter id="sh58" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter><marker id="arrBuild" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#00ADD8" points="0 0, 10 3.5, 0 7"></polygon></marker></defs>
 <text fill="#00ADD8" font-size="15" font-weight="bold" text-anchor="middle" x="325" y="28" direction="rtl" unicode-bidi="embed">خط لوله‌ی ساخت (<tspan direction="ltr" unicode-bidi="embed">Build</tspan> <tspan direction="ltr" unicode-bidi="embed">Pipeline</tspan>)</text>
 <!-- Source -->
 <rect fill="#e3f2fd" height="50" rx="8" stroke="#2196f3" stroke-width="2" width="100" x="15" y="60"></rect>
@@ -361,12 +361,12 @@ upx --best myapp
 </figure>
 
 <h3 id="خط-لوله-کامپایل-go-از-منبع-تا-باینری">خط لوله‌ی کامپایل <bdi dir="ltr">Go</bdi>: از منبع تا باینری</h3>
-<p>کامپایلر <bdi dir="ltr">Go</bdi> چندین مرحله‌ی پیوسته را برای تبدیل کد منبع به فایل باینری اجرایی طی می‌کند. هر مرحله خروجی مرحله‌ی قبلی را دریافت کرده و تبدیلی مشخص روی آن انجام می‌دهد. درک این خط لوله به شما کمک می‌کند تا رفتار کامپایلر، خطاهای احتمالی و فرصت‌های بهینه‌سازی را بهتر بشناسید. مرحله‌ی اول، تجزیه‌ی کد منبع به <bdi dir="ltr">token</bdi> و ساخت <bdi dir="ltr">AST</bdi> است. مرحله‌ی دوم، بررسی انواع و تطبیق تایپ‌هاست. مرحله‌ی سوم، تولید فرم میانی <bdi dir="ltr">SSA</bdi> و اعمال بهینه‌سازی‌هاست. مرحله‌ی نهایی، تولید کد ماشین و لینک کردن باینری خروجی است.</p>
+<p>همان‌طور که در بخش «مراحل کامپایل در Go» دیدید، کامپایلر <bdi dir="ltr">Go</bdi> کد منبع را طی چندین مرحله‌ی پیوسته (Parsing → Type Checking → SSA → Optimization → Code Generation → Linking) به فایل باینری اجرایی تبدیل می‌کند. نمودار زیر این خط لوله را به‌صورت بصری به همراه مقایسه‌ی سه دستور <code dir="ltr">go build</code>، <code dir="ltr">go run</code> و <code dir="ltr">go install</code> نشان می‌دهد.</p>
 
 <figure class="diagram" dir="ltr">
 <svg height="380" viewBox="0 0 480 380" width="480" xmlns="http://www.w3.org/2000/svg">
 <rect fill="#fafafa" height="380" rx="8" width="480" x="0" y="0"></rect>
-<defs><marker id="arrPipe" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#00ADD8" points="0 0, 10 3.5, 0 7"></polygon></marker></defs>
+<defs><filter id="sh59" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter><marker id="arrPipe" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#00ADD8" points="0 0, 10 3.5, 0 7"></polygon></marker></defs>
 <text fill="#00ADD8" font-size="14" font-weight="bold" text-anchor="middle" x="240" y="25" direction="rtl" unicode-bidi="embed">خط لوله‌ی کامپایل <tspan direction="ltr" unicode-bidi="embed">Go</tspan>: <tspan direction="ltr" unicode-bidi="embed">Source → AST → SSA → Machine Code</tspan></text>
 
 <!-- Source .go -->
@@ -456,6 +456,8 @@ upx --best myapp
 </ul>
 
 <div class="tip"><strong>نکته‌ی عملی:</strong> برای باینری‌های تولیدی حتماً از <code dir="ltr">-ldflags="-s -w"</code> استفاده کنید تا اندازه کاهش یابد. همچنین با <code dir="ltr">-X main.version=1.2.3</code> می‌توانید اطلاعات نسخه را در زمان ساخت تزریق کنید. ترکیب کامل: <code dir="ltr">go build -ldflags="-s -w -X main.version=$(git describe --tags) -X main.commit=$(git rev-parse --short HEAD)" -trimpath -o myapp</code>. پرچم <code dir="ltr">-trimpath</code> مسیرهای محلی را از باینری حذف می‌کند که برای تکرارپذیری بیلد و امنیت مهم است.</div>
+
+<div class="note"><strong>نکته‌ی حرفه‌ای — تفاوت <code dir="ltr">go build</code>، <code dir="ltr">go install</code> و <code dir="ltr">go run</code>:</strong> <code dir="ltr">go run</code> برای توسعه‌ی سریع استفاده می‌شود، کد را کامپایل می‌کند، اجرا می‌کند و سپس باینری موقت را پاک می‌کند. <code dir="ltr">go build</code> باینری پایدار در دایرکتوری جاری می‌سازد و مناسب CI/CD است. <code dir="ltr">go install</code> باینری را در <code dir="ltr">GOBIN</code> (یا <code dir="ltr">GOPATH/bin</code>) نصب می‌کند تا از هر مسیری قابل اجرا باشد — این بهترین روش برای نصب ابزارهای توسعه مثل <code dir="ltr">golangci-lint</code> یا <code dir="ltr">air</code> است. در Go 1.24 به بعد، ابزارهای پروژه‌ای را با دستورالعمل <code dir="ltr">tool</code> در <code dir="ltr">go.mod</code> مدیریت کنید (به بخش ۳.۲ مراجعه کنید) تا نسخه‌ی ابزار بین اعضای تیم ثابت بماند.</div>
 </div>
 </main>
 </div>

@@ -155,6 +155,8 @@
 
 <p><strong>Traces:</strong> ردیابی مسیر یک درخواست از ورود تا خروج. <bdi dir="ltr">Trace</bdi> ها به شما می‌گویند <em>کجا</em> و <em>چرا</em> یک درخواست کند بوده. مثلاً «درخواست ۴۲۰ میلی‌ثانیه طول کشیده: ۵۰ میلی‌ثانیه کوئری دیتابیس، ۸۰ میلی‌ثانیه رندر قالب، ۱۰ میلی‌ثانیه <bdi dir="ltr">Redis</bdi>».</p>
 
+<div class="tip"><strong>نکته‌ی اولویت‌بندی:</strong> اگر در حال migrations از <bdi dir="ltr">PHP</bdi> به <bdi dir="ltr">Go</bdi> هستید و منابع محدودی دارید، با <bdi dir="ltr">Logging</bdi> شروع کنید (پایه‌ای‌ترین ابزار)، سپس <bdi dir="ltr">Metrics</bdi> اضافه کنید (برای مانیتورینگ بلندمدت) و در نهایت <bdi dir="ltr">Tracing</bdi> را پیاده‌سازی کنید (وقتی چند سرویس دارید). هر سه رکن لازم نیستند همزمان پیاده شوند؛ حتی فقط <bdi dir="ltr">Logging</bdi> ساختاریافته و چند <bdi dir="ltr">Metric</bdi> کلیدی، به‌مراتب بهتر از هیچ <bdi dir="ltr">Observability</bdi>ی است.</div>
+
 <div class="important"><strong>تفاوت با PHP:</strong> در <bdi dir="ltr">PHP</bdi> معمولاً <bdi dir="ltr">Monolog</bdi> برای Logs و <bdi dir="ltr">New Relic</bdi> یا <bdi dir="ltr">Datadog</bdi> برای مانیتورینگ کافی است. اما در <bdi dir="ltr">Go</bdi> به دلیل مدل <bdi dir="ltr">concurrent</bdi> و معماری میکروسرویس، نیاز به سیستم <bdi dir="ltr">Observability</bdi> جامع‌تری دارید. خوشبختانه اکوسیستم <bdi dir="ltr">Go</bdi> ابزارهای قدرتمندی دارد که همگی متن‌باز هستند.</div>
 
 <h3 id="سناریو-واقعی-چرا-بدون-مشاهدهپذیری-گم-میشویم">سناریو واقعی: چرا بدون Observability گم می‌شویم</h3>

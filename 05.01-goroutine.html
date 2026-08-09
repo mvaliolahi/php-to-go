@@ -99,7 +99,7 @@ go func() { // run anonymous function in goroutine
 <figure class="diagram" dir="ltr">
 <svg height="240" viewBox="0 0 700 240" width="700" xmlns="http://www.w3.org/2000/svg">
 <rect fill="#fafafa" height="240" rx="8" width="700" x="0" y="0"></rect>
-<defs>
+<defs><filter id="sh89" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
 <marker id="aP" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#777BB4" points="0 0,10 3.5,0 7"></polygon></marker>
 </defs>
 <text fill="#777BB4" font-size="15" font-weight="bold" text-anchor="middle" x="350" y="25" direction="rtl" unicode-bidi="embed">مدل پردازشی <tspan direction="ltr" unicode-bidi="embed">PHP</tspan>: هر درخواست = یک <tspan direction="ltr" unicode-bidi="embed">Process</tspan> مستقل</text>
@@ -140,7 +140,7 @@ go func() { // run anonymous function in goroutine
     </div>
     <p>Uber به‌طور گسترده از goroutine‌ها برای مدیریت صدها هزار درخواست همزمان استفاده می‌کند. در مقایسه با مدل thread-per-request جاوا که هر thread حدود ۱ مگابایت حافظه مصرف می‌کند، هر goroutine تنها حدود ۲ تا ۸ کیلوبایت حافظه استک اولیه دارد. این تفاوت به Uber اجازه می‌دهد میلیون‌ها goroutine را در یک سرور اجرا کند. در عمل، این یعنی یک سرور Go با ۸ گیگابایت حافظه می‌تواند حدود یک میلیون goroutine فعال داشته باشد، در حالی که همان سرور با مدل thread جاوا تنها حدود ۸ هزار thread می‌تواند نگه دارد.</p>
     <p>مدل همزمانی goroutine مزیت مهم دیگری هم دارد: زمان ایجاد. ایجاد یک thread جدید در سیستم‌عامل حدود ۱ تا ۱۰ میکروسثانیه طول می‌کشد و شامل تخصیص حافظه، تنظیم stack و ثبت در scheduler سیستم‌عامل است. اما ایجاد یک goroutine تنها حدود ۳۰۰ نانوثانیه طول می‌کشد چون Go scheduler داخلی این کار را با کارایی بسیار بالاتری انجام می‌دهد. این تفاوت در مقیاس صدها هزار درخواست بر ثانیه، تفاوت بین یک سیستم پاسخگو و یک سیستم فروپاشیده است.</p>
-    <p>از چالش‌های اصلی: نشتی goroutine (goroutine leak) که در آن goroutine‌ها هرگز خاتمه نمی‌یابند و حافظه نشت می‌کند. این مشکل در سیستم‌های تولیدی بسیار شایع است و Uber ابزارهای مانیتورینگ مخصوصی برای ردیابی goroutine‌های زامبی توسعه داده است. این ابزارها تعداد goroutine فعال را به‌صورت مداوم مانیتور می‌کنند و اگر روند افزایشی غیرعادی مشاهده کنند، هشدار می‌دهند. بدون این مانیتورینگ، نشتی goroutine می‌تواند به تدریج منابع سرور را تخلیه کند و باعث قطعی سرویس شود.</p>
+    <p>از چالش‌های اصلی: goroutine leak که در آن goroutine‌ها هرگز خاتمه نمی‌یابند و حافظه نشت می‌کند. این مشکل در سیستم‌های تولیدی بسیار شایع است و Uber ابزارهای مانیتورینگ مخصوصی برای ردیابی goroutine‌های زامبی توسعه داده است. این ابزارها تعداد goroutine فعال را به‌صورت مداوم مانیتور می‌کنند و اگر روند افزایشی غیرعادی مشاهده کنند، هشدار می‌دهند. بدون این مانیتورینگ، نشتی goroutine می‌تواند به تدریج منابع سرور را تخلیه کند و باعث قطعی سرویس شود.</p>
     <p class="case-study-source">
         <span class="source-event">GopherCon 2019</span>
         <span class="source-year">، ۲۰۱۹</span>
@@ -173,7 +173,7 @@ go func() { // run anonymous function in goroutine
 <figure class="diagram" dir="ltr">
 <svg height="280" viewBox="0 0 600 280" width="600" xmlns="http://www.w3.org/2000/svg">
 <rect fill="#fafafa" height="280" rx="8" width="600" x="0" y="0"></rect>
-<defs>
+<defs><filter id="sh90" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
 <marker id="aStk1" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#00ADD8" points="0 0,10 3.5,0 7"></polygon></marker>
 <marker id="aStk2" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#27ae60" points="0 0,10 3.5,0 7"></polygon></marker>
 </defs>
@@ -224,12 +224,12 @@ go func() { // run anonymous function in goroutine
 
 <p><strong><bdi dir="ltr">M (Machine)</bdi>:</strong> هر <bdi dir="ltr">M</bdi> نماینده‌ی یک <bdi dir="ltr">Thread</bdi> واقعی سیستم‌عامل است (<code dir="ltr">runtime.m</code>). تعداد <bdi dir="ltr">M</bdi>‌ها می‌تواند بیشتر از <bdi dir="ltr">P</bdi>‌ها باشد (مثلاً وقتی <bdi dir="ltr">Goroutine</bdi> در <bdi dir="ltr">Syscall</bdi> مسدود شده باشد). هر <bdi dir="ltr">M</bdi> بدون <bdi dir="ltr">P</bdi> نمی‌تواند <bdi dir="ltr">G</bdi> اجرا کند.</p>
 
-<p><strong><bdi dir="ltr">P (Processor)</bdi>:</strong> هر <bdi dir="ltr">P</bdi> نماینده‌ی یک منبع مجازی اجرایی است (<code dir="ltr">runtime.p</code>). تعداد <bdi dir="ltr">P</bdi>‌ها برابر با <code>GOMAXPROCS</code> (پیش‌فرض: تعداد هسته‌های <bdi dir="ltr">CPU</bdi>) است. هر <bdi dir="ltr">P</bdi> یک صف محلی (<bdi dir="ltr">Local Run Queue</bdi>) با ظرفیت ۲۵۶ <bdi dir="ltr">Goroutine</bdi> دارد.</p>
+<p><strong><bdi dir="ltr">P (Processor)</bdi>:</strong> هر <bdi dir="ltr">P</bdi> نماینده‌ی یک منبع مجازی اجرایی است (<code dir="ltr">runtime.p</code>). تعداد <bdi dir="ltr">P</bdi>‌ها برابر با <code>GOMAXPROCS</code> (پیش‌فرض: تعداد هسته‌های <bdi dir="ltr">CPU</bdi>) است. هر <bdi dir="ltr">P</bdi> یک <bdi dir="ltr">Local Run Queue</bdi> با ظرفیت ۲۵۶ <bdi dir="ltr">Goroutine</bdi> دارد.</p>
 
 <figure class="diagram" dir="ltr">
 <svg height="380" viewBox="0 0 750 380" width="750" xmlns="http://www.w3.org/2000/svg">
 <rect fill="#fafafa" height="380" rx="8" width="750" x="0" y="0"></rect>
-<defs>
+<defs><filter id="sh91" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
 <marker id="aSch1" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#00ADD8" points="0 0,10 3.5,0 7"></polygon></marker>
 <marker id="aSch2" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#777BB4" points="0 0,10 3.5,0 7"></polygon></marker>
 <marker id="aSch3" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#f39c12" points="0 0,10 3.5,0 7"></polygon></marker>
@@ -288,7 +288,7 @@ go func() { // run anonymous function in goroutine
 <h4 id="work-stealing">الگوریتم <bdi dir="ltr">Work-Stealing</bdi></h4>
 <p>وقتی یک <bdi dir="ltr">P</bdi> صف محلی خود را خالی می‌یابد، به ترتیب زیر عمل می‌کند:</p>
 <p>۱. ابتدا صف محلی خود را بررسی می‌کند — اگر خالی بود، به مرحله بعد.</p>
-<p>۲. صف سراسری (<bdi dir="ltr">Global Run Queue</bdi>) را بررسی می‌کند — اگر <bdi dir="ltr">G</bdi>‌ای وجود داشت آن را می‌گیرد.</p>
+<p>۲. <bdi dir="ltr">Global Run Queue</bdi> را بررسی می‌کند — اگر <bdi dir="ltr">G</bdi>‌ای وجود داشت آن را می‌گیرد.</p>
 <p>۳. از صف محلی <bdi dir="ltr">P</bdi> دیگر نیمی از <bdi dir="ltr">Goroutine</bdi>‌ها را می‌دزدد (<bdi dir="ltr">Work-Stealing</bdi>) — این کار تضمین می‌کند که بار کار به‌صورت مساوی بین <bdi dir="ltr">P</bdi>‌ها توزیع شود.</p>
 <p>۴. اگر هیچ جا <bdi dir="ltr">G</bdi>‌ای یافت نشد، <bdi dir="ltr">M</bdi> خود را آزاد می‌کند و به استخر <bdi dir="ltr">Thread</bdi>‌های غیرفعال برمی‌گردد.</p>
 
@@ -378,6 +378,8 @@ for i := 0; i &lt; 5; i++ {
 </figure>
 <p>این یکی از رایج‌ترین اشتباهات در کار با <bdi dir="ltr">Goroutine</bdi> است. در حلقه‌ی اول، تمام <bdi dir="ltr">Goroutine</bdi>‌ها به متغیر <code>i</code> یکسان ارجاع دارند و چون <bdi dir="ltr">Goroutine</bdi>‌ها ممکن است دیرتر اجرا شوند، مقدار نهایی <code>i</code> را خواهند دید. در حلقه‌ی دوم، <code>i</code> به عنوان پارامتر پاس داده می‌شود و هر <bdi dir="ltr">Goroutine</bdi> یک کپی مستقل از مقدار دارد.</p>
 
+<div class="note"><strong>یادداشت:</strong> در <bdi dir="ltr">PHP</bdi>، هر درخواست در فرآیند مستقل اجرا می‌شود و متغیرها به‌طور طبیعی ایزوله‌اند. اما در <bdi dir="ltr">Go</bdi>، تمام <bdi dir="ltr">Goroutine</bdi>‌ها داخل یک فرآیند حافظه مشترک دارند. به همین دلیل، حلقه‌های <code>for</code> که در آن‌ها <bdi dir="ltr">Goroutine</bdi> می‌سازید، باید متغیر حلقه را به‌صورت پارامتر به <bdi dir="ltr">Goroutine</bdi> پاس بدهید (<code>go func(n int){...}(i)</code>) تا هر <bdi dir="ltr">Goroutine</bdi> کپی مستقل خود را داشته باشد. این تله برای مهاجران <bdi dir="ltr">PHP</bdi> بسیار شایع است؛ همیشه قبل از <code>go</code> از خود بپرسید «آیا این متغیر بین <bdi dir="ltr">Goroutine</bdi>‌ها به‌اشتراک گذاشته می‌شود؟».</div>
+
 <p><strong>مثال ۴: شبیه‌سازی پردازش موازی درخواست‌ها</strong></p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">package main
@@ -465,7 +467,7 @@ func main() {
 }
 </code></pre>
 </figure>
-<p>تابع <code>runtime.Gosched()</code> به <bdi dir="ltr">Scheduler</bdi> اعلام می‌کند که <bdi dir="ltr">Goroutine</bdi> فعلی مایل است اجرا را به <bdi dir="ltr">Goroutine</bdi> دیگری تسلیم کند. این تابع در عمل کمتر استفاده می‌شود چون <bdi dir="ltr">Scheduler</bdi> Go به‌صورت خودکار <bdi dir="ltr">Preemption</bdi> را مدیریت می‌کند، اما در برخی موارد خاص مثل حلقه‌های فشرده‌ی محاسباتی (<bdi dir="ltr">CPU-bound</bdi>) ممکن است مفید باشد.</p>
+<p>تابع <code>runtime.Gosched()</code> به <bdi dir="ltr">Scheduler</bdi> اعلام می‌کند که <bdi dir="ltr">Goroutine</bdi> فعلی مایل است اجرا را به <bdi dir="ltr">Goroutine</bdi> دیگری تسلیم کند. این تابع در عمل کمتر استفاده می‌شود چون <bdi dir="ltr">Scheduler</bdi> Go به‌صورت خودکار <bdi dir="ltr">Preemption</bdi> را مدیریت می‌کند، اما در برخی موارد خاص مثل حلقه‌های فشرده‌ی <bdi dir="ltr">CPU-bound</bdi> ممکن است مفید باشد.</p>
 
 <p><strong>مثال ۶: بررسی تعداد <bdi dir="ltr">Goroutine</bdi>‌های فعال</strong></p>
 <figure class="code go" dir="ltr">
@@ -525,7 +527,7 @@ func main() {
         Go 1.25 دو تغییر مهم معرفی می‌کند:
     </p>
     <ul>
-        <li>در لینوکس، runtime اکنون محدودیت پهنای باند CPU گروه cgroup (cgroup CPU bandwidth limit) را در نظر می‌گیرد. اگر این محدودیت کمتر از تعداد CPU‌های منطقی باشد، <code>GOMAXPROCS</code> به حد پایین‌تر تنظیم می‌شود.</li>
+        <li>در لینوکس، runtime اکنون محدودیت پهنای باند CPU گروه cgroup CPU bandwidth limit را در نظر می‌گیرد. اگر این محدودیت کمتر از تعداد CPU‌های منطقی باشد، <code>GOMAXPROCS</code> به حد پایین‌تر تنظیم می‌شود.</li>
         <li>در تمام سیستم‌عامل‌ها، runtime به‌صورت دوره‌ای <code>GOMAXPROCS</code> را به‌روزرسانی می‌کند اگر تعداد CPU‌های منطقی یا محدودیت cgroup تغییر کند.</li>
     </ul>
     <figure class="code go" dir="ltr">
@@ -577,12 +579,12 @@ fmt.Println("GOMAXPROCS:", runtime.GOMAXPROCS(0))
 
 <h3 id="goroutine-lifecycle-diagram">نمودار وضعیت‌های چرخه‌ی حیات <bdi dir="ltr">Goroutine</bdi></h3>
 
-<p>همان‌طور که در بخش قبل دیدیم، هر <bdi dir="ltr">Goroutine</bdi> در طول اجرای خود از وضعیت‌های مختلفی عبور می‌کند. این نمودار وضعیت (<bdi dir="ltr">State Machine</bdi>) به‌صورت بصری نشان می‌دهد که یک <bdi dir="ltr">Goroutine</bdi> چگونه از وضعیت ایجاد تا مرگ طی می‌کند و چه عواملی باعث انتقال بین وضعیت‌ها می‌شوند. درک این چرخه برای دیباگ مشکلاتی مثل نشت <bdi dir="ltr">Goroutine</bdi> و <bdi dir="ltr">Deadlock</bdi> بسیار حیاتی است. هر فلش در نمودار نشان‌دهنده‌ی یک رویداد یا عملیاتی است که باعث تغییر وضعیت می‌شود و هر جعبه رنگی نمایانگر یک وضعیت مشخص در <bdi dir="ltr">Runtime</bdi> Go است.</p>
+<p>همان‌طور که در بخش قبل دیدیم، هر <bdi dir="ltr">Goroutine</bdi> در طول اجرای خود از وضعیت‌های مختلفی عبور می‌کند. این <bdi dir="ltr">State Machine</bdi> به‌صورت بصری نشان می‌دهد که یک <bdi dir="ltr">Goroutine</bdi> چگونه از وضعیت ایجاد تا مرگ طی می‌کند و چه عواملی باعث انتقال بین وضعیت‌ها می‌شوند. درک این چرخه برای دیباگ مشکلاتی مثل نشت <bdi dir="ltr">Goroutine</bdi> و <bdi dir="ltr">Deadlock</bdi> بسیار حیاتی است. هر فلش در نمودار نشان‌دهنده‌ی یک رویداد یا عملیاتی است که باعث تغییر وضعیت می‌شود و هر جعبه رنگی نمایانگر یک وضعیت مشخص در <bdi dir="ltr">Runtime</bdi> Go است.</p>
 
 <figure class="diagram" dir="ltr">
 <svg height="520" viewBox="0 0 780 520" width="780" xmlns="http://www.w3.org/2000/svg">
 <rect fill="#fafafa" height="520" rx="8" width="780" x="0" y="0"></rect>
-<defs>
+<defs><filter id="sh92" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
 <marker id="aLC1" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#666" points="0 0,10 3.5,0 7"></polygon></marker>
 <marker id="aLC2" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#00ADD8" points="0 0,10 3.5,0 7"></polygon></marker>
 <marker id="aLC3" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#27ae60" points="0 0,10 3.5,0 7"></polygon></marker>
@@ -712,7 +714,7 @@ fmt.Println("GOMAXPROCS:", runtime.GOMAXPROCS(0))
 <li><strong>الگوی <bdi dir="ltr">Pipeline</bdi> با مراحل به‌عنوان <bdi dir="ltr">Goroutine</bdi>:</strong> در پردازش داده‌ها می‌توان هر مرحله از خط لوله (<bdi dir="ltr">Pipeline</bdi>) را به یک <bdi dir="ltr">Goroutine</bdi> اختصاص داد. مثلاً مرحله خواندن داده، مرحله تبدیل، مرحله فیلتر و مرحله نوشتن خروجی هر کدام یک <bdi dir="ltr">Goroutine</bdi> مستقل هستند که از طریق <bdi dir="ltr">Channel</bdi> به هم متصل شده‌اند. این الگو شبیه <bdi dir="ltr">Unix Pipe</bdi> عمل می‌کند و مزیتش این است که هر مرحله می‌تواند با سرعت مستقل خود کار کند.</li>
 </ul>
 
-<div class="tip"><strong>نکته عملی — شرط خروج مشخص برای هر <bdi dir="ltr">Goroutine</bdi>:</strong> مهم‌ترین قاعده در کار با <bdi dir="ltr">Goroutine</bdi> این است: هر <bdi dir="ltr">Goroutine</bdi> باید شرط خروج مشخصی داشته باشد. بدون شرط خروج، <bdi dir="ltr">Goroutine</bdi> ممکن است برای همیشه اجرا شود و حافظه نشت کند (<bdi dir="ltr">Goroutine Leak</bdi>). بهترین روش این است که هر <bdi dir="ltr">Goroutine</bdi> یا از یک <bdi dir="ltr">Channel</bdi> سیگنال توقف دریافت کند، یا از <code>context.Context</code> برای لغو استفاده نماید، یا در یک حلقه <code>for</code> با شرط خروج واضح کار کند. هرگز <bdi dir="ltr">Goroutine</bdi>‌ای نسازید که نتوانید آن را متوقف کنید — این قانون ساده از بسیاری از باگ‌های تولیدی جلوگیری می‌کند.</div>
+<div class="tip"><strong>نکته عملی — شرط خروج مشخص برای هر <bdi dir="ltr">Goroutine</bdi>:</strong> مهم‌ترین قاعده در کار با <bdi dir="ltr">Goroutine</bdi> این است: هر <bdi dir="ltr">Goroutine</bdi> باید شرط خروج مشخصی داشته باشد. بهترین روش این است که هر <bdi dir="ltr">Goroutine</bdi> یا از یک <bdi dir="ltr">Channel</bdi> سیگنال توقف دریافت کند، یا از <code>context.Context</code> برای لغو استفاده نماید، یا در یک حلقه <code>for</code> با شرط خروج واضح کار کند. هرگز <bdi dir="ltr">Goroutine</bdi>‌ای نسازید که نتوانید آن را متوقف کنید — جزئیات کامل عوامل نشت و راه‌حل‌های تشخیصی آن‌ها در بخش ۵.۹ (<a href="05.09-goroutine-leak.html#goroutine-leak">Goroutine Leak</a>) بررسی شده است.</div>
 
 
 </div>

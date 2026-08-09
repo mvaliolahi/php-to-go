@@ -145,13 +145,15 @@ func main() {
 
 <div class="warning"><strong>تله‌ی رایج:</strong> <code dir="ltr">sql.Open()</code> اتصال واقعی برقرار نمی‌کند. اگر DSN اشتباه باشد، <code dir="ltr">sql.Open</code> خطایی نمی‌دهد. همیشه پس از <code dir="ltr">sql.Open</code> حتماً <code dir="ltr">db.Ping()</code> را فراخوانی کنید تا از صحت اتصال مطمئن شوید.</div>
 
+<div class="note"><strong>چرا <code dir="ltr">database/sql</code> به‌جای <bdi dir="ltr">ORM</bdi>؟</strong> مهاجران <bdi dir="ltr">Laravel/Eloquent</bdi> غالباً انتظار دارند <code>User::find($id)</code> یا <code>$model->save()</code> را در <bdi dir="ltr">Go</bdi> هم پیدا کنند. پکیج <code dir="ltr">database/sql</code> عمداً این انتزاع را ارائه نمی‌دهد تا کنترل دقیق کوئری، اتصال و خطا را در دست توسعه‌دهنده نگه دارد. اگر پروژه‌ی شما <bdi dir="ltr">CRUD</bdi> غالب و ساده دارد، کتابخانه‌هایی مثل <bdi dir="ltr">sqlc</bdi> (تولید کد از <bdi dir="ltr">SQL</bdi>) یا <bdi dir="ltr">GORM</bdi> (<bdi dir="ltr">ORM</bdi> کامل) گزینه‌های معقول‌اند؛ اما برای کوئری‌های پیچیده، گزارش‌گیری و عملیات حساس، همان <code dir="ltr">database/sql</code> + <code dir="ltr">sqlx</code> شفاف‌ترین و کارآمدترین انتخاب است.</div>
+
 <h3 id="مدیریت-اتصالها-و-منابع">مدیریت اتصال‌ها و منابع</h3>
 <p>در <bdi dir="ltr">Laravel</bdi> نیازی به بستن اتصال یا کنترل <bdi dir="ltr">connection pool</bdi> ندارید. اما در <bdi dir="ltr">Go</bdi> شما مسئول مدیریت دقیق منابع هستید. اگر یک <bdi dir="ltr">Query</bdi> انجام دهید و <span dir="ltr">rows.Close()</span> را فراخوانی نکنید برنامه ممکن است با مشکلات جدی در مصرف منابع مواجه شود.</p>
 
 <figure class="diagram" dir="ltr">
 <svg width="700" height="240" viewBox="0 0 700 240" xmlns="http://www.w3.org/2000/svg">
 <rect fill="#fafafa" height="240" rx="8" width="700" x="0" y="0"></rect>
-<defs>
+<defs><filter id="sh155" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
 <marker id="aDb1" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#00ADD8" points="0 0,10 3.5,0 7"></polygon></marker>
 <marker id="aDb2" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#27ae60" points="0 0,10 3.5,0 7"></polygon></marker>
 <marker id="aDb3" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#e74c3c" points="0 0,10 3.5,0 7"></polygon></marker>
@@ -227,8 +229,7 @@ db.SetConnMaxLifetime(time.Minute * 5)</code></pre>
 </figure>
 
 <h4 id="نکات-کلیدی-برای-بهینهسازی-connection-pool">نکات کلیدی برای بهینه‌سازی Connection Pool</h4>
-<p><strong>انتخاب مقادیر مناسب برای <bdi dir="ltr">MaxOpenConns</bdi> و <bdi dir="ltr">MaxIdleConns</bdi>:</strong> تنظیم عدد خیلی پایین باعث صف‌بندی درخواست‌ها می‌شود. تنظیم عدد خیلی بالا باعث فشار روی دیتابیس. قانون تجربی: حدود ۲ تا ۴ برابر هسته‌های CPU، اما هرگز بیشتر از حداکثر اتصال‌های دیتابیس.</p>
-<p><strong>تنظیم <bdi dir="ltr">ConnMaxLifetime</bdi>:</strong> برخی دیتابیس‌ها اتصالات قدیمی را ناگهانی قطع می‌کنند. تنظیم این پارامتر باعث جایگزینی به‌موقع اتصال‌ها می‌شود.</p>
+<p>راهنمای تفصیلی مقدار پیشنهادی هر پارامتر (<bdi dir="ltr">MaxOpenConns</bdi>، <bdi dir="ltr">MaxIdleConns</bdi>، <bdi dir="ltr">ConnMaxLifetime</bdi>) و جدول سناریوهای سبک/متوسط/سنگین را در بخش <a href="#تنظیم-دقیق-connection-pool-برای-production">بهینه‌سازی تنظیمات Connection Pool برای Production</a> در ادامه‌ی همین فصل پیدا می‌کنید. در اینجا تنها نکته‌ای را می‌آوریم که در آن بخش پوشش داده نشده است.</p>
 <p><strong>استفاده از <bdi dir="ltr">Context</bdi>:</strong> همیشه کوئری‌ها را با <bdi dir="ltr">Context</bdi> اجرا کنید تا امکان لغو عملیات فراهم شود:</p>
 <figure class="code go" dir="ltr"><pre><code class="language-go">ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 defer cancel()
@@ -372,7 +373,7 @@ stats.WaitDuration,
 
 <div class="tip"><strong>نکته‌ی پیشرفته:</strong> وقتی <code>SetMaxOpenConns</code> روی مقدار مثبت تنظیم شود حداکثر اتصال <bdi dir="ltr">idle</bdi> پیش‌فرض برابر با <code>MaxOpenConns</code> خواهد بود (از Go 1.14).</div>
 
-<div class="comparison"><strong>مقایسه با PDO در PHP:</strong> PDO هیچ Connection Pool داخلی ندارد. هر درخواست HTTP یک اتصال جدید باز و بسته می‌کند. در Go اتصال‌ها بین درخواست‌ها به اشتراک گذاشته می‌شوند.</div>
+<div class="comparison"><strong>مقایسه با PDO در PHP:</strong> مقایسه‌ی کامل تفاوت‌های <bdi dir="ltr">PDO</bdi> (بدون <bdi dir="ltr">Connection Pool</bdi> داخلی، باز و بسته شدن اتصال در هر درخواست) با <code>*sql.DB</code> در <bdi dir="ltr">Go</bdi> را در <a href="08.00-chapter-8.html">مقدمه‌ی فصل ۸</a> بررسی کردیم — در اینجا فقط یادآوری می‌کنیم که در <bdi dir="ltr">Go</bdi> اتصال‌ها بین درخواست‌ها به اشتراک گذاشته می‌شوند و به همین دلیل تنظیم دقیق پارامترهای بالا اهمیت دارد.</div>
 
 <h3 id="ساختار-داخلی-connection-pool-بصری">ساختار داخلی Connection Pool (بصری)</h3>
 
@@ -515,7 +516,7 @@ stats.WaitDuration,
 <li><strong>عمر اتصال و راه‌اندازی مجدد دیتابیس:</strong> وقتی سرور دیتابیس راه‌اندازی مجدد می‌شود تمام اتصال‌های موجود قطع می‌شوند. اگر <bdi dir="ltr">ConnMaxLifetime</bdi> تنظیم نشده باشد برنامه ممکن است اتصال‌های قطع‌شده را در <bdi dir="ltr">Pool</bdi> نگه دارد و خطاهای <code dir="ltr">connection reset by peer</code> دریافت کند. تنظیم <code dir="ltr">ConnMaxLifetime = 5 * time.Minute</code> تضمین می‌کند اتصال‌ها قبل از اینکه سرور آنها را قطع کند جایگزین شوند.</li>
 </ul>
 
-<div class="tip"><strong>تنظیم <bdi dir="ltr">MaxOpenConns</bdi> ضروری است:</strong> مقدار پیش‌فرض <bdi dir="ltr">MaxOpenConns</bdi> در <bdi dir="ltr">database/sql</bdi> برابر صفر یعنی بدون محدودیت است. این یعنی برنامه می‌تواند تعداد نامحدودی اتصال همزمان باز کند و دیتابیس را مختل کند. یک نقطه‌ی شروع معقول <code dir="ltr">NumCPU * 2</code> است. مثلاً روی سروری با ۸ هسته <bdi dir="ltr">CPU</bdi> مقدار <code dir="ltr">MaxOpenConns = 16</code> یک شروع خوب است. سپس با مشاهده‌ی متریک‌ها مقدار را تنظیم کنید.</div>
+<div class="tip"><strong>یادآوری قانون طلایی:</strong> مقدار پیش‌فرض <bdi dir="ltr">MaxOpenConns</bdi> در <bdi dir="ltr">database/sql</bdi> برابر صفر یعنی «بدون محدودیت» — در <bdi dir="ltr">production</bdi> هرگز این مقدار را روی صفر رها نکنید. راهنمای انتخاب عدد مناسب (<code dir="ltr">NumCPU * 2</code> به‌عنوان نقطه‌ی شروع، تنظیم بر اساس متریک‌های <code dir="ltr">db.Stats()</code>) را در بخش <a href="#تنظیم-دقیق-connection-pool-برای-production">بهینه‌سازی تنظیمات Connection Pool برای Production</a> و سناریوی اول همین بخش بررسی کردیم.</div>
 </div>
 </div>
 

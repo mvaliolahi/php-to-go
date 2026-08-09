@@ -141,28 +141,24 @@
 <p>باید اعتبارسنجی پارامترها را به‌دقت انجام دهید و در صورت نیاز مقدار پیش‌فرض یا خطا برگردانید.
 </p>
 <h3 id="خواندن-path-parameters">خواندن Path Parameters</h3>
-<p>پکیج استاندارد net/http خود مسیرهای پارامتردار ندارد، بنابراین برای خواندن پارامترهای دینامیک در مسیر معمولا از فریم‌ورک‌ها استفاده می‌شود. اما می‌توان با کد ساده این کار را انجام داد.</p>
+<p>از <bdi dir="ltr">Go 1.22+</bdi> به بعد، <code dir="ltr">ServeMux</code> به صورت توکار از پارامترهای مسیر پشتیبانی می‌کند (همان‌طور که در بخش ۷.۲ دیدید). کافیست الگوی مسیر را با <code dir="ltr">{name}</code> ثبت کنید و مقدار را با <code dir="ltr">r.PathValue("name")</code> بخوانید:</p>
 <p>در نظر بگیرید URL هایی به شکل زیر داریم:</p>
 <p>/user/123</p>
 <p>که 123 شناسه کاربر است.</p>
 <figure class="code go" dir="ltr">
-<pre><code class="language-go">func userHandler(w http.ResponseWriter, r *http.Request) {
-    prefix := "/user/"
-    if len(r.URL.Path) &lt;= len(prefix) || r.URL.Path[:len(prefix)] != prefix {
-        http.NotFound(w, r)
-        return
-    }
-    userID := r.URL.Path[len(prefix):] // get ID after /user/
+<pre><code class="language-go">// Go 1.22+ — path params built into ServeMux
+mux.HandleFunc("GET /user/{id}", func(w http.ResponseWriter, r *http.Request) {
+    userID := r.PathValue("id")
     if userID == "" {
         http.Error(w, "شناسه کاربر لازم است", http.StatusBadRequest)
         return
     }
     fmt.Fprintf(w, "شناسه کاربر: %s\n", userID)
-}
+})
 </code></pre>
 </figure>
-<p>مسیر باید با /user/ شروع شود.</p>
-<p>برای پروژه‌های بزرگ بهتر است از Routerهایی مثل gorilla/mux استفاده شود که پارامترهای مسیر را به شکل مستقیم می‌گیرند.</p>
+<p>اگر هنوز روی نسخه‌ی قدیمی‌تر از <bdi dir="ltr">Go 1.22</bdi> هستید یا کنترل دستی می‌خواهید، می‌توان با <code dir="ltr">strings.TrimPrefix</code> روی <code dir="ltr">r.URL.Path</code> پارامتر را استخراج کرد؛ اما این روش با افزایش تعداد مسیرها به‌سرعت غیرقابل نگهداری می‌شود.</p>
+<div class="note"><strong>یادداشت:</strong> <code dir="ltr">r.PathValue()</code> در صورت نبود پارامتر رشته‌ی خالی برمی‌گرداند، بنابراین همیشه مقدار را اعتبارسنجی کنید. برای اعتبارسنجی فرمت (مثلاً فقط عدد)، از <code dir="ltr">strconv.Atoi</code> یا <code dir="ltr">regexp</code> استفاده کنید و در صورت خطا کد <bdi dir="ltr">400 Bad Request</bdi> برگردانید. هرگز مقدار خام پارامتر مسیر را مستقیماً به کوئری دیتابیس ندهید.</div>
 <h3 id="خواندن-دادههای-request-body">خواندن داده‌های Request Body</h3>
 <p>داده‌هایی که در درخواست POST، PUT، PATCH ارسال می‌شوند معمولا در بخش Body قرار دارند. این داده‌ها می‌توانند فرمت‌های مختلفی مثل JSON، فرم‌های HTML (urlencoded) یا فایل باشند.</p>
 <p>برای خواندن JSON ابتدا باید Body را بخوانید و سپس آن را به ساختار Go دیکد کنید.</p>
@@ -170,7 +166,7 @@
 <figure class="diagram" dir="ltr">
 <svg width="700" height="250" viewBox="0 0 700 250" xmlns="http://www.w3.org/2000/svg">
 <rect fill="#fafafa" height="250" rx="8" width="700" x="0" y="0"></rect>
-<defs>
+<defs><filter id="sh144" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
 <marker id="aRq1" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#00ADD8" points="0 0,10 3.5,0 7"></polygon></marker>
 </defs>
 <text fill="#00ADD8" font-size="15" font-weight="bold" text-anchor="middle" x="350" y="22" direction="rtl" unicode-bidi="embed">منابع داده درخواست <tspan direction="ltr" unicode-bidi="embed">HTTP</tspan></text>
@@ -562,7 +558,7 @@ func createArticleHandler(w http.ResponseWriter, r *http.Request) {
 <h3 id="سناریوهای-عملیاتی-خواندن-ورودی">سناریوهای عملیاتی خواندن ورودی درخواست</h3>
 <p>در پروژه‌های واقعی با انواع مختلفی از درخواست‌ها روبرو می‌شوید که هر کدام نیازمند رویکرد متفاوتی برای خواندن و اعتبارسنجی داده‌ها هستند. شناخت مناسب سناریوهای عملیاتی به شما کمک می‌کند تا برای هر موقعیت بهترین روش پارس را انتخاب کنید و از خطاهای رایج جلوگیری کنید. در ادامه پنج سناریوی عملیاتی پرتکرار را بررسی می‌کنیم:</p>
 <ul>
-<li><strong>پارس بدنه درخواست <bdi dir="ltr">JSON API</bdi>:</strong> هنگام ساخت <bdi dir="ltr">API</b> های <bdi dir="ltr">REST</bdi>، کلاینت‌ها معمولاً داده‌ها را به صورت <bdi dir="ltr">JSON</bdi> در بدنه درخواست ارسال می‌کنند. در این حالت باید ابتدا هدر <code dir="ltr">Content-Type: application/json</code> را بررسی کنید، سپس با <code dir="ltr">json.NewDecoder(r.Body)</code> داده را دیکد کنید. حتماً از <code dir="ltr">http.MaxBytesReader</code> برای محدودیت حجم و <code dir="ltr">DisallowUnknownFields()</code> برای جلوگیری از فیلدهای ناشناخته استفاده نمایید. این رویکرد بسیار ایمن‌تر از <bdi dir="ltr">PHP</bdi> است که در آن <code dir="ltr">json_decode(file_get_contents('php://input'))</code> بدون هیچ محدودیت حجمی انجام می‌شود.</li>
+<li><strong>پارس بدنه درخواست <bdi dir="ltr">JSON API</bdi>:</strong> هنگام ساخت <bdi dir="ltr">API</bdi> های <bdi dir="ltr">REST</bdi>، کلاینت‌ها معمولاً داده‌ها را به صورت <bdi dir="ltr">JSON</bdi> در بدنه درخواست ارسال می‌کنند. در این حالت باید ابتدا هدر <code dir="ltr">Content-Type: application/json</code> را بررسی کنید، سپس با <code dir="ltr">json.NewDecoder(r.Body)</code> داده را دیکد کنید. حتماً از <code dir="ltr">http.MaxBytesReader</code> برای محدودیت حجم و <code dir="ltr">DisallowUnknownFields()</code> برای جلوگیری از فیلدهای ناشناخته استفاده نمایید. این رویکرد بسیار ایمن‌تر از <bdi dir="ltr">PHP</bdi> است که در آن <code dir="ltr">json_decode(file_get_contents('php://input'))</code> بدون هیچ محدودیت حجمی انجام می‌شود.</li>
 <li><strong>مدیریت ارسال فرم‌های <bdi dir="ltr">HTML</bdi>:</strong> فرم‌های سنتی <bdi dir="ltr">HTML</bdi> داده‌ها را با <code dir="ltr">application/x-www-form-urlencoded</code> یا <code dir="ltr">multipart/form-data</code> ارسال می‌کنند. برای حالت اول از <code dir="ltr">r.ParseForm()</code> و سپس <code dir="ltr">r.PostFormValue()</code> استفاده کنید. دقت کنید که <code dir="ltr">r.FormValue()</code> مقادیر کوئری را هم شامل می‌شود، بنابراین اگر فقط به داده‌های بدنه نیاز دارید از <code dir="ltr">r.PostFormValue()</code> استفاده نمایید تا از تداخل با پارامترهای <bdi dir="ltr">URL</bdi> جلوگیری شود.</li>
 <li><strong>پردازش آپلود فایل:</strong> برای دریافت فایل آپلودشده ابتدا <code dir="ltr">r.ParseMultipartForm(maxMemory)</code> را فراخوانی کنید، سپس با <code dir="ltr">r.FormFile("fieldname")</code> به فایل دسترسی پیدا کنید. حتماً نوع واقعی فایل را با <code dir="ltr">http.DetectContentType()</code> بررسی کنید و هرگز به پسوند فایل اعتماد نکنید. نام فایل ذخیره‌شده را با ترکیب زمان و <bdi dir="ltr">UUID</bdi> تولید کنید تا از حملات مسیر فایل جلوگیری شود.</li>
 <li><strong>اعتبارسنجی پارامترهای کوئری:</strong> پارامترهای کوئری معمولاً برای فیلتر، صفحه‌بندی و جستجو استفاده می‌شوند. همیشه مقادیر پیش‌فرض تعیین کنید، اعداد را با <code dir="ltr">strconv.Atoi()</code> تبدیل و محدوده آن‌ها را بررسی کنید. از <code dir="ltr">r.URL.Query()</code> به جای <code dir="ltr">r.FormValue()</code> استفاده کنید تا فقط مقادیر کوئری خوانده شود و خطر تداخل با داده‌های بدنه وجود نداشته باشد.</li>

@@ -76,7 +76,7 @@
 <figure class="diagram" dir="ltr">
 <svg height="260" viewBox="0 0 650 260" width="650" xmlns="http://www.w3.org/2000/svg">
 <rect fill="#fafafa" height="260" rx="8" width="650" x="0" y="0"></rect>
-<defs>
+<defs><filter id="sh103" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
 <marker id="aWg1" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#00ADD8" points="0 0,10 3.5,0 7"></polygon></marker>
 <marker id="aWg2" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#27ae60" points="0 0,10 3.5,0 7"></polygon></marker>
 <marker id="aWg3" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#f39c12" points="0 0,10 3.5,0 7"></polygon></marker>
@@ -191,7 +191,7 @@ for i := 0; i &lt; 5; i++ {
 <figure class="diagram" dir="ltr">
 <svg width="700" height="200" viewBox="0 0 700 200" xmlns="http://www.w3.org/2000/svg">
 <rect fill="#fafafa" height="200" rx="8" width="700" x="0" y="0"></rect>
-<defs>
+<defs><filter id="sh104" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
 <marker id="aWgT1" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#00ADD8" points="0 0,10 3.5,0 7"></polygon></marker>
 <marker id="aWgT2" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#f39c12" points="0 0,10 3.5,0 7"></polygon></marker>
 <marker id="aWgT3" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#27ae60" points="0 0,10 3.5,0 7"></polygon></marker>
@@ -335,7 +335,7 @@ go func() {
 <h3 id="قوانین-باز-use-کردن-waitgroup">قوانین باز‌استفاده از WaitGroup</h3>
 <p>پس از اینکه <code>Wait()</code> برگردد، <bdi dir="ltr">WaitGroup</bdi> قابل باز‌استفاده است. اما نباید در حین فعال بودن (<code>counter > 0</code>) آن را باز‌استفاده کنید. الگوی صحیح: <code>Add</code> → <code>go</code> → <code>Done</code> → <code>Wait</code> → (باز‌استفاده از صفر).</p>
 
-<div class="warning"><strong>نکته درباره Race Detection در WaitGroup:</strong> اگر برنامه را با فلگ <code>-race</code> اجرا کنید، WaitGroup به‌طور خودکار عملیات <code>Add</code> و <code>Done</code> را ردیابی می‌کند تا از Race Condition جلوگیری شود. به‌طور خاص، فراخوانی <code>Add</code> باید قبل از راه‌اندازی Goroutine (قبل از <code>go</code>) انجام شود. اگر <code>Add</code> داخل Goroutine فراخوانی شود، ممکن است <code>Wait</code> قبل از <code>Add</code> اجرا شود و برنامه پیش از اتمام Goroutine‌ها ادامه پیدا کند. این یکی از اشتباهات رایج در استفاده از WaitGroup است.</div>
+<div class="warning"><strong>نکته درباره Race Detection در WaitGroup:</strong> اگر برنامه را با فلگ <code>-race</code> اجرا کنید، WaitGroup به‌طور خودکار عملیات <code>Add</code> و <code>Done</code> را ردیابی می‌کند. فراخوانی <code>Add</code> باید قبل از راه‌اندازی Goroutine (قبل از <code>go</code>) انجام شود — این قانون طلایی در «اشتباه ۱» همین بخش و در نکته‌ی پایانی فصل توضیح داده شده است.</div>
 
 <h3 id="waitgroup-چرخه-حیات-شمارنده">چرخه حیات شمارنده <bdi dir="ltr">WaitGroup</bdi> — نمودار وضعیت</h3>
 <p>یکی از مهم‌ترین مفاهیم در کار با <bdi dir="ltr">WaitGroup</bdi> درک چرخه حیات شمارنده داخلی آن است. شمارنده <bdi dir="ltr">WaitGroup</bdi> از صفر شروع می‌شود، با هر فراخوانی <bdi dir="ltr">Add(delta)</bdi> به اندازه <bdi dir="ltr">delta</bdi> افزایش می‌یابد و با هر <bdi dir="ltr">Done()</bdi> یک واحد کاهش پیدا می‌کند. وقتی شمارنده به صفر برسد تمام <bdi dir="ltr">goroutine</bdi>هایی که در <bdi dir="ltr">Wait()</bdi> بلاک شده‌اند آزاد می‌شوند. اما اگر شمارنده منفی شود، برنامه بلافاصله <bdi dir="ltr">panic</bdi> می‌کند. این یعنی تعداد فراخوانی‌های <bdi dir="ltr">Done()</bdi> هرگز نباید از تعداد <bdi dir="ltr">Add()</bdi> بیشتر شود. همچنین اگر <bdi dir="ltr">Add()</bdi> با مقدار منفی فراخوانی شود که شمارنده را منفی کند، باز هم <bdi dir="ltr">panic</bdi> رخ می‌دهد. درک این چرخه برای جلوگیری از <bdi dir="ltr">deadlock</bdi> و <bdi dir="ltr">panic</bdi> در برنامه‌های واقعی حیاتی است.</p>
@@ -343,7 +343,7 @@ go func() {
 <figure class="diagram" dir="ltr">
 <svg width="780" height="520" viewBox="0 0 780 520" xmlns="http://www.w3.org/2000/svg">
 <rect fill="#fafafa" height="520" rx="8" width="780" x="0" y="0"></rect>
-<defs>
+<defs><filter id="sh105" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
 <marker id="aWgE1" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#4CAF50" points="0 0,10 3.5,0 7"></polygon></marker>
 <marker id="aWgE2" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#FF9800" points="0 0,10 3.5,0 7"></polygon></marker>
 <marker id="aWgE3" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#00ADD8" points="0 0,10 3.5,0 7"></polygon></marker>
@@ -468,7 +468,7 @@ go func() {
 <figcaption dir="rtl">شکل ۵-۱۱-ج: چرخه حیات شمارنده <bdi dir="ltr">WaitGroup</bdi> — ماشین وضعیت از <bdi dir="ltr">Add</bdi> تا آزاد شدن <bdi dir="ltr">Wait</bdi> و حالت <bdi dir="ltr">panic</bdi></figcaption>
 </figure>
 
-<p>نمودار بالا چرخه کامل حیات شمارنده <bdi dir="ltr">WaitGroup</bdi> را نشان می‌دهد. در بخش بالایی خط زمانی تغییرات شمارنده از <bdi dir="ltr">Add(3)</bdi> تا آخرین <bdi dir="ltr">Done()</bdi> قابل مشاهده است. نکته مهم این است که <bdi dir="ltr">Wait()</bdi> در تمام مدتی که شمارنده بزرگتر از صفر است بلاک می‌ماند و فقط زمانی که شمارنده دقیقاً به صفر برسد آزاد می‌شود. بخش میله‌ای وسط نشان می‌دهد که شمارنده چگونه با هر <bdi dir="ltr">Done()</bdi> کاهش می‌یابد و در نهایت به صفر می‌رسد. بخش خطا در سمت راست نشان می‌دهد که اگر تعداد <bdi dir="ltr">Done()</bdi> از <bdi dir="ltr">Add()</bdi> بیشتر شود، شمارنده منفی شده و برنامه بلافاصله <bdi dir="ltr">panic</bdi> می‌کند. این خطا در زمان اجرا قابل تشخیص است و پیام آن واضحاً بیان می‌کند که <bdi dir="ltr">WaitGroup</bdi> قبل از اتمام <bdi dir="ltr">Wait</bdi> قبلی باز‌استفاده شده است.</p>
+<p>نمودار بالا چرخه کامل حیات شمارنده <bdi dir="ltr">WaitGroup</bdi> را نشان می‌دهد: خط زمانی تغییرات شمارنده از <bdi dir="ltr">Add(3)</bdi> تا آخرین <bdi dir="ltr">Done()</bdi>، و حالت خطا در صورتی که تعداد <bdi dir="ltr">Done()</bdi> از <bdi dir="ltr">Add()</bdi> بیشتر شود (<bdi dir="ltr">panic</bdi>).</p>
 
 <h4 id="سناریوهای-عملیاتی-waitgroup">سناریوهای عملیاتی <bdi dir="ltr">WaitGroup</bdi></h4>
 <ul>
@@ -511,6 +511,8 @@ func fetchAll(urls []string) ([]string, error) {
 </figure>
 
 <div class="tip"><strong>فراخوانی <bdi dir="ltr">Add()</bdi> قبل از راه‌اندازی <bdi dir="ltr">goroutine</bdi>:</strong> یکی از اشتباهات رایج فراخوانی <bdi dir="ltr">wg.Add(1)</bdi> داخل <bdi dir="ltr">goroutine</bdi> است. این کار باعث <bdi dir="ltr">race condition</bdi> می‌شود زیرا ممکن است <bdi dir="ltr">wg.Wait()</bdi> قبل از اینکه هیچ <bdi dir="ltr">Add()</bdi> فراخوانی شود اجرا شود و برنامه پیش از اتمام <bdi dir="ltr">goroutine</bdi>ها ادامه پیدا کند. الگوی صحیح این است که <bdi dir="ltr">Add()</bdi> را قبل از کلمه کلیدی <bdi dir="ltr">go</bdi> فراخوانی کنید. اگر تعداد <bdi dir="ltr">goroutine</bdi>ها از قبل مشخص است، می‌توانید از <bdi dir="ltr">wg.Add(n)</bdi> یک‌بار قبل از حلقه استفاده کنید که کارایی بهتری دارد.</div>
+
+<div class="note"><strong>یادداشت:</strong> <bdi dir="ltr">sync.WaitGroup</bdi> هیچ مکانیزمی برای انتشار خطا از <bdi dir="ltr">Goroutine</bdi>‌های فرزند به فراخوان ارائه نمی‌دهد — <code>wg.Wait()</code> فقط منتظر اتمام می‌ماند و خطاها باید دستی جمع‌آوری شوند (مثلاً با کانال یا <code>sync.Mutex</code> روی متغیر <code>firstErr</code>). اگر لازم است خطای اول، بقیه <bdi dir="ltr">Goroutine</bdi>‌ها را لغو کند، به‌جای <bdi dir="ltr">WaitGroup</bdi> از <code>golang.org/x/sync/errgroup</code> استفاده کنید که ترکیب <bdi dir="ltr">WaitGroup + context.WithCancel</bdi> را با کد بسیار تمیزتر فراهم می‌کند (در فصل ۵.۷ معرفی شده است).</div>
 </div>
 </main>
 </div>

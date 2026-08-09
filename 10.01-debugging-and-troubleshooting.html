@@ -69,7 +69,7 @@
 <div class="content-wrap text">
 <div class="chapter">فصل ۱۰.۱</div>
 <h2 id="دیباگ-و-ریشهیابی-خطاها">دیباگ و ریشه‌یابی خطاها</h2>
-<p>اگر مثل بسیاری از توسعه‌دهندگان PHP رشد کرده باشید، احتمالاً با دستورهای آشنایی مثل <bdi dir="ltr">var_dump</bdi> ، <bdi dir="ltr">print_r</bdi> یا همان <bdi dir="ltr">die</b> سال‌ها زندگی کرده‌اید. این دستورات ساده، سریع و همیشه در دسترس بودند. کافی بود جایی از برنامه درست کار نمی‌کرد یک <bdi dir="ltr">dd()</bdi> یا <bdi dir="ltr">die(var_dump($something))</bdi> بزنید و بلافاصله می‌فهمیدید چه خبر است. این کار واقعاً هم کار می‌کرد — البته تا حدودی.</p>
+<p>اگر مثل بسیاری از توسعه‌دهندگان PHP رشد کرده باشید، احتمالاً با دستورهای آشنایی مثل <bdi dir="ltr">var_dump</bdi> ، <bdi dir="ltr">print_r</bdi> یا همان <bdi dir="ltr">die</bdi> سال‌ها زندگی کرده‌اید. این دستورات ساده، سریع و همیشه در دسترس بودند. کافی بود جایی از برنامه درست کار نمی‌کرد یک <bdi dir="ltr">dd()</bdi> یا <bdi dir="ltr">die(var_dump($something))</bdi> بزنید و بلافاصله می‌فهمیدید چه خبر است. این کار واقعاً هم کار می‌کرد — البته تا حدودی.</p>
 <p>در Go به دلیل ماهیت کامپایل‌شده، مدیریت حافظه، همزمانی و runtime متفاوت، دیگر <bdi dir="ltr">dd()</bdi> کاربردی ندارد. البته دستوراتی مشابه <bdi dir="ltr">fmt.Println()</bdi> و <bdi dir="ltr">log.Printf()</bdi> شاید کمی کمک‌حال باشند، اما نمی‌توانند مثل یک دیباگر جزئیات اجرای برنامه را نشان دهند. در این فصل قصد داریم از پایه دیباگ را به شما آموزش دهیم، طوری که هم بتوانید کدهای ساده خود را با دقت دنبال کنید و هم در محیط‌های پیچیده مثل container یا remote بتوانید مشکلات را سریع‌تر پیدا کنید.</p>
 <p>دیباگ کردن برخلاف «کد خواندن» یا «حدس زدن» به شما امکان می‌دهد برنامه را در حین اجرا متوقف کنید و بدانید کد کجا متوقف شده، در این وضعیت مقدار متغیرها چیست و مسیر اجرای کد چگونه است. این کار یعنی شناخت دقیق‌تر و رفع سریع‌تر مشکلات. به دلیل کامپایل شدن کد به باینری، دیباگ کردن چالش‌های خاصی دارد، اما ابزارهایی مانند <bdi dir="ltr">pprof</bdi> و <bdi dir="ltr">Delve</bdi> به کمک ما آمده‌اند تا این فرآیند را کارآمد کنند.</p>
 
@@ -88,7 +88,7 @@
 
 <figure class="diagram" dir="ltr">
 <svg height="320" viewBox="0 0 650 320" width="650" xmlns="http://www.w3.org/2000/svg">
-<defs>
+<defs><filter id="sh163" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
 <marker id="arrow10" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5">
 <polygon fill="#555" points="0 0, 10 3.5, 0 7"></polygon>
 </marker>
@@ -410,7 +410,7 @@ func main() {
 
 <figure class="diagram" dir="ltr">
 <svg height="250" viewBox="0 0 700 250" width="700" xmlns="http://www.w3.org/2000/svg">
-<defs>
+<defs><filter id="sh164" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
 <marker id="arrowDbg" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#555" points="0 0, 10 3.5, 0 7"></polygon></marker>
 <marker id="arrowDbgBack" markerheight="7" markerwidth="10" orient="auto" refx="0" refy="3.5"><polygon fill="#f39c12" points="10 0, 0 3.5, 10 7"></polygon></marker>
 </defs>
@@ -730,7 +730,7 @@ func monitorMemory(ctx context.Context) {
 
 <figure class="diagram" dir="ltr">
 <svg height="450" viewBox="0 0 700 450" width="700" xmlns="http://www.w3.org/2000/svg">
-<defs>
+<defs><filter id="sh165" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
 <marker id="arrowdbg2" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5">
 <polygon fill="#00ADD8" points="0 0, 10 3.5, 0 7"></polygon>
 </marker>
@@ -830,7 +830,7 @@ func monitorMemory(ctx context.Context) {
 
 <figure class="diagram" dir="ltr">
 <svg height="520" viewBox="0 0 780 520" width="780" xmlns="http://www.w3.org/2000/svg">
-<defs>
+<defs><filter id="sh166" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
 <marker id="arrowwf1" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5">
 <polygon fill="#555" points="0 0, 10 3.5, 0 7"></polygon>
 </marker>
@@ -956,11 +956,13 @@ func monitorMemory(ctx context.Context) {
 
 <p>همان‌طور که در نمودار بالا مشاهده می‌کنید، فرآیند دیباگ در Go هشت مرحله مشخص دارد که هر کدام ابزار و دستورات خاص خود را نیاز دارند. در PHP با Xdebug فرآیند ساده‌تر است چون extension در همان process اجرا می‌شود و نیازی به کامپایل مجدد ندارید، اما در Go باید هر بار پس از تغییر کد، برنامه را با فلگ‌های دیباگ کامپایل و دیباگر را مجدداً متصل کنید. این تفاوت مهمی است که برنامه‌نویسان مهاجر از PHP باید به آن عادت کنند. خوشبختانه دستور <bdi dir="ltr">restart</bdi> در Delve این فرآیند را ساده می‌کند و نیازی به خروج و ورود مجدد به دیباگر نیست.</p>
 
+<div class="note"><strong>نکته:</strong> در Delve، دستور <bdi dir="ltr">restart</bdi> (یا مخفف <bdi dir="ltr">r</bdi>) باینری را با کد به‌روزشده بازمی‌سازد و بدون خروج از جلسه دیباگ، اجرای جدید را شروع می‌کند. این یعنی breakpoint‌ها، watch variables و سایر تنظیمات جلسه حفظ می‌شوند. اما در <bdi dir="ltr">VS Code</bdi>، کلید <bdi dir="ltr">Ctrl+Shift+F5</bdi> همان کار را انجام می‌دهد. بدون <bdi dir="ltr">restart</bdi>، اگر کد را تغییر دهید و فقط <bdi dir="ltr">continue</bdi> بزنید، روی باینری قدیمی دیباگ می‌کنید و تغییرات شما اثر نخواهند داشت — این یکی از رایج‌ترین سردرگمی‌های مهاجران از PHP است که به refresh مرورگر عادت دارند.</div>
+
 <h3 id="سناریوهای-عملیاتی-دیباگ">سناریوهای عملیاتی دیباگ</h3>
 <p>علاوه بر سناریوهای رایجی که بررسی کردیم، در محیط‌های عملیاتی واقعی با شرایط پیچیده‌تری مواجه می‌شوید که نیاز به ابزارها و رویکردهای تخصصی‌تر دارند. این سناریوها معمولاً در محیط production یا staging رخ می‌دهند و دیباگ آن‌ها چالش‌برانگیزتر است چون دسترسی مستقیم به محیط اجرا محدودتر است و باید با دقت بیشتری عمل کنید تا به عملکرد سیستم اختلالی وارد نشود. در ادامه مهم‌ترین سناریوهای عملیاتی و روش‌های مربوط به آن‌ها را بررسی می‌کنیم:</p>
 
 <ul>
-<li><strong>دیباگ <bdi dir="ltr">Race Condition</bdi> با فلگ <bdi dir="ltr">-race</bdi>:</strong> وقتی رفتار برنامه غیرقطعی است و خروجی در اجراهای مختلف تغییر می‌کند، احتمالاً با race condition مواجه هستید. ابزار <code>go test -race</code> و <code>go run -race</code> می‌توانند این مشکلات را شناسایی کنند. race detector با ثبت تمام دسترسی‌های همزمان به حافظه کار می‌کند و در صورت شناسایی دسترسی همزمان بدون همگام‌سازی، گزارش دقیقی شامل stack trace هر دو goroutine درگیر ارائه می‌دهد. توجه کنید که race detector فقط مشکلاتی را شناسایی می‌کند که در زمان اجرای تست واقعاً رخ دهند، بنابراین باید تست‌هایی بنویسید که شرایط race را تولید کنند.</li>
+<li><strong>دیباگ <bdi dir="ltr">Race Condition</bdi> با فلگ <bdi dir="ltr">-race</bdi>:</strong> همان‌طور که در «سناریو ۴: Data Race» بالاتر شرح داده شد، ابزار <code>go test -race</code> و <code>go run -race</code> با ثبت تمام دسترسی‌های همزمان به حافظه، گزارش دقیقی شامل stack trace هر دو goroutine درگیر ارائه می‌دهند. نکته کلیدی این است که باید تست‌هایی بنویسید که شرایط race را تولید کنند، وگرنه race detector قادر به شناسایی آن نخواهد بود (این محدودیت در هشدار همین بخش نیز یادآوری شده است).</li>
 <li><strong>دیباگ <bdi dir="ltr">Deadlock</bdi> با <bdi dir="ltr">pprof goroutine</bdi>:</strong> وقتی برنامه کاملاً قفل می‌شود و هیچ goroutine‌ای پیشرفت نمی‌کند، deadlock رخ داده است. runtime خودکار deadlock‌هایی که تمام goroutine‌ها در حالت sleep هستند را شناسایی می‌کند و پیام «all goroutines are asleep - deadlock!» را چاپ می‌کند. اما برای deadlock‌های جزئی که فقط برخی goroutine‌ها درگیر هستند، از <code>go tool pprof http://localhost:6060/debug/pprof/goroutine</code> استفاده کنید تا وضعیت هر goroutine و stack trace آن را ببینید. goroutine‌هایی که در وضعیت <bdi dir="ltr">[semacquire]</bdi> یا <bdi dir="ltr">[chan send]</bdi> هستند، احتمالاً درگیر deadlock هستند.</li>
 <li><strong>دیباگ راه‌دور در <bdi dir="ltr">Container</bdi>:</strong> وقتی برنامه در Docker container اجرا می‌شود و مشکلی فقط در محیط container رخ می‌دهد (نه محلی)، باید از remote debugging استفاده کنید. Delve را در حالت headless داخل container اجرا کنید (<code>dlv exec --headless --listen=:2345 --api-version=2</code>)، پورت ۲۳۴۵ را map کنید (<code>-p 2345:2345</code>)، و از محیط محلی با <code>dlv connect localhost:2345</code> یا VS Code متصل شوید. حتماً برنامه را با <code>-gcflags="all=-N -l"</code> بسازید و <code>remotePath</code> را در <code>launch.json</code> تنظیم کنید.</li>
 <li><strong>دیباگ مشکلات <bdi dir="ltr">Production</bdi> با <bdi dir="ltr">Core Dump</bdi>:</strong> وقتی برنامه در production crash می‌کند و امکان دیباگ زنده ندارید، core dump بهترین ابزار تحلیل بعدی است. با <code>ulimit -c unlimited</code> تولید core dump را فعال کنید. پس از crash، فایل core را با <code>dlv core ./myapp core</code> باز کنید تا وضعیت برنامه در لحظه crash را بررسی کنید. همچنین <code>GOTRACEBACK=crash</code> باعث تولید core dump هنگام panic می‌شود.</li>

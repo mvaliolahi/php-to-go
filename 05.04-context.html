@@ -75,7 +75,7 @@
 <figure class="diagram" dir="ltr">
 <svg height="280" viewBox="0 0 700 280" width="700" xmlns="http://www.w3.org/2000/svg">
 <rect fill="#fafafa" height="280" rx="8" width="700" x="0" y="0"></rect>
-<defs>
+<defs><filter id="sh100" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
 <marker id="aCtx" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#00ADD8" points="0 0,10 3.5,0 7"></polygon></marker>
 </defs>
 <text fill="#00ADD8" font-size="15" font-weight="bold" text-anchor="middle" x="350" y="25" direction="rtl" unicode-bidi="embed">سلسله‌مراتب <tspan direction="ltr" unicode-bidi="embed">Context</tspan></text>
@@ -343,7 +343,7 @@ func main() {
 <figure class="diagram" dir="ltr">
 <svg width="700" height="240" viewBox="0 0 700 240" xmlns="http://www.w3.org/2000/svg">
 <rect fill="#fafafa" height="240" rx="8" width="700" x="0" y="0"></rect>
-<defs>
+<defs><filter id="sh101" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
 <marker id="aCn1" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#e74c3c" points="0 0,10 3.5,0 7"></polygon></marker>
 <marker id="aCn2" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#00ADD8" points="0 0,10 3.5,0 7"></polygon></marker>
 </defs>
@@ -431,7 +431,7 @@ func fetchOrders(ctx context.Context, userID int) ([]Order, error) {
 </div>
 
 <h3 id="context-در-طراحی-api">Context در طراحی API</h3>
-<p>در Go قرارداد این است که <code>context.Context</code> همیشه اولین پارامتر تابع باشد و نام آن <code>ctx</code> باشد. این قرارداد در تمام کتابخانه‌های استاندارد و پروژه‌های متن‌باز رعایت می‌شود:</p>
+<p>در Go قرارداد این است که <code>context.Context</code> همیشه اولین پارامتر تابع باشد و نام آن <code>ctx</code> باشد. این قرارداد در تمام کتابخانه‌های استاندارد و پروژه‌های متن‌باز رعایت می‌شود (جزئیات بیشتر و دلایل آن در انتهای این بخش آمده است).</p>
 
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">// Correct — right: ctx as first parameter
@@ -443,7 +443,7 @@ func FetchUser(id int, ctx context.Context) (*User, error)
 </figure>
 
 <h3 id="propagation-value-در-context">انتقال مقادیر در Context — بهترین شیوه‌ها</h3>
-<p>هرچند <code>context.WithValue</code> ابزاری مفید است، سوءاستفاده از آن یک <bdi dir="ltr">Anti-pattern</bdi> شناخته‌شده است. مقادیر ذخیره‌شده در <bdi dir="ltr">Context</bdi> از نوع <code>interface{}</code> هستند و امنیت نوع (<bdi dir="ltr">Type Safety</bdi>) ندارند. بهترین شیوه‌ها:</p>
+<p>هرچند <code>context.WithValue</code> ابزاری مفید است، سوءاستفاده از آن یک <bdi dir="ltr">Anti-pattern</bdi> شناخته‌شده است. مقادیر ذخیره‌شده در <bdi dir="ltr">Context</bdi> از نوع <code>interface{}</code> هستند و <bdi dir="ltr">Type Safety</bdi> ندارند. بهترین شیوه‌ها:</p>
 <p><strong>۱. همیشه از کلیدهای نوع‌دار سفارشی استفاده کنید:</strong></p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">// Correct — right: custom typed key
@@ -590,12 +590,12 @@ func queryWithTimeout(ctx context.Context) {
     </div>
 
 <h2 id="درخت-انتشار-لغو-context">درخت انتشار لغو <bdi dir="ltr">Context</bdi></h2>
-<p>یکی از مهم‌ترین ویژگی‌های <bdi dir="ltr">Context</bdi> در Go مدل درختی انتشار لغو است. وقتی یک <bdi dir="ltr">Context</bdi> والد لغو می‌شود، این سیگنال لغو به صورت خودکار و بازگشتی به تمام <bdi dir="ltr">Context</bdi>‌های فرزند و نوه منتشر می‌شود. این رفتار تضمین می‌کند که هیچ <bdi dir="ltr">Goroutine</bdi> ای پس از لغو درخواست اصلی به کار بیهوده ادامه ندهد و منابع سیستم از جمله اتصالات دیتابیس، <bdi dir="ltr">HTTP</bdi> و حافظه آزاد شوند. در PHP معمولاً هر درخواست مستقل است و لغو یک فرآیند تأثیری روی دیگران ندارد اما در Go که یک سرور هزاران درخواست را به صورت همزمان پردازش می‌کند این مکانیزم حیاتی است.</p>
+<p>همان‌طور که در ابتدای این بخش اشاره شد، <bdi dir="ltr">Context</bdi> در Go یک ساختار درختی دارد و لغو والد به‌صورت بازگشتی به تمام فرزندان و نوادگان منتشر می‌شود. این رفتار تضمین می‌کند که هیچ <bdi dir="ltr">Goroutine</bdi> ای پس از لغو درخواست اصلی به کار بیهوده ادامه ندهد و منابع سیستم از جمله اتصالات دیتابیس، <bdi dir="ltr">HTTP</bdi> و حافظه آزاد شوند. در PHP معمولاً هر درخواست مستقل است و لغو یک فرآیند تأثیری روی دیگران ندارد اما در Go که یک سرور هزاران درخواست را به صورت همزمان پردازش می‌کند این مکانیزم حیاتی است. نمودار زیر این درخت را در عمل نشان می‌دهد.</p>
 
 <figure class="diagram" dir="ltr">
 <svg height="520" viewBox="0 0 780 520" width="780" xmlns="http://www.w3.org/2000/svg">
 <rect fill="#fafafa" height="520" rx="8" width="780" x="0" y="0"></rect>
-<defs>
+<defs><filter id="sh102" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
 <marker id="aTree1" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#00ADD8" points="0 0,10 3.5,0 7"></polygon></marker>
 <marker id="aTreeR" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#e74c3c" points="0 0,10 3.5,0 7"></polygon></marker>
 </defs>
@@ -742,6 +742,8 @@ func queryWithTimeout(ctx context.Context) {
 </ul>
 
 <div class="tip"><strong>نکته عملی — <tspan direction="ltr" unicode-bidi="embed">Context</tspan> همیشه اولین پارامتر و هرگز فیلد <tspan direction="ltr" unicode-bidi="embed">struct</tspan> نباید باشد:</strong> در Go قرارداد بسیار مهمی وجود دارد که <tspan direction="ltr" unicode-bidi="embed">context.Context</tspan> باید همیشه به عنوان اولین پارامتر تابع پاس داده شود و نام آن <tspan direction="ltr" unicode-bidi="embed">ctx</tspan> باشد. هرگز <tspan direction="ltr" unicode-bidi="embed">Context</tspan> را در یک <tspan direction="ltr" unicode-bidi="embed">struct</tspan> ذخیره نکنید. دلیل این قرارداد این است که <tspan direction="ltr" unicode-bidi="embed">Context</tspan> یک شیء با چرخه حیات مشخص است و باید با پایان عملیات والد لغو شود. اگر <tspan direction="ltr" unicode-bidi="embed">Context</tspan> در <tspan direction="ltr" unicode-bidi="embed">struct</tspan> ذخیره شود چرخه حیات آن نامشخص می‌شود و ممکن است <tspan direction="ltr" unicode-bidi="embed">Goroutine</tspan>‌هایی که از آن استفاده می‌کنند هرگز سیگنال لغو دریافت نکنند. همچنین ذخیره <tspan direction="ltr" unicode-bidi="embed">Context</tspan> در <tspan direction="ltr" unicode-bidi="embed">struct</tspan> باعث وابستگی پنهان می‌شود و تست‌نویسی را بسیار دشوار می‌سازد. همیشه امضای تابع باید <tspan direction="ltr" unicode-bidi="embed">func DoSomething(ctx context.Context, ...)</tspan> باشد نه اینکه <tspan direction="ltr" unicode-bidi="embed">ctx</tspan> از داخل <tspan direction="ltr" unicode-bidi="embed">struct</tspan> خوانده شود. این قرارداد در تمام کتابخانه‌های استاندارد Go رعایت می‌شود و ابزارهایی مثل <tspan direction="ltr" unicode-bidi="embed">go vet</tspan> نیز آن را بررسی می‌کنند.</div>
+
+<div class="note"><strong>یادداشت:</strong> در <bdi dir="ltr">PHP</bdi> مفهوم <bdi dir="ltr">Context</bdi> به این شکل وجود ندارد؛ در Laravel درخواست فعلی از طریق <code>request()</code> یا تزریق <code>Request $request</code> در دسترس است اما قابلیت لغو یا <bdi dir="ltr">deadline</bdi> ندارد. در <bdi dir="ltr">Go</bdi> همیشه <code>context.Context</code> را از <code>r.Context()</code> در <bdi dir="ltr">HTTP handler</bdi>ها بگیرید و به توابع فرعی پاس بدهید. در زنجیره‌ی <bdi dir="ltr">middleware</bdi>، <bdi dir="ltr">Context</bdi> درخواست به‌طور خودکار با هر <bdi dir="ltr">middleware</bdi> جدید می‌تواند مشتق شود (<code>r.WithContext(ctx)</code>) تا <bdi dir="ltr">deadline</bdi> یا <bdi dir="ltr">value</bdi> جدیدی اضافه شود بدون اینکه <bdi dir="ltr">Context</bdi> والد تغییر کند (یادآوری: <bdi dir="ltr">Context</bdi>ها <bdi dir="ltr">immutable</bdi> هستند).</div>
 
 </div>
 </main>

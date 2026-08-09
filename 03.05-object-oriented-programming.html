@@ -93,7 +93,7 @@
 
 <figure class="diagram" dir="ltr">
 <svg height="280" viewBox="0 0 700 280" width="700" xmlns="http://www.w3.org/2000/svg">
-<defs>
+<defs><filter id="sh65" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
 <marker id="arrMRPHP" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#777BB4" points="0 0, 10 3.5, 0 7"></polygon></marker>
 <marker id="arrMRGo" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#00ADD8" points="0 0, 10 3.5, 0 7"></polygon></marker>
 </defs>
@@ -141,7 +141,7 @@
 
 
 <figure class="diagram" dir="ltr">
-<svg height="280" viewBox="0 0 600 280" width="600" xmlns="http://www.w3.org/2000/svg">
+<svg height="280" viewBox="0 0 600 280" width="600" xmlns="http://www.w3.org/2000/svg"><defs><filter id="sh66" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter></defs>
 <text fill="#555" font-size="15" font-weight="bold" text-anchor="middle" x="300" y="25" direction="rtl" unicode-bidi="embed">شی‌گرایی: <tspan direction="ltr" unicode-bidi="embed">PHP</tspan> <tspan direction="ltr" unicode-bidi="embed">vs</tspan> <tspan direction="ltr" unicode-bidi="embed">Go</tspan></text>
 <!-- PHP -->
 <rect fill="#f3e5f5" height="230" rx="12" stroke="#777BB4" stroke-width="2" width="280" x="10" y="40"></rect>
@@ -389,7 +389,7 @@ fmt.Println(u.City) // Output: Tehran
 <p>ترکیب dependency ها را کاهش می‌دهد و به کد خوانایی و انعطاف بیشتری می‌بخشد و سلسله‌مراتب پیچیده کلاس‌ها را حذف می‌کند و به جای آن قابلیت‌های مورد نیاز را به صورت ماژولار به هم اضافه می‌کند و به شما این امکان را می‌دهد که چندین struct را در یک struct جدید ترکیب کنید چیزی که در وراثت چندگانه به صورت مستقیم امکان‌پذیر نیست.</p>
 <h4 id="embedding-در-برابر-composition">Embedding در برابر Composition</h4>
 <p>در Go دو راه برای استفاده‌ی مجدد از struct ها وجود دارد: <strong dir="ltr">Embedding</strong> (تعبیه) و <strong dir="ltr">Composition</strong> (ترکیب). تفاوت این دو ظریف اما بسیار مهم است:</p>
-<p><strong>Embedding:</strong> struct داخلی بدون نام تعریف می‌شود و فیلدها و متدهای آن <strong>ارتقا</strong> (promoted) می‌شوند — یعنی مستقیماً روی struct بیرونی قابل دسترسی هستند:</p>
+<p><strong>Embedding:</strong> struct داخلی بدون نام تعریف می‌شود و فیلدها و متدهای آن <strong dir="ltr">promoted</strong> می‌شوند — یعنی مستقیماً روی struct بیرونی قابل دسترسی هستند:</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">type Address struct {
     City string
@@ -481,12 +481,12 @@ func (u *User) SetEmail(e string) {
 <p>این سبک کپسوله‌سازی ساده اما مؤثر است و در کنار طراحی ماژولار Go باعث کاهش dependency ها و افزایش خوانایی و قابلیت تست کد می‌شود.</p>
 
 <h3 id="وراثت-در-برابر-ترکیب">وراثت در برابر ترکیب: مقایسه‌ی عمیق</h3>
-<p>یکی از بزرگترین تغییرات ذهنی که برنامه‌نویسان PHP باید انجام دهند، گذاشتن از تفکر «وراثت» به تفکر «ترکیب» است. در PHP معمولاً سلسله‌مراتب وراثت عمیقی ساخته می‌شود: <code>Animal → Mammal → Dog</code>. اما در Go این الگو ضدالگوی (<bdi dir="ltr">anti-pattern</bdi>) محسوب می‌شود. به‌جای پرسش «Dog چه نوع Animal ای است؟» باید بپرسید «Dog چه رفتارهایی دارد؟»</p>
+<p>یکی از بزرگترین تغییرات ذهنی که برنامه‌نویسان PHP باید انجام دهند، گذاشتن از تفکر «وراثت» به تفکر «ترکیب» است. در PHP معمولاً سلسله‌مراتب وراثت عمیقی ساخته می‌شود: <code>Animal → Mammal → Dog</code>. اما در Go این الگو <bdi dir="ltr">anti-pattern</bdi> محسوب می‌شود. به‌جای پرسش «Dog چه نوع Animal ای است؟» باید بپرسید «Dog چه رفتارهایی دارد؟»</p>
 
 <figure class="diagram" dir="ltr">
 <svg height="280" viewBox="0 0 700 280" width="700" xmlns="http://www.w3.org/2000/svg">
 <rect fill="#fafafa" height="280" rx="8" width="700" x="0" y="0"></rect>
-<defs>
+<defs><filter id="sh67" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
 <marker id="arrInh" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#777BB4" points="0 0, 10 3.5, 0 7"></polygon></marker>
 <marker id="arrComp" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#00ADD8" points="0 0, 10 3.5, 0 7"></polygon></marker>
 </defs>
@@ -528,7 +528,7 @@ func (u *User) SetEmail(e string) {
 </figure>
 
 <h4 id="method-promotion">ارتقای متد از طریق Embedding</h4>
-<p>وقتی یک struct را در struct دیگری <bdi dir="ltr">embed</bdi> می‌کنید، متدهای struct داخلی به‌صورت خودکار روی struct بیرونی قابل دسترسی می‌شوند. این مکانیزم <strong>ارتقای متد</strong> (<bdi dir="ltr">method promotion</bdi>) نامیده می‌شود و شبیه‌ترین چیز به وراثت در Go است اما با تفاوت‌های مهم:</p>
+<p>وقتی یک struct را در struct دیگری <bdi dir="ltr">embed</bdi> می‌کنید، متدهای struct داخلی به‌صورت خودکار روی struct بیرونی قابل دسترسی می‌شوند. این مکانیزم <bdi dir="ltr">method promotion</bdi> نامیده می‌شود و شبیه‌ترین چیز به وراثت در Go است اما با تفاوت‌های مهم:</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">type Logger struct {
     prefix string
@@ -551,7 +551,7 @@ s.Log("started") // equivalent to s.Logger.Log("started")
 <p>متدهای ارتقایافته در واقع یک <bdi dir="ltr">syntactic sugar</bdi> هستند — کامپایلر فراخوانی <code>s.Log()</code> را به <code>s.Logger.Log()</code> تبدیل می‌کند. اما نکته‌ی مهم این است که receiver همیشه struct داخلی است نه بیرونی. یعنی اگر <code>Log</code> بخواهد به فیلدهای <code>Service</code> دسترسی داشته باشد، نمی‌تواند — چون receiver آن <code>Logger</code> است نه <code>Service</code>.</p>
 
 <h4 id="polymorphism-via-interfaces">چندریختی از طریق Interfaceها</h4>
-<p>در PHP چندریختی (<bdi dir="ltr">polymorphism</bdi>) از طریق وراثت و <bdi dir="ltr">interface</bdi> حاصل می‌شود. در Go نیز چندریختی وجود دارد اما فقط از طریق <bdi dir="ltr">interface</bdi> و بدون نیاز به وراثت:</p>
+<p>در PHP <bdi dir="ltr">polymorphism</bdi> از طریق وراثت و <bdi dir="ltr">interface</bdi> حاصل می‌شود. در Go نیز polymorphism وجود دارد اما فقط از طریق <bdi dir="ltr">interface</bdi> و بدون نیاز به وراثت:</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">// Define behavior
 type Speaker interface {
@@ -595,11 +595,11 @@ MakeThemSpeak(animals)
 </table>
 
 <h3 id="embedding-method-promotion-chain">زنجیره‌ی ارتقای متد در Embedding</h3>
-<p>یکی از مهم‌ترین مفاهیمی که برنامه‌نویسان PHP باید درباره‌ی <bdi dir="ltr">embedding</bdi> در Go درک کنند، نحوه‌ی عملکرد <strong>زنجیره‌ی ارتقای متد</strong> (<bdi dir="ltr">method promotion chain</bdi>) است. وقتی یک <bdi dir="ltr">struct</bdi> را در <bdi dir="ltr">struct</bdi> دیگری تعبیه می‌کنید، کامپایلر Go یک مسیر جستجوی مشخص برای متدها ایجاد می‌کند که کاملاً با زنجیره‌ی وراثت PHP متفاوت است. در PHP وقتی متدی روی یک شیء فراخوانی می‌شود، موتور زبان از کلاس فرزند به سمت والد حرکت می‌کند تا متد مناسب را بیابد و با <code dir="ltr">parent::method()</code> می‌توان متد والد را صریحاً فراخوانی کرد. اما در Go مکانیزم ارتقای متد صرفاً یک <strong>شکر نحوی</strong> (<bdi dir="ltr">syntactic sugar</bdi>) است که فراخوانی متد struct تعبیه‌شده را ساده‌تر می‌کند و هیچ زنجیره‌ی واقعی وجود ندارد.</p>
+<p>یکی از مهم‌ترین مفاهیمی که برنامه‌نویسان PHP باید درباره‌ی <bdi dir="ltr">embedding</bdi> در Go درک کنند، نحوه‌ی عملکرد <bdi dir="ltr">method promotion chain</bdi> است. وقتی یک <bdi dir="ltr">struct</bdi> را در <bdi dir="ltr">struct</bdi> دیگری تعبیه می‌کنید، کامپایلر Go یک مسیر جستجوی مشخص برای متدها ایجاد می‌کند که کاملاً با زنجیره‌ی وراثت PHP متفاوت است. در PHP وقتی متدی روی یک شیء فراخوانی می‌شود، موتور زبان از کلاس فرزند به سمت والد حرکت می‌کند تا متد مناسب را بیابد و با <code dir="ltr">parent::method()</code> می‌توان متد والد را صریحاً فراخوانی کرد. اما در Go مکانیزم method promotion صرفاً یک <bdi dir="ltr">syntactic sugar</bdi> است که فراخوانی متد struct تعبیه‌شده را ساده‌تر می‌کند و هیچ زنجیره‌ی واقعی وجود ندارد.</p>
 
 <figure class="diagram" dir="ltr">
 <svg height="520" viewBox="0 0 800 520" width="800" xmlns="http://www.w3.org/2000/svg">
-<defs>
+<defs><filter id="sh68" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
 <marker id="arrEmbed" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#00ADD8" points="0 0, 10 3.5, 0 7"></polygon></marker>
 <marker id="arrPromote" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#4CAF50" points="0 0, 10 3.5, 0 7"></polygon></marker>
 <marker id="arrOverride" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#FF9800" points="0 0, 10 3.5, 0 7"></polygon></marker>
@@ -696,7 +696,7 @@ MakeThemSpeak(animals)
 <figcaption dir="rtl">شکل ۵-۳-ج: زنجیره‌ی ارتقای متد در <bdi dir="ltr">Go embedding</bdi> در برابر وراثت <bdi dir="ltr">PHP</bdi> — ارتقا ≠ وراثت</figcaption>
 </figure>
 
-<p>در نمودار بالا می‌بینید که در سمت <bdi dir="ltr">PHP</bdi> رابطه‌ی <code dir="ltr">class Dog extends Animal</code> یک رابطه‌ی <strong>is-a</strong> واقعی است: <bdi dir="ltr">Dog</bdi> واقعاً یک <bdi dir="ltr">Animal</bdi> است و با <code dir="ltr">parent::speak()</code> می‌تواند به متد والد دسترسی پیدا کند. اما در سمت <bdi dir="ltr">Go</bdi> رابطه‌ی <code dir="ltr">type Dog struct { Animal }</code> یک رابطه‌ی <strong>has-a</strong> است: <bdi dir="ltr">Dog</bdi> یک <bdi dir="ltr">Animal</bdi> را در خود جای داده و متدهای آن به‌صورت خودکار «ارتقا» یافته‌اند. این ارتقا فقط یک میانبر نحوی است و هیچ زنجیره‌ی وراثت واقعی ایجاد نمی‌کند. تفاوت کلیدی این است که وقتی <bdi dir="ltr">Dog.Speak()</bdi> تعریف می‌شود متد <bdi dir="ltr">Animal.Speak()</bdi> را <strong>سایه‌اندازی</strong> (<bdi dir="ltr">shadow</bdi>) می‌کند نه <strong>بازنویسی</strong> (<bdi dir="ltr">override</bdi>). در نتیجه هرگز <bdi dir="ltr">parent</bdi> وجود ندارد که بخواهید از آن فراخوانی کنید — فقط <code dir="ltr">d.Animal.Speak()</code> دارید که صریحاً متد struct تعبیه‌شده را فراخوانی می‌کند و receiver همیشه <bdi dir="ltr">Animal</bdi> است نه <bdi dir="ltr">Dog</bdi>.</p>
+<p>در نمودار بالا می‌بینید که در سمت <bdi dir="ltr">PHP</bdi> رابطه‌ی <code dir="ltr">class Dog extends Animal</code> یک رابطه‌ی <strong>is-a</strong> واقعی است: <bdi dir="ltr">Dog</bdi> واقعاً یک <bdi dir="ltr">Animal</bdi> است و با <code dir="ltr">parent::speak()</code> می‌تواند به متد والد دسترسی پیدا کند. اما در سمت <bdi dir="ltr">Go</bdi> رابطه‌ی <code dir="ltr">type Dog struct { Animal }</code> یک رابطه‌ی <strong>has-a</strong> است: <bdi dir="ltr">Dog</bdi> یک <bdi dir="ltr">Animal</bdi> را در خود جای داده و متدهای آن به‌صورت خودکار «ارتقا» یافته‌اند. این ارتقا فقط یک میانبر نحوی است و هیچ زنجیره‌ی وراثت واقعی ایجاد نمی‌کند. تفاوت کلیدی این است که وقتی <bdi dir="ltr">Dog.Speak()</bdi> تعریف می‌شود متد <bdi dir="ltr">Animal.Speak()</bdi> را <bdi dir="ltr">shadow</bdi> می‌کند نه <bdi dir="ltr">override</bdi>. در نتیجه هرگز <bdi dir="ltr">parent</bdi> وجود ندارد که بخواهید از آن فراخوانی کنید — فقط <code dir="ltr">d.Animal.Speak()</code> دارید که صریحاً متد struct تعبیه‌شده را فراخوانی می‌کند و receiver همیشه <bdi dir="ltr">Animal</bdi> است نه <bdi dir="ltr">Dog</bdi>.</p>
 
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">type Animal struct {
@@ -746,7 +746,9 @@ func main() {
 <li><strong>Embedding در برابر interface برای چندریختی:</strong> وقتی نیاز به چندریختی دارید از <bdi dir="ltr">interface</bdi> استفاده کنید و وقتی نیاز به استفاده‌ی مجدد از کد دارید از <bdi dir="ltr">embedding</bdi>. این دو مکمل هم هستند نه جایگزین: <bdi dir="ltr">interface</bdi> رفتار را تعریف می‌کند و <bdi dir="ltr">embedding</bdi> پیاده‌سازی را به اشتراک می‌گذارد. در PHP این دو مفهوم با وراثت و Trait ترکیب شده‌اند اما در Go صریح‌تر و مجزاتر هستند و این جدایی باعث می‌شود کد تمیزتر و قابل‌فهم‌تر باشد.</li>
 </ul>
 
-<div class="tip"><strong>تفاوت بنیادین embedding و inheritance:</strong> embedding در Go یک رابطه‌ی <bdi dir="ltr">has-a</bdi> است نه <bdi dir="ltr">is-a</bdi>. ارتقای متد (<bdi dir="ltr">method promotion</bdi>) فقط یک <bdi dir="ltr">syntactic sugar</bdi> است — وقتی <code dir="ltr">d.Speak()</code> را فراخوانی می‌کنید کامپایلر Go آن را به <code dir="ltr">d.Animal.Speak()</code> تبدیل می‌کند. این یعنی: ۱) هیچ زنجیره‌ی وراثت وجود ندارد ۲) <code dir="ltr">parent::method()</code> معادل ندارد ۳) receiver متد ارتقا‌یافته همیشه struct داخلی است نه بیرونی ۴) سایه‌اندازی (<bdi dir="ltr">shadowing</bdi>) با بازنویسی (<bdi dir="ltr">override</bdi>) متفاوت است. این تفاوت‌ها ممکن است در ابتدا محدودکننده به نظر برسند اما در عمل باعث کاهش coupling و افزایش قابلیت نگهداری کد می‌شوند.</div>
+<div class="tip"><strong>تفاوت بنیادین embedding و inheritance:</strong> embedding در Go یک رابطه‌ی <bdi dir="ltr">has-a</bdi> است نه <bdi dir="ltr">is-a</bdi>. method promotion فقط یک <bdi dir="ltr">syntactic sugar</bdi> است — وقتی <code dir="ltr">d.Speak()</code> را فراخوانی می‌کنید کامپایلر Go آن را به <code dir="ltr">d.Animal.Speak()</code> تبدیل می‌کند. این یعنی: ۱) هیچ زنجیره‌ی وراثت وجود ندارد ۲) <code dir="ltr">parent::method()</code> معادل ندارد ۳) receiver متد ارتقا‌یافته همیشه struct داخلی است نه بیرونی ۴) shadowing با override متفاوت است. این تفاوت‌ها ممکن است در ابتدا محدودکننده به نظر برسند اما در عمل باعث کاهش coupling و افزایش قابلیت نگهداری کد می‌شوند.</div>
+
+<div class="note"><strong>نکته‌ی حرفه‌ای — راهنمای مهاجرت از ارث‌بری PHP به ترکیب Go:</strong> وقتی در حال تبدیل یک سلسله‌مراتب ارث‌بری PHP به Go هستید، الگوی امن این است: ۱) رفتارهای اشتراکی را به <bdi dir="ltr">interface</bdi>های کوچک تبدیل کنید (مثلاً <code>Speaker</code>، <code>Walker</code>)، ۲) پیاده‌سازی‌های قابل استفاده‌ی مجدد را در structهای مستقل قرار دهید، ۳) structهای مرکب را با <bdi dir="ltr">embedding</bdi> بسازید نه <code>extends</code>. این رویکرد «has-a» در برابر «is-a» نه‌تنها محدودیت Go را برطرف می‌کند، بلکه همان چیزی است که اصل «Favor composition over inheritance» در الگوهای طراحی OOP سال‌ها توصیه می‌کرده است.</div>
 
 </div>
 </main>

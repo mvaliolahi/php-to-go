@@ -91,7 +91,7 @@
 
 <figure class="diagram" dir="ltr">
 <svg height="380" viewBox="0 0 650 380" width="650" xmlns="http://www.w3.org/2000/svg">
-<defs>
+<defs><filter id="sh198" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
 <marker id="arrowg" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5">
 <polygon fill="#555" points="0 0, 10 3.5, 0 7"></polygon>
 </marker>
@@ -168,6 +168,7 @@
         <span class="quote-book">GopherCon 2018</span>
     </p>
 </div>
+<div class="note"><strong>ارجاع:</strong> مفهوم <bdi dir="ltr">Escape Analysis</bdi>، تفاوت <bdi dir="ltr">value</bdi> و <bdi dir="ltr">pointer receiver</bdi>، و تأثیر pointer بر تخصیص heap در <a href="02.05-pointers.html"><bdi dir="ltr">بخش ۲.۵</bdi></a> به‌طور کامل بررسی شده‌اند. در این بخش صرفاً جنبه‌ی مرتبط با GC را مرور می‌کنیم.</div>
 <p>Escape Analysis یعنی بررسی اینکه آیا یک متغیر فقط داخل همان تابع باقی می‌ماند یا به بیرون از تابع هم می‌رود. اگر فقط داخل تابع استفاده شود روی <strong dir="ltr">stack</strong> ذخیره می‌شود که سریع‌تر و سبک‌تر است. اگر به بیرون منتقل شود — مثلاً به return برود یا به goroutine داده شود — روی <strong dir="ltr">heap</strong> قرار می‌گیرد و نیاز به بررسی توسط Garbage Collector دارد.</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">type User struct {
@@ -407,70 +408,12 @@ func processLargeData(data []byte) error {
 <div class="important"><strong>قوانین حیاتی sync.Pool:</strong> اولاً، همیشه قبل از <code dir="ltr">Put</code> وضعیت شیء را ریست کنید (مثلاً <code dir="ltr">buf.Reset()</code>). ثانیاً، هرگز اشیاء با وضعیت حساس (مثل اطلاعات کاربر) را در pool قرار ندهید چون ممکن است بین goroutine‌های مختلف به اشتراک گذاشته شوند. ثالثاً، pool برای ذخیره‌سازی بلندمدت نیست — اشیاء در هر چرخه‌ی GC ممکن است حذف شوند. رابعاً، هرگز reference به شیء pool را بعد از Put نگه ندارید.</div>
 
 <h3 id="stringsbuilder-و-الحاق-رشتهها">strings.Builder و الحاق رشته‌ها</h3>
-<p>یکی از منابع رایج تخصیص حافظه در Go، الحاق رشته‌ها است. در Go رشته‌ها immutable هستند و هر الحاق یک رشته‌ی جدید ایجاد می‌کند. این رفتار در حلقه‌ها پرهزینه است:</p>
-<figure class="code go" dir="ltr">
-<pre><code class="language-go">// Bad: each + creates a new allocation
-func badConcat(parts []string) string {
-    result := ""
-    for _, p := range parts {
-        result += p // allocation + copy on each iteration
-    }
-    return result
-}
-
-// Good: with strings.Builder only one final allocation
-func goodConcat(parts []string) string {
-    var sb strings.Builder
-    for _, p := range parts {
-        sb.WriteString(p) // without extra allocation
-    }
-    return sb.String()
-}
-
-// Best: pre-allocate capacity
-func bestConcat(parts []string) string {
-    total := 0
-    for _, p := range parts {
-        total += len(p)
-    }
-    var sb strings.Builder
-    sb.Grow(total) // one-time allocation — no reallocation
-    for _, p := range parts {
-        sb.WriteString(p)
-    }
-    return sb.String()
-}
-</code></pre>
-</figure>
-<p>نتایج بنچمارک (با ۱۰۰۰ رشته‌ی ۱۰ کاراکتری): روش <code>+</code> حدود <strong>۲۰۰۰ تخصیص</strong> و <strong>۵۰۰ μs/op</strong> ، <code>strings.Builder</code> حدود <strong>۱۰ تخصیص</strong> و <strong>۳ μs/op</strong> ، و <code>strings.Builder</code> با <code dir="ltr">Grow</code> فقط <strong>۱ تخصیص</strong> و <strong>۱.۵ μs/op</strong> . تفاوت ۳۰۰ برابری بین بدترین و بهترین.</p>
+<p>الحاق رشته‌ها با عملگر <code>+</code> در حلقه‌ها از منابع رایج تخصیص حافظه و فشار GC است. در Go رشته‌ها immutable هستند و هر الحاق یک رشته‌ی جدید ایجاد می‌کند. راه‌حل استاندارد استفاده از <bdi dir="ltr">strings.Builder</bdi> با <bdi dir="ltr">Grow()</bdi> است که با یک تخصیص نهایی کار می‌کند. این تکنیک (شامل مقایسه‌ی بنچمارک <code>+</code> در برابر <code>strings.Builder</code> با/بدون <code>Grow</code> و نمودار مقایسه‌ای روش‌های الحاق) به‌طور کامل در <a href="12.03-practical-optimization-tips.html">بخش ۱۲.۳</a> پوشش داده شده است. در اینجا صرفاً یادآوری می‌کنیم که در حلقه‌های پرتکرار همیشه <bdi dir="ltr">strings.Builder</bdi> با <bdi dir="ltr">Grow()</bdi> را به <code>+</code> ترجیح دهید.</p>
+<div class="tip"><strong>نکته ارتباطی:</strong> اگر در handlerهای HTTP رشته‌ی پاسخ بزرگ می‌سازید، به‌جای ساخت رشته و سپس نوشتن در <bdi dir="ltr">http.ResponseWriter</bdi>، مستقیماً در <bdi dir="ltr">ResponseWriter</bdi> بنویسید (که <bdi dir="ltr">io.Writer</bdi> است). این کار یک کپی و تخصیص حافظه را حذف می‌کند. برای JSON هم می‌توانید <bdi dir="ltr">json.NewEncoder(w).Encode(v)</bdi> را مستقیماً روی <bdi dir="ltr">ResponseWriter</bdi> فراخوانی کنید.</div>
 
 <h3 id="پیشتخصیص-slice-و-map">پیش‌تخصیص Slice و Map</h3>
-<p>وقتی اندازه‌ی نهایی یک slice یا map از قبل مشخص یا قابل تخمین است، preallocation از تخصیص‌های مکرر و کپی‌شدن داده‌ها جلوگیری می‌کند:</p>
-<figure class="code go" dir="ltr">
-<pre><code class="language-go">// Bad: append creates repeated allocations
-func badSlice(items []int) []int {
-    var result []int
-    for _, item := range items {
-        result = append(result, item*2)
-    }
-    return result
-}
-
-// Good: pre-allocate with make
-func goodSlice(items []int) []int {
-    result := make([]int, 0, len(items))
-    for _, item := range items {
-        result = append(result, item*2)
-    }
-    return result
-}
-
-// Pre-allocate map (from Go 1.11 with hint)
-m := make(map[string]int, 1000) // hint for 1000 entries
-</code></pre>
-</figure>
-<p>نتایج بنچمارک slice (با ۱۰,۰۰۰ عنصر): روش بد <strong>۲۰ تخصیص</strong> (هر بار دوبرابر شدن)، روش خوب <strong>۱ تخصیص</strong> . سرعت اجرای خوب حدود ۲-۳ برابر سریع‌تر.</p>
-<div class="note"><strong>قانون عملی:</strong> هر زمان که اندازه‌ی نهایی یک slice را می‌دانید یا می‌توانید تخمین بزنید، از <code>make([]T, 0, n)</code> استفاده کنید. این کار از reallocation و کپی‌شدن مکرر جلوگیری می‌کند و عملکرد را به‌طور قابل توجهی بهبود می‌بخشد.</div>
+<p>وقتی اندازه‌ی نهایی یک slice یا map از قبل مشخص یا قابل تخمین است، preallocation از تخصیص‌های مکرر و کپی‌شدن داده‌ها جلوگیری می‌کند. این تکنیک — شامل مثال‌های <code>badSlice</code>/<code>goodSlice</code>، استفاده از <code>make(map[K]V, hint)</code> از Go 1.11 و نتایج بنچمارک — به‌طور کامل در <a href="12.03-practical-optimization-tips.html">بخش ۱۲.۳</a> پوشش داده شده است. در اینجا فقط بر جنبه‌ی مرتبط با GC تأکید می‌کنیم: هر <code>append</code> که باعث reallocation شود، یک آرایه‌ی قدیمی روی heap می‌سازد که GC باید آن را ردیابی و آزاد کند. با preallocation، تعداد اشیاء روی heap کمتر شده و فاز marking سریع‌تر تمام می‌شود.</p>
+<div class="note"><strong>نکته:</strong> در Go 1.24 پیاده‌سازی داخلی map با <bdi dir="ltr">Swiss Tables</bdi> بازنویسی شد که locality بهتری دارد و سربار CPU را به‌طور میانگین ۲-۳٪ کاهش می‌دهد. با این حال hint در <code>make(map[K]V, hint)</code> همچنان مهم است چون از resize اولیه‌ی bucket‌ها جلوگیری می‌کند.</div>
 
 <h3 id="تنظیم-gc-با-gogc-و-gomemlimit">تنظیم GC با GOGC و GOMEMLIMIT</h3>
 <p>Go دو متغیر محیطی مهم برای کنترل رفتار Garbage Collector دارد:</p>
@@ -530,6 +473,7 @@ $ GOGC=200 GOMEMLIMIT=2GiB ./myapp
 
 <h3 id="تنظیمات-پیشرفته-gc-برای-production">تنظیمات پیشرفته GC برای Production</h3>
 <p>در محیط‌های production با بار بالا، تنظیم GC می‌تواند تأثیر قابل‌توجهی بر عملکرد داشته باشد. در اینجا چند الگوی رایج را بررسی می‌کنیم:</p>
+<div class="tip"><strong>نکته:</strong> قبل از تنظیم <code>GOGC</code> یا <code>GOMEMLIMIT</code>، با <bdi dir="ltr">GODEBUG=gctrace=1 ./myapp</bdi> لاگ‌های GC را در stderr فعال کنید. هر خط نشان می‌دهد GC چند بار اجرا شده، چقدر طول کشیده (<bdi dir="ltr">STW</bdi>)، heap قبل/بعد چقدر بوده و چند goroutine فعال بوده است. بدون این داده‌ها تنظیم GOGC فقط حدس است. الگوی سالم: GC با فرکانس منظم، STW زیر ۱ms و heap پایدار. الگوی مشکوک: GC هر چند صد میلی‌ثانیه، STW طولانی یا heap رشد مستمر.</div>
 <p><strong>الگوی Ballast:</strong> قبل از معرفی <code>GOMEMLIMIT</code> ، الگوی ballast رایج بود. در این الگو یک slice بزرگ حافظه تخصیص می‌دهید تا GC را فریب دهید و فکر کند heap بزرگ‌تر از واقعیت است:</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">func main() {
@@ -560,30 +504,8 @@ debug.FreeOSMemory()
 </figure>
 
 <h3 id="همترازی-حافظه-memory-alignment">Memory Alignment</h3>
-<p>در Go، ترتیب فیلدهای struct تأثیر مستقیم روی مصرف حافظه دارد. کامپایلر Go align می‌کند. فیلدهای بزرگ‌تر (مثل <code>int64</code>) باید در آدرس‌های مضرب ۸ قرار بگیرند. اگر فیلدهای کوچک و بزرگ به‌صورت نامنظم ترکیب شوند، فضای padding بین آن‌ها ایجاد می‌شود:</p>
-<figure class="code go" dir="ltr">
-<pre><code class="language-go">// Bad: 24 bytes (due to padding)
-type Bad struct {
-    A bool // 1 byte + 7 bytes padding
-    B int64 // 8 bytes
-    C int32 // 4 bytes + 4 bytes padding
-}
-
-// Good: 16 bytes (no extra padding)
-type Good struct {
-    B int64 // 8 bytes
-    C int32 // 4 bytes
-    A bool // 1 byte + 3 bytes padding
-}
-</code></pre>
-</figure>
-<p>قانون ساده: فیلدها را از بزرگ به کوچک مرتب کنید (<code>int64</code> قبل از <code>int32</code> قبل از <code>bool</code>). با این کار فضای padding کاهش می‌یابد و مصرف حافظه بهینه‌تر می‌شود. وقتی هزاران نمونه از یک struct دارید (مثلاً در slice)، حتی ۸ بایت تفاوت می‌تواند به صدها مگابایت حافظه تبدیل شود.</p>
-<div class="note"><strong>ابزار بررسی:</strong> با <code dir="ltr">unsafe.Sizeof()</code> و <code dir="ltr">unsafe.Offsetof()</code> می‌توانید اندازه واقعی struct و offset هر فیلد را بررسی کنید. همچنین ابزار <code>fieldalignment</code> در <code>golang.org/x/tools</code> به‌صورت خودکار فیلدها را مرتب می‌کند:</div>
-<figure class="code bash" dir="ltr">
-<pre><code class="language-bash">$ go install golang.org/x/tools/go/analysis/passes/fieldalignment/cmd/fieldalignment@latest
-$ fieldalignment -fix ./...
-</code></pre>
-</figure>
+<p>ترتیب فیلدهای struct تأثیر مستقیم روی مصرف حافظه دارد. کامپایلر Go فیلدهای بزرگ‌تر (مثل <code>int64</code>) را در آدرس‌های مضرب ۸ align می‌کند و اگر فیلدهای کوچک و بزرگ به‌صورت نامنظم ترکیب شوند، فضای padding بین آن‌ها ایجاد می‌شود. این موضوع در <a href="12.05-practical-techniques-for-memory-reduction.html">بخش ۱۲.۵</a> به‌طور کامل با مثال‌های ۴۰-بایتی در برابر ۲۴-بایتی، محاسبه‌ی offset با <code>unsafe.Sizeof</code> و ابزار <code>fieldalignment</code> پوشش داده شده است. در اینجا صرفاً یادآوری می‌کنیم: <strong>فیلدها را از بزرگ به کوچک مرتب کنید</strong> (<code>int64</code> قبل از <code>int32</code> قبل از <code>bool</code>) — این ساده‌ترین تکنیکی است که بدون تغییر رفتار برنامه، تا ۴۰٪ حافظه صرفه‌جویی می‌کند.</p>
+<div class="tip"><strong>نکته ارتباطی:</strong> هر بایت ذخیره‌شده در struct به‌معنای یک بایت کمتر برای اسکن توسط GC در فاز marking است. وقتی میلیون‌ها نمونه از یک struct روی heap دارید، alignment خوب نه‌که حافظه را کاهش می‌دهد بلکه تأخیر GC را هم بهبود می‌بخشد.</div>
 
 <h3 id="finalizer-ها-و-ملاحظات">Finalizer‌ها و ملاحظات</h3>
 <p>Go از طریق <code dir="ltr">runtime.SetFinalizer</code> امکان ثبت تابعی را می‌دهد که هنگام جمع‌آوری شیء توسط GC فراخوانی شود. اما استفاده از finalizer‌ها در Go بسیار محدود و معمولاً توصیه نمی‌شود:</p>
@@ -698,7 +620,7 @@ GOEXPERIMENT=nogreenteagc go build -o myapp .
     </div>
 
 <h3 id="الگوریتم-سه-رنگی-gc-در-go">الگوریتم سه‌رنگی GC در Go — مرحله به مرحله</h3>
-<p>قلب تپنده‌ی Garbage Collector در Go الگوریتم Tri-Color Marking است که به‌صورت همزمان (concurrent) با اجرای برنامه کار می‌کند. درک این الگوریتم برای هر توسعه‌دهنده‌ی Go ضروری است، زیرا رفتار حافظه‌ی برنامه‌تان مستقیماً تحت تأثیر نحوه کار این الگوریتم قرار دارد. الگوریتم سه‌رنگی اشیاء روی heap را به سه دسته تقسیم می‌کند: سیاه (قابل دسترس و کاملاً بررسی‌شده)، خاکستری (قابل دسترس اما هنوز بررسی نشده) و سفید (احتمالاً غیرقابل دسترس). فرآیند marking از root‌ها شروع می‌شود و به‌تدریج تمام اشیاء قابل دسترس را از خاکستری به سیاه تبدیل می‌کند. در پایان، اشیاء سفید باقی‌مانده زباله محسوب شده و حافظه‌ی آنها آزاد می‌شود.</p>
+<p>قلب تپنده‌ی Garbage Collector در Go الگوریتم Tri-Color Marking است که به‌صورت concurrent با اجرای برنامه کار می‌کند. درک این الگوریتم برای هر توسعه‌دهنده‌ی Go ضروری است، زیرا رفتار حافظه‌ی برنامه‌تان مستقیماً تحت تأثیر نحوه کار این الگوریتم قرار دارد. الگوریتم سه‌رنگی اشیاء روی heap را به سه دسته تقسیم می‌کند: سیاه (قابل دسترس و کاملاً بررسی‌شده)، خاکستری (قابل دسترس اما هنوز بررسی نشده) و سفید (احتمالاً غیرقابل دسترس). فرآیند marking از root‌ها شروع می‌شود و به‌تدریج تمام اشیاء قابل دسترس را از خاکستری به سیاه تبدیل می‌کند. در پایان، اشیاء سفید باقی‌مانده زباله محسوب شده و حافظه‌ی آنها آزاد می‌شود.</p>
 
 <figure class="diagram" dir="ltr">
 <svg height="680" viewBox="0 0 750 680" width="750" xmlns="http://www.w3.org/2000/svg">
@@ -866,7 +788,7 @@ GOEXPERIMENT=nogreenteagc go build -o myapp .
 <figcaption>شکل ۱۲-۴-۵: الگوریتم سه‌رنگی <bdi dir="ltr">GC</bdi> در <bdi dir="ltr">Go</bdi> — از marking تا sweep با <bdi dir="ltr">write barrier</bdi></figcaption>
 </figure>
 
-<p>نمودار فوق فرآیند الگوریتم سه‌رنگی را پنج مرحله‌ی اصلی نشان می‌دهد. در مرحله‌ی اول، همه‌ی اشیاء روی heap سفید هستند و GC هنوز شروع نکرده. در مرحله‌ی دوم، root‌ها (اشیاء مستقیماً قابل دسترس از stack و متغیرهای سراسری) خاکستری标记 می‌شوند. مرحله‌ی سوم قلب الگوریتم است: GC یک شیء خاکستری را انتخاب می‌کند، آن را سیاه می‌کند (یعنی بررسی‌شده) و تمام اشیایی که به آن ارجاع دارند خاکستری می‌شوند. این فرآیند در مرحله‌ی چهارم تکرار می‌شود تا هیچ شیء خاکستری باقی نماند. در مرحله‌ی پنجم، اشیاء سفید باقی‌مانده زباله هستند و حافظه‌ی آنها آزاد می‌شود. اما نکته‌ی حیاتی write barrier است: چون برنامه (mutator) همزمان با GC در حال اجراست، ممکن است یک اشاره‌گر از شیء سیاه به شیء سفید اضافه کند. بدون write barrier، این شیء سفید ناپدید می‌شد چون هیچ خاکستری‌ای دیگر به آن اشاره نمی‌کرد. write barrier با خاکستری کردن شیء سفید هدف، این مشکل را حل می‌کند.</p>
+<p>نمودار فوق فرآیند الگوریتم سه‌رنگی را پنج مرحله‌ی اصلی نشان می‌دهد. در مرحله‌ی اول، همه‌ی اشیاء روی heap سفید هستند و GC هنوز شروع نکرده. در مرحله‌ی دوم، root‌ها (اشیاء مستقیماً قابل دسترس از stack و متغیرهای سراسری) خاکستری标记 می‌شوند. مرحله‌ی سوم قلب الگوریتم است: GC یک شیء خاکستری را انتخاب می‌کند، آن را سیاه می‌کند (یعنی بررسی‌شده) و تمام اشیایی که به آن ارجاع دارند خاکستری می‌شوند. این فرآیند در مرحله‌ی چهارم تکرار می‌شود تا هیچ شیء خاکستری باقی نماند. در مرحله‌ی پنجم، اشیاء سفید باقی‌مانده زباله هستند و حافظه‌ی آنها آزاد می‌شود. اما نکته‌ی حیاتی write barrier است: چون mutator همزمان با GC در حال اجراست، ممکن است یک اشاره‌گر از شیء سیاه به شیء سفید اضافه کند. بدون write barrier، این شیء سفید ناپدید می‌شد چون هیچ خاکستری‌ای دیگر به آن اشاره نمی‌کرد. write barrier با خاکستری کردن شیء سفید هدف، این مشکل را حل می‌کند.</p>
 
 <h3 id="سناریوهای-عملیاتی-بهینهسازی-حافظه-و-gc">سناریوهای عملیاتی: بهینه‌سازی حافظه و GC</h3>
 <p>درک تئوری الگوریتم GC مهم است، اما در عمل نیاز دارید تکنیک‌های خاصی را برای کاهش فشار GC و بهینه‌سازی مصرف حافظه به‌کار ببرید. این سناریوهای عملیاتی بر اساس تجربیات تیم‌هایی مثل Twitch، Uber و Dropbox تنظیم شده‌اند و هر کدام راهکار مشخصی برای یک مشکل واقعی ارائه می‌دهند. به‌یاد داشته باشید که بهینه‌سازی GC بدون اندازه‌گیری اولیه بی‌فایده است — همیشه ابتدا با pprof مشکل را شناسایی کنید و سپس راهکار مناسب را اعمال کنید. بسیاری از تیم‌ها بدون پروفایلینگ، GOGC را تنظیم می‌کنند و نتایج عکس می‌گیرند چون مشکل واقعی اصلاً GC نبوده.</p>

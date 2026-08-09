@@ -87,7 +87,7 @@
 <strong>نکته‌ی حرفه‌ای:</strong> سیستم نوع‌دهی صریح <bdi dir="ltr">Go</bdi> در کدبیس‌های بزرگ یک مزیت رقابتی است. در <bdi dir="ltr">PHP</bdi> با رشد پروژه، عدم قطعیت نوع متغیرها باعث می‌شود هر فراخوانی تابع نیازمند بررسی مستندات یا کد منبع باشد. اما در <bdi dir="ltr">Go</bdi> امضای تابع <code>func Process(order Order, repo Repository) error</code> فوراً می‌گوید چه ورودی‌هایی لازم است و چه خروجی‌ای ممکن است. همین صراحت، زمان درک کد را کاهش و اطمینان از صحت تغییرات را افزایش می‌دهد — به‌ویژه وقتی ده‌ها توسعه‌دهنده روی یک پروژه کار می‌کنند.
 </div>
 <figure class="diagram" dir="ltr">
-<svg height="380" viewBox="0 0 600 380" width="600" xmlns="http://www.w3.org/2000/svg">
+<svg height="380" viewBox="0 0 600 380" width="600" xmlns="http://www.w3.org/2000/svg"><defs><filter id="sh24" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter></defs>
 <rect fill="#fafafa" height="360" rx="12" stroke="#00ADD8" stroke-width="2" width="580" x="10" y="10"></rect>
 <text fill="#00ADD8" font-size="16" font-weight="bold" text-anchor="middle" x="300" y="38" direction="rtl" unicode-bidi="embed">انواع داده در <tspan direction="ltr" unicode-bidi="embed">Go</tspan></text>
 <!-- Primitive -->
@@ -242,7 +242,7 @@ fmt.Println(len(runes)) // 4 — actual number of letters
 <br/>
 فیلد <code>Data</code> اشاره‌گری به آرایه‌ای از بایت‌های فقط‌خواندنی است و <code>Len</code> تعداد بایت‌ها را نگه می‌دارد. به همین دلیل است که رشته‌ها immutable هستند — داده‌ی زیربنایی در حافظه‌ی فقط‌خواندنی قرار دارد و هنگام تغییر، یک آرایه‌ی جدید ساخته می‌شود. انتساب رشته فقط کپی ۱۶ بایتِ header است نه خود داده. این مکانیزم شبیه به Copy-on-Write در PHP است اما تفاوت مهمی دارد: در PHP رشته‌ها هنگام تغییر واقعاً کپی می‌شوند (به‌دلیل reference counting) اما در Go چندین رشته می‌توانند به همان بایت‌های زیربنایی اشاره کنند تا زمانی که تغییری نیاز نباشد.</div>
 <figure class="diagram" dir="ltr">
-<svg height="250" viewBox="0 0 600 250" width="600" xmlns="http://www.w3.org/2000/svg">
+<svg height="250" viewBox="0 0 600 250" width="600" xmlns="http://www.w3.org/2000/svg"><defs><filter id="sh25" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter></defs>
 <rect fill="#fafafa" height="230" rx="12" stroke="#00ADD8" stroke-width="2" width="580" x="10" y="10"></rect>
 <text fill="#00ADD8" font-size="15" font-weight="bold" text-anchor="middle" x="300" y="38" direction="rtl" unicode-bidi="embed">توابع مهم کار با رشته در <tspan direction="ltr" unicode-bidi="embed">Go</tspan></text>
 <text fill="#333" font-family="monospace" font-size="13" x="50" y="70" direction="ltr" unicode-bidi="embed">len(str)</text><text fill="#666" font-size="12" x="180" y="70" direction="rtl" unicode-bidi="embed">→ تعداد بایت‌ها</text>
@@ -267,7 +267,7 @@ fmt.Println(len(runes)) // 4 — actual number of letters
 <text fill="#2e7d32" font-size="14" font-weight="bold" text-anchor="middle" x="370" y="50" direction="rtl" unicode-bidi="embed">اشاره‌گر p</text>
 <text fill="#333" font-family="monospace" font-size="16" text-anchor="middle" x="370" y="80" direction="ltr" unicode-bidi="embed">0xC0001</text>
 <text fill="#888" font-size="10" text-anchor="middle" x="370" y="95" direction="ltr" unicode-bidi="embed">p = &amp;x</text>
-<defs><marker id="arrp" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#4caf50" points="0 0, 10 3.5, 0 7"></polygon></marker></defs>
+<defs><filter id="sh26" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter><marker id="arrp" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#4caf50" points="0 0, 10 3.5, 0 7"></polygon></marker></defs>
 <line marker-end="url(#arrp)" stroke="#4caf50" stroke-width="2" x1="280" x2="200" y1="60" y2="60"></line>
 <text fill="#555" font-size="12" text-anchor="middle" x="100" y="145" direction="rtl" unicode-bidi="embed">*p = مقدار در آدرس (10)</text>
 <text fill="#555" font-size="12" text-anchor="middle" x="370" y="145" direction="rtl" unicode-bidi="embed">&<tspan direction="ltr" unicode-bidi="embed">amp</tspan>;x = آدرس حافظه</text>
@@ -349,6 +349,7 @@ arr[2] = 30
 fmt.Println(arr)
 </code></pre>
 </figure>
+<div class="tip"><strong>نکته‌ی حرفه‌ای — array یا slice؟</strong> در <bdi dir="ltr">PHP</bdi> تنها یک ساختار آرایه دارید، اما در <bdi dir="ltr">Go</bdi> انتخاب بین <code>array</code> و <code>slice</code> عمدی است. از <code>array</code> فقط وقتی استفاده کنید که طول ثابت در زمان کامپایل معنای دامنه‌ای دارد (مثلاً آدرس IPv4 به‌صورت <code>[4]byte</code> یا ماتریس <code>[3][3]float64</code>)؛ در غیر این صورت <code>slice</code> انتخاب idiomatic است. آرایه‌ها با انتساب کامل کپی می‌شوند و این رفتار برای برنامه‌نویسان <bdi dir="ltr">PHP</bdi> غیرمنتظره است.</div>
 <h4 id="slice">Slice</h4>
 <p>slice از ویژگی‌های مهم Go است و تقریباً جایگزین آرایه‌های دینامیک در PHP محسوب می‌شود. اما همان‌طور که دیدیم آرایه‌ها طول ثابتی دارند و به‌ندرت به‌صورت روزمره استفاده می‌شوند. به جای آن Go ساختاری به نام Slice ارائه کرده که قدرت و انعطاف‌پذیری آرایه‌های PHP را با امنیت و کارایی بیشتر فراهم می‌کند. در حقیقت در پشت صحنه یک slice به یک آرایه‌ی واقعی اشاره می‌کند و فقط بخش مشخصی از آن را نمایان می‌سازد. تغییر در مقادیر slice می‌تواند آرایه زیربنایی را نیز تغییر دهد.</p>
 <div class="note"><strong>ساختار داخلی Slice در runtime:</strong> هر slice در Go در واقع یک ساختار سه فیلدی به نام SliceHeader است:
@@ -363,7 +364,7 @@ fmt.Println(arr)
 <br/>
 <code>Data</code> اشاره‌گری به اولین عنصر آرایه‌ی زیربنایی است. <code>Len</code> تعداد عناصری است که slice در حال حاضر شامل می‌شود و <code>Cap</code> ظرفیت کل آرایه‌ی زیربنایی از نقطه‌ی شروع Data به بعد را نشان می‌دهد. انتساب یک slice به متغیر دیگر فقط این ۲۴ بایت header را کپی می‌کند نه داده‌ها را — به همین دلیل دو slice می‌توانند به همان آرایه‌ی زیربنایی اشتراک داشته باشند. این رفتار با Copy-on-Write در آرایه‌های PHP تفاوت بنیادین دارد: در PHP وقتی <code>$b = $a</code> می‌نویسید ابتدا داده‌ها به‌اشتراک گذاشته می‌شوند اما به‌محض تغییر یکی از آن‌ها کپی ایجاد می‌شود. اما در Go داده‌ها واقعاً مشترک می‌مانند مگر اینکه <code>append</code> باعث ایجاد آرایه‌ی جدید شود.</div>
 <figure class="diagram" dir="ltr">
-<svg height="220" viewBox="0 0 550 220" width="550" xmlns="http://www.w3.org/2000/svg">
+<svg height="220" viewBox="0 0 550 220" width="550" xmlns="http://www.w3.org/2000/svg"><defs><filter id="sh27" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter></defs>
 <text fill="#00ADD8" font-size="14" font-weight="bold" text-anchor="middle" x="275" y="25" direction="rtl" unicode-bidi="embed">ساختار داخلی <tspan direction="ltr" unicode-bidi="embed">Slice</tspan> در <tspan direction="ltr" unicode-bidi="embed">Go</tspan></text>
 <rect fill="#fff3e0" height="70" rx="8" stroke="#ff9800" stroke-width="1.5" width="160" x="30" y="45"></rect>
 <text fill="#e65100" font-size="13" font-weight="bold" text-anchor="middle" x="110" y="68" direction="ltr" unicode-bidi="embed">Slice Header</text>
@@ -456,7 +457,7 @@ copy(copyUsers, users)
 <h4 id="map">Map‌</h4>
 <p>ساختارهای <strong dir="ltr">Key-Value</strong> ابزاری متداول برای نگهداری داده‌های ساخت‌یافته هستند. در PHP این ساختار با آرایه‌های انجمنی پیاده‌سازی می‌شود:</p>
 <figure class="diagram" dir="ltr">
-<svg height="200" viewBox="0 0 500 200" width="500" xmlns="http://www.w3.org/2000/svg">
+<svg height="200" viewBox="0 0 500 200" width="500" xmlns="http://www.w3.org/2000/svg"><defs><filter id="sh28" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter></defs>
 <text fill="#00ADD8" font-size="14" font-weight="bold" text-anchor="middle" x="250" y="25" direction="rtl" unicode-bidi="embed">ساختار <tspan direction="ltr" unicode-bidi="embed">Map</tspan> در <tspan direction="ltr" unicode-bidi="embed">Go</tspan></text>
 <rect fill="#e8f5e9" height="130" rx="8" stroke="#4caf50" stroke-width="1.5" width="200" x="30" y="45"></rect>
 <text fill="#2e7d32" font-size="13" font-weight="bold" text-anchor="middle" x="130" y="70" direction="ltr" unicode-bidi="embed">map[string]int</text>
@@ -545,7 +546,7 @@ if ok {
 <h4 id="struct">Struct</h4>
 <p>در زبان Go مفهومی به نام <em>کلاس</em> وجود ندارد اما به‌جای آن ساختار داده‌ای به نام <strong dir="ltr">struct</strong> برای تعریف داده‌های ترکیبی و سازمان‌دهی اطلاعات استفاده می‌شود. Structها مانند جعبه‌هایی هستند که می‌توانند چندین مقدار با انواع مختلف را در خود جای دهند. یکی از تفاوت‌های مهم Go با PHP این است که در Go ارث‌بری وجود ندارد. به جای آن می‌توان Composition انجام داد یعنی یک struct می‌تواند شامل struct دیگری به صورت embedding باشد که باعث قابلیت استفاده مجدد و سازماندهی بهتر کد می‌شود که این موارد در فصل های بعد در بخش مربوط به شی‌گرایی بیشتر توضیح داده خواهد شد.</p>
 <figure class="diagram" dir="ltr">
-<svg height="200" viewBox="0 0 500 200" width="500" xmlns="http://www.w3.org/2000/svg">
+<svg height="200" viewBox="0 0 500 200" width="500" xmlns="http://www.w3.org/2000/svg"><defs><filter id="sh29" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter></defs>
 <text fill="#00ADD8" font-size="14" font-weight="bold" text-anchor="middle" x="250" y="25" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">Struct</tspan> در <tspan direction="ltr" unicode-bidi="embed">Go</tspan> مشابه کلاس در <tspan direction="ltr" unicode-bidi="embed">PHP</tspan></text>
 <rect fill="#e0f7fa" height="130" rx="8" stroke="#00ADD8" stroke-width="1.5" width="200" x="30" y="45"></rect>
 <text fill="#00ADD8" font-size="13" font-weight="bold" text-anchor="middle" x="130" y="70" direction="ltr" unicode-bidi="embed">Go: struct</text>
@@ -711,7 +712,7 @@ var s Status = Active
         <span class="quote-book">Go Proverbs</span>
     </p>
 </div>
-<p>از تفاوت‌های فلسفی مهم بین <bdi dir="ltr">Go</bdi> و <bdi dir="ltr">PHP</bdi> در نحوه‌ی برخورد با متغیرهای مقداردهی‌نشده است. در <bdi dir="ltr">PHP</bdi> متغیری که مقداردهی نشده باشد <code>null</code> است — یعنی «مقداری ندارد». اما در <bdi dir="ltr">Go</bdi> هر نوع داده‌ای یک <strong>مقدار صفر</strong> (<bdi dir="ltr">zero value</bdi>) دارد که هنگام تعریف متغیر بدون مقداردهی صریح، به‌طور خودکار به آن اختصاص می‌یابد. این یعنی در <bdi dir="ltr">Go</bdi> هیچ متغیری هرگز «بدون مقدار» نیست.</p>
+<p>از تفاوت‌های فلسفی مهم بین <bdi dir="ltr">Go</bdi> و <bdi dir="ltr">PHP</bdi> در نحوه‌ی برخورد با متغیرهای مقداردهی‌نشده است. در <bdi dir="ltr">PHP</bdi> متغیری که مقداردهی نشده باشد <code>null</code> است — یعنی «مقداری ندارد». اما در <bdi dir="ltr">Go</bdi> هر نوع داده‌ای یک <bdi dir="ltr">zero value</bdi> دارد که هنگام تعریف متغیر بدون مقداردهی صریح، به‌طور خودکار به آن اختصاص می‌یابد. این یعنی در <bdi dir="ltr">Go</bdi> هیچ متغیری هرگز «بدون مقدار» نیست.</p>
 <table class="comparison-table" dir="rtl">
 <thead>
 <tr><th>نوع در Go</th><th>مقدار صفر</th><th>معادل PHP</th></tr>
@@ -802,8 +803,8 @@ func safeAdd(a, b int) (int, bool) {
 </code></pre>
 </figure>
 <div class="important"><strong>توصیه‌ی عملی:</strong> اگر با اعداد ورودی کاربر یا مقادیر دیتابیس کار می‌کنید، حتماً بازه‌ی مجاز را بررسی کنید. برای کارهای حساس (مثلاً محاسبات مالی) از بسته‌ی <code>math/big</code> یا کتابخانه‌های تخصصی استفاده کنید. هرگز به سرریز نشدن اعداد اعتماد نکنید.</div>
-<h3 id="const-iota">ثابت‌ها و الگوهای iota</h3>
-<p>ثابت‌ها در <bdi dir="ltr">Go</bdi> برخلاف متغیرها در زمان کامپایل ارزیابی می‌شوند و قابل تغییر نیستند. <bdi dir="ltr">Go</bdi> از <code>iota</code> به‌عنوان شمارنده‌ی خودکار در بلوک‌های <code>const</code> استفاده می‌کند که الگوهای بسیار قدرتمندی ایجاد می‌کند. در <bdi dir="ltr">PHP</bdi> معادل مستقیمی برای <code>iota</code> وجود ندارد و باید مقادیر را دستی بنویسید.</p>
+<h3 id="const-iota">الگوهای پیشرفته‌ی iota</h3>
+<p>همان‌طور که در بخش <a href="#const">ثابت‌ها</a> دیدید، <bdi dir="ltr">Go</bdi> از <code>iota</code> به‌عنوان شمارنده‌ی خودکار در بلوک‌های <code>const</code> استفاده می‌کند. در ادامه الگوهای قدرتمندتری را بررسی می‌کنیم که در <bdi dir="ltr">PHP</bdi> معادل مستقیمی ندارند و باید مقادیر را دستی بنویسید.</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">// base pattern — auto counter
 type Direction int
@@ -858,7 +859,7 @@ func processRunes(data string) {
 </figure>
 <div class="tip"><strong>بهینه‌سازی پیشرفته:</strong> در مسیرهای بحرانی کد می‌توانید از <code>unsafe.Pointer</code> برای تبدیل بدون کپی استفاده کنید (که در بخش ۲.۲ توضیح داده شده). اما این روش فقط وقتی امن است که <code>[]byte</code> پس از تبدیل تغییر نکند. اگر داده‌ی بزرگ را فقط می‌خوانید، این بهینه‌سازی می‌تواند تأثیر قابل‌توجهی داشته باشد.</div>
 <figure class="diagram" dir="ltr">
-<svg height="340" viewBox="0 0 600 340" width="600" xmlns="http://www.w3.org/2000/svg">
+<svg height="340" viewBox="0 0 600 340" width="600" xmlns="http://www.w3.org/2000/svg"><defs><filter id="sh30" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter></defs>
 <rect fill="#fafafa" height="320" rx="12" stroke="#00ADD8" stroke-width="2" width="580" x="10" y="10"></rect>
 <text fill="#00ADD8" font-size="15" font-weight="bold" text-anchor="middle" x="300" y="38" direction="rtl" unicode-bidi="embed">سلسله‌مراتب سیستم نوع در <tspan direction="ltr" unicode-bidi="embed">Go</tspan></text>
 <!-- Root -->
@@ -908,7 +909,7 @@ func processRunes(data string) {
 <p>یکی از تفاوت‌های بنیادین <bdi dir="ltr">PHP</bdi> و <bdi dir="ltr">Go</bdi> در نحوه‌ی ذخیره‌سازی مقادیر در حافظه نهفته است. در <bdi dir="ltr">PHP</bdi> هر متغیر فارغ از نوع داده‌ی آن در یک ساختار یکسان به نام <bdi dir="ltr">zval</bdi> نگهداری می‌شود که شامل برچسب نوع، مقدار واقعی، شمارنده‌ی ارجاع و پرچم ارجاع است. این طراحی یکنواخت انعطاف‌پذیری بالایی در زمان اجرا فراهم می‌کند اما هزینه‌ی حافظه‌ی قابل‌توجهی دارد. در مقابل <bdi dir="ltr">Go</bdi> هر مقدار دقیقاً به اندازه‌ی نوع واقعی خود فضا اشغال می‌کند بدون هیچ سربار اضافی برای مدیریت نوع در زمان اجرا.</p>
 <p>این تفاوت ساختاری پیامدهای عملی مهمی دارد: برنامه‌های <bdi dir="ltr">Go</bdi> معمولاً حافظه‌ی بسیار کمتری نسبت به معادل <bdi dir="ltr">PHP</bdi> خود مصرف می‌کنند. به‌عنوان مثال ذخیره‌ی هزار عدد صحیح در <bdi dir="ltr">PHP</bdi> حدود ۱۶ کیلوبایت فقط برای ساختارهای <bdi dir="ltr">zval</bdi> نیاز دارد اما در <bdi dir="ltr">Go</bdi> فقط ۸ کیلوبایت. این بهره‌وری حافظه مستقیماً بر کارایی کش پردازنده و سرعت اجرای برنامه تأثیر می‌گذارد و یکی از دلایل اصلی برتری عملکرد <bdi dir="ltr">Go</bdi> در کارهای محاسباتی است.</p>
 <figure class="diagram" dir="ltr">
-<svg height="560" viewBox="0 0 780 560" width="780" xmlns="http://www.w3.org/2000/svg">
+<svg height="560" viewBox="0 0 780 560" width="780" xmlns="http://www.w3.org/2000/svg"><defs><filter id="sh31" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter></defs>
 <rect fill="#fafafa" height="540" rx="12" stroke="#00ADD8" stroke-width="2" width="760" x="10" y="10"></rect>
 <text fill="#333" font-size="16" font-weight="bold" text-anchor="middle" x="390" y="35" direction="rtl" unicode-bidi="embed">مقایسه‌ی ساختار حافظه: <tspan direction="ltr" unicode-bidi="embed">PHP zval</tspan> در برابر <tspan direction="ltr" unicode-bidi="embed">Go Typed Values</tspan></text>
 

@@ -71,7 +71,7 @@
 <h2 id="تست-پیشرفته-apiهای-restful-با-httpexpect">تست پیشرفته APIهای RESTful با httpexpect</h2>
 <figure class="diagram" dir="ltr">
 <svg height="300" viewBox="0 0 650 300" width="650" xmlns="http://www.w3.org/2000/svg">
-<defs>
+<defs><filter id="sh183" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
 <marker id="arrowh" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5">
 <polygon fill="#00ADD8" points="0 0, 10 3.5, 0 7"></polygon>
 </marker>
@@ -119,6 +119,7 @@
 <p>پشتیبانی از cookie و session</p>
 <p>قابل اجرا به صورت in-process یا real HTTP request</p>
 <p>پشتیبانی از chain‌های assertion خوانا و دقیق</p>
+<div class="tip"><strong>نکته درباره طراحی قابل‌تست API:</strong> پیش از نوشتن تست، مطمئن شوید هندلرهای شما قابل تزریق <code dir="ltr">http.Handler</code> هستند. یعنی به‌جای وابستگی به <code dir="ltr">http.DefaultServeMux</code> یا متغیرهای سراسری، یک <code dir="ltr">NewRouter(deps)</code> یا <code dir="ltr">NewHandler(deps)</code> بسازید که وابستگی‌ها را به‌صورت پارامتر بپذیرد. این الگو به شما اجازه می‌دهد در تست، همان router را با mock یا دیتابیس تستی بسازید و به <code dir="ltr">httptest.NewServer</code> بدهید. در <span dir="ltr">Laravel</span> این کار با Service Provider و Container خودکار است، اما در <span dir="ltr">Go</span> صریح بودن آن مزیت محسوب می‌شود چون وابستگی‌ها شفاف می‌مانند.</div>
 <h3 id="نصب-httpexpect">نصب httpexpect</h3>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">go get github.com/gavv/httpexpect/v2
@@ -357,7 +358,7 @@ assert.Greater(t, value.(int), 10)
 
 <figure class="diagram" dir="ltr">
 <svg height="300" viewBox="0 0 620 300" width="620" xmlns="http://www.w3.org/2000/svg">
-<defs>
+<defs><filter id="sh184" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
 <marker id="arrowapi" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5">
 <polygon fill="#00ADD8" points="0 0, 10 3.5, 0 7"></polygon>
 </marker>
@@ -585,7 +586,7 @@ assert.Greater(t, value.(int), 10)
 
 <figure class="diagram" dir="ltr">
 <svg height="580" viewBox="0 0 780 580" width="780" xmlns="http://www.w3.org/2000/svg">
-<defs>
+<defs><filter id="sh185" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
 <marker id="arrowHTTPPipe" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#555" points="0 0, 10 3.5, 0 7"></polygon></marker>
 <marker id="arrowBlueHTTP" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#00ADD8" points="0 0, 10 3.5, 0 7"></polygon></marker>
 <marker id="arrowGreenHTTP" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#4CAF50" points="0 0, 10 3.5, 0 7"></polygon></marker>
@@ -724,7 +725,7 @@ assert.Greater(t, value.(int), 10)
 <li><strong>تست <bdi dir="ltr">middleware</bdi> احراز هویت:</strong> هر سه حالت را تست کنید: بدون توکن (باید ۴۰۱ برگرداند)، با توکن نامعتبر (باید ۴۰۱ برگرداند) و با توکن معتبر (باید ۲۰۰ برگرداند). همچنین دسترسی بر اساس نقش (<bdi dir="ltr">role</bdi>) را بررسی کنید: کاربر عادی نباید به <bdi dir="ltr">endpoint</bdi> مدیریت دسترسی داشته باشد.</li>
 <li><strong>تست صفحه‌بندی (<bdi dir="ltr">Pagination</bdi>):</strong> صفحه اول، صفحه آخر و صفحه میانی را جداگانه تست کنید. بررسی کنید که <bdi dir="ltr">meta</bdi> شامل تعداد کل، شماره صفحه و حد مجاز باشد و تعداد آیتم‌های هر صفحه از حد مجاز تجاوز نکند. همچنین صفحه خارج از محدوده باید ۴۰۴ یا آرایه خالی برگرداند.</li>
 <li><strong>تست پاسخ‌های خطا (۴۰۰، ۴۰۴، ۵۰۰):</strong> ورودی نامعتبر باید ۴۰۰ با پیام خطای واضح برگرداند. منبع ناموجود باید ۴۰۴ برگرداند. خطای سرور باید ۵۰۰ با ساختار ثابت و بدون نشت اطلاعات حساس برگرداند. هر کد خطا باید فرمت JSON یکسانی داشته باشد.</li>
-<li><strong>تست <bdi dir="ltr">endpoint</bdi> آپلود فایل:</strong> فایل معتبر و نامعتبر (فرمت اشتباه، حجم بیش از حد) را تست کنید. بررسی کنید که فایل ذخیره شده و <bdi dir="ltr">URL</b> بازگشتی معتبر باشد. فایل خالی و فایل بسیار بزرگ نیز باید به‌درستی مدیریت شوند.</li>
+<li><strong>تست <bdi dir="ltr">endpoint</bdi> آپلود فایل:</strong> فایل معتبر و نامعتبر (فرمت اشتباه، حجم بیش از حد) را تست کنید. بررسی کنید که فایل ذخیره شده و <bdi dir="ltr">URL</bdi> بازگشتی معتبر باشد. فایل خالی و فایل بسیار بزرگ نیز باید به‌درستی مدیریت شوند.</li>
 </ul>
 
 <div class="tip"><strong>نکته کلیدی درباره <code>httptest.NewServer</code>:</strong> از <bdi dir="ltr">httptest.NewServer</bdi> برای تست هندلرها بدون راه‌اندازی سرور واقعی استفاده کنید — این روش سریع، ایزوله و بدون نیاز به دسترسی شبکه است. سرور تست کاملاً درون فرآیند اجرا می‌شود و درخواست‌ها بدون عبور از پشته شبکه پردازش می‌شوند. این یعنی تست‌های شما چند مرتبه سریع‌تر از تست‌های واقعی HTTP اجرا می‌شوند و هیچ وابستگی به پورت‌ها یا وضعیت شبکه ندارند. همچنین چون سرور تست پس از هر تست بسته می‌شود، هیچ تداخلی بین تست‌ها وجود ندارد و هر تست در محیطی کاملاً تمیز اجرا می‌شود.</div>

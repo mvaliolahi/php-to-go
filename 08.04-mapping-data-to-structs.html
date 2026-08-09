@@ -146,6 +146,8 @@ if err := rows.Err(); err != nil {
 </figure>
 <p><strong>مزایا:</strong> کنترل کامل، بدون وابستگی خارجی، عملکرد بالا. <strong>معایب:</strong> کد تکراری برای هر کوئری، احتمال خطا در تعداد و ترتیب پارامترها.</p>
 
+<div class="note"><strong>از <code>$fillable</code> تا <code>Scan()</code>:</strong> در <bdi dir="ltr">Eloquent</bdi> نگاشت ستون‌ها به فیلد به‌صورت خودکار با اسم‌گذاری <bdi dir="ltr">camelCase ⇄ snake_case</bdi> انجام می‌شود و <code>$casts</code> تبدیل نوع را مدیریت می‌کند. در <bdi dir="ltr">Go</bdi> این قرارداد پنهان وجود ندارد — هر فیلد را صراحتاً در <code>Scan()</code> می‌نویسید و ترتیب آرگومان‌ها باید دقیقاً با <code>SELECT</code> مطابقت داشته باشد. این کد تکراری در نگاه اول پرحجم به‌نظر می‌رسد اما یک مزیت بزرگ دارد: اگر ستونی از کوئری حذف یا اضافه شود، کامپایلر بلافاصله خطا می‌دهد نه اینکه در زمان اجرا با مقدار صفر یا <bdi dir="ltr">NULL</bdi> تصادفی خود را نشان دهد. برای پروژه‌های متوسط به بالا، <bdi dir="ltr">sqlc</bdi> همین امنیت نوع را به‌صورت خودکار با کد کمتر می‌دهد.</div>
+
 <figure class="diagram" dir="ltr">
 <svg height="420" viewBox="0 0 760 420" width="760" xmlns="http://www.w3.org/2000/svg">
 <defs>

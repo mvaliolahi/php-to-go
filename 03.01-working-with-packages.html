@@ -70,7 +70,7 @@
 <div class="chapter">فصل ۳.۱</div>
 <h2 id="کار-با-پکیجها">کار با پکیج‌ها</h2>
 <figure class="diagram" dir="ltr">
-<svg height="250" viewBox="0 0 550 250" width="550" xmlns="http://www.w3.org/2000/svg">
+<svg height="250" viewBox="0 0 550 250" width="550" xmlns="http://www.w3.org/2000/svg"><defs><filter id="sh50" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter></defs>
 <rect fill="#fafafa" height="230" rx="12" stroke="#00ADD8" stroke-width="2" width="530" x="10" y="10"></rect>
 <text fill="#00ADD8" font-size="15" font-weight="bold" text-anchor="middle" x="275" y="38" direction="rtl" unicode-bidi="embed">ساختار پکیج‌ها در <tspan direction="ltr" unicode-bidi="embed">Go</tspan></text>
 <rect fill="#e0f7fa" height="50" rx="8" stroke="#00ADD8" stroke-width="1.5" width="180" x="40" y="55"></rect>
@@ -104,7 +104,7 @@
 <p><strong>ساختار کلی پروژه‌ها</strong></p>
 <p>در فصل یک ساختار استاندارد پروژه های Go توضیح داده شد. یک پروژه‌ی استاندارد Go ممکن است به‌صورت زیر سازماندهی شود:</p>
 <figure class="diagram" dir="ltr">
-<svg height="225" viewBox="0 0 420 225" width="420" xmlns="http://www.w3.org/2000/svg">
+<svg height="225" viewBox="0 0 420 225" width="420" xmlns="http://www.w3.org/2000/svg"><defs><filter id="sh51" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter></defs>
 <rect fill="#fafafa" height="225" rx="8" stroke="#e0e0e0" stroke-width="1.5" width="420" x="0" y="0"></rect>
 <!-- Tree connector lines -->
 <g fill="none" stroke="#ccc" stroke-linecap="round" stroke-width="1.5">
@@ -281,7 +281,7 @@ func main() {
 <figure class="diagram" dir="ltr">
 <svg height="200" viewBox="0 0 550 200" width="550" xmlns="http://www.w3.org/2000/svg">
 <rect fill="#fafafa" height="200" rx="8" width="550" x="0" y="0"></rect>
-<defs>
+<defs><filter id="sh52" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
 <marker id="arrCirc1" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#e74c3c" points="0 0, 10 3.5, 0 7"></polygon></marker>
 <marker id="arrCirc2" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#27ae60" points="0 0, 10 3.5, 0 7"></polygon></marker>
 </defs>
@@ -360,7 +360,7 @@ func Greet() string { return "Hello" }
 <figure class="diagram" dir="ltr">
 <svg height="520" viewBox="0 0 820 520" width="820" xmlns="http://www.w3.org/2000/svg">
 <rect fill="#fafafa" height="520" rx="12" stroke="#00ADD8" stroke-width="2" width="820" x="0" y="0"></rect>
-<defs>
+<defs><filter id="sh53" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
 <marker id="arrPkg1" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#00ADD8" points="0 0, 10 3.5, 0 7"></polygon></marker>
 <marker id="arrPkgInt" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#FF9800" points="0 0, 10 3.5, 0 7"></polygon></marker>
 </defs>
@@ -463,6 +463,8 @@ func Greet() string { return "Hello" }
 </ul>
 
 <div class="tip"><strong>قانون طلایی دیدپذیری در <bdi dir="ltr">Go</bdi>:</strong> برخلاف <bdi dir="ltr">PHP</bdi> که از کلیدواژه‌های <bdi dir="ltr">public</bdi>، <bdi dir="ltr">private</bdi> و <bdi dir="ltr">protected</bdi> استفاده می‌کند، در <bdi dir="ltr">Go</bdi> دیدپذیری فقط با بزرگی یا کوچکی حرف اول نام تعیین می‌شود. این سادگی یک مزیت بزرگ است: بدون نیاز به کلیدواژه‌های اضافی، فقط با نگاه به نام یک نماد می‌فهمید آیا از خارج پکیج قابل دسترسی است یا نه. حرف بزرگ یعنی <bdi dir="ltr">exported</bdi> (عمومی) و حرف کوچک یعنی <bdi dir="ltr">unexported</bdi> (خصوصی). هیچ سطح <bdi dir="ltr">protected</bdi> وجود ندارد — فقط دو حالت داریم. این سادگی باعث می‌شود کد خواناتر و قابل پیش‌بینی‌تر باشد.</div>
+
+<div class="note"><strong>نکته‌ی حرفه‌ای — اصل Cohesion در طراحی پکیج:</strong> یک پکیج خوب باید مجموعه‌ای از نمادهای هم‌هدف باشد، نه صرفاً یک پوشه‌ی فیزیکی. قانون طلایی این است: «اگر نتوانستید در یک جمله کوتاه بگویید پکیج چه کار می‌کند، احتمالاً باید آن را بشکنید». به‌عنوان برنامه‌نویس PHP که به کلاس‌های تک‌مسئولیتی عادت دارید، در Go این مسئولیت را به سطح پکیج منتقل کنید. پکیج‌هایی با نام‌هایی مثل <code dir="ltr">user</code>، <code dir="ltr">auth</code> یا <code dir="ltr">invoice</code> مرزهای شفافی دارند؛ اما <code dir="ltr">util</code> یا <code dir="ltr">common</code> هرگز مسئولیت واحدی ندارند و به زباله‌دان کد تبدیل می‌شوند.</div>
 </div>
 </main>
 </div>

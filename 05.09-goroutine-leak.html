@@ -86,7 +86,7 @@
 <figure class="diagram" dir="ltr">
 <svg height="320" viewBox="0 0 700 320" width="700" xmlns="http://www.w3.org/2000/svg">
 <rect fill="#fafafa" height="320" rx="8" width="700" x="0" y="0"></rect>
-<defs>
+<defs><filter id="sh116" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
 <marker id="aLk1" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#e74c3c" points="0 0,10 3.5,0 7"></polygon></marker>
 <marker id="aLk2" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#27ae60" points="0 0,10 3.5,0 7"></polygon></marker>
 </defs>
@@ -142,18 +142,14 @@ func main() {
 </code></pre>
 </figure>
 <p>&lt;-ch // منتظر دریافت از channel که هیچ‌گاه داده‌ای نمی‌آید</p>
-<p>چگونه از نشت جلوگیری کنیم؟</p>
-<p>همیشه goroutineها را با context یا channelهای کنترل مدیریت کنید.</p>
-<p>برای انتظار از context با timeout یا cancel استفاده کنید.</p>
-<p>از الگوهایی مانند worker pool استفاده کنید که تعداد goroutineها را محدود و مدیریت می‌کند.</p>
-<p>ابزارهای مانیتورینگ goroutine را به کار ببرید (مثلاً <span dir="ltr">runtime.NumGoroutine()</span> برای بررسی تعداد goroutineهای در حال اجرا).</p>
+<p>چگونه از نشت جلوگیری کنیم؟ پاسخ کوتاه: همیشه <bdi dir="ltr">Goroutine</bdi>‌ها را با <bdi dir="ltr">Context</bdi> یا کانال‌های کنترل مدیریت کنید و <code>runtime.NumGoroutine()</code> را برای نظارت به‌کار ببرید. قوانین طلایی کامل در انتهای این فصل (بخش «خلاصه قوانین طلایی») آمده است.</p>
 <h3 id="علل-رایج-leak">علل رایج نشت Goroutine</h3>
 <p>نشتی Goroutine معمولاً از یکی از دلایل زیر ناشی می‌شود:</p>
 
 <figure class="diagram" dir="ltr">
 <svg width="700" height="260" viewBox="0 0 700 260" xmlns="http://www.w3.org/2000/svg">
 <rect fill="#fafafa" height="260" rx="8" width="700" x="0" y="0"></rect>
-<defs>
+<defs><filter id="sh117" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
 <marker id="aLkN1" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#e74c3c" points="0 0,10 3.5,0 7"></polygon></marker>
 <marker id="aLkN2" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#27ae60" points="0 0,10 3.5,0 7"></polygon></marker>
 </defs>
@@ -459,7 +455,7 @@ go tool pprof leak.prof</code></pre>
 <figure class="diagram" dir="ltr">
 <svg height="720" viewBox="0 0 860 720" width="860" xmlns="http://www.w3.org/2000/svg">
 <rect fill="#fafafa" height="720" rx="8" width="860" x="0" y="0"></rect>
-<defs>
+<defs><filter id="sh118" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
 <marker id="aGl1" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#e91e63" points="0 0,10 3.5,0 7"></polygon></marker>
 <marker id="aGl2" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#4CAF50" points="0 0,10 3.5,0 7"></polygon></marker>
 <marker id="aGl3" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#FF9800" points="0 0,10 3.5,0 7"></polygon></marker>
@@ -649,7 +645,7 @@ go tool pprof leak.prof</code></pre>
 <p>در پروژه‌های واقعی، نشت <bdi dir="ltr">Goroutine</bdi> معمولاً در الگوهای خاصی رخ می‌دهد. شناخت این الگوها به شما کمک می‌کند قبل از وقوع نشت از آن جلوگیری کنید. هر یک از سناریوهای زیر بر اساس تجربه توسعه‌دهندگان <bdi dir="ltr">Go</bdi> در سیستم‌های تولیدی بزرگ شناسایی شده‌اند و راه‌حل مشخصی دارند. درک این سناریوها برای هر برنامه‌نویسی که از همزمانی استفاده می‌کند ضروری است.</p>
 
 <ul>
-<li><strong>گیرنده‌های کانال رها شده:</strong> وقتی یک <bdi dir="ltr">goroutine</bdi> منتظر دریافت از کانالی است که دیگر هیچ‌کس به آن ارسال نمی‌کند. مثلاً وقتی تابعی یک <bdi dir="ltr">goroutine</bdi> راه‌اندازی می‌کند که از کانال می‌خواند اما تابع بدون بستن کانال بازمی‌گردد. این الگو به‌ویژه در <bdi dir="ltr">handler</b>های <bdi dir="ltr">HTTP</bdi> رایج است که <bdi dir="ltr">goroutine</bdi> پس‌زمینه‌ای راه‌اندازی می‌کنند. راه‌حل: همیشه کانال را ببندید یا از <bdi dir="ltr">Context</bdi> استفاده کنید.</li>
+<li><strong>گیرنده‌های کانال رها شده:</strong> وقتی یک <bdi dir="ltr">goroutine</bdi> منتظر دریافت از کانالی است که دیگر هیچ‌کس به آن ارسال نمی‌کند. مثلاً وقتی تابعی یک <bdi dir="ltr">goroutine</bdi> راه‌اندازی می‌کند که از کانال می‌خواند اما تابع بدون بستن کانال بازمی‌گردد. این الگو به‌ویژه در <bdi dir="ltr">handler</bdi>های <bdi dir="ltr">HTTP</bdi> رایج است که <bdi dir="ltr">goroutine</bdi> پس‌زمینه‌ای راه‌اندازی می‌کنند. راه‌حل: همیشه کانال را ببندید یا از <bdi dir="ltr">Context</bdi> استفاده کنید.</li>
 <li><strong>عدم لغو <bdi dir="ltr">Context</bdi> در فراخوان‌های <bdi dir="ltr">HTTP</bdi>:</strong> وقتی درخواست <bdi dir="ltr">HTTP</bdi> بدون <bdi dir="ltr">timeout</bdi> یا <bdi dir="ltr">Context</bdi> ارسال می‌شود و سرور پاسخ نمی‌دهد. <bdi dir="ltr">goroutine</bdi> برای همیشه منتظر می‌ماند. این مشکل در <bdi dir="ltr">PHP</bdi> وجود ندارد زیرا هر درخواست <bdi dir="ltr">PHP</bdi> <bdi dir="ltr">timeout</bdi> پیش‌فرض دارد اما در <bdi dir="ltr">Go</bdi> باید صراحتاً تنظیم شود. راه‌حل: همیشه از <code dir="ltr">http.Client{Timeout: ...}</code> و <code dir="ltr">http.NewRequestWithContext(ctx, ...)</code> استفاده کنید.</li>
 <li><strong><bdi dir="ltr">Goroutine</bdi>های حلقه بی‌نهایت:</strong> وقتی <bdi dir="ltr">goroutine</bdi> در حلقه بی‌نهایت اجرا می‌شود بدون آنکه <bdi dir="ltr">ctx.Done()</bdi> را بررسی کند. این الگو اغلب در وظایف پس‌زمینه دیده می‌شود که فراموش می‌شود مکانیزم توقف اضافه شود. حتی اگر حلقه <bdi dir="ltr">time.Sleep</bdi> داشته باشد، <bdi dir="ltr">goroutine</bdi> هرگز پایان نمی‌یابد. راه‌حل: همیشه <code dir="ltr">select</code> با <code dir="ltr">ctx.Done()</code> در حلقه قرار دهید.</li>
 <li><strong>فراموش کردن <bdi dir="ltr">WaitGroup Done</bdi>:</strong> وقتی <bdi dir="ltr">wg.Add(1)</bdi> فراخوانی شده اما به دلیل <bdi dir="ltr">return</bdi> زودهنگام یا <bdi dir="ltr">panic</bdi>، <bdi dir="ltr">wg.Done()</bdi> هرگز اجرا نمی‌شود. <bdi dir="ltr">wg.Wait()</bdi> برای همیشه مسدود می‌ماند. این یکی از خطرناک‌ترین انواع نشت است زیرا نه تنها <bdi dir="ltr">goroutine</bdi> نشت شده بلکه <bdi dir="ltr">goroutine</bdi> منتظر را هم مسدود می‌کند. راه‌حل: همیشه <code dir="ltr">defer wg.Done()</code> را بلافاصله بعد از <code dir="ltr">wg.Add(1)</code> قرار دهید.</li>
@@ -657,6 +653,8 @@ go tool pprof leak.prof</code></pre>
 </ul>
 
 <div class="tip"><strong>نکته درباره تشخیص نشت در تولید:</strong> برای شناسایی نشت <bdi dir="ltr">Goroutine</bdi> در محیط تولید، دو ابزار اصلی دارید: اول، <code dir="ltr">runtime.NumGoroutine()</code> که تعداد کل <bdi dir="ltr">goroutine</bdi>های فعال را برمی‌گرداند. ثبت دوره‌ای این عدد و ارسال به سیستم مانیتورینگ (مثل <bdi dir="ltr">Prometheus</bdi>) بهترین روش است. اگر نمودار روند صعودی مداوم داشت، نشت رخ داده است. دوم، <code dir="ltr">pprof</code> با مسیر <code dir="ltr">/debug/pprof/goroutine</code> که <bdi dir="ltr">stack trace</bdi> تمام <bdi dir="ltr">goroutine</bdi>ها را نشان می‌دهد. با مقایسه‌ی خروجی در زمان‌های مختلف می‌توان <bdi dir="ltr">goroutine</bdi>های نشتی را که <bdi dir="ltr">stack trace</bdi> یکسانی دارند و تعدادشان فقط افزایش می‌یابد شناسایی کرد. دستور <code dir="ltr">go tool pprof http://localhost:6060/debug/pprof/goroutine</code> پروفایل تعاملی ارائه می‌دهد.</div>
+
+<div class="note"><strong>یادداشت:</strong> برای اطمینان از عدم نشت در تست‌های خود، الگوی زیر را به‌کار ببرید: قبل و بعد از هر تست، <code>runtime.NumGoroutine()</code> را چک کنید و اگر اختلاف معناداری وجود داشت، تست را شکست‌خورده اعلام کنید. این کار با <code>go test -race</code> ترکیب شود تا علاوه بر <bdi dir="ltr">Data Race</bdi>، نشت‌های ظریف <bdi dir="ltr">Goroutine</bdi> نیز در CI شناسایی شوند. کتابخانه‌هایی مثل <code>go.uber.org/goleak</code> این کار را با چند خط کد ساده می‌کنند و در پروژه‌های تولیدی به‌عنوان استاندارد تلقی می‌شوند.</div>
 
 </div>
 </main>

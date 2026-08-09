@@ -87,7 +87,7 @@
 <figure class="diagram" dir="ltr">
 <svg height="280" viewBox="0 0 650 280" width="650" xmlns="http://www.w3.org/2000/svg">
 <rect fill="#fafafa" height="280" rx="8" width="650" x="0" y="0"></rect>
-<defs>
+<defs><filter id="sh106" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
 <marker id="aRc1" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#00ADD8" points="0 0,10 3.5,0 7"></polygon></marker>
 <marker id="aRc2" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#e74c3c" points="0 0,10 3.5,0 7"></polygon></marker>
 </defs>
@@ -181,7 +181,7 @@ func main() {
 <figure class="diagram" dir="ltr">
 <svg width="700" height="280" viewBox="0 0 700 280" xmlns="http://www.w3.org/2000/svg">
 <rect fill="#fafafa" height="280" rx="8" width="700" x="0" y="0"></rect>
-<defs>
+<defs><filter id="sh107" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
 <marker id="aMx1" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#00ADD8" points="0 0,10 3.5,0 7"></polygon></marker>
 <marker id="aMx2" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#27ae60" points="0 0,10 3.5,0 7"></polygon></marker>
 <marker id="aMx3" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#f39c12" points="0 0,10 3.5,0 7"></polygon></marker>
@@ -264,7 +264,7 @@ func main() {
 <p>count++ // افزایش شمارنده داخل بخش محافظت شده</p>
 <p>بدون استفاده از <span dir="ltr">mu.Lock()</span> و <span dir="ltr">mu.Unlock()</span> ممکن بود چند goroutine همزمان مقدار count را بخوانند و سپس بنویسند که باعث می‌شود تعداد افزایش‌ها کمتر از ۵۰ شود. در این مثال mutex تضمین می‌کند که فقط یک goroutine در هر لحظه بخش افزایش شمارنده را اجرا کند. توجه داشته باشید که deferها به صورت LIFO اجرا می‌شوند یعنی <span dir="ltr">wg.Done()</span> در آخر اجرا می‌شود چون اول <span dir="ltr">Unlock()</span> deferred شده.</p>
 <h4 id="rwmutex">RWMutex</h4>
-<p>گاهی ممکن است بخواهید چند <bdi dir="ltr">Goroutine</bdi> به طور همزمان بتوانند فقط بخوانند اما نوشتن به صورت انحصاری باشد. Go این امکان را با <code>sync.RWMutex</code> فراهم کرده است. این نوع قفل برای سناریوهایی مثل کش (<bdi dir="ltr">Cache</bdi>) که خواندن بسیار بیشتر از نوشتن است بسیار مفید است.</p>
+<p>گاهی ممکن است بخواهید چند <bdi dir="ltr">Goroutine</bdi> به طور همزمان بتوانند فقط بخوانند اما نوشتن به صورت انحصاری باشد. Go این امکان را با <code>sync.RWMutex</code> فراهم کرده است. این نوع قفل برای سناریوهایی مثل <bdi dir="ltr">Cache</bdi> که خواندن بسیار بیشتر از نوشتن است بسیار مفید است.</p>
 
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">type SafeCache struct {
@@ -440,7 +440,7 @@ addr := net.JoinHostPort(host, strconv.Itoa(port))</code></pre>
 <figure class="diagram" dir="ltr">
 <svg width="780" height="620" viewBox="0 0 780 620" xmlns="http://www.w3.org/2000/svg">
 <rect fill="#fafafa" height="620" rx="8" width="780" x="0" y="0"></rect>
-<defs>
+<defs><filter id="sh108" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
 <marker id="aDrE1" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#e91e63" points="0 0,10 3.5,0 7"></polygon></marker>
 <marker id="aDrE2" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#4CAF50" points="0 0,10 3.5,0 7"></polygon></marker>
 <marker id="aDrE3" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#00ADD8" points="0 0,10 3.5,0 7"></polygon></marker>
@@ -655,7 +655,9 @@ func (m *SafeMap) Set(key, value string) {
 </code></pre>
 </figure>
 
-<div class="tip"><strong>استفاده از فلگ <bdi dir="ltr">go test -race</bdi> برای تشخیص خودکار <bdi dir="ltr">Data Race</bdi>:</strong> یکی از قوی‌ترین ابزارهای <bdi dir="ltr">Go</bdi> فلگ <bdi dir="ltr">-race</bdi> است که به صورت خودکار <bdi dir="ltr">Data Race</bdi> را در زمان اجرای تست شناسایی می‌کند. همیشه تست‌های خود را با دستور <bdi dir="ltr">go test -race ./...</bdi> اجرا کنید و در <bdi dir="ltr">CI/CD</bdi> خود این فلگ را اجباری نمایید. ابزار <bdi dir="ltr">Race Detector</bdi> بر پایه <bdi dir="ltr">ThreadSanitizer</bdi> گوگل کار می‌کند و هر دسترسی همزمان غیرهمگام به حافظه را با اطلاعات دقیق فایل و شماره خط گزارش می‌دهد. توجه کنید که عدم شناسایی <bdi dir="ltr">Data Race</bdi> توسط این ابزار به معنای عدم وجود آن نیست — <bdi dir="ltr">Race Detector</bdi> فقط مسابقاتی را شناسایی می‌کند که در آن اجرای خاص فعال شده باشند. هرگز از <bdi dir="ltr">-race</bdi> در محیط تولید استفاده نکنید زیرا کارایی برنامه ۵ تا ۱۰ برابر کاهش می‌یابد.</div>
+<div class="tip"><strong>استفاده از فلگ <bdi dir="ltr">go test -race</bdi> در CI:</strong> در بخش <a href="#race-detector">Race Detector</a> همین فصل، فلگ <code>-race</code> و <bdi dir="ltr">ThreadSanitizer</bdi> معرفی شدند. همیشه تست‌های خود را با <bdi dir="ltr">go test -race ./...</bdi> اجرا و در <bdi dir="ltr">CI/CD</bdi> اجباری کنید — عدم شناسایی <bdi dir="ltr">Data Race</bdi> در یک اجرای خاص، به معنای عدم وجود آن نیست.</div>
+
+<div class="note"><strong>یادداشت:</strong> انتخاب بین <code>sync.Mutex</code> و <code>sync/atomic</code> اغلب گیج‌کننده است. قاعده ساده: اگر فقط یک متغیر ساده (مثل <code>int64</code> شمارنده) را به‌طور همزمان تغییر می‌دهید، <code>atomic.AddInt64</code> سریع‌تر و سبک‌تر از <code>Mutex</code> است. اما به‌محض اینکه باید چند متغیر را به‌صورت اتمیک به‌روزرسانی کنید یا منطق شرطی روی آن‌ها اعمال کنید، <code>Mutex</code> تنها گزینه‌ی صحیح است — ترکیب چند <code>atomic</code> روی متغیرهای مختلف، اتمیسیته‌ی کل عملیات را تضمین نمی‌کند. در <bdi dir="ltr">PHP</bdi> این تمایز وجود ندارد چون هر درخواست در فرآیند مستقل است و همزمانی روی حافظه مشترک رخ نمی‌دهد.</div>
 
 <div class="warning"><strong>هشدار درباره <bdi dir="ltr">map</bdi> همزمان:</strong> برخلاف <bdi dir="ltr">slice</bdi> و سایر ساختارهای داده، <bdi dir="ltr">map</bdi> در <bdi dir="ltr">Go</bdi> برای دسترسی همزمان طراحی نشده است. نوشتن همزمان روی <bdi dir="ltr">map</bdi> باعث <bdi dir="ltr">panic: concurrent map writes</bdi> می‌شود. حتی خواندن و نوشتن همزمان نیز خطرناک است. اگر نیاز به <bdi dir="ltr">map</bdi> همزمان دارید، حتماً از <bdi dir="ltr">sync.Map</bdi> یا <bdi dir="ltr">map</bdi> معمولی با <bdi dir="ltr">Mutex/RWMutex</bdi> استفاده کنید. این یکی از تفاوت‌های مهم <bdi dir="ltr">Go</bdi> با <bdi dir="ltr">PHP</bdi> است زیرا در <bdi dir="ltr">PHP</bdi> هر درخواست <bdi dir="ltr">map</bdi> (آرایه انجمنی) مستقل خود را دارد.</div>
 </div>

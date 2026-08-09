@@ -70,7 +70,7 @@
 <div class="chapter">فصل ۱۱.۲</div>
 <h2 id="assertion">Assertion</h2>
 <figure class="diagram" dir="ltr">
-<svg height="280" viewBox="0 0 650 280" width="650" xmlns="http://www.w3.org/2000/svg">
+<svg height="280" viewBox="0 0 650 280" width="650" xmlns="http://www.w3.org/2000/svg"><defs><filter id="sh177" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter></defs>
 <text class="title" text-anchor="middle" x="325" y="25" direction="rtl" unicode-bidi="embed">الگوهای <tspan direction="ltr" unicode-bidi="embed">Assertion</tspan> در <tspan direction="ltr" unicode-bidi="embed">Go</tspan></text>
 <!-- Center: testing package -->
 <rect class="box-center" height="45" width="170" x="240" y="50"></rect>
@@ -113,7 +113,7 @@
 
 <figure class="diagram" dir="ltr">
 <svg height="220" viewBox="0 0 700 220" width="700" xmlns="http://www.w3.org/2000/svg">
-<defs>
+<defs><filter id="sh178" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
 <marker id="arrowAssert" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#555" points="0 0, 10 3.5, 0 7"></polygon></marker>
 </defs>
 <rect fill="#fafafa" height="220" rx="8" width="700" x="0" y="0"></rect>
@@ -210,6 +210,7 @@ func TestAdd(t *testing.T) {
 <tr><td dir="ltr"><code dir="ltr">assertInstanceOf(Type::class, $obj)</code></td><td dir="ltr"><code dir="ltr">if _, ok := obj.(Type)</code></td><td dir="ltr"><code dir="ltr">assert.IsType(t, Type{}, obj)</code></td></tr>
 </tbody>
 </table>
+<div class="tip"><strong>نکته درباره testify در برابر کتابخانه استاندارد:</strong> انتخاب بین <code dir="ltr">if + t.Errorf</code> و <code dir="ltr">testify/assert</code> یک <strong>تصمیم پروژه‌ای</strong> است، نه یک قانون مطلق. در <strong>کتابخانه‌های متن‌باز</strong> یا کدهای عمومی، روش بومی Go ترجیح داده می‌شود چون وابستگی خارجی اضافه نمی‌کند و با فلسفه مینیمالیسم Go هم‌خوان است. در <strong>اپلیکیشن‌های تجاری</strong> با هزاران تست، testify به‌دلیل <code dir="ltr">diff</code> خودکار و <code dir="ltr">trace</code> فراخوانی، زمان دیباگ را به‌شدت کاهش می‌دهد. نکته مهم: <code dir="ltr">stretchr/testify</code> همان پکیج testify است که از <code dir="ltr">github.com/stretchr/testify</code> ایمپورت می‌شود — <span dir="ltr">stretchr</span> نام سازمان گیت‌هاب است، نه کتابخانه‌ای جداگانه.</div>
 <h3 id="کتابخانههای-assertion-سفارشی">کتابخانه‌های Assertion سفارشی</h3>
 <p>علاوه بر testify، کتابخانه‌های دیگری نیز برای assertion در Go وجود دارند. هر کدام فلسفه متفاوتی دارند و انتخاب بین آن‌ها به نیاز پروژه شما بستگی دارد:</p>
 
@@ -547,7 +548,7 @@ func NoError(t *testing.T, err error) {
 
 <figure class="diagram" dir="ltr">
 <svg height="520" viewBox="0 0 780 520" width="780" xmlns="http://www.w3.org/2000/svg">
-<defs>
+<defs><filter id="sh179" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
 <marker id="arrowAssertFlow" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#555" points="0 0, 10 3.5, 0 7"></polygon></marker>
 <marker id="arrowGreenAF" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#4CAF50" points="0 0, 10 3.5, 0 7"></polygon></marker>
 <marker id="arrowRedAF" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#e91e63" points="0 0, 10 3.5, 0 7"></polygon></marker>
@@ -711,7 +712,7 @@ func TestUserWithCmp(t *testing.T) {
 <li><strong>تست پیام خطا:</strong> هرگز <bdi dir="ltr">err.Error()</bdi> را برابری دقیق بررسی نکنید. به‌جای آن از <bdi dir="ltr">assert.Contains(t, err.Error(), "keyword")</bdi> یا <bdi dir="ltr">assert.ErrorIs(t, err, target)</bdi> استفاده کنید تا در برابر تغییرات پیام خطا مقاوم باشید.</li>
 <li><strong>تحمل مقایسه اعداد اعشاری:</strong> برای مقایسه <bdi dir="ltr">float64</bdi> از <bdi dir="ltr">assert.InDelta(t, 3.14, result, 0.001)</bdi> یا <bdi dir="ltr">cmpopts.EquateApprox(0.001)</bdi> استفاده کنید. هرگز از <bdi dir="ltr">==</bdi> برای اعداد اعشاری استفاده نکنید.</li>
 <li><strong>مقایسه زمان‌ها (در محدوده تحمل):</strong> از <bdi dir="ltr">assert.WithinDuration(t, expected, actual, time.Second)</bdi> یا <bdi dir="ltr">cmpopts.EquateApproxTime(time.Second)</bdi> استفاده کنید تا تفاوت‌های کوچک در نانوثانیه باعث شکست تست نشود.</li>
-<li><strong>مقایسه با فایل مرجع (<bdi dir="ltr">Golden File</bdi>):</strong> خروجی واقعی را با فایل مرجع مقایسه کنید. اگر تفاوت وجود داشت، فایل مرجع را با فلگ <bdi dir="ltr">-update</tspan> به‌روزرسانی کنید. این روش برای تست خروجی‌های بزرگ مثل JSON یا HTML بسیار کارآمد است.</li>
+<li><strong>مقایسه با فایل مرجع (<bdi dir="ltr">Golden File</bdi>):</strong> خروجی واقعی را با فایل مرجع مقایسه کنید. اگر تفاوت وجود داشت، فایل مرجع را با فلگ <bdi dir="ltr">-update</bdi> به‌روزرسانی کنید. این روش برای تست خروجی‌های بزرگ مثل JSON یا HTML بسیار کارآمد است.</li>
 </ul>
 
 <div class="tip"><strong>نکته کلیدی درباره <code>google/go-cmp</code>:</strong> از <bdi dir="ltr">google/go-cmp</bdi> برای مقایسه <bdi dir="ltr">struct</bdi>های پیچیده استفاده کنید — این ابزار <bdi dir="ltr">diff</bdi> معنادار نشان می‌دهد به‌جای شکست‌های مبهم <bdi dir="ltr">reflect.DeepEqual</bdi>. وقتی <bdi dir="ltr">reflect.DeepEqual</bdi> شکست می‌خورد فقط می‌گوید «نامساوی» اما <bdi dir="ltr">cmp.Diff</bdi> دقیقاً نشان می‌دهد کدام فیلد، کدام مقدار مورد انتظار و کدام مقدار واقعی متفاوت است. با <bdi dir="ltr">cmpopts</bdi> می‌توانید رفتار مقایسه را سفارشی کنید: نادیده گرفتن فیلدها، تحمل اعداد اعشاری، نادیده گرفتن ترتیب <bdi dir="ltr">slice</bdi>ها و مقایسه زمان با تحمل. این ابزار استاندارد تیم Go در گوگل است و برای هر پروژه‌ای با ساختارهای داده پیچیده توصیه می‌شود.</div>

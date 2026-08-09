@@ -377,7 +377,7 @@ dbConnections.WithLabelValues("primary").Set(float64(dbPool.Stats().OpenConnecti
 
 <figure class="diagram" dir="ltr">
 <svg height="350" viewBox="0 0 660 350" width="660" xmlns="http://www.w3.org/2000/svg">
-<defs>
+<defs><filter id="sh160" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
 <linearGradient id="histGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#9C27B0"/><stop offset="100%" stop-color="#6A1B9A"/></linearGradient>
 </defs>
 <rect fill="#fafafa" height="350" rx="8" width="660" x="0" y="0"></rect>
@@ -493,7 +493,7 @@ func durationMiddleware(next http.Handler) http.Handler {
 
 <figure class="diagram" dir="ltr">
 <svg height="300" viewBox="0 0 660 300" width="660" xmlns="http://www.w3.org/2000/svg">
-<defs>
+<defs><filter id="sh161" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
 <linearGradient id="sumGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#e91e63"/><stop offset="100%" stop-color="#AD1457"/></linearGradient>
 </defs>
 <rect fill="#fafafa" height="300" rx="8" width="660" x="0" y="0"></rect>
@@ -693,12 +693,14 @@ scrape_configs:
 <p>صدک ۹۵ زمان پاسخ: <bdi dir="ltr">histogram_quantile(0.95, sum(rate(http_request_duration_seconds_bucket[5m])) by (le))</bdi></p>
 <p>نرخ خطا: <bdi dir="ltr">sum(rate(http_requests_total{status=~"5.."}[5m])) / sum(rate(http_requests_total[5m]))</bdi></p>
 
+<div class="tip"><strong>نکته طراحی داشبورد:</strong> یک داشبورد <bdi dir="ltr">Grafana</bdi> مؤثر معمولاً چهار پنل کلیدی در ردیف بالایی دارد: <bdi dir="ltr">request rate</bdi>، <bdi dir="ltr">error rate</bdi>، <bdi dir="ltr">latency p95/p99</bdi> و <bdi dir="ltr">saturation</bdi> (الگوی <bdi dir="ltr">RED</bdi>). هر پنل باید یک عنوان واضح، <bdi dir="ltr">unit</bdi> صحیح (مثلاً <code>requests/sec</code> یا <code>milliseconds</code>) و <bdi dir="ltr">threshold</bdi>‌های رنگی داشته باشد. از تعداد زیاد پنل در یک داشبورد پرهیز کنید — به‌جای یک داشبورد شلوغ با ۲۰ پنل، چند داشبورد تخصصی بسازید (یکی برای <bdi dir="ltr">HTTP</bdi>، یکی برای دیتابیس، یکی برای <bdi dir="ltr">background jobs</bdi>). متغیرهای <bdi dir="ltr">$service</bdi> و <bdi dir="ltr">$env</bdi> را تعریف کنید تا بتوانید بین سرویس‌ها و محیط‌ها سوئیچ کنید.</div>
+
 <h3 id="alerting">تنظیم Alerting</h3>
 <p>یکی از قابلیت‌های مهم <bdi dir="ltr">Grafana</bdi> تعریف <bdi dir="ltr">Alert</bdi> روی متریک‌هاست. مثلاً وقتی نرخ خطا بیش از ۵ درصد شود یا زمان پاسخ بیشتر از ۲ ثانیه گردد اعلان به <bdi dir="ltr">Slack</bdi> ، ایمیل یا <bdi dir="ltr">Telegram</bdi> ارسال می‌شود.</p>
 
 <p>همچنین می‌توانید از <bdi dir="ltr">Alertmanager</bdi> (جزء جدانشدنی اکوسیستم <bdi dir="ltr">Prometheus</bdi>) برای مدیریت پیشرفته‌ی هشدارها شامل <bdi dir="ltr">grouping</bdi> ، <bdi dir="ltr">inhibition</bdi> و <bdi dir="ltr">silencing</bdi> استفاده کنید.</p>
 
-<div class="important"><strong>نکته‌ی عملی:</strong> متریک‌های کلیدی که باید مانیتور کنید: نرخ درخواست (<bdi dir="ltr">request rate</bdi>)، زمان پاسخ (<bdi dir="ltr">latency</bdi>)، نرخ خطا (<bdi dir="ltr">error rate</bdi>) و اشباع (<bdi dir="ltr">saturation</bdi>). این چهار متریک به عنوان «علامت‌های طلایی» (<bdi dir="ltr">USE/RED method</bdi>) شناخته می‌شوند.</div>
+<div class="important"><strong>نکته‌ی عملی:</strong> متریک‌های کلیدی که باید مانیتور کنید: <bdi dir="ltr">request rate</bdi>، <bdi dir="ltr">latency</bdi>، <bdi dir="ltr">error rate</bdi> و <bdi dir="ltr">saturation</bdi>. این چهار متریک به‌عنوان <bdi dir="ltr">USE/RED method</bdi> شناخته می‌شوند.</div>
 
 <h3 id="روش-red-و-use">روش‌های RED و USE: متریک‌های طلایی</h3>
 <p>دو چارچوب رایج برای انتخاب متریک‌های مناسب وجود دارد که هر توسعه‌دهنده‌ای باید بشناسد. این چارچوب‌ها به شما کمک می‌کنند بدانید دقیقاً چه چیزی را باید اندازه بگیرید:</p>

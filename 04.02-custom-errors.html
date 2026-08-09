@@ -73,7 +73,7 @@
 <figure class="diagram" dir="ltr">
 <svg height="340" viewBox="0 0 700 340" width="700" xmlns="http://www.w3.org/2000/svg">
 <rect fill="#fafafa" height="340" rx="8" width="700" x="0" y="0"></rect>
-<defs>
+<defs><filter id="sh79" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
 <marker id="arrB" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#00ADD8" points="0 0,10 3.5,0 7"></polygon></marker>
 <marker id="arrP" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#777BB4" points="0 0,10 3.5,0 7"></polygon></marker>
 <marker id="arrG" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#27ae60" points="0 0,10 3.5,0 7"></polygon></marker>
@@ -140,7 +140,7 @@ if err != nil {
 
 <figure class="diagram" dir="ltr">
 <svg height="240" viewBox="0 0 700 240" width="700" xmlns="http://www.w3.org/2000/svg">
-<defs><marker id="arrIsAs" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#00ADD8" points="0 0, 10 3.5, 0 7"></polygon></marker></defs>
+<defs><filter id="sh80" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter><marker id="arrIsAs" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#00ADD8" points="0 0, 10 3.5, 0 7"></polygon></marker></defs>
 <rect fill="#fafafa" height="240" rx="8" width="700" x="0" y="0"></rect>
 <text fill="#00ADD8" font-size="15" font-weight="bold" text-anchor="middle" x="350" y="25" direction="rtl" unicode-bidi="embed">جستجو در زنجیره‌ی خطا: <tspan direction="ltr" unicode-bidi="embed">errors.Is</tspan> در برابر <tspan direction="ltr" unicode-bidi="embed">errors.As</tspan></text>
 <!-- errors.Is -->
@@ -301,6 +301,7 @@ if errors.Is(err, store.ErrNotFound) {
 </code></pre>
 </figure>
 <div class="warning"><strong>هشدار:</strong> هرگز خطاهای sentinel را با <code>==</code> مقایسه نکنید: <code>err == ErrNotFound</code>. اگر خطا wrap شده باشد، این مقایسه <code>false</code> برمی‌گرداند. همیشه از <code dir="ltr">errors.Is(err, ErrNotFound)</code> استفاده کنید.</div>
+<div class="note"><strong>چه زمانی <bdi dir="ltr">sentinel error</bdi> و چه زمانی <bdi dir="ltr">custom error type</bdi>؟</strong> اگر خطا فقط یک «شرط» را نشان می‌دهد و نیازی به حمل داده‌ی اضافی نیست (مثل <code dir="ltr">ErrNotFound</code>، <code dir="ltr">ErrForbidden</code>)، از <code>var</code> در سطح پکیج استفاده کنید — ساده، سبک و با <code dir="ltr">errors.Is</code> قابل بررسی. اگر خطا باید اطلاعات اضافه (مسیر فایل، کد خطای دیتابیس، فیلد نامعتبر) را برای تصمیم‌گیری فراخوانی‌کننده حمل کند، یک <code>struct</code> با متد <code dir="ltr">Error()</code> بسازید و با <code dir="ltr">errors.As</code> استخراج کنید. در طراحی API عمومی، ترکیب هر دو (sentinel برای شرایط ساده و custom type برای خطاهای غنی) رایج‌ترین الگوست.</div>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">err := readConfig("config.yaml")
 if errors.Is(err, os.ErrNotExist) {
@@ -333,7 +334,7 @@ if errors.Is(err, os.ErrNotExist) {
     </p>
 </div>
 
-<div class="tip"><strong>نکته‌ی حرفه‌ای:</strong> خطاهای سفارشی باید حامل زمینه‌ی کافی باشند تا فراخوانی‌کننده بتواند تصمین بگیرد: تلاش مجدد (<bdi dir="ltr">retry</bdi>)، شکست فوری (<bdi dir="ltr">fail</bdi>) یا ارتقا به سطح بالاتر (<bdi dir="ltr">escalate</bdi>)؟ خطایی که فقط پیغام دارد، فراخوانی‌کننده را بی‌خیال می‌گذارد. خطایی که نوع، کد، زمینه و خطای اصلی را حمل می‌کند، تصمیم‌گیری هوشمندانه را ممکن می‌سازد.</div>
+<div class="tip"><strong>نکته‌ی حرفه‌ای:</strong> خطاهای سفارشی باید حامل زمینه‌ی کافی باشند تا فراخوانی‌کننده بتواند تصمیم بگیرد: <bdi dir="ltr">retry</bdi>، <bdi dir="ltr">fail</bdi> یا <bdi dir="ltr">escalate</bdi>؟ خطایی که فقط پیغام دارد، فراخوانی‌کننده را بی‌خیال می‌گذارد. خطایی که نوع، کد، زمینه و خطای اصلی را حمل می‌کند، تصمیم‌گیری هوشمندانه را ممکن می‌سازد.</div>
 
 <h3 id="stack-trace-preservation">حفظ Stack Trace در خطاهای سفارشی</h3>
 <p>یکی از نقاط ضعف خطاهای Go عدم ثبت خودکار stack trace است. برای رفع این مشکل می‌توان stack trace را در نوع خطای سفارشی ذخیره کرد:</p>
@@ -417,7 +418,7 @@ func GetUser(id int) (*User, error) {
 <figure class="diagram" dir="ltr">
 <svg height="250" viewBox="0 0 600 250" width="600" xmlns="http://www.w3.org/2000/svg">
 <rect fill="#fafafa" height="250" rx="8" width="600" x="0" y="0"></rect>
-<defs><marker id="arrErr" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#00ADD8" points="0 0, 10 3.5, 0 7"></polygon></marker></defs>
+<defs><filter id="sh81" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter><marker id="arrErr" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#00ADD8" points="0 0, 10 3.5, 0 7"></polygon></marker></defs>
 <text fill="#00ADD8" font-size="15" font-weight="bold" text-anchor="middle" x="300" y="25" direction="rtl" unicode-bidi="embed">سلسله‌مراتب خطاهای سفارشی</text>
 <!-- error interface -->
 <rect fill="#e0f7fa" height="40" rx="8" stroke="#00ADD8" stroke-width="2" width="180" x="210" y="50"></rect>
@@ -446,11 +447,11 @@ func GetUser(id int) (*User, error) {
 </figure>
 
 <h3 id="error-wrapping-chain-tree">زنجیره‌ی پیچیدن خطا: درخت <bdi dir="ltr">fmt.Errorf %w</bdi></h3>
-<p>یکی از قدرتمندترین ویژگی‌های مدیریت خطا در <bdi dir="ltr">Go</bdi> امکان ساختن زنجیره‌ی خطا با <code dir="ltr">fmt.Errorf</code> و فعل قالب <code dir="ltr">%w</code> است. وقتی خطایی را با <code dir="ltr">%w</code> می‌پیچید، یک لایه‌ی جدید روی خطای قبلی اضافه می‌شود و متد <code dir="ltr">Unwrap()</code> به‌صورت خودکار پیاده‌سازی می‌شود. این زنجیره به <code dir="ltr">errors.Is()</code> اجازه می‌دهد خطای اصلی را در عمق زنجیره پیدا کند و به <code dir="ltr">errors.As()</code> اجازه می‌دهد نوع خطا را استخراج کند. تفاوت حیاتی <code dir="ltr">%w</code> با <code dir="ltr">%v</code> این است که <code dir="ltr">%v</code> فقط پیغام خطا را قالب‌بندی می‌کند و زنجیره را می‌شکند — فراخوانی‌کننده دیگر نمی‌تواند خطای اصلی را بررسی کند. این یک منبع رایج باگ‌های پنهان در پروژه‌های <bdi dir="ltr">Go</bdi> است.</p>
+<p>در بخش «<a href="#خطای-پیچیده-تر-با-wrapping">خطای پیچیده‌تر با Wrapping</a>» دیدیم که <code dir="ltr">fmt.Errorf</code> با فعل <code dir="ltr">%w</code> چگونه زنجیره‌ی خطا می‌سازد و متد <code dir="ltr">Unwrap()</code> را به‌صورت خودکار پیاده‌سازی می‌کند. در این بخش روی نکته‌ی حیاتی‌ای تمرکز می‌کنیم که منبع رایج باگ‌های پنهان در پروژه‌های <bdi dir="ltr">Go</bdi> است: تفاوت <code dir="ltr">%w</code> با <code dir="ltr">%v</code>. <code dir="ltr">%v</code> فقط پیغام خطا را قالب‌بندی می‌کند و زنجیره را می‌شکند — فراخوانی‌کننده دیگر نمی‌تواند خطای اصلی را با <code dir="ltr">errors.Is()</code> یا <code dir="ltr">errors.As()</code> بررسی کند. نمودار زیر این تفاوت را در کنار مکانیزم <code dir="ltr">Unwrap()</code> سفارشی و ساخت درخت خطا نشان می‌دهد.</p>
 
 <figure class="diagram" dir="ltr">
 <svg font-family="sans-serif" viewBox="0 0 820 680" xmlns="http://www.w3.org/2000/svg" width="820" height="680">
-<defs>
+<defs><filter id="sh82" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
 <marker id="arrChain" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#00ADD8" points="0 0, 10 3.5, 0 7"></polygon></marker>
 <marker id="arrWrap" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#FF9800" points="0 0, 10 3.5, 0 7"></polygon></marker>
 <marker id="arrIsAs" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#4CAF50" points="0 0, 10 3.5, 0 7"></polygon></marker>
@@ -573,12 +574,8 @@ func GetUser(id int) (*User, error) {
 <li><strong>پیاده‌سازی <bdi dir="ltr">Unwrap()</bdi> سفارشی برای درخت خطا:</strong> با <code dir="ltr">errors.Join</code> یا پیاده‌سازی مستقیم <code dir="ltr">Unwrap() []error</code> می‌توان درخت خطا ساخت. این الگو برای مواقعی که یک عملیات چند خطای مستقل تولید می‌کند مناسب است و هر دو شاخه‌ی درخت توسط <code dir="ltr">errors.Is</code> و <code dir="ltr">errors.As</code> قابل پیمایش هستند.</li>
 </ul>
 
-<div class="tip">
-<strong>نکته‌ی مهم:</strong> همیشه در <code dir="ltr">fmt.Errorf</code> از <code dir="ltr">%w</code> استفاده کنید نه <code dir="ltr">%v</code>، مگر اینکه عمداً بخواهید زنجیره‌ی خطا را قطع کنید. <code dir="ltr">%v</code> فقط پیغام خطا را قالب‌بندی می‌کند و فراخوانی‌کننده دیگر نمی‌تواند خطای اصلی را با <code dir="ltr">errors.Is</code> یا <code dir="ltr">errors.As</code> بررسی کند. این یکی از رایج‌ترین اشتباهات برنامه‌نویسان مهاجر از <bdi dir="ltr">PHP</bdi> است که عادت به الحاق رشته‌ی پیغام خطا دارند و اهمیت زنجیره‌ی خطا را درک نمی‌کنند.
-</div>
-
 <div class="important">
-<strong>قانون طلایی:</strong> در <bdi dir="ltr">Go</bdi> هرگز از <code dir="ltr">%v</code> در <code dir="ltr">fmt.Errorf</code> برای پیچیدن خطا استفاده نکنید. <code dir="ltr">%w</code> زنجیره را حفظ می‌کند، <code dir="ltr">%v</code> زنجیره را می‌شکند. خطای بدون زنجیره = خطای غیرقابل بررسی = باگ پنهان.
+<strong>قانون طلایی:</strong> در <bdi dir="ltr">Go</bdi> هرگز از <code dir="ltr">%v</code> در <code dir="ltr">fmt.Errorf</code> برای پیچیدن خطا استفاده نکنید. <code dir="ltr">%w</code> زنجیره را حفظ می‌کند، <code dir="ltr">%v</code> زنجیره را می‌شکند. خطای بدون زنجیره = خطای غیرقابل بررسی = باگ پنهان. این یکی از رایج‌ترین اشتباهات برنامه‌نویسان مهاجر از <bdi dir="ltr">PHP</bdi> است که عادت به الحاق رشته‌ی پیغام خطا دارند و اهمیت زنجیره‌ی خطا را درک نمی‌کنند.
 </div>
 </div>
 </main>

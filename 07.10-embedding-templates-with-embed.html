@@ -165,6 +165,7 @@ tmpl, err := template.ParseFS(templateFS, "templates/*.html", "templates/**/*.ht
 </code></pre>
 </figure>
 <div class="warning"><strong>هشدار:</strong> در <code>ParseFS</code> مسیرها باید با نام دقیق در <code dir="ltr">embed.FS</code> مطابقت داشته باشند. اگر از <code>//go:embed templates/*.html</code> استفاده کنید، فایل‌ها با پیشوند <code>templates/</code> در <code dir="ltr">embed.FS</code> ذخیره می‌شوند و باید <code>"templates/home.html"</code> را در <code>ParseFS</code> مشخص کنید، نه <code>"home.html"</code>.</div>
+<div class="note"><strong>یادداشت:</strong> دستور <code dir="ltr">//go:embed</code> محدودیت‌های امنیتی دارد: نمی‌توان از <code dir="ltr">..</code> برای خروج از دایرکتوری فایل منبع استفاده کرد و فایل‌هایی که با <code dir="ltr">.</code> یا <code dir="ltr">_</code> شروع می‌شوند (مثل <code dir="ltr">.env</code> یا <code dir="ltr">_test.go</code>) به‌صورت پیش‌فرض جاسازی نمی‌شوند — باید صریحاً نام‌برده شوند. این محدودیت‌ها از نشت تصادفی فایل‌های حساس (مثل <code dir="ltr">.git</code> یا کلیدها) به داخل باینری جلوگیری می‌کنند. قبل از <code dir="ltr">go build</code> با <code dir="ltr">git status</code> بررسی کنید که فقط فایل‌های مورد نظر در پوشه‌ی <code dir="ltr">templates/</code> یا <code dir="ltr">static/</code> قرار دارند.</div>
 <h3 id="جریان-کامل-embed-و-parsefs">جریان کامل embed و ParseFS</h3>
 <p>برای درک بهتر نحوه کار <code dir="ltr">embed</code> با سیستم قالب‌سازی، در ادامه کل جریان را از زمان کامپایل تا اجرای قالب مرور می‌کنیم. وقتی شما دستور <code dir="ltr">go build</code> را اجرا می‌کنید، کامپایلر فایل‌های مشخص‌شده توسط <code>//go:embed</code> را می‌خواند و محتوای آن‌ها را مستقیماً در باینری برنامه جاسازی می‌کند. در زمان اجرا، این محتوا از طریق <code dir="ltr">embed.FS</code> در دسترس است که یک سیستم فایل فقط‌خواندنی پیاده‌سازی رابط <code dir="ltr">fs.FS</code> است:</p>
 <figure class="diagram" dir="ltr">
@@ -370,11 +371,11 @@ func main() {
 <ul>
 <li><strong>استقرار باینری واحد:</strong> همه قالب‌ها، فایل‌های استاتیک و حتی migrations داخل یک باینری جاسازی می‌شوند. نیازی به Docker volume یا mount فایل‌ها نیست و استقرار به سادگی کپی کردن یک فایل باینری انجام می‌شود.</li>
 <li><strong>جاسازی قالب‌های ایمیل:</strong> قالب‌های HTML ایمیل با <bdi dir="ltr">embed.FS</bdi> جاسازی می‌شوند. این کار تضمین می‌کند که قالب‌های ایمیل همیشه در دسترس هستند و نیازی به مسیر فایل در محیط اجرا ندارند.</li>
-<li><strong>جاسازی admin panel:</strong> یک پنل مدیریت ساده با <bdi dir="ltr">embed.FS</b> داخل باینری قرار می‌گیرد. این الگو در ابزارهای CLI مثل <bdi dir="ltr">pgweb</bdi> یا <bdi dir="ltr">ghound</bdi> رایج است.</li>
-<li><strong>قالب‌های پیش‌فرض با override:</strong> قالب‌های پیش‌فرض با <bdi dir="ltr">embed.FS</b> جاسازی می‌شوند و کاربر می‌تواند قالب‌های سفارشی خود را در مسیر مشخصی روی filesystem قرار دهد. برنامه ابتدا filesystem و سپس <bdi dir="ltr">embed.FS</b> را بررسی می‌کند — الگوی overlay.</li>
+<li><strong>جاسازی admin panel:</strong> یک پنل مدیریت ساده با <bdi dir="ltr">embed.FS</bdi> داخل باینری قرار می‌گیرد. این الگو در ابزارهای CLI مثل <bdi dir="ltr">pgweb</bdi> یا <bdi dir="ltr">ghound</bdi> رایج است.</li>
+<li><strong>قالب‌های پیش‌فرض با override:</strong> قالب‌های پیش‌فرض با <bdi dir="ltr">embed.FS</bdi> جاسازی می‌شوند و کاربر می‌تواند قالب‌های سفارشی خود را در مسیر مشخصی روی filesystem قرار دهد. برنامه ابتدا filesystem و سپس <bdi dir="ltr">embed.FS</bdi> را بررسی می‌کند — الگوی overlay.</li>
 </ul>
 
-<div class="tip"><strong>نکته عملی:</strong> از <bdi dir="ltr">embed.FS</b> برای production استفاده کنید (باینری واحد، بدون وابستگی) و از <bdi dir="ltr">os.DirFS</b> در زمان توسعه استفاده کنید (hot-reload بدون recompile). یک الگوی رایج: فلگ <code>--dev</code> برای تغییر بین این دو حالت. در حالت توسعه، قالب‌ها مستقیم از دیسک خوانده می‌شوند و تغییرات بلافاصله بدون recompile مشاهده می‌شوند. در حالت production، همه چیز از <bdi dir="ltr">embed.FS</b> خوانده می‌شود و فقط یک باینری نیاز است.</div>
+<div class="tip"><strong>نکته عملی:</strong> از <bdi dir="ltr">embed.FS</bdi> برای production استفاده کنید (باینری واحد، بدون وابستگی) و از <bdi dir="ltr">os.DirFS</bdi> در زمان توسعه استفاده کنید (hot-reload بدون recompile). یک الگوی رایج: فلگ <code>--dev</code> برای تغییر بین این دو حالت. در حالت توسعه، قالب‌ها مستقیم از دیسک خوانده می‌شوند و تغییرات بلافاصله بدون recompile مشاهده می‌شوند. در حالت production، همه چیز از <bdi dir="ltr">embed.FS</bdi> خوانده می‌شود و فقط یک باینری نیاز است.</div>
 </div>
 </main>
 </div>

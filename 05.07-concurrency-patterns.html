@@ -77,7 +77,7 @@
 <figure class="diagram" dir="ltr">
 <svg height="200" viewBox="0 0 700 200" width="700" xmlns="http://www.w3.org/2000/svg">
 <rect fill="#fafafa" height="200" rx="8" width="700" x="0" y="0"></rect>
-<defs>
+<defs><filter id="sh109" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
 <marker id="aPt1" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#00ADD8" points="0 0,10 3.5,0 7"></polygon></marker>
 </defs>
 <text fill="#00ADD8" font-size="14" font-weight="bold" text-anchor="middle" x="350" y="25" direction="rtl" unicode-bidi="embed">الگوهای همزمانی در <tspan direction="ltr" unicode-bidi="embed">Go</tspan></text>
@@ -388,7 +388,7 @@ func main() {
 <figure class="diagram" dir="ltr">
 <svg height="220" viewBox="0 0 650 220" width="650" xmlns="http://www.w3.org/2000/svg">
 <rect fill="#fafafa" height="220" rx="8" width="650" x="0" y="0"></rect>
-<defs>
+<defs><filter id="sh110" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
 <marker id="aRl1" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#00ADD8" points="0 0,10 3.5,0 7"></polygon></marker>
 <marker id="aRl2" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#27ae60" points="0 0,10 3.5,0 7"></polygon></marker>
 </defs>
@@ -462,7 +462,7 @@ func advancedRateLimit(ctx context.Context) {
 <p>بسته‌ی <code>golang.org/x/time/rate</code> یک <bdi dir="ltr">Token Bucket Limiter</bdi> کامل ارائه می‌دهد. پارامتر اول نرخ تولید توکن (تعداد توکن در ثانیه) و پارامتر دوم حداکثر تعداد توکن‌های ذخیره‌شده (<bdi dir="ltr">Burst</bdi>) است. متد <code>Wait()</code> تا زمان دسترسی به توکن منتظر می‌ماند و از <bdi dir="ltr">Context</bdi> پشتیبانی می‌کند. متد <code>Allow()</code> بلافاصله برمی‌گردد و نشان می‌دهد آیا توکن موجود است یا نه.</p>
 
 <h3 id="semaphore">الگوی Semaphore</h3>
-<p>سمافور الگویی برای محدود کردن همزمانی (<bdi dir="ltr">Concurrency</bdi>) است. در Go می‌توان از کانال بافر‌دار به‌عنوان سمافور استفاده کرد. این الگو شبیه <bdi dir="ltr">Worker Pool</bdi> است اما ساده‌تر — به‌جای ساخت <bdi dir="ltr">Worker</bdi>‌های ثابت، فقط تعداد <bdi dir="ltr">Goroutine</bdi>‌های همزمان را محدود می‌کند.</p>
+<p>سمافور الگویی برای محدود کردن <bdi dir="ltr">Concurrency</bdi> است. در Go می‌توان از کانال بافر‌دار به‌عنوان سمافور استفاده کرد. این الگو شبیه <bdi dir="ltr">Worker Pool</bdi> است اما ساده‌تر — به‌جای ساخت <bdi dir="ltr">Worker</bdi>‌های ثابت، فقط تعداد <bdi dir="ltr">Goroutine</bdi>‌های همزمان را محدود می‌کند.</p>
 
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">package main
@@ -499,7 +499,7 @@ func main() {
 <p>در هر لحظه فقط ۳ <bdi dir="ltr">Goroutine</bdi> می‌توانند بخش بحرانی را اجرا کنند. بقیه در خط <code>sem &lt;- struct{}{}</code> مسدود می‌شوند تا یک جای خالی آزاد شود. این الگو برای محدود کردن تعداد اتصالات دیتابیس همزمان، درخواست‌های <bdi dir="ltr">HTTP</bdi> همزمان، یا عملیات <bdi dir="ltr">I/O</bdi> سنگین بسیار مفید است.</p>
 
 <h3 id="graceful-shutdown">الگوی Graceful Shutdown</h3>
-<p>یکی از الگوهای کلیدی در سیستم‌های واقعی، خاموش کردن کنترل‌شده (<bdi dir="ltr">Graceful Shutdown</bdi>) است. وقتی سیگنال توقف (<bdi dir="ltr">SIGTERM</bdi>) به برنامه ارسال می‌شود، باید تمام <bdi dir="ltr">Goroutine</bdi>‌های فعال به‌صورت تمیز متوقف شوند، اتصالات دیتابیس بسته شوند، و داده‌های در حال پردازش ذخیره گردند.</p>
+<p>یکی از الگوهای کلیدی در سیستم‌های واقعی، <bdi dir="ltr">Graceful Shutdown</bdi> است. وقتی سیگنال توقف (<bdi dir="ltr">SIGTERM</bdi>) به برنامه ارسال می‌شود، باید تمام <bdi dir="ltr">Goroutine</bdi>‌های فعال به‌صورت تمیز متوقف شوند، اتصالات دیتابیس بسته شوند، و داده‌های در حال پردازش ذخیره گردند.</p>
 
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">package main
@@ -706,12 +706,12 @@ func fetchAll(ctx context.Context, urls []string) ([]string, error) {
 </table>
 
 <h2 id="نمودار-fan-out-fan-in">نمودار الگوی <bdi dir="ltr">Fan-Out / Fan-In</bdi></h2>
-<p>الگوی <bdi dir="ltr">Fan-Out / Fan-In</bdi> یکی از قدرتمندترین الگوهای همزمانی در Go است. در بخش <bdi dir="ltr">Fan-Out</bdi> کارها بین چندین <bdi dir="ltr">Goroutine</bdi> مستقل توزیع می‌شوند تا موازی پردازش شوند و در بخش <bdi dir="ltr">Fan-In</bdi> نتایج همه این <bdi dir="ltr">Goroutine</bdi>‌ها در یک کانال واحد تجمیع می‌شوند. این الگو شبیه سیستم صف در <bdi dir="ltr">Laravel</bdi> است اما با این تفاوت مهم که در Go همه چیز در داخل یک فرآیند انجام می‌شود و نیاز به سیستم خارجی مثل <bdi dir="ltr">Redis</bdi> یا <bdi dir="ltr">Supervisor</bdi> ندارد. نمودار زیر ساختار این الگو را به همراه واریانت <bdi dir="ltr">Worker Pool</bdi> نشان می‌دهد.</p>
+<p>الگوی <bdi dir="ltr">Fan-Out / Fan-In</bdi> که در بخش قبل معرفی شد، شبیه سیستم صف در <bdi dir="ltr">Laravel</bdi> است اما با این تفاوت مهم که در Go همه چیز در داخل یک فرآیند انجام می‌شود و نیاز به سیستم خارجی مثل <bdi dir="ltr">Redis</bdi> یا <bdi dir="ltr">Supervisor</bdi> ندارد. نمودار زیر ساختار این الگو را به همراه واریانت <bdi dir="ltr">Worker Pool</bdi> نشان می‌دهد.</p>
 
 <figure class="diagram" dir="ltr">
 <svg height="420" viewBox="0 0 780 420" width="780" xmlns="http://www.w3.org/2000/svg">
 <rect fill="#fafafa" height="420" rx="8" width="780" x="0" y="0"></rect>
-<defs>
+<defs><filter id="sh111" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
 <marker id="aFO1" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#00ADD8" points="0 0,10 3.5,0 7"></polygon></marker>
 <marker id="aFO2" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#4CAF50" points="0 0,10 3.5,0 7"></polygon></marker>
 <marker id="aFO3" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#FF9800" points="0 0,10 3.5,0 7"></polygon></marker>
@@ -831,12 +831,12 @@ func fetchAll(ctx context.Context, urls []string) ([]string, error) {
 <p>در نمودار بالا دو مدل از توزیع کار را مشاهده می‌کنید. مدل اول <bdi dir="ltr">Fan-Out / Fan-In</bdi> ساده است که هر <bdi dir="ltr">Goroutine</bdi> کانال خروجی مستقل خود را دارد و تابع <bdi dir="ltr">merge()</bdi> نتایج را تجمیع می‌کند. مدل دوم <bdi dir="ltr">Worker Pool</bdi> است که در آن تمام <bdi dir="ltr">Worker</bdi>‌ها از یک کانال ورودی مشترک می‌خوانند و به یک کانال خروجی مشترک می‌نویسند. تفاوت اصلی این است که در <bdi dir="ltr">Worker Pool</bdi> تعداد <bdi dir="ltr">Goroutine</bdi>‌ها ثابت و محدود است اما در <bdi dir="ltr">Fan-Out</bdi> ساده ممکن است به تعداد کارها <bdi dir="ltr">Goroutine</bdi> ساخته شود. انتخاب بین این دو مدل به ماهیت کار و محدودیت‌های منابع سیستم بستگی دارد.</p>
 
 <h2 id="نمودار-pipeline">نمودار الگوی <bdi dir="ltr">Pipeline</bdi></h2>
-<p>الگوی <bdi dir="ltr">Pipeline</bdi> داده‌ها را از طریق مراحل متوالی پردازش می‌کند. هر مرحله یک <bdi dir="ltr">Goroutine</bdi> مستقل است که از یک کانال ورودی می‌خواند، پردازش انجام می‌دهد و نتیجه را در کانال خروجی می‌نویسد. مزیت کلیدی این الگو آن است که هر مرحله به صورت مستقل و همزمان با مراحل دیگر اجرا می‌شود و زمانی که یک مرحله منتظر <bdi dir="ltr">I/O</bdi> است مراحل دیگر می‌توانند کار کنند. همچنین مکانیزم <bdi dir="ltr">Backpressure</bdi> از طریق مسدود شدن کانال‌ها به صورت طبیعی پیاده‌سازی می‌شود یعنی اگر مرحله پایین‌دست کند باشد مرحله بالادست به صورت خودکند کندتر می‌شود.</p>
+<p>الگوی <bdi dir="ltr">Pipeline</bdi> که در بخش قبل معرفی شد، مزیت کلیدی دارد که هر مرحله به صورت مستقل و همزمان با مراحل دیگر اجرا می‌شود. مکانیزم <bdi dir="ltr">Backpressure</bdi> از طریق مسدود شدن کانال‌ها به صورت طبیعی پیاده‌سازی می‌شود — اگر مرحله پایین‌دست کند باشد، مرحله بالادست به صورت خودکند کندتر می‌شود. در نمودار زیر این الگو را به‌تفصیل مشاهده می‌کنید.</p>
 
 <figure class="diagram" dir="ltr">
 <svg height="340" viewBox="0 0 780 340" width="780" xmlns="http://www.w3.org/2000/svg">
 <rect fill="#fafafa" height="340" rx="8" width="780" x="0" y="0"></rect>
-<defs>
+<defs><filter id="sh112" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
 <marker id="aPL1" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#00ADD8" points="0 0,10 3.5,0 7"></polygon></marker>
 <marker id="aPL2" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#27ae60" points="0 0,10 3.5,0 7"></polygon></marker>
 <marker id="aPL3" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#FF9800" points="0 0,10 3.5,0 7"></polygon></marker>

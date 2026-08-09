@@ -73,7 +73,7 @@
 
 <figure class="diagram" dir="ltr">
 <svg  font-family="sans-serif" viewBox="0 0 700 320" xmlns="http://www.w3.org/2000/svg" width="700" height="320">
-<defs><marker id="arrRead" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#00ADD8" points="0 0, 10 3.5, 0 7"></polygon></marker></defs>
+<defs><filter id="sh124" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter><marker id="arrRead" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#00ADD8" points="0 0, 10 3.5, 0 7"></polygon></marker></defs>
 <rect fill="#fff3e0" height="80" rx="10" stroke="#ff9800" stroke-width="2" width="140" x="20" y="110"></rect>
 <text fill="#e65100" font-size="14" text-anchor="middle" x="90" y="145" direction="rtl" unicode-bidi="embed">فایل روی دیسک</text>
 <text fill="#666" font-size="12" text-anchor="middle" x="90" y="168" direction="ltr" unicode-bidi="embed">notes.txt</text>
@@ -204,6 +204,10 @@ for {
 <strong>هشدار:</strong> <code dir="ltr">os.ReadFile()</code> کل فایل را در حافظه بارگذاری می‌کند. برای فایل‌های بزرگ (مثل فایل‌های Logs گیگابایتی) این کار باعث پر شدن حافظه و حتی crash برنامه می‌شود. همیشه برای فایل‌های بزرگ از <code dir="ltr">io.Reader</code> و خواندن جریانی استفاده کنید.
 </div>
 
+<div class="note">
+<strong>نکته — ترتیب صحیح <code>defer file.Close()</code>:</strong> الگوی صحیح در Go این است: (۱) فایل را باز کنید، (۲) خطا را بررسی کنید و در صورت نیاز بازگردید، (۳) سپس <code>defer file.Close()</code> را بنویسید. اگر <code>defer</code> را قبل از بررسی خطا قرار دهید و <code>os.Open</code> شکست بخورد، متغیر <code>file</code> برابر <code>nil</code> خواهد بود و فراخوانی <code>Close()</code> روی <code>nil</code> باعث <code>panic</code> می‌شود. در PHP ترتیب <code>fopen()</code> و <code>fclose()</code> دستی است و این تله وجود ندارد، اما در Go به دلیل استفاده‌ی گسترده از <code>defer</code> رعایت این ترتیب حیاتی است.
+</div>
+
 <h3 id="خواندن-فایلهای-بزرگ-با-mmap">خواندن فایل‌های بزرگ با mmap</h3>
 <p>برای فایل‌های بسیار بزرگ (صدها مگابایت تا گیگابایت)، یک روش پیشرفته‌تر استفاده از Memory-Mapped Files است. mmap فایل را مستقیماً در فضای آدرس حافظه فرآیند نگاشت می‌کند، بدون نیاز به خواندن صریح. این روش به سیستم‌عامل اجازه می‌دهد صفحات فایل را به‌صورت lazy بارگذاری کند و عملکرد بسیار بالایی برای دسترسی تصادفی دارد:</p>
 
@@ -250,7 +254,7 @@ func mmapRead(path string) ([]byte, error) {
 
 <figure class="diagram" dir="ltr">
 <svg  font-family="sans-serif" viewBox="0 0 700 280" xmlns="http://www.w3.org/2000/svg" width="700" height="280">
-<defs><marker id="arrStrat" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#00ADD8" points="0 0, 10 3.5, 0 7"></polygon></marker></defs>
+<defs><filter id="sh125" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter><marker id="arrStrat" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#00ADD8" points="0 0, 10 3.5, 0 7"></polygon></marker></defs>
 <rect fill="#fafafa" height="280" rx="8" width="700" x="0" y="0"></rect>
 <text fill="#333" font-size="16" font-weight="bold" text-anchor="middle" x="350" y="30" direction="rtl" unicode-bidi="embed">مقایسه استراتژی‌های خواندن فایل</text>
 <!-- ReadFile -->
@@ -420,7 +424,7 @@ func readLastNLines(path string, n int) ([]string, error) {
 
 <figure class="diagram" dir="ltr">
 <svg font-family="sans-serif" viewBox="0 0 860 660" xmlns="http://www.w3.org/2000/svg" width="860" height="660">
-<defs>
+<defs><filter id="sh126" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
 <marker id="arrCmp1" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#4CAF50" points="0 0, 10 3.5, 0 7"></polygon></marker>
 <marker id="arrCmp2" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#FF9800" points="0 0, 10 3.5, 0 7"></polygon></marker>
 <marker id="arrCmp3" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#e91e63" points="0 0, 10 3.5, 0 7"></polygon></marker>
@@ -548,7 +552,7 @@ func readLastNLines(path string, n int) ([]string, error) {
 <h3 id="سناریوهای-عملیاتی-خواندن">سناریوهای عملیاتی خواندن فایل</h3>
 <p>در پروژه‌های واقعی، انتخاب روش خواندن فایل کمتر به ترجیح شخصی و بیشتر به ماهیت داده و نوع پردازش بستگی دارد. هر سناریو زیر نشان می‌دهد که چرا یک روش خاص بهتر از دیگری عمل می‌کند. درک این سناریوها به شما کمک می‌کند در پروژه‌های واقعی تصمیم آگاهانه‌تری بگیرید و از خطاهای رایج مانند پر شدن حافظه یا کندی بیش از حد اجتناب کنید.</p>
 <ul>
-<li><strong>خواندن فایل پیکربندی (Config):</strong> فایل‌های <bdi dir="ltr">JSON</bdi>، <bdi dir="ltr">YAML</bdi> و <bdi dir="ltr">TOML</bdi> معمولاً کوچک هستند (چند کیلوبایت) و کل محتوای آن‌ها نیاز است. <bdi dir="ltr">os.ReadFile</bdi> بهترین انتخاب است زیرا ساده‌ترین روش است و بعد از خواندن می‌توانید مستقیماً محتوا را به <bdi dir="ltr">json.Unmarshal</bdi> یا <bdi dir="ltr">yaml.Unmarshal</bdi> پاس بدهید. نمونه: <code dir="ltr">data, _ := os.ReadFile("config.json"); json.Unmarshal(data, &amp;cfg)</code></li>
+<li><strong>خواندن فایل Config:</strong> فایل‌های <bdi dir="ltr">JSON</bdi>، <bdi dir="ltr">YAML</bdi> و <bdi dir="ltr">TOML</bdi> معمولاً کوچک هستند (چند کیلوبایت) و کل محتوای آن‌ها نیاز است. <bdi dir="ltr">os.ReadFile</bdi> بهترین انتخاب است زیرا ساده‌ترین روش است و بعد از خواندن می‌توانید مستقیماً محتوا را به <bdi dir="ltr">json.Unmarshal</bdi> یا <bdi dir="ltr">yaml.Unmarshal</bdi> پاس بدهید. نمونه: <code dir="ltr">data, _ := os.ReadFile("config.json"); json.Unmarshal(data, &amp;cfg)</code></li>
 <li><strong>پردازش فایل‌های CSV/TSV:</strong> این فایل‌ها معمولاً حجیم هستند و باید خط‌به‌خط پردازش شوند. <bdi dir="ltr">bufio.Scanner</bdi> به همراه <bdi dir="ltr">encoding/csv</bdi> بهترین ترکیب است. Scanner هر خط را جداگانه می‌خواند و مصرف حافظه ثابت می‌ماند، حتی اگر فایل صدها مگابایت باشد. نمونه: باز کردن فایل با <code dir="ltr">os.Open</code>، ساخت <code dir="ltr">csv.NewReader(file)</code> و خواندن خط‌به‌خط با <code dir="ltr">reader.Read()</code>.</li>
 <li><strong>خواندن بدنه درخواست HTTP:</strong> <bdi dir="ltr">http.Request.Body</bdi> یک <bdi dir="ltr">io.ReadCloser</bdi> است و باید با <bdi dir="ltr">io.Reader</bdi> خوانده شود. نمی‌توانید از <bdi dir="ltr">os.ReadFile</bdi> استفاده کنید زیرا داده در فایل نیست. به‌جای آن از <bdi dir="ltr">io.ReadAll(req.Body)</bdi> یا <bdi dir="ltr">json.NewDecoder(req.Body).Decode(&amp;v)</bdi> استفاده کنید. نکته مهم: بدنه درخواست فقط یکبار قابل خواندن است — بعد از خواندن بسته می‌شود.</li>
 <li><strong>مدیریت فایل‌های لاگ بزرگ:</strong> فایل‌های لاگ سرور ممکن است گیگابایت‌ها حجم داشته باشند و هرگز نباید کل آن‌ها در حافظه بارگذاری شود. <bdi dir="ltr">bufio.Scanner</bdi> برای خواندن خط‌به‌خط و فیلتر کردن الگوهای خاص ایده‌آل است. اگر نیاز به پردازش باینری یا جستجوی الگو در سطح بایت دارید، <bdi dir="ltr">io.Reader</bdi> با <bdi dir="ltr">bufio.NewReader</bdi> کنترل بیشتری می‌دهد. در هر دو حالت مصرف حافظه ثابت و قابل پیش‌بینی خواهد بود.</li>

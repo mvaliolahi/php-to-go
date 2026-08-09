@@ -72,7 +72,7 @@
 <p>نوشتن در فایل یکی از عملیات اساسی هر برنامه است. از ذخیره Logs و خروجی‌ها تا تولید فایل‌های پیکربندی و گزارش‌ها، همه نیاز به نوشتن داده در فایل دارند. در Go ابزارهای مختلفی برای این کار وجود دارد که هر کدام برای موقعیت خاصی مناسب هستند.</p>
 <figure class="diagram" dir="ltr">
 <svg  font-family="sans-serif" viewBox="0 0 700 350" xmlns="http://www.w3.org/2000/svg" width="700" height="350">
-<defs>
+<defs><filter id="sh127" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
 <marker id="arrWrite" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#00ADD8" points="0 0, 10 3.5, 0 7"></polygon></marker>
 </defs>
 <!-- Input data -->
@@ -192,7 +192,7 @@ data, _ := io.ReadAll(tee)
 </code></pre>
 </figure>
 <div class="comparison">
-<strong>مقایسه با PHP:</strong> در PHP نوشتن هم‌زمان در دو خروجی نیازمند دو فراخوانی جداگانه <code dir="ltr">fwrite()</code> یا استفاده از تابع کمکی است. اما <code dir="ltr">io.MultiWriter</code> در Go یک <code dir="ltr">io.Writer</code> جدید تولید می‌کند که شفاف و یکپارچه عمل می‌کند — تابع‌های مصرف‌کننده حتی نمی‌دانند داده به چند مقصد می‌رود. این الگوی decorator یکی از نقاط قوت طراحی Go است.
+<strong>مقایسه با PHP:</strong> مقایسه‌ی کامل‌تر دکوراتورهای <code dir="ltr">MultiWriter</code> و <code dir="ltr">TeeReader</code> با معادل‌های PHP (<code dir="ltr">fwrite()</code> و <code dir="ltr">stream_copy_to_stream()</code>) در فصل ۶.۱ آورده شده است. در Go، <code dir="ltr">io.MultiWriter</code> یک <code dir="ltr">io.Writer</code> جدید می‌سازد که برای تابع‌های مصرف‌کننده شفاف عمل می‌کند — هیچ‌کدام از مقاصد نمی‌دانند داده به‌طور هم‌زمان به چند خروجی می‌رود.
 </div>
 
 <h3 id="نوشتن-اتمیک">Atomic Write: write-to-temp + rename</h3>
@@ -200,7 +200,7 @@ data, _ := io.ReadAll(tee)
 
 <figure class="diagram" dir="ltr">
 <svg  font-family="sans-serif" viewBox="0 0 720 280" xmlns="http://www.w3.org/2000/svg" width="720" height="280">
-<defs>
+<defs><filter id="sh128" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
 <marker id="arrAtomic" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#00ADD8" points="0 0, 10 3.5, 0 7"></polygon></marker>
 </defs>
 <rect fill="#fafafa" height="280" rx="8" width="720" x="0" y="0"></rect>
@@ -419,7 +419,7 @@ fclose($fp);
 
 <figure class="diagram" dir="ltr">
 <svg font-family="sans-serif" viewBox="0 0 880 760" xmlns="http://www.w3.org/2000/svg" width="880" height="760">
-<defs>
+<defs><filter id="sh129" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
 <marker id="arrW1" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#4CAF50" points="0 0, 10 3.5, 0 7"></polygon></marker>
 <marker id="arrW2" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#FF9800" points="0 0, 10 3.5, 0 7"></polygon></marker>
 <marker id="arrW3" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#e91e63" points="0 0, 10 3.5, 0 7"></polygon></marker>
@@ -487,7 +487,7 @@ fclose($fp);
 <text fill="#fff3e0" font-size="10" text-anchor="middle" x="760" y="256" direction="rtl" unicode-bidi="embed">یا فایل کامل جایگزین می‌شود یا هیچ تغییری ⚠</text>
 
 <!-- ============ ATOMIC WRITE DETAIL SECTION ============ -->
-<text fill="#333" font-size="15" font-weight="bold" text-anchor="middle" x="440" y="320" direction="rtl" unicode-bidi="embed">الگوی نوشتن اتمیک (Atomic Write Pattern) به‌تفصیل</text>
+<text fill="#333" font-size="15" font-weight="bold" text-anchor="middle" x="440" y="320" direction="rtl" unicode-bidi="embed">Atomic Write Pattern به‌تفصیل</text>
 
 <!-- Step boxes -->
 <rect fill="#e3f2fd" height="55" rx="8" stroke="#2196f3" stroke-width="2" width="180" x="20" y="340"></rect>
@@ -577,7 +577,7 @@ fclose($fp);
 </ul>
 
 <div class="tip">
-<strong>نکته عملی — الگوی نوشتن اتمیک:</strong> مهم‌ترین الگوی نوشتن ایمن در Go (و هر زبان سیستمی دیگر) الگوی «فایل موقت + Sync + Rename» است. این الگو تضمین می‌کند که اگر برنامه در هر نقطه‌ای از فرآیند نوشتن crash کند، فایل اصلی یا دست‌نخورده باقی می‌ماند یا کامل جایگزین شده است — هیچ حالت میانی وجود ندارد. مراحل: (۱) فایل موقت در همان دایرکتوری فایل نهایی ایجاد کنید (برای اطمینان از همان فایل‌سیستم)، (۲) داده را در فایل موقت بنویسید، (۳) <code dir="ltr">file.Sync()</code> را فراخوانی کنید تا داده قطعاً روی دیسک فیزیکی نوشته شود، (۴) فایل موقت را ببندید، (۵) با <code dir="ltr">os.Rename()</code> فایل موقت را به نام نهایی تغییر دهید. عملیات Rename در POSIX اتمیک است. این همان الگویی است که دیتابیس‌های SQLite و PostgreSQL برای نوشتن WAL استفاده می‌کنند.
+<strong>نکته عملی — الگوی نوشتن اتمیک:</strong> الگوی «فایل موقت + <code dir="ltr">Sync()</code> + <code dir="ltr">Rename()</code>» که در تابع <code dir="ltr">atomicWriteFile</code> بالا پیاده‌سازی شد، همان الگویی است که دیتابیس‌های SQLite و PostgreSQL برای نوشتن WAL خود استفاده می‌کنند. این الگو دوام داده روی دیسک را حتی در صورت قطع برق یا <code dir="ltr">crash</code> برنامه تضمین می‌کند — یا فایل کامل جایگزین می‌شود یا هیچ تغییری رخ نمی‌دهد. برای مرور مراحل پنج‌گانه به چارت تصمیم‌گیری در شکل ۶-۳-ج و تابع <code dir="ltr">atomicWriteFile</code> مراجعه کنید.
 </div>
 
 </div>

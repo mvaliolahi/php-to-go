@@ -72,7 +72,7 @@
 <p>در دنیای مدرن نرم‌افزار، تبادل داده بین سرویس‌ها و پیکربندی برنامه‌ها عمدتاً با فرمت‌های JSON و YAML انجام می‌شود. در PHP کار با این فرمت‌ها بسیار ساده است: <code dir="ltr">json_decode()</code> و <code dir="ltr">json_encode()</code> برای JSON و افزونه‌های YAML در دسترس هستند. در Go اما رویکرد متفاوتی وجود دارد: تبدیل داده‌ها به و از struct‌ها با استفاده از struct tag ها. این رویکرد ابتدا ممکن است پیچیده به نظر برسد اما مزیت‌های بزرگی دارد: نوع‌داری ایستا، عملکرد بالا و امنیت بیشتر.</p>
 <figure class="diagram" dir="ltr">
 <svg  font-family="sans-serif" viewBox="0 0 720 380" xmlns="http://www.w3.org/2000/svg" width="720" height="380">
-<defs>
+<defs><filter id="sh136" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
 <marker id="arrJson" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#00ADD8" points="0 0, 10 3.5, 0 7"></polygon></marker>
 <marker id="arrBack" markerheight="7" markerwidth="10" orient="auto" refx="0" refy="3.5"><polygon fill="#ff9800" points="10 0, 0 3.5, 10 7"></polygon></marker>
 </defs>
@@ -134,7 +134,7 @@
 <figure class="diagram" dir="ltr">
 <svg width="700" height="250" viewBox="0 0 700 250" xmlns="http://www.w3.org/2000/svg">
 <rect fill="#fafafa" height="250" rx="8" width="700" x="0" y="0"></rect>
-<defs>
+<defs><filter id="sh137" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
 <marker id="aSt1" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#00ADD8" points="0 0,10 3.5,0 7"></polygon></marker>
 </defs>
 <text fill="#00ADD8" font-size="15" font-weight="bold" text-anchor="middle" x="350" y="25" direction="rtl" unicode-bidi="embed">نگاشت <tspan direction="ltr" unicode-bidi="embed">Struct Tags</tspan>: فیلد <tspan direction="ltr" unicode-bidi="embed">Go</tspan> ↔ کلید <tspan direction="ltr" unicode-bidi="embed">JSON</tspan></text>
@@ -395,6 +395,11 @@ type Product struct {
 }
 </code></pre>
 </figure>
+
+<div class="note">
+<strong>نکته — تله‌ی <code>omitempty</code> با مقادیر صفر:</strong> <code>json:",omitempty"</code> فیلد را فقط زمانی حذف می‌کند که مقدارش برابر <em>مقدار صفر</em> نوع باشد (<code>""</code> برای رشته، <code>0</code> برای عدد، <code>false</code> برای بولین، <code>nil</code> برای slice/map/pointer). این یعنی نمی‌توان بین «فیلد ارسال نشده» و «فیلد با مقدار صفر ارسال شده» تمایز قائل شد — مشکلی که در PHP با <code>array_key_exists()</code> در برابر <code>isset()</code> آشنا هستید. برای PATCH‌های جزئی یا تشخیص غیبت فیلد، از اشاره‌گر (<code>*int</code>) یا <code>json.RawMessage</code> استفاده کنید تا <code>nil</code> از <code>0</code> متمایز شود.
+</div>
+
 <h3 id="تفاوت-json-yaml">تفاوت‌های JSON و YAML در عمل</h3>
 <table class="comparison-table" dir="rtl">
 <thead>
@@ -480,7 +485,7 @@ func streamUsers(w http.ResponseWriter, r *http.Request) {
 
 <figure class="diagram" dir="ltr">
 <svg  font-family="sans-serif" viewBox="0 0 720 340" xmlns="http://www.w3.org/2000/svg" width="720" height="340">
-<defs>
+<defs><filter id="sh138" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
 <marker id="arrJ2" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#00ADD8" points="0 0, 10 3.5, 0 7"></polygon></marker>
 </defs>
 <rect fill="#fafafa" height="340" rx="8" width="720" x="0" y="0"></rect>
@@ -710,7 +715,7 @@ func main() {
 
 <figure class="diagram" dir="ltr">
 <svg font-family="sans-serif" viewBox="0 0 820 620" xmlns="http://www.w3.org/2000/svg" width="820" height="620">
-<defs>
+<defs><filter id="sh139" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
 <marker id="arrG1" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#4CAF50" points="0 0, 10 3.5, 0 7"></polygon></marker>
 <marker id="arrO1" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#FF9800" points="0 0, 10 3.5, 0 7"></polygon></marker>
 <marker id="arrP1" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#e91e63" points="0 0, 10 3.5, 0 7"></polygon></marker>

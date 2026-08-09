@@ -72,7 +72,7 @@
 <figure class="diagram" dir="ltr">
 <svg height="260" viewBox="0 0 700 260" width="700" xmlns="http://www.w3.org/2000/svg">
 <rect fill="#fafafa" height="260" rx="8" width="700" x="0" y="0"></rect>
-<defs>
+<defs><filter id="sh113" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
 <marker id="aPr1" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#00ADD8" points="0 0,10 3.5,0 7"></polygon></marker>
 <marker id="aPr2" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#27ae60" points="0 0,10 3.5,0 7"></polygon></marker>
 </defs>
@@ -148,7 +148,7 @@ func main() {
 <h3 id="crawl-داده-از-چند-api-به-طور-همزمان">Crawl داده از چند API به طور همزمان</h3>
 <figure class="diagram" dir="ltr">
 <svg height="320" viewBox="0 0 660 320" width="660" xmlns="http://www.w3.org/2000/svg">
-<defs>
+<defs><filter id="sh114" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
 <marker id="arrFo1" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#00ADD8" points="0 0,10 3.5,0 7"></polygon></marker>
 <marker id="arrFi1" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#4caf50" points="0 0,10 3.5,0 7"></polygon></marker>
 </defs>
@@ -362,7 +362,7 @@ func main() {
 </figure>
 
 <h3 id="پردازنده-کار-پس‌زمینه">پردازنده کارهای پس‌زمینه</h3>
-<p>یکی از الگوهای رایج در سیستم‌های واقعی، پردازنده‌ی کارهای پس‌زمینه (<bdi dir="ltr">Background Job Processor</bdi>) است. در Laravel این کار با <bdi dir="ltr">Queue</bdi> و <bdi dir="ltr">Worker</bdi> انجام می‌شود. در Go می‌توانید یک <bdi dir="ltr">Worker Pool</bdi> با <bdi dir="ltr">Context</bdi> و <bdi dir="ltr">Graceful Shutdown</bdi> بسازید:</p>
+<p>یکی از الگوهای رایج در سیستم‌های واقعی، <bdi dir="ltr">Background Job Processor</bdi> است. در Laravel این کار با <bdi dir="ltr">Queue</bdi> و <bdi dir="ltr">Worker</bdi> انجام می‌شود. در Go می‌توانید یک <bdi dir="ltr">Worker Pool</bdi> با <bdi dir="ltr">Context</bdi> و <bdi dir="ltr">Graceful Shutdown</bdi> بسازید:</p>
 
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">package main
@@ -519,7 +519,7 @@ func (h *Hub) Run(ctx context.Context) {
 <figure class="diagram" dir="ltr">
 <svg height="620" viewBox="0 0 820 620" width="820" xmlns="http://www.w3.org/2000/svg">
 <rect fill="#fafafa" height="620" rx="8" width="820" x="0" y="0"></rect>
-<defs>
+<defs><filter id="sh115" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
 <marker id="aWk1" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#00ADD8" points="0 0,10 3.5,0 7"></polygon></marker>
 <marker id="aWk2" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#FF9800" points="0 0,10 3.5,0 7"></polygon></marker>
 <marker id="aWk3" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#4CAF50" points="0 0,10 3.5,0 7"></polygon></marker>
@@ -681,10 +681,12 @@ func (h *Hub) Run(ctx context.Context) {
 <li><strong>کلاینت <bdi dir="ltr">API</bdi> با محدودیت نرخ:</strong> وقتی با <bdi dir="ltr">API</bdi>های خارجی کار می‌کنید که محدودیت درخواست دارند (مثلاً ۱۰۰ درخواست در دقیقه)، باید از الگوی <bdi dir="ltr">Rate-Limited Worker Pool</bdi> استفاده کنید. یک <bdi dir="ltr">ticker</bdi> نرخ ارسال را کنترل می‌کند و <bdi dir="ltr">Worker</bdi>ها فقط در صورت وجود <bdi dir="ltr">token</bdi> درخواست ارسال می‌کنند. در <bdi dir="ltr">PHP</bdi> این کار با <bdi dir="ltr">Redis Throttle</bdi> انجام می‌شود اما در <bdi dir="ltr">Go</bdi> با <bdi dir="ltr">time.Ticker</bdi> و <bdi dir="ltr">channel</bdi> بسیار ساده‌تر است.</li>
 <li><strong>پردازش موازی تصویر:</strong> وقتی کاربر چند تصویر آپلود می‌کند، هر تصویر باید تغییر اندازه، فشرده‌سازی و ذخیره شود. یک <bdi dir="ltr">Worker Pool</bdi> با تعداد <bdi dir="ltr">Worker</bdi> برابر تعداد هسته‌های <bdi dir="ltr">CPU</bdi> بهینه‌ترین عملکرد را دارد زیرا پردازش تصویر کار محاسباتی است. هر <bdi dir="ltr">Worker</bdi> یک تصویر را از <bdi dir="ltr">jobs</bdi> کانال می‌گیرد و نتیجه را در <bdi dir="ltr">results</bdi> کانال می‌فرستد.</li>
 <li><strong>ارسال دسته‌ای ایمیل:</strong> در سیستم‌های اطلاع‌رسانی که هزاران ایمیل باید ارسال شود، <bdi dir="ltr">Worker Pool</bdi> با <bdi dir="ltr">buffered channel</bdi> بهترین راه‌حل است. <bdi dir="ltr">Producer</bdi> ایمیل‌ها را در صف قرار می‌دهد و <bdi dir="ltr">Worker</bdi>ها به صورت موازی ارسال می‌کنند. اگر سرور <bdi dir="ltr">SMTP</bdi> محدودیت داشته باشد، <bdi dir="ltr">Rate Limiter</bdi> نرخ ارسال را کنترل می‌کند و از مسدود شدن اتصال جلوگیری می‌کند.</li>
-<li><strong>خزش وب همزمان با محدودیت نرخ:</strong> در ابزارهای <bdi dir="ltr">Web Scraping</bdi>، باید چندین صفحه را همزمان دانلود کنید اما نرخ درخواست محدود باشد تا سرور مقصد مسدودتان نکند. ترکیب <bdi dir="ltr">Worker Pool</b> با <bdi dir="ltr">time.Ticker</b> و <bdi dir="ltr">Context</b> با <bdi dir="ltr">timeout</b> راه‌حل ایده‌آل است. هر <bdi dir="ltr">Worker</b> قبل از ارسال درخواست جدید منتظر <bdi dir="ltr">token</bdi> از <bdi dir="ltr">ticker</b> می‌ماند.</li>
+<li><strong>خزش وب همزمان با محدودیت نرخ:</strong> در ابزارهای <bdi dir="ltr">Web Scraping</bdi>، باید چندین صفحه را همزمان دانلود کنید اما نرخ درخواست محدود باشد تا سرور مقصد مسدودتان نکند. ترکیب <bdi dir="ltr">Worker Pool</bdi> با <bdi dir="ltr">time.Ticker</bdi> و <bdi dir="ltr">Context</bdi> با <bdi dir="ltr">timeout</bdi> راه‌حل ایده‌آل است. هر <bdi dir="ltr">Worker</bdi> قبل از ارسال درخواست جدید منتظر <bdi dir="ltr">token</bdi> از <bdi dir="ltr">ticker</bdi> می‌ماند.</li>
 </ul>
 
-<div class="tip"><strong>نکته درباره اندازه <bdi dir="ltr">Worker Pool</bdi>:</strong> تعداد <bdi dir="ltr">Worker</bdi>ها باید متناسب با نوع کار باشد. برای کارهای محاسباتی (<bdi dir="ltr">CPU-bound</bdi>) مثل پردازش تصویر یا رمزنگاری، از <code dir="ltr">runtime.NumCPU()</code> استفاده کنید — تعداد بیشتر فقط باعث <bdi dir="ltr">context switching</b> اضافی می‌شود. اما برای کارهای ورودی/خروجی (<bdi dir="ltr">I/O-bound</bdi>) مثل درخواست <bdi dir="ltr">HTTP</bdi> یا کوئری دیتابیس، می‌توانید تعداد بسیار بیشتری <bdi dir="ltr">Worker</bdi> داشته باشید (مثلاً ۱۰۰ یا بیشتر) زیرا هر <bdi dir="ltr">Worker</bdi> بیشتر وقتش منتظر پاسخ شبکه است و <bdi dir="ltr">CPU</b> اشغال نمی‌کند. یک الگوی رایج شروع با <code dir="ltr">runtime.NumCPU() * 2</code> و تنظیم بر اساس نتایج بنچمارک است.</div>
+<div class="tip"><strong>نکته درباره اندازه <bdi dir="ltr">Worker Pool</bdi>:</strong> تعداد <bdi dir="ltr">Worker</bdi>ها باید متناسب با نوع کار باشد. برای <bdi dir="ltr">CPU-bound</bdi> مثل پردازش تصویر یا رمزنگاری، از <code dir="ltr">runtime.NumCPU()</code> استفاده کنید — تعداد بیشتر فقط باعث <bdi dir="ltr">context switching</bdi> اضافی می‌شود. اما برای <bdi dir="ltr">I/O-bound</bdi> مثل درخواست <bdi dir="ltr">HTTP</bdi> یا کوئری دیتابیس، می‌توانید تعداد بسیار بیشتری <bdi dir="ltr">Worker</bdi> داشته باشید (مثلاً ۱۰۰ یا بیشتر) زیرا هر <bdi dir="ltr">Worker</bdi> بیشتر وقتش منتظر پاسخ شبکه است و <bdi dir="ltr">CPU</bdi> اشغال نمی‌کند. یک الگوی رایج شروع با <code dir="ltr">runtime.NumCPU() * 2</code> و تنظیم بر اساس نتایج بنچمارک است.</div>
+
+<div class="note"><strong>یادداشت:</strong> در سرورهای <bdi dir="ltr">HTTP</bdi> تولیدی، هرگز در <bdi dir="ltr">Handler</bdi> مستقیماً <code>go func(){...}</code> ننویسید بدون اینکه <bdi dir="ltr">Context</bdi> درخواست را به آن پاس بدهید. وقتی کاربر مرورگر را می‌بندد، <code>r.Context()</code> لغو می‌شود و اگر <bdi dir="ltr">Goroutine</bdi> پس‌زمینه آن را بررسی نکند، به‌جای توقف، منابع سرور را مصرف می‌کند و در نهایت نشت می‌دهد. الگوی امن: <code>go func(ctx context.Context){ select { case &lt;-ctx.Done(): return; case result := &lt;-ch: ... } }(r.Context())</code>. در <bdi dir="ltr">PHP</bdi> این مشکل رخ نمی‌دهد زیرا فرآیند <bdi dir="ltr">PHP-FPM</bdi> با تمام درخواست از بین می‌رود، اما در <bdi dir="ltr">Go</bdi> سرور طول‌عمر دارد و نشت‌ها تجمعی هستند.</div>
 
 </div>
 </main>

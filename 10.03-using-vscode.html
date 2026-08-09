@@ -319,6 +319,8 @@ $ docker compose -f docker-compose.debug.yml up
 
 <div class="important"><strong>نکته مهم:</strong> برای دیباگ صحیح در container، حتماً برنامه را با فلگ‌های <code>-gcflags="all=-N -l"</code> بسازید تا بهینه‌سازی کامپایلر غیرفعال شود. بدون این فلگ‌ها، ممکن است breakpoint‌ها کار نکنند یا متغیرها قابل مشاهده نباشند. همچنین <code>remotePath</code> باید مسیر کد داخل container باشد.</div>
 
+<div class="note"><strong>نکته:</strong> تنظیم نادرست <code>remotePath</code> یکی از رایج‌ترین دلایل کار نکردن breakpoint‌ها در دیباگ container است. این مقدار باید دقیقاً با مسیر کد <bdi dir="ltr">Go</bdi> داخل container مطابقت داشته باشد (مثلاً <code>"/app"</code> یا <code>"/workspace"</code>)، نه مسیر محلی شما. وقتی <bdi dir="ltr">VS Code</bdi> روی یک خط breakpoint می‌گذارد اما برنامه متوقف نمی‌شود، ابتدا <code>remotePath</code> و <code>mode: "remote"</code> را بررسی کنید. ابزار <bdi dir="ltr">Delve</bdi> برای نگاشت خط کد محلی به خط کد داخل container به این مسیر وابسته است و هرگونه عدم تطابق باعث می‌شود breakpoint‌ها به خط اشتباه یا اصلاً متصل نشوند.</div>
+
 <h3 id="دیباگ-تست-فایلها">دیباگ تست‌ها</h3>
 <p>یکی از قابلیت‌های بسیار مفید VS Code برای توسعه Go دیباگ تعاملی تست‌هاست. در PhpStorm با PHPUnit دیباگ تست‌ها به‌صورت خودکار پشتیبانی می‌شود اما در VS Code با Go باید configuration مناسب بسازید. با این حال VS Code قابلیت‌هایی دارد که PhpStorm فاقد آن‌هاست مانند دیباگ تست‌های race-sensitive.</p>
 
@@ -386,7 +388,7 @@ $ docker compose -f docker-compose.debug.yml up
 
 <figure class="diagram" dir="ltr">
 <svg height="480" viewBox="0 0 700 480" width="700" xmlns="http://www.w3.org/2000/svg">
-<defs>
+<defs><filter id="sh170" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
 <marker id="arrowvc" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5">
 <polygon fill="#555" points="0 0, 10 3.5, 0 7"></polygon>
 </marker>
@@ -544,7 +546,7 @@ $ docker compose -f docker-compose.debug.yml up
 
 <figure class="diagram" dir="ltr">
 <svg height="620" viewBox="0 0 780 620" width="780" xmlns="http://www.w3.org/2000/svg">
-<defs>
+<defs><filter id="sh171" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
 <marker id="arrowvc2" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5">
 <polygon fill="#555" points="0 0, 10 3.5, 0 7"></polygon>
 </marker>
@@ -661,7 +663,7 @@ $ docker compose -f docker-compose.debug.yml up
 <figcaption>شکل ۱۰-۶: نقشه ویژگی‌های <bdi dir="ltr">VS Code Go</bdi> و جریان پیکربندی دیباگ با مقایسه <bdi dir="ltr">PhpStorm</bdi></figcaption>
 </figure>
 
-<p>نمودار بالا دو بخش اصلی را نشان می‌دهد: بخش اول نقشه ویژگی‌های افزونه Go است که شامل ابزارهای ناوبری کد (Go to Definition، Find References، Rename Symbol)، تکمیل کد هوشمند (IntelliSense)، تشخیص خطای لحظه‌ای (Diagnostics) و دیباگ گرافیکی است. بخش دوم جریان پیکربندی دیباگ را نشان می‌دهد که از فایل <bdi dir="ltr">launch.json</bdi> شروع شده و با فشردن F5 به دیباگر متصل می‌شود. هر مرحله از این جریان پیکربندی مشخص دارد و اگر هر کدام نادرست باشد، دیباگ کار نمی‌کند. به همین دلیل مهم است که هر پارامتر <bdi dir="ltr">launch.json</bdi> را بشناسید و برای سناریوی خود تنظیم کنید.</p>
+<p>نمودار بالا دو بخش اصلی را نشان می‌دهد: بخش اول نقشه ویژگی‌های افزونه Go است که شامل ابزارهای ناوبری کد (Go to Definition، Find References، Rename Symbol)، IntelliSense، Diagnostics و دیباگ گرافیکی است. بخش دوم جریان پیکربندی دیباگ را نشان می‌دهد که از فایل <bdi dir="ltr">launch.json</bdi> شروع شده و با فشردن F5 به دیباگر متصل می‌شود. هر مرحله از این جریان پیکربندی مشخص دارد و اگر هر کدام نادرست باشد، دیباگ کار نمی‌کند. به همین دلیل مهم است که هر پارامتر <bdi dir="ltr">launch.json</bdi> را بشناسید و برای سناریوی خود تنظیم کنید.</p>
 
 <h3 id="سناریوهای-عملیاتی-vscode">سناریوهای عملیاتی VS Code برای توسعه Go</h3>
 <p>در محیط‌های عملیاتی واقعی، پیکربندی دیباگ در VS Code فراتر از یک فایل <bdi dir="ltr">launch.json</bdi> ساده است. هر پروژه نیازمندی‌های خاص خود را دارد: برخی برنامه‌ها باید با آرگومان‌های خط فرمان اجرا شوند، برخی در Docker container دیباگ می‌شوند، و برخی نیاز به build tags خاص دارند. همچنین دیباگ تست‌ها و remote debugging سناریوهای متفاوتی را ایجاد می‌کنند. در ادامه مهم‌ترین سناریوهای عملیاتی و روش‌های پیکربندی آن‌ها را بررسی می‌کنیم:</p>
@@ -669,7 +671,7 @@ $ docker compose -f docker-compose.debug.yml up
 <ul>
 <li><strong>تنظیم <bdi dir="ltr">launch.json</bdi> برای دیباگ:</strong> اولین و مهم‌ترین قدم، ساخت فایل <code>.vscode/launch.json</code> صحیح است. حداقل یک configuration برای دیباگ محلی و یک configuration برای دیباگ تست نیاز دارید. برای برنامه‌هایی که از <code>stdin</code> می‌خوانند، حتماً <code>"console": "integratedTerminal"</code> را تنظیم کنید — مقدار پیش‌فرض <code>"internalConsole"</code> از ورودی <code>stdin</code> پشتیبانی نمی‌کند و برنامه قفل می‌شود. همچنین <code>"showLog": true</code> و <code>"logOutput": "rpc"</code> را برای رفع مشکلات دیباگ فعال کنید.</li>
 <li><strong>دیباگ فایل‌های تست:</strong> برای دیباگ تست‌ها، از <code>"mode": "test"</code> در <code>launch.json</code> استفاده کنید. با <code>"args": ["-test.run", "^TestUserService$"]</code> فقط تست خاصی اجرا می‌شود. افزونه Go همچنین لینک‌های <code>debug test</code> و <code>run test</code> بالای هر تابع تست اضافه می‌کند که ساده‌ترین روش دیباگ تست‌های منفرد است. برای تست‌های همزمان، از <code>"buildFlags": "-race"</code> استفاده کنید تا race detector فعال شود.</li>
-<li><strong>دیباگ راه‌دور با <bdi dir="ltr">Delve</bdi>:</strong> برای دیباگ برنامه‌ای که در سرور راه‌دور یا Docker container اجرا می‌شود، ابتدا Delve را در حالت headless اجرا کنید (<code>dlv exec --headless --listen=:2345 --api-version=2</code>)، سپس در <code>launch.json</code> یک configuration با <code>"request": "attach"</code>، <code>"mode": "remote"</code>، <code>"port": 2345</code> و <code>"remotePath": "/app"</code> اضافه کنید. حتماً از SSH tunnel برای امنیت استفاده کنید و هرگز پورت Delve را مستقیماً به اینترنت باز نگذارید.</li>
+<li><strong>دیباگ راه‌دور با <bdi dir="ltr">Delve</bdi>:</strong> همان‌طور که در بخش «دیباگ در Container» بالاتر شرح داده شد، Delve را در حالت <code>headless</code> روی سرور یا داخل container اجرا کنید (<code>dlv exec --headless --listen=:2345 --api-version=2</code>)، سپس در <code>launch.json</code> یک configuration با <code>"request": "attach"</code>، <code>"mode": "remote"</code>، <code>"port": 2345</code> و <code>"remotePath"</code> متناظر با مسیر کد داخل container اضافه کنید. برای امنیت، همیشه از SSH tunnel استفاده کنید و پورت <code>2345</code> را مستقیماً به اینترنت باز نگذارید (توضیحات کامل‌تر و Dockerfile نمونه در بخش Container آمده است).</li>
 <li><strong>استفاده از <bdi dir="ltr">Go Test Explorer</bdi>:</strong> افزونه Go یک Test Explorer در نوار کناری VS Code اضافه می‌کند که تمام تست‌های پروژه را به‌صورت درختی نمایش می‌دهد. می‌توانید با کلیک راست روی هر تست، آن را مستقیماً دیباگ کنید. همچنین آیکون‌های سبز و قرمز وضعیت موفقیت یا شکست هر تست را نشان می‌دهند. این قابلیت مشابه Test Runner در PhpStorm است اما رابط کاربری ساده‌تری دارد.</li>
 <li><strong>پیکربندی <bdi dir="ltr">Build Tags</bdi> برای دیباگ:</strong> وقتی پروژه از build tags استفاده می‌کند (مثلاً <code>//go:build integration</code>)، باید آن‌ها را در <code>launch.json</code> مشخص کنید: <code>"buildFlags": "-tags=integration"</code>. بدون این تنظیم، VS Code فایل‌هایی که build tag دارند را نادیده می‌گیرد و breakpoint‌ها روی آن‌ها کار نمی‌کند. همچنین می‌توانید در <code>settings.json</code> مقدار <code>"go.buildTags": "integration"</code> را تنظیم کنید تا همیشه اعمال شود.</li>
 </ul>

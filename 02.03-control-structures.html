@@ -166,7 +166,7 @@
 
 <figure class="diagram" dir="ltr">
 <svg height="280" viewBox="0 0 700 280" width="700" xmlns="http://www.w3.org/2000/svg">
-<defs><marker id="arrLoop" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#00ADD8" points="0 0, 10 3.5, 0 7"></polygon></marker></defs>
+<defs><filter id="sh35" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter><marker id="arrLoop" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#00ADD8" points="0 0, 10 3.5, 0 7"></polygon></marker></defs>
 <rect fill="#fafafa" height="280" rx="8" width="700" x="0" y="0"></rect>
 <text fill="#00ADD8" font-size="15" font-weight="bold" text-anchor="middle" x="350" y="25" direction="rtl" unicode-bidi="embed">انواع <tspan direction="ltr" unicode-bidi="embed">for</tspan> در <tspan direction="ltr" unicode-bidi="embed">Go</tspan> — فقط یک کلمه‌ی کلیدی</text>
 <!-- Classic for -->
@@ -338,6 +338,7 @@ for ($i = 0; $i &lt; 10; $i++) {
 <br/>• روی string: پیمایش UTF-8 به‌صورت rune‌به‌rune انجام می‌شود (نه بایت‌به‌بایت)
 <br/><br/>
 نکته‌ی مهم: مقدار برگشتی range یک کپی از عنصر اصلی است نه ارجاع به آن. بنابراین تغییر مقدار متغیر range روی داده‌ی اصلی تأثیری ندارد. اگر نیاز به تغییر عناصر slice دارید باید از اندیس استفاده کنید: <code>nums[i] = newValue</code>.</div>
+<div class="tip"><strong>نکته‌ی حرفه‌ای — range عبارت را فقط یک‌بار ارزیابی می‌کند:</strong> عبارت بعد از <code>range</code> پیش از شروع حلقه یک‌بار ارزیابی می‌شود و طول آن کش می‌شود. در نتیجه <code>append</code> به یک slice درون حلقه، بر تعداد تکرارهای همان حلقه بی‌تأثیر است. این رفتار با <bdi dir="ltr">PHP foreach</bdi> متفاوت است و در ویرایش هم‌زمان مجموعه باید مراقب آن باشید.</div>
 <p><strong>دستورات ترکیبی و تفاوت‌های فلسفی</strong></p>
 <p><strong>خوانایی و سادگی</strong></p>
 <p>Go تاکید زیادی بر نوشتن کد خوانا، ساده و قابل پیش‌بینی دارد. به همین دلیل:</p>
@@ -399,7 +400,7 @@ switch num := 2; num {
 </figure>
 <div class="warning"><strong>احتیاط با fallthrough:</strong> <code>fallthrough</code> باید آخرین دستور در <code>case</code> باشد و نمی‌توان از آن در <code>case</code> آخر استفاده کنید. برخلاف <bdi dir="ltr">PHP</bdi> که در آن فراموش کردن <code>break</code> باعث اجرای <bdi dir="ltr">fall-through</bdi> می‌شود، در <bdi dir="ltr">Go</bdi> باید صراحتاً <code>fallthrough</code> را بنویسید. این طراحی عمدی است تا از باگ‌های رایج <bdi dir="ltr">PHP</bdi> جلوگیری شود.</div>
 <h3 id="goto-labeled">goto و برچسب‌ها: کاربردهای نادر اما معتبر</h3>
-<p>هرچند استفاده از <code>goto</code> در زبان‌های مدرن منع می‌شود، <bdi dir="ltr">Go</bdi> آن را پشتیبانی می‌کند. یکی از کاربردهای معتبر <code>goto</code> در <bdi dir="ltr">Go</bdi> پاکسازی و خروج یکباره از بلوک‌های تودرتو است — الگویی که در کد منبع خود زبان <bdi dir="ltr">Go</bdi> نیز استفاده شده است. البته برچسب‌ها (<bdi dir="ltr">Labels</bdi>) معمولاً ترجیح داده می‌شوند.</p>
+<p>هرچند استفاده از <code>goto</code> در زبان‌های مدرن منع می‌شود، <bdi dir="ltr">Go</bdi> آن را پشتیبانی می‌کند. یکی از کاربردهای معتبر <code>goto</code> در <bdi dir="ltr">Go</bdi> پاکسازی و خروج یکباره از بلوک‌های تودرتو است — الگویی که در کد منبع خود زبان <bdi dir="ltr">Go</bdi> نیز استفاده شده است. البته <bdi dir="ltr">Labels</bdi> معمولاً ترجیح داده می‌شوند.</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">// goto for exit and cleanup (valid but rare pattern)
 func process(data []byte) error {
@@ -452,7 +453,7 @@ for i := range 3 {
 </code></pre>
 </figure>
 <figure class="diagram" dir="ltr">
-<svg height="400" viewBox="0 0 600 400" width="600" xmlns="http://www.w3.org/2000/svg">
+<svg height="400" viewBox="0 0 600 400" width="600" xmlns="http://www.w3.org/2000/svg"><defs><filter id="sh36" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter></defs>
 <rect fill="#fafafa" height="380" rx="12" stroke="#00ADD8" stroke-width="2" width="580" x="10" y="10"></rect>
 <text fill="#00ADD8" font-size="15" font-weight="bold" text-anchor="middle" x="300" y="35" direction="rtl" unicode-bidi="embed">مقایسه‌ی ساختارهای کنترلی: <tspan direction="ltr" unicode-bidi="embed">PHP</tspan> در برابر <tspan direction="ltr" unicode-bidi="embed">Go</tspan></text>
 <!-- if -->
@@ -497,7 +498,7 @@ for i := range 3 {
 <h3 id="foreach-range-comparison">مقایسه‌ی بصری <bdi dir="ltr">PHP foreach</bdi> در برابر <bdi dir="ltr">Go range</bdi></h3>
 <p>پیمایش مجموعه‌ها یکی از پرکاربردترین عملیات در برنامه‌نویسی است. در <bdi dir="ltr">PHP</bdi> دستور <bdi dir="ltr">foreach</bdi> ابزار اصلی برای پیمایش آرایه‌ها و اشیاء است و مقادیر را به‌صورت ارجاع یا کپی در اختیار بدنه‌ی حلقه قرار می‌دهد. در <bdi dir="ltr">Go</bdi> دستور <bdi dir="ltr">range</bdi> با برگرداندن کپی مقادیر رویکرد متفاوتی دارد و قابلیت‌های منحصربه‌فردی مانند پیمایش <bdi dir="ltr">rune</bdi> رشته و دریافت از <bdi dir="ltr">channel</bdi> فراهم می‌کند. شکل زیر تفاوت‌های کلیدی این دو رویکرد را در کنار هم نمایش می‌دهد.</p>
 <figure class="diagram" dir="ltr">
-<svg height="620" viewBox="0 0 780 620" width="780" xmlns="http://www.w3.org/2000/svg">
+<svg height="620" viewBox="0 0 780 620" width="780" xmlns="http://www.w3.org/2000/svg"><defs><filter id="sh37" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter></defs>
 <rect fill="#fafafa" height="600" rx="12" stroke="#00ADD8" stroke-width="2" width="760" x="10" y="10"></rect>
 <text fill="#333" font-size="16" font-weight="bold" text-anchor="middle" x="390" y="35" direction="rtl" unicode-bidi="embed">مقایسه‌ی <tspan direction="ltr" unicode-bidi="embed">PHP foreach</tspan> در برابر <tspan direction="ltr" unicode-bidi="embed">Go range</tspan></text>
 

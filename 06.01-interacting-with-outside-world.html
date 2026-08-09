@@ -86,7 +86,7 @@
 
 <figure class="diagram" dir="ltr">
 <svg  font-family="sans-serif" viewBox="0 0 680 400" xmlns="http://www.w3.org/2000/svg" width="680" height="400">
-<defs>
+<defs><filter id="sh120" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
 <marker id="arrowGo" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#00ADD8" points="0 0, 10 3.5, 0 7"></polygon></marker>
 </defs>
 <!-- Central Go Program -->
@@ -152,7 +152,7 @@ type Writer interface {
 
 <figure class="diagram" dir="ltr">
 <svg  font-family="sans-serif" viewBox="0 0 700 340" xmlns="http://www.w3.org/2000/svg" width="700" height="340">
-<defs>
+<defs><filter id="sh121" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
 <marker id="arrIO" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#00ADD8" points="0 0, 10 3.5, 0 7"></polygon></marker>
 </defs>
 <rect fill="#fafafa" height="340" rx="8" stroke="#e0e0e0" stroke-width="1.5" width="700" x="0" y="0"></rect>
@@ -268,9 +268,13 @@ writer.Flush() // without this, data is lost!
 </tbody>
 </table>
 
+<div class="note">
+<strong>نکته — انتخاب بین بافرشده و بافرنشده:</strong> قانون کلی این است: برای خواندن/نوشتن‌های کوچک و مکرر (مثل لاگ‌گذاری، پردازش خط‌به‌خط، صدها <code>Write</code> کوچک) همیشه از <code>bufio.Reader</code>/<code>bufio.Writer</code> استفاده کنید تا سربار سیستم‌کال کاهش یابد. برای انتقال داده‌ی حجیم یکباره، <code>io.Copy</code> خودش بافر ۳۲ کیلوبایتی دارد و نسخه‌ی بافرشده‌ی جداگانه لازم نیست. در PHP تفاوت کمتر حس می‌شود زیرا <code>fwrite()</code> به‌طور پیش‌فرض بافرشده است، اما در Go انتخاب صریح به شما سپرده شده است.
+</div>
+
 <figure class="diagram" dir="ltr">
 <svg  font-family="sans-serif" viewBox="0 0 700 340" xmlns="http://www.w3.org/2000/svg" width="700" height="340">
-<defs>
+<defs><filter id="sh122" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
 <marker id="arrPHP6" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#777BB4" points="0 0, 10 3.5, 0 7"></polygon></marker>
 <marker id="arrBack6" markerheight="7" markerwidth="10" orient="auto" refx="0" refy="3.5"><polygon fill="#ff9800" points="10 0, 0 3.5, 10 7"></polygon></marker>
 </defs>
@@ -493,7 +497,7 @@ written, _ := io.CopyN(dst, src, 1024)
 
 <figure class="diagram" dir="ltr">
 <svg font-family="sans-serif" viewBox="0 0 780 560" xmlns="http://www.w3.org/2000/svg" width="780" height="560">
-<defs>
+<defs><filter id="sh123" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
 <marker id="arrIOTree" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#00ADD8" points="0 0, 10 3.5, 0 7"></polygon></marker>
 <marker id="arrCombined" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#FF9800" points="0 0, 10 3.5, 0 7"></polygon></marker>
 <marker id="arrConcrete" markerheight="7" markerwidth="10" orient="auto" refx="10" refy="3.5"><polygon fill="#4CAF50" points="0 0, 10 3.5, 0 7"></polygon></marker>
@@ -562,7 +566,7 @@ written, _ := io.CopyN(dst, src, 1024)
 
 <!-- Concrete types section label -->
 <rect fill="#4CAF50" height="24" rx="4" stroke="none" width="200" x="290" y="220"></rect>
-<text fill="#fff" font-size="11" font-weight="bold" text-anchor="middle" x="390" y="237" direction="rtl" unicode-bidi="embed">انواع عینی (Concrete Types)</text>
+<text fill="#fff" font-size="11" font-weight="bold" text-anchor="middle" x="390" y="237" direction="rtl" unicode-bidi="embed">Concrete Types</text>
 
 <!-- os.File -->
 <rect fill="#e8f5e9" height="42" rx="8" stroke="#4CAF50" stroke-width="1.5" width="155" x="20" y="260"></rect>
@@ -614,7 +618,7 @@ written, _ := io.CopyN(dst, src, 1024)
 
 <!-- Composition info box -->
 <rect fill="#f3e5f5" height="120" rx="10" stroke="#9c27b0" stroke-width="1.5" width="720" x="30" y="390"></rect>
-<text fill="#7b1fa2" font-size="13" font-weight="bold" text-anchor="middle" x="390" y="418" direction="rtl" unicode-bidi="embed">نحوه ترکیب رابط‌ها (Interface Composition)</text>
+<text fill="#7b1fa2" font-size="13" font-weight="bold" text-anchor="middle" x="390" y="418" direction="rtl" unicode-bidi="embed">Interface Composition</text>
 <line stroke="#9c27b0" stroke-width="0.5" x1="50" x2="730" y1="430" y2="430"></line>
 <text fill="#4a148c" font-size="11" text-anchor="start" x="50" y="450" direction="ltr" unicode-bidi="embed">type ReadWriter interface {</text>
 <text fill="#4a148c" font-size="11" text-anchor="start" x="70" y="468" direction="ltr" unicode-bidi="embed">Reader  // embeds io.Reader</text>

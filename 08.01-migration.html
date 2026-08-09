@@ -136,7 +136,7 @@
 <figure class="diagram" dir="ltr">
 <svg width="700" height="250" viewBox="0 0 700 250" xmlns="http://www.w3.org/2000/svg">
 <rect fill="#fafafa" height="250" rx="8" width="700" x="0" y="0"></rect>
-<defs>
+<defs><filter id="sh154" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
 <marker id="aMg1" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#27ae60" points="0 0,10 3.5,0 7"></polygon></marker>
 <marker id="aMg2" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#e74c3c" points="0 0,10 3.5,0 7"></polygon></marker>
 </defs>
@@ -377,7 +377,7 @@ func Down(tx *sql.Tx) error {
 <li><strong><bdi dir="ltr">Migration</bdi> بدون توقف (<bdi dir="ltr">Zero-Downtime</bdi>) — الگوی Expand/Contract:</strong> تغییرات مخرب مثل حذف ستون را در سه مرحله اعمال کنید: ابتدا ستون جدید را اضافه کنید (<bdi dir="ltr">expand</bdi>) و کد را طوری بنویسید که هم ساختار قدیم و هم جدید را پشتیبانی کند. سپس کد را برای استفاده فقط از ساختار جدید به‌روز کنید. در نهایت ستون قدیمی را حذف کنید (<bdi dir="ltr">contract</bdi>). این الگو تضمین می‌کند که در هیچ لحظه‌ای سرویس قطع نمی‌شود.</li>
 </ul>
 
-<div class="tip"><strong>همیشه <bdi dir="ltr">Migration</bdi> قابل بازگشت بنویسید:</strong> فایل <bdi dir="ltr">.down.sql</bdi> را همیشه بنویسید و جهت <bdi dir="ltr">down</bdi> را تست کنید. در محیط تولید قطعاً لحظه‌ای فرا می‌رسد که باید سریعاً یک تغییر را بازگشت دهید. اگر فایل <bdi dir="ltr">down</bdi> نداشته باشید یا نادرست باشد بازگشت دستی در محیط تولید بسیار پرخطر و زمان‌بر خواهد بود. بهترین روش این است که هر <bdi dir="ltr">Migration</bdi> جدید را ابتدا <code dir="ltr">up</code> و سپس <code dir="ltr">down</code> اجرا کنید تا از صحت هر دو جهت مطمئن شوید.</div>
+<div class="tip"><strong>تست دوجهتِ <bdi dir="ltr">Migration</bdi> قبل از ادغام:</strong> قاعده‌ی «<bdi dir="ltr">Migration</bdi> قابل بازگشت» را در ابتدای همین فصل بررسی کردیم — در اینجا فقط تأکید می‌کنیم که هر <bdi dir="ltr">Migration</bdi> جدید را در محیط محلی ابتدا <code dir="ltr">up</code> و بلافاصله <code dir="ltr">down</code> اجرا کنید تا از صحت هر دو جهت مطمئن شوید. این کار کم‌هزینه‌ترین لحظه‌ای است که می‌توانید نقص فایل <bdi dir="ltr">.down.sql</bdi> را کشف کنید؛ کشف همان نقص در محیط تولید بسیار پرخطر و زمان‌بر خواهد بود.</div>
 </div>
 
 </div>

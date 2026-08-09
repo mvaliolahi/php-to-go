@@ -216,6 +216,8 @@ func isRetryable(err error) bool {
 
 <div class="comparison"><strong>مقایسه با Laravel:</strong> در <bdi dir="ltr">Laravel</bdi> خطاها به <bdi dir="ltr">Exception</bdi> تبدیل می‌شوند و با <code>try/catch</code> مدیریت می‌شوند اما نوع دقیق خطا (مثل <code>unique_violation</code>) کمتر در دسترس است. در <bdi dir="ltr">Go</bdi> با <code>errors.As</code> و درایور خاص دیتابیس کنترل بسیار دقیق‌تری روی نوع خطا دارید.</div>
 
+<div class="note"><strong>درخت تصمیم خطای دیتابیس برای مهاجران <bdi dir="ltr">PHP</bdi>:</strong> در <bdi dir="ltr">Laravel</bdi> معمولاً <code>QueryException</code> را به‌صورت یک‌جا <code>catch</code> می‌کنیم و تصمیم نمی‌گیریم که آیا خطا موقتی است یا دائمی. در <bdi dir="ltr">Go</bdi> این تمایز حیاتی است: قبل از پیاده‌سازی <bdi dir="ltr">retry</bdi> از خود بپرسید «آیا داده‌ها مشکل دارند یا زیرساخت؟». خطاهای <code>unique_violation</code>، <code>foreign_key_violation</code>، <code>not_null_violation</code> و <code>syntax_error</code> دائمی‌اند و با <bdi dir="ltr">retry</bdi> فقط منابع هدر می‌رود؛ در مقابل <code>deadlock_detected</code>، <code>connection_exception</code>، <code>context.DeadlineExceeded</code> و <code>context.Canceled</code> موقتی‌اند و <bdi dir="ltr">retry</bdi> با <bdi dir="ltr">exponential backoff</bdi> تنها راه درست پاسخ است. درخت کامل این طبقه‌بندی را در شکل ۸-۶-ب می‌بینید.</div>
+
 <h3 id="درخت-طبقهبندی-خطاهای-دیتابیس">درخت طبقه‌بندی خطاهای دیتابیس</h3>
 
 <p>برای مدیریت مؤثر خطاهای دیتابیس ابتدا باید بدانیم هر خطا متعلق به کدام دسته است. شکل زیر درخت کامل طبقه‌بندی خطاهای دیتابیس را نشان می‌دهد. هر دسته رنگ متمایزی دارد و زیرمجموعه‌های آن به همراه کد خطای <bdi dir="ltr">PostgreSQL</bdi> و راه‌حل پیشنهادی مشخص شده‌اند. این طبقه‌بندی به شما کمک می‌کند تا در زمان بروز خطا، سریعاً نوع آن را تشخیص داده و واکنش مناسب نشان دهید.</p>
@@ -357,7 +359,7 @@ func isRetryable(err error) bool {
 
 <!-- Info box: transient vs non-transient -->
 <rect fill="#fff" height="80" rx="6" stroke="#4CAF50" stroke-width="1.5" width="345" x="20" y="375"></rect>
-<text fill="#4CAF50" font-size="10" font-weight="bold" text-anchor="middle" x="192" y="395" direction="rtl" unicode-bidi="embed">خطاهای موقتی (Transient) در مقابل دائمی (Permanent)</text>
+<text fill="#4CAF50" font-size="10" font-weight="bold" text-anchor="middle" x="192" y="395" direction="rtl" unicode-bidi="embed">Transient در مقابل Permanent</text>
 <text fill="#333" font-size="8" text-anchor="start" x="35" y="412" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">✓ Transient</tspan>: <tspan direction="ltr" unicode-bidi="embed">timeout, deadlock, connection_lost</tspan> → <tspan direction="ltr" unicode-bidi="embed">Retry</tspan></text>
 <text fill="#333" font-size="8" text-anchor="start" x="35" y="428" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">✗ Permanent</tspan>: <tspan direction="ltr" unicode-bidi="embed">unique_violation, syntax_error, fk_violation</tspan> → <tspan direction="ltr" unicode-bidi="embed">No Retry</tspan></text>
 <text fill="#888" font-size="7" text-anchor="start" x="35" y="445" direction="rtl" unicode-bidi="embed">خطاهای دائمی با <tspan direction="ltr" unicode-bidi="embed">retry</tspan> برطرف نمی‌شوند و فقط منابع را هدر می‌دهند</text>
