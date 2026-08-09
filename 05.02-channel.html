@@ -77,29 +77,13 @@
 <p><bdi dir="ltr">Channel</bdi>‌ها در واقع لوله‌های ارتباطی نوع‌دار هستند. یعنی شما به‌طور دقیق مشخص می‌کنید چه نوع داده‌ای از یک کانال عبور خواهد کرد. <strong>ارسال</strong> با دستور <code>ch &lt;- value</code> و <strong>دریافت</strong> با دستور <code>value := &lt;-ch</code> انجام می‌شود. نکته کلیدی اینجاست که <bdi dir="ltr">Channel</bdi> به طور پیش‌فرض <bdi dir="ltr">Synchronous</bdi> است — اگر گیرنده آماده نباشد ارسال‌کننده بلاک می‌شود و بالعکس. این رفتار باعث می‌شود <bdi dir="ltr">Channel</bdi>‌ها هم نقش انتقال داده و هم نقش مکانیزم همگام‌سازی را ایفا کنند.</p>
 
 <figure class="diagram" dir="ltr">
-<svg height="180" viewBox="0 0 600 180" width="600" xmlns="http://www.w3.org/2000/svg">
-<rect fill="#fafafa" height="180" rx="8" width="600" x="0" y="0"></rect>
-<defs><filter id="sh93" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
-<marker id="aCh1" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#00ADD8" points="0 0,10 3.5,0 7"></polygon></marker>
-<marker id="aCh2" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#27ae60" points="0 0,10 3.5,0 7"></polygon></marker>
-</defs>
-<text fill="#00ADD8" font-size="15" font-weight="bold" text-anchor="middle" x="300" y="25" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">Channel</tspan>: ارسال و دریافت داده</text>
-<rect fill="#00ADD8" height="55" opacity="0.15" rx="8" stroke="#00ADD8" stroke-width="2" width="150" x="30" y="55"></rect>
-<text fill="#333" font-size="12" text-anchor="middle" x="105" y="78" direction="ltr" unicode-bidi="embed">Goroutine A</text>
-<text fill="#666" font-size="10" text-anchor="middle" x="105" y="95" direction="rtl" unicode-bidi="embed">ارسال‌کننده</text>
-<rect fill="#f39c12" height="55" opacity="0.15" rx="20" stroke="#f39c12" stroke-width="2" width="140" x="230" y="55"></rect>
-<text fill="#333" font-size="13" text-anchor="middle" x="300" y="78" direction="ltr" unicode-bidi="embed">Channel</text>
-<text fill="#888" font-size="10" text-anchor="middle" x="300" y="95" direction="ltr" unicode-bidi="embed">chan T</text>
-<rect fill="#27ae60" height="55" opacity="0.15" rx="8" stroke="#27ae60" stroke-width="2" width="150" x="420" y="55"></rect>
-<text fill="#333" font-size="12" text-anchor="middle" x="495" y="78" direction="ltr" unicode-bidi="embed">Goroutine B</text>
-<text fill="#666" font-size="10" text-anchor="middle" x="495" y="95" direction="rtl" unicode-bidi="embed">دریافت‌کننده</text>
-<line marker-end="url(#aCh1)" stroke="#00ADD8" stroke-width="2" x1="180" x2="230" y1="82" y2="82"></line>
-<text fill="#00ADD8" font-size="9" x="205" y="72" direction="ltr" unicode-bidi="embed">ch &lt;- v</text>
-<line marker-end="url(#aCh2)" stroke="#27ae60" stroke-width="2" x1="370" x2="420" y1="82" y2="82"></line>
-<text fill="#27ae60" font-size="9" x="395" y="72" direction="ltr" unicode-bidi="embed">v &lt;- ch</text>
-<rect fill="#f5f5f5" height="30" rx="6" stroke="#ddd" stroke-width="1" width="300" x="150" y="135"></rect>
-<text fill="#555" font-size="11" text-anchor="middle" x="300" y="155" direction="rtl" unicode-bidi="embed">نوع‌دار و ایمن — فقط مقدار از نوع T عبور می‌کند</text>
-</svg>
+<pre class="mermaid">sequenceDiagram
+    participant A as Goroutine A<br/>(ارسال‌کننده)
+    participant C as Channel<br/>chan T
+    participant B as Goroutine B<br/>(دریافت‌کننده)
+    Note over A,B: نوع‌دار و ایمن — فقط مقدار از نوع T عبور می‌کند
+    A->>C: ch &lt;- v (send)
+    C->>B: v &lt;- ch (receive)</pre>
 <figcaption>شکل ۵-۵: <bdi dir="ltr">Channel</bdi> ساده برای ارسال و دریافت داده بین دو <bdi dir="ltr">Goroutine</bdi></figcaption>
 </figure>
 
@@ -120,142 +104,93 @@
 </div>
 
 <figure class="diagram" dir="ltr">
-<svg height="280" viewBox="0 0 650 280" width="650" xmlns="http://www.w3.org/2000/svg">
-<rect fill="#fafafa" height="280" rx="8" width="650" x="0" y="0"></rect>
-<defs><filter id="sh94" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
-<marker id="aHC1" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#00ADD8" points="0 0,10 3.5,0 7"></polygon></marker>
-</defs>
-<text fill="#f39c12" font-size="14" font-weight="bold" text-anchor="middle" x="325" y="25" direction="ltr" unicode-bidi="embed">hchan struct (ساختار داخلی Channel)</text>
-<!-- Main struct box -->
-<rect fill="#f39c12" height="230" opacity="0.06" rx="10" stroke="#f39c12" stroke-width="2" width="380" x="30" y="40"></rect>
-<text fill="#f39c12" font-size="12" font-weight="bold" text-anchor="middle" x="220" y="60" direction="ltr" unicode-bidi="embed">runtime.hchan</text>
-<!-- buf -->
-<rect fill="#27ae60" height="35" opacity="0.15" rx="6" stroke="#27ae60" stroke-width="1.5" width="320" x="55" y="70"></rect>
-<text fill="#333" font-size="10" text-anchor="middle" x="215" y="92" direction="ltr" unicode-bidi="embed">buf *array (Ring Buffer)</text>
-<!-- buf slots -->
-<rect fill="#27ae60" height="22" opacity="0.2" rx="3" width="50" x="70" y="72"></rect><text fill="#333" font-size="7" text-anchor="middle" x="95" y="86" direction="ltr" unicode-bidi="embed">val0</text>
-<rect fill="#27ae60" height="22" opacity="0.2" rx="3" width="50" x="125" y="72"></rect><text fill="#333" font-size="7" text-anchor="middle" x="150" y="86" direction="ltr" unicode-bidi="embed">val1</text>
-<rect fill="#27ae60" height="22" opacity="0.2" rx="3" width="50" x="180" y="72"></rect><text fill="#333" font-size="7" text-anchor="middle" x="205" y="86" direction="ltr" unicode-bidi="embed">val2</text>
-<rect fill="#eee" height="22" rx="3" stroke="#ddd" stroke-dasharray="3,2" stroke-width="1" width="50" x="235" y="72"></rect><text fill="#999" font-size="7" text-anchor="middle" x="260" y="86" direction="rtl" unicode-bidi="embed">خالی</text>
-<!-- qcount & dataqsiz -->
-<rect fill="#00ADD8" height="25" opacity="0.12" rx="4" stroke="#00ADD8" stroke-width="1" width="150" x="55" y="110"></rect>
-<text fill="#333" font-size="9" text-anchor="middle" x="130" y="127" direction="ltr" unicode-bidi="embed">qcount=3 dataqsiz=4</text>
-<!-- sendx & recvx -->
-<rect fill="#f39c12" height="25" opacity="0.12" rx="4" stroke="#f39c12" stroke-width="1" width="150" x="215" y="110"></rect>
-<text fill="#333" font-size="9" text-anchor="middle" x="290" y="127" direction="ltr" unicode-bidi="embed">sendx=3 recvx=0</text>
-<!-- elemtype -->
-<rect fill="#777BB4" height="25" opacity="0.12" rx="4" stroke="#777BB4" stroke-width="1" width="320" x="55" y="140"></rect>
-<text fill="#333" font-size="9" text-anchor="middle" x="215" y="157" direction="ltr" unicode-bidi="embed">elemtype *type</text>
-<!-- sendq -->
-<rect fill="#e74c3c" height="40" opacity="0.1" rx="6" stroke="#e74c3c" stroke-width="1.5" width="150" x="55" y="170"></rect>
-<text fill="#333" font-size="10" text-anchor="middle" x="130" y="188" direction="ltr" unicode-bidi="embed">sendq waitq</text>
-<text fill="#999" font-size="8" text-anchor="middle" x="130" y="203" direction="rtl" unicode-bidi="embed">صف فرستنده‌های مسدود</text>
-<!-- recvq -->
-<rect fill="#e74c3c" height="40" opacity="0.1" rx="6" stroke="#e74c3c" stroke-width="1.5" width="150" x="215" y="170"></rect>
-<text fill="#333" font-size="10" text-anchor="middle" x="290" y="188" direction="ltr" unicode-bidi="embed">recvq waitq</text>
-<text fill="#999" font-size="8" text-anchor="middle" x="290" y="203" direction="rtl" unicode-bidi="embed">صف گیرنده‌های مسدود</text>
-<!-- mutex -->
-<rect fill="#999" height="25" opacity="0.12" rx="4" stroke="#999" stroke-width="1" width="320" x="55" y="215"></rect>
-<text fill="#333" font-size="9" text-anchor="middle" x="215" y="232" direction="ltr" unicode-bidi="embed">mutex sync.Mutex</text>
-<!-- Legend -->
-<rect fill="#f5f5f5" height="230" rx="6" stroke="#ddd" stroke-width="1" width="210" x="430" y="40"></rect>
-<text fill="#555" font-size="11" font-weight="bold" text-anchor="middle" x="535" y="60" direction="rtl" unicode-bidi="embed">جریان ارسال:</text>
-<text fill="#666" font-size="9" x="445" y="80" direction="rtl" unicode-bidi="embed">۱. گیرنده در انتظار → کپی مستقیم به <tspan direction="ltr" unicode-bidi="embed">Stack</tspan></text>
-<text fill="#666" font-size="9" x="445" y="100" direction="rtl" unicode-bidi="embed">۲. بافر جای خالی → کپی به <tspan direction="ltr" unicode-bidi="embed">Ring</tspan> <tspan direction="ltr" unicode-bidi="embed">Buffer</tspan></text>
-<text fill="#666" font-size="9" x="445" y="120" direction="rtl" unicode-bidi="embed">۳. بافر پر → فرستنده در <tspan direction="ltr" unicode-bidi="embed">sendq</tspan> مسدود</text>
-<text fill="#555" font-size="11" font-weight="bold" text-anchor="middle" x="535" y="150" direction="rtl" unicode-bidi="embed">جریان دریافت:</text>
-<text fill="#666" font-size="9" x="445" y="170" direction="rtl" unicode-bidi="embed">۱. فرستنده در <tspan direction="ltr" unicode-bidi="embed">sendq</tspan> → کپی از <tspan direction="ltr" unicode-bidi="embed">Stack</tspan></text>
-<text fill="#666" font-size="9" x="445" y="190" direction="rtl" unicode-bidi="embed">۲. بافر خالی نیست → خواندن از <tspan direction="ltr" unicode-bidi="embed">Ring</tspan> <tspan direction="ltr" unicode-bidi="embed">Buffer</tspan></text>
-<text fill="#666" font-size="9" x="445" y="210" direction="rtl" unicode-bidi="embed">۳. بافر خالی → گیرنده در <tspan direction="ltr" unicode-bidi="embed">recvq</tspan> مسدود</text>
-</svg>
+<pre class="mermaid">flowchart TB
+    H["runtime.hchan"]
+
+    subgraph BUF["buf *array (Ring Buffer)"]
+        direction LR
+        V0["val0"]
+        V1["val1"]
+        V2["val2"]
+        V3["خالی"]
+        Meta["qcount=3  dataqsiz=4<br/>sendx=3  recvx=0"]
+    end
+
+    ET["elemtype *type"]
+    SQ["sendq waitq<br/>صف فرستنده‌های مسدود"]
+    RQ["recvq waitq<br/>صف گیرنده‌های مسدود"]
+    MX["mutex sync.Mutex"]
+
+    H --> BUF
+    H --> ET
+    H --> SQ
+    H --> RQ
+    H --> MX
+
+    subgraph SEND["جریان ارسال"]
+        direction TB
+        S1["۱. گیرنده در انتظار → کپی مستقیم به Stack"]
+        S2["۲. بافر جای خالی → کپی به Ring Buffer"]
+        S3["۳. بافر پر → فرستنده در sendq مسدود"]
+        S1 --> S2 --> S3
+    end
+
+    subgraph RECV["جریان دریافت"]
+        direction TB
+        R1["۱. فرستنده در sendq → کپی از Stack"]
+        R2["۲. بافر خالی نیست → خواندن از Ring Buffer"]
+        R3["۳. بافر خالی → گیرنده در recvq مسدود"]
+        R1 --> R2 --> R3
+    end
+
+    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
+    classDef bothBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
+    classDef neuBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
+    class H,BUF,V0,V1,V2,V3,Meta,ET,SQ,RQ,MX goBox;
+    class SEND,RECV,S1,S2,S3,R1,R2,R3 bothBox;</pre>
 <figcaption>شکل ۵-۶: ساختار داخلی <bdi dir="ltr">hchan</bdi> — <bdi dir="ltr">Ring</bdi> <bdi dir="ltr">Buffer</bdi> و صف‌های انتظار <bdi dir="ltr">sendq</bdi> و <bdi dir="ltr">recvq</bdi></figcaption>
 </figure>
 
 <h3 id="buffered-vs-unbuffered">Buffered vs Unbuffered</h3>
 
 <figure class="diagram" dir="ltr">
-<svg height="280" viewBox="0 0 660 280" width="660" xmlns="http://www.w3.org/2000/svg">
-<defs><filter id="sh95" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
-<marker id="arrBuf1" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#e91e63" points="0 0,10 3.5,0 7"></polygon></marker>
-<marker id="arrBuf2" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#4caf50" points="0 0,10 3.5,0 7"></polygon></marker>
-</defs>
-<rect fill="#fafafa" height="280" rx="10" stroke="#ddd" stroke-width="1" width="660" x="0" y="0"></rect>
-<text fill="#333" font-size="15" font-weight="bold" text-anchor="middle" x="330" y="25" direction="rtl" unicode-bidi="embed">مقایسه کانال بدون بافر و با بافر</text>
+<pre class="mermaid">flowchart LR
+    subgraph UB["کانال بدون بافر (cap=0)"]
+        direction TB
+        US["Sender<br/>بلاک"]
+        UC["chan T<br/>ظرفیت: ۰"]
+        UR["Receiver<br/>بلاک"]
+        US --> UC
+        UC --> UR
+        UN1["دست دادن مستقیم (Handshake)"]
+        UN2["فرستنده تا آماده‌شدن گیرنده بلاک می‌شود"]
+        UN3["دریافت‌کننده تا ارسال بلاک می‌شود"]
+        UN4["همگام‌سازی دقیق — سیگنال‌دهی و اطلاع‌رسانی"]
+        UN1 --> UN2 --> UN3 --> UN4
+    end
 
-<!-- Unbuffered Channel -->
-<rect fill="#fce4ec" height="230" rx="8" stroke="#e91e63" stroke-width="2" width="300" x="15" y="40"></rect>
-<text fill="#e91e63" font-size="13" font-weight="bold" text-anchor="middle" x="165" y="62" direction="rtl" unicode-bidi="embed">کانال بدون بافر (<tspan direction="ltr" unicode-bidi="embed">cap=0</tspan>)</text>
+    subgraph BB["کانال با بافر (cap=N)"]
+        direction TB
+        BS["Sender<br/>غیربلاک"]
+        BRB["Ring Buffer<br/>v1 · v2 · v3 · خالی"]
+        BR["Receiver<br/>خواندن"]
+        BS --> BRB
+        BRB --> BR
+        BN1["بافر میانی — ارسال بدون انتظار"]
+        BN2["فرستنده تا پر‌نشده بافر بلاک نمی‌شود"]
+        BN3["گیرنده از بافر می‌خواند — شبیه Redis Queue"]
+        BN4["جدا شده — صف کارها و بافر داده"]
+        BN1 --> BN2 --> BN3 --> BN4
+    end
 
-<!-- Sender -->
-<rect fill="#e91e63" height="50" opacity="0.15" rx="8" stroke="#e91e63" stroke-width="2" width="80" x="30" y="80"></rect>
-<text fill="#333" font-size="11" text-anchor="middle" x="70" y="100" direction="ltr" unicode-bidi="embed">Sender</text>
-<text fill="#e91e63" font-size="9" text-anchor="middle" x="70" y="118" direction="rtl" unicode-bidi="embed">بلاک</text>
-
-<!-- Channel pipe -->
-<rect fill="#fff" height="50" rx="20" stroke="#e91e63" stroke-width="2" stroke-dasharray="6,3" width="100" x="115" y="80"></rect>
-<text fill="#e91e63" font-size="11" text-anchor="middle" x="165" y="102" direction="ltr" unicode-bidi="embed">chan T</text>
-<text fill="#888" font-size="8" text-anchor="middle" x="165" y="118" direction="rtl" unicode-bidi="embed">ظرفیت: ۰</text>
-
-<!-- Receiver -->
-<rect fill="#e91e63" height="50" opacity="0.15" rx="8" stroke="#e91e63" stroke-width="2" width="80" x="220" y="80"></rect>
-<text fill="#333" font-size="11" text-anchor="middle" x="260" y="100" direction="ltr" unicode-bidi="embed">Receiver</text>
-<text fill="#e91e63" font-size="9" text-anchor="middle" x="260" y="118" direction="rtl" unicode-bidi="embed">بلاک</text>
-
-<!-- Handshake arrows -->
-<line marker-end="url(#arrBuf1)" stroke="#e91e63" stroke-width="2" x1="110" x2="115" y1="95" y2="95"></line>
-<line marker-end="url(#arrBuf1)" stroke="#4caf50" stroke-width="2" x1="215" x2="220" y1="95" y2="95"></line>
-
-<!-- Description -->
-<rect fill="#fff" height="60" rx="4" stroke="#e91e63" stroke-width="1" width="270" x="30" y="150"></rect>
-<text fill="#333" font-size="10" text-anchor="middle" x="165" y="170" direction="rtl" unicode-bidi="embed">دست دادن مستقیم (<tspan direction="ltr" unicode-bidi="embed">Handshake</tspan>)</text>
-<text fill="#e91e63" font-size="9" text-anchor="middle" x="165" y="188" direction="rtl" unicode-bidi="embed">فرستنده تا آماده‌شدن گیرنده بلاک می‌شود</text>
-<text fill="#e91e63" font-size="9" text-anchor="middle" x="165" y="203" direction="rtl" unicode-bidi="embed">دریافت‌کننده تا ارسال بلاک می‌شود</text>
-
-<!-- Sync label -->
-<rect fill="#e91e63" height="22" rx="4" width="270" x="30" y="240"></rect>
-<text fill="#fff" font-size="10" font-weight="bold" text-anchor="middle" x="165" y="256" direction="rtl" unicode-bidi="embed">همگام‌سازی دقیق — سیگنال‌دهی و اطلاع‌رسانی</text>
-
-<!-- Buffered Channel -->
-<rect fill="#e8f5e9" height="230" rx="8" stroke="#4caf50" stroke-width="2" width="320" x="325" y="40"></rect>
-<text fill="#4caf50" font-size="13" font-weight="bold" text-anchor="middle" x="485" y="62" direction="rtl" unicode-bidi="embed">کانال با بافر (<tspan direction="ltr" unicode-bidi="embed">cap=N</tspan>)</text>
-
-<!-- Sender -->
-<rect fill="#4caf50" height="50" opacity="0.15" rx="8" stroke="#4caf50" stroke-width="2" width="80" x="340" y="80"></rect>
-<text fill="#333" font-size="11" text-anchor="middle" x="380" y="100" direction="ltr" unicode-bidi="embed">Sender</text>
-<text fill="#4caf50" font-size="9" text-anchor="middle" x="380" y="118" direction="rtl" unicode-bidi="embed">غیربلاک</text>
-
-<!-- Buffer ring -->
-<rect fill="#fff" height="50" rx="6" stroke="#4caf50" stroke-width="2" width="160" x="425" y="80"></rect>
-<text fill="#4caf50" font-size="10" font-weight="bold" text-anchor="middle" x="505" y="98" direction="ltr" unicode-bidi="embed">Ring Buffer</text>
-<!-- Buffer slots -->
-<rect fill="#4caf50" height="22" opacity="0.3" rx="3" width="30" x="435" y="100"></rect>
-<text fill="#333" font-size="7" text-anchor="middle" x="450" y="114" direction="ltr" unicode-bidi="embed">v1</text>
-<rect fill="#4caf50" height="22" opacity="0.3" rx="3" width="30" x="470" y="100"></rect>
-<text fill="#333" font-size="7" text-anchor="middle" x="485" y="114" direction="ltr" unicode-bidi="embed">v2</text>
-<rect fill="#4caf50" height="22" opacity="0.3" rx="3" width="30" x="505" y="100"></rect>
-<text fill="#333" font-size="7" text-anchor="middle" x="520" y="114" direction="ltr" unicode-bidi="embed">v3</text>
-<rect fill="#eee" height="22" rx="3" stroke="#ccc" stroke-dasharray="3,2" stroke-width="1" width="30" x="540" y="100"></rect>
-<text fill="#999" font-size="7" text-anchor="middle" x="555" y="114" direction="rtl" unicode-bidi="embed">خالی</text>
-
-<!-- Receiver -->
-<rect fill="#4caf50" height="50" opacity="0.15" rx="8" stroke="#4caf50" stroke-width="2" width="80" x="555" y="80"></rect>
-<text fill="#333" font-size="11" text-anchor="middle" x="595" y="100" direction="ltr" unicode-bidi="embed">Receiver</text>
-<text fill="#4caf50" font-size="9" text-anchor="middle" x="595" y="118" direction="rtl" unicode-bidi="embed">خواندن</text>
-
-<!-- Arrows -->
-<line marker-end="url(#arrBuf2)" stroke="#4caf50" stroke-width="2" x1="420" x2="425" y1="105" y2="105"></line>
-<line marker-end="url(#arrBuf2)" stroke="#4caf50" stroke-width="2" x1="585" x2="590" y1="105" y2="105"></line>
-
-<!-- Description -->
-<rect fill="#fff" height="60" rx="4" stroke="#4caf50" stroke-width="1" width="290" x="340" y="150"></rect>
-<text fill="#333" font-size="10" text-anchor="middle" x="485" y="170" direction="rtl" unicode-bidi="embed">بافر میانی — ارسال بدون انتظار</text>
-<text fill="#4caf50" font-size="9" text-anchor="middle" x="485" y="188" direction="rtl" unicode-bidi="embed">فرستنده تا پر‌نشده بافر بلاک نمی‌شود</text>
-<text fill="#4caf50" font-size="9" text-anchor="middle" x="485" y="203" direction="rtl" unicode-bidi="embed">گیرنده از بافر می‌خواند — شبیه <tspan direction="ltr" unicode-bidi="embed">Redis Queue</tspan></text>
-
-<!-- Async label -->
-<rect fill="#4caf50" height="22" rx="4" width="290" x="340" y="240"></rect>
-<text fill="#fff" font-size="10" font-weight="bold" text-anchor="middle" x="485" y="256" direction="rtl" unicode-bidi="embed">جدا شده — صف کارها و بافر داده</text>
-</svg>
+    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
+    classDef bothBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
+    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
+    classDef neuBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
+    class UB,US,UC,UR warnBox;
+    class UN1,UN2,UN3,UN4 neuBox;
+    class BB,BS,BRB,BR goBox;
+    class BN1,BN2,BN3,BN4 neuBox;</pre>
 <figcaption dir="rtl">شکل ۵-۷: کانال بدون بافر (همگام، دست‌دادن مستقیم) در برابر کانال با بافر (ناهمگام، بافر میانی)</figcaption>
 </figure>
 
@@ -473,135 +408,58 @@ func main() {
 <p>درک تفاوت داخلی کانال‌های بافر‌دار و بدون بافر برای نوشتن کد همزمان صحیح بسیار مهم است. هر دو نوع کانال از ساختار <code>hchan</code> مشابهی استفاده می‌کنند، اما <bdi dir="ltr">Blocking Behavior</bdi> آن‌ها کاملاً متفاوت است. در نمودار زیر نیمی از تصویر یک کانال بدون بافر را نشان می‌دهد که در آن فرستنده مستقیماً منتظر گیرنده است (دست دادن همگام)، و نیمی دیگر یک کانال بافر‌دار را نمایش می‌دهد که در آن یک <bdi dir="ltr">Ring Buffer</bdi> داخلی به‌عنوان صف میانی عمل می‌کند. این تفاوت ساختاری، رفتار کاملاً متفاوتی در مسدودسازی ایجاد می‌کند که直接影响 عملکرد و طراحی سیستم دارد.</p>
 
 <figure class="diagram" dir="ltr">
-<svg height="520" viewBox="0 0 800 520" width="800" xmlns="http://www.w3.org/2000/svg">
-<rect fill="#fafafa" height="520" rx="8" width="800" x="0" y="0"></rect>
-<defs><filter id="sh96" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
-<marker id="aCI1" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#00ADD8" points="0 0,10 3.5,0 7"></polygon></marker>
-<marker id="aCI2" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#4CAF50" points="0 0,10 3.5,0 7"></polygon></marker>
-<marker id="aCI3" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#e74c3c" points="0 0,10 3.5,0 7"></polygon></marker>
-</defs>
-<text fill="#333" font-size="15" font-weight="bold" text-anchor="middle" x="400" y="25" direction="rtl" unicode-bidi="embed">ساختار داخلی: کانال بدون بافر در برابر کانال با بافر</text>
+<pre class="mermaid">flowchart LR
+    subgraph UB["کانال بدون بافر (make(chan T))"]
+        direction TB
+        US["Sender G<br/>مسدود ⏸ منتظر"]
+        UC["chan T<br/>ظرفیت: ۰ — بافر ندارد"]
+        UR["Receiver G<br/>مسدود ⏸ منتظر"]
+        US --> UC
+        UC --> UR
+        UT["دست دادن همگام (Synchronous Handoff)"]
+        UN1["فرستنده داده را مستقیماً به Stack گیرنده کپی می‌کند"]
+        UN2["هر دو طرف باید آماده باشند — هیچ بافر میانی وجود ندارد"]
+        UT --> UN1 --> UN2
+        UBH["رفتار مسدودسازی:"]
+        UB1["ارسال: همیشه مسدود می‌شود تا گیرنده آماده شود"]
+        UB2["دریافت: همیشه مسدود می‌شود تا فرستنده ارسال کند"]
+        UB3["ch &lt;- v   // blocks until receiver"]
+        UBH --> UB1 --> UB2 --> UB3
+        UU["کاربرد اصلی:<br/>سیگنال‌دهی، اطلاع‌رسانی، همگام‌سازی دقیق بین دو Goroutine"]
+        UC2["ch := make(chan struct{})  // unbuffered signal"]
+        UU --> UC2
+        USUM["همگام — هر دو طرف همزمان آماده می‌شوند"]
+    end
 
-<!-- ===== LEFT HALF: Unbuffered Channel ===== -->
-<rect fill="#fff3e0" height="440" rx="8" stroke="#f39c12" stroke-width="1.5" width="380" x="10" y="40"></rect>
-<text fill="#f39c12" font-size="13" font-weight="bold" text-anchor="middle" x="200" y="62" direction="rtl" unicode-bidi="embed">کانال بدون بافر (<tspan direction="ltr" unicode-bidi="embed">make(chan T)</tspan>)</text>
+    subgraph BB["کانال با بافر (make(chan T, 4))"]
+        direction TB
+        BS["Sender G<br/>غیرمسدود ✅<br/>ch&lt;-v"]
+        BRB["Ring Buffer (hchan.buf)<br/>val0 · val1 · val2 · خالی<br/>↑recvx   ↑sendx"]
+        BR["Receiver G<br/>&lt;-ch"]
+        BS --> BRB
+        BRB --> BR
+        BM["cap(ch) = 4    |    len(ch) = 3<br/>ظرفیت ثابت است، طول با ارسال/دریافت تغییر می‌کند"]
+        BN1["بافر میانی — جداسازی فرستنده و گیرنده"]
+        BN2["فرستنده داده را در Ring Buffer می‌نویسد و بدون انتظار ادامه می‌دهد"]
+        BN3["گیرنده از Ring Buffer می‌خواند — مشابه صف Redis Queue"]
+        BN1 --> BN2 --> BN3
+        BBH["رفتار مسدودسازی:"]
+        BB1["ارسال: فقط وقتی بافر پر باشد مسدود می‌شود"]
+        BB2["دریافت: فقط وقتی بافر خالی باشد مسدود می‌شود"]
+        BB3["ch := make(chan int, 4)  // buffered, cap=4"]
+        BBH --> BB1 --> BB2 --> BB3
+        BSUM["ناهمگام — بافر میانی، فرستنده و گیرنده مستقل‌تر"]
+    end
 
-<!-- Sender goroutine -->
-<rect fill="#4CAF50" height="55" opacity="0.15" rx="8" stroke="#4CAF50" stroke-width="2" width="100" x="30" y="85"></rect>
-<text fill="#333" font-size="11" text-anchor="middle" x="80" y="107" direction="ltr" unicode-bidi="embed">Sender G</text>
-<text fill="#e74c3c" font-size="9" text-anchor="middle" x="80" y="125" direction="rtl" unicode-bidi="embed">مسدود ⏸</text>
+    GOLD["قانون طلایی: بدون بافر = سیگنال‌دهی | با بافر = صف کار.<br/>ظرفیت بافر را بر اساس سرعت تولید و مصرف تنظیم کنید"]
 
-<!-- Arrow: Sender blocked waiting -->
-<line marker-end="url(#aCI3)" stroke="#e74c3c" stroke-width="2" x1="130" x2="155" y1="110" y2="110"></line>
-<text fill="#e74c3c" font-size="8" text-anchor="middle" x="142" y="102" direction="rtl" unicode-bidi="embed">منتظر</text>
-
-<!-- Channel box (unbuffered) -->
-<rect fill="#00ADD8" height="55" opacity="0.15" rx="20" stroke="#00ADD8" stroke-width="2" width="100" x="155" y="85"></rect>
-<text fill="#00ADD8" font-size="11" text-anchor="middle" x="205" y="107" direction="ltr" unicode-bidi="embed">chan T</text>
-<text fill="#888" font-size="8" text-anchor="middle" x="205" y="122" direction="rtl" unicode-bidi="embed">ظرفیت: ۰ — بافر ندارد</text>
-
-<!-- Receiver goroutine -->
-<rect fill="#4CAF50" height="55" opacity="0.15" rx="8" stroke="#4CAF50" stroke-width="2" width="100" x="270" y="85"></rect>
-<text fill="#333" font-size="11" text-anchor="middle" x="320" y="107" direction="ltr" unicode-bidi="embed">Receiver G</text>
-<text fill="#e74c3c" font-size="9" text-anchor="middle" x="320" y="125" direction="rtl" unicode-bidi="embed">مسدود ⏸</text>
-
-<!-- Arrow: Channel to Receiver -->
-<line marker-end="url(#aCI3)" stroke="#e74c3c" stroke-width="2" x1="255" x2="270" y1="110" y2="110"></line>
-
-<!-- Synchronous handoff explanation -->
-<rect fill="#fff" height="70" rx="6" stroke="#f39c12" stroke-width="1" width="350" x="25" y="155"></rect>
-<text fill="#333" font-size="10" font-weight="bold" text-anchor="middle" x="200" y="175" direction="rtl" unicode-bidi="embed">دست دادن همگام (<tspan direction="ltr" unicode-bidi="embed">Synchronous Handoff</tspan>)</text>
-<text fill="#666" font-size="9" text-anchor="middle" x="200" y="193" direction="rtl" unicode-bidi="embed">فرستنده داده را مستقیماً به <tspan direction="ltr" unicode-bidi="embed">Stack</tspan> گیرنده کپی می‌کند</text>
-<text fill="#666" font-size="9" text-anchor="middle" x="200" y="209" direction="rtl" unicode-bidi="embed">هر دو طرف باید آماده باشند — هیچ بافر میانی وجود ندارد</text>
-
-<!-- Blocking scenarios -->
-<rect fill="#fff" height="80" rx="6" stroke="#e74c3c" stroke-width="1" width="350" x="25" y="235"></rect>
-<text fill="#e74c3c" font-size="10" font-weight="bold" text-anchor="middle" x="200" y="255" direction="rtl" unicode-bidi="embed">رفتار مسدودسازی:</text>
-<text fill="#666" font-size="9" text-anchor="middle" x="200" y="273" direction="rtl" unicode-bidi="embed">ارسال: <tspan font-weight="bold">همیشه</tspan> مسدود می‌شود تا گیرنده آماده شود</text>
-<text fill="#666" font-size="9" text-anchor="middle" x="200" y="289" direction="rtl" unicode-bidi="embed">دریافت: <tspan font-weight="bold">همیشه</tspan> مسدود می‌شود تا فرستنده ارسال کند</text>
-<text fill="#888" font-size="8" text-anchor="middle" x="200" y="305" direction="ltr" unicode-bidi="embed">ch <- v   // blocks until receiver</text>
-
-<!-- Use case box -->
-<rect fill="#fff" height="55" rx="6" stroke="#00ADD8" stroke-width="1" width="350" x="25" y="325"></rect>
-<text fill="#00ADD8" font-size="10" font-weight="bold" text-anchor="middle" x="200" y="345" direction="rtl" unicode-bidi="embed">کاربرد اصلی:</text>
-<text fill="#666" font-size="9" text-anchor="middle" x="200" y="362" direction="rtl" unicode-bidi="embed">سیگنال‌دهی، اطلاع‌رسانی، همگام‌سازی دقیق بین دو <tspan direction="ltr" unicode-bidi="embed">Goroutine</tspan></text>
-
-<!-- Code snippet -->
-<rect fill="#fff" height="40" rx="4" stroke="#ddd" stroke-width="1" width="350" x="25" y="390"></rect>
-<text fill="#333" font-size="9" font-family="Fira Code, monospace" direction="ltr" unicode-bidi="embed" x="40" y="410">ch := make(chan struct{})  // unbuffered signal</text>
-
-<!-- Bottom bar for unbuffered -->
-<rect fill="#f39c12" height="22" rx="4" width="350" x="25" y="440"></rect>
-<text fill="#fff" font-size="10" font-weight="bold" text-anchor="middle" x="200" y="456" direction="rtl" unicode-bidi="embed">همگام — هر دو طرف همزمان آماده می‌شوند</text>
-
-<!-- ===== RIGHT HALF: Buffered Channel ===== -->
-<rect fill="#e8f5e9" height="440" rx="8" stroke="#4CAF50" stroke-width="1.5" width="390" x="400" y="40"></rect>
-<text fill="#4CAF50" font-size="13" font-weight="bold" text-anchor="middle" x="595" y="62" direction="rtl" unicode-bidi="embed">کانال با بافر (<tspan direction="ltr" unicode-bidi="embed">make(chan T, 4)</tspan>)</text>
-
-<!-- Sender goroutine -->
-<rect fill="#4CAF50" height="55" opacity="0.15" rx="8" stroke="#4CAF50" stroke-width="2" width="100" x="420" y="85"></rect>
-<text fill="#333" font-size="11" text-anchor="middle" x="470" y="107" direction="ltr" unicode-bidi="embed">Sender G</text>
-<text fill="#27ae60" font-size="9" text-anchor="middle" x="470" y="125" direction="rtl" unicode-bidi="embed">غیرمسدود ✅</text>
-
-<!-- Arrow: Sender to buffer -->
-<line marker-end="url(#aCI2)" stroke="#4CAF50" stroke-width="2" x1="520" x2="555" y1="110" y2="110"></line>
-<text fill="#4CAF50" font-size="8" text-anchor="middle" x="537" y="102" direction="ltr" unicode-bidi="embed">ch<-v</text>
-
-<!-- Ring Buffer visualization -->
-<rect fill="#00ADD8" height="70" opacity="0.1" rx="6" stroke="#00ADD8" stroke-width="2" width="220" x="555" y="80"></rect>
-<text fill="#00ADD8" font-size="10" font-weight="bold" text-anchor="middle" x="665" y="97" direction="ltr" unicode-bidi="embed">Ring Buffer (hchan.buf)</text>
-
-<!-- Buffer slots -->
-<rect fill="#4CAF50" height="30" opacity="0.25" rx="3" width="40" x="570" y="105"></rect>
-<text fill="#333" font-size="8" text-anchor="middle" x="590" y="124" direction="ltr" unicode-bidi="embed">val0</text>
-<rect fill="#4CAF50" height="30" opacity="0.25" rx="3" width="40" x="615" y="105"></rect>
-<text fill="#333" font-size="8" text-anchor="middle" x="635" y="124" direction="ltr" unicode-bidi="embed">val1</text>
-<rect fill="#4CAF50" height="30" opacity="0.25" rx="3" width="40" x="660" y="105"></rect>
-<text fill="#333" font-size="8" text-anchor="middle" x="680" y="124" direction="ltr" unicode-bidi="embed">val2</text>
-<rect fill="#eee" height="30" rx="3" stroke="#ccc" stroke-dasharray="3,2" stroke-width="1" width="40" x="705" y="105"></rect>
-<text fill="#999" font-size="8" text-anchor="middle" x="725" y="124" direction="rtl" unicode-bidi="embed">خالی</text>
-
-<!-- sendx / recvx indicators -->
-<text fill="#00ADD8" font-size="8" text-anchor="middle" x="590" y="138" direction="ltr" unicode-bidi="embed">↑recvx</text>
-<text fill="#00ADD8" font-size="8" text-anchor="middle" x="725" y="138" direction="ltr" unicode-bidi="embed">↑sendx</text>
-
-<!-- Arrow: Buffer to Receiver -->
-<line marker-end="url(#aCI2)" stroke="#4CAF50" stroke-width="2" x1="665" x2="665" y1="150" y2="165"></line>
-
-<!-- Receiver goroutine -->
-<rect fill="#4CAF50" height="40" opacity="0.15" rx="8" stroke="#4CAF50" stroke-width="2" width="100" x="615" y="165"></rect>
-<text fill="#333" font-size="11" text-anchor="middle" x="665" y="187" direction="ltr" unicode-bidi="embed">Receiver G</text>
-<text fill="#27ae60" font-size="9" text-anchor="middle" x="665" y="200" direction="ltr" unicode-bidi="embed">&lt;-ch</text>
-
-<!-- Capacity and Length indicators -->
-<rect fill="#fff" height="45" rx="4" stroke="#00ADD8" stroke-width="1" width="370" x="410" y="215"></rect>
-<text fill="#00ADD8" font-size="10" font-weight="bold" text-anchor="middle" x="595" y="235" direction="ltr" unicode-bidi="embed">cap(ch) = 4    |    len(ch) = 3</text>
-<text fill="#666" font-size="8" text-anchor="middle" x="595" y="250" direction="rtl" unicode-bidi="embed">ظرفیت ثابت است، طول با ارسال/دریافت تغییر می‌کند</text>
-
-<!-- Asynchronous explanation -->
-<rect fill="#fff" height="70" rx="6" stroke="#4CAF50" stroke-width="1" width="370" x="410" y="270"></rect>
-<text fill="#333" font-size="10" font-weight="bold" text-anchor="middle" x="595" y="290" direction="rtl" unicode-bidi="embed">بافر میانی — جداسازی فرستنده و گیرنده</text>
-<text fill="#666" font-size="9" text-anchor="middle" x="595" y="308" direction="rtl" unicode-bidi="embed">فرستنده داده را در <tspan direction="ltr" unicode-bidi="embed">Ring Buffer</tspan> می‌نویسد و بدون انتظار ادامه می‌دهد</text>
-<text fill="#666" font-size="9" text-anchor="middle" x="595" y="324" direction="rtl" unicode-bidi="embed">گیرنده از <tspan direction="ltr" unicode-bidi="embed">Ring Buffer</tspan> می‌خواند — مشابه صف <tspan direction="ltr" unicode-bidi="embed">Redis Queue</tspan></text>
-
-<!-- Blocking scenarios -->
-<rect fill="#fff" height="65" rx="6" stroke="#e74c3c" stroke-width="1" width="370" x="410" y="350"></rect>
-<text fill="#e74c3c" font-size="10" font-weight="bold" text-anchor="middle" x="595" y="370" direction="rtl" unicode-bidi="embed">رفتار مسدودسازی:</text>
-<text fill="#666" font-size="9" text-anchor="middle" x="595" y="388" direction="rtl" unicode-bidi="embed">ارسال: <tspan font-weight="bold">فقط وقتی بافر پر باشد</tspan> مسدود می‌شود</text>
-<text fill="#666" font-size="9" text-anchor="middle" x="595" y="404" direction="rtl" unicode-bidi="embed">دریافت: <tspan font-weight="bold">فقط وقتی بافر خالی باشد</tspan> مسدود می‌شود</text>
-
-<!-- Code snippet -->
-<rect fill="#fff" height="40" rx="4" stroke="#ddd" stroke-width="1" width="370" x="410" y="425"></rect>
-<text fill="#333" font-size="9" font-family="Fira Code, monospace" direction="ltr" unicode-bidi="embed" x="425" y="445">ch := make(chan int, 4)  // buffered, cap=4</text>
-
-<!-- Bottom bar for buffered -->
-<rect fill="#4CAF50" height="22" rx="4" width="370" x="410" y="475"></rect>
-<text fill="#fff" font-size="10" font-weight="bold" text-anchor="middle" x="595" y="491" direction="rtl" unicode-bidi="embed">ناهمگام — بافر میانی، فرستنده و گیرنده مستقل‌تر</text>
-
-<!-- Golden rule bar -->
-<rect fill="#00ADD8" height="26" rx="6" width="780" x="10" y="500"></rect>
-<text fill="#fff" font-size="10" font-weight="bold" text-anchor="middle" x="400" y="517" direction="rtl" unicode-bidi="embed">قانون طلایی: بدون بافر = سیگنال‌دهی | با بافر = صف کار. ظرفیت بافر را بر اساس سرعت تولید و مصرف تنظیم کنید</text>
-</svg>
+    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
+    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
+    classDef neuBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
+    classDef bothBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
+    class UB,US,UC,UR,UT,UN1,UN2,UBH,UB1,UB2,UB3,UU,UC2,USUM warnBox;
+    class BB,BS,BRB,BR,BM,BN1,BN2,BN3,BBH,BB1,BB2,BB3,BSUM goBox;
+    class GOLD bothBox;</pre>
 <figcaption>شکل ۵-۸: ساختار داخلی کانال بدون بافر (دست دادن همگام) در برابر کانال با بافر (<bdi dir="ltr">Ring Buffer</bdi> میانی و رفتار مسدودسازی متفاوت)</figcaption>
 </figure>
 

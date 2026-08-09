@@ -84,44 +84,38 @@
 <div class="tip"><strong>نکته‌ی حرفه‌ای:</strong> برای تشخیص نشت <bdi dir="ltr">Goroutine</bdi> در محیط تولید، از معیارهای <bdi dir="ltr">runtime</bdi> استفاده کنید: مانیتورینگ <bdi dir="ltr"><code>runtime.NumGoroutine()</code></bdi> و تنظیم هشدار برای رشد نامحدود. اگر نمودار تعداد <bdi dir="ltr">Goroutine</bdi>‌ها روند صعودی مداوم دارد و هرگز کاهش نمی‌یابد، نشت رخ داده است. ابزار <bdi dir="ltr"><code>pprof</code></bdi> نیز stack trace دقیق <bdi dir="ltr">Goroutine</bdi>‌های نشتی را ارائه می‌دهد.</div>
 
 <figure class="diagram" dir="ltr">
-<svg height="320" viewBox="0 0 700 320" width="700" xmlns="http://www.w3.org/2000/svg">
-<rect fill="#fafafa" height="320" rx="8" width="700" x="0" y="0"></rect>
-<defs><filter id="sh116" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
-<marker id="aLk1" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#e74c3c" points="0 0,10 3.5,0 7"></polygon></marker>
-<marker id="aLk2" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#27ae60" points="0 0,10 3.5,0 7"></polygon></marker>
-</defs>
-<text fill="#e74c3c" font-size="15" font-weight="bold" text-anchor="middle" x="350" y="25" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">Goroutine</tspan> <tspan direction="ltr" unicode-bidi="embed">Leak</tspan>: نشت و تشخیص</text>
-<!-- Leak scenario -->
-<text fill="#e74c3c" font-size="13" font-weight="bold" text-anchor="middle" x="175" y="55" direction="rtl" unicode-bidi="embed">نشت (<tspan direction="ltr" unicode-bidi="embed">Leak</tspan>)</text>
-<rect fill="#00ADD8" height="40" opacity="0.12" rx="8" stroke="#00ADD8" stroke-width="2" width="130" x="30" y="70"></rect>
-<text fill="#333" font-size="11" text-anchor="middle" x="95" y="95" direction="ltr" unicode-bidi="embed">main()</text>
-<rect fill="#e74c3c" height="40" opacity="0.12" rx="8" stroke="#e74c3c" stroke-width="2" width="130" x="30" y="130"></rect>
-<text fill="#333" font-size="11" text-anchor="middle" x="95" y="155" direction="ltr" unicode-bidi="embed">go leak()</text>
-<line marker-end="url(#aLk1)" stroke="#e74c3c" stroke-width="2" x1="95" x2="95" y1="110" y2="130"></line>
-<rect fill="#e74c3c" height="40" opacity="0.2" rx="8" stroke="#e74c3c" stroke-dasharray="6,3" stroke-width="2" width="130" x="30" y="190"></rect>
-<text fill="#e74c3c" font-size="10" text-anchor="middle" x="95" y="210" direction="rtl" unicode-bidi="embed">&<tspan direction="ltr" unicode-bidi="embed">lt</tspan>;-<tspan direction="ltr" unicode-bidi="embed">ch</tspan> (بلاک برای همیشه)</text>
-<text fill="#e74c3c" font-size="9" text-anchor="middle" x="95" y="225" direction="rtl" unicode-bidi="embed">هیچ‌گاه تمام نمی‌شود!</text>
-<line stroke="#e74c3c" stroke-dasharray="4,3" stroke-width="1.5" x1="95" x2="95" y1="170" y2="190"></line>
-<!-- Fixed scenario -->
-<text fill="#27ae60" font-size="13" font-weight="bold" text-anchor="middle" x="525" y="55" direction="rtl" unicode-bidi="embed">اصلاح‌شده (<tspan direction="ltr" unicode-bidi="embed">Fixed</tspan>)</text>
-<rect fill="#00ADD8" height="40" opacity="0.12" rx="8" stroke="#00ADD8" stroke-width="2" width="130" x="420" y="70"></rect>
-<text fill="#333" font-size="11" text-anchor="middle" x="485" y="95" direction="ltr" unicode-bidi="embed">main()</text>
-<rect fill="#27ae60" height="40" opacity="0.12" rx="8" stroke="#27ae60" stroke-width="2" width="130" x="420" y="130"></rect>
-<text fill="#333" font-size="11" text-anchor="middle" x="485" y="155" direction="ltr" unicode-bidi="embed">go worker()</text>
-<line marker-end="url(#aLk2)" stroke="#27ae60" stroke-width="2" x1="485" x2="485" y1="110" y2="130"></line>
-<rect fill="#27ae60" height="40" opacity="0.15" rx="8" stroke="#27ae60" stroke-width="2" width="130" x="420" y="190"></rect>
-<text fill="#27ae60" font-size="10" text-anchor="middle" x="485" y="210" direction="ltr" unicode-bidi="embed">select + ctx.Done()</text>
-<text fill="#27ae60" font-size="9" text-anchor="middle" x="485" y="225" direction="rtl" unicode-bidi="embed">خروج کنترل‌شده</text>
-<line stroke="#27ae60" stroke-width="1.5" x1="485" x2="485" y1="170" y2="190"></line>
-<!-- Detection tools -->
-<text fill="#555" font-size="12" font-weight="bold" text-anchor="middle" x="350" y="260" direction="rtl" unicode-bidi="embed">ابزارهای تشخیص:</text>
-<rect fill="#00ADD8" height="30" opacity="0.08" rx="6" stroke="#00ADD8" stroke-width="1.5" width="190" x="30" y="275"></rect>
-<text fill="#333" font-size="10" text-anchor="middle" x="125" y="295" direction="ltr" unicode-bidi="embed">runtime.NumGoroutine()</text>
-<rect fill="#f39c12" height="30" opacity="0.08" rx="6" stroke="#f39c12" stroke-width="1.5" width="190" x="240" y="275"></rect>
-<text fill="#333" font-size="10" text-anchor="middle" x="335" y="295" direction="ltr" unicode-bidi="embed">pprof (net/http/pprof)</text>
-<rect fill="#e74c3c" height="30" opacity="0.08" rx="6" stroke="#e74c3c" stroke-width="1.5" width="190" x="450" y="275"></rect>
-<text fill="#333" font-size="10" text-anchor="middle" x="545" y="295" direction="rtl" unicode-bidi="embed">مانیتورینگ + <tspan direction="ltr" unicode-bidi="embed">context</tspan> <tspan direction="ltr" unicode-bidi="embed">timeout</tspan></text>
-</svg>
+<pre class="mermaid">flowchart LR
+    subgraph LEAK["نشت (Leak)"]
+        direction TB
+        M1["main()"]
+        L1["go leak()"]
+        L2["&lt;-ch (بلاک برای همیشه)<br/>هیچ‌گاه تمام نمی‌شود!"]
+        M1 --> L1 --> L2
+    end
+
+    subgraph FIXED["اصلاح‌شده (Fixed)"]
+        direction TB
+        M2["main()"]
+        W1["go worker()"]
+        W2["select + ctx.Done()<br/>خروج کنترل‌شده"]
+        M2 --> W1 --> W2
+    end
+
+    subgraph TOOLS["ابزارهای تشخیص"]
+        direction TB
+        T1["runtime.NumGoroutine()"]
+        T2["pprof (net/http/pprof)"]
+        T3["مانیتورینگ + context timeout"]
+        T1 --> T2 --> T3
+    end
+
+    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
+    classDef errBox fill:#fef2f2,stroke:#ef4444,stroke-width:1.5px,color:#1f2937;
+    classDef bothBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
+    classDef neuBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
+    class LEAK,M1,L1,L2 errBox;
+    class FIXED,M2,W1,W2 bothBox;
+    class TOOLS,T1,T2,T3 neuBox;</pre>
 <figcaption>شکل ۵-۱۶: <bdi dir="ltr">Goroutine</bdi> <bdi dir="ltr">Leak</bdi> - نشت، عواقب و راه‌حل</figcaption>
 </figure>
 <p>اگر Goroutine Leak رخ دهد:</p>
@@ -147,40 +141,32 @@ func main() {
 <p>نشتی Goroutine معمولاً از یکی از دلایل زیر ناشی می‌شود:</p>
 
 <figure class="diagram" dir="ltr">
-<svg width="700" height="260" viewBox="0 0 700 260" xmlns="http://www.w3.org/2000/svg">
-<rect fill="#fafafa" height="260" rx="8" width="700" x="0" y="0"></rect>
-<defs><filter id="sh117" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
-<marker id="aLkN1" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#e74c3c" points="0 0,10 3.5,0 7"></polygon></marker>
-<marker id="aLkN2" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#27ae60" points="0 0,10 3.5,0 7"></polygon></marker>
-</defs>
-<text fill="#e74c3c" font-size="14" font-weight="bold" text-anchor="middle" x="175" y="22" direction="rtl" unicode-bidi="embed">نشت: کانال بسته نمی‌شود</text>
-<text fill="#27ae60" font-size="14" font-weight="bold" text-anchor="middle" x="525" y="22" direction="rtl" unicode-bidi="embed">اصلاح: <tspan direction="ltr" unicode-bidi="embed">close(ch)</tspan> + <tspan direction="ltr" unicode-bidi="embed">ctx.Done()</tspan></text>
-<!-- Leak scenario -->
-<rect fill="#00ADD8" height="35" opacity="0.12" rx="6" stroke="#00ADD8" stroke-width="1.5" width="100" x="50" y="45"></rect>
-<text fill="#333" font-size="10" text-anchor="middle" x="100" y="67" direction="ltr" unicode-bidi="embed">go worker()</text>
-<line marker-end="url(#aLkN1)" stroke="#e74c3c" stroke-width="1.5" x1="100" x2="100" y1="80" y2="105"></line>
-<rect fill="#e74c3c" height="40" opacity="0.12" rx="8" stroke="#e74c3c" stroke-width="2" width="200" x="30" y="105"></rect>
-<text fill="#333" font-size="10" text-anchor="middle" x="130" y="122" direction="ltr" unicode-bidi="embed">for val := range ch</text>
-<text fill="#e74c3c" font-size="9" text-anchor="middle" x="130" y="138" direction="rtl" unicode-bidi="embed">بلاک! <tspan direction="ltr" unicode-bidi="embed">close(ch)</tspan> فراموش شده</text>
-<line stroke="#e74c3c" stroke-dasharray="4,3" stroke-width="1.5" x1="100" x2="100" y1="145" y2="170"></line>
-<text fill="#e74c3c" font-size="11" font-weight="bold" text-anchor="middle" x="100" y="185" direction="rtl" unicode-bidi="embed">نشت حافظه!</text>
-<text fill="#e74c3c" font-size="9" text-anchor="middle" x="100" y="200" direction="rtl" unicode-bidi="embed">گوریوتین تا ابد منتظر می‌ماند</text>
-<!-- Divider -->
-<line stroke="#ddd" stroke-width="1" x1="350" x2="350" y1="35" y2="240"></line>
-<!-- Fixed scenario -->
-<rect fill="#00ADD8" height="35" opacity="0.12" rx="6" stroke="#00ADD8" stroke-width="1.5" width="100" x="420" y="45"></rect>
-<text fill="#333" font-size="10" text-anchor="middle" x="470" y="67" direction="ltr" unicode-bidi="embed">go worker()</text>
-<line marker-end="url(#aLkN2)" stroke="#27ae60" stroke-width="1.5" x1="470" x2="470" y1="80" y2="105"></line>
-<rect fill="#27ae60" height="40" opacity="0.12" rx="8" stroke="#27ae60" stroke-width="2" width="220" x="400" y="105"></rect>
-<text fill="#333" font-size="10" text-anchor="middle" x="510" y="122" direction="ltr" unicode-bidi="embed">select + ctx.Done()</text>
-<text fill="#27ae60" font-size="9" text-anchor="middle" x="510" y="138" direction="rtl" unicode-bidi="embed">خروج کنترل‌شده + <tspan direction="ltr" unicode-bidi="embed">close(ch)</tspan></text>
-<line marker-end="url(#aLkN2)" stroke="#27ae60" stroke-width="1.5" x1="470" x2="470" y1="145" y2="170"></line>
-<rect fill="#27ae60" height="35" opacity="0.12" rx="8" stroke="#27ae60" stroke-width="2" width="140" x="400" y="170"></rect>
-<text fill="#27ae60" font-size="11" text-anchor="middle" x="470" y="192" direction="rtl" unicode-bidi="embed">منابع آزاد شدند</text>
-<!-- Bottom note -->
-<rect fill="#f5f5f5" height="30" rx="6" stroke="#ddd" stroke-width="1" width="600" x="50" y="220"></rect>
-<text fill="#555" font-size="10" text-anchor="middle" x="350" y="240" direction="rtl" unicode-bidi="embed">راه‌حل: همیشه <tspan direction="ltr" unicode-bidi="embed">close(ch)</tspan> فراخوانی کنید و از <tspan direction="ltr" unicode-bidi="embed">context</tspan> برای لغو استفاده کنید</text>
-</svg>
+<pre class="mermaid">flowchart LR
+    subgraph LEAK["نشت: کانال بسته نمی‌شود"]
+        direction TB
+        L1["go worker()"]
+        L2["for val := range ch<br/>بلاک! close(ch) فراموش شده"]
+        L3["نشت حافظه!<br/>گوریوتین تا ابد منتظر می‌ماند"]
+        L1 --> L2 --> L3
+    end
+
+    subgraph FIXED["اصلاح: close(ch) + ctx.Done()"]
+        direction TB
+        F1["go worker()"]
+        F2["select + ctx.Done()<br/>خروج کنترل‌شده + close(ch)"]
+        F3["منابع آزاد شدند"]
+        F1 --> F2 --> F3
+    end
+
+    Note["راه‌حل: همیشه close(ch) فراخوانی کنید<br/>و از context برای لغو استفاده کنید"]
+
+    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
+    classDef errBox fill:#fef2f2,stroke:#ef4444,stroke-width:1.5px,color:#1f2937;
+    classDef bothBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
+    classDef neuBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
+    class LEAK,L1,L2,L3 errBox;
+    class FIXED,F1,F2,F3 bothBox;
+    class Note neuBox;</pre>
 <figcaption dir="rtl">شکل ۵-۱۶-ب: نشت <bdi dir="ltr">Goroutine</bdi> از کانال بسته‌نشده و راه‌حل</figcaption>
 </figure>
 
@@ -453,188 +439,83 @@ go tool pprof leak.prof</code></pre>
 <p>تشخیص نشت <bdi dir="ltr">Goroutine</bdi> نیازمند یک رویکرد سیستماتیک است. فلوچارت زیر یک درخت تصمیم کامل ارائه می‌دهد که به شما کمک می‌کند به صورت مرحله‌ای تشخیص دهید آیا <bdi dir="ltr">goroutine</bdi> شما نشت کرده یا خیر. ابتدا بررسی می‌شود آیا <bdi dir="ltr">goroutine</bdi> مسدود شده است، سپس علت مسدود شدن مشخص می‌شود و در نهایت راه‌حل مناسب پیشنهاد می‌گردد. هر مسیر نشت با رنگ قرمز و هر مسیر صحیح با رنگ سبز نمایش داده شده است.</p>
 
 <figure class="diagram" dir="ltr">
-<svg height="720" viewBox="0 0 860 720" width="860" xmlns="http://www.w3.org/2000/svg">
-<rect fill="#fafafa" height="720" rx="8" width="860" x="0" y="0"></rect>
-<defs><filter id="sh118" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
-<marker id="aGl1" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#e91e63" points="0 0,10 3.5,0 7"></polygon></marker>
-<marker id="aGl2" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#4CAF50" points="0 0,10 3.5,0 7"></polygon></marker>
-<marker id="aGl3" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#FF9800" points="0 0,10 3.5,0 7"></polygon></marker>
-<marker id="aGl4" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#555" points="0 0,10 3.5,0 7"></polygon></marker>
-</defs>
+<pre class="mermaid">flowchart TB
+    Start(["شروع: بررسی Goroutine"])
+    Q1{"مسدود شده؟<br/>(Is it blocked?)"}
+    Q2{"شرط خروج دارد؟<br/>(Exit condition?)"}
+    Q3{"روی چه مسدود شده؟<br/>(Blocked on what?)"}
+    OK["✓ OK"]
+    Leak1["LEAK<br/>Fix: add ctx.Done() / break"]
 
-<!-- Title -->
-<text fill="#333" font-size="16" font-weight="bold" text-anchor="middle" x="430" y="28" direction="rtl" unicode-bidi="embed">فلوچارت تشخیص نشت <tspan direction="ltr" unicode-bidi="embed">Goroutine</tspan></text>
+    Start --> Q1
+    Q1 -- "No" --> Q2
+    Q2 -- "Yes" --> OK
+    Q2 -- "No" --> Leak1
+    Q1 -- "Yes" --> Q3
 
-<!-- ===== START Node ===== -->
-<rect fill="#00ADD8" height="36" rx="18" stroke="#00838F" stroke-width="2" width="200" x="330" y="45"></rect>
-<text fill="#fff" font-size="12" font-weight="bold" text-anchor="middle" x="430" y="68" direction="rtl" unicode-bidi="embed">شروع: بررسی <tspan direction="ltr" unicode-bidi="embed">Goroutine</tspan></text>
+    CS["Channel Send<br/>ch &lt;- val<br/>گیرنده‌ای نیست"]
+    CSF["LEAK!<br/>Fix: buffered chan / close(ch)"]
+    CR["Channel Recv<br/>&lt;-ch<br/>فرستنده‌ای نیست"]
+    CRF["LEAK!<br/>Fix: close(ch) / ctx.Done()"]
+    WG["WaitGroup<br/>wg.Wait()<br/>Done() فراموش شده"]
+    WGF["LEAK!<br/>Fix: defer wg.Done() always"]
+    LK["Lock<br/>mu.Lock()<br/>Unlock هرگز فراخوانی نمی‌شود"]
+    LKF["LEAK!<br/>Fix: defer mu.Unlock() always"]
+    HT["HTTP Request<br/>http.Get()<br/>بدون timeout"]
+    HTF["LEAK!<br/>Fix: ctx + http.Client&#123;Timeout&#125;"]
 
-<!-- Arrow START → Decision 1 -->
-<line marker-end="url(#aGl4)" stroke="#555" stroke-width="2" x1="430" x2="430" y1="81" y2="108"></line>
+    Q3 -- "Channel Send" --> CS --> CSF
+    Q3 -- "Channel Recv" --> CR --> CRF
+    Q3 -- "WaitGroup" --> WG --> WGF
+    Q3 -- "Lock" --> LK --> LKF
+    Q3 -- "HTTP Request" --> HT --> HTF
 
-<!-- ===== Decision 1: Is it blocked? ===== -->
-<polygon fill="#FF9800" points="430,108 540,148 430,188 320,148" stroke="#E65100" stroke-width="2"></polygon>
-<text fill="#fff" font-size="11" font-weight="bold" text-anchor="middle" x="430" y="145" direction="rtl" unicode-bidi="embed">مسدود شده؟</text>
-<text fill="#fff3e0" font-size="9" text-anchor="middle" x="430" y="160" direction="ltr" unicode-bidi="embed">Is it blocked?</text>
+    subgraph CORRECT["الگوی صحیح هر Goroutine"]
+        direction TB
+        CO1["select &#123;"]
+        CO2["case &lt;-ctx.Done(): return   // always check cancellation"]
+        CO3["case job := &lt;-jobs: process(job)  // do work"]
+        CO1 --> CO2 --> CO3
+    end
 
-<!-- ===== NO branch: Right → Decision 2 ===== -->
-<line marker-end="url(#aGl2)" stroke="#4CAF50" stroke-width="2" x1="540" x2="700" y1="148" y2="148"></line>
-<text fill="#4CAF50" font-size="10" font-weight="bold" text-anchor="middle" x="620" y="142" direction="ltr" unicode-bidi="embed">No</text>
+    subgraph TOOLS["ابزارهای تشخیص"]
+        direction TB
+        T1["runtime.NumGoroutine()"]
+        T2["go tool pprof goroutine"]
+        T1 --> T2
+    end
 
-<!-- Decision 2: Does it have an exit condition? -->
-<polygon fill="#FF9800" points="700,118 810,158 700,198 590,158" stroke="#E65100" stroke-width="2"></polygon>
-<text fill="#fff" font-size="10" font-weight="bold" text-anchor="middle" x="700" y="153" direction="rtl" unicode-bidi="embed">شرط خروج دارد؟</text>
-<text fill="#fff3e0" font-size="8" text-anchor="middle" x="700" y="168" direction="ltr" unicode-bidi="embed">Exit condition?</text>
+    subgraph PREV["پیشگیری"]
+        direction TB
+        P1["context.WithCancel / WithTimeout"]
+        P2["defer close(ch) / defer wg.Done()"]
+        P1 --> P2
+    end
 
-<!-- Decision 2: YES → OK (green) -->
-<line marker-end="url(#aGl2)" stroke="#4CAF50" stroke-width="2" x1="810" x2="840" y1="158" y2="158"></line>
-<rect fill="#4CAF50" height="32" rx="6" stroke="#2E7D32" stroke-width="2" width="0" x="840" y="142"></rect>
-<!-- OK box below Decision 2 -->
-<line marker-end="url(#aGl2)" stroke="#4CAF50" stroke-width="2" x1="700" x2="700" y1="198" y2="230"></line>
-<text fill="#4CAF50" font-size="9" font-weight="bold" text-anchor="middle" x="730" y="215" direction="ltr" unicode-bidi="embed">Yes</text>
-<rect fill="#4CAF50" height="32" rx="6" stroke="#2E7D32" stroke-width="2" width="120" x="640" y="230"></rect>
-<text fill="#fff" font-size="13" font-weight="bold" text-anchor="middle" x="700" y="251" direction="ltr" unicode-bidi="embed">✓ OK</text>
+    subgraph NEW["Go 1.26 New"]
+        direction TB
+        N1["goroutineleak profile"]
+        N2["GOEXPERIMENT=goroutineleakprofile"]
+        N1 --> N2
+    end
 
-<!-- Decision 2: NO → LEAK! -->
-<line marker-end="url(#aGl1)" stroke="#e91e63" stroke-width="2" x1="810" x2="840" y1="158" y2="158"></line>
-<text fill="#e91e63" font-size="9" font-weight="bold" text-anchor="middle" x="820" y="135" direction="ltr" unicode-bidi="embed">No</text>
-<!-- Leak box for no exit condition -->
-<rect fill="#e91e63" height="32" rx="6" stroke="#880E4F" stroke-width="2" width="0" x="840" y="142"></rect>
-<!-- Actually place it properly -->
-<rect fill="#e91e63" height="32" rx="6" stroke="#880E4F" stroke-width="2" width="50" x="830" y="142"></rect>
-<text fill="#fff" font-size="10" font-weight="bold" text-anchor="middle" x="855" y="163" direction="ltr" unicode-bidi="embed">LEAK</text>
+    GOLD["قانون طلایی: هر Goroutine باید Context بپذیرد، select با ctx.Done() داشته باشد<br/>و مسیر خروج مشخصی داشته باشد"]
 
-<!-- Fix annotation for no exit -->
-<rect fill="#FFF3E0" height="18" rx="3" stroke="#FF9800" stroke-width="1" width="140" x="780" y="180"></rect>
-<text fill="#E65100" font-size="7" text-anchor="middle" x="850" y="193" direction="ltr" unicode-bidi="embed">Fix: add ctx.Done() / break</text>
+    LEG1["مسیر نشت"]
+    LEG2["مسیر صحیح:<br/>select + ctx.Done() + close(ch)"]
+    LEG3["نشتی رایج:<br/>for &#123;&#125; without ctx.Done()"]
 
-<!-- ===== YES branch: Down → Decision 3 ===== -->
-<line marker-end="url(#aGl1)" stroke="#e91e63" stroke-width="2" x1="430" x2="430" y1="188" y2="225"></line>
-<text fill="#e91e63" font-size="10" font-weight="bold" text-anchor="middle" x="448" y="212" direction="ltr" unicode-bidi="embed">Yes</text>
-
-<!-- Decision 3: What is it blocked on? -->
-<polygon fill="#FF9800" points="430,225 560,270 430,315 300,270" stroke="#E65100" stroke-width="2"></polygon>
-<text fill="#fff" font-size="10" font-weight="bold" text-anchor="middle" x="430" y="266" direction="rtl" unicode-bidi="embed">روی چه مسدود شده؟</text>
-<text fill="#fff3e0" font-size="8" text-anchor="middle" x="430" y="282" direction="ltr" unicode-bidi="embed">Blocked on what?</text>
-
-<!-- ===== 5 Leak paths ===== -->
-
-<!-- Path 1: Channel Send -->
-<line marker-end="url(#aGl1)" stroke="#e91e63" stroke-width="1.5" x1="340" x2="100" y1="270" y2="340"></line>
-<text fill="#e91e63" font-size="8" text-anchor="middle" x="210" y="298" direction="ltr" unicode-bidi="embed">Channel Send</text>
-<rect fill="#e91e63" height="36" rx="6" stroke="#880E4F" stroke-width="2" width="140" x="30" y="340"></rect>
-<text fill="#fff" font-size="9" font-weight="bold" text-anchor="middle" x="100" y="356" direction="ltr" unicode-bidi="embed">ch &lt;- val</text>
-<text fill="#FFCDD2" font-size="8" text-anchor="middle" x="100" y="370" direction="rtl" unicode-bidi="embed">گیرنده‌ای نیست</text>
-<!-- LEAK label -->
-<rect fill="#880E4F" height="22" rx="4" width="60" x="70" y="382"></rect>
-<text fill="#fff" font-size="10" font-weight="bold" text-anchor="middle" x="100" y="397" direction="ltr" unicode-bidi="embed">LEAK!</text>
-<!-- Fix annotation -->
-<rect fill="#E8F5E9" height="18" rx="3" stroke="#4CAF50" stroke-width="1" width="150" x="25" y="410"></rect>
-<text fill="#2E7D32" font-size="7" text-anchor="middle" x="100" y="423" direction="ltr" unicode-bidi="embed">Fix: buffered chan / close(ch)</text>
-
-<!-- Path 2: Channel Recv -->
-<line marker-end="url(#aGl1)" stroke="#e91e63" stroke-width="1.5" x1="370" x2="260" y1="300" y2="340"></line>
-<text fill="#e91e63" font-size="8" text-anchor="middle" x="300" y="318" direction="ltr" unicode-bidi="embed">Channel Recv</text>
-<rect fill="#e91e63" height="36" rx="6" stroke="#880E4F" stroke-width="2" width="140" x="190" y="340"></rect>
-<text fill="#fff" font-size="9" font-weight="bold" text-anchor="middle" x="260" y="356" direction="ltr" unicode-bidi="embed">&lt;-ch</text>
-<text fill="#FFCDD2" font-size="8" text-anchor="middle" x="260" y="370" direction="rtl" unicode-bidi="embed">فرستنده‌ای نیست</text>
-<!-- LEAK label -->
-<rect fill="#880E4F" height="22" rx="4" width="60" x="230" y="382"></rect>
-<text fill="#fff" font-size="10" font-weight="bold" text-anchor="middle" x="260" y="397" direction="ltr" unicode-bidi="embed">LEAK!</text>
-<!-- Fix annotation -->
-<rect fill="#E8F5E9" height="18" rx="3" stroke="#4CAF50" stroke-width="1" width="150" x="185" y="410"></rect>
-<text fill="#2E7D32" font-size="7" text-anchor="middle" x="260" y="423" direction="ltr" unicode-bidi="embed">Fix: close(ch) / ctx.Done()</text>
-
-<!-- Path 3: WaitGroup -->
-<line marker-end="url(#aGl1)" stroke="#e91e63" stroke-width="1.5" x1="430" x2="430" y1="315" y2="340"></line>
-<text fill="#e91e63" font-size="8" text-anchor="middle" x="465" y="332" direction="ltr" unicode-bidi="embed">WaitGroup</text>
-<rect fill="#e91e63" height="36" rx="6" stroke="#880E4F" stroke-width="2" width="140" x="360" y="340"></rect>
-<text fill="#fff" font-size="9" font-weight="bold" text-anchor="middle" x="430" y="356" direction="ltr" unicode-bidi="embed">wg.Wait()</text>
-<text fill="#FFCDD2" font-size="8" text-anchor="middle" x="430" y="370" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">Done()</tspan> فراموش شده</text>
-<!-- LEAK label -->
-<rect fill="#880E4F" height="22" rx="4" width="60" x="400" y="382"></rect>
-<text fill="#fff" font-size="10" font-weight="bold" text-anchor="middle" x="430" y="397" direction="ltr" unicode-bidi="embed">LEAK!</text>
-<!-- Fix annotation -->
-<rect fill="#E8F5E9" height="18" rx="3" stroke="#4CAF50" stroke-width="1" width="150" x="355" y="410"></rect>
-<text fill="#2E7D32" font-size="7" text-anchor="middle" x="430" y="423" direction="ltr" unicode-bidi="embed">Fix: defer wg.Done() always</text>
-
-<!-- Path 4: Lock -->
-<line marker-end="url(#aGl1)" stroke="#e91e63" stroke-width="1.5" x1="490" x2="600" y1="300" y2="340"></line>
-<text fill="#e91e63" font-size="8" text-anchor="middle" x="560" y="318" direction="ltr" unicode-bidi="embed">Lock</text>
-<rect fill="#e91e63" height="36" rx="6" stroke="#880E4F" stroke-width="2" width="140" x="530" y="340"></rect>
-<text fill="#fff" font-size="9" font-weight="bold" text-anchor="middle" x="600" y="356" direction="ltr" unicode-bidi="embed">mu.Lock()</text>
-<text fill="#FFCDD2" font-size="8" text-anchor="middle" x="600" y="370" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">Unlock</tspan> هرگز فراخوانی نمی‌شود</text>
-<!-- LEAK label -->
-<rect fill="#880E4F" height="22" rx="4" width="60" x="570" y="382"></rect>
-<text fill="#fff" font-size="10" font-weight="bold" text-anchor="middle" x="600" y="397" direction="ltr" unicode-bidi="embed">LEAK!</text>
-<!-- Fix annotation -->
-<rect fill="#E8F5E9" height="18" rx="3" stroke="#4CAF50" stroke-width="1" width="155" x="522" y="410"></rect>
-<text fill="#2E7D32" font-size="7" text-anchor="middle" x="600" y="423" direction="ltr" unicode-bidi="embed">Fix: defer mu.Unlock() always</text>
-
-<!-- Path 5: HTTP request -->
-<line marker-end="url(#aGl1)" stroke="#e91e63" stroke-width="1.5" x1="520" x2="760" y1="270" y2="340"></line>
-<text fill="#e91e63" font-size="8" text-anchor="middle" x="660" y="298" direction="ltr" unicode-bidi="embed">HTTP Request</text>
-<rect fill="#e91e63" height="36" rx="6" stroke="#880E4F" stroke-width="2" width="140" x="690" y="340"></rect>
-<text fill="#fff" font-size="9" font-weight="bold" text-anchor="middle" x="760" y="356" direction="ltr" unicode-bidi="embed">http.Get()</text>
-<text fill="#FFCDD2" font-size="8" text-anchor="middle" x="760" y="370" direction="rtl" unicode-bidi="embed">بدون <tspan direction="ltr" unicode-bidi="embed">timeout</tspan></text>
-<!-- LEAK label -->
-<rect fill="#880E4F" height="22" rx="4" width="60" x="730" y="382"></rect>
-<text fill="#fff" font-size="10" font-weight="bold" text-anchor="middle" x="760" y="397" direction="ltr" unicode-bidi="embed">LEAK!</text>
-<!-- Fix annotation -->
-<rect fill="#E8F5E9" height="18" rx="3" stroke="#4CAF50" stroke-width="1" width="160" x="680" y="410"></rect>
-<text fill="#2E7D32" font-size="7" text-anchor="middle" x="760" y="423" direction="ltr" unicode-bidi="embed">Fix: ctx + http.Client{Timeout}</text>
-
-<!-- ===== Summary Section ===== -->
-<rect fill="#263238" height="80" rx="6" width="760" x="50" y="450"></rect>
-<text fill="#80CBC4" font-size="10" font-weight="bold" text-anchor="start" x="70" y="472" direction="rtl" unicode-bidi="embed">الگوی صحیح هر <tspan direction="ltr" unicode-bidi="embed">Goroutine</tspan>:</text>
-<text fill="#A5D6A7" font-size="9" font-family="monospace" text-anchor="start" x="70" y="490" direction="ltr" unicode-bidi="embed">select {</text>
-<text fill="#A5D6A7" font-size="9" font-family="monospace" text-anchor="start" x="70" y="504" direction="ltr" unicode-bidi="embed">  case &lt;-ctx.Done(): return   // always check cancellation</text>
-<text fill="#A5D6A7" font-size="9" font-family="monospace" text-anchor="start" x="70" y="518" direction="ltr" unicode-bidi="embed">  case job := &lt;-jobs: process(job)  // do work</text>
-
-<!-- ===== Info box: detection tools ===== -->
-<rect fill="#E0F7FA" height="55" rx="6" stroke="#00ADD8" stroke-width="1" width="260" x="50" y="545"></rect>
-<text fill="#006064" font-size="10" font-weight="bold" text-anchor="middle" x="180" y="563" direction="rtl" unicode-bidi="embed">ابزارهای تشخیص:</text>
-<text fill="#006064" font-size="8" text-anchor="middle" x="180" y="578" direction="ltr" unicode-bidi="embed">runtime.NumGoroutine()</text>
-<text fill="#006064" font-size="8" text-anchor="middle" x="180" y="592" direction="ltr" unicode-bidi="embed">go tool pprof goroutine</text>
-
-<!-- ===== Info box: prevention ===== -->
-<rect fill="#E8F5E9" height="55" rx="6" stroke="#4CAF50" stroke-width="1" width="260" x="330" y="545"></rect>
-<text fill="#1B5E20" font-size="10" font-weight="bold" text-anchor="middle" x="460" y="563" direction="rtl" unicode-bidi="embed">پیشگیری:</text>
-<text fill="#1B5E20" font-size="8" text-anchor="middle" x="460" y="578" direction="ltr" unicode-bidi="embed">context.WithCancel / WithTimeout</text>
-<text fill="#1B5E20" font-size="8" text-anchor="middle" x="460" y="592" direction="ltr" unicode-bidi="embed">defer close(ch) / defer wg.Done()</text>
-
-<!-- ===== Info box: Go 1.26 ===== -->
-<rect fill="#F3E5F5" height="55" rx="6" stroke="#9C27B0" stroke-width="1" width="210" x="610" y="545"></rect>
-<text fill="#6A1B9A" font-size="10" font-weight="bold" text-anchor="middle" x="715" y="563" direction="ltr" unicode-bidi="embed">Go 1.26 New:</text>
-<text fill="#6A1B9A" font-size="8" text-anchor="middle" x="715" y="578" direction="ltr" unicode-bidi="embed">goroutineleak profile</text>
-<text fill="#6A1B9A" font-size="8" text-anchor="middle" x="715" y="592" direction="ltr" unicode-bidi="embed">GOEXPERIMENT=goroutineleakprofile</text>
-
-<!-- ===== Golden Rule Bar ===== -->
-<rect fill="#FFF8E1" height="24" rx="4" stroke="#F9A825" stroke-width="1.5" width="760" x="50" y="618"></rect>
-<text fill="#E65100" font-size="10" font-weight="bold" text-anchor="middle" x="430" y="635" direction="rtl" unicode-bidi="embed">قانون طلایی: هر <tspan direction="ltr" unicode-bidi="embed">Goroutine</tspan> باید <tspan direction="ltr" unicode-bidi="embed">Context</tspan> بپذیرد، <tspan direction="ltr" unicode-bidi="embed">select</tspan> با <tspan direction="ltr" unicode-bidi="embed">ctx.Done()</tspan> داشته باشد و مسیر خروج مشخصی داشته باشد</text>
-
-<!-- Legend -->
-<rect fill="#e91e63" height="10" rx="2" width="30" x="50" y="660"></rect>
-<text fill="#555" font-size="8" text-anchor="start" x="88" y="669" direction="rtl" unicode-bidi="embed">مسیر نشت</text>
-<rect fill="#4CAF50" height="10" rx="2" width="30" x="160" y="660"></rect>
-<text fill="#555" font-size="8" text-anchor="start" x="198" y="669" direction="rtl" unicode-bidi="embed">مسیر صحیح</text>
-<rect fill="#FF9800" height="10" rx="2" width="30" x="280" y="660"></rect>
-<text fill="#555" font-size="8" text-anchor="start" x="318" y="669" direction="rtl" unicode-bidi="embed">گره تصمیم</text>
-
-<!-- Correct path highlight on the right side -->
-<rect fill="#E8F5E9" height="50" rx="6" stroke="#4CAF50" stroke-width="1" width="180" x="610" y="230"></rect>
-<text fill="#2E7D32" font-size="9" font-weight="bold" text-anchor="middle" x="700" y="248" direction="rtl" unicode-bidi="embed">مسیر صحیح:</text>
-<text fill="#2E7D32" font-size="8" text-anchor="middle" x="700" y="264" direction="ltr" unicode-bidi="embed">select + ctx.Done() + close(ch)</text>
-
-<!-- Dashed line connecting OK box to correct path info -->
-<line stroke="#4CAF50" stroke-dasharray="4,3" stroke-width="1" x1="760" x2="790" y1="246" y2="246"></line>
-
-<!-- Right side annotation: No leak path -->
-<rect fill="#FFEBEE" height="50" rx="6" stroke="#e91e63" stroke-width="1" width="180" x="610" y="290"></rect>
-<text fill="#880E4F" font-size="9" font-weight="bold" text-anchor="middle" x="700" y="308" direction="rtl" unicode-bidi="embed">نشتی رایج:</text>
-<text fill="#880E4F" font-size="8" text-anchor="middle" x="700" y="324" direction="ltr" unicode-bidi="embed">for {} without ctx.Done()</text>
-
-</svg>
+    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
+    classDef bothBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
+    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
+    classDef errBox fill:#fef2f2,stroke:#ef4444,stroke-width:1.5px,color:#1f2937;
+    classDef neuBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
+    class Start,Q1,Q2,Q3 goBox;
+    class OK bothBox;
+    class Leak1,CS,CSF,CR,CRF,WG,WGF,LK,LKF,HT,HTF errBox;
+    class CORRECT,CO1,CO2,CO3 bothBox;
+    class TOOLS,T1,T2,PREV,P1,P2,NEW,N1,N2,LEG1,LEG2,LEG3 neuBox;
+    class GOLD warnBox;</pre>
 <figcaption>شکل ۵-۱۸: فلوچارت تشخیص نشت <bdi dir="ltr">Goroutine</bdi> — درخت تصمیم با راه‌حل‌ها</figcaption>
 </figure>
 

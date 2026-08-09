@@ -73,45 +73,30 @@
 <p>در نظر بگیرید یک سیستم پرداخت آنلاین دارید. کاربر روی دکمه پرداخت کلیک می‌کند و سرویس شما باید هم‌زمان چند کار از جمله ثبت تراکنش در دیتابیس، ارتباط با درگاه بانکی، ارسال ایمیل تأیید و نوتیفیکیشن به کاربر انجام دهد. اگر کاربر وسط کار مرورگر را بست یا ارتباط با درگاه بانکی بیش از ده ثانیه طول کشید احتمالا شما نمی‌خواهید منابع سیستم بیهوده مصرف شود. در Laravel معمولاً باید هر کدام از این بخش‌ها را جداگانه مدیریت کنید مثلاً Job مربوط به ایمیل را دستی کنسل کنید یا با ابزارهایی مثل Horizon وضعیت Workerها را بررسی کنید.</p>
 <p>در Go این مسئله با context.Context به‌صورت یکپارچه و داخلی حل می‌شود. شما یک Context با قابلیت لغو یا timeout تعریف می‌کنید و آن را به تمام Goroutine‌های مرتبط پاس می‌دهید. اگر یکی از شرایط رخ دهد مثلاً timeout ده ثانیه‌ای بگذرد یا کاربر ارتباطش را قطع کند همه Goroutineهای مرتبط با آن Context سیگنال cancellation را دریافت می‌کنند و عملیاتشان را متوقف می‌کنند. به این ترتیب ارسال ایمیل، تراکنش در دیتابیس یا هر عملیات جانبی دیگری نیمه‌کاره رها نمی‌شود و منابع آزاد می‌شوند.</p>
 <figure class="diagram" dir="ltr">
-<svg height="280" viewBox="0 0 700 280" width="700" xmlns="http://www.w3.org/2000/svg">
-<rect fill="#fafafa" height="280" rx="8" width="700" x="0" y="0"></rect>
-<defs><filter id="sh100" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
-<marker id="aCtx" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#00ADD8" points="0 0,10 3.5,0 7"></polygon></marker>
-</defs>
-<text fill="#00ADD8" font-size="15" font-weight="bold" text-anchor="middle" x="350" y="25" direction="rtl" unicode-bidi="embed">سلسله‌مراتب <tspan direction="ltr" unicode-bidi="embed">Context</tspan></text>
-<!-- Background -->
-<rect fill="#00ADD8" height="55" opacity="0.08" rx="8" stroke="#00ADD8" stroke-width="2" width="640" x="30" y="50"></rect>
-<text fill="#333" font-size="13" text-anchor="middle" x="350" y="72" direction="ltr" unicode-bidi="embed">context.Background()</text>
-<text fill="#666" font-size="10" text-anchor="middle" x="350" y="92" direction="rtl" unicode-bidi="embed">ریشه‌ی <tspan direction="ltr" unicode-bidi="embed">Context</tspan> - نقطه شروع</text>
-<!-- WithCancel -->
-<line marker-end="url(#aCtx)" stroke="#00ADD8" stroke-width="1.5" x1="200" x2="120" y1="105" y2="140"></line>
-<rect fill="#e74c3c" height="45" opacity="0.1" rx="8" stroke="#e74c3c" stroke-width="2" width="180" x="30" y="140"></rect>
-<text fill="#333" font-size="12" text-anchor="middle" x="120" y="160" direction="ltr" unicode-bidi="embed">WithCancel</text>
-<text fill="#666" font-size="9" text-anchor="middle" x="120" y="176" direction="rtl" unicode-bidi="embed">لغو دستی با <tspan direction="ltr" unicode-bidi="embed">cancel()</tspan></text>
-<!-- WithTimeout -->
-<line marker-end="url(#aCtx)" stroke="#00ADD8" stroke-width="1.5" x1="350" x2="350" y1="105" y2="140"></line>
-<rect fill="#f39c12" height="45" opacity="0.1" rx="8" stroke="#f39c12" stroke-width="2" width="180" x="260" y="140"></rect>
-<text fill="#333" font-size="12" text-anchor="middle" x="350" y="160" direction="ltr" unicode-bidi="embed">WithTimeout</text>
-<text fill="#666" font-size="9" text-anchor="middle" x="350" y="176" direction="rtl" unicode-bidi="embed">لغو خودکار بعد از مدت زمان</text>
-<!-- WithDeadline -->
-<line marker-end="url(#aCtx)" stroke="#00ADD8" stroke-width="1.5" x1="500" x2="580" y1="105" y2="140"></line>
-<rect fill="#f39c12" height="45" opacity="0.1" rx="8" stroke="#f39c12" stroke-width="2" width="180" x="490" y="140"></rect>
-<text fill="#333" font-size="12" text-anchor="middle" x="580" y="160" direction="ltr" unicode-bidi="embed">WithDeadline</text>
-<text fill="#666" font-size="9" text-anchor="middle" x="580" y="176" direction="rtl" unicode-bidi="embed">لغو در زمان مشخص</text>
-<!-- Children -->
-<line stroke="#e74c3c" stroke-dasharray="4,3" stroke-width="1.2" x1="120" x2="120" y1="185" y2="210"></line>
-<rect fill="#27ae60" height="35" opacity="0.1" rx="6" stroke="#27ae60" stroke-width="1.5" width="160" x="40" y="210"></rect>
-<text fill="#333" font-size="10" text-anchor="middle" x="120" y="232" direction="ltr" unicode-bidi="embed">Goroutine A: ctx.Done()</text>
-<line stroke="#f39c12" stroke-dasharray="4,3" stroke-width="1.2" x1="350" x2="350" y1="185" y2="210"></line>
-<rect fill="#27ae60" height="35" opacity="0.1" rx="6" stroke="#27ae60" stroke-width="1.5" width="160" x="270" y="210"></rect>
-<text fill="#333" font-size="10" text-anchor="middle" x="350" y="232" direction="ltr" unicode-bidi="embed">Goroutine B: ctx.Done()</text>
-<line stroke="#f39c12" stroke-dasharray="4,3" stroke-width="1.2" x1="580" x2="580" y1="185" y2="210"></line>
-<rect fill="#27ae60" height="35" opacity="0.1" rx="6" stroke="#27ae60" stroke-width="1.5" width="160" x="500" y="210"></rect>
-<text fill="#333" font-size="10" text-anchor="middle" x="580" y="232" direction="ltr" unicode-bidi="embed">Goroutine C: ctx.Done()</text>
-<!-- Key -->
-<rect fill="#f5f5f5" height="20" rx="4" stroke="#ddd" stroke-width="1" width="500" x="100" y="255"></rect>
-<text fill="#555" font-size="10" text-anchor="middle" x="350" y="269" direction="rtl" unicode-bidi="embed">لغو والد → تمام فرزندان نیز لغو می‌شوند | هر <tspan direction="ltr" unicode-bidi="embed">Context</tspan> از والد خود مشتق شده</text>
-</svg>
+<pre class="mermaid">flowchart TB
+    Root["context.Background()<br/>ریشه‌ی Context — نقطه شروع"]
+    WC["WithCancel<br/>لغو دستی با cancel()"]
+    WT["WithTimeout<br/>لغو خودکار بعد از مدت زمان"]
+    WD["WithDeadline<br/>لغو در زمان مشخص"]
+    GA["Goroutine A:<br/>ctx.Done()"]
+    GB["Goroutine B:<br/>ctx.Done()"]
+    GC["Goroutine C:<br/>ctx.Done()"]
+
+    Root --> WC
+    Root --> WT
+    Root --> WD
+    WC --> GA
+    WT --> GB
+    WD --> GC
+
+    Note["لغو والد → تمام فرزندان نیز لغو می‌شوند |<br/>هر Context از والد خود مشتق شده"]
+
+    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
+    classDef bothBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
+    classDef neuBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
+    class Root goBox;
+    class WC,WT,WD,GA,GB,GC bothBox;
+    class Note neuBox;</pre>
 <figcaption>شکل ۵-۱۰: سلسله‌مراتب <bdi dir="ltr">Context</bdi> - هر <bdi dir="ltr">Context</bdi> فرزند از والد مشتق می‌شود</figcaption>
 </figure>
 <p>در واقع context.Context یک شیء immutable است که اطلاعاتی مانند deadline، cancellation signal و values را در خودش دارد. این شیء به عنوان پارامتری به توابع و Goroutine ها پاس داده می‌شود تا همه بتوانند یک نقطه کنترل مشترک برای لغو عملیات یا ارسال اطلاعات داشته باشند. </p>
@@ -341,35 +326,25 @@ func main() {
 <h3 id="لغو-درخواست‌های-طولانی-با-context">لغو درخواست‌های طولانی با Context</h3>
 
 <figure class="diagram" dir="ltr">
-<svg width="700" height="240" viewBox="0 0 700 240" xmlns="http://www.w3.org/2000/svg">
-<rect fill="#fafafa" height="240" rx="8" width="700" x="0" y="0"></rect>
-<defs><filter id="sh101" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
-<marker id="aCn1" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#e74c3c" points="0 0,10 3.5,0 7"></polygon></marker>
-<marker id="aCn2" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#00ADD8" points="0 0,10 3.5,0 7"></polygon></marker>
-</defs>
-<text fill="#e74c3c" font-size="15" font-weight="bold" text-anchor="middle" x="350" y="25" direction="rtl" unicode-bidi="embed">انتشار لغو از والد به فرزندان</text>
-<!-- Parent -->
-<rect fill="#e74c3c" height="45" opacity="0.12" rx="8" stroke="#e74c3c" stroke-width="2" width="160" x="270" y="45"></rect>
-<text fill="#333" font-size="12" text-anchor="middle" x="350" y="68" direction="ltr" unicode-bidi="embed">cancel()</text>
-<text fill="#e74c3c" font-size="10" text-anchor="middle" x="350" y="82" direction="rtl" unicode-bidi="embed">والد لغو می‌شود</text>
-<!-- Arrows down -->
-<line marker-end="url(#aCn1)" stroke="#e74c3c" stroke-width="2" x1="280" x2="130" y1="90" y2="130"></line>
-<line marker-end="url(#aCn1)" stroke="#e74c3c" stroke-width="2" x1="350" x2="350" y1="90" y2="130"></line>
-<line marker-end="url(#aCn1)" stroke="#e74c3c" stroke-width="2" x1="420" x2="570" y1="90" y2="130"></line>
-<!-- Children -->
-<rect fill="#00ADD8" height="45" opacity="0.12" rx="8" stroke="#00ADD8" stroke-width="2" width="150" x="40" y="130"></rect>
-<text fill="#333" font-size="11" text-anchor="middle" x="115" y="150" direction="ltr" unicode-bidi="embed">ctx.Done() ← A</text>
-<text fill="#00ADD8" font-size="9" text-anchor="middle" x="115" y="166" direction="rtl" unicode-bidi="embed">گوریوتین A متوقف</text>
-<rect fill="#00ADD8" height="45" opacity="0.12" rx="8" stroke="#00ADD8" stroke-width="2" width="150" x="275" y="130"></rect>
-<text fill="#333" font-size="11" text-anchor="middle" x="350" y="150" direction="ltr" unicode-bidi="embed">ctx.Done() ← B</text>
-<text fill="#00ADD8" font-size="9" text-anchor="middle" x="350" y="166" direction="rtl" unicode-bidi="embed">گوریوتین B متوقف</text>
-<rect fill="#00ADD8" height="45" opacity="0.12" rx="8" stroke="#00ADD8" stroke-width="2" width="150" x="510" y="130"></rect>
-<text fill="#333" font-size="11" text-anchor="middle" x="585" y="150" direction="ltr" unicode-bidi="embed">ctx.Done() ← C</text>
-<text fill="#00ADD8" font-size="9" text-anchor="middle" x="585" y="166" direction="rtl" unicode-bidi="embed">گوریوتین C متوقف</text>
-<!-- Result -->
-<rect fill="#27ae60" height="35" opacity="0.12" rx="8" stroke="#27ae60" stroke-width="2" width="500" x="100" y="195"></rect>
-<text fill="#27ae60" font-size="11" text-anchor="middle" x="350" y="217" direction="rtl" unicode-bidi="embed">تمام فرزندان سیگنال لغو را دریافت می‌کنند → منابع آزاد می‌شوند</text>
-</svg>
+<pre class="mermaid">flowchart TB
+    Canc["cancel()<br/>والد لغو می‌شود"]
+    A["ctx.Done() ← A<br/>گوریوتین A متوقف"]
+    B["ctx.Done() ← B<br/>گوریوتین B متوقف"]
+    C["ctx.Done() ← C<br/>گوریوتین C متوقف"]
+
+    Canc --> A
+    Canc --> B
+    Canc --> C
+
+    Note["تمام فرزندان سیگنال لغو را دریافت می‌کنند<br/>→ منابع آزاد می‌شوند"]
+
+    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
+    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
+    classDef errBox fill:#fef2f2,stroke:#ef4444,stroke-width:1.5px,color:#1f2937;
+    classDef neuBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
+    class Canc warnBox;
+    class A,B,C errBox;
+    class Note neuBox;</pre>
 <figcaption dir="rtl">شکل ۵-۱۰-ب: انتشار لغو — فراخوانی <bdi dir="ltr">cancel()</bdi> والد، تمام فرزندان متوقف می‌شوند</figcaption>
 </figure>
 
@@ -593,138 +568,63 @@ func queryWithTimeout(ctx context.Context) {
 <p>همان‌طور که در ابتدای این بخش اشاره شد، <bdi dir="ltr">Context</bdi> در Go یک ساختار درختی دارد و لغو والد به‌صورت بازگشتی به تمام فرزندان و نوادگان منتشر می‌شود. این رفتار تضمین می‌کند که هیچ <bdi dir="ltr">Goroutine</bdi> ای پس از لغو درخواست اصلی به کار بیهوده ادامه ندهد و منابع سیستم از جمله اتصالات دیتابیس، <bdi dir="ltr">HTTP</bdi> و حافظه آزاد شوند. در PHP معمولاً هر درخواست مستقل است و لغو یک فرآیند تأثیری روی دیگران ندارد اما در Go که یک سرور هزاران درخواست را به صورت همزمان پردازش می‌کند این مکانیزم حیاتی است. نمودار زیر این درخت را در عمل نشان می‌دهد.</p>
 
 <figure class="diagram" dir="ltr">
-<svg height="520" viewBox="0 0 780 520" width="780" xmlns="http://www.w3.org/2000/svg">
-<rect fill="#fafafa" height="520" rx="8" width="780" x="0" y="0"></rect>
-<defs><filter id="sh102" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
-<marker id="aTree1" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#00ADD8" points="0 0,10 3.5,0 7"></polygon></marker>
-<marker id="aTreeR" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#e74c3c" points="0 0,10 3.5,0 7"></polygon></marker>
-</defs>
-<!-- Title -->
-<text fill="#00ADD8" font-size="15" font-weight="bold" text-anchor="middle" x="390" y="25" direction="rtl" unicode-bidi="embed">درخت انتشار لغو <tspan direction="ltr" unicode-bidi="embed">Context</tspan> — از ریشه تا برگ‌ها</text>
+<pre class="mermaid">flowchart TB
+    Root["context.Background()<br/>ریشه — بدون deadline ، بدون cancel"]
 
-<!-- Level 0: Background root -->
-<rect fill="#00ADD8" height="50" opacity="0.1" rx="8" stroke="#00ADD8" stroke-width="2.5" width="220" x="280" y="42"></rect>
-<text fill="#00ADD8" font-size="13" font-weight="bold" text-anchor="middle" x="390" y="63" direction="ltr" unicode-bidi="embed">context.Background()</text>
-<text fill="#666" font-size="9" text-anchor="middle" x="390" y="82" direction="rtl" unicode-bidi="embed">ریشه — بدون <tspan direction="ltr" unicode-bidi="embed">deadline</tspan> ، بدون <tspan direction="ltr" unicode-bidi="embed">cancel</tspan></text>
+    WC["WithCancel<br/>لغو دستی با cancel()<br/>props: cancel func"]
+    WT["WithTimeout<br/>لغو خودکار بعد از مدت زمان<br/>props: timeout, cancel func"]
+    WD["WithDeadline<br/>لغو در زمان مشخص<br/>props: deadline time, cancel func"]
 
-<!-- Lines from root to children -->
-<line marker-end="url(#aTree1)" stroke="#00ADD8" stroke-width="1.5" x1="320" x2="150" y1="92" y2="128"></line>
-<line marker-end="url(#aTree1)" stroke="#00ADD8" stroke-width="1.5" x1="390" x2="390" y1="92" y2="128"></line>
-<line marker-end="url(#aTree1)" stroke="#00ADD8" stroke-width="1.5" x1="460" x2="630" y1="92" y2="128"></line>
+    Root --> WC
+    Root --> WT
+    Root --> WD
 
-<!-- Level 1: WithCancel -->
-<rect fill="#4CAF50" height="52" opacity="0.12" rx="8" stroke="#4CAF50" stroke-width="2" width="200" x="50" y="128"></rect>
-<text fill="#4CAF50" font-size="12" font-weight="bold" text-anchor="middle" x="150" y="150" direction="ltr" unicode-bidi="embed">WithCancel</text>
-<text fill="#555" font-size="9" text-anchor="middle" x="150" y="166" direction="rtl" unicode-bidi="embed">لغو دستی با <tspan direction="ltr" unicode-bidi="embed">cancel()</tspan></text>
-<text fill="#888" font-size="8" text-anchor="middle" x="150" y="178" direction="ltr" unicode-bidi="embed">props: cancel func</text>
+    DBQ["WithTimeout(ctx, 5s)<br/>گوریوتین DB Query"]
+    CACHE["WithCancel(ctx)<br/>گوریوتین Cache"]
+    API["WithCancel(ctx)<br/>گوریوتین API Call"]
+    EMAIL["WithTimeout(ctx, 2s)<br/>گوریوتین Email"]
+    LOG["WithCancel(ctx)<br/>گوریوتین Logger"]
+    NOT["WithTimeout(ctx, 3s)<br/>گوریوتین Notify"]
 
-<!-- Level 1: WithTimeout -->
-<rect fill="#FF9800" height="52" opacity="0.12" rx="8" stroke="#FF9800" stroke-width="2" width="200" x="290" y="128"></rect>
-<text fill="#FF9800" font-size="12" font-weight="bold" text-anchor="middle" x="390" y="150" direction="ltr" unicode-bidi="embed">WithTimeout</text>
-<text fill="#555" font-size="9" text-anchor="middle" x="390" y="166" direction="rtl" unicode-bidi="embed">لغو خودکار بعد از مدت زمان</text>
-<text fill="#888" font-size="8" text-anchor="middle" x="390" y="178" direction="ltr" unicode-bidi="embed">props: timeout, cancel func</text>
+    WC --> DBQ
+    WT --> CACHE
+    WT --> API
+    WT --> EMAIL
+    WD --> LOG
+    WD --> NOT
 
-<!-- Level 1: WithDeadline -->
-<rect fill="#9C27B0" height="52" opacity="0.12" rx="8" stroke="#9C27B0" stroke-width="2" width="200" x="530" y="128"></rect>
-<text fill="#9C27B0" font-size="12" font-weight="bold" text-anchor="middle" x="630" y="150" direction="ltr" unicode-bidi="embed">WithDeadline</text>
-<text fill="#555" font-size="9" text-anchor="middle" x="630" y="166" direction="rtl" unicode-bidi="embed">لغو در زمان مشخص</text>
-<text fill="#888" font-size="8" text-anchor="middle" x="630" y="178" direction="ltr" unicode-bidi="embed">props: deadline time, cancel func</text>
+    subgraph CANCEL["فراخوانی cancel() والد — انتشار لغو به پایین"]
+        direction TB
+        C1["WithCancel ✗<br/>Done() closed → Err() = Canceled"]
+        C2["WithTimeout ✗<br/>Done() closed → Err() = Canceled"]
+        C3["WithDeadline ✗<br/>Done() closed → Err() = Canceled"]
+        G1["DB Query ✗<br/>ctx.Done() → return"]
+        G2["Cache ✗<br/>ctx.Done() → return"]
+        G3["API Call ✗<br/>ctx.Done() → return"]
+        G4["Email ✗<br/>ctx.Done() → return"]
+        G5["Logger ✗<br/>ctx.Done() → return"]
+        G6["Notify ✗<br/>ctx.Done() → return"]
+        C1 --> G1
+        C2 --> G2
+        C2 --> G3
+        C2 --> G4
+        C3 --> G5
+        C3 --> G6
+    end
 
-<!-- Lines from Level 1 to Level 2 (grandchildren) -->
-<line stroke="#4CAF50" stroke-width="1.2" stroke-dasharray="4,3" x1="120" x2="90" y1="180" y2="218"></line>
-<line stroke="#4CAF50" stroke-width="1.2" stroke-dasharray="4,3" x1="180" x2="220" y1="180" y2="218"></line>
-<line stroke="#FF9800" stroke-width="1.2" stroke-dasharray="4,3" x1="360" x2="350" y1="180" y2="218"></line>
-<line stroke="#FF9800" stroke-width="1.2" stroke-dasharray="4,3" x1="420" x2="480" y1="180" y2="218"></line>
-<line stroke="#9C27B0" stroke-width="1.2" stroke-dasharray="4,3" x1="600" x2="590" y1="180" y2="218"></line>
-<line stroke="#9C27B0" stroke-width="1.2" stroke-dasharray="4,3" x1="660" x2="700" y1="180" y2="218"></line>
+    N1["کانال Done() بسته می‌شود → &lt;-ctx.Done() سیگنال دریافت می‌کند → Goroutine متوقف می‌شود"]
+    GOLD["قاعده طلایی: لغو والد = لغو تمام فرزندان و نوادگان —<br/>سیگنال لغو فقط به پایین منتشر می‌شود، هرگز به بالا"]
 
-<!-- Level 2: Grandchildren -->
-<rect fill="#4CAF50" height="42" opacity="0.07" rx="6" stroke="#4CAF50" stroke-width="1.5" width="130" x="25" y="218"></rect>
-<text fill="#333" font-size="9" text-anchor="middle" x="90" y="236" direction="ltr" unicode-bidi="embed">WithTimeout(ctx, 5s)</text>
-<text fill="#666" font-size="8" text-anchor="middle" x="90" y="252" direction="rtl" unicode-bidi="embed">گوریوتین <tspan direction="ltr" unicode-bidi="embed">DB Query</tspan></text>
-
-<rect fill="#4CAF50" height="42" opacity="0.07" rx="6" stroke="#4CAF50" stroke-width="1.5" width="130" x="155" y="218"></rect>
-<text fill="#333" font-size="9" text-anchor="middle" x="220" y="236" direction="ltr" unicode-bidi="embed">WithCancel(ctx)</text>
-<text fill="#666" font-size="8" text-anchor="middle" x="220" y="252" direction="rtl" unicode-bidi="embed">گوریوتین <tspan direction="ltr" unicode-bidi="embed">Cache</tspan></text>
-
-<rect fill="#FF9800" height="42" opacity="0.07" rx="6" stroke="#FF9800" stroke-width="1.5" width="130" x="285" y="218"></rect>
-<text fill="#333" font-size="9" text-anchor="middle" x="350" y="236" direction="ltr" unicode-bidi="embed">WithCancel(ctx)</text>
-<text fill="#666" font-size="8" text-anchor="middle" x="350" y="252" direction="rtl" unicode-bidi="embed">گوریوتین <tspan direction="ltr" unicode-bidi="embed">API Call</tspan></text>
-
-<rect fill="#FF9800" height="42" opacity="0.07" rx="6" stroke="#FF9800" stroke-width="1.5" width="130" x="415" y="218"></rect>
-<text fill="#333" font-size="9" text-anchor="middle" x="480" y="236" direction="ltr" unicode-bidi="embed">WithTimeout(ctx, 2s)</text>
-<text fill="#666" font-size="8" text-anchor="middle" x="480" y="252" direction="rtl" unicode-bidi="embed">گوریوتین <tspan direction="ltr" unicode-bidi="embed">Email</tspan></text>
-
-<rect fill="#9C27B0" height="42" opacity="0.07" rx="6" stroke="#9C27B0" stroke-width="1.5" width="130" x="525" y="218"></rect>
-<text fill="#333" font-size="9" text-anchor="middle" x="590" y="236" direction="ltr" unicode-bidi="embed">WithCancel(ctx)</text>
-<text fill="#666" font-size="8" text-anchor="middle" x="590" y="252" direction="rtl" unicode-bidi="embed">گوریوتین <tspan direction="ltr" unicode-bidi="embed">Logger</tspan></text>
-
-<rect fill="#9C27B0" height="42" opacity="0.07" rx="6" stroke="#9C27B0" stroke-width="1.5" width="130" x="665" y="218"></rect>
-<text fill="#333" font-size="9" text-anchor="middle" x="730" y="236" direction="ltr" unicode-bidi="embed">WithTimeout(ctx, 3s)</text>
-<text fill="#666" font-size="8" text-anchor="middle" x="730" y="252" direction="rtl" unicode-bidi="embed">گوریوتین <tspan direction="ltr" unicode-bidi="embed">Notify</tspan></text>
-
-<!-- Cancel propagation section -->
-<text fill="#e74c3c" font-size="13" font-weight="bold" text-anchor="middle" x="390" y="290" direction="rtl" unicode-bidi="embed">فراخوانی <tspan direction="ltr" unicode-bidi="embed">cancel()</tspan> والد — انتشار لغو به پایین</text>
-
-<!-- Red X marks propagation from Level 0 -->
-<line marker-end="url(#aTreeR)" stroke="#e74c3c" stroke-width="2.5" x1="310" x2="150" y1="300" y2="330"></line>
-<line marker-end="url(#aTreeR)" stroke="#e74c3c" stroke-width="2.5" x1="390" x2="390" y1="300" y2="330"></line>
-<line marker-end="url(#aTreeR)" stroke="#e74c3c" stroke-width="2.5" x1="470" x2="630" y1="300" y2="330"></line>
-
-<!-- Level 1 cancelled -->
-<rect fill="#e74c3c" height="40" opacity="0.12" rx="8" stroke="#e74c3c" stroke-width="2" width="200" x="50" y="330"></rect>
-<text fill="#e74c3c" font-size="11" text-anchor="middle" x="150" y="348" direction="ltr" unicode-bidi="embed">WithCancel ✗</text>
-<text fill="#666" font-size="8" text-anchor="middle" x="150" y="362" direction="ltr" unicode-bidi="embed">Done() closed → Err() = Canceled</text>
-
-<rect fill="#e74c3c" height="40" opacity="0.12" rx="8" stroke="#e74c3c" stroke-width="2" width="200" x="290" y="330"></rect>
-<text fill="#e74c3c" font-size="11" text-anchor="middle" x="390" y="348" direction="ltr" unicode-bidi="embed">WithTimeout ✗</text>
-<text fill="#666" font-size="8" text-anchor="middle" x="390" y="362" direction="ltr" unicode-bidi="embed">Done() closed → Err() = Canceled</text>
-
-<rect fill="#e74c3c" height="40" opacity="0.12" rx="8" stroke="#e74c3c" stroke-width="2" width="200" x="530" y="330"></rect>
-<text fill="#e74c3c" font-size="11" text-anchor="middle" x="630" y="348" direction="ltr" unicode-bidi="embed">WithDeadline ✗</text>
-<text fill="#666" font-size="8" text-anchor="middle" x="630" y="362" direction="ltr" unicode-bidi="embed">Done() closed → Err() = Canceled</text>
-
-<!-- Red propagation to grandchildren -->
-<line stroke="#e74c3c" stroke-width="1.5" stroke-dasharray="3,3" x1="120" x2="90" y1="370" y2="398"></line>
-<line stroke="#e74c3c" stroke-width="1.5" stroke-dasharray="3,3" x1="180" x2="220" y1="370" y2="398"></line>
-<line stroke="#e74c3c" stroke-width="1.5" stroke-dasharray="3,3" x1="360" x2="350" y1="370" y2="398"></line>
-<line stroke="#e74c3c" stroke-width="1.5" stroke-dasharray="3,3" x1="420" x2="480" y1="370" y2="398"></line>
-<line stroke="#e74c3c" stroke-width="1.5" stroke-dasharray="3,3" x1="600" x2="590" y1="370" y2="398"></line>
-<line stroke="#e74c3c" stroke-width="1.5" stroke-dasharray="3,3" x1="660" x2="700" y1="370" y2="398"></line>
-
-<!-- Level 2 cancelled grandchildren -->
-<rect fill="#e74c3c" height="35" opacity="0.08" rx="6" stroke="#e74c3c" stroke-width="1.5" width="130" x="25" y="398"></rect>
-<text fill="#e74c3c" font-size="9" text-anchor="middle" x="90" y="416" direction="ltr" unicode-bidi="embed">DB Query ✗</text>
-<text fill="#888" font-size="8" text-anchor="middle" x="90" y="428" direction="ltr" unicode-bidi="embed">ctx.Done() → return</text>
-
-<rect fill="#e74c3c" height="35" opacity="0.08" rx="6" stroke="#e74c3c" stroke-width="1.5" width="130" x="155" y="398"></rect>
-<text fill="#e74c3c" font-size="9" text-anchor="middle" x="220" y="416" direction="ltr" unicode-bidi="embed">Cache ✗</text>
-<text fill="#888" font-size="8" text-anchor="middle" x="220" y="428" direction="ltr" unicode-bidi="embed">ctx.Done() → return</text>
-
-<rect fill="#e74c3c" height="35" opacity="0.08" rx="6" stroke="#e74c3c" stroke-width="1.5" width="130" x="285" y="398"></rect>
-<text fill="#e74c3c" font-size="9" text-anchor="middle" x="350" y="416" direction="ltr" unicode-bidi="embed">API Call ✗</text>
-<text fill="#888" font-size="8" text-anchor="middle" x="350" y="428" direction="ltr" unicode-bidi="embed">ctx.Done() → return</text>
-
-<rect fill="#e74c3c" height="35" opacity="0.08" rx="6" stroke="#e74c3c" stroke-width="1.5" width="130" x="415" y="398"></rect>
-<text fill="#e74c3c" font-size="9" text-anchor="middle" x="480" y="416" direction="ltr" unicode-bidi="embed">Email ✗</text>
-<text fill="#888" font-size="8" text-anchor="middle" x="480" y="428" direction="ltr" unicode-bidi="embed">ctx.Done() → return</text>
-
-<rect fill="#e74c3c" height="35" opacity="0.08" rx="6" stroke="#e74c3c" stroke-width="1.5" width="130" x="525" y="398"></rect>
-<text fill="#e74c3c" font-size="9" text-anchor="middle" x="590" y="416" direction="ltr" unicode-bidi="embed">Logger ✗</text>
-<text fill="#888" font-size="8" text-anchor="middle" x="590" y="428" direction="ltr" unicode-bidi="embed">ctx.Done() → return</text>
-
-<rect fill="#e74c3c" height="35" opacity="0.08" rx="6" stroke="#e74c3c" stroke-width="1.5" width="130" x="665" y="398"></rect>
-<text fill="#e74c3c" font-size="9" text-anchor="middle" x="730" y="416" direction="ltr" unicode-bidi="embed">Notify ✗</text>
-<text fill="#888" font-size="8" text-anchor="middle" x="730" y="428" direction="ltr" unicode-bidi="embed">ctx.Done() → return</text>
-
-<!-- Info box: Done() channel -->
-<rect fill="#fff8e1" height="32" rx="6" stroke="#FF9800" stroke-width="1" width="350" x="215" y="445"></rect>
-<text fill="#555" font-size="9" text-anchor="middle" x="390" y="463" direction="rtl" unicode-bidi="embed">کانال <tspan direction="ltr" unicode-bidi="embed">Done()</tspan> بسته می‌شود → <tspan direction="ltr" unicode-bidi="embed">&lt;-ctx.Done()</tspan> سیگنال دریافت می‌کند → <tspan direction="ltr" unicode-bidi="embed">Goroutine</tspan> متوقف می‌شود</text>
-
-<!-- Golden rule bar -->
-<rect fill="#00ADD8" height="28" rx="6" width="720" x="30" y="485"></rect>
-<text fill="#fff" font-size="11" font-weight="bold" text-anchor="middle" x="390" y="503" direction="rtl" unicode-bidi="embed">قاعده طلایی: لغو والد = لغو تمام فرزندان و نوادگان — سیگنال لغو فقط به پایین منتشر می‌شود، هرگز به بالا</text>
-</svg>
+    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
+    classDef bothBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
+    classDef errBox fill:#fef2f2,stroke:#ef4444,stroke-width:1.5px,color:#1f2937;
+    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
+    classDef neuBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
+    class Root goBox;
+    class WC,WT,WD,DBQ,CACHE,API,EMAIL,LOG,NOT bothBox;
+    class CANCEL,C1,C2,C3,G1,G2,G3,G4,G5,G6 errBox;
+    class N1 neuBox;
+    class GOLD warnBox;</pre>
 <figcaption>شکل ۵-۱۰-ج: درخت انتشار لغو <bdi dir="ltr">Context</bdi> — وقتی <bdi dir="ltr">cancel()</bdi> روی والد فراخوانی می‌شود، تمام فرزندان و نوادگان متوقف می‌شوند</figcaption>
 </figure>
 

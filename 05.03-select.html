@@ -71,45 +71,36 @@
 <h2 id="select">Select</h2>
 <p> دستور select یک ساختار کنترلی ویژه برای مدیریت هم‌زمان چند کانال است. این دستور شبیه حالتی عمل می‌کند که در یک سیستم صف مانند Laravel چندین worker در حال گوش دادن به صف باشند و هر کدام که زودتر آماده شود job را دریافت کند. select به شما اجازه می‌دهد عملیات ارسال و دریافت روی کانال‌های مختلف را به صورت هم‌زمان تحت نظر داشته باشید و اولین کانالی که داده‌ای برای پردازش آماده کند انتخاب می‌شود. اگر چند کانال به طور هم‌زمان آماده باشند Go یکی از آن‌ها را به صورت تصادفی اجرا می‌کند تا تعادل میان کانال‌ها حفظ شود. در صورتی که هیچ کانالی آماده نباشد اگر بخش default تعریف شده باشد اجرای آن بلاک بلافاصله انجام می‌شود و در غیر این صورت select منتظر می‌ماند تا یکی از کانال‌ها آماده شود. این قابلیت امکان پیاده‌سازی الگوهایی مانند multiplexing برای دریافت داده از منابع مختلف، مدیریت زمان‌بندی و اعمال timeout یا cancellation و همچنین طراحی سیستم‌های non locking را فراهم می‌کند.</p>
 <figure class="diagram" dir="ltr">
-<svg height="300" viewBox="0 0 650 300" width="650" xmlns="http://www.w3.org/2000/svg">
-<rect fill="#fafafa" height="300" rx="8" width="650" x="0" y="0"></rect>
-<defs><filter id="sh97" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
-<marker id="aSl1" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#00ADD8" points="0 0,10 3.5,0 7"></polygon></marker>
-<marker id="aSl2" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#27ae60" points="0 0,10 3.5,0 7"></polygon></marker>
-<marker id="aSl3" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#f39c12" points="0 0,10 3.5,0 7"></polygon></marker>
-</defs>
-<text fill="#00ADD8" font-size="15" font-weight="bold" text-anchor="middle" x="325" y="25" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">Select</tspan>: گوش دادن همزمان به چند کانال</text>
-<!-- Channels -->
-<rect fill="#00ADD8" height="40" opacity="0.15" rx="8" stroke="#00ADD8" stroke-width="2" width="130" x="20" y="50"></rect>
-<text fill="#333" font-size="12" text-anchor="middle" x="85" y="75" direction="ltr" unicode-bidi="embed">Channel 1</text>
-<rect fill="#27ae60" height="40" opacity="0.15" rx="8" stroke="#27ae60" stroke-width="2" width="130" x="20" y="105"></rect>
-<text fill="#333" font-size="12" text-anchor="middle" x="85" y="130" direction="ltr" unicode-bidi="embed">Channel 2</text>
-<rect fill="#f39c12" height="40" opacity="0.15" rx="8" stroke="#f39c12" stroke-width="2" width="130" x="20" y="160"></rect>
-<text fill="#333" font-size="12" text-anchor="middle" x="85" y="185" direction="ltr" unicode-bidi="embed">time.After</text>
-<!-- Select box -->
-<rect fill="#e0e0e0" height="180" opacity="0.3" rx="12" stroke="#999" stroke-width="2" width="190" x="230" y="45"></rect>
-<text fill="#333" font-size="14" font-weight="bold" text-anchor="middle" x="325" y="70" direction="ltr" unicode-bidi="embed">select</text>
-<line stroke="#999" stroke-width="1" x1="245" x2="405" y1="80" y2="80"></line>
-<text fill="#00ADD8" font-size="11" text-anchor="middle" x="325" y="100" direction="ltr" unicode-bidi="embed">case &lt;-ch1:</text>
-<text fill="#27ae60" font-size="11" text-anchor="middle" x="325" y="130" direction="ltr" unicode-bidi="embed">case &lt;-ch2:</text>
-<text fill="#f39c12" font-size="11" text-anchor="middle" x="325" y="160" direction="ltr" unicode-bidi="embed">case &lt;-timeout:</text>
-<text fill="#999" font-size="11" text-anchor="middle" x="325" y="195" direction="ltr" unicode-bidi="embed">default:</text>
-<!-- Arrows -->
-<line marker-end="url(#aSl1)" stroke="#00ADD8" stroke-width="2" x1="150" x2="230" y1="70" y2="95"></line>
-<line marker-end="url(#aSl2)" stroke="#27ae60" stroke-width="2" x1="150" x2="230" y1="125" y2="125"></line>
-<line marker-end="url(#aSl3)" stroke="#f39c12" stroke-width="2" x1="150" x2="230" y1="180" y2="155"></line>
-<!-- Output -->
-<rect fill="#27ae60" height="40" opacity="0.15" rx="8" stroke="#27ae60" stroke-width="2" width="150" x="480" y="80"></rect>
-<text fill="#333" font-size="11" text-anchor="middle" x="555" y="105" direction="rtl" unicode-bidi="embed">اولین آماده اجرا</text>
-<line marker-end="url(#aSl2)" stroke="#333" stroke-width="1.5" x1="420" x2="480" y1="110" y2="100"></line>
-<rect fill="#999" height="40" opacity="0.1" rx="8" stroke="#999" stroke-dasharray="5,3" stroke-width="1.5" width="150" x="480" y="140"></rect>
-<text fill="#999" font-size="10" text-anchor="middle" x="555" y="165" direction="rtl" unicode-bidi="embed">هیچ‌کدام آماده نبود</text>
-<line stroke="#999" stroke-dasharray="4,3" stroke-width="1" x1="420" x2="480" y1="195" y2="160"></line>
-<!-- Notes -->
-<rect fill="#f5f5f5" height="45" rx="6" stroke="#ddd" stroke-width="1" width="550" x="50" y="240"></rect>
-<text fill="#555" font-size="11" text-anchor="middle" x="325" y="258" direction="rtl" unicode-bidi="embed">چند <tspan direction="ltr" unicode-bidi="embed">case</tspan> آماده → انتخاب تصادفی | هیچ <tspan direction="ltr" unicode-bidi="embed">case</tspan> آماده + <tspan direction="ltr" unicode-bidi="embed">default</tspan> → <tspan direction="ltr" unicode-bidi="embed">non-blocking</tspan></text>
-<text fill="#888" font-size="10" text-anchor="middle" x="325" y="275" direction="rtl" unicode-bidi="embed">بدون <tspan direction="ltr" unicode-bidi="embed">default</tspan> → بلاک تا آماده شدن یکی از <tspan direction="ltr" unicode-bidi="embed">case</tspan>‌ها</text>
-</svg>
+<pre class="mermaid">flowchart TB
+    C1["Channel 1"]
+    C2["Channel 2"]
+    TA["time.After"]
+    Sel{"select"}
+    A1["case &lt;-ch1:<br/>اولین آماده اجرا"]
+    A2["case &lt;-ch2:<br/>اولین آماده اجرا"]
+    A3["case &lt;-timeout:<br/>اولین آماده اجرا"]
+    A4["default:<br/>هیچ‌کدام آماده نبود"]
+
+    C1 --> Sel
+    C2 --> Sel
+    TA --> Sel
+    Sel -- "case &lt;-ch1:" --> A1
+    Sel -- "case &lt;-ch2:" --> A2
+    Sel -- "case &lt;-timeout:" --> A3
+    Sel -- "default:" --> A4
+
+    N1["چند case آماده → انتخاب تصادفی |<br/>هیچ case آماده + default → non-blocking"]
+    N2["بدون default → بلاک تا آماده شدن یکی از case‌ها"]
+    N1 --> N2
+
+    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
+    classDef bothBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
+    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
+    classDef neuBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
+    class C1,C2,TA goBox;
+    class Sel,A1,A2,A3 bothBox;
+    class A4 warnBox;
+    class N1,N2 neuBox;</pre>
 <figcaption>شکل ۵-۹: جریان <bdi dir="ltr">select</bdi> - گوش دادن همزمان به چند کانال</figcaption>
 </figure>
 <figure class="code go" dir="ltr">
@@ -186,45 +177,27 @@ func main() {
 <p>یکی از کاربردهای کلیدی <code>select</code> ترکیب آن با <code>time.After</code> و <code>context.Done()</code> برای مدیریت زمان و لغو عملیات است. در سیستم‌های واقعی هیچ عملیاتی نباید بی‌نهایت منتظر بماند — همیشه باید مهلت زمانی و مکانیزم لغو وجود داشته باشد.</p>
 
 <figure class="diagram" dir="ltr">
-<svg width="700" height="260" viewBox="0 0 700 260" xmlns="http://www.w3.org/2000/svg">
-<rect fill="#fafafa" height="260" rx="8" width="700" x="0" y="0"></rect>
-<defs><filter id="sh98" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
-<marker id="aTm1" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#00ADD8" points="0 0,10 3.5,0 7"></polygon></marker>
-<marker id="aTm2" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#f39c12" points="0 0,10 3.5,0 7"></polygon></marker>
-<marker id="aTm3" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#e74c3c" points="0 0,10 3.5,0 7"></polygon></marker>
-</defs>
-<text fill="#00ADD8" font-size="15" font-weight="bold" text-anchor="middle" x="350" y="25" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">select</tspan> با تایم‌اوت و لغو</text>
-<!-- Three cases -->
-<rect fill="#00ADD8" height="40" opacity="0.12" rx="8" stroke="#00ADD8" stroke-width="2" width="150" x="30" y="55"></rect>
-<text fill="#333" font-size="11" text-anchor="middle" x="105" y="80" direction="ltr" unicode-bidi="embed">case &lt;-ch:</text>
-<rect fill="#f39c12" height="40" opacity="0.12" rx="8" stroke="#f39c12" stroke-width="2" width="150" x="230" y="55"></rect>
-<text fill="#333" font-size="11" text-anchor="middle" x="305" y="80" direction="ltr" unicode-bidi="embed">case &lt;-time.After:</text>
-<rect fill="#e74c3c" height="40" opacity="0.12" rx="8" stroke="#e74c3c" stroke-width="2" width="150" x="430" y="55"></rect>
-<text fill="#333" font-size="11" text-anchor="middle" x="505" y="80" direction="ltr" unicode-bidi="embed">case &lt;-ctx.Done():</text>
-<!-- Labels under each -->
-<text fill="#00ADD8" font-size="9" text-anchor="middle" x="105" y="108" direction="rtl" unicode-bidi="embed">داده آماده</text>
-<text fill="#f39c12" font-size="9" text-anchor="middle" x="305" y="108" direction="rtl" unicode-bidi="embed">مهلت تمام شد</text>
-<text fill="#e74c3c" font-size="9" text-anchor="middle" x="505" y="108" direction="rtl" unicode-bidi="embed">لغو شد</text>
-<!-- Arrows to select box -->
-<rect fill="#e0e0e0" height="50" opacity="0.3" rx="10" stroke="#999" stroke-width="2" width="100" x="275" y="130"></rect>
-<text fill="#333" font-size="13" font-weight="bold" text-anchor="middle" x="325" y="160" direction="ltr" unicode-bidi="embed">select</text>
-<line marker-end="url(#aTm1)" stroke="#00ADD8" stroke-width="1.5" x1="105" x2="275" y1="95" y2="150"></line>
-<line stroke="#f39c12" stroke-width="1.5" x1="305" x2="325" y1="95" y2="130"></line>
-<line stroke="#e74c3c" stroke-width="1.5" x1="505" x2="375" y1="95" y2="150"></line>
-<!-- Results -->
-<rect fill="#27ae60" height="35" opacity="0.12" rx="8" stroke="#27ae60" stroke-width="2" width="130" x="40" y="200"></rect>
-<text fill="#27ae60" font-size="10" text-anchor="middle" x="105" y="222" direction="rtl" unicode-bidi="embed">پردازش داده (خیر)</text>
-<rect fill="#f39c12" height="35" opacity="0.12" rx="8" stroke="#f39c12" stroke-width="2" width="140" x="230" y="200"></rect>
-<text fill="#f39c12" font-size="10" text-anchor="middle" x="300" y="222" direction="rtl" unicode-bidi="embed">بازگشت خطای تایم‌اوت</text>
-<rect fill="#e74c3c" height="35" opacity="0.12" rx="8" stroke="#e74c3c" stroke-width="2" width="140" x="430" y="200"></rect>
-<text fill="#e74c3c" font-size="10" text-anchor="middle" x="500" y="222" direction="rtl" unicode-bidi="embed">بازگشت خطای لغو</text>
-<line marker-end="url(#aTm1)" stroke="#27ae60" stroke-width="1.5" x1="290" x2="170" y1="170" y2="210"></line>
-<line marker-end="url(#aTm2)" stroke="#f39c12" stroke-width="1.5" x1="325" x2="310" y1="180" y2="200"></line>
-<line marker-end="url(#aTm3)" stroke="#e74c3c" stroke-width="1.5" x1="360" x2="440" y1="170" y2="210"></line>
-<!-- Priority note -->
-<text fill="#999" font-size="9" text-anchor="middle" x="620" y="155" direction="rtl" unicode-bidi="embed">اولین آماده</text>
-<text fill="#999" font-size="9" text-anchor="middle" x="620" y="168" direction="rtl" unicode-bidi="embed">اجرا می‌شود</text>
-</svg>
+<pre class="mermaid">flowchart TB
+    Sel{"select<br/>اولین آماده اجرا می‌شود"}
+    A1["case &lt;-ch:<br/>داده آماده"]
+    A2["case &lt;-time.After:<br/>مهلت تمام شد"]
+    A3["case &lt;-ctx.Done():<br/>لغو شد"]
+    R1["پردازش داده (خیر)"]
+    R2["بازگشت خطای تایم‌اوت"]
+    R3["بازگشت خطای لغو"]
+
+    Sel -- "case &lt;-ch:" --> A1 --> R1
+    Sel -- "case &lt;-time.After:" --> A2 --> R2
+    Sel -- "case &lt;-ctx.Done():" --> A3 --> R3
+
+    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
+    classDef bothBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
+    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
+    classDef errBox fill:#fef2f2,stroke:#ef4444,stroke-width:1.5px,color:#1f2937;
+    class Sel goBox;
+    class A1,R1 bothBox;
+    class A2,R2 warnBox;
+    class A3,R3 errBox;</pre>
 <figcaption dir="rtl">شکل ۵-۹-ب: جریان <bdi dir="ltr">select</bdi> با تایم‌اوت و لغو — سه حالت رقابتی</figcaption>
 </figure>
 
@@ -334,160 +307,59 @@ func processWithTimeout(ctx context.Context) {
 <p>همان‌طور که در ابتدای این بخش دیدیم، <bdi dir="ltr">select</bdi> تمام <bdi dir="ltr">case</bdi>‌ها را به‌صورت تصادفی بررسی می‌کند و اولین <bdi dir="ltr">case</bdi> آماده را اجرا می‌کند. این رفتار دقیقاً مشابه الگوی <bdi dir="ltr">epoll</bdi> در سیستم‌عامل لینوکس است که در آن چندین <bdi dir="ltr">file descriptor</bdi> به صورت همزمان تحت نظر قرار می‌گیرند و اولین رویداد آماده پردازش می‌شود. در نمودار زیر خط زمانی یک <bdi dir="ltr">select</bdi> در حلقه را مشاهده می‌کنید که در هر تکرار <bdi dir="ltr">case</bdi> متفاوتی انتخاب می‌شود.</p>
 
 <figure class="diagram" dir="ltr">
-<svg width="780" height="580" viewBox="0 0 780 580" xmlns="http://www.w3.org/2000/svg">
-<rect fill="#fafafa" height="580" rx="8" width="780" x="0" y="0"></rect>
-<defs><filter id="sh99" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/></filter>
-<marker id="aSelE1" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#00ADD8" points="0 0,10 3.5,0 7"></polygon></marker>
-<marker id="aSelE2" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#4CAF50" points="0 0,10 3.5,0 7"></polygon></marker>
-<marker id="aSelE3" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#FF9800" points="0 0,10 3.5,0 7"></polygon></marker>
-<marker id="aSelE4" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5"><polygon fill="#999" points="0 0,10 3.5,0 7"></polygon></marker>
-</defs>
+<pre class="mermaid">flowchart TB
+    subgraph INP["کانال‌های ورودی"]
+        direction LR
+        C1["ch1"]
+        C2["ch2"]
+        C3["ch3"]
+        TA["time.After"]
+    end
 
-<!-- Title -->
-<text fill="#00ADD8" font-size="16" font-weight="bold" text-anchor="middle" x="390" y="28" direction="rtl" unicode-bidi="embed">ارزیابی <tspan direction="ltr" unicode-bidi="embed">select</tspan> و <tspan direction="ltr" unicode-bidi="embed">Multiplexing</tspan>: انتخاب تصادفی و خط زمانی</text>
+    Sel{"select"}
+    A1["case &lt;-ch1:"]
+    A2["case &lt;-ch2:"]
+    A3["case &lt;-ch3:"]
+    A4["case &lt;-timeout:"]
+    A5["default:"]
 
-<!-- Section 1: Channel inputs -->
-<text fill="#555" font-size="11" font-weight="bold" x="20" y="55" direction="rtl" unicode-bidi="embed">کانال‌های ورودی</text>
+    INP --> Sel
+    Sel -- "case &lt;-ch1:" --> A1
+    Sel -- "case &lt;-ch2:" --> A2
+    Sel -- "case &lt;-ch3:" --> A3
+    Sel -- "case &lt;-timeout:" --> A4
+    Sel -- "default:" --> A5
 
-<!-- ch1 -->
-<rect fill="#00ADD8" height="38" opacity="0.15" rx="8" stroke="#00ADD8" stroke-width="2" width="130" x="20" y="65"></rect>
-<text fill="#333" font-size="12" font-weight="bold" text-anchor="middle" x="85" y="89" direction="ltr" unicode-bidi="embed">ch1</text>
-<!-- ch2 -->
-<rect fill="#00ADD8" height="38" opacity="0.15" rx="8" stroke="#00ADD8" stroke-width="2" width="130" x="20" y="115"></rect>
-<text fill="#333" font-size="12" font-weight="bold" text-anchor="middle" x="85" y="139" direction="ltr" unicode-bidi="embed">ch2</text>
-<!-- ch3 -->
-<rect fill="#00ADD8" height="38" opacity="0.15" rx="8" stroke="#00ADD8" stroke-width="2" width="130" x="20" y="165"></rect>
-<text fill="#333" font-size="12" font-weight="bold" text-anchor="middle" x="85" y="189" direction="ltr" unicode-bidi="embed">ch3</text>
-<!-- timeout -->
-<rect fill="#FF9800" height="38" opacity="0.15" rx="8" stroke="#FF9800" stroke-width="2" width="130" x="20" y="215"></rect>
-<text fill="#333" font-size="12" font-weight="bold" text-anchor="middle" x="85" y="239" direction="ltr" unicode-bidi="embed">time.After</text>
+    subgraph RULES["قوانین انتخاب"]
+        direction TB
+        R1["چند case آماده؟ → یکی تصادفی انتخاب"]
+        R2["default غیربلاک‌کننده — هیچ case آماده نبود"]
+        R3["select بلاک تا آماده شدن یک case<br/>بدون default → goroutine منتظر می‌ماند"]
+        R4["چند case آماده → انتخاب تصادفی<br/>تضمین عدم starvation"]
+        R5["default → غیربلاک‌کننده<br/>هیچ case آماده نبود → default اجرا"]
+        R1 --> R2 --> R3 --> R4 --> R5
+    end
 
-<!-- Select box -->
-<rect fill="#e0e0e0" height="210" opacity="0.25" rx="12" stroke="#666" stroke-width="2.5" width="220" x="230" y="55"></rect>
-<text fill="#333" font-size="16" font-weight="bold" text-anchor="middle" x="340" y="80" direction="ltr" unicode-bidi="embed">select</text>
-<line stroke="#999" stroke-width="1" x1="245" x2="435" y1="90" y2="90"></line>
+    subgraph TIMELINE["خط زمانی select در حلقه — هر تکرار یک case متفاوت"]
+        direction TB
+        I1["Iter 1 — ch1:—  ch2:✓  ch3:—  tmout:…  → ch2 ✓"]
+        I2["Iter 2 — ch1:✓  ch2:✓  ch3:—  tmout:…  → ch1 ✓ (random)"]
+        I3["Iter 3 — ch1:—  ch2:—  ch3:—  tmout:✓  → timeout ✓"]
+        I4["Iter 4 — ch1:—  ch2:—  ch3:—  tmout:…  → default (non-block)"]
+        I1 --> I2 --> I3 --> I4
+    end
 
-<!-- Cases inside select -->
-<text fill="#00ADD8" font-size="11" text-anchor="middle" x="340" y="112" direction="ltr" unicode-bidi="embed">case &lt;-ch1:</text>
-<text fill="#00ADD8" font-size="11" text-anchor="middle" x="340" y="148" direction="ltr" unicode-bidi="embed">case &lt;-ch2:</text>
-<text fill="#00ADD8" font-size="11" text-anchor="middle" x="340" y="184" direction="ltr" unicode-bidi="embed">case &lt;-ch3:</text>
-<text fill="#FF9800" font-size="11" text-anchor="middle" x="340" y="220" direction="ltr" unicode-bidi="embed">case &lt;-timeout:</text>
-<text fill="#999" font-size="11" text-anchor="middle" x="340" y="252" direction="ltr" unicode-bidi="embed">default:</text>
+    GOLD["قانون طلایی: select هرگز اولویت نمی‌دهد — تصادفی بودن تضمین‌کننده‌ی عدالت بین caseهاست"]
 
-<!-- Arrows from channels to select -->
-<line marker-end="url(#aSelE1)" stroke="#00ADD8" stroke-width="1.5" x1="150" x2="230" y1="84" y2="107"></line>
-<line marker-end="url(#aSelE1)" stroke="#00ADD8" stroke-width="1.5" x1="150" x2="230" y1="134" y2="143"></line>
-<line marker-end="url(#aSelE1)" stroke="#00ADD8" stroke-width="1.5" x1="150" x2="230" y1="184" y2="179"></line>
-<line marker-end="url(#aSelE3)" stroke="#FF9800" stroke-width="1.5" x1="150" x2="230" y1="234" y2="215"></line>
-
-<!-- Result output -->
-<rect fill="#4CAF50" height="45" opacity="0.12" rx="8" stroke="#4CAF50" stroke-width="2" width="150" x="530" y="70"></rect>
-<text fill="#4CAF50" font-size="11" font-weight="bold" text-anchor="middle" x="605" y="90" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">case</tspan> آماده اجرا شد</text>
-<text fill="#4CAF50" font-size="10" text-anchor="middle" x="605" y="107" direction="rtl" unicode-bidi="embed">انتخاب تصادفی</text>
-
-<rect fill="#999" height="45" opacity="0.1" rx="8" stroke="#999" stroke-dasharray="5,3" stroke-width="1.5" width="150" x="530" y="130"></rect>
-<text fill="#999" font-size="10" text-anchor="middle" x="605" y="150" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">default</tspan> غیربلاک‌کننده</text>
-<text fill="#999" font-size="9" text-anchor="middle" x="605" y="167" direction="rtl" unicode-bidi="embed">هیچ <tspan direction="ltr" unicode-bidi="embed">case</tspan> آماده نبود</text>
-
-<line marker-end="url(#aSelE2)" stroke="#4CAF50" stroke-width="1.5" x1="450" x2="530" y1="95" y2="90"></line>
-<line stroke="#999" stroke-dasharray="4,3" stroke-width="1" x1="450" x2="530" y1="250" y2="155"></line>
-
-<!-- Random indicator -->
-<rect fill="#f5f5f5" height="35" rx="6" stroke="#ddd" stroke-width="1" width="150" x="530" y="195"></rect>
-<text fill="#555" font-size="10" text-anchor="middle" x="605" y="210" direction="rtl" unicode-bidi="embed">چند <tspan direction="ltr" unicode-bidi="embed">case</tspan> آماده؟</text>
-<text fill="#555" font-size="10" text-anchor="middle" x="605" y="225" direction="rtl" unicode-bidi="embed">→ یکی تصادفی انتخاب</text>
-
-<!-- ===== Section 2: Timeline ===== -->
-<text fill="#555" font-size="12" font-weight="bold" x="20" y="290" direction="rtl" unicode-bidi="embed">خط زمانی <tspan direction="ltr" unicode-bidi="embed">select</tspan> در حلقه — هر تکرار یک <tspan direction="ltr" unicode-bidi="embed">case</tspan> متفاوت</text>
-
-<!-- Timeline axis -->
-<line stroke="#999" stroke-width="1.5" x1="40" x2="750" y1="310" y2="310"></line>
-<line marker-end="url(#aSelE4)" stroke="#999" stroke-width="1.5" x1="730" x2="750" y1="310" y2="310"></line>
-
-<!-- Iteration 1 -->
-<circle cx="80" cy="310" fill="#00ADD8" r="5"></circle>
-<text fill="#00ADD8" font-size="9" text-anchor="middle" x="80" y="305" direction="ltr" unicode-bidi="embed">Iter 1</text>
-<rect fill="#ccc" height="22" opacity="0.2" rx="4" width="55" x="120" y="299"></rect>
-<text fill="#999" font-size="9" text-anchor="middle" x="147" y="314" direction="ltr" unicode-bidi="embed">ch1:—</text>
-<rect fill="#4CAF50" height="22" opacity="0.2" rx="4" stroke="#4CAF50" stroke-width="1.5" width="55" x="180" y="299"></rect>
-<text fill="#4CAF50" font-size="9" text-anchor="middle" x="207" y="314" direction="ltr" unicode-bidi="embed">ch2:✓</text>
-<rect fill="#ccc" height="22" opacity="0.2" rx="4" width="55" x="240" y="299"></rect>
-<text fill="#999" font-size="9" text-anchor="middle" x="267" y="314" direction="ltr" unicode-bidi="embed">ch3:—</text>
-<rect fill="#ccc" height="22" opacity="0.2" rx="4" width="60" x="300" y="299"></rect>
-<text fill="#999" font-size="9" text-anchor="middle" x="330" y="314" direction="ltr" unicode-bidi="embed">tmout:…</text>
-<!-- Result arrow -->
-<line marker-end="url(#aSelE2)" stroke="#4CAF50" stroke-width="2" x1="370" x2="420" y1="310" y2="310"></line>
-<rect fill="#4CAF50" height="22" opacity="0.15" rx="4" stroke="#4CAF50" stroke-width="1.5" width="90" x="420" y="299"></rect>
-<text fill="#4CAF50" font-size="9" font-weight="bold" text-anchor="middle" x="465" y="314" direction="ltr" unicode-bidi="embed">→ ch2 ✓</text>
-
-<!-- Iteration 2 -->
-<circle cx="80" cy="350" fill="#00ADD8" r="5"></circle>
-<text fill="#00ADD8" font-size="9" text-anchor="middle" x="80" y="345" direction="ltr" unicode-bidi="embed">Iter 2</text>
-<rect fill="#4CAF50" height="22" opacity="0.2" rx="4" stroke="#4CAF50" stroke-width="1.5" width="55" x="120" y="339"></rect>
-<text fill="#4CAF50" font-size="9" text-anchor="middle" x="147" y="354" direction="ltr" unicode-bidi="embed">ch1:✓</text>
-<rect fill="#4CAF50" height="22" opacity="0.2" rx="4" stroke="#4CAF50" stroke-width="1.5" width="55" x="180" y="339"></rect>
-<text fill="#4CAF50" font-size="9" text-anchor="middle" x="207" y="354" direction="ltr" unicode-bidi="embed">ch2:✓</text>
-<rect fill="#ccc" height="22" opacity="0.2" rx="4" width="55" x="240" y="339"></rect>
-<text fill="#999" font-size="9" text-anchor="middle" x="267" y="354" direction="ltr" unicode-bidi="embed">ch3:—</text>
-<rect fill="#ccc" height="22" opacity="0.2" rx="4" width="60" x="300" y="339"></rect>
-<text fill="#999" font-size="9" text-anchor="middle" x="330" y="354" direction="ltr" unicode-bidi="embed">tmout:…</text>
-<!-- Result arrow -->
-<line marker-end="url(#aSelE2)" stroke="#4CAF50" stroke-width="2" x1="370" x2="420" y1="350" y2="350"></line>
-<rect fill="#4CAF50" height="22" opacity="0.15" rx="4" stroke="#4CAF50" stroke-width="1.5" width="110" x="420" y="339"></rect>
-<text fill="#4CAF50" font-size="9" font-weight="bold" text-anchor="middle" x="475" y="354" direction="ltr" unicode-bidi="embed">→ ch1 ✓ (random)</text>
-
-<!-- Iteration 3 -->
-<circle cx="80" cy="390" fill="#00ADD8" r="5"></circle>
-<text fill="#00ADD8" font-size="9" text-anchor="middle" x="80" y="385" direction="ltr" unicode-bidi="embed">Iter 3</text>
-<rect fill="#ccc" height="22" opacity="0.2" rx="4" width="55" x="120" y="379"></rect>
-<text fill="#999" font-size="9" text-anchor="middle" x="147" y="394" direction="ltr" unicode-bidi="embed">ch1:—</text>
-<rect fill="#ccc" height="22" opacity="0.2" rx="4" width="55" x="180" y="379"></rect>
-<text fill="#999" font-size="9" text-anchor="middle" x="207" y="394" direction="ltr" unicode-bidi="embed">ch2:—</text>
-<rect fill="#ccc" height="22" opacity="0.2" rx="4" width="55" x="240" y="379"></rect>
-<text fill="#999" font-size="9" text-anchor="middle" x="267" y="394" direction="ltr" unicode-bidi="embed">ch3:—</text>
-<rect fill="#FF9800" height="22" opacity="0.2" rx="4" stroke="#FF9800" stroke-width="1.5" width="60" x="300" y="379"></rect>
-<text fill="#FF9800" font-size="9" text-anchor="middle" x="330" y="394" direction="ltr" unicode-bidi="embed">tmout:✓</text>
-<!-- Result arrow -->
-<line marker-end="url(#aSelE3)" stroke="#FF9800" stroke-width="2" x1="370" x2="420" y1="390" y2="390"></line>
-<rect fill="#FF9800" height="22" opacity="0.15" rx="4" stroke="#FF9800" stroke-width="1.5" width="100" x="420" y="379"></rect>
-<text fill="#FF9800" font-size="9" font-weight="bold" text-anchor="middle" x="470" y="394" direction="ltr" unicode-bidi="embed">→ timeout ✓</text>
-
-<!-- Iteration 4 -->
-<circle cx="80" cy="430" fill="#00ADD8" r="5"></circle>
-<text fill="#00ADD8" font-size="9" text-anchor="middle" x="80" y="425" direction="ltr" unicode-bidi="embed">Iter 4</text>
-<rect fill="#ccc" height="22" opacity="0.2" rx="4" width="55" x="120" y="419"></rect>
-<text fill="#999" font-size="9" text-anchor="middle" x="147" y="434" direction="ltr" unicode-bidi="embed">ch1:—</text>
-<rect fill="#ccc" height="22" opacity="0.2" rx="4" width="55" x="180" y="419"></rect>
-<text fill="#999" font-size="9" text-anchor="middle" x="207" y="434" direction="ltr" unicode-bidi="embed">ch2:—</text>
-<rect fill="#ccc" height="22" opacity="0.2" rx="4" width="55" x="240" y="419"></rect>
-<text fill="#999" font-size="9" text-anchor="middle" x="267" y="434" direction="ltr" unicode-bidi="embed">ch3:—</text>
-<rect fill="#ccc" height="22" opacity="0.2" rx="4" width="60" x="300" y="419"></rect>
-<text fill="#999" font-size="9" text-anchor="middle" x="330" y="434" direction="ltr" unicode-bidi="embed">tmout:…</text>
-<!-- Result arrow -->
-<line marker-end="url(#aSelE4)" stroke="#999" stroke-width="2" x1="370" x2="420" y1="430" y2="430"></line>
-<rect fill="#999" height="22" opacity="0.1" rx="4" stroke="#999" stroke-dasharray="4,3" stroke-width="1.5" width="110" x="420" y="419"></rect>
-<text fill="#999" font-size="9" font-weight="bold" text-anchor="middle" x="475" y="434" direction="ltr" unicode-bidi="embed">→ default (non-block)</text>
-
-<!-- ===== Info boxes ===== -->
-<!-- Info box 1 -->
-<rect fill="#00ADD8" height="48" opacity="0.08" rx="8" stroke="#00ADD8" stroke-width="1.5" width="230" x="20" y="468"></rect>
-<text fill="#00ADD8" font-size="10" font-weight="bold" text-anchor="middle" x="135" y="486" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">select</tspan> بلاک تا آماده شدن یک <tspan direction="ltr" unicode-bidi="embed">case</tspan></text>
-<text fill="#555" font-size="9" text-anchor="middle" x="135" y="504" direction="rtl" unicode-bidi="embed">بدون <tspan direction="ltr" unicode-bidi="embed">default</tspan> → <tspan direction="ltr" unicode-bidi="embed">goroutine</tspan> منتظر می‌ماند</text>
-
-<!-- Info box 2 -->
-<rect fill="#4CAF50" height="48" opacity="0.08" rx="8" stroke="#4CAF50" stroke-width="1.5" width="230" x="270" y="468"></rect>
-<text fill="#4CAF50" font-size="10" font-weight="bold" text-anchor="middle" x="385" y="486" direction="rtl" unicode-bidi="embed">چند <tspan direction="ltr" unicode-bidi="embed">case</tspan> آماده → انتخاب تصادفی</text>
-<text fill="#555" font-size="9" text-anchor="middle" x="385" y="504" direction="rtl" unicode-bidi="embed">تضمین عدم <tspan direction="ltr" unicode-bidi="embed">starvation</tspan></text>
-
-<!-- Info box 3 -->
-<rect fill="#FF9800" height="48" opacity="0.08" rx="8" stroke="#FF9800" stroke-width="1.5" width="230" x="520" y="468"></rect>
-<text fill="#FF9800" font-size="10" font-weight="bold" text-anchor="middle" x="635" y="486" direction="rtl" unicode-bidi="embed"><tspan direction="ltr" unicode-bidi="embed">default</tspan> → غیربلاک‌کننده</text>
-<text fill="#555" font-size="9" text-anchor="middle" x="635" y="504" direction="rtl" unicode-bidi="embed">هیچ <tspan direction="ltr" unicode-bidi="embed">case</tspan> آماده نبود → <tspan direction="ltr" unicode-bidi="embed">default</tspan> اجرا</text>
-
-<!-- Golden rule bar -->
-<rect fill="#FFD54F" height="32" opacity="0.2" rx="6" stroke="#F9A825" stroke-width="1.5" width="740" x="20" y="535"></rect>
-<text fill="#5D4037" font-size="11" font-weight="bold" text-anchor="middle" x="390" y="556" direction="rtl" unicode-bidi="embed">قانون طلایی: <tspan direction="ltr" unicode-bidi="embed">select</tspan> هرگز اولویت نمی‌دهد — تصادفی بودن تضمین‌کننده‌ی عدالت بین <tspan direction="ltr" unicode-bidi="embed">case</tspan>هاست</text>
-</svg>
+    classDef goBox fill:#e6f9fc,stroke:#00ADD8,stroke-width:1.5px,color:#1f2937;
+    classDef bothBox fill:#ecfdf5,stroke:#10b981,stroke-width:1.5px,color:#1f2937;
+    classDef warnBox fill:#fffbeb,stroke:#f59e0b,stroke-width:1.5px,color:#1f2937;
+    classDef neuBox fill:#f8fafc,stroke:#475569,stroke-width:1.5px,color:#1f2937;
+    class INP,C1,C2,C3,TA goBox;
+    class Sel,A1,A2,A3,A4 bothBox;
+    class A5 warnBox;
+    class RULES,R1,R2,R3,R4,R5,TIMELINE,I1,I2,I3,I4 neuBox;
+    class GOLD warnBox;</pre>
 <figcaption dir="rtl">شکل ۵-۹-ج: ارزیابی <bdi dir="ltr">select</bdi> و <bdi dir="ltr">Multiplexing</bdi> — خط زمانی انتخاب تصادفی و رفتار <bdi dir="ltr">default</bdi></figcaption>
 </figure>
 
