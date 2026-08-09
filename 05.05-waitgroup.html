@@ -230,6 +230,81 @@ go func() {
 <div class="warning"><strong>نکته درباره Race Detection در WaitGroup:</strong> اگر برنامه را با فلگ <code>-race</code> اجرا کنید، WaitGroup به‌طور خودکار عملیات <code>Add</code> و <code>Done</code> را ردیابی می‌کند. فراخوانی <code>Add</code> باید قبل از راه‌اندازی Goroutine (قبل از <code>go</code>) انجام شود — این قانون طلایی در «اشتباه ۱» همین بخش و در نکته‌ی پایانی فصل توضیح داده شده است.</div>
 <h3 id="waitgroup-چرخه-حیات-شمارنده">5.5.5 چرخه حیات شمارندهWaitGroup— نمودار وضعیت</h3>
 <p>یکی از مهم‌ترین مفاهیم در کار با <bdi dir="ltr">WaitGroup</bdi> درک چرخه حیات شمارنده داخلی آن است. شمارنده <bdi dir="ltr">WaitGroup</bdi> از صفر شروع می‌شود، با هر فراخوانی <bdi dir="ltr">Add(delta)</bdi> به اندازه <bdi dir="ltr">delta</bdi> افزایش می‌یابد و با هر <bdi dir="ltr">Done()</bdi> یک واحد کاهش پیدا می‌کند. وقتی شمارنده به صفر برسد تمام <bdi dir="ltr">goroutine</bdi>هایی که در <bdi dir="ltr">Wait()</bdi> بلاک شده‌اند آزاد می‌شوند. </p><p>اما اگر شمارنده منفی شود، برنامه بلافاصله <bdi dir="ltr">panic</bdi> می‌کند. این یعنی تعداد فراخوانی‌های <bdi dir="ltr">Done()</bdi> هرگز نباید از تعداد <bdi dir="ltr">Add()</bdi> بیشتر شود. همچنین اگر <bdi dir="ltr">Add()</bdi> با مقدار منفی فراخوانی شود که شمارنده را منفی کند، باز هم <bdi dir="ltr">panic</bdi> رخ می‌دهد. درک این چرخه برای جلوگیری از <bdi dir="ltr">deadlock</bdi> و <bdi dir="ltr">panic</bdi> در برنامه‌های واقعی حیاتی است.</p>
+<figure class="diagram" dir="ltr">
+<svg viewBox="0 0 760 380" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+<path d="M0,0 L10,5 L0,10 z" fill="#64748b"/>
+</marker>
+<marker id="arrow-ok" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+<path d="M0,0 L10,5 L0,10 z" fill="#4caf50"/>
+</marker>
+<marker id="arrow-bad" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+<path d="M0,0 L10,5 L0,10 z" fill="#ef4444"/>
+</marker>
+</defs>
+<text x="380" y="28" text-anchor="middle" class="title rtl">چرخه‌ی حیات شمارنده WaitGroup: Add → Done → Wait (و حالت خطای panic)</text>
+<!-- Top row: healthy flow -->
+<text x="380" y="55" text-anchor="middle" class="small rtl" fill="#4caf50">مسیر صحیح — توازن Add و Done</text>
+<rect x="30" y="70" width="100" height="55" class="box"/>
+<text x="80" y="93" text-anchor="middle" class="title">counter=0</text>
+<text x="80" y="113" text-anchor="middle" class="small rtl">شروع</text>
+<rect x="160" y="70" width="100" height="55" class="box-go"/>
+<text x="210" y="93" text-anchor="middle" class="title">counter=3</text>
+<text x="210" y="113" text-anchor="middle" class="small">Add(3)</text>
+<rect x="290" y="70" width="100" height="55" class="box-go"/>
+<text x="340" y="93" text-anchor="middle" class="title">counter=2</text>
+<text x="340" y="113" text-anchor="middle" class="small">Done()</text>
+<rect x="420" y="70" width="100" height="55" class="box-go"/>
+<text x="470" y="93" text-anchor="middle" class="title">counter=1</text>
+<text x="470" y="113" text-anchor="middle" class="small">Done()</text>
+<rect x="550" y="70" width="100" height="55" class="box-go"/>
+<text x="600" y="93" text-anchor="middle" class="title">counter=0</text>
+<text x="600" y="113" text-anchor="middle" class="small">Done()</text>
+<rect x="670" y="70" width="80" height="55" class="box-result"/>
+<text x="710" y="93" text-anchor="middle" class="title">Wait()</text>
+<text x="710" y="113" text-anchor="middle" class="small rtl">برمی‌گردد ✓</text>
+<line x1="130" y1="97" x2="160" y2="97" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
+<line x1="260" y1="97" x2="290" y2="97" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
+<line x1="390" y1="97" x2="420" y2="97" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
+<line x1="520" y1="97" x2="550" y2="97" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
+<line x1="650" y1="97" x2="670" y2="97" stroke="#4caf50" stroke-width="2" marker-end="url(#arrow-ok)"/>
+<text x="380" y="148" text-anchor="middle" class="small rtl">هر goroutine با defer wg.Done() در پایان کارش، شمارنده را یک واحد کاهش می‌دهد</text>
+<!-- Divider -->
+<line x1="30" y1="170" x2="730" y2="170" stroke="#cbd5e1" stroke-width="1" stroke-dasharray="4 4"/>
+<!-- Bottom row: error case -->
+<text x="380" y="195" text-anchor="middle" class="small rtl" fill="#ef4444">مسیر خطا — تعداد Done بیشتر از Add → panic</text>
+<rect x="30" y="210" width="100" height="55" class="box"/>
+<text x="80" y="233" text-anchor="middle" class="title">counter=0</text>
+<text x="80" y="253" text-anchor="middle" class="small rtl">شروع</text>
+<rect x="160" y="210" width="100" height="55" class="box-go"/>
+<text x="210" y="233" text-anchor="middle" class="title">counter=2</text>
+<text x="210" y="253" text-anchor="middle" class="small">Add(2)</text>
+<rect x="290" y="210" width="100" height="55" class="box-go"/>
+<text x="340" y="233" text-anchor="middle" class="title">counter=1</text>
+<text x="340" y="253" text-anchor="middle" class="small">Done()</text>
+<rect x="420" y="210" width="100" height="55" class="box-go"/>
+<text x="470" y="233" text-anchor="middle" class="title">counter=0</text>
+<text x="470" y="253" text-anchor="middle" class="small">Done()</text>
+<rect x="550" y="210" width="100" height="55" class="warn-box"/>
+<text x="600" y="233" text-anchor="middle" class="title">counter=-1</text>
+<text x="600" y="253" text-anchor="middle" class="small">Done()!</text>
+<rect x="670" y="210" width="80" height="55" class="warn-box"/>
+<text x="710" y="233" text-anchor="middle" class="title" fill="#ef4444">panic</text>
+<text x="710" y="253" text-anchor="middle" class="small rtl" fill="#ef4444">✗</text>
+<line x1="130" y1="237" x2="160" y2="237" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
+<line x1="260" y1="237" x2="290" y2="237" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
+<line x1="390" y1="237" x2="420" y2="237" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
+<line x1="520" y1="237" x2="550" y2="237" stroke="#ef4444" stroke-width="2" marker-end="url(#arrow-bad)"/>
+<line x1="650" y1="237" x2="670" y2="237" stroke="#ef4444" stroke-width="2" marker-end="url(#arrow-bad)"/>
+<!-- Bottom legend -->
+<text x="380" y="298" text-anchor="middle" class="small rtl">قانون طلایی: همیشه <tspan font-family="monospace">Add(n)</tspan> را قبل از <tspan font-family="monospace">go</tspan> فراخوانی کنید و در هر goroutine از <tspan font-family="monospace">defer wg.Done()</tspan> استفاده کنید</text>
+<text x="380" y="320" text-anchor="middle" class="small rtl" fill="#ef4444">اگر Add(n) کمتر از تعداد واقعی goroutine‌ها باشد → Wait() برای همیشه مسدود (deadlock)</text>
+<text x="380" y="342" text-anchor="middle" class="small rtl" fill="#ef4444">اگر Done() بیش از Add فراخوانی شود → counter منفی → panic: sync: negative WaitGroup counter</text>
+<text x="380" y="364" text-anchor="middle" class="small rtl" fill="#4caf50">الگوی صحیح: wg.Add(n) قبل از حلقه؛ defer wg.Done() در ابتدای goroutine؛ wg.Wait() برای انتظار</text>
+</svg>
+<figcaption>شکل ۵-۷: چرخه‌ی حیات شمارنده‌ی داخلی <code>sync.WaitGroup</code> — در مسیر صحیح (بالا)، <code>Add(3)</code> سه <code>Done()</code> را متعادل می‌کند و وقتی شمارنده به صفر می‌رسد <code>Wait()</code> برمی‌گردد. در مسیر خطا (پایین)، تعداد <code>Done()</code> از <code>Add()</code> بیشتر می‌شود، شمارنده منفی می‌شود و <code>panic</code> رخ می‌دهد. همیشه <code>Add</code> را قبل از <code>go</code> و <code>Done</code> را با <code>defer</code> در ابتدای goroutine فراخوانی کنید.</figcaption>
+</figure>
 <p>نمودار بالا چرخه کامل حیات شمارنده <bdi dir="ltr">WaitGroup</bdi> را نشان می‌دهد: خط زمانی تغییرات شمارنده از <bdi dir="ltr">Add(3)</bdi> تا آخرین <bdi dir="ltr">Done()</bdi>، و حالت خطا در صورتی که تعداد <bdi dir="ltr">Done()</bdi> از <bdi dir="ltr">Add()</bdi> بیشتر شود (<bdi dir="ltr">panic</bdi>).</p>
 <h4 id="سناریوهای-عملیاتی-waitgroup">سناریوهای عملیاتی <bdi dir="ltr">WaitGroup</bdi></h4>
 <ul>

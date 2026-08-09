@@ -502,6 +502,56 @@ func queryWithTimeout(ctx context.Context) {
 </div>
 <h2 id="درخت-انتشار-لغو-context">درخت انتشار لغو <bdi dir="ltr">Context</bdi></h2>
 <p>همان‌طور که در ابتدای این بخش اشاره شد، <bdi dir="ltr">Context</bdi> در Go یک ساختار درختی دارد و لغو والد به‌صورت بازگشتی به تمام فرزندان و نوادگان منتشر می‌شود. این رفتار تضمین می‌کند که هیچ <bdi dir="ltr">Goroutine</bdi> ای پس از لغو درخواست اصلی به کار بیهوده ادامه ندهد و منابع سیستم از جمله اتصالات دیتابیس، <bdi dir="ltr">HTTP</bdi> و حافظه آزاد شوند. </p><p>در PHP معمولاً هر درخواست مستقل است و لغو یک فرآیند تأثیری روی دیگران ندارد اما در Go که یک سرور هزاران درخواست را به صورت همزمان پردازش می‌کند این مکانیزم حیاتی است. نمودار زیر این درخت را در عمل نشان می‌دهد.</p>
+<figure class="diagram" dir="ltr">
+<svg viewBox="0 0 760 420" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+<path d="M0,0 L10,5 L0,10 z" fill="#64748b"/>
+</marker>
+<marker id="arrow-cancel" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+<path d="M0,0 L10,5 L0,10 z" fill="#ef4444"/>
+</marker>
+</defs>
+<text x="380" y="28" text-anchor="middle" class="title rtl">درخت انتشار لغو Context — لغو والد به تمام نوادگان سرایت می‌کند</text>
+<!-- Root: Background -->
+<rect x="280" y="55" width="200" height="55" class="box-go"/>
+<text x="380" y="78" text-anchor="middle" class="title">context.Background()</text>
+<text x="380" y="98" text-anchor="middle" class="small rtl">ریشه — هرگز لغو نمی‌شود</text>
+<!-- Level 1: r.Context() -->
+<rect x="280" y="150" width="200" height="55" class="box-go"/>
+<text x="380" y="173" text-anchor="middle" class="title">r.Context()</text>
+<text x="380" y="193" text-anchor="middle" class="small rtl">با اتمام درخواست HTTP لغو می‌شود</text>
+<line x1="380" y1="110" x2="380" y2="150" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+<!-- Level 2: WithTimeout(10s) + WithCancel (logger) -->
+<rect x="100" y="245" width="200" height="55" class="box-join"/>
+<text x="200" y="268" text-anchor="middle" class="title">WithTimeout(10s)</text>
+<text x="200" y="288" text-anchor="middle" class="small rtl">مهلت ۱۰ ثانیه برای کل عملیات</text>
+<rect x="460" y="245" width="200" height="55" class="box-join"/>
+<text x="560" y="268" text-anchor="middle" class="title">WithCancel</text>
+<text x="560" y="288" text-anchor="middle" class="small rtl">لاگ پس‌زمینه</text>
+<line x1="320" y1="205" x2="200" y2="245" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+<line x1="440" y1="205" x2="560" y2="245" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+<!-- Level 3: children of WithTimeout -->
+<rect x="40" y="340" width="160" height="55" class="box-action"/>
+<text x="120" y="363" text-anchor="middle" class="title">DB Query</text>
+<text x="120" y="383" text-anchor="middle" class="small">db.QueryContext(ctx, ...)</text>
+<rect x="220" y="340" width="160" height="55" class="box-action"/>
+<text x="300" y="363" text-anchor="middle" class="title">API Call</text>
+<text x="300" y="383" text-anchor="middle" class="small">http.NewRequestWithContext</text>
+<line x1="170" y1="300" x2="120" y2="340" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+<line x1="230" y1="300" x2="300" y2="340" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+<!-- Level 3: child of WithCancel (logger) -->
+<rect x="500" y="340" width="160" height="55" class="box-action"/>
+<text x="580" y="363" text-anchor="middle" class="title">Log Writer</text>
+<text x="580" y="383" text-anchor="middle" class="small">writeToDisk(ctx, ...)</text>
+<line x1="560" y1="300" x2="580" y2="340" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+<!-- Red cancellation propagation arrows -->
+<path d="M 460 180 L 90 180 L 90 360 L 40 360" fill="none" stroke="#ef4444" stroke-width="2.5" stroke-dasharray="6 3" marker-end="url(#arrow-cancel)"/>
+<text x="60" y="200" class="small rtl" fill="#ef4444">لغو روان به پایین</text>
+<text x="60" y="218" class="small rtl" fill="#ef4444">(بازگشتی)</text>
+</svg>
+<figcaption>شکل ۵-۶: درخت انتشار لغو <code>Context</code> — ریشه <code>context.Background()</code> است؛ <code>r.Context()</code> با اتمام درخواست HTTP لغو می‌شود و لغو آن به‌صورت بازگشتی به تمام فرزندان (<code>WithTimeout</code>، <code>WithCancel</code>) و نوادگان (کوئری دیتابیس، فراخوانی API، Log Writer) منتقل می‌شود. لغو فقط به سمت پایین حرکت می‌کند: اگر فرزندی لغو شود روی والد یا خواهر/برادرش اثر نمی‌گذارد.</figcaption>
+</figure>
 <p>همان‌طور که در نمودار بالا مشاهده می‌کنید، ساختار درختی <bdi dir="ltr">Context</bdi> شبیه یک درخت خانوادگی است. ریشه <bdi dir="ltr">context.Background()</bdi> است و هر شاخه با توابع <bdi dir="ltr">WithCancel</bdi>، <bdi dir="ltr">WithTimeout</bdi> یا <bdi dir="ltr">WithDeadline</bdi> ایجاد می‌شود. </p><p>نکته کلیدی این است که لغو فقط به سمت پایین حرکت می‌کند یعنی اگر فرزندی لغو شود تأثیری روی والد یا خواهر و برادرهایش ندارد. </p><p>اما اگر والدی لغو شود تمام نوادگان او نیز لغو می‌شوند. </p><p>این رفتار دقیقاً شبیه لغو یک درخواست <bdi dir="ltr">HTTP</bdi> در سرور است وقتی کاربر مرورگر را می‌بندد تمام عملیات‌های فرعی مانند کوئری دیتابیس و فراخوانی <bdi dir="ltr">API</bdi> باید متوقف شوند.</p>
 <h3 id="سناریوهای-عملیاتی-context">5.4.14 سناریوهای عملیاتیContext</h3>
 <p>در پروژه‌های واقعی، <bdi dir="ltr">Context</bdi> نقش حیاتی در مدیریت چرخه حیات عملیات‌ها دارد. در ادامه پنج سناریو عملیاتی رایج را بررسی می‌کنیم که هر کدام نشان‌دهنده کاربرد خاصی از قابلیت‌های <bdi dir="ltr">Context</bdi> هستند. </p><p>این سناریوها به شما کمک می‌کنند درک عملی و ملموسی از نحوه استفاده از <bdi dir="ltr">Context</bdi> در موقعیت‌های مختلف داشته باشید و بتوانید در پروژه‌های خود تصمیمات درست‌تری بگیرید.</p>

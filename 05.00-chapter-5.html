@@ -163,6 +163,59 @@ func main() {
 <p><strong>بخش ۵.۷ — الگوهای هم‌روندی:</strong> <bdi dir="ltr">Worker Pool</bdi>، <bdi dir="ltr">Fan-out/Fan-in</bdi>، <bdi dir="ltr">Pipeline</bdi>، <bdi dir="ltr">Rate Limiting</bdi>، <bdi dir="ltr">Semaphore</bdi>، و <bdi dir="ltr">Graceful Shutdown</bdi>.</p>
 <p><strong>بخش ۵.۸ — کاربردهای عملی:</strong> کلاینت <bdi dir="ltr">HTTP</bdi> همزمان، کوئری‌های دیتابیس موازی، و پردازنده‌ی کارهای پس‌زمینه.</p>
 <p><strong>بخش ۵.۹ — نشت <bdi dir="ltr">Goroutine</bdi>:</strong> الگوهای رایج نشت، تشخیص با <bdi dir="ltr">pprof</bdi>، و راه‌حل‌ها.</p>
+<figure class="diagram" dir="ltr">
+<svg viewBox="0 0 760 340" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+<path d="M0,0 L10,5 L0,10 z" fill="#64748b"/>
+</marker>
+</defs>
+<text x="380" y="28" text-anchor="middle" class="title rtl">نقشه‌ی راه فصل پنجم: از گوروتین تا مدیریت نشتی</text>
+<text x="380" y="50" text-anchor="middle" class="small rtl">۹ بخش — سه لایه: مبانی (فیروزه‌ای) › همگام‌سازی (نارنجی) › الگوها و کاربرد (آبی)</text>
+<!-- Row 1: foundations -->
+<rect x="50" y="75" width="200" height="65" class="box-go"/>
+<text x="150" y="100" text-anchor="middle" class="title">۵.۱ Goroutine</text>
+<text x="150" y="122" text-anchor="middle" class="small rtl">واحد سبک هم‌روندی</text>
+<rect x="280" y="75" width="200" height="65" class="box-go"/>
+<text x="380" y="100" text-anchor="middle" class="title">۵.۲ Channel</text>
+<text x="380" y="122" text-anchor="middle" class="small rtl">ارتباط امن بین گوروتین‌ها</text>
+<rect x="510" y="75" width="200" height="65" class="box-go"/>
+<text x="610" y="100" text-anchor="middle" class="title">۵.۳ Select</text>
+<text x="610" y="122" text-anchor="middle" class="small rtl">چندگانه‌سازی کانال‌ها</text>
+<!-- Row 1 arrows -->
+<line x1="250" y1="107" x2="280" y2="107" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+<line x1="480" y1="107" x2="510" y2="107" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+<!-- Row 2: synchronization -->
+<rect x="50" y="170" width="200" height="65" class="box-go"/>
+<text x="150" y="195" text-anchor="middle" class="title">۵.۴ Context</text>
+<text x="150" y="217" text-anchor="middle" class="small rtl">لغو، timeout، درخت فراخوانی</text>
+<rect x="280" y="170" width="200" height="65" class="box-go"/>
+<text x="380" y="195" text-anchor="middle" class="title">۵.۵ WaitGroup</text>
+<text x="380" y="217" text-anchor="middle" class="small rtl">انتظار برای اتمام گروه</text>
+<rect x="510" y="170" width="200" height="65" class="warn-box"/>
+<text x="610" y="195" text-anchor="middle" class="title">۵.۶ Race Condition</text>
+<text x="610" y="217" text-anchor="middle" class="small rtl">Mutex، Atomic، -race</text>
+<!-- Row 2 arrows (right to left, zigzag from row 1) -->
+<path d="M 610 140 Q 610 155 510 155 L 150 155 Q 150 162 150 170" fill="none" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+<line x1="250" y1="202" x2="280" y2="202" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+<line x1="480" y1="202" x2="510" y2="202" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+<!-- Row 3: patterns + leak -->
+<rect x="50" y="265" width="200" height="65" class="box-action"/>
+<text x="150" y="290" text-anchor="middle" class="title">۵.۷ Patterns</text>
+<text x="150" y="312" text-anchor="middle" class="small rtl">Worker Pool، Fan-out، Pipeline</text>
+<rect x="280" y="265" width="200" height="65" class="box-action"/>
+<text x="380" y="290" text-anchor="middle" class="title">۵.۸ Practical</text>
+<text x="380" y="312" text-anchor="middle" class="small rtl">HTTP، DB، Background Worker</text>
+<rect x="510" y="265" width="200" height="65" class="warn-box"/>
+<text x="610" y="290" text-anchor="middle" class="title">۵.۹ Goroutine Leak</text>
+<text x="610" y="312" text-anchor="middle" class="small rtl">تشخیص و راه‌حل با pprof</text>
+<!-- Row 3 arrows (right to left, zigzag from row 2) -->
+<path d="M 610 235 Q 610 250 510 250 L 150 250 Q 150 257 150 265" fill="none" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+<line x1="250" y1="297" x2="280" y2="297" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+<line x1="480" y1="297" x2="510" y2="297" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+</svg>
+<figcaption>شکل ۵-۱: نقشه‌ی راه فصل پنجم — ۹ بخش که در سه لایه چیده شده‌اند: مبانی هم‌روندی (۵.۱ تا ۵.۵)، همگام‌سازی و امنیت حافظه (۵.۶)، و الگوهای عملی به‌همراه شناسایی نشتی (۵.۷ تا ۵.۹). مسیر خواندن پیشنهادی با فلش‌ها مشخص است.</figcaption>
+</figure>
 <div class="summary">
 <strong>خلاصه‌ی نکات کلیدی:</strong>
 <ul>

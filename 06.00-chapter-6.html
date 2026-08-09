@@ -90,6 +90,53 @@
 <div class="tip">
 <strong>یک قانون ساده برای مدیریت منابع در Go:</strong> هر منبعی که باز می‌کنید (فایل، اتصال شبکه، response body) را بلافاصله با <code>defer</code> ببندید. این الگو را در تمام مثال‌های این فصل خواهید دید. هرچند <code>defer</code> در حلقه‌ها ممکن است منابع را دیرتر از مطلوب ببندد، اما در اکثر موارد امن‌ترین و خواناترین روش است.
 </div>
+<figure class="diagram" dir="ltr">
+<svg viewBox="0 0 760 340" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+<path d="M0,0 L10,5 L0,10 z" fill="#64748b"/>
+</marker>
+</defs>
+<text x="380" y="28" text-anchor="middle" class="title rtl">نقشه‌ی راه فصل ششم: از io.Reader تا مدیریت سیگنال</text>
+<text x="380" y="50" text-anchor="middle" class="small rtl">۷ بخش — سه لایه: مبانی I/O (فیروزه‌ای) › فایل‌ها (فیروزه‌ای) › داده و سیستم (آبی/نارنجی)</text>
+<!-- Row 1: foundation (single box centered) -->
+<rect x="280" y="75" width="200" height="65" class="box-go"/>
+<text x="380" y="100" text-anchor="middle" class="title">۶.۱ io.Reader/Writer</text>
+<text x="380" y="122" text-anchor="middle" class="small rtl">قرارداد یکتای ورودی/خروجی</text>
+<!-- Row 2: file operations -->
+<rect x="50" y="170" width="200" height="65" class="box-go"/>
+<text x="150" y="195" text-anchor="middle" class="title">۶.۲ Reading Files</text>
+<text x="150" y="217" text-anchor="middle" class="small rtl">ReadFile، io.Reader، mmap</text>
+<rect x="280" y="170" width="200" height="65" class="box-go"/>
+<text x="380" y="195" text-anchor="middle" class="title">۶.۳ Writing Files</text>
+<text x="380" y="217" text-anchor="middle" class="small rtl">WriteFile، bufio، atomic</text>
+<rect x="510" y="170" width="200" height="65" class="box-go"/>
+<text x="610" y="195" text-anchor="middle" class="title">۶.۴ Line-by-Line</text>
+<text x="610" y="217" text-anchor="middle" class="small rtl">Scanner، SplitFunc، CSV</text>
+<!-- Arrow from row 1 to row 2 -->
+<path d="M 380 140 L 380 155 L 150 155 L 150 170" fill="none" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+<path d="M 380 155 L 380 170" fill="none" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+<path d="M 380 155 L 610 155 L 610 170" fill="none" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+<!-- Row 2 arrows -->
+<line x1="250" y1="202" x2="280" y2="202" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+<line x1="480" y1="202" x2="510" y2="202" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+<!-- Row 3: data formats & system -->
+<rect x="50" y="265" width="200" height="65" class="box-action"/>
+<text x="150" y="290" text-anchor="middle" class="title">۶.۵ embed</text>
+<text x="150" y="312" text-anchor="middle" class="small rtl">جاسازی فایل در باینری</text>
+<rect x="280" y="265" width="200" height="65" class="box-action"/>
+<text x="380" y="290" text-anchor="middle" class="title">۶.۶ JSON / YAML</text>
+<text x="380" y="312" text-anchor="middle" class="small rtl">struct tag، RawMessage</text>
+<rect x="510" y="265" width="200" height="65" class="warn-box"/>
+<text x="610" y="290" text-anchor="middle" class="title">۶.۷ OS Signals</text>
+<text x="610" y="312" text-anchor="middle" class="small rtl">SIGINT/SIGTERM، Shutdown</text>
+<!-- Row 2 → Row 3 arrows (zigzag) -->
+<path d="M 610 235 Q 610 250 510 250 L 150 250 Q 150 257 150 265" fill="none" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+<line x1="250" y1="297" x2="280" y2="297" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+<line x1="480" y1="297" x2="510" y2="297" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+</svg>
+<figcaption>شکل ۶-۱: نقشه‌ی راه فصل ششم — ۷ بخش در سه لایه: مبانی I/O با <code>io.Reader</code>/<code>io.Writer</code> (۶.۱) به‌عنوان قرارداد یکتای ورودی/خروجی، سپس سه روش خواندن/نوشتن فایل (۶.۲ تا ۶.۴)، و در نهایت جاسازی فایل، پردازش داده‌های ساخت‌یافته و مدیریت سیگنال‌های سیستم‌عامل (۶.۵ تا ۶.۷).</figcaption>
+</figure>
 <div class="summary">
 <strong>خلاصه‌ی نکات کلیدی:</strong>
 <ul>

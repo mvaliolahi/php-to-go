@@ -128,6 +128,57 @@ go func() { // run anonymous function in goroutine
 <p><strong><bdi dir="ltr">G (Goroutine)</bdi>:</strong> هر <bdi dir="ltr">Goroutine</bdi> توسط ساختار <code dir="ltr">runtime.g</code> نمایش داده می‌شود. شامل <bdi dir="ltr">Stack</bdi>، شمارنده برنامه، وضعیت و غیره است. هر <bdi dir="ltr">G</bdi> در یکی از وضعیت‌های <code>_Gidle</code>، <code>_Grunnable</code>، <code>_Grunning</code>، <code>_Gsyscall</code>، <code>_Gwaiting</code> یا <code>_Gdead</code> قرار دارد.</p>
 <p><strong><bdi dir="ltr">M (Machine)</bdi>:</strong> هر <bdi dir="ltr">M</bdi> نماینده‌ی یک <bdi dir="ltr">Thread</bdi> واقعی سیستم‌عامل است (<code dir="ltr">runtime.m</code>). تعداد <bdi dir="ltr">M</bdi>‌ها می‌تواند بیشتر از <bdi dir="ltr">P</bdi>‌ها باشد (مثلاً وقتی <bdi dir="ltr">Goroutine</bdi> در <bdi dir="ltr">Syscall</bdi> مسدود شده باشد). هر <bdi dir="ltr">M</bdi> بدون <bdi dir="ltr">P</bdi> نمی‌تواند <bdi dir="ltr">G</bdi> اجرا کند.</p>
 <p><strong><bdi dir="ltr">P (Processor)</bdi>:</strong> هر <bdi dir="ltr">P</bdi> نماینده‌ی یک منبع مجازی اجرایی است (<code dir="ltr">runtime.p</code>). تعداد <bdi dir="ltr">P</bdi>‌ها برابر با <code>GOMAXPROCS</code> (پیش‌فرض: تعداد هسته‌های <bdi dir="ltr">CPU</bdi>) است. هر <bdi dir="ltr">P</bdi> یک <bdi dir="ltr">Local Run Queue</bdi> با ظرفیت ۲۵۶ <bdi dir="ltr">Goroutine</bdi> دارد.</p>
+<figure class="diagram" dir="ltr">
+<svg viewBox="0 0 760 380" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+<path d="M0,0 L10,5 L0,10 z" fill="#64748b"/>
+</marker>
+<marker id="arrow-steal" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+<path d="M0,0 L10,5 L0,10 z" fill="#ff9800"/>
+</marker>
+</defs>
+<text x="380" y="28" text-anchor="middle" class="title rtl">مدل GMP Scheduler: نگاشت M:N بین Goroutine و OS Thread</text>
+<!-- Global Run Queue -->
+<rect x="230" y="55" width="300" height="42" class="box"/>
+<text x="380" y="73" text-anchor="middle" class="title">Global Run Queue</text>
+<text x="380" y="91" text-anchor="middle" class="small">G1 · G2 · G3 · G4</text>
+<text x="380" y="115" text-anchor="middle" class="small rtl">صف سراسری — وقتی صف محلی P پر شود، G به اینجا سرریز می‌شود</text>
+<!-- Three columns: P1, P2, P3 -->
+<!-- P1 column -->
+<rect x="50" y="140" width="180" height="60" class="box-go"/>
+<text x="140" y="162" text-anchor="middle" class="title">P1</text>
+<text x="140" y="183" text-anchor="middle" class="small rtl">صف محلی: G5, G6</text>
+<rect x="50" y="225" width="180" height="55" class="box-action"/>
+<text x="140" y="247" text-anchor="middle" class="title">M1 (OS Thread)</text>
+<text x="140" y="267" text-anchor="middle" class="small rtl">در حال اجرای G5</text>
+<!-- P2 column -->
+<rect x="290" y="140" width="180" height="60" class="box-go"/>
+<text x="380" y="162" text-anchor="middle" class="title">P2</text>
+<text x="380" y="183" text-anchor="middle" class="small rtl">صف محلی: G7</text>
+<rect x="290" y="225" width="180" height="55" class="box-action"/>
+<text x="380" y="247" text-anchor="middle" class="title">M2 (OS Thread)</text>
+<text x="380" y="267" text-anchor="middle" class="small rtl">در حال اجرای G7</text>
+<!-- P3 column -->
+<rect x="530" y="140" width="180" height="60" class="box-go"/>
+<text x="620" y="162" text-anchor="middle" class="title">P3</text>
+<text x="620" y="183" text-anchor="middle" class="small rtl">صف محلی: خالی</text>
+<rect x="530" y="225" width="180" height="55" class="box"/>
+<text x="620" y="247" text-anchor="middle" class="title">M3 (idle)</text>
+<text x="620" y="267" text-anchor="middle" class="small rtl">منتظر کار</text>
+<!-- Global to local arrows -->
+<line x1="280" y1="97" x2="180" y2="140" stroke="#64748b" stroke-width="1.5" stroke-dasharray="4 3" marker-end="url(#arrow)"/>
+<line x1="380" y1="97" x2="380" y2="140" stroke="#64748b" stroke-width="1.5" stroke-dasharray="4 3" marker-end="url(#arrow)"/>
+<!-- P3 steals from P1 -->
+<path d="M 530 170 Q 380 200 230 170" fill="none" stroke="#ff9800" stroke-width="2" stroke-dasharray="6 3" marker-end="url(#arrow-steal)"/>
+<text x="380" y="208" text-anchor="middle" class="small rtl" fill="#ff9800">Work-Stealing: P3 نیمی از Gهای P1 را می‌دزدد</text>
+<!-- Legend at bottom -->
+<text x="380" y="320" text-anchor="middle" class="title rtl">GOMAXPROCS = 3 → سه P، هر P به یک M متصل می‌شود</text>
+<text x="380" y="342" text-anchor="middle" class="small rtl">وقتی G در Syscall مسدود شود، P از M جدا شده و به M دیگری داده می‌شود (Hand-off)</text>
+<text x="380" y="362" text-anchor="middle" class="small rtl">Mها واقعی‌اند (Threadهای OS)، Pها مجازی‌اند (مجوز اجرای متصل به GOMAXPROCS)، Gها سبک‌اند (Goroutine)</text>
+</svg>
+<figcaption>شکل ۵-۲: مدل سه‌وجهی GMP — P (Processor) منبع مجازی اجرایی است که تعدادش با GOMAXPROCS برابر است؛ M (Machine) یک Thread واقعی سیستم‌عامل است که یک P را در اختیار دارد و G (Goroutine) را اجرا می‌کند. وقتی صف محلی یک P خالی شود، با Work-Stealing نیمی از صف یک P پرتر را برمی‌دارد.</figcaption>
+</figure>
 <h4 id="work-stealing">الگوریتم <bdi dir="ltr">Work-Stealing</bdi></h4>
 <p>وقتی یک <bdi dir="ltr">P</bdi> صف محلی خود را خالی می‌یابد، به ترتیب زیر عمل می‌کند:</p>
 <p>۱. ابتدا صف محلی خود را بررسی می‌کند — اگر خالی بود، به مرحله بعد.</p>
@@ -406,6 +457,66 @@ fmt.Println("GOMAXPROCS:", runtime.GOMAXPROCS(0))
 </div>
 <h3 id="goroutine-lifecycle-diagram">5.1.7 نمودار وضعیت‌های چرخه‌ی حیاتGoroutine</h3>
 <p>همان‌طور که در بخش قبل دیدیم، هر <bdi dir="ltr">Goroutine</bdi> در طول اجرای خود از وضعیت‌های مختلفی عبور می‌کند. این <bdi dir="ltr">State Machine</bdi> به‌صورت بصری نشان می‌دهد که یک <bdi dir="ltr">Goroutine</bdi> چگونه از وضعیت ایجاد تا مرگ طی می‌کند و چه عواملی باعث انتقال بین وضعیت‌ها می‌شوند. درک این چرخه برای دیباگ مشکلاتی مثل نشت <bdi dir="ltr">Goroutine</bdi> و <bdi dir="ltr">Deadlock</bdi> بسیار حیاتی است. </p><p>هر فلش در نمودار نشان‌دهنده‌ی یک رویداد یا عملیاتی است که باعث تغییر وضعیت می‌شود و هر جعبه رنگی نمایانگر یک وضعیت مشخص در <bdi dir="ltr">Runtime</bdi> Go است.</p>
+<figure class="diagram" dir="ltr">
+<svg viewBox="0 0 760 420" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+<path d="M0,0 L10,5 L0,10 z" fill="#64748b"/>
+</marker>
+<marker id="arrow-dead" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+<path d="M0,0 L10,5 L0,10 z" fill="#ef4444"/>
+</marker>
+</defs>
+<text x="380" y="28" text-anchor="middle" class="title rtl">چرخه‌ی حیات Goroutine در Runtime زبان Go</text>
+<!-- Row 1: idle → runnable → running -->
+<rect x="40" y="65" width="180" height="70" class="box"/>
+<text x="130" y="92" text-anchor="middle" class="title">_Gidle</text>
+<text x="130" y="113" text-anchor="middle" class="small rtl">تازه ایجاد شده</text>
+<rect x="290" y="65" width="180" height="70" class="box-go"/>
+<text x="380" y="92" text-anchor="middle" class="title">_Grunnable</text>
+<text x="380" y="113" text-anchor="middle" class="small rtl">آماده اجرا، در صف</text>
+<rect x="540" y="65" width="180" height="70" class="box-action"/>
+<text x="630" y="92" text-anchor="middle" class="title">_Grunning</text>
+<text x="630" y="113" text-anchor="middle" class="small rtl">روی M در حال اجرا</text>
+<!-- Row 1 arrows -->
+<line x1="220" y1="100" x2="290" y2="100" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+<text x="255" y="93" text-anchor="middle" class="small">init</text>
+<line x1="470" y1="100" x2="540" y2="100" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+<text x="505" y="93" text-anchor="middle" class="small">schedule</text>
+<!-- Row 2: dead ← waiting ← syscall -->
+<rect x="40" y="265" width="180" height="70" class="warn-box"/>
+<text x="130" y="292" text-anchor="middle" class="title">_Gdead</text>
+<text x="130" y="313" text-anchor="middle" class="small rtl">پایان، بازیافت شد</text>
+<rect x="290" y="265" width="180" height="70" class="box-join"/>
+<text x="380" y="292" text-anchor="middle" class="title">_Gwaiting</text>
+<text x="380" y="313" text-anchor="middle" class="small rtl">منتظر channel/timer</text>
+<rect x="540" y="265" width="180" height="70" class="box-join"/>
+<text x="630" y="292" text-anchor="middle" class="title">_Gsyscall</text>
+<text x="630" y="313" text-anchor="middle" class="small rtl">در syscall مسدودکننده</text>
+<!-- Down arrows running → syscall, running → waiting -->
+<path d="M 630 135 L 630 265" fill="none" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+<text x="700" y="200" text-anchor="middle" class="small">syscall</text>
+<path d="M 540 135 Q 460 200 470 265" fill="none" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+<text x="490" y="200" text-anchor="middle" class="small">chan/timer wait</text>
+<!-- Up arrows: syscall → runnable, waiting → runnable -->
+<path d="M 290 300 Q 250 200 290 135" fill="none" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+<text x="240" y="200" text-anchor="middle" class="small">wakeup</text>
+<path d="M 380 265 L 380 135" fill="none" stroke="#64748b" stroke-width="2" stroke-dasharray="4 3" marker-end="url(#arrow)"/>
+<text x="410" y="200" text-anchor="middle" class="small">ready</text>
+<!-- running → dead (curved red) -->
+<path d="M 540 110 Q 220 110 130 265" fill="none" stroke="#ef4444" stroke-width="2" stroke-dasharray="6 3" marker-end="url(#arrow-dead)"/>
+<text x="320" y="155" text-anchor="middle" class="small" fill="#ef4444">return</text>
+<text x="320" y="173" text-anchor="middle" class="small" fill="#ef4444">(تابع تمام شد)</text>
+<!-- dead → runnable (recycle) -->
+<path d="M 130 265 Q 50 200 50 100 L 40 100" fill="none" stroke="#64748b" stroke-width="1.5" stroke-dasharray="3 3" marker-end="url(#arrow)"/>
+<text x="40" y="200" text-anchor="middle" class="small rtl">بازیافت</text>
+<text x="40" y="218" text-anchor="middle" class="small rtl">ساختار g</text>
+<!-- Bottom legend -->
+<text x="380" y="378" text-anchor="middle" class="small rtl">نکته: وقتی main() تمام شود، تمام Goroutine‌ها بلافاصله متوقف می‌شوند — صرف‌نظر از وضعیتشان</text>
+<text x="380" y="398" text-anchor="middle" class="small rtl">به همین دلیل باید با WaitGroup یا Channel صراحتاً منتظر اتمام آن‌ها ماند</text>
+</svg>
+<figcaption>شکل ۵-۳: ماشین حالت چرخه‌ی حیات یک Goroutine در Runtime زبان Go — هر Goroutine از <code>_Gidle</code> آغاز شده، با <code>schedule</code> روی M اجرا می‌شود، در طول اجرا می‌تواند به‌خاطر <code>syscall</code> یا انتظار روی channel/timer به وضعیت‌های مسدود برود، و در نهایت با return به <code>_Gdead</code> می‌رسد. ساختار <code>runtime.g</code> بازیافت می‌شود تا برای Goroutine بعدی استفاده شود.</figcaption>
+</figure>
 <h3 id="سناریوهای-عملیاتی-goroutine">5.1.8 سناریوهای عملیاتیGoroutine</h3>
 <p>در پروژه‌های واقعی، <bdi dir="ltr">Goroutine</bdi>‌ها نقش‌های متنوعی ایفا می‌کنند. شناخت این الگوهای عملیاتی به شما کمک می‌کند در هر موقعیت تصمیم درستی درباره نحوه استفاده از هم‌روندی بگیرید. هر الگو مزایا و معایب خاص خود را دارد و انتخاب صحیح بین آن‌ها می‌تواند تفاوت بین یک سیستم مقیاس‌پذیر و یک سیستم شکننده باشد. در ادامه رایج‌ترین سناریوهای عملیاتی آشنا می‌شویم.</p>
 <ul>

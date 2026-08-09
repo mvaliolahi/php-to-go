@@ -224,6 +224,62 @@ func main() {
 <!-- ═══════════════════════════════════════════════════════════════ -->
  ENRICHMENT: SVG — ServeMux Routing Tree &amp; Pattern Matching 
 <!-- ═══════════════════════════════════════════════════════════════ -->
+<figure class="diagram" dir="ltr">
+<svg viewBox="0 0 760 440" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+<path d="M0,0 L10,5 L0,10 z" fill="#64748b"/>
+</marker>
+<marker id="arrow-bad" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+<path d="M0,0 L10,5 L0,10 z" fill="#ef4444"/>
+</marker>
+<marker id="arrow-ok" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+<path d="M0,0 L10,5 L0,10 z" fill="#4caf50"/>
+</marker>
+</defs>
+<text x="380" y="28" text-anchor="middle" class="title rtl">درخت تطبیق الگوها در ServeMux (Go 1.22+) — بلندترین تطبیق پیشتاز است</text>
+<!-- Incoming request -->
+<rect x="30" y="60" width="200" height="50" class="box-action"/>
+<text x="130" y="80" text-anchor="middle" class="title">GET /api/users/42</text>
+<text x="130" y="98" text-anchor="middle" class="small rtl">درخواست ورودی</text>
+<line x1="230" y1="85" x2="270" y2="85" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+<!-- ServeMux root -->
+<rect x="270" y="60" width="220" height="50" class="box-go"/>
+<text x="380" y="83" text-anchor="middle" class="title">ServeMux</text>
+<text x="380" y="100" text-anchor="middle" class="small rtl">جستجوی بلندترین پیشوند</text>
+<!-- Patterns registered (left column) -->
+<text x="40" y="145" class="small rtl" fill="#4a5568">الگوهای ثبت‌شده:</text>
+<rect x="40" y="155" width="180" height="36" class="box"/>
+<text x="130" y="178" text-anchor="middle" class="small">"GET /"</text>
+<rect x="40" y="195" width="180" height="36" class="box"/>
+<text x="130" y="218" text-anchor="middle" class="small">"GET /api/users"</text>
+<rect x="40" y="235" width="180" height="36" class="box-result"/>
+<text x="130" y="258" text-anchor="middle" class="small">"GET /api/users/{id}"  ✓</text>
+<rect x="40" y="275" width="180" height="36" class="box"/>
+<text x="130" y="298" text-anchor="middle" class="small">"GET /api/posts"</text>
+<rect x="40" y="315" width="180" height="36" class="box"/>
+<text x="130" y="338" text-anchor="middle" class="small">"/static/"  (subtree)</text>
+<!-- Evaluation arrows: only one matches -->
+<line x1="220" y1="253" x2="280" y2="253" stroke="#4caf50" stroke-width="2" marker-end="url(#arrow-ok)"/>
+<text x="245" y="245" text-anchor="middle" class="small" fill="#4caf50">تطبیق!</text>
+<line x1="220" y1="173" x2="270" y2="200" stroke="#cbd5e1" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="220" y1="213" x2="270" y2="210" stroke="#cbd5e1" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="220" y1="293" x2="270" y2="230" stroke="#cbd5e1" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="220" y1="333" x2="270" y2="245" stroke="#cbd5e1" stroke-width="1" stroke-dasharray="3 3"/>
+<!-- Selected handler -->
+<rect x="500" y="225" width="240" height="60" class="box-result"/>
+<text x="620" y="248" text-anchor="middle" class="title">getUser(w, r)</text>
+<text x="620" y="265" text-anchor="middle" class="small rtl">هندلر انتخاب‌شده</text>
+<text x="620" y="280" text-anchor="middle" class="small">r.PathValue("id") → "42"</text>
+<line x1="490" y1="253" x2="500" y2="253" stroke="#4caf50" stroke-width="2" marker-end="url(#arrow-ok)"/>
+<!-- Rules box -->
+<rect x="40" y="375" width="700" height="55" class="warn-box"/>
+<text x="380" y="395" text-anchor="middle" class="title rtl">قوانین تطبیق ServeMux</text>
+<text x="380" y="414" text-anchor="middle" class="small rtl">۱. الگوی با اسلش انتهایی (<code>/static/</code>) subtree است • ۲. بلندترین پیشوند برنده است • ۳. <code>"GET /x"</code> متد را هم بررسی می‌کند و در عدم تطابق، ۴۰۵ برمی‌گرداند • ۴. <code>{id}</code> فقط یک بخش مسیر را تطبیق می‌دهد</text>
+</svg>
+<figcaption>شکل ۷-۳: درخت تطبیق الگوها در <code>ServeMux</code> (Go 1.22+) — برای درخواست <code>GET /api/users/42</code> میان پنج الگوی ثبت‌شده، الگوی <code>"GET /api/users/{id}"</code> به‌عنوان بلندترین تطبیق پیشتاز انتخاب می‌شود (سبز) و هندلر <code>getUser</code> اجرا می‌گردد. سایر الگوها (<code>/</code>، <code>/api/users</code>، <code>/api/posts</code>، <code>/static/</code>) با پیشوندهای کوتاه‌تر رد می‌شوند (خاکستری نقطه‌چین). در پایین چهار قانون بنیادین تطبیق آورده شده: اسلش انتهایی معنای <code>subtree</code> دارد، بلندترین پیشوند برنده است، متد <bdi dir="ltr">HTTP</bdi> بررسی می‌شود و الگوی <code>{id}</code> فقط یک بخش مسیر را می‌گیرد.</figcaption>
+</figure>
+<!-- ═══════════════════════════════════════════════════════════════ -->
 <h3 id="سناریوهای-عملیاتی-مسیریابی">7.2.8 سناریوهای عملیاتی</h3>
 <p>در پروژه‌های واقعی، مسیریابی فراتر از تعریف ساده‌ی مسیرهاست. هر سناریوی کاربردی نیازمند درک عمیق‌تری از نحوه‌ی عملکرد <bdi dir="ltr">ServeMux</bdi> و الگوهای طراحی مناسب است. بدون شناخت این سناریوها، ممکن است با رفتارهای غیرمنتظره مثل تغییر مسیرهای ناخواسته یا تطبیق نادرست الگوها مواجه شوید. در ادامه مهم‌ترین سناریوهای عملیاتی مسیریابی را با ذکر مثال و راه‌حل بررسی می‌کنیم:</p>
 <ul>

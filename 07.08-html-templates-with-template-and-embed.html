@@ -105,6 +105,71 @@
 </code></pre>
 </figure>
 <div class="important"><strong>مهم:</strong> این ایمن‌سازی هوشمند تضمین می‌کند که حتی اگر برنامه‌نویس محل قرارگیری متغیر را عوض کند، همچنان ایمن‌سازی صحیح اعمال می‌شود. در Laravel Blade، <code>{{ }}</code> فقط HTML escaping انجام می‌دهد و در context‌های دیگر (مثل JavaScript یا CSS) باید به صورت دستی از توابع مناسب استفاده کنید.</div>
+<figure class="diagram" dir="ltr">
+<svg viewBox="0 0 760 440" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+<path d="M0,0 L10,5 L0,10 z" fill="#64748b"/>
+</marker>
+</defs>
+<text x="380" y="28" text-anchor="middle" class="title rtl">Context-Aware Escaping در html/template — ایمن‌سازی هوشمند بر اساس محل قرارگیری</text>
+<!-- Input data -->
+<rect x="40" y="60" width="180" height="50" class="box-action"/>
+<text x="130" y="83" text-anchor="middle" class="title">data.Name = "&lt;script&gt;..."</text>
+<text x="130" y="100" text-anchor="middle" class="small rtl">داده‌ی ورودی (خطرناک)</text>
+<line x1="220" y1="85" x2="260" y2="85" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+<!-- html/template engine -->
+<rect x="260" y="60" width="240" height="50" class="box-go"/>
+<text x="380" y="83" text-anchor="middle" class="title">html/template</text>
+<text x="380" y="100" text-anchor="middle" class="small rtl">تشخیص context و انتخاب escape مناسب</text>
+<!-- Output: 4 contexts side by side -->
+<text x="380" y="135" text-anchor="middle" class="title rtl">چهار context متفاوت — هرکدام escape خود را دارد</text>
+<!-- HTML content -->
+<rect x="40" y="150" width="160" height="100" class="box-go"/>
+<text x="120" y="172" text-anchor="middle" class="title">HTML content</text>
+<text x="50" y="195" class="small">&lt;p&gt;{{.Name}}&lt;/p&gt;</text>
+<line x1="50" y1="205" x2="190" y2="205" stroke="#cbd5e1" stroke-width="1"/>
+<text x="50" y="222" class="small rtl">→ HTML-escape</text>
+<text x="50" y="240" class="small">&lt;script&gt; → &amp;lt;script&amp;gt;</text>
+<!-- HTML attribute -->
+<rect x="210" y="150" width="160" height="100" class="box-action"/>
+<text x="290" y="172" text-anchor="middle" class="title">HTML attribute</text>
+<text x="220" y="195" class="small">&lt;div title="{{.Name}}"&gt;</text>
+<line x1="220" y1="205" x2="360" y2="205" stroke="#cbd5e1" stroke-width="1"/>
+<text x="220" y="222" class="small rtl">→ attr-escape</text>
+<text x="220" y="240" class="small">" → &amp;#34;</text>
+<!-- JavaScript -->
+<rect x="380" y="150" width="160" height="100" class="box-join"/>
+<text x="460" y="172" text-anchor="middle" class="title">JavaScript</text>
+<text x="390" y="195" class="small">&lt;script&gt;var n = "{{.Name}}";&lt;/script&gt;</text>
+<line x1="390" y1="205" x2="530" y2="205" stroke="#cbd5e1" stroke-width="1"/>
+<text x="390" y="222" class="small rtl">→ JS-escape (\uXXXX)</text>
+<text x="390" y="240" class="small">&lt; → \u003c</text>
+<!-- URL -->
+<rect x="550" y="150" width="170" height="100" class="box-result"/>
+<text x="635" y="172" text-anchor="middle" class="title">URL</text>
+<text x="560" y="195" class="small">&lt;a href="/q={{.Name}}"&gt;</text>
+<line x1="560" y1="205" x2="710" y2="205" stroke="#cbd5e1" stroke-width="1"/>
+<text x="560" y="222" class="small rtl">→ URL-encode (%XX)</text>
+<text x="560" y="240" class="small">&lt; → %3C</text>
+<!-- Arrows from engine to each context -->
+<line x1="320" y1="110" x2="120" y2="150" stroke="#64748b" stroke-width="1.5" stroke-dasharray="3 3"/>
+<line x1="360" y1="110" x2="290" y2="150" stroke="#64748b" stroke-width="1.5" stroke-dasharray="3 3"/>
+<line x1="400" y1="110" x2="460" y2="150" stroke="#64748b" stroke-width="1.5" stroke-dasharray="3 3"/>
+<line x1="440" y1="110" x2="635" y2="150" stroke="#64748b" stroke-width="1.5" stroke-dasharray="3 3"/>
+<!-- Comparison with PHP -->
+<rect x="40" y="275" width="680" height="70" class="box-php"/>
+<text x="380" y="295" text-anchor="middle" class="title rtl">معادل Laravel Blade</text>
+<text x="380" y="313" text-anchor="middle" class="small rtl"><code>{{ $name }}</code> فقط HTML-escape می‌کند — برای JS باید <code>json_encode()</code> و برای URL باید <code>urlencode()</code> دستی فراخوانی کنید</text>
+<text x="380" y="333" text-anchor="middle" class="small rtl"><code>{!! $name !!}</code> خام و خطرناک — معادل <code>template.HTML</code> در Go</text>
+<!-- Bottom takeaway -->
+<rect x="40" y="360" width="680" height="60" class="tip-box"/>
+<text x="380" y="380" text-anchor="middle" class="title rtl">مزیت کلیدی html/template</text>
+<text x="380" y="398" text-anchor="middle" class="small rtl">همان متغیر <code>.Name</code> در چهار جای مختلف به‌صورت خودکار با روش مناسب ایمن‌سازی می‌شود — برنامه‌نویس نیازی به انتخاب تابع ندارد</text>
+<text x="380" y="414" text-anchor="middle" class="small rtl">اگر محل قرارگیری متغیر در آینده تغییر کند، روش escape هم به‌صورت خودکار به‌روزرسانی می‌شود</text>
+</svg>
+<figcaption>شکل ۷-۹: ایمن‌سازی هوشمند <bdi dir="ltr">Context-Aware</bdi> در <code>html/template</code> — متغیر <code>.Name</code> با مقدار خطرناک <code>&lt;script&gt;...</code> از چپ وارد موتور قالب می‌شود. موتور بسته به محل قرارگیری متغیر، روش <code>escape</code> متفاوتی اعمال می‌کند: در محتوای <bdi dir="ltr">HTML</bdi> (<code>&lt;p&gt;{{.Name}}&lt;/p&gt;</code>) کاراکترهای <code>&lt;</code> و <code>&gt;</code> به <code>&amp;lt;</code> و <code>&amp;gt;</code> تبدیل می‌شوند؛ در attribute‌ها (مثل <code>title="..."</code>) کوتیشن <code>"</code> به <code>&amp;#34;</code>؛ در جاوااسکریپت به فرمت <code>\uXXXX</code>؛ و در <bdi dir="ltr">URL</bdi> به <code>%XX</code>. این رفتار هوشمند در <bdi dir="ltr">Laravel Blade</bdi> وجود ندارد — <code>{{ }}</code> فقط <bdi dir="ltr">HTML-escape</bdi> می‌کند و برای سایر context‌ها باید تابع مناسب دستی فراخوانی شود. این یکی از برتری‌های امنیتی <bdi dir="ltr">Go</bdi> نسبت به <bdi dir="ltr">PHP</bdi> است.</figcaption>
+</figure>
 <h3 id="نوع-templatehtml-برای-خروجی-خام">7.8.2 نوع template.HTML برای خروجی خام</h3>
 <p>گاهی اوقات نیاز دارید HTML ثابت و کنترل‌شده را بدون escape نمایش دهید. برای این کار از نوع <code dir="ltr">template.HTML</code> استفاده می‌شود:</p>
 <figure class="code go" dir="ltr">

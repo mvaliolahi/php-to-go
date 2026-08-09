@@ -165,6 +165,56 @@ type Product struct {
 <h3 id="ماتریس-تبدیل-نوع-sql-به-go">8.7.5 ماتریس تبدیل نوع SQL به Go</h3>
 <p>یکی از چالش‌های اصلی در کار با دیتابیس در <bdi dir="ltr">Go</bdi> نگاشت صحیح انواع داده‌ای <bdi dir="ltr">SQL</bdi> به انواع <bdi dir="ltr">Go</bdi> است. برخلاف <bdi dir="ltr">PHP</bdi> که نوع‌گذاری پویا دارد و تبدیل‌ها عموماً خودکار هستند، در <bdi dir="ltr">Go</bdi> باید دقیقاً بدانید هر نوع <bdi dir="ltr">SQL</bdi> به کدام نوع <bdi dir="ltr">Go</bdi> نگاشت می‌شود. شکل زیر ماتریس کامل این نگاشت‌ها را نشان می‌دهد. </p><p>رنگ سبز نشان‌دهنده‌ی نگاشت مستقیم و بی‌خطر، رنگ نارنجی نشان‌دهنده‌ی تبدیل با احتمال از دست رفتن دقت و رنگ قرمز نشان‌دهنده‌ی مواردی است که نیاز به توجه ویژه دارند.</p>
 <p>همان‌طور که در ماتریس بالا مشاهده می‌کنید، بیشتر انواع پایه‌ای <bdi dir="ltr">SQL</bdi> نگاشت مستقیمی به انواع <bdi dir="ltr">Go</bdi> دارند. </p><p>اما سه مورد نیاز به توجه ویژه دارند: نوع <bdi dir="ltr">JSON/JSONB</bdi> که نیاز به <bdi dir="ltr">json.RawMessage</bdi> یا پیاده‌سازی <code>sql.Scanner</code> دارد، نوع <bdi dir="ltr">DECIMAL/NUMERIC</bdi> که تبدیل آن به <code>float64</code> با خطر از دست رفتن دقت همراه است، و مقادیر <bdi dir="ltr">NULL</bdi> که باید با انواع <code>sql.Null*</code> یا اشاره‌گرها مدیریت شوند. درک این تفاوت‌ها برای جلوگیری از باگ‌های پنهان در اپلیکیشن‌های واقعی بسیار مهم است.</p>
+<figure class="diagram" dir="ltr">
+<svg viewBox="0 0 720 380" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+<path d="M0,0 L10,5 L0,10 z" fill="#64748b"/>
+</marker>
+</defs>
+<text x="360" y="28" text-anchor="middle" class="title rtl">ماتریس تبدیل نوع SQL به Go</text>
+<text x="360" y="50" text-anchor="middle" class="small rtl">سبز: مستقیم • نارنجی: هشدار دقت • قرمز: نیاز به کد اضافی</text>
+<text x="160" y="80" text-anchor="middle" class="title">SQL Type</text>
+<text x="560" y="80" text-anchor="middle" class="title">Go Type</text>
+<rect x="40" y="90" width="240" height="32" class="box-result"/>
+<text x="160" y="110" text-anchor="middle" class="small">INT / BIGINT / SERIAL</text>
+<rect x="440" y="90" width="240" height="32" class="box-result"/>
+<text x="560" y="110" text-anchor="middle" class="small">int / int64</text>
+<line x1="280" y1="106" x2="440" y2="106" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
+<rect x="40" y="127" width="240" height="32" class="box-result"/>
+<text x="160" y="147" text-anchor="middle" class="small">VARCHAR / TEXT</text>
+<rect x="440" y="127" width="240" height="32" class="box-result"/>
+<text x="560" y="147" text-anchor="middle" class="small">string</text>
+<line x1="280" y1="143" x2="440" y2="143" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
+<rect x="40" y="164" width="240" height="32" class="box-result"/>
+<text x="160" y="184" text-anchor="middle" class="small">BOOLEAN</text>
+<rect x="440" y="164" width="240" height="32" class="box-result"/>
+<text x="560" y="184" text-anchor="middle" class="small">bool</text>
+<line x1="280" y1="180" x2="440" y2="180" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
+<rect x="40" y="201" width="240" height="32" class="box-result"/>
+<text x="160" y="221" text-anchor="middle" class="small">TIMESTAMP / TIMESTAMPTZ</text>
+<rect x="440" y="201" width="240" height="32" class="box-result"/>
+<text x="560" y="221" text-anchor="middle" class="small">time.Time</text>
+<line x1="280" y1="217" x2="440" y2="217" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
+<rect x="40" y="238" width="240" height="32" class="box-result"/>
+<text x="160" y="258" text-anchor="middle" class="small">BYTEA / BLOB</text>
+<rect x="440" y="238" width="240" height="32" class="box-result"/>
+<text x="560" y="258" text-anchor="middle" class="small">[]byte</text>
+<line x1="280" y1="254" x2="440" y2="254" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
+<rect x="40" y="275" width="240" height="32" class="warn-box"/>
+<text x="160" y="295" text-anchor="middle" class="small">DECIMAL / NUMERIC</text>
+<rect x="440" y="275" width="240" height="32" class="warn-box"/>
+<text x="560" y="295" text-anchor="middle" class="small">float64 ⚠ یا decimal.Decimal</text>
+<line x1="280" y1="291" x2="440" y2="291" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
+<rect x="40" y="312" width="240" height="32" class="box-php" fill="rgba(239,68,68,0.08)" stroke="#ef4444"/>
+<text x="160" y="332" text-anchor="middle" class="small">JSON / JSONB</text>
+<rect x="440" y="312" width="240" height="32" class="box-php" fill="rgba(239,68,68,0.08)" stroke="#ef4444"/>
+<text x="560" y="332" text-anchor="middle" class="small">json.RawMessage + sql.Scanner</text>
+<line x1="280" y1="328" x2="440" y2="328" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
+<text x="360" y="365" text-anchor="middle" class="small rtl">ستون‌های NULL: به sql.Null* (مثل sql.NullString) یا اشاره‌گر (مثل *string) نیاز دارند</text>
+</svg>
+<figcaption>شکل ۸-۸: ماتریس تبدیل نوع <bdi dir="ltr">SQL</bdi> به <bdi dir="ltr">Go</bdi> — پنج نوع اول (سبز) نگاشت مستقیم و بی‌خطر دارند؛ <bdi dir="ltr">DECIMAL/NUMERIC</bdi> (نارنجی) با <code>float64</code> دقت از دست می‌دهد و برای داده‌های مالی به <code>decimal.Decimal</code> نیاز دارد؛ <bdi dir="ltr">JSON/JSONB</bdi> (قرمز) به <code>sql.Scanner</code> سفارشی نیاز دارد؛ و ستون‌های <bdi dir="ltr">NULL</bdi> با انواع <code>sql.Null*</code> یا اشاره‌گر مدیریت می‌شوند.</figcaption>
+</figure>
 <div class="note"><strong>چرا <bdi dir="ltr">Go</bdi> خطاهای نوع را زودتر از <bdi dir="ltr">PHP</bdi> نشان می‌دهد:</strong> در <bdi dir="ltr">PHP</bdi> تبدیل <code>string</code> به <code>int</code> یا <code>float</code> به‌صورت ضمنی انجام می‌شود و حتی اگر ستون <bdi dir="ltr">SQL</bdi> از نوع <bdi dir="ltr">NUMERIC</bdi> باشد، مقدار بدون خطا در متغیر عددی قرار می‌گیرد — البته با احتمال از دست رفتن دقت. در <bdi dir="ltr">Go</bdi> این خطا در زمان <code>Scan()</code> فوراً اعلام می‌شود. برای داده‌های مالی به‌جای مبارزه با <code>float64</code>، یا مقدار را به‌صورت <code>int64</code> در کوچک‌ترین واحد (ریال/سنت) ذخیره کنید یا از <code>github.com/shopspring/decimal</code> با پیاده‌سازی <code>sql.Scanner</code> استفاده کنید. این سخت‌گیری در نگاه اول آزاردهنده است اما جلوی باگ‌های مالی خاموش را می‌گیرد.</div>
 <h3 id="سناریوهای-عملیاتی-تبدیل-نوع">8.7.6 سناریوهای عملیاتی تبدیل نوع</h3>
 <p>در پروژه‌های واقعی تبدیل نوع بین <bdi dir="ltr">SQL</bdi> و <bdi dir="ltr">Go</bdi> فراتر از نگاشت‌های ساده است. هر سناریو چالش‌های خاص خود را دارد و نیاز به آشنایی با الگوهای رایج و تله‌های احتمالی دارد. در ادامه چهار سناریوی عملیاتی کلیدی را بررسی می‌کنیم که در پروژه‌های <bdi dir="ltr">Go</bdi> مبتنی بر دیتابیس مکرراً با آن‌ها مواجه می‌شوید. </p><p>این سناریوها شامل نکات مهمی هستند که در مستندات رسمی کمتر به آن‌ها پرداخته شده ولی در عمل بسیار کاربردی هستند.</p>

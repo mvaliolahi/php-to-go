@@ -489,6 +489,55 @@ $userID = app('userID');
 <div class="tip">
 <strong>نکته:</strong> ترتیب اجرای <bdi dir="ltr">Middleware</bdi> بسیار مهم است و می‌تواند رفتار کل سیستم را تغییر دهد. <bdi dir="ltr">Logging</bdi> باید بیرونی‌ترین لایه باشد تا تمام درخواست‌ها (حتی درخواست‌های ردشده توسط <bdi dir="ltr">Auth</bdi>) لاگ شوند. <bdi dir="ltr">Auth</bdi> باید داخل <bdi dir="ltr">Logging</bdi> قرار گیرد تا لاگ‌ها شامل اطلاعات احراز هویت باشند. <bdi dir="ltr">Rate Limiting</bdi> باید قبل از <bdi dir="ltr">Auth</bdi> باشد تا حتی درخواست‌های غیرمجاز هم شمارش و محدود شوند — در غیر این صورت، مهاجم می‌تواند با ارسال درخواست‌های نامعتبر، منابع سرور را مصرف کند. ترتیب پیشنهادی: <code dir="ltr">recoverPanic → logging → rateLimit → auth → handler</code>
 </div>
+<figure class="diagram" dir="ltr">
+<svg viewBox="0 0 760 460" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+<path d="M0,0 L10,5 L0,10 z" fill="#64748b"/>
+</marker>
+<marker id="arrow-in" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+<path d="M0,0 L10,5 L0,10 z" fill="#2196f3"/>
+</marker>
+<marker id="arrow-out" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+<path d="M0,0 L10,5 L0,10 z" fill="#4caf50"/>
+</marker>
+</defs>
+<text x="380" y="28" text-anchor="middle" class="title rtl">مدل پیازی Middleware: ترتیب اجرا از بیرون به درون</text>
+<!-- Request arrow on left -->
+<text x="80" y="80" text-anchor="middle" class="title" fill="#2196f3">Request ↓</text>
+<line x1="80" y1="90" x2="80" y2="200" stroke="#2196f3" stroke-width="2.5" marker-end="url(#arrow-in)"/>
+<!-- Response arrow on right -->
+<text x="680" y="80" text-anchor="middle" class="title" fill="#4caf50">Response ↑</text>
+<line x1="680" y1="200" x2="680" y2="90" stroke="#4caf50" stroke-width="2.5" marker-end="url(#arrow-out)"/>
+<!-- Layer 1: recoverPanic (outermost) -->
+<rect x="160" y="100" width="440" height="280" class="box-go" fill="rgba(0,173,216,0.03)"/>
+<text x="380" y="120" text-anchor="middle" class="title">① recoverPanic</text>
+<text x="380" y="135" text-anchor="middle" class="small rtl">بیرونی‌ترین لایه — تمام panicها را شکار می‌کند</text>
+<!-- Layer 2: logging -->
+<rect x="190" y="145" width="380" height="220" class="box-action" fill="rgba(33,150,243,0.05)"/>
+<text x="380" y="165" text-anchor="middle" class="title">② logging</text>
+<text x="380" y="180" text-anchor="middle" class="small rtl">ثبت متد، مسیر، کد وضعیت و زمان پاسخ</text>
+<!-- Layer 3: rateLimit -->
+<rect x="220" y="190" width="320" height="160" class="warn-box" fill="rgba(255,152,0,0.05)"/>
+<text x="380" y="210" text-anchor="middle" class="title">③ rateLimit</text>
+<text x="380" y="225" text-anchor="middle" class="small rtl">محدودیت نرخ بر اساس IP (token bucket)</text>
+<!-- Layer 4: auth -->
+<rect x="250" y="235" width="260" height="100" class="box-join" fill="rgba(255,152,0,0.05)"/>
+<text x="380" y="255" text-anchor="middle" class="title">④ auth</text>
+<text x="380" y="270" text-anchor="middle" class="small rtl">احراز هویت JWT + قرار دادن user در context</text>
+<!-- Layer 5: handler (innermost) -->
+<rect x="280" y="280" width="200" height="40" class="box-result"/>
+<text x="380" y="305" text-anchor="middle" class="title">⑤ handler</text>
+<!-- Arrows showing request flow downward -->
+<line x1="80" y1="280" x2="280" y2="300" stroke="#2196f3" stroke-width="2" stroke-dasharray="3 3" marker-end="url(#arrow-in)"/>
+<line x1="480" y1="300" x2="680" y2="280" stroke="#4caf50" stroke-width="2" stroke-dasharray="3 3" marker-end="url(#arrow-out)"/>
+<!-- Bottom legend -->
+<rect x="50" y="400" width="660" height="50" class="tip-box"/>
+<text x="380" y="420" text-anchor="middle" class="title rtl">قانون طلایی ترتیب Middleware</text>
+<text x="380" y="440" text-anchor="middle" class="small rtl">recover → logging (بیرونی) → rateLimit → auth (درونی) → handler • هر لایه می‌تواند درخواست را short-circuit کند و به handler نرسد (مثلاً ۴۰۱ از auth)</text>
+</svg>
+<figcaption>شکل ۷-۵: مدل پیازی <bdi dir="ltr">Middleware</bdi> در <bdi dir="ltr">Go</bdi> — درخواست از چپ وارد می‌شود (آبی) و لایه به لایه به داخل نفوذ می‌کند تا به هندلر اصلی برسد؛ پاسخ از همان مسیر برمی‌گردد (سبز). هر لایه می‌تواند قبل از فراخوانی <code>next.ServeHTTP()</code> درخواست را متوقف کند (<code>short-circuit</code>) و مستقیماً پاسخ برگرداند. ترتیب حیاتی است: <code>recoverPanic</code> باید بیرونی‌ترین لایه باشد تا بتواند <code>panic</code>های همه‌ی لایه‌های داخلی را شکار کند؛ <code>logging</code> بعد از آن می‌آید تا تمام درخواست‌ها (حتی ردشده‌ها) را ثبت کند؛ <code>rateLimit</code> قبل از <code>auth</code> تا درخواست‌های غیرمجاز هم شمارش شوند. این ترتیب دقیقاً معادل آرایه‌ی <code>$middleware</code> در <code>Kernel.php</code> در <bdi dir="ltr">Laravel</bdi> است.</figcaption>
+</figure>
 <div class="summary">
 <strong>خلاصه‌ی نکات کلیدی:</strong>
 <ul>

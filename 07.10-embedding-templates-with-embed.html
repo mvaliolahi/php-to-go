@@ -138,6 +138,67 @@ tmpl, err := template.ParseFS(templateFS, "templates/*.html", "templates/**/*.ht
 <div class="note"><strong>یادداشت:</strong> دستور <code dir="ltr">//go:embed</code> محدودیت‌های امنیتی دارد: نمی‌توان از <code dir="ltr">..</code> برای خروج از دایرکتوری فایل منبع استفاده کرد و فایل‌هایی که با <code dir="ltr">.</code> یا <code dir="ltr">_</code> شروع می‌شوند (مثل <code dir="ltr">.env</code> یا <code dir="ltr">_test.go</code>) به‌صورت پیش‌فرض جاسازی نمی‌شوند — باید صریحاً نام‌برده شوند. این محدودیت‌ها از نشت تصادفی فایل‌های حساس (مثل <code dir="ltr">.git</code> یا کلیدها) به داخل باینری جلوگیری می‌کنند. قبل از <code dir="ltr">go build</code> با <code dir="ltr">git status</code> بررسی کنید که فقط فایل‌های مورد نظر در پوشه‌ی <code dir="ltr">templates/</code> یا <code dir="ltr">static/</code> قرار دارند.</div>
 <h3 id="جریان-کامل-embed-و-parsefs">7.10.3 جریان کامل embed و ParseFS</h3>
 <p>برای درک بهتر نحوه کار <code dir="ltr">embed</code> با سیستم قالب‌سازی، در ادامه کل جریان را از زمان کامپایل تا اجرای قالب مرور می‌کنیم. وقتی شما دستور <code dir="ltr">go build</code> را اجرا می‌کنید، کامپایلر فایل‌های مشخص‌شده توسط <code>//go:embed</code> را می‌خواند و محتوای آن‌ها را مستقیماً در باینری برنامه جاسازی می‌کند. </p><p>در زمان اجرا، این محتوا از طریق <code dir="ltr">embed.FS</code> در دسترس است که یک سیستم فایل فقط‌خواندنی پیاده‌سازی رابط <code dir="ltr">fs.FS</code> است:</p>
+<figure class="diagram" dir="ltr">
+<svg viewBox="0 0 760 440" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+<path d="M0,0 L10,5 L0,10 z" fill="#64748b"/>
+</marker>
+</defs>
+<text x="380" y="28" text-anchor="middle" class="title rtl">خط لوله‌ی کامپایل //go:embed — از فایل منبع تا رندر قالب</text>
+<!-- Phase 1: Source files -->
+<text x="115" y="58" text-anchor="middle" class="title rtl">۱. فایل‌های منبع</text>
+<rect x="40" y="70" width="150" height="180" class="box-php"/>
+<text x="115" y="95" text-anchor="middle" class="small">main.go</text>
+<rect x="55" y="105" width="120" height="20" class="box-go"/>
+<text x="115" y="120" text-anchor="middle" class="small">//go:embed</text>
+<text x="115" y="145" text-anchor="middle" class="small">templates/</text>
+<text x="60" y="165" class="small">├── layout.html</text>
+<text x="60" y="183" class="small">├── header.html</text>
+<text x="60" y="201" class="small">├── footer.html</text>
+<text x="60" y="219" class="small">└── home.html</text>
+<text x="115" y="242" text-anchor="middle" class="small rtl">+ فایل‌های استاتیک</text>
+<!-- Phase 2: go build -->
+<text x="380" y="58" text-anchor="middle" class="title rtl">۲. go build (compile-time)</text>
+<rect x="240" y="70" width="280" height="180" class="warn-box"/>
+<text x="380" y="95" text-anchor="middle" class="title">go build</text>
+<text x="260" y="120" class="small rtl">کامپایلر چه می‌کند؟</text>
+<text x="260" y="140" class="small">① parse //go:embed directives</text>
+<text x="260" y="158" class="small">② read files from disk</text>
+<text x="260" y="176" class="small">③ embed bytes into .rodata section</text>
+<text x="260" y="194" class="small">④ initialize embed.FS variable</text>
+<text x="260" y="212" class="small">⑤ link everything into one binary</text>
+<text x="260" y="235" class="small rtl" fill="#ff9800">⚠ فایل‌های _ و . (مثل .env) جاسازی نمی‌شوند</text>
+<!-- Phase 3: Single binary -->
+<text x="645" y="58" text-anchor="middle" class="title rtl">۳. باینری مستقل</text>
+<rect x="570" y="70" width="150" height="180" class="box-result"/>
+<text x="645" y="95" text-anchor="middle" class="title">app (binary)</text>
+<text x="585" y="120" class="small rtl">شامل:</text>
+<text x="585" y="140" class="small">✓ Go code (compiled)</text>
+<text x="585" y="158" class="small">✓ embed.FS (readonly)</text>
+<text x="585" y="176" class="small rtl">  ├── templates/*.html</text>
+<text x="585" y="194" class="small rtl">  └── static/*</text>
+<text x="585" y="218" class="small">✓ FROM scratch OK</text>
+<text x="585" y="236" class="small rtl">✓ یک فایل برای deploy</text>
+<!-- Arrows -->
+<line x1="190" y1="160" x2="240" y2="160" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+<line x1="520" y1="160" x2="570" y2="160" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+<!-- Runtime phase: at bottom -->
+<text x="380" y="290" text-anchor="middle" class="title rtl">۴. در زمان اجرا (runtime)</text>
+<rect x="40" y="305" width="680" height="120" class="box-go"/>
+<rect x="60" y="320" width="160" height="40" class="box-action"/>
+<text x="140" y="345" text-anchor="middle" class="small">templateFS embed.FS</text>
+<line x1="220" y1="340" x2="240" y2="340" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="240" y="320" width="200" height="40" class="box-go"/>
+<text x="340" y="345" text-anchor="middle" class="small">template.ParseFS(templateFS, ...)</text>
+<line x1="440" y1="340" x2="460" y2="340" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="460" y="320" width="240" height="40" class="box-go"/>
+<text x="580" y="345" text-anchor="middle" class="small">tmpl.ExecuteTemplate(w, name, data)</text>
+<text x="380" y="385" text-anchor="middle" class="small rtl">→ قالب از حافظه خوانده می‌شود، نه از دیسک — سرعت بالا و امنیت تضمین‌شده</text>
+<text x="380" y="405" text-anchor="middle" class="small rtl" fill="#4a5568">در PHP معادل رسمی ندارد: <code>file_get_contents("templates/...")</code> همیشه از دیسک می‌خواند</text>
+</svg>
+<figcaption>شکل ۷-۱۱: خط لوله‌ی کامپایل <code>//go:embed</code> — سه فاز از چپ به راست: (۱) فایل‌های منبع شامل <code>main.go</code> با directive <code>//go:embed</code> و فایل‌های جانبی قالب‌ها و استاتیک؛ (۲) <code>go build</code> در زمان کامپایل directiveها را parse می‌کند، فایل‌ها را از دیسک می‌خواند، بایت‌ها را در بخش <code>.rodata</code> باینری جاسازی می‌کند، متغیر <code>embed.FS</code> را مقداردهی می‌کند و همه‌چیز را در یک باینری لینک می‌کند؛ (۳) باینری مستقل حاصل شامل کد <bdi dir="ltr">Go</bdi> کامپایل‌شده و <code>embed.FS</code> فقط‌خواندنی است. در فاز ۴ (پایین) در زمان اجرا، <code>template.ParseFS</code> قالب‌ها را از <code>embed.FS</code> می‌خواند و <code>ExecuteTemplate</code> آن‌ها را رندر می‌کند — فایل‌ها از حافظه خوانده می‌شوند، نه از دیسک. در <bdi dir="ltr">PHP</bdi> معادل رسمی برای <code>embed</code> وجود ندارد و <code>file_get_contents</code> همیشه از دیسک می‌خواند.</figcaption>
+</figure>
 <p><strong>مفاهیم کلیدی قالب‌ها</strong></p>
 <p><strong dir="ltr">Template inheritance</strong> : با استفاده از <code>block</code> و <code>define</code> می‌توانید یک طرح کلی داشته باشید و صفحات مختلف را درون آن جای‌گذاری کنید.</p>
 <p><strong>Context داده‌ها</strong> : قالب‌ها با استفاده از struct یا map داده‌ها را دریافت و رندر می‌کنند. نماد نقطه (<code>.</code>) به داده‌های context فعلی اشاره دارد.</p>

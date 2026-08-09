@@ -571,6 +571,71 @@ func main() {
 </div>
 <h3 id="json-marshal-unmarshal-type-mapping">6.6.13 نگاشت نوع‌هایGoبهJSONدرMarshal/Unmarshal</h3>
 <p>درک دقیق نگاشت نوع‌های <bdi dir="ltr">Go</bdi> به نوع‌های <bdi dir="ltr">JSON</bdi> برای جلوگیری از باگ‌های پنهان بسیار مهم است. برخی نگاشت‌ها مستقیم و ساده هستند مانند تبدیل <bdi dir="ltr">string</bdi> به رشته‌ی <bdi dir="ltr">JSON</bdi> یا <bdi dir="ltr">bool</bdi> به <bdi dir="ltr">boolean</bdi>، اما برخی دیگر نیاز به توجه ویژه دارند. مثلاً <bdi dir="ltr">time.Time</bdi> به رشته‌ی <bdi dir="ltr">RFC3339</bdi> تبدیل می‌شود و <bdi dir="ltr">[]byte</bdi> به رشته‌ی <bdi dir="ltr">base64</bdi> تبدیل می‌شود. </p><p>همچنین فیلدهای <bdi dir="ltr">unexported</bdi> (که با حرف کوچک شروع می‌شوند) به‌طور کامل نادیده گرفته می‌شوند و هرگز در خروجی <bdi dir="ltr">JSON</bdi> ظاهر نمی‌شوند. این رفتار می‌تواند برای برنامه‌نویسان <bdi dir="ltr">PHP</bdi> که به دسترسی پویا به همه‌ی کلیدها عادت دارند، غافلگیرکننده باشد.</p>
+<figure class="diagram" dir="ltr">
+<svg viewBox="0 0 760 460" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+<path d="M0,0 L10,5 L0,10 z" fill="#64748b"/>
+</marker>
+<marker id="arrow-ok" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+<path d="M0,0 L10,5 L0,10 z" fill="#4caf50"/>
+</marker>
+<marker id="arrow-warn" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+<path d="M0,0 L10,5 L0,10 z" fill="#ff9800"/>
+</marker>
+</defs>
+<text x="380" y="28" text-anchor="middle" class="title rtl">نگاشت نوع‌های Go به JSON در Marshal/Unmarshal</text>
+<text x="170" y="55" text-anchor="middle" class="title">Go</text>
+<text x="590" y="55" text-anchor="middle" class="title">JSON</text>
+<line x1="380" y1="65" x2="380" y2="395" stroke="#cbd5e1" stroke-width="1" stroke-dasharray="4 4"/>
+<!-- Row 1: string ↔ string -->
+<rect x="50" y="75" width="240" height="40" class="box-go"/>
+<text x="170" y="100" text-anchor="middle" class="title">string</text>
+<rect x="470" y="75" width="240" height="40" class="box-result"/>
+<text x="590" y="100" text-anchor="middle" class="title">"string"</text>
+<line x1="290" y1="95" x2="470" y2="95" stroke="#4caf50" stroke-width="2" marker-end="url(#arrow-ok)"/>
+<!-- Row 2: int/float ↔ number -->
+<rect x="50" y="125" width="240" height="40" class="box-go"/>
+<text x="170" y="150" text-anchor="middle" class="title">int, float64</text>
+<rect x="470" y="125" width="240" height="40" class="box-result"/>
+<text x="590" y="150" text-anchor="middle" class="title">number</text>
+<line x1="290" y1="145" x2="470" y2="145" stroke="#4caf50" stroke-width="2" marker-end="url(#arrow-ok)"/>
+<!-- Row 3: bool ↔ boolean -->
+<rect x="50" y="175" width="240" height="40" class="box-go"/>
+<text x="170" y="200" text-anchor="middle" class="title">bool</text>
+<rect x="470" y="175" width="240" height="40" class="box-result"/>
+<text x="590" y="200" text-anchor="middle" class="title">true / false</text>
+<line x1="290" y1="195" x2="470" y2="195" stroke="#4caf50" stroke-width="2" marker-end="url(#arrow-ok)"/>
+<!-- Row 4: nil ↔ null -->
+<rect x="50" y="225" width="240" height="40" class="box-go"/>
+<text x="170" y="250" text-anchor="middle" class="title">nil pointer (*T)</text>
+<rect x="470" y="225" width="240" height="40" class="box-result"/>
+<text x="590" y="250" text-anchor="middle" class="title">null</text>
+<line x1="290" y1="245" x2="470" y2="245" stroke="#4caf50" stroke-width="2" marker-end="url(#arrow-ok)"/>
+<!-- Row 5: slice/array ↔ array -->
+<rect x="50" y="275" width="240" height="40" class="box-go"/>
+<text x="170" y="300" text-anchor="middle" class="title">[]T, [N]T</text>
+<rect x="470" y="275" width="240" height="40" class="box-result"/>
+<text x="590" y="300" text-anchor="middle" class="title">[ ... ]</text>
+<line x1="290" y1="295" x2="470" y2="295" stroke="#4caf50" stroke-width="2" marker-end="url(#arrow-ok)"/>
+<!-- Row 6: struct/map ↔ object -->
+<rect x="50" y="325" width="240" height="40" class="box-go"/>
+<text x="170" y="350" text-anchor="middle" class="title">struct, map[string]T</text>
+<rect x="470" y="325" width="240" height="40" class="box-result"/>
+<text x="590" y="350" text-anchor="middle" class="title">{ ... }</text>
+<line x1="290" y1="345" x2="470" y2="345" stroke="#4caf50" stroke-width="2" marker-end="url(#arrow-ok)"/>
+<!-- Tricky mappings section -->
+<line x1="50" y1="385" x2="710" y2="385" stroke="#cbd5e1" stroke-width="1"/>
+<text x="380" y="405" text-anchor="middle" class="title rtl" fill="#ff9800">نگاشت‌های غیر بدیهی:</text>
+<rect x="50" y="415" width="220" height="35" class="warn-box"/>
+<text x="160" y="437" text-anchor="middle" class="small">time.Time → "2006-01-02T15:04:05Z"</text>
+<rect x="290" y="415" width="200" height="35" class="warn-box"/>
+<text x="390" y="437" text-anchor="middle" class="small">[]byte → "base64-encoded"</text>
+<rect x="500" y="415" width="210" height="35" class="warn-box"/>
+<text x="605" y="437" text-anchor="middle" class="small">unexported field → (حذف می‌شود)</text>
+</svg>
+<figcaption>شکل ۶-۷: نگاشت نوع‌های <bdi dir="ltr">Go</bdi> به <bdi dir="ltr">JSON</bdi> — شش نگاشت مستقیم (سبز، خط بالایی): <code>string</code> ↔ رشته، <code>int</code>/<code>float</code> ↔ عدد، <code>bool</code> ↔ بولین، <code>nil</code> اشاره‌گر ↔ <code>null</code>، <code>[]T</code> ↔ آرایه، و <code>struct</code>/<code>map</code> ↔ آبجکت. سه نگاشت غیربدیهی (نارنجی، پایین) که اغلب برای برنامه‌نویسان PHP غافلگیرکننده‌اند: <code>time.Time</code> به رشته‌ی RFC3339 تبدیل می‌شود، <code>[]byte</code> به‌صورت base64 رمزگذاری می‌شود (نه آرایه‌ی عدد!)، و فیلدهای <code>unexported</code> (با حرف کوچک) به‌طور کامل از خروجی حذف می‌شوند — حتی اگر <code>struct tag</code> داشته باشند.</figcaption>
+</figure>
 <h3 id="json-سناریوهای-عملیاتی">6.6.14 سناریوهای عملیاتی</h3>
 <p>در پروژه‌های واقعی، کار با <bdi dir="ltr">JSON</bdi> فراتر از تبدیل ساده‌ی <bdi dir="ltr">struct</bdi> به <bdi dir="ltr">JSON</bdi> است. سناریوهای متعددی وجود دارند که هر کدام نیازمند رویکرد و تکنیک خاصی هستند. آشنایی با این الگوها به شما کمک می‌کند در موقعیت‌های مختلف بهترین تصمیم را بگیرید و از خطاهای رایج جلوگیری کنید. در ادامه پنج سناریوی عملیاتی کلیدی بررسی می‌شوند که هر برنامه‌نویس <bdi dir="ltr">Go</bdi> باید با آن‌ها آشنا باشد.</p>
 <ul>

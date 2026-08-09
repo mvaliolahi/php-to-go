@@ -235,6 +235,66 @@ func processWithTimeout(ctx context.Context) {
 </div>
 <h3 id="select-ارزیابی-و-multiplexing-جزئیات">5.3.4 ارزیابی و Multiplexing در Select — جزئیات عملیاتی</h3>
 <p>همان‌طور که در ابتدای این بخش دیدیم، <bdi dir="ltr">select</bdi> تمام <bdi dir="ltr">case</bdi>‌ها را به‌صورت تصادفی بررسی می‌کند و اولین <bdi dir="ltr">case</bdi> آماده را اجرا می‌کند. این رفتار دقیقاً مشابه الگوی <bdi dir="ltr">epoll</bdi> در سیستم‌عامل لینوکس است که در آن چندین <bdi dir="ltr">file descriptor</bdi> به صورت همزمان تحت نظر قرار می‌گیرند و اولین رویداد آماده پردازش می‌شود. </p><p>در نمودار زیر خط زمانی یک <bdi dir="ltr">select</bdi> در حلقه را مشاهده می‌کنید که در هر تکرار <bdi dir="ltr">case</bdi> متفاوتی انتخاب می‌شود.</p>
+<figure class="diagram" dir="ltr">
+<svg viewBox="0 0 760 380" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+<path d="M0,0 L10,5 L0,10 z" fill="#64748b"/>
+</marker>
+</defs>
+<text x="380" y="28" text-anchor="middle" class="title rtl">خط زمانی اجرای select در حلقه — چهار تکرار با چهار مسیر متفاوت</text>
+<!-- Time axis -->
+<line x1="60" y1="60" x2="700" y2="60" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+<text x="710" y="65" class="small">time</text>
+<!-- Tick marks for 4 iterations -->
+<g font-size="12" fill="#4a5568">
+<line x1="150" y1="55" x2="150" y2="65" stroke="#64748b" stroke-width="1.5"/>
+<text x="150" y="48" text-anchor="middle" class="small">iter 1</text>
+<line x1="300" y1="55" x2="300" y2="65" stroke="#64748b" stroke-width="1.5"/>
+<text x="300" y="48" text-anchor="middle" class="small">iter 2</text>
+<line x1="450" y1="55" x2="450" y2="65" stroke="#64748b" stroke-width="1.5"/>
+<text x="450" y="48" text-anchor="middle" class="small">iter 3</text>
+<line x1="600" y1="55" x2="600" y2="65" stroke="#64748b" stroke-width="1.5"/>
+<text x="600" y="48" text-anchor="middle" class="small">iter 4</text>
+</g>
+<!-- Channels (left labels) -->
+<text x="50" y="135" text-anchor="end" class="title">ch1</text>
+<text x="50" y="215" text-anchor="end" class="title">ch2</text>
+<text x="50" y="295" text-anchor="end" class="title">default</text>
+<!-- Channel readiness states (4 cells per row) -->
+<!-- ch1 row: ready at iter 1 and iter 2 -->
+<rect x="80" y="115" width="140" height="40" class="box-go"/>
+<text x="150" y="140" text-anchor="middle" class="small rtl">آماده ✓</text>
+<rect x="230" y="115" width="140" height="40" class="box-go"/>
+<text x="300" y="140" text-anchor="middle" class="small rtl">آماده ✓</text>
+<rect x="380" y="115" width="140" height="40" class="box"/>
+<text x="450" y="140" text-anchor="middle" class="small rtl">—</text>
+<rect x="530" y="115" width="140" height="40" class="box"/>
+<text x="600" y="140" text-anchor="middle" class="small rtl">—</text>
+<!-- ch2 row: ready at iter 2, iter 3 -->
+<rect x="80" y="195" width="140" height="40" class="box"/>
+<text x="150" y="220" text-anchor="middle" class="small rtl">—</text>
+<rect x="230" y="195" width="140" height="40" class="box-go"/>
+<text x="300" y="220" text-anchor="middle" class="small rtl">آماده ✓</text>
+<rect x="380" y="195" width="140" height="40" class="box-go"/>
+<text x="450" y="220" text-anchor="middle" class="small rtl">آماده ✓</text>
+<rect x="530" y="195" width="140" height="40" class="box"/>
+<text x="600" y="220" text-anchor="middle" class="small rtl">—</text>
+<!-- default row: only iter 4 -->
+<rect x="80" y="275" width="140" height="40" class="box"/>
+<rect x="230" y="275" width="140" height="40" class="box"/>
+<rect x="380" y="275" width="140" height="40" class="box"/>
+<rect x="530" y="275" width="140" height="40" class="box-action"/>
+<text x="600" y="300" text-anchor="middle" class="small rtl">اجرا می‌شود</text>
+<!-- Selected case badges -->
+<text x="150" y="345" text-anchor="middle" class="small" fill="#4caf50">→ case ch1 انتخاب شد</text>
+<text x="300" y="345" text-anchor="middle" class="small" fill="#ff9800">→ تصادفی: ch2 انتخاب شد</text>
+<text x="450" y="345" text-anchor="middle" class="small" fill="#4caf50">→ case ch2 انتخاب شد</text>
+<text x="600" y="345" text-anchor="middle" class="small" fill="#2196f3">→ default اجرا شد</text>
+<text x="380" y="372" text-anchor="middle" class="small rtl">قانون کلیدی: اگر چند case هم‌زمان آماده باشند، Go یکی را تصادفی انتخاب می‌کند تا از starvation جلوگیری شود</text>
+</svg>
+<figcaption>شکل ۵-۵: خط زمانی چهار تکرار از یک <code>select</code> در حلقه — در تکرار ۱ فقط <code>ch1</code> آماده است؛ در تکرار ۲ هر دو <code>ch1</code> و <code>ch2</code> آماده‌اند و Go به‌صورت تصادفی یکی را انتخاب می‌کند؛ در تکرار ۳ فقط <code>ch2</code> آماده است؛ در تکرار ۴ هیچ کانالی آماده نیست و مسیر <code>default</code> اجرا می‌شود (رفتار non-blocking).</figcaption>
+</figure>
 <p>در نمودار بالا مشاهده می‌کنید که در هر تکرار حلقه، <bdi dir="ltr">select</bdi> وضعیت آماده بودن تمام کانال‌ها را بررسی می‌کند و بر اساس اولین <bdi dir="ltr">case</bdi> آماده، مسیر اجرا را تعیین می‌کند. در تکرار دوم که هر دو <bdi dir="ltr">ch1</bdi> و <bdi dir="ltr">ch2</bdi> آماده هستند، <bdi dir="ltr">Go</bdi> به صورت تصادفی یکی را انتخاب می‌کند تا از <bdi dir="ltr">starvation</bdi> جلوگیری شود. </p><p>تکرار چهارم نشان می‌دهد که وقتی هیچ کانالی آماده نیست و <bdi dir="ltr">default</bdi> وجود دارد، <bdi dir="ltr">select</bdi> بدون بلاک شدن مسیر <bdi dir="ltr">default</bdi> را طی می‌کند. </p><p>این رفتار برای پیاده‌سازی الگوهای <bdi dir="ltr">non-blocking</bdi> بسیار مفید است زیرا به شما اجازه می‌دهد همزمان با انتظار روی کانال‌ها، کارهای دیگر را نیز انجام دهید.</p>
 <h4 id="سناریوهای-عملیاتی-select">سناریوهای عملیاتی <bdi dir="ltr">select</bdi></h4>
 <ul>

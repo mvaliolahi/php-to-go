@@ -511,6 +511,60 @@ handler := maxBodySizeMiddleware(1 &lt;&lt; 20)(mux)
 <!-- ═══════════════════════════════════════════════════════════════ -->
  ENRICHMENT: SVG — http.Server Internal Connection Handling 
 <!-- ═══════════════════════════════════════════════════════════════ -->
+<figure class="diagram" dir="ltr">
+<svg viewBox="0 0 760 440" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+<path d="M0,0 L10,5 L0,10 z" fill="#64748b"/>
+</marker>
+<marker id="arrow-bad" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+<path d="M0,0 L10,5 L0,10 z" fill="#ef4444"/>
+</marker>
+<marker id="arrow-ok" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+<path d="M0,0 L10,5 L0,10 z" fill="#4caf50"/>
+</marker>
+</defs>
+<text x="380" y="28" text-anchor="middle" class="title rtl">داخلی‌های http.Server: لایه‌های محافظتی زمان‌بندی و بدنه</text>
+<!-- Inbound request -->
+<rect x="30" y="60" width="140" height="50" class="box-action"/>
+<text x="100" y="83" text-anchor="middle" class="title">HTTP Request</text>
+<text x="100" y="100" text-anchor="middle" class="small rtl">از کلاینت</text>
+<line x1="170" y1="85" x2="200" y2="85" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+<!-- Outer shield: MaxHeaderBytes -->
+<rect x="200" y="60" width="540" height="360" class="box-go" fill="rgba(0,173,216,0.04)"/>
+<text x="470" y="80" text-anchor="middle" class="title">http.Server</text>
+<!-- Layer 1: ReadHeaderTimeout (anti-Slowloris) -->
+<rect x="220" y="95" width="500" height="55" class="warn-box"/>
+<text x="240" y="118" class="title">① ReadHeaderTimeout: 2s</text>
+<text x="240" y="138" class="small rtl">مهلت خواندن هدرها — خط اول دفاع در برابر Slowloris</text>
+<text x="700" y="125" text-anchor="end" class="small" fill="#ef4444">✗ قطع اتصال نیمه‌باز</text>
+<line x1="470" y1="150" x2="470" y2="170" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+<!-- Layer 2: ReadTimeout -->
+<rect x="220" y="170" width="500" height="55" class="warn-box"/>
+<text x="240" y="193" class="title">② ReadTimeout: 5s</text>
+<text x="240" y="213" class="small rtl">مهلت خواندن کل درخواست (شامل body)</text>
+<text x="700" y="200" text-anchor="end" class="small" fill="#ef4444">✗ قطع body بسیار بزرگ</text>
+<line x1="470" y1="225" x2="470" y2="245" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+<!-- Layer 3: MaxBytesReader (handler-level) -->
+<rect x="220" y="245" width="500" height="55" class="box-action"/>
+<text x="240" y="268" class="title">③ http.MaxBytesReader(w, r.Body, 1MB)</text>
+<text x="240" y="288" class="small rtl">محدودیت حجم بدنه در سطح هندلر + قطع اتصال</text>
+<text x="700" y="275" text-anchor="end" class="small" fill="#2196f3">↹ در Handler</text>
+<line x1="470" y1="300" x2="470" y2="320" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+<!-- Layer 4: Handler execution -->
+<rect x="220" y="320" width="500" height="55" class="box-go"/>
+<text x="240" y="343" class="title">④ Handler executes (goroutine per request)</text>
+<text x="240" y="363" class="small rtl">منطق کسب‌وکار — WriteTimeout پاسخ را محدود می‌کند</text>
+<line x1="470" y1="375" x2="470" y2="395" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+<!-- Layer 5: WriteTimeout -->
+<rect x="220" y="395" width="500" height="20" class="warn-box"/>
+<text x="470" y="409" text-anchor="middle" class="small">⑤ WriteTimeout: 10s   •   IdleTimeout: 120s (keep-alive)</text>
+<!-- Side notes -->
+<text x="380" y="432" text-anchor="middle" class="small rtl" fill="#4a5568">بدون این لایه‌ها، مهاجم با هزاران اتصال نیمه‌باز منابع سرور را تخلیه می‌کند</text>
+</svg>
+<figcaption>شکل ۷-۲: لایه‌های دفاعی <code>http.Server</code> در برابر درخواست‌های مخرب — هر درخواست <bdi dir="ltr">HTTP</bdi> از چپ وارد می‌شود و پنج لایه‌ی متوالی از آن عبور می‌کند. لایه‌ی ۱ <code>ReadHeaderTimeout</code> مهم‌ترین خط دفاع در برابر <bdi dir="ltr">Slowloris</bdi> است (مهاجم نتواند هدرها را در مهلت ارسال کند → قطع اتصال). لایه‌ی ۲ <code>ReadTimeout</code> کل زمان خواندن درخواست را محدود می‌کند. لایه‌ی ۳ <code>MaxBytesReader</code> در داخل هندلر حجم <code>body</code> را محدود می‌کند و اتصال را در صورت تجاوز قطع می‌نماید. لایه‌ی ۴ هندلر در یک <code>goroutine</code> سبک اجرا می‌شود. لایه‌ی ۵ <code>WriteTimeout</code> زمان نوشتن پاسخ و <code>IdleTimeout</code> اتصال <code>keep-alive</code> بی‌کاربرد را محدود می‌سازد. بدون این مهلت‌ها، سرور در برابر <bdi dir="ltr">DoS</bdi> آسیب‌پذیر است.</figcaption>
+</figure>
+<!-- ═══════════════════════════════════════════════════════════════ -->
 <h3 id="سناریوهای-عملیاتی-وبسرور">7.1.11 سناریوهای عملیاتی</h3>
 <p>در محیط‌های واقعی <bdi dir="ltr">production</bdi>، تنظیم وب‌سرور <bdi dir="ltr">Go</bdi> فراتر از نوشتن یک <code dir="ltr">ListenAndServe</code> ساده است. هر سناریوی استقرار نیازمند تنظیمات متفاوتی است و بدون توجه به این تفاوت‌ها، سرور شما ممکن است در برابر حملات آسیب‌پذیر شود یا عملکرد مناسبی نداشته باشد. در ادامه مهم‌ترین سناریوهای عملیاتی و راه‌حل‌های مربوط به هر کدام را بررسی می‌کنیم:</p>
 <ul>

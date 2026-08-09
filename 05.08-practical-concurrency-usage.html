@@ -393,6 +393,71 @@ func (h *Hub) Run(ctx context.Context) {
 <div class="tip"><strong>نکته عملی:</strong> در سیستم‌های واقعی باید محدودیت تعداد اتصالات، <bdi dir="ltr">Rate Limiting</bdi> پیام‌ها، <bdi dir="ltr">Ping/Pong</bdi> برای تشخیص اتصالات قطع‌شده، و <bdi dir="ltr">Graceful Shutdown</bdi> را نیز پیاده‌سازی کنید. هر یک از این موارد با ترکیب الگوهایی که در این فصل آموختید قابل پیاده‌سازی است.</div>
 <h3 id="معماری-worker-pool-با-اتصال-کانال‌ها">5.8.7 معماریWorker Poolبا اتصال کانال‌ها</h3>
 <p>یکی از مهم‌ترین الگوهای هم‌روندی در <bdi dir="ltr">Go</bdi>، الگوی <bdi dir="ltr">Worker Pool</bdi> است. این الگو به شما اجازه می‌دهد تعداد مشخصی <bdi dir="ltr">goroutine</bdi> برای پردازش موازی کارها ایجاد کنید و از طریق <bdi dir="ltr">channel</bdi>‌ها ورودی و خروجی آن‌ها را مدیریت کنید. </p><p>برخلاف <bdi dir="ltr">PHP</bdi> که برای هر <bdi dir="ltr">Worker</bdi> نیاز به <bdi dir="ltr">Process</bdi> جداگانه دارید، در <bdi dir="ltr">Go</bdi> تمام <bdi dir="ltr">Worker</bdi>ها درون یک <bdi dir="ltr">Process</bdi> با حافظه مشترک اجرا می‌شوند. </p><p>ترکیب <bdi dir="ltr">Worker Pool</bdi> با <bdi dir="ltr">Context</bdi> برای لغو عملیات و <bdi dir="ltr">WaitGroup</bdi> برای انتظار روی اتمام تمام <bdi dir="ltr">Worker</bdi>ها، یک سیستم مقیاس‌پذیر و امن ایجاد می‌کند.</p>
+<figure class="diagram" dir="ltr">
+<svg viewBox="0 0 760 420" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+<path d="M0,0 L10,5 L0,10 z" fill="#64748b"/>
+</marker>
+<marker id="arrow-ctx" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+<path d="M0,0 L10,5 L0,10 z" fill="#ff9800"/>
+</marker>
+</defs>
+<text x="380" y="28" text-anchor="middle" class="title rtl">معماری کامل Worker Pool با Context و WaitGroup</text>
+<!-- Job Producer -->
+<rect x="40" y="60" width="160" height="60" class="box-action"/>
+<text x="120" y="85" text-anchor="middle" class="title">Job Producer</text>
+<text x="120" y="105" text-anchor="middle" class="small rtl">ساخت و ارسال Job</text>
+<!-- jobs channel -->
+<rect x="240" y="60" width="160" height="60" class="box-go"/>
+<text x="320" y="85" text-anchor="middle" class="title">jobs chan Job</text>
+<text x="320" y="105" text-anchor="middle" class="small rtl">buffered channel</text>
+<!-- Workers (3) -->
+<rect x="440" y="55" width="100" height="25" class="box-go"/>
+<text x="490" y="72" text-anchor="middle" class="small">Worker 1</text>
+<rect x="440" y="82" width="100" height="25" class="box-go"/>
+<text x="490" y="99" text-anchor="middle" class="small">Worker 2</text>
+<rect x="440" y="109" width="100" height="25" class="box-go"/>
+<text x="490" y="126" text-anchor="middle" class="small">Worker 3</text>
+<text x="600" y="100" class="small rtl" fill="#64748b"> wg.Add(1) per worker</text>
+<text x="600" y="118" class="small rtl" fill="#64748b"> defer wg.Done()</text>
+<!-- results channel -->
+<rect x="240" y="170" width="160" height="60" class="box-go"/>
+<text x="320" y="195" text-anchor="middle" class="title">results chan Result</text>
+<text x="320" y="215" text-anchor="middle" class="small rtl">buffered channel</text>
+<!-- Result Collector -->
+<rect x="40" y="170" width="160" height="60" class="box-action"/>
+<text x="120" y="195" text-anchor="middle" class="title">Result Collector</text>
+<text x="120" y="215" text-anchor="middle" class="small rtl">for r := range results</text>
+<!-- Arrows: Producer → jobs → Workers → results → Collector -->
+<line x1="200" y1="90" x2="240" y2="90" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+<line x1="400" y1="90" x2="440" y2="67" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
+<line x1="400" y1="90" x2="440" y2="94" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
+<line x1="400" y1="90" x2="440" y2="121" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
+<line x1="440" y1="67" x2="400" y2="195" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
+<line x1="440" y1="94" x2="400" y2="200" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
+<line x1="440" y1="121" x2="400" y2="205" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
+<line x1="240" y1="200" x2="200" y2="200" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+<!-- Bottom layer: Context + WaitGroup -->
+<rect x="40" y="280" width="340" height="55" class="warn-box"/>
+<text x="210" y="303" text-anchor="middle" class="title">context.Context (with cancel/timeout)</text>
+<text x="210" y="323" text-anchor="middle" class="small rtl">لغو هماهنگ همه Workerها با ctx.Done()</text>
+<rect x="420" y="280" width="300" height="55" class="box-join"/>
+<text x="570" y="303" text-anchor="middle" class="title">sync.WaitGroup</text>
+<text x="570" y="323" text-anchor="middle" class="small rtl">انتظار برای اتمام تمام Workerها</text>
+<!-- Context arrows to workers -->
+<path d="M 210 280 Q 210 250 440 130" fill="none" stroke="#ff9800" stroke-width="1.5" stroke-dasharray="5 3" marker-end="url(#arrow-ctx)"/>
+<text x="320" y="262" text-anchor="middle" class="small" fill="#ff9800">ctx.Done()</text>
+<!-- WaitGroup arrows -->
+<path d="M 570 280 Q 570 200 540 130" fill="none" stroke="#64748b" stroke-width="1.5" stroke-dasharray="5 3" marker-end="url(#arrow)"/>
+<text x="600" y="220" text-anchor="middle" class="small">wg.Wait()</text>
+<!-- Bottom legend -->
+<text x="380" y="370" text-anchor="middle" class="small rtl">Producer کارها را در jobs می‌ریزد؛ Workerها موازی پردازش می‌کنند؛ نتایج در results جمع می‌شوند</text>
+<text x="380" y="390" text-anchor="middle" class="small rtl">Context مسیر لغو فراهم می‌کند؛ WaitGroup تضمین می‌کند قبل از بسته شدن برنامه، همه Workerها کامل شوند</text>
+<text x="380" y="410" text-anchor="middle" class="small rtl" fill="#4caf50">این معماری شبیه Laravel Queue + Horizon است اما بدون نیاز به Redis یا RabbitMQ</text>
+</svg>
+<figcaption>شکل ۵-۱۱: معماری کامل یک Worker Pool در Go — <code>Job Producer</code> کارها را در کانال <code>jobs</code> می‌ریزد، چند <code>Worker</code> به‌صورت موازی از آن می‌خوانند و پردازش می‌کنند، نتایج را در کانال <code>results</code> می‌نویسند و <code>Result Collector</code> آن‌ها را جمع‌آوری می‌کند. <code>context.Context</code> مسیر لغو هماهنگ را فراهم می‌کند و <code>sync.WaitGroup</code> تضمین می‌کند که قبل از خروج برنامه، تمام Workerها کارشان را کامل کنند.</figcaption>
+</figure>
 <p>در این معماری، <bdi dir="ltr">Job Producer</bdi> کارها را در <bdi dir="ltr">jobs</bdi> کانال قرار می‌دهد و هر <bdi dir="ltr">Worker</bdi> از کانال می‌خواند، پردازش می‌کند و نتیجه را در <bdi dir="ltr">results</bdi> کانال می‌نویسد. <bdi dir="ltr">Result Collector</bdi> نتایج را جمع‌آوری می‌کند. <bdi dir="ltr">Context</bdi> مسیر لغو فراهم می‌کند و <bdi dir="ltr">WaitGroup</bdi> تضمین می‌کند که تمام <bdi dir="ltr">Worker</bdi>ها قبل از بسته شدن برنامه به پایان برسند. </p><p>این الگو شبیه به سیستم <bdi dir="ltr">Queue</bdi> در <bdi dir="ltr">Laravel</bdi> است اما بدون نیاز به <bdi dir="ltr">Redis</bdi> یا <bdi dir="ltr">RabbitMQ</bdi> و با هزینه بسیار کمتر.</p>
 <h3 id="سناریوهای-عملیاتی-concurrency">5.8.8 سناریوهای عملیاتی</h3>
 <p>در پروژه‌های واقعی، الگوهای هم‌روندی در سناریوهای متنوعی کاربرد دارند. هر سناریو نیازمند ترکیب متفاوتی از الگوهای <bdi dir="ltr">Worker Pool</bdi>، <bdi dir="ltr">Rate Limiting</bdi>، <bdi dir="ltr">Context</bdi> و <bdi dir="ltr">Channel</bdi> است. در ادامه رایج‌ترین سناریوهای عملیاتی را بررسی می‌کنیم که هر توسعه‌دهنده‌ای در پروژه‌های واقعی با آن‌ها روبه‌رو خواهد شد. این سناریوها نشان می‌دهند که چگونه مفاهیم تئوری این فصل در عمل پیاده‌سازی می‌شوند.</p>

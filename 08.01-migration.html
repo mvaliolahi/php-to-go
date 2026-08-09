@@ -186,6 +186,51 @@ func Down(tx *sql.Tx) error {
 <h3 id="خط-زمانی-نسخههای-migration">8.1.11 خط زمانی نسخه‌های Migration</h3>
 <p>خط زمانی نسخه‌های <bdi dir="ltr">Migration</bdi> نشان می‌دهد که دیتابیس چگونه از یک حالت خالی به ساختار نهایی می‌رسد. هر نسخه یک تغییر مشخص را اعمال می‌کند و فایل‌های <bdi dir="ltr">.up.sql</bdi> و <bdi dir="ltr">.down.sql</bdi> به ترتیب مسئول اعمال و بازگشت آن تغییر هستند. </p><p>وقتی دستور <code dir="ltr">migrate up</code> اجرا می‌شود، تمام نسخه‌هایی که هنوز اعمال نشده‌اند به ترتیب اجرا می‌شوند و شماره نسخه در جدول <code dir="ltr">schema_migrations</code> ثبت می‌گردد. وقتی دستور <code dir="ltr">migrate down N</code> اجرا می‌شود، <bdi dir="ltr">N</bdi> نسخه‌ی آخر به ترتیب معکوس بازگشت می‌خورند.</p>
 <p>یکی از مهم‌ترین چالش‌ها در کار تیمی تداخل شماره‌گذاری است. اگر دو توسعه‌دهنده به‌طور همزمان <bdi dir="ltr">Migration</bdi> جدیدی با شماره‌ی یکسان بسازند، ابزار <bdi dir="ltr">golang-migrate</bdi> نمی‌داند کدام را اول اجرا کند. </p><p>راه‌حل‌های متعددی وجود دارد: استفاده از <bdi dir="ltr">advisory lock</bdi> روی دیتابیس برای جلوگیری از اجرای همزمان، اجرای <bdi dir="ltr">Migration</bdi> فقط در <bdi dir="ltr">CI/CD pipeline</bdi> تا یک نقطه‌ی کنترل واحد وجود داشته باشد، و استفاده از شماره‌گذاری مبتنی بر <bdi dir="ltr">timestamp</bdi> به‌جای شماره‌گذاری ترتیبی که احتمال تداخل را کاهش می‌دهد.</p>
+<figure class="diagram" dir="ltr">
+<svg viewBox="0 0 720 320" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+<path d="M0,0 L10,5 L0,10 z" fill="#64748b"/>
+</marker>
+<marker id="arrow-green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+<path d="M0,0 L10,5 L0,10 z" fill="#4caf50"/>
+</marker>
+<marker id="arrow-orange" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+<path d="M0,0 L10,5 L0,10 z" fill="#ff9800"/>
+</marker>
+</defs>
+<text x="360" y="28" text-anchor="middle" class="title rtl">خط زمانی Migration: فایل‌های up و down و جدول ردیابی نسخه</text>
+<text x="60" y="78" text-anchor="start" class="small rtl">migrate up →</text>
+<rect x="100" y="58" width="160" height="48" class="box-result"/>
+<text x="180" y="80" text-anchor="middle" class="title">0001_create_users</text>
+<text x="180" y="98" text-anchor="middle" class="small">.up.sql</text>
+<rect x="290" y="58" width="160" height="48" class="box-result"/>
+<text x="370" y="80" text-anchor="middle" class="title">0002_add_posts</text>
+<text x="370" y="98" text-anchor="middle" class="small">.up.sql</text>
+<rect x="480" y="58" width="160" height="48" class="box-result"/>
+<text x="560" y="80" text-anchor="middle" class="title">0003_add_index</text>
+<text x="560" y="98" text-anchor="middle" class="small">.up.sql</text>
+<line x1="260" y1="82" x2="290" y2="82" stroke="#4caf50" stroke-width="2" marker-end="url(#arrow-green)"/>
+<line x1="450" y1="82" x2="480" y2="82" stroke="#4caf50" stroke-width="2" marker-end="url(#arrow-green)"/>
+<rect x="100" y="170" width="160" height="48" class="box-join"/>
+<text x="180" y="192" text-anchor="middle" class="title">0001_create_users</text>
+<text x="180" y="210" text-anchor="middle" class="small">.down.sql</text>
+<rect x="290" y="170" width="160" height="48" class="box-join"/>
+<text x="370" y="192" text-anchor="middle" class="title">0002_add_posts</text>
+<text x="370" y="210" text-anchor="middle" class="small">.down.sql</text>
+<rect x="480" y="170" width="160" height="48" class="box-join"/>
+<text x="560" y="192" text-anchor="middle" class="title">0003_add_index</text>
+<text x="560" y="210" text-anchor="middle" class="small">.down.sql</text>
+<line x1="480" y1="194" x2="450" y2="194" stroke="#ff9800" stroke-width="2" marker-end="url(#arrow-orange)"/>
+<line x1="290" y1="194" x2="260" y2="194" stroke="#ff9800" stroke-width="2" marker-end="url(#arrow-orange)"/>
+<text x="660" y="195" text-anchor="end" class="small rtl">← migrate down</text>
+<rect x="240" y="252" width="240" height="50" class="box"/>
+<text x="360" y="273" text-anchor="middle" class="title">schema_migrations</text>
+<text x="360" y="293" text-anchor="middle" class="small">version = 3, dirty = false</text>
+<line x1="560" y1="106" x2="420" y2="252" stroke="#64748b" stroke-width="1" stroke-dasharray="3 3" marker-end="url(#arrow)"/>
+</svg>
+<figcaption>شکل ۸-۲: خط زمانی <bdi dir="ltr">Migration</bdi> در <bdi dir="ltr">golang-migrate</bdi> — نسخه‌های ۰۰۰۱ تا ۰۰۰۳ به ترتیب با فایل‌های <code>.up.sql</code> (سبز) اعمال می‌شوند و با <code>.down.sql</code> (نارنجی) به ترتیب معکوس بازگشت می‌خورند. جدول <code>schema_migrations</code> نسخه‌ی فعلی (۳) و وضعیت <code>dirty</code> را ردیابی می‌کند.</figcaption>
+</figure>
 <h3 id="سناریوهای-عملیاتی-migration">8.1.12 سناریوهای عملیاتی</h3>
 <ul>
 <li><strong>جریان کاری توسعه با <bdi dir="ltr">Migration</bdi>:</strong> توسعه‌دهنده شاخه‌ی جدیدی در گیت می‌سازد، <bdi dir="ltr">Migration</bdi> جدید ایجاد می‌کند، تغییرات را روی دیتابیس محلی اعمال می‌کند (<code dir="ltr">migrate up</code>)، کد مربوطه را می‌نویسد، و در نهایت هر دو فایل <bdi dir="ltr">Migration</bdi> و کد برنامه را در <bdi dir="ltr">Pull Request</bdi> ارسال می‌کند. بررسی‌کننده باید فایل‌های <bdi dir="ltr">.up.sql</bdi> و <bdi dir="ltr">.down.sql</bdi> را با دقت بررسی کند.</li>

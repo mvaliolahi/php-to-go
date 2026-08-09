@@ -656,6 +656,80 @@ func main() {
 </table>
 <h3 id="دنباله-خاموشی-ایمن">6.7.13 دنباله‌ی خاموشی ایمن: از سیگنال تا خروج</h3>
 <p>درک دقیق ترتیب مراحل خاموشی ایمن برای ساخت سرورهای مقاوم در برابر خرابی ضروری است. شکل زیر یک نمای زمان‌بندی‌شده از کل فرآیند خاموشی را نشان می‌دهد: از لحظه‌ی دریافت سیگنال تا خروج نهایی. هر مرحله با رنگ مشخص شده — مراحل سبز نشان‌دهنده‌ی خاموشی ایمن و مراحل قرمز نشان‌دهنده‌ی مسیر اجباری هستند. </p><p>همچنین مسیر انتشار لغو <code dir="ltr">Context</code> از کانال سیگنال به تمام گوروتین‌ها قابل مشاهده است. </p><p>بدون خاموشی ایمن، اتصالات ناگهان قطع می‌شوند، داده‌ها نیمه‌کاره رها می‌شوند و منابع آزاد نمی‌شوند — دقیقاً همان مشکلاتی که در محیط‌های عملیاتی باعث از دست رفتن داده و نارضایتی کاربران می‌شوند.</p>
+<figure class="diagram" dir="ltr">
+<svg viewBox="0 0 760 460" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+<path d="M0,0 L10,5 L0,10 z" fill="#64748b"/>
+</marker>
+<marker id="arrow-ok" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+<path d="M0,0 L10,5 L0,10 z" fill="#4caf50"/>
+</marker>
+<marker id="arrow-bad" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+<path d="M0,0 L10,5 L0,10 z" fill="#ef4444"/>
+</marker>
+</defs>
+<text x="380" y="28" text-anchor="middle" class="title rtl">دنباله‌ی خاموشی ایمن: از سیگنال تا خروج</text>
+<!-- Horizontal timeline arrow -->
+<line x1="50" y1="65" x2="710" y2="65" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+<text x="50" y="55" class="small rtl">زمان →</text>
+<text x="380" y="55" text-anchor="middle" class="small rtl">t=0 (دریافت سیگنال) … t=30s (مهلت پیش‌فرض)</text>
+<!-- Step 1: Signal received -->
+<rect x="50" y="90" width="160" height="80" class="warn-box"/>
+<text x="130" y="115" text-anchor="middle" class="title">۱. SIGTERM/SIGINT</text>
+<line x1="60" y1="125" x2="200" y2="125" stroke="#cbd5e1" stroke-width="1"/>
+<text x="130" y="145" text-anchor="middle" class="small rtl">دریافت از OS</text>
+<text x="130" y="162" text-anchor="middle" class="small rtl">(Ctrl+C یا docker stop)</text>
+<!-- Step 2: ctx cancelled -->
+<line x1="210" y1="130" x2="240" y2="130" stroke="#ff9800" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="240" y="90" width="160" height="80" class="warn-box"/>
+<text x="320" y="115" text-anchor="middle" class="title">۲. ctx.Done() closed</text>
+<line x1="250" y1="125" x2="390" y2="125" stroke="#cbd5e1" stroke-width="1"/>
+<text x="320" y="145" text-anchor="middle" class="small rtl">signal.NotifyContext</text>
+<text x="320" y="162" text-anchor="middle" class="small rtl">کانال ctx.Done می‌بندد</text>
+<!-- Step 3: stop listener -->
+<line x1="400" y1="130" x2="430" y2="130" stroke="#ff9800" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="430" y="90" width="160" height="80" class="warn-box"/>
+<text x="510" y="115" text-anchor="middle" class="title">۳. srv.Shutdown(ctx)</text>
+<line x1="440" y1="125" x2="580" y2="125" stroke="#cbd5e1" stroke-width="1"/>
+<text x="510" y="145" text-anchor="middle" class="small rtl">پذیرش جدید متوقف</text>
+<text x="510" y="162" text-anchor="middle" class="small rtl">Listener بسته می‌شود</text>
+<!-- Step 4: cleanup goroutines + wait -->
+<line x1="590" y1="130" x2="620" y2="130" stroke="#ff9800" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="620" y="90" width="120" height="80" class="box-action"/>
+<text x="680" y="115" text-anchor="middle" class="title">۴. cleanup</text>
+<line x1="630" y1="125" x2="730" y2="125" stroke="#cbd5e1" stroke-width="1"/>
+<text x="680" y="145" text-anchor="middle" class="small rtl">گوروتین‌ها</text>
+<text x="680" y="162" text-anchor="middle" class="small rtl">DB، فایل، queue</text>
+<!-- Parallel: goroutines reacting to ctx.Done -->
+<rect x="240" y="200" width="500" height="65" class="box-go"/>
+<text x="490" y="225" text-anchor="middle" class="title rtl">گوروتین‌های فعال به‌طور هم‌زمان ctx.Done را دریافت می‌کنند</text>
+<text x="490" y="245" text-anchor="middle" class="small rtl">HTTP Handler → تکمیل درخواست فعال • Worker → اتمام Job • DB Consumer → Rollback تراکنش</text>
+<text x="490" y="260" text-anchor="middle" class="small rtl">هر گوروتین با defer wg.Done() خروج تمیز انجام می‌دهد</text>
+<line x1="320" y1="170" x2="320" y2="200" stroke="#64748b" stroke-width="1.5" stroke-dasharray="3 3" marker-end="url(#arrow)"/>
+<line x1="510" y1="170" x2="510" y2="200" stroke="#64748b" stroke-width="1.5" stroke-dasharray="3 3" marker-end="url(#arrow)"/>
+<line x1="680" y1="170" x2="680" y2="200" stroke="#64748b" stroke-width="1.5" stroke-dasharray="3 3" marker-end="url(#arrow)"/>
+<!-- Branch: timeout -->
+<text x="380" y="295" text-anchor="middle" class="title rtl">محک نهایی: آیا همه کارها قبل از timeout تمام شدند؟</text>
+<line x1="680" y1="265" x2="680" y2="320" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+<polygon points="680,320 770,360 680,400 590,360" class="warn-box"/>
+<text x="680" y="358" text-anchor="middle" class="title rtl">wg.Wait()</text>
+<text x="680" y="378" text-anchor="middle" class="small rtl">تمام شد؟</text>
+<text x="680" y="395" text-anchor="middle" class="small rtl">انتظار + timeout</text>
+<!-- Success path (left) -->
+<line x1="590" y1="360" x2="380" y2="360" stroke="#4caf50" stroke-width="2" marker-end="url(#arrow-ok)"/>
+<text x="485" y="350" text-anchor="middle" class="small rtl" fill="#4caf50">بله ✓ (قبل از timeout)</text>
+<rect x="50" y="335" width="330" height="55" class="box-result"/>
+<text x="215" y="358" text-anchor="middle" class="title rtl">✓ خروج ایمن — OS Exit 0</text>
+<text x="215" y="378" text-anchor="middle" class="small rtl">تمام منابع آزاد شدند، داده‌ها ذخیره شدند</text>
+<!-- Failure path (right) -->
+<line x1="680" y1="400" x2="680" y2="420" stroke="#ef4444" stroke-width="2" marker-end="url(#arrow-bad)"/>
+<text x="730" y="415" class="small rtl" fill="#ef4444">خیر ✗</text>
+<rect x="500" y="420" width="260" height="35" class="box-php"/>
+<text x="630" y="442" text-anchor="middle" class="title rtl">✗ خروج اجباری — داده نیمه‌کاره از دست می‌رود</text>
+</svg>
+<figcaption>شکل ۶-۸: دنباله‌ی خاموشی ایمن از سیگنال تا خروج — مرحله ۱: سیگنال <code>SIGTERM</code>/<code>SIGINT</code> دریافت می‌شود. مرحله ۲: <code>signal.NotifyContext</code> کانال <code>ctx.Done()</code> را می‌بندد و تمام گوروتین‌ها به‌طور هم‌زمان مطلع می‌شوند. مرحله ۳: <code>srv.Shutdown(ctx)</code> Listener را می‌بندد و پذیرش درخواست‌های جدید را متوقف می‌کند. مرحله ۴: گوروتین‌های فعال (Handler، Worker، DB Consumer) کار فعلی را تمام می‌کنند و با <code>defer wg.Done()</code> خارج می‌شوند. در نهایت <code>wg.Wait()</code> با مهلت زمانی (مثلاً ۳۰ ثانیه) منتظر می‌ماند: اگر همه کارها تمام شدند خروج ایمن (سبز) انجام می‌شود، در غیر این صورت خروج اجباری (قرمز) رخ می‌دهد.</figcaption>
+</figure>
 <h3 id="سناریوهای-عملیاتی-signal">6.7.14 سناریوهای عملیاتی</h3>
 <p>مدیریت سیگنال‌ها در محیط‌های عملیاتی بسیار فراتر از یک مثال ساده‌ی <code dir="ltr">Ctrl+C</code> است. در واقعیت، سرورها و سرویس‌های شما باید با شرایط متنوعی مقابله کنند: از خاموشی ایمن سرور <bdi dir="ltr">HTTP</bdi> گرفته تا تخلیه‌ی <code dir="ltr">worker pool</code> و چرخش فایل‌های لاگ. </p><p>هر سناریو در ادامه یک چالش واقعی را توصیف می‌کند و نشان می‌دهد که چگونه الگوهای مدیریت سیگنال <bdi dir="ltr">Go</bdi> به حل آن‌ها کمک می‌کنند. </p><p>این سناریوها معمولاً در محیط‌های <bdi dir="ltr">Docker</bdi> و <bdi dir="ltr">Kubernetes</bdi> با مکانیزم خاموشی خودکار این سیستم‌ها ترکیب می‌شوند و درک آن‌ها برای ساخت سرویس‌های مقاوم ضروری است.</p>
 <ul>

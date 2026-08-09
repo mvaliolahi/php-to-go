@@ -362,6 +362,84 @@ func readUsersCSV(path string) ([]User, error) {
 </div>
 <h3 id="خط-لوله-توکنایز-اسکنر">6.4.8 خط لوله توکنایزیشن Scanner: نگاهی به درون bufio.Scanner</h3>
 <p>فهم نحوه کار داخلی <bdi dir="ltr">bufio.Scanner</bdi> به شما کمک می‌کند از آن به‌درستی استفاده کنید و خطاهای رایج مانند «token too long» را رفع کنید. </p><p>Scanner یک خط لوله پردازشی است: داده از جریان ورودی خوانده می‌شود، توسط تابع Split به توکن‌ها تقسیم می‌شود، و هر توکن در یک بافر داخلی ذخیره شده و به کاربر بازگردانده می‌شود. </p><p>در نمودار زیر تمام جزئیات این خط لوله، مدیریت بافر داخلی، و نحوه نوشتن تابع Split سفارشی را مشاهده می‌کنید.</p>
+<figure class="diagram" dir="ltr">
+<svg viewBox="0 0 760 420" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+<path d="M0,0 L10,5 L0,10 z" fill="#64748b"/>
+</marker>
+<marker id="arrow-data" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+<path d="M0,0 L10,5 L0,10 z" fill="#00ADD8"/>
+</marker>
+</defs>
+<text x="380" y="28" text-anchor="middle" class="title rtl">خط لوله‌ی داخلی bufio.Scanner</text>
+<text x="380" y="50" text-anchor="middle" class="small rtl">از io.Reader تا scanner.Text() — جریان داده و بافر داخلی</text>
+<!-- Stage 1: io.Reader -->
+<rect x="30" y="85" width="140" height="80" class="box-action"/>
+<text x="100" y="110" text-anchor="middle" class="title">io.Reader</text>
+<text x="100" y="130" text-anchor="middle" class="small">file / conn / ...</text>
+<text x="100" y="148" text-anchor="middle" class="small rtl">منبع داده</text>
+<!-- Stage 2: Read into buf -->
+<rect x="220" y="85" width="160" height="80" class="box-go"/>
+<text x="300" y="110" text-anchor="middle" class="title">Read(buf)</text>
+<text x="300" y="130" text-anchor="middle" class="small rtl">پر کردن بافر ۴KB</text>
+<text x="300" y="148" text-anchor="middle" class="small rtl">یک syscall در هر ۴KB</text>
+<!-- Stage 3: SplitFunc -->
+<rect x="430" y="85" width="160" height="80" class="warn-box"/>
+<text x="510" y="110" text-anchor="middle" class="title">SplitFunc</text>
+<text x="510" y="130" text-anchor="middle" class="small rtl">تقسیم به توکن</text>
+<text x="510" y="148" text-anchor="middle" class="small rtl">ScanLines / Words / ...</text>
+<!-- Stage 4: token → user -->
+<rect x="640" y="85" width="100" height="80" class="box-result"/>
+<text x="690" y="110" text-anchor="middle" class="title">Token</text>
+<text x="690" y="130" text-anchor="middle" class="small rtl">یک خط/کلمه</text>
+<text x="690" y="148" text-anchor="middle" class="small">→ Text()</text>
+<!-- Arrows top row -->
+<line x1="170" y1="125" x2="220" y2="125" stroke="#00ADD8" stroke-width="2" marker-end="url(#arrow-data)"/>
+<line x1="380" y1="125" x2="430" y2="125" stroke="#00ADD8" stroke-width="2" marker-end="url(#arrow-data)"/>
+<line x1="590" y1="125" x2="640" y2="125" stroke="#00ADD8" stroke-width="2" marker-end="url(#arrow-data)"/>
+<text x="195" y="118" text-anchor="middle" class="small" fill="#00ADD8">bytes</text>
+<text x="405" y="118" text-anchor="middle" class="small" fill="#00ADD8">buf</text>
+<text x="615" y="118" text-anchor="middle" class="small" fill="#00ADD8">token</text>
+<!-- User code -->
+<rect x="540" y="210" width="200" height="60" class="box-action"/>
+<text x="640" y="232" text-anchor="middle" class="title">for scanner.Scan() {</text>
+<text x="640" y="252" text-anchor="middle" class="small">  line := scanner.Text()</text>
+<line x1="690" y1="165" x2="640" y2="210" stroke="#64748b" stroke-width="2" stroke-dasharray="3 3" marker-end="url(#arrow)"/>
+<!-- Buffer visualization -->
+<rect x="30" y="210" width="490" height="180" class="box"/>
+<text x="275" y="232" text-anchor="middle" class="title rtl">بافر داخلی Scanner (۴KB پیش‌فرض، ۶۴KB حداکثر توکن)</text>
+<line x1="40" y1="240" x2="510" y2="240" stroke="#cbd5e1" stroke-width="1"/>
+<!-- Buffer cells -->
+<rect x="50" y="255" width="40" height="30" fill="rgba(0,173,216,0.15)" stroke="#00ADD8" stroke-width="1" rx="4"/>
+<text x="70" y="275" text-anchor="middle" class="small">H</text>
+<rect x="90" y="255" width="40" height="30" fill="rgba(0,173,216,0.15)" stroke="#00ADD8" stroke-width="1" rx="4"/>
+<text x="110" y="275" text-anchor="middle" class="small">e</text>
+<rect x="130" y="255" width="40" height="30" fill="rgba(0,173,216,0.15)" stroke="#00ADD8" stroke-width="1" rx="4"/>
+<text x="150" y="275" text-anchor="middle" class="small">l</text>
+<rect x="170" y="255" width="40" height="30" fill="rgba(0,173,216,0.15)" stroke="#00ADD8" stroke-width="1" rx="4"/>
+<text x="190" y="275" text-anchor="middle" class="small">l</text>
+<rect x="210" y="255" width="40" height="30" fill="rgba(0,173,216,0.15)" stroke="#00ADD8" stroke-width="1" rx="4"/>
+<text x="230" y="275" text-anchor="middle" class="small">o</text>
+<rect x="250" y="255" width="40" height="30" fill="#ef4444" stroke="#ef4444" stroke-width="1" rx="4"/>
+<text x="270" y="275" text-anchor="middle" class="small" fill="#fff">\n</text>
+<rect x="290" y="255" width="40" height="30" fill="rgba(0,173,216,0.15)" stroke="#00ADD8" stroke-width="1" rx="4"/>
+<text x="310" y="275" text-anchor="middle" class="small">G</text>
+<rect x="330" y="255" width="40" height="30" fill="rgba(0,173,216,0.15)" stroke="#00ADD8" stroke-width="1" rx="4"/>
+<text x="350" y="275" text-anchor="middle" class="small">o</text>
+<rect x="370" y="255" width="40" height="30" fill="#ef4444" stroke="#ef4444" stroke-width="1" rx="4"/>
+<text x="390" y="275" text-anchor="middle" class="small" fill="#fff">\n</text>
+<rect x="410" y="255" width="40" height="30" fill="rgba(33,150,243,0.1)" stroke="#2196f3" stroke-width="1" stroke-dasharray="2 2" rx="4"/>
+<text x="430" y="275" text-anchor="middle" class="small">…</text>
+<text x="275" y="305" text-anchor="middle" class="small rtl">توکن اول: "Hello" (کاراکترهای قبل از \n) — توکن دوم: "Go" — SplitFunc جداکننده را پیدا می‌کند</text>
+<!-- Key rules -->
+<line x1="50" y1="320" x2="500" y2="320" stroke="#cbd5e1" stroke-width="1"/>
+<text x="50" y="340" class="small rtl" fill="#4caf50">✓ ScanLines: جداکننده \n و \r\n (هر دو تشخیص داده می‌شوند)</text>
+<text x="50" y="358" class="small rtl" fill="#4caf50">✓ ScanWords: تقسیم بر اساس فاصله‌ی سفید</text>
+<text x="50" y="376" class="small rtl" fill="#ef4444">✗ خط بلندتر از ۶۴KB → خطای bufio.ErrTooLong</text>
+</svg>
+<figcaption>شکل ۶-۵: خط لوله‌ی داخلی <code>bufio.Scanner</code> — داده از <code>io.Reader</code> (مرحله ۱) با فراخوانی <code>Read(buf)</code> در بافر ۴ کیلوبایتی (مرحله ۲) پر می‌شود (هر ۴KB یک syscall). سپس <code>SplitFunc</code> (مرحله ۳) مشخص می‌کند چگونه بافر به توکن تقسیم شود: <code>ScanLines</code> بر اساس <code>\n</code> یا <code>\r\n</code>، <code>ScanWords</code> بر اساس فاصله‌ی سفید. توکن نهایی (مرحله ۴) به‌صورت یک خط یا کلمه در اختیار کاربر قرار می‌گیرد. اگر خطی بلندتر از حد پیش‌فرض ۶۴KB باشد، خطای <code>bufio.ErrTooLong</code> صادر می‌شود که با <code>scanner.Buffer()</code> قابل افزایش است.</figcaption>
+</figure>
 <p>نمودار بالا نحوه کار داخلی <bdi dir="ltr">bufio.Scanner</bdi> را به‌تفصیل نشان می‌دهد. داده‌ها از <bdi dir="ltr">io.Reader</bdi> وارد بافر داخلی Scanner می‌شوند، سپس تابع <bdi dir="ltr">SplitFunc</bdi> مشخص می‌کند که چگونه داده‌ها به توکن‌ها تقسیم شوند. </p><p>سه تابع Split داخلی وجود دارد: <bdi dir="ltr">ScanLines</bdi> (پیش‌فرض — تقسیم بر اساس خطوط)، <bdi dir="ltr">ScanWords</bdi> (تقسیم بر اساس کلمات) و <bdi dir="ltr">ScanBytes</bdi> (هر بایت یک توکن). </p><p>همچنین می‌توانید تابع Split سفارشی خود را بنویسید که برای جداکننده‌های دلخواه مانند کاما، pipe یا فرمت‌های خاص کاربرد دارد.</p>
 <p>مهم‌ترین نکته درباره مدیریت بافر این است که Scanner یک بافر ۶۴ کیلوبایتی برای ذخیره توکن دارد. اگر خطی بلندتر از این حد باشد، خطای <code dir="ltr">bufio.ErrTooLong</code> صادر می‌شود. </p><p>این خطا در فایل‌های معمولی نادر است اما در فایل‌هایی مثل لاگ‌های باینری یا فایل‌های CSV که ممکن است خطوط بسیار بلندی داشته باشند، رخ می‌دهد. </p><p>راه‌حل افزایش اندازه بافر با تابع <code dir="ltr">scanner.Buffer()</code> است که در بخش سناریوهای عملیاتی توضیح داده شده است.</p>
 <h3 id="سناریوهای-عملیاتی-خط‌به‌خط">6.4.9 سناریوهای عملیاتی خواندن خط‌به‌خط</h3>

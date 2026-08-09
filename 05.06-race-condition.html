@@ -344,6 +344,85 @@ addr := net.JoinHostPort(host, strconv.Itoa(port))</code></pre>
 </figure>
 <h3 id="data-race-خط-زمانی-داخل‌درج">5.6.5 خط زمانی داخل‌درجData Race— تجزیه گام‌به‌گام</h3>
 <p>برای درک عمیق‌تر <bdi dir="ltr">Data Race</bdi> باید ببینیم دقیقاً چه اتفاقی در سطح دستورات ماشین افتاده است. عملیات <bdi dir="ltr">counter++</bdi> در ظاهر یک دستور است اما در واقع سه مرحله مجزا دارد: خواندن مقدار فعلی از حافظه، افزایش مقدار در ثبات پردازنده، و نوشتن مقدار جدید در حافظه. </p><p>وقتی دو <bdi dir="ltr">goroutine</bdi> این سه مرحله را به صورت درهم‌آمیخته اجرا کنند، ممکن است هر دو مقدار یکسانی را بخوانند و سپس هر دو مقدار یکسانی را بنویسند که نتیجه‌ی آن از بین رفتن یکی از افزایش‌هاست. </p><p>این مشکل به نام <bdi dir="ltr">lost update</bdi> شناخته می‌شود و در سیستم‌های پایگاه داده نیز وقتی رخ می‌دهد که دو تراکنش همزمان روی یک رکورد تغییر ایجاد کنند بدون اینکه از قفل استفاده کنند.</p>
+<figure class="diagram" dir="ltr">
+<svg viewBox="0 0 760 460" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+<path d="M0,0 L10,5 L0,10 z" fill="#64748b"/>
+</marker>
+<marker id="arrow-bad" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+<path d="M0,0 L10,5 L0,10 z" fill="#ef4444"/>
+</marker>
+<marker id="arrow-ok" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+<path d="M0,0 L10,5 L0,10 z" fill="#4caf50"/>
+</marker>
+</defs>
+<text x="380" y="28" text-anchor="middle" class="title rtl">تجزیه‌ی گام‌به‌گام counter++ — چرا Data Race رخ می‌دهد و چطور Mutex حل می‌کند</text>
+<!-- TOP: Race scenario -->
+<text x="380" y="55" text-anchor="middle" class="small rtl" fill="#ef4444">بدون همگام‌سازی — Lost Update (نتیجه‌ی نهایی غلط: ۱ به‌جای ۲)</text>
+<!-- Time axis top -->
+<line x1="60" y1="80" x2="700" y2="80" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
+<text x="710" y="85" class="small">time</text>
+<text x="120" y="100" text-anchor="middle" class="small">t1</text>
+<text x="260" y="100" text-anchor="middle" class="small">t2</text>
+<text x="400" y="100" text-anchor="middle" class="small">t3</text>
+<text x="540" y="100" text-anchor="middle" class="small">t4</text>
+<!-- G1 lane -->
+<text x="50" y="145" text-anchor="end" class="title">G1</text>
+<rect x="80" y="125" width="80" height="40" class="box-action"/>
+<text x="120" y="148" text-anchor="middle" class="small">READ (0)</text>
+<rect x="220" y="125" width="80" height="40" class="box-action"/>
+<text x="260" y="148" text-anchor="middle" class="small">INC → 1</text>
+<rect x="500" y="125" width="80" height="40" class="warn-box"/>
+<text x="540" y="148" text-anchor="middle" class="small">WRITE 1</text>
+<line x1="160" y1="145" x2="220" y2="145" stroke="#64748b" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="300" y1="145" x2="500" y2="145" stroke="#64748b" stroke-width="1" stroke-dasharray="3 3"/>
+<!-- G2 lane -->
+<text x="50" y="215" text-anchor="end" class="title">G2</text>
+<rect x="180" y="195" width="80" height="40" class="box-action"/>
+<text x="220" y="218" text-anchor="middle" class="small">READ (0!)</text>
+<rect x="360" y="195" width="80" height="40" class="box-action"/>
+<text x="400" y="218" text-anchor="middle" class="small">INC → 1</text>
+<rect x="540" y="195" width="80" height="40" class="warn-box"/>
+<text x="540" y="218" text-anchor="middle" class="small">WRITE 1</text>
+<line x1="260" y1="215" x2="360" y2="215" stroke="#64748b" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="440" y1="215" x2="540" y2="215" stroke="#64748b" stroke-width="1" stroke-dasharray="3 3"/>
+<!-- Memory box -->
+<text x="380" y="265" text-anchor="middle" class="small rtl" fill="#ef4444">حافظه‌ی مشترک: counter — مقدار نهایی: ۱ (هر دو G مقدار ۰ را خواندند و ۱ را نوشتند)</text>
+<!-- Divider -->
+<line x1="30" y1="285" x2="730" y2="285" stroke="#cbd5e1" stroke-width="1" stroke-dasharray="4 4"/>
+<!-- BOTTOM: With Mutex -->
+<text x="380" y="310" text-anchor="middle" class="small rtl" fill="#4caf50">با Mutex — بخش بحرانی سریال‌سازی شده (نتیجه‌ی صحیح: ۲)</text>
+<line x1="60" y1="335" x2="700" y2="335" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
+<text x="710" y="340" class="small">time</text>
+<!-- G1 lane with Mutex -->
+<text x="50" y="400" text-anchor="end" class="title">G1</text>
+<rect x="80" y="375" width="80" height="55" class="box-go"/>
+<text x="120" y="395" text-anchor="middle" class="small">Lock()</text>
+<text x="120" y="415" text-anchor="middle" class="small">READ (0)</text>
+<rect x="180" y="375" width="80" height="55" class="box-go"/>
+<text x="220" y="395" text-anchor="middle" class="small">INC → 1</text>
+<text x="220" y="415" text-anchor="middle" class="small">WRITE 1</text>
+<rect x="280" y="375" width="80" height="55" class="box-result"/>
+<text x="320" y="395" text-anchor="middle" class="small">Unlock()</text>
+<text x="320" y="415" text-anchor="middle" class="small rtl">آزاد شد ✓</text>
+<!-- G2 lane with Mutex (waiting) -->
+<text x="50" y="455" text-anchor="end" class="title">G2</text>
+<rect x="80" y="438" width="280" height="22" class="warn-box"/>
+<text x="220" y="453" text-anchor="middle" class="small rtl" fill="#ff9800">منتظر قفل (مسدود)... Mutex بسته است</text>
+<rect x="380" y="430" width="80" height="55" class="box-go"/>
+<text x="420" y="450" text-anchor="middle" class="small">Lock()</text>
+<text x="420" y="470" text-anchor="middle" class="small">READ (1)</text>
+<rect x="480" y="430" width="80" height="55" class="box-go"/>
+<text x="520" y="450" text-anchor="middle" class="small">INC → 2</text>
+<text x="520" y="470" text-anchor="middle" class="small">WRITE 2</text>
+<rect x="580" y="430" width="80" height="55" class="box-result"/>
+<text x="620" y="450" text-anchor="middle" class="small">Unlock()</text>
+<text x="620" y="470" text-anchor="middle" class="small rtl">✓</text>
+<line x1="360" y1="450" x2="380" y2="450" stroke="#4caf50" stroke-width="2" marker-end="url(#arrow-ok)"/>
+</svg>
+<figcaption>شکل ۵-۸: تجزیه‌ی گام‌به‌گام <code>counter++</code> در دو سناریو — در نیمه‌ی بالا (بدون همگام‌سازی)، G1 و G2 هر دو مقدار <code>0</code> را می‌خوانند، هر دو آن را افزایش می‌دهند و هر دو <code>1</code> را می‌نویسند؛ نتیجه‌ی نهایی <code>1</code> است به‌جای <code>2</code> (lost update). در نیمه‌ی پایین (با Mutex)، G1 قفل را می‌گیرد و G2 تا اتمام کار G1 مسدود می‌شود؛ سپس G2 مقدار صحیح <code>1</code> را می‌خواند و <code>2</code> را می‌نویسد — عملیات سریال‌سازی شده و نتیجه صحیح است.</figcaption>
+</figure>
 <p>نمودار بالا به وضوح نشان می‌دهد که چرا <bdi dir="ltr">counter++</bdi> در محیط همزمان مشکل‌ساز است. در مسیر مسابقه، <bdi dir="ltr">G1</bdi> مقدار <bdi dir="ltr">0</bdi> را می‌خواند و قبل از اینکه بنویسد، <bdi dir="ltr">G2</bdi> هم مقدار <bdi dir="ltr">0</bdi> را می‌خواند. سپس هر دو مقدار <bdi dir="ltr">1</bdi> را می‌نویسند و نتیجه نهایی <bdi dir="ltr">1</bdi> می‌شود به جای <bdi dir="ltr">2</bdi>. این همان <bdi dir="ltr">lost update</bdi> است. </p><p>در بخش پایینی نمودار می‌بینید که <bdi dir="ltr">Mutex</bdi> با ایجاد بخش بحرانی این مشکل را حل می‌کند: وقتی <bdi dir="ltr">G1</bdi> قفل را می‌گیرد، <bdi dir="ltr">G2</bdi> باید صبر کند تا <bdi dir="ltr">G1</bdi> کارش تمام شود و قفل را آزاد کند. سپس <bdi dir="ltr">G2</bdi> مقدار صحیح <bdi dir="ltr">1</bdi> را می‌خواند و <bdi dir="ltr">2</bdi> را می‌نویسد. نتیجه نهایی صحیح خواهد بود.</p>
 <h4 id="سناریوهای-عملیاتی-race">سناریوهای عملیاتی <bdi dir="ltr">Race Condition</bdi></h4>
 <ul>

@@ -123,6 +123,50 @@ func main() {
     return user, nil
 }</code></pre>
 </figure>
+<figure class="diagram" dir="ltr">
+<svg viewBox="0 0 760 340" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+<path d="M0,0 L10,5 L0,10 z" fill="#64748b"/>
+</marker>
+<marker id="arrow-green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+<path d="M0,0 L10,5 L0,10 z" fill="#4caf50"/>
+</marker>
+<marker id="arrow-orange" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+<path d="M0,0 L10,5 L0,10 z" fill="#ff9800"/>
+</marker>
+</defs>
+<text x="380" y="28" text-anchor="middle" class="title rtl">الگوی Cache-Aside: ابتدا کش، در صورت MISS از دیتابیس</text>
+<rect x="20" y="60" width="120" height="50" class="box-go"/>
+<text x="80" y="83" text-anchor="middle" class="title">Handler</text>
+<text x="80" y="100" text-anchor="middle" class="small">getUserByID(id)</text>
+<line x1="140" y1="85" x2="180" y2="85" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="180" y="60" width="160" height="50" class="box-action"/>
+<text x="260" y="83" text-anchor="middle" class="title">① GET cache</text>
+<text x="260" y="100" text-anchor="middle" class="small">rdb.Get("user:ID")</text>
+<text x="425" y="78" text-anchor="middle" class="small" fill="#2e7d32">HIT</text>
+<line x1="340" y1="85" x2="460" y2="85" stroke="#4caf50" stroke-width="2" marker-end="url(#arrow-green)"/>
+<rect x="460" y="60" width="180" height="50" class="box-result"/>
+<text x="550" y="83" text-anchor="middle" class="title">✓ Return cached</text>
+<text x="550" y="100" text-anchor="middle" class="small rtl">سریع، بدون دسترسی DB</text>
+<text x="290" y="130" text-anchor="middle" class="small" fill="#c0392b">MISS</text>
+<line x1="260" y1="110" x2="260" y2="140" stroke="#ff9800" stroke-width="2" marker-end="url(#arrow-orange)"/>
+<rect x="180" y="140" width="160" height="50" class="box-php"/>
+<text x="260" y="163" text-anchor="middle" class="title">② Query DB</text>
+<text x="260" y="180" text-anchor="middle" class="small">SELECT FROM users</text>
+<line x1="260" y1="190" x2="260" y2="220" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="180" y="220" width="160" height="50" class="box-action"/>
+<text x="260" y="243" text-anchor="middle" class="title">③ SET cache + TTL</text>
+<text x="260" y="260" text-anchor="middle" class="small">rdb.Set("user:ID", 10min)</text>
+<line x1="340" y1="245" x2="460" y2="245" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="460" y="220" width="180" height="50" class="box-result"/>
+<text x="550" y="243" text-anchor="middle" class="title">✓ Return user</text>
+<text x="550" y="260" text-anchor="middle" class="small rtl">ذخیره در کش برای خواندن بعدی</text>
+<rect x="20" y="290" width="720" height="40" class="tip-box"/>
+<text x="380" y="315" text-anchor="middle" class="small rtl">همیشه TTL تعیین کنید — بدون TTL داده‌ی کهنه برای همیشه در Redis باقی می‌ماند</text>
+</svg>
+<figcaption>شکل ۸-۹: الگوی <bdi dir="ltr">Cache-Aside</bdi> در <bdi dir="ltr">Redis</bdi> — هندلر ابتدا کلید را از کش می‌خواند. اگر <bdi dir="ltr">HIT</bdi> بود (سبز) مستقیم برمی‌گردد؛ اگر <bdi dir="ltr">MISS</bdi> بود (نارنجی) از دیتابیس می‌خواند، نتیجه را با <bdi dir="ltr">TTL</bdi> در کش ذخیره می‌کند و برمی‌گرداند. تعیین <bdi dir="ltr">TTL</bdi> از انباشت داده‌ی کهنه جلوگیری می‌کند.</figcaption>
+</figure>
 <h3 id="write-through">8.8.3 الگوی Write-Through</h3>
 <p>در این الگو هنگام نوشتن داده همزمان دیتابیس و کش به‌روز می‌شوند:</p>
 <figure class="code go" dir="ltr">

@@ -353,6 +353,91 @@ go tool pprof leak.prof</code></pre>
 </div>
 <h3 id="فلوچارت-تشخیص-goroutine-leak">5.9.7 فلوچارت تشخیص نشتGoroutine</h3>
 <p>تشخیص نشت <bdi dir="ltr">Goroutine</bdi> نیازمند یک رویکرد سیستماتیک است. فلوچارت زیر یک درخت تصمیم کامل ارائه می‌دهد که به شما کمک می‌کند به صورت مرحله‌ای تشخیص دهید آیا <bdi dir="ltr">goroutine</bdi> شما نشت کرده یا خیر. ابتدا بررسی می‌شود آیا <bdi dir="ltr">goroutine</bdi> مسدود شده است، سپس علت مسدود شدن مشخص می‌شود و در نهایت راه‌حل مناسب پیشنهاد می‌گردد. هر مسیر نشت با رنگ قرمز و هر مسیر صحیح با رنگ سبز نمایش داده شده است.</p>
+<figure class="diagram" dir="ltr">
+<svg viewBox="0 0 760 520" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+<path d="M0,0 L10,5 L0,10 z" fill="#64748b"/>
+</marker>
+<marker id="arrow-bad" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+<path d="M0,0 L10,5 L0,10 z" fill="#ef4444"/>
+</marker>
+<marker id="arrow-ok" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+<path d="M0,0 L10,5 L0,10 z" fill="#4caf50"/>
+</marker>
+</defs>
+<text x="380" y="28" text-anchor="middle" class="title rtl">درخت تصمیم تشخیص نشت Goroutine — هر مسیر با راه‌حل مشخص</text>
+<!-- Start node -->
+<rect x="300" y="55" width="160" height="50" class="box-action"/>
+<text x="380" y="78" text-anchor="middle" class="title rtl">گوروتین ایجاد شده</text>
+<text x="380" y="96" text-anchor="middle" class="small">go func(){ ... }()</text>
+<!-- Q1: blocked? -->
+<rect x="290" y="135" width="180" height="50" class="box"/>
+<text x="380" y="158" text-anchor="middle" class="title rtl">مسدود شده؟</text>
+<text x="380" y="176" text-anchor="middle" class="small rtl">(_Gwaiting طولانی)</text>
+<line x1="380" y1="105" x2="380" y2="135" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+<!-- Yes branch (left) and No branch (right) -->
+<text x="320" y="200" class="small" fill="#ef4444">YES</text>
+<text x="430" y="200" class="small" fill="#4caf50">NO</text>
+<!-- YES → Q2 (what blocked on?) -->
+<rect x="180" y="220" width="220" height="50" class="box"/>
+<text x="290" y="243" text-anchor="middle" class="title rtl">روی چه چیزی مسدود شده؟</text>
+<text x="290" y="261" text-anchor="middle" class="small rtl">دریافت، ارسال، WaitGroup، Mutex، HTTP</text>
+<line x1="350" y1="185" x2="290" y2="220" stroke="#ef4444" stroke-width="2" marker-end="url(#arrow-bad)"/>
+<!-- NO → Q3 (has exit condition?) -->
+<rect x="430" y="220" width="220" height="50" class="box"/>
+<text x="540" y="243" text-anchor="middle" class="title rtl">شرط خروج دارد؟</text>
+<text x="540" y="261" text-anchor="middle" class="small rtl">ctx.Done یا close(chan)</text>
+<line x1="410" y1="185" x2="540" y2="220" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+<!-- Five leak outcomes (red) for YES branches -->
+<rect x="30" y="300" width="140" height="55" class="warn-box"/>
+<text x="100" y="322" text-anchor="middle" class="small">ch &lt;- v</text>
+<text x="100" y="340" text-anchor="middle" class="small rtl">گیرنده نیست</text>
+<text x="100" y="356" text-anchor="middle" class="small" fill="#ef4444">→ LEAK</text>
+<rect x="180" y="300" width="140" height="55" class="warn-box"/>
+<text x="250" y="322" text-anchor="middle" class="small">&lt;-ch</text>
+<text x="250" y="340" text-anchor="middle" class="small rtl">فرستنده نیست</text>
+<text x="250" y="356" text-anchor="middle" class="small" fill="#ef4444">→ LEAK</text>
+<rect x="330" y="300" width="140" height="55" class="warn-box"/>
+<text x="400" y="322" text-anchor="middle" class="small">wg.Wait()</text>
+<text x="400" y="340" text-anchor="middle" class="small rtl">Done فراموش شد</text>
+<text x="400" y="356" text-anchor="middle" class="small" fill="#ef4444">→ LEAK</text>
+<rect x="480" y="300" width="140" height="55" class="warn-box"/>
+<text x="550" y="322" text-anchor="middle" class="small">mu.Lock()</text>
+<text x="550" y="340" text-anchor="middle" class="small rtl">Unlock فراموش شد</text>
+<text x="550" y="356" text-anchor="middle" class="small" fill="#ef4444">→ LEAK</text>
+<rect x="630" y="300" width="120" height="55" class="warn-box"/>
+<text x="690" y="322" text-anchor="middle" class="small">HTTP</text>
+<text x="690" y="340" text-anchor="middle" class="small rtl">بدون timeout</text>
+<text x="690" y="356" text-anchor="middle" class="small" fill="#ef4444">→ LEAK</text>
+<!-- Arrows from Q2 to each leak outcome -->
+<line x1="240" y1="270" x2="100" y2="300" stroke="#ef4444" stroke-width="1.5" marker-end="url(#arrow-bad)"/>
+<line x1="270" y1="270" x2="250" y2="300" stroke="#ef4444" stroke-width="1.5" marker-end="url(#arrow-bad)"/>
+<line x1="300" y1="270" x2="400" y2="300" stroke="#ef4444" stroke-width="1.5" marker-end="url(#arrow-bad)"/>
+<line x1="330" y1="270" x2="550" y2="300" stroke="#ef4444" stroke-width="1.5" marker-end="url(#arrow-bad)"/>
+<line x1="370" y1="270" x2="690" y2="300" stroke="#ef4444" stroke-width="1.5" marker-end="url(#arrow-bad)"/>
+<!-- Q3 outcomes: Yes → OK, No → LEAK -->
+<rect x="430" y="300" width="100" height="55" class="box-result"/>
+<text x="480" y="322" text-anchor="middle" class="small">OK ✓</text>
+<text x="480" y="340" text-anchor="middle" class="small rtl">تمام می‌شود</text>
+<text x="480" y="356" text-anchor="middle" class="small" fill="#4caf50">→ safe</text>
+<line x1="500" y1="270" x2="480" y2="300" stroke="#4caf50" stroke-width="2" marker-end="url(#arrow-ok)"/>
+<rect x="560" y="300" width="160" height="55" class="warn-box"/>
+<text x="640" y="322" text-anchor="middle" class="small rtl">حلقه بی‌نهایت</text>
+<text x="640" y="340" text-anchor="middle" class="small rtl">بدون ctx.Done</text>
+<text x="640" y="356" text-anchor="middle" class="small" fill="#ef4444">→ LEAK</text>
+<line x1="580" y1="270" x2="640" y2="300" stroke="#ef4444" stroke-width="2" marker-end="url(#arrow-bad)"/>
+<!-- Solutions row -->
+<text x="380" y="395" text-anchor="middle" class="title rtl">راه‌حل‌ها (برای هر مسیر LEAK)</text>
+<rect x="30" y="410" width="720" height="95" class="tip-box"/>
+<text x="50" y="432" class="small rtl">• گیرنده نیست: <tspan font-family="monospace">select</tspan> با <tspan font-family="monospace">ctx.Done()</tspan> یا کانال بافر‌دار اضافه کنید</text>
+<text x="50" y="452" class="small rtl">• فرستنده نیست: <tspan font-family="monospace">close(ch)</tspan> پس از اتمام همه فرستنده‌ها (تنها سازنده کانال باید ببندد)</text>
+<text x="50" y="472" class="small rtl">• WaitGroup: <tspan font-family="monospace">defer wg.Done()</tspan> بلافاصله بعد از <tspan font-family="monospace">wg.Add(1)</tspan> — همیشه با defer</text>
+<text x="50" y="492" class="small rtl">• Mutex: <tspan font-family="monospace">defer mu.Unlock()</tspan> بلافاصله بعد از <tspan font-family="monospace">mu.Lock()</tspan> — هرگز قفل را دستی آزاد نکنید</text>
+<text x="50" y="512" class="small rtl">• HTTP بدون timeout: <tspan font-family="monospace">http.Client{Timeout: ...}</tspan> و <tspan font-family="monospace">http.NewRequestWithContext(ctx, ...)</tspan></text>
+</svg>
+<figcaption>شکل ۵-۱۲: درخت تصمیم برای تشخیص نشت <code>Goroutine</code> — اگر گوروتین مسدود نشده اما شرط خروج ندارد (حلقه بی‌نهایت بدون <code>ctx.Done()</code>)، نشت رخ می‌دهد. اگر مسدود شده، پنج علت رایج وجود دارد: ارسال بدون گیرنده، دریافت بدون فرستنده، انتظار روی <code>WaitGroup</code> بدون <code>Done</code>، قفل <code>Mutex</code> بدون <code>Unlock</code>، و درخواست <code>HTTP</code> بدون <code>timeout</code>. هر مسیر با راه‌حل مشخص در کادر سبز پایین آمده است.</figcaption>
+</figure>
 <p>این فلوچارت نشان می‌دهد که هر <bdi dir="ltr">goroutine</bdi> مسدود شده معمولاً یکی از پنج علت رایج را دارد: ارسال روی کانال بدون گیرنده، دریافت از کانال بدون فرستنده، انتظار روی <bdi dir="ltr">WaitGroup</bdi> که هرگز <bdi dir="ltr">Done</bdi> نمی‌شود، قفل شدن روی <bdi dir="ltr">Mutex</bdi> که هرگز آزاد نمی‌شود، یا درخواست <bdi dir="ltr">HTTP</bdi> بدون <bdi dir="ltr">timeout</bdi>. </p><p>برای هر یک از این علت‌ها راه‌حل مشخصی وجود دارد که در بخش‌های راهنمایی کنار هر مسیر نشت نمایش داده شده است. </p><p>نکته مهم این است که اگر <bdi dir="ltr">goroutine</bdi> مسدود نشده اما شرط خروج ندارد (مثلاً حلقه بی‌نهایت بدون بررسی <bdi dir="ltr">ctx.Done()</bdi>)، باز هم نشت رخ می‌دهد.</p>
 <h3 id="سناریوهای-عملیاتی-leak">5.9.8 سناریوهای عملیاتی نشتGoroutine</h3>
 <p>در پروژه‌های واقعی، نشت <bdi dir="ltr">Goroutine</bdi> معمولاً در الگوهای خاصی رخ می‌دهد. شناخت این الگوها به شما کمک می‌کند قبل از وقوع نشت از آن جلوگیری کنید. هر یک از سناریوهای زیر بر اساس تجربه توسعه‌دهندگان <bdi dir="ltr">Go</bdi> در سیستم‌های تولیدی بزرگ شناسایی شده‌اند و راه‌حل مشخصی دارند. درک این سناریوها برای هر برنامه‌نویسی که از هم‌روندی استفاده می‌کند ضروری است.</p>

@@ -94,6 +94,67 @@
 <p>یکی از جذاب‌ترین ویژگی‌های <bdi dir="ltr">Go</bdi> در حوزه وب، امکان تولید یک فایل باینری مستقل است که تمام قالب‌ها، فایل‌های استاتیک و حتی گواهی‌نامه‌های <bdi dir="ltr">TLS</bdi> را درون خود جای داده است. این ویژگی که با پکیج <bdi dir="ltr">embed</bdi> ممکن شده، فرآیند استقرار (<bdi dir="ltr">deployment</bdi>) را به شدت ساده می‌کند. </p><p>دیگر نیازی به کپی کردن پوشه‌های متعدد، تنظیم وب‌سرور و نصب وابستگی‌ها روی سرور نیست — فقط یک فایل باینری کافی است.</p>
 <div class="note"><strong>یادداشت:</strong> یکی از تفاوت‌های کلیدی <bdi dir="ltr">Go</bdi> با <bdi dir="ltr">PHP</bdi> در حوزه وب، مدل اجرای برنامه است. در <bdi dir="ltr">PHP</bdi> هر درخواست یک فرآیند جداگانه ایجاد می‌کند و پس از اتمام، تمام منابع آزاد می‌شوند. اما در <bdi dir="ltr">Go</bdi> سرور یک پروسه مداوم است که هر درخواست را در یک <bdi dir="ltr">goroutine</bdi> سبک پردازش می‌کند. این تفاوت بنیادین، نیازمند تغییر ذهنیت در مدیریت وضعیت (<bdi dir="ltr">state</bdi>)، منابع مشترک و هم‌روندی است. مثلاً در <bdi dir="ltr">PHP</bdi> اتصال دیتابیس به صورت خودکار بسته می‌شود، اما در <bdi dir="ltr">Go</bdi> باید خودتان مدیریت اشتراک اتصال‌ها (<bdi dir="ltr">connection pool</bdi>) و بستن صحیح آن‌ها را تضمین کنید.</div>
 <div class="important"><strong>مهم:</strong> در طول این فصل، هر مفهوم با مقایسه مستقیم <bdi dir="ltr">PHP</bdi> (به‌ویژه <bdi dir="ltr">Laravel</bdi>) همراه است تا توسعه‌دهندگانی که از <bdi dir="ltr">PHP</bdi> مهاجرت می‌کنند، بتوانند دانش موجود خود را به سرعت به <bdi dir="ltr">Go</bdi> انتقال دهند. اما به یاد داشته باشید که <bdi dir="ltr">Go</bdi> رویکرد متفاوتی دارد: به جای «جادوی» فریم‌ورک، کنترل کامل و شفافیت در دست شماست.</div>
+<figure class="diagram" dir="ltr">
+<svg viewBox="0 0 760 380" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+<path d="M0,0 L10,5 L0,10 z" fill="#64748b"/>
+</marker>
+</defs>
+<text x="380" y="30" text-anchor="middle" class="title rtl">نقشه‌ی راه فصل هفتم — ساخت وب‌سرور با net/http</text>
+<!-- Row 1: Foundation (7.1-7.4) -->
+<text x="40" y="80" class="small rtl" fill="#4a5568">لایه‌ی ۱ — مبانی سرور و مسیریابی</text>
+<rect x="50" y="95" width="155" height="60" class="box-go"/>
+<text x="127" y="120" text-anchor="middle" class="title">۷.۱</text>
+<text x="127" y="140" text-anchor="middle" class="small rtl">سرور پایدار و ایمن</text>
+<rect x="220" y="95" width="155" height="60" class="box-go"/>
+<text x="297" y="120" text-anchor="middle" class="title">۷.۲</text>
+<text x="297" y="140" text-anchor="middle" class="small rtl">مدیریت Routing</text>
+<rect x="390" y="95" width="155" height="60" class="box-go"/>
+<text x="467" y="120" text-anchor="middle" class="title">۷.۳</text>
+<text x="467" y="140" text-anchor="middle" class="small rtl">خواندن ورودی</text>
+<rect x="560" y="95" width="155" height="60" class="box-go"/>
+<text x="637" y="120" text-anchor="middle" class="title">۷.۴</text>
+<text x="637" y="140" text-anchor="middle" class="small rtl">Middleware</text>
+<line x1="205" y1="125" x2="220" y2="125" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+<line x1="375" y1="125" x2="390" y2="125" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+<line x1="545" y1="125" x2="560" y2="125" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+<!-- Row 2: Static + State (7.5-7.7) -->
+<text x="40" y="190" class="small rtl" fill="#4a5568">لایه‌ی ۲ — فایل‌های استاتیک و وضعیت</text>
+<rect x="50" y="205" width="220" height="60" class="box-action"/>
+<text x="160" y="230" text-anchor="middle" class="title">۷.۵</text>
+<text x="160" y="250" text-anchor="middle" class="small rtl">سرو فایل‌های استاتیک</text>
+<rect x="285" y="205" width="220" height="60" class="box-action"/>
+<text x="395" y="230" text-anchor="middle" class="title">۷.۶</text>
+<text x="395" y="250" text-anchor="middle" class="small rtl">کار با Cookie ها</text>
+<rect x="520" y="205" width="220" height="60" class="box-action"/>
+<text x="630" y="230" text-anchor="middle" class="title">۷.۷</text>
+<text x="630" y="250" text-anchor="middle" class="small rtl">مدیریت Session</text>
+<line x1="270" y1="235" x2="285" y2="235" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+<line x1="505" y1="235" x2="520" y2="235" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+<!-- Row 3: Templates + Forms (7.8-7.14) -->
+<text x="40" y="300" class="small rtl" fill="#4a5568">لایه‌ی ۳ — قالب‌ها، embed و فرم‌ها</text>
+<rect x="50" y="315" width="120" height="55" class="box-result"/>
+<text x="110" y="338" text-anchor="middle" class="title">۷.۸-۷.۹</text>
+<text x="110" y="357" text-anchor="middle" class="small rtl">قالب‌ها و ساختار</text>
+<rect x="185" y="315" width="120" height="55" class="box-result"/>
+<text x="245" y="338" text-anchor="middle" class="title">۷.۱۰-۷.۱۱</text>
+<text x="245" y="357" text-anchor="middle" class="small rtl">embed + رندر</text>
+<rect x="320" y="315" width="120" height="55" class="box-result"/>
+<text x="380" y="338" text-anchor="middle" class="title">۷.۱۲-۷.۱۳</text>
+<text x="380" y="357" text-anchor="middle" class="small rtl">static + فایل در قالب</text>
+<rect x="455" y="315" width="120" height="55" class="warn-box"/>
+<text x="515" y="338" text-anchor="middle" class="title">۷.۱۴</text>
+<text x="515" y="357" text-anchor="middle" class="small rtl">پردازش فرم</text>
+<line x1="170" y1="342" x2="185" y2="342" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+<line x1="305" y1="342" x2="320" y2="342" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+<line x1="440" y1="342" x2="455" y2="342" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+<!-- Curved continuation arrows between rows -->
+<path d="M 637 155 Q 637 180 580 205" stroke="#64748b" stroke-width="1.5" stroke-dasharray="3 3" fill="none" marker-end="url(#arrow)"/>
+<path d="M 630 265 Q 630 290 515 315" stroke="#64748b" stroke-width="1.5" stroke-dasharray="3 3" fill="none" marker-end="url(#arrow)"/>
+</svg>
+<figcaption>شکل ۷-۱: نقشه‌ی راه فصل هفتم — چهارده بخش در سه لایه‌ی مفهومی چیده شده‌اند. لایه‌ی ۱ (فیروزه‌ای Go) مبانی سرور و مسیریابی را پوشش می‌دهد؛ لایه‌ی ۲ (آبی action) فایل‌های استاتیک و مدیریت وضعیت را بررسی می‌کند؛ لایه‌ی ۳ (سبز result) قالب‌ها و جاسازی فایل‌ها را آموزش می‌دهد و با پردازش فرم (نارنجی warn) به پایان می‌رسد. مسیر پیشنهادی به‌صورت متوالی از بالا به پایین است.</figcaption>
+</figure>
 <div class="summary">
 <strong>خلاصه‌ی نکات کلیدی:</strong>
 <ul>

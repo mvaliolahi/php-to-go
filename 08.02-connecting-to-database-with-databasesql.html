@@ -255,6 +255,52 @@ stats.WaitDuration,
 <h3 id="ساختار-داخلی-connection-pool-بصری">8.2.8 ساختار داخلی Connection Pool (بصری)</h3>
 <p>این نمودار ساختار داخلی <bdi dir="ltr">Connection Pool</bdi> در <bdi dir="ltr">database/sql</bdi> را به صورت بصری نشان می‌دهد. وقتی یک <bdi dir="ltr">Goroutine</bdi> کوئری اجرا می‌کند، ابتدا <bdi dir="ltr">Pool</bdi> اتصال‌های بیکار را بررسی می‌کند. اگر اتصال بیکاری موجود باشد مستقیماً استفاده می‌شود و نیازی به باز کردن اتصال جدید نیست. </p><p>اگر اتصال بیکاری نباشد ولی تعداد کل اتصال‌ها کمتر از <bdi dir="ltr">MaxOpenConns</bdi> باشد، یک اتصال جدید ایجاد می‌شود. اما اگر تعداد اتصال‌ها به حداکثر رسیده باشد، کوئری وارد صف انتظار می‌شود تا یکی از اتصال‌ها آزاد شود.</p>
 <p>تنظیمات <bdi dir="ltr">ConnMaxLifetime</bdi> و <bdi dir="ltr">ConnMaxIdleTime</bdi> مکانیزم بازیافت اتصال‌ها را کنترل می‌کنند. اتصال‌هایی که عمرشان از <bdi dir="ltr">ConnMaxLifetime</bdi> بیشتر شود بسته می‌شوند و در فرصت مناسب جایگزین می‌شوند. </p><p>این مکانیزم از بروز مشکل اتصال‌های <bdi dir="ltr">stale</bdi> (اتصال‌هایی که سرور دیتابیس قطع کرده ولی کلاینت هنوز نمی‌داند) جلوگیری می‌کند. </p><p>همچنین <bdi dir="ltr">openerCh</bdi> یک کانال داخلی است که <bdi dir="ltr">goroutine</bdi> اختصاصی <code dir="ltr">connectionOpener</code> از آن برای ایجاد اتصال‌های جدید استفاده می‌کند.</p>
+<figure class="diagram" dir="ltr">
+<svg viewBox="0 0 760 360" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+<path d="M0,0 L10,5 L0,10 z" fill="#64748b"/>
+</marker>
+</defs>
+<text x="380" y="28" text-anchor="middle" class="title rtl">ساختار داخلی Connection Pool در database/sql</text>
+<rect x="30" y="70" width="130" height="44" class="box-action"/>
+<text x="95" y="92" text-anchor="middle" class="title">Goroutine 1</text>
+<text x="95" y="108" text-anchor="middle" class="small">db.Query()</text>
+<rect x="30" y="130" width="130" height="44" class="box-action"/>
+<text x="95" y="152" text-anchor="middle" class="title">Goroutine 2</text>
+<text x="95" y="168" text-anchor="middle" class="small">db.Exec()</text>
+<rect x="30" y="190" width="130" height="44" class="box-action"/>
+<text x="95" y="212" text-anchor="middle" class="title">Goroutine N</text>
+<text x="95" y="228" text-anchor="middle" class="small">tx.Begin()</text>
+<rect x="220" y="60" width="320" height="200" class="box-go" fill="rgba(0,173,216,0.03)"/>
+<text x="380" y="82" text-anchor="middle" class="title">*sql.DB</text>
+<rect x="240" y="100" width="280" height="44" class="box-result"/>
+<text x="380" y="120" text-anchor="middle" class="title rtl">Idle (freeConn)</text>
+<text x="380" y="138" text-anchor="middle" class="small rtl">اتصال‌های بیکار، آماده استفاده</text>
+<rect x="240" y="155" width="280" height="44" class="box-action"/>
+<text x="380" y="175" text-anchor="middle" class="title rtl">In-Use</text>
+<text x="380" y="193" text-anchor="middle" class="small rtl">حداکثر MaxOpenConns</text>
+<rect x="240" y="210" width="280" height="44" class="warn-box"/>
+<text x="380" y="230" text-anchor="middle" class="title rtl">Wait Queue</text>
+<text x="380" y="248" text-anchor="middle" class="small rtl">وقتی Pool پر است، درخواست‌ها منتظر می‌مانند</text>
+<rect x="590" y="120" width="140" height="80" class="box-php"/>
+<text x="660" y="150" text-anchor="middle" class="title">PostgreSQL</text>
+<text x="660" y="170" text-anchor="middle" class="small rtl">سرور دیتابیس</text>
+<text x="660" y="188" text-anchor="middle" class="small">max_connections</text>
+<line x1="160" y1="92" x2="220" y2="120" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
+<line x1="160" y1="152" x2="220" y2="170" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
+<line x1="160" y1="212" x2="220" y2="200" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
+<line x1="540" y1="160" x2="590" y2="160" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="240" y="282" width="280" height="44" class="box-go"/>
+<text x="380" y="302" text-anchor="middle" class="title">openerCh goroutine</text>
+<text x="380" y="320" text-anchor="middle" class="small rtl">اتصال جدید می‌سازد وقتی Idle خالی و In-Use &lt; MaxOpen</text>
+<line x1="380" y1="282" x2="380" y2="258" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
+<rect x="600" y="282" width="130" height="44" class="warn-box"/>
+<text x="665" y="302" text-anchor="middle" class="title">ConnMaxLifetime</text>
+<text x="665" y="320" text-anchor="middle" class="small rtl">بستن stale</text>
+</svg>
+<figcaption>شکل ۸-۳: ساختار داخلی <code>*sql.DB</code> در <bdi dir="ltr">database/sql</bdi> — <bdi dir="ltr">Goroutine</bdi>‌های فراخوان اتصال را از <bdi dir="ltr">Pool</bdi> قرض می‌گیرند. اگر اتصال <bdi dir="ltr">idle</bdi> موجود باشد مستقیم استفاده می‌شود، در غیر این صورت <bdi dir="ltr">openerCh</bdi> یک اتصال جدید می‌سازد (تا سقف <code>MaxOpenConns</code>)؛ وقتی <bdi dir="ltr">Pool</bdi> پر است درخواست وارد صف انتظار می‌شود. <code>ConnMaxLifetime</code> و <code>ConnMaxIdleTime</code> اتصال‌های فرسوده را می‌بندند.</figcaption>
+</figure>
 <h3 id="سناریوهای-عملیاتی-connection-pool">8.2.9 سناریوهای عملیاتی</h3>
 <ul>
 <li><strong>بهینه‌سازی اندازه‌ی <bdi dir="ltr">Pool</bdi> برای محیط تولید:</strong> اندازه‌ی <bdi dir="ltr">Pool</bdi> باید بر اساس ظرفیت دیتابیس و الگوی ترافیک برنامه تنظیم شود. یک نقطه‌ی شروع معقول <code dir="ltr">NumCPU * 2</code> برای <bdi dir="ltr">MaxOpenConns</bdi> و نصف آن برای <bdi dir="ltr">MaxIdleConns</bdi> است. سپس با مانیتورینگ متریک‌های <code dir="ltr">db.Stats()</code> مقادیر را تنظیم کنید. اگر <bdi dir="ltr">WaitCount</bdi> بالا می‌رود یعنی باید <bdi dir="ltr">MaxOpenConns</bdi> را افزایش دهید.</li>

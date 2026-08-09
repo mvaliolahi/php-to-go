@@ -155,6 +155,62 @@ if affected == 0 {
 <p>این نمودار چرخه‌ی کامل حیات یک تراکنش را از نقطه‌ی شروع تا نتیجه‌ی نهایی نشان می‌دهد. تراکنش با فراخوانی <code dir="ltr">db.Begin()</code> آغاز می‌شود و یک شیء <code dir="ltr">*sql.Tx</code> برگردانده می‌شود که تمام عملیات بعدی باید از طریق آن انجام شوند. </p><p>پس از اجرای عملیات‌های مختلف (<code dir="ltr">INSERT</code>، <code dir="ltr">UPDATE</code>، <code dir="ltr">SELECT</code>، <code dir="ltr">DELETE</code>) یک نقطه‌ی تصمیم وجود دارد: اگر همه عملیات‌ها موفق بوده‌اند <code dir="ltr">tx.Commit()</code> تغییرات را به‌طور دائم ذخیره می‌کند و اگر هرکدام با خطا مواجه شده‌اند <code dir="ltr">tx.Rollback()</code> تمام تغییرات را لغو می‌کند.</p>
 <p>ویژگی‌های <bdi dir="ltr">ACID</bdi> تضمین‌های بنیادی تراکنش‌ها هستند. <bdi dir="ltr">Atomicity</bdi> (اتمی بودن) تضمین می‌کند که یا تمام عملیات‌ها اعمال می‌شوند یا هیچ‌کدام. <bdi dir="ltr">Consistency</bdi> (سازگاری) تضمین می‌کند دیتابیس همیشه از یک حالت معتبر به حالت معتبر دیگر گذار می‌کند و قیدها و محدودیت‌ها نقض نمی‌شوند. <bdi dir="ltr">Isolation</bdi> (ایزولاسیون) تضمین می‌کند تراکنش‌های همزمان روی یکدیگر تأثیر ناخواسته ندارند. <bdi dir="ltr">Durability</bdi> (ماندگاری) تضمین می‌کند داده‌هایی که <code dir="ltr">commit</code> شده‌اند حتی در صورت خرابی سیستم از بین نمی‌روند.</p>
 <p>سطوح ایزولاسیون کنترل می‌کنند که تراکنش‌های همزمان چقدر از یکدیگر ایزوله هستند. <code dir="ltr">Read Uncommitted</code> کمترین ایزولاسیون را دارد و ممکن است داده‌های هنوز <code dir="ltr">commit</code> نشده را بخوانید (<bdi dir="ltr">Dirty Read</bdi>). <code dir="ltr">Read Committed</code> پیش‌فرض <bdi dir="ltr">PostgreSQL</bdi> است و فقط داده‌های <code dir="ltr">commit</code> شده را می‌خواند. <code dir="ltr">Repeatable Read</code> تضمین می‌کند خواندن مجدد همان داده مقدار یکسان برگرداند. <code dir="ltr">Serializable</code> سخت‌گیرانه‌ترین سطح است و تضمین می‌کند نتیجه‌ی اجرای همزمان تراکنش‌ها معادل اجرای ترتیبی آنها باشد اما هزینه‌ی عملکرد بالاتری دارد.</p>
+<figure class="diagram" dir="ltr">
+<svg viewBox="0 0 760 320" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+<path d="M0,0 L10,5 L0,10 z" fill="#64748b"/>
+</marker>
+<marker id="arrow-green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+<path d="M0,0 L10,5 L0,10 z" fill="#4caf50"/>
+</marker>
+<marker id="arrow-orange" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+<path d="M0,0 L10,5 L0,10 z" fill="#ff9800"/>
+</marker>
+</defs>
+<text x="380" y="28" text-anchor="middle" class="title rtl">چرخه‌ی حیات تراکنش و اصول ACID</text>
+<rect x="20" y="60" width="120" height="50" class="box-go"/>
+<text x="80" y="83" text-anchor="middle" class="title">db.Begin()</text>
+<text x="80" y="100" text-anchor="middle" class="small rtl">شروع</text>
+<rect x="160" y="60" width="100" height="50" class="box-go"/>
+<text x="210" y="90" text-anchor="middle" class="title">*sql.Tx</text>
+<rect x="280" y="50" width="160" height="70" class="box-action"/>
+<text x="360" y="70" text-anchor="middle" class="title rtl">عملیات‌ها</text>
+<text x="360" y="87" text-anchor="middle" class="small">INSERT / UPDATE</text>
+<text x="360" y="103" text-anchor="middle" class="small">SELECT / DELETE</text>
+<rect x="460" y="60" width="120" height="50" class="warn-box"/>
+<text x="520" y="83" text-anchor="middle" class="title">err != nil?</text>
+<text x="520" y="100" text-anchor="middle" class="small rtl">تصمیم</text>
+<line x1="140" y1="85" x2="160" y2="85" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+<line x1="260" y1="85" x2="280" y2="85" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+<line x1="440" y1="85" x2="460" y2="85" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+<text x="475" y="138" text-anchor="middle" class="small" fill="#c0392b">Y</text>
+<line x1="500" y1="110" x2="455" y2="160" stroke="#ff9800" stroke-width="2" marker-end="url(#arrow-orange)"/>
+<rect x="380" y="160" width="130" height="50" class="warn-box"/>
+<text x="445" y="183" text-anchor="middle" class="title">tx.Rollback()</text>
+<text x="445" y="200" text-anchor="middle" class="small rtl">لغو تغییرات</text>
+<text x="595" y="138" text-anchor="middle" class="small" fill="#2e7d32">N</text>
+<line x1="540" y1="110" x2="600" y2="160" stroke="#4caf50" stroke-width="2" marker-end="url(#arrow-green)"/>
+<rect x="590" y="160" width="140" height="50" class="box-result"/>
+<text x="660" y="183" text-anchor="middle" class="title">tx.Commit()</text>
+<text x="660" y="200" text-anchor="middle" class="small rtl">ذخیره دائم</text>
+<line x1="20" y1="228" x2="740" y2="228" stroke="#cbd5e1" stroke-width="1" stroke-dasharray="4 4"/>
+<text x="380" y="248" text-anchor="middle" class="title rtl">ویژگی‌های ACID</text>
+<rect x="20" y="258" width="180" height="50" class="box"/>
+<text x="110" y="278" text-anchor="middle" class="title">A — Atomicity</text>
+<text x="110" y="297" text-anchor="middle" class="small rtl">همه یا هیچ</text>
+<rect x="210" y="258" width="180" height="50" class="box"/>
+<text x="300" y="278" text-anchor="middle" class="title">C — Consistency</text>
+<text x="300" y="297" text-anchor="middle" class="small rtl">قیدها نقض نشوند</text>
+<rect x="400" y="258" width="180" height="50" class="box"/>
+<text x="490" y="278" text-anchor="middle" class="title">I — Isolation</text>
+<text x="490" y="297" text-anchor="middle" class="small rtl">ایزولاسیون همزمان</text>
+<rect x="590" y="258" width="160" height="50" class="box"/>
+<text x="670" y="278" text-anchor="middle" class="title">D — Durability</text>
+<text x="670" y="297" text-anchor="middle" class="small rtl">commit = دائم</text>
+</svg>
+<figcaption>شکل ۸-۶: چرخه‌ی حیات تراکنش در <bdi dir="ltr">database/sql</bdi> — تراکنش با <code>db.Begin()</code> شروع و یک <code>*sql.Tx</code> برمی‌گرداند. پس از اجرای عملیات‌ها، اگر خطایی رخ داده باشد <code>tx.Rollback()</code> تمام تغییرات را لغو می‌کند و در غیر این صورت <code>tx.Commit()</code> تغییرات را به‌صورت دائم ذخیره می‌کند. چهار ویژگی <bdi dir="ltr">ACID</bdi> تضمین می‌کنند این رفتار در همه‌ی شرایط برقرار بماند.</figcaption>
+</figure>
 <div class="quote-box">
 <p class="quote-text">برای بدترین حالت طراحی کنید. تراکنش‌هایی که ناقص تمام می‌شوند بدتر از تراکنش‌هایی هستند که اصلاً شروع نمی‌شوند. مطمئن شوید هر عملیات یا کاملاً کامل می‌شود یا کاملاً بازگشت می‌خورد.</p>
 <p class="quote-source">

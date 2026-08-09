@@ -83,6 +83,49 @@
 <p>در این فضا اتصال به دیتابیس و کار با آن غالباً بدون لایه‌های انتزاعی سنگین انجام می‌شود مگر آنکه خودمان آگاهانه تصمیم به استفاده از کتابخانه‌هایی چون <bdi dir="ltr">GORM</bdi> یا <bdi dir="ltr">ent</bdi> بگیریم. </p><p>در <bdi dir="ltr">Go</bdi> این امکان وجود دارد که به‌صورت مستقیم با پایگاه‌داده تعامل کنیم، از طریق کتابخانه‌ی استاندارد <bdi dir="ltr">database/sql</bdi> یا نسخه‌ی توسعه‌یافته‌ی آن مانند <bdi dir="ltr">sqlx</bdi>. </p><p>این روش‌ها در کنار سادگی، کنترل کاملی روی کوئری‌ها، مدیریت منابع و عملکرد نهایی برنامه در اختیار ما می‌گذارند. </p><p>از سوی دیگر اگر پروژه‌ای پیچیده و مبتنی بر عملیات <bdi dir="ltr">CRUD</bdi> گسترده داشته باشیم استفاده از یک <bdi dir="ltr">ORM</bdi> مانند <bdi dir="ltr">GORM</bdi> می‌تواند توسعه را تسریع کند البته به بهای از دست رفتن بخشی از شفافیت و عملکرد.</p>
 <p>یکی از تفاوت‌های بنیادین بین <bdi dir="ltr">PHP</bdi> و <bdi dir="ltr">Go</bdi> در نحوه مدیریت اتصال به دیتابیس است. در <bdi dir="ltr">PHP</bdi> مدل اجرا بر اساس درخواست (<bdi dir="ltr">request-based</bdi>) است: هر درخواست <bdi dir="ltr">HTTP</bdi> یک فرآیند جدید ایجاد می‌کند، اتصال به دیتابیس باز می‌شود، عملیات انجام می‌شود و در پایان اتصال بسته می‌شود. </p><p>اما در <bdi dir="ltr">Go</bdi> برنامه شما یک فرآیند بلندمدت (<bdi dir="ltr">long-running</bdi>) است که هزاران درخواست را به‌صورت همزمان پردازش می‌کند. این تفاوت باعث می‌شود مفاهیمی مانند <bdi dir="ltr">Connection Pool</bdi>، مدیریت منابع و نشتی اتصال در <bdi dir="ltr">Go</bdi> اهمیت زیادی داشته باشند.</p>
 <p>همچنین در <bdi dir="ltr">Go</bdi> مفهوم <bdi dir="ltr">context.Context</bdi> نقش محوری در کنترل زمان‌بندی و لغو عملیات دیتابیس دارد — چیزی که در <bdi dir="ltr">PHP</bdi> معادل مستقیمی ندارد. در این فصل یاد می‌گیریم که چگونه <bdi dir="ltr">context</bdi> را با کوئری‌ها و تراکنش‌ها ترکیب کنیم تا از قفل شدن و معطل ماندن برنامه جلوگیری کنیم.</p>
+<figure class="diagram" dir="ltr">
+<svg viewBox="0 0 760 340" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+<path d="M0,0 L10,5 L0,10 z" fill="#64748b"/>
+</marker>
+</defs>
+<text x="380" y="28" text-anchor="middle" class="title rtl">مدل اجرای PHP (چپ) در برابر Go (راست)</text>
+<line x1="380" y1="50" x2="380" y2="320" stroke="#cbd5e1" stroke-width="1" stroke-dasharray="4 4"/>
+<text x="190" y="60" text-anchor="middle" class="title rtl">PHP — هر درخواست یک اتصال</text>
+<rect x="120" y="78" width="140" height="48" class="box-php"/>
+<text x="190" y="100" text-anchor="middle" class="title">HTTP Request</text>
+<text x="190" y="118" text-anchor="middle" class="small rtl">پردازش جدید</text>
+<rect x="120" y="150" width="140" height="48" class="box-php"/>
+<text x="190" y="172" text-anchor="middle" class="title">PDO::open()</text>
+<text x="190" y="190" text-anchor="middle" class="small rtl">اتصال تازه</text>
+<rect x="120" y="222" width="140" height="48" class="box-php"/>
+<text x="190" y="244" text-anchor="middle" class="title">close + end</text>
+<text x="190" y="262" text-anchor="middle" class="small rtl">پایان درخواست</text>
+<line x1="190" y1="126" x2="190" y2="150" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
+<line x1="190" y1="198" x2="190" y2="222" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
+<text x="570" y="60" text-anchor="middle" class="title rtl">Go — فرآیند بلندمدت با Connection Pool</text>
+<rect x="460" y="78" width="220" height="48" class="box-go"/>
+<text x="570" y="100" text-anchor="middle" class="title">*sql.DB</text>
+<text x="570" y="118" text-anchor="middle" class="small rtl">یک نمونه در طول عمر برنامه</text>
+<rect x="460" y="150" width="220" height="80" class="box-go"/>
+<text x="570" y="170" text-anchor="middle" class="title rtl">Connection Pool</text>
+<rect x="475" y="185" width="58" height="35" class="box"/>
+<text x="504" y="208" text-anchor="middle" class="small">conn 1</text>
+<rect x="540" y="185" width="58" height="35" class="box"/>
+<text x="569" y="208" text-anchor="middle" class="small">conn 2</text>
+<rect x="605" y="185" width="58" height="35" class="box"/>
+<text x="634" y="208" text-anchor="middle" class="small">conn N</text>
+<rect x="460" y="252" width="220" height="48" class="box-action"/>
+<text x="570" y="274" text-anchor="middle" class="title">Goroutines (HTTP handlers)</text>
+<text x="570" y="292" text-anchor="middle" class="small rtl">اشتراک اتصال‌ها</text>
+<line x1="570" y1="126" x2="570" y2="150" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
+<line x1="504" y1="252" x2="510" y2="225" stroke="#64748b" stroke-width="1" marker-end="url(#arrow)"/>
+<line x1="569" y1="252" x2="569" y2="225" stroke="#64748b" stroke-width="1" marker-end="url(#arrow)"/>
+<line x1="634" y1="252" x2="628" y2="225" stroke="#64748b" stroke-width="1" marker-end="url(#arrow)"/>
+</svg>
+<figcaption>شکل ۸-۱: تفاوت بنیادین مدل اجرای <bdi dir="ltr">PHP</bdi> و <bdi dir="ltr">Go</bdi> در کار با دیتابیس — در <bdi dir="ltr">PHP</bdi> هر درخواست <bdi dir="ltr">HTTP</bdi> یک اتصال جدید باز و بسته می‌کند (هزینه‌ی شبکه در هر درخواست)، اما در <bdi dir="ltr">Go</bdi> یک نمونه‌ی <code>*sql.DB</code> در طول عمر برنامه زنده می‌ماند و اتصال‌های <bdi dir="ltr">idle</bdi> را در یک <bdi dir="ltr">Pool</bdi> بین <bdi dir="ltr">Goroutine</bdi>‌ها به اشتراک می‌گذارد.</figcaption>
+</figure>
 <div class="note"><strong>نکته‌ی معماری:</strong> پکیج <code dir="ltr">database/sql</code> در <bdi dir="ltr">Go</bdi> بر اساس الگوی <strong dir="ltr">driver interface</strong> طراحی شده. یعنی خود پکیج هیچ درایوری را به‌صورت توکار ندارد بلکه از طریق <code dir="ltr">sql.Register()</code> درایورها را ثبت می‌کند. وقتی <code dir="ltr">sql.Open("postgres", dsn)</code> را فراخوانی می‌کنید، پکیج در نگاشت داخلی خود به دنبال درایوری با نام <code>"postgres"</code> می‌گردد که پیش‌تر از طریق <code>import _ "github.com/lib/pq"</code> ثبت شده است. این معماریِ <em>separation of concerns</em> باعث می‌شود کد برنامه‌ی شما مستقل از دیتابیس خاصی بماند.</div>
 <div class="comparison"><strong>مقایسه‌ی کلیدی <bdi dir="ltr">PHP</bdi> و <bdi dir="ltr">Go</bdi> در کار با دیتابیس:</strong> <bdi dir="ltr">PDO</bdi> در <bdi dir="ltr">PHP</bdi> هیچ <bdi dir="ltr">Connection Pool</bdi> داخلی ندارد و هر درخواست <bdi dir="ltr">HTTP</bdi> یک اتصال جدید باز و بسته می‌کند. اما در <bdi dir="ltr">Go</bdi>، <code dir="ltr">*sql.DB</code> یک <bdi dir="ltr">Connection Pool</bdi> واقعی با اتصال‌های <bdi dir="ltr">idle</bdi> مدیریت می‌کند. این تفاوت بنیادین باعث می‌شود در <bdi dir="ltr">Go</bdi> تنظیم پارامترهایی مثل <code dir="ltr">MaxOpenConns</code> و <code dir="ltr">ConnMaxLifetime</code> اهمیت بسیار بیشتری داشته باشد.</div>
 <div class="warning"><strong>هشدار برای مهاجرت:</strong> از اشتباهات رایج توسعه‌دهندگان <bdi dir="ltr">PHP</bdi> که به <bdi dir="ltr">Go</bdi> مهاجرت می‌کنند، نادیده گرفتن مدیریت منابع دیتابیس است. در <bdi dir="ltr">PHP</bdi> منابع به‌صورت خودکار در پایان درخواست آزاد می‌شوند، اما در <bdi dir="ltr">Go</bdi> اگر <code>rows.Close()</code> یا <code>stmt.Close()</code> را فراموش کنید، اتصال‌ها نشت می‌کنند و به‌زودی برنامه با خطای <bdi dir="ltr">connection pool exhausted</bdi> متوقف می‌شود. در این فصل به‌طور مفصل به این موضوع خواهیم پرداخت.</div>

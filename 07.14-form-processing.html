@@ -417,6 +417,60 @@ func contactPostHandler(w http.ResponseWriter, r *http.Request) {
 <div class="important">
 <strong>مهم:</strong> الگوی POST-Redirect-GET (PRG) را همیشه رعایت کنید. بعد از پردازش فرم POST، کاربر را به صفحه دیگری redirect کنید. این کار از ارسال مجدد فرم با دکمه بازنشانی مرورگر جلوگیری می‌کند. کد وضعیت <code dir="ltr">http.StatusSeeOther</code> (303) برای این redirect مناسب‌ترین گزینه است.
 </div>
+<figure class="diagram" dir="ltr">
+<svg viewBox="0 0 760 420" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+<path d="M0,0 L10,5 L0,10 z" fill="#64748b"/>
+</marker>
+<marker id="arrow-ok" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+<path d="M0,0 L10,5 L0,10 z" fill="#4caf50"/>
+</marker>
+<marker id="arrow-bad" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+<path d="M0,0 L10,5 L0,10 z" fill="#ef4444"/>
+</marker>
+</defs>
+<text x="380" y="28" text-anchor="middle" class="title rtl">الگوی POST-Redirect-GET (PRG) — جلوگیری از ارسال مجدد فرم با Refresh</text>
+<!-- Browser row -->
+<text x="190" y="62" text-anchor="middle" class="title" fill="#2196f3">Browser</text>
+<text x="570" y="62" text-anchor="middle" class="title" fill="#00ADD8">Go Server</text>
+<!-- Step 1: POST form -->
+<rect x="60" y="80" width="260" height="55" class="box-action"/>
+<text x="190" y="103" text-anchor="middle" class="title">① POST /contact</text>
+<text x="190" y="123" text-anchor="middle" class="small rtl">کاربر فرم را ارسال می‌کند</text>
+<line x1="320" y1="107" x2="430" y2="107" stroke="#2196f3" stroke-width="2" marker-end="url(#arrow)"/>
+<text x="375" y="100" text-anchor="middle" class="small" fill="#2196f3">form data</text>
+<!-- Server: process + save -->
+<rect x="430" y="80" width="260" height="55" class="box-go"/>
+<text x="560" y="103" text-anchor="middle" class="title rtl">② پردازش + ذخیره در DB</text>
+<text x="560" y="123" text-anchor="middle" class="small">flash message → session</text>
+<!-- Step 3: 303 redirect -->
+<line x1="430" y1="135" x2="320" y2="135" stroke="#4caf50" stroke-width="2" marker-end="url(#arrow-ok)"/>
+<text x="375" y="153" text-anchor="middle" class="small" fill="#4caf50">303 See Other → /contact</text>
+<rect x="60" y="145" width="260" height="35" class="box-result"/>
+<text x="190" y="168" text-anchor="middle" class="small rtl">③ مرورگر redirect را دنبال می‌کند</text>
+<!-- Step 4: GET -->
+<line x1="320" y1="180" x2="430" y2="180" stroke="#2196f3" stroke-width="2" marker-end="url(#arrow)"/>
+<text x="375" y="173" text-anchor="middle" class="small" fill="#2196f3">GET /contact</text>
+<rect x="430" y="165" width="260" height="35" class="box-go"/>
+<text x="560" y="188" text-anchor="middle" class="small rtl">④ رندر فرم خالی + flash</text>
+<!-- Final response -->
+<line x1="430" y1="200" x2="320" y2="200" stroke="#4caf50" stroke-width="2" marker-end="url(#arrow-ok)"/>
+<text x="375" y="218" text-anchor="middle" class="small" fill="#4caf50">200 OK + HTML</text>
+<rect x="60" y="210" width="260" height="35" class="box-action"/>
+<text x="190" y="233" text-anchor="middle" class="small rtl">⑤ نمایش صفحه با پیام موفقیت</text>
+<!-- Without PRG (bad) -->
+<text x="380" y="280" text-anchor="middle" class="title rtl">بدون PRG (اشتباه):</text>
+<rect x="60" y="295" width="630" height="55" class="warn-box"/>
+<text x="375" y="315" text-anchor="middle" class="title rtl">POST /contact → پردازش + ذخیره → 200 OK (HTML)</text>
+<text x="375" y="335" text-anchor="middle" class="small rtl">⚠ کاربر F5 می‌زند → مرورگر هشدار می‌دهد → "ارسال مجدد؟" → اگر بله، رکورد دوباره در DB ذخیره می‌شود (داده تکراری)</text>
+<!-- With PRG (good) -->
+<rect x="60" y="360" width="630" height="50" class="tip-box"/>
+<text x="375" y="380" text-anchor="middle" class="title rtl">با PRG (درست):</text>
+<text x="375" y="398" text-anchor="middle" class="small rtl">✓ POST → 303 Redirect → GET → 200 OK • حالا F5 فقط GET را تکرار می‌کند — بدون عارضه جانبی، بدون داده تکراری</text>
+</svg>
+<figcaption>شکل ۷-۱۳: الگوی <bdi dir="ltr">POST-Redirect-GET (PRG)</bdi> — پنج مرحله از بالا به پایین: (۱) کاربر فرم را با <code>POST</code> ارسال می‌کند؛ (۲) سرور پردازش می‌کند، در پایگاه‌داده ذخیره می‌کند و یک پیام فلش در سشن می‌گذارد؛ (۳) سرور به جای نمایش مستقیم نتیجه، با کد <code>303 See Other</code> به همان مسیر <code>redirect</code> می‌کند؛ (۴) مرورگر به‌صورت خودکار درخواست <code>GET</code> به مسیر جدید می‌فرستد؛ (۵) سرور فرم خالی را با پیام فلش رندر می‌کند. حالا اگر کاربر دکمه بازنشانی مرورگر را بزند، فقط درخواست <code>GET</code> تکرار می‌شود — بدون عارضه جانبی، بدون داده تکراری در دیتابیس. بدون این الگو (نارنجی)، نمایش صفحه بعد از <code>POST</code> باعث می‌شود <code>F5</code> ارسال مجدد فرم را تکرار کند.</figcaption>
+</figure>
 <h3 id="محافظت-از-csrf">7.14.6 محافظت از CSRF</h3>
 <p>همان‌طور که در بخش ۷.۶ دیدید، حمله <bdi dir="ltr">CSRF</bdi> زمانی رخ می‌دهد که سایت مخرب مرورگر کاربر را فریب می‌دهد تا درخواستی به سایت شما ارسال کند و مرورگر به‌صورت خودکار کوکی‌های سشن را ضمیمه می‌کند. </p><p>در <bdi dir="ltr">Laravel</bdi> با <code>@csrf</code> به صورت خودکار از این حمله محافظت می‌شود؛ در <bdi dir="ltr">Go</bdi> ساده‌ترین راه استفاده از کتابخانه <code dir="ltr">gorilla/csrf</code> است که الگوی <bdi dir="ltr">Double Submit Cookie</bdi> را پیاده‌سازی می‌کند:</p>
 <figure class="code bash" dir="ltr">

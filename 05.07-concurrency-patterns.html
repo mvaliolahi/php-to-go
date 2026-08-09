@@ -604,9 +604,129 @@ func fetchAll(ctx context.Context, urls []string) ([]string, error) {
 </table>
 <h2 id="نمودار-fan-out-fan-in">نمودار الگوی <bdi dir="ltr">Fan-Out / Fan-In</bdi></h2>
 <p>الگوی <bdi dir="ltr">Fan-Out / Fan-In</bdi> که در بخش قبل معرفی شد، شبیه سیستم صف در <bdi dir="ltr">Laravel</bdi> است اما با این تفاوت مهم که در Go همه چیز در داخل یک فرآیند انجام می‌شود و نیاز به سیستم خارجی مثل <bdi dir="ltr">Redis</bdi> یا <bdi dir="ltr">Supervisor</bdi> ندارد. نمودار زیر ساختار این الگو را به همراه واریانت <bdi dir="ltr">Worker Pool</bdi> نشان می‌دهد.</p>
+<figure class="diagram" dir="ltr">
+<svg viewBox="0 0 760 360" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+<path d="M0,0 L10,5 L0,10 z" fill="#64748b"/>
+</marker>
+</defs>
+<text x="380" y="28" text-anchor="middle" class="title rtl">دو مدل توزیع کار: Fan-Out/Fan-In (چپ) و Worker Pool (راست)</text>
+<!-- Vertical divider -->
+<line x1="380" y1="50" x2="380" y2="340" stroke="#cbd5e1" stroke-width="1" stroke-dasharray="4 4"/>
+<!-- LEFT: Fan-Out / Fan-In -->
+<text x="190" y="60" text-anchor="middle" class="title rtl">Fan-Out / Fan-In</text>
+<text x="190" y="80" text-anchor="middle" class="small rtl">هر Worker کانال خروجی مستقل دارد</text>
+<!-- Source -->
+<rect x="120" y="105" width="140" height="50" class="box-action"/>
+<text x="190" y="128" text-anchor="middle" class="title">Source</text>
+<text x="190" y="148" text-anchor="middle" class="small rtl">تقسیم کار</text>
+<!-- Three independent workers, each with own output channel -->
+<rect x="40" y="190" width="100" height="50" class="box-go"/>
+<text x="90" y="213" text-anchor="middle" class="title">G1</text>
+<text x="90" y="233" text-anchor="middle" class="small rtl">API-1</text>
+<rect x="140" y="190" width="100" height="50" class="box-go"/>
+<text x="190" y="213" text-anchor="middle" class="title">G2</text>
+<text x="190" y="233" text-anchor="middle" class="small rtl">API-2</text>
+<rect x="240" y="190" width="100" height="50" class="box-go"/>
+<text x="290" y="213" text-anchor="middle" class="title">G3</text>
+<text x="290" y="233" text-anchor="middle" class="small rtl">API-3</text>
+<!-- Arrows from source to each worker -->
+<line x1="160" y1="155" x2="90" y2="190" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
+<line x1="190" y1="155" x2="190" y2="190" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
+<line x1="220" y1="155" x2="290" y2="190" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
+<!-- merge() -->
+<rect x="100" y="270" width="180" height="50" class="box-result"/>
+<text x="190" y="293" text-anchor="middle" class="title">merge() — Fan-In</text>
+<text x="190" y="313" text-anchor="middle" class="small rtl">تجمیع در یک کانال</text>
+<!-- Arrows from each worker to merge -->
+<line x1="90" y1="240" x2="150" y2="270" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
+<line x1="190" y1="240" x2="190" y2="270" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
+<line x1="290" y1="240" x2="230" y2="270" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
+<!-- RIGHT: Worker Pool -->
+<text x="570" y="60" text-anchor="middle" class="title rtl">Worker Pool</text>
+<text x="570" y="80" text-anchor="middle" class="small rtl">همه از یک کانال می‌خوانند</text>
+<!-- Single jobs channel -->
+<rect x="460" y="105" width="220" height="50" class="box-action"/>
+<text x="570" y="128" text-anchor="middle" class="title">jobs chan Job</text>
+<text x="570" y="148" text-anchor="middle" class="small rtl">یک کانال ورودی مشترک</text>
+<!-- Three workers reading from same channel -->
+<rect x="420" y="190" width="100" height="50" class="box-go"/>
+<text x="470" y="213" text-anchor="middle" class="title">Worker 1</text>
+<text x="470" y="233" text-anchor="middle" class="small">for j := range jobs</text>
+<rect x="530" y="190" width="100" height="50" class="box-go"/>
+<text x="580" y="213" text-anchor="middle" class="title">Worker 2</text>
+<text x="580" y="233" text-anchor="middle" class="small">for j := range jobs</text>
+<rect x="640" y="190" width="100" height="50" class="box-go"/>
+<text x="690" y="213" text-anchor="middle" class="title">Worker 3</text>
+<text x="690" y="233" text-anchor="middle" class="small">for j := range jobs</text>
+<!-- Arrows from jobs to each worker -->
+<line x1="510" y1="155" x2="470" y2="190" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
+<line x1="570" y1="155" x2="580" y2="190" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
+<line x1="630" y1="155" x2="690" y2="190" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
+<!-- Single results channel -->
+<rect x="460" y="270" width="220" height="50" class="box-result"/>
+<text x="570" y="293" text-anchor="middle" class="title">results chan Result</text>
+<text x="570" y="313" text-anchor="middle" class="small rtl">یک کانال خروجی مشترک</text>
+<!-- Arrows from workers to results -->
+<line x1="470" y1="240" x2="510" y2="270" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
+<line x1="580" y1="240" x2="570" y2="270" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
+<line x1="690" y1="240" x2="630" y2="270" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
+</svg>
+<figcaption>شکل ۵-۹: مقایسه‌ی دو الگوی توزیع کار — در Fan-Out/Fan-In (چپ)، هر Goroutine کانال خروجی مستقل خود را دارد و تابع <code>merge()</code> نتایج را در یک کانال تجمیع می‌کند؛ تعداد Goroutine‌ها به تعداد کارهاست. در Worker Pool (راست)، تمام Workerها از یک کانال <code>jobs</code> مشترک می‌خوانند و به یک کانال <code>results</code> مشترک می‌نویسند؛ تعداد Workerها ثابت و محدود است.</figcaption>
+</figure>
 <p>در نمودار بالا دو مدل از توزیع کار را مشاهده می‌کنید. مدل اول <bdi dir="ltr">Fan-Out / Fan-In</bdi> ساده است که هر <bdi dir="ltr">Goroutine</bdi> کانال خروجی مستقل خود را دارد و تابع <bdi dir="ltr">merge()</bdi> نتایج را تجمیع می‌کند. مدل دوم <bdi dir="ltr">Worker Pool</bdi> است که در آن تمام <bdi dir="ltr">Worker</bdi>‌ها از یک کانال ورودی مشترک می‌خوانند و به یک کانال خروجی مشترک می‌نویسند. </p><p>تفاوت اصلی این است که در <bdi dir="ltr">Worker Pool</bdi> تعداد <bdi dir="ltr">Goroutine</bdi>‌ها ثابت و محدود است اما در <bdi dir="ltr">Fan-Out</bdi> ساده ممکن است به تعداد کارها <bdi dir="ltr">Goroutine</bdi> ساخته شود. انتخاب بین این دو مدل به ماهیت کار و محدودیت‌های منابع سیستم بستگی دارد.</p>
 <h2 id="نمودار-pipeline">نمودار الگوی <bdi dir="ltr">Pipeline</bdi></h2>
 <p>الگوی <bdi dir="ltr">Pipeline</bdi> که در بخش قبل معرفی شد، مزیت کلیدی دارد که هر مرحله به صورت مستقل و همزمان با مراحل دیگر اجرا می‌شود. مکانیزم <bdi dir="ltr">Backpressure</bdi> از طریق مسدود شدن کانال‌ها به صورت طبیعی پیاده‌سازی می‌شود — اگر مرحله پایین‌دست کند باشد، مرحله بالادست به صورت خودکند کندتر می‌شود. در نمودار زیر این الگو را به‌تفصیل مشاهده می‌کنید.</p>
+<figure class="diagram" dir="ltr">
+<svg viewBox="0 0 760 320" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+<path d="M0,0 L10,5 L0,10 z" fill="#64748b"/>
+</marker>
+</defs>
+<text x="380" y="28" text-anchor="middle" class="title rtl">الگوی Pipeline — هر مرحله یک Goroutine، با Backpressure خودکار</text>
+<!-- Stage 1: generate -->
+<rect x="30" y="70" width="150" height="100" class="box-go"/>
+<text x="105" y="93" text-anchor="middle" class="title">generate()</text>
+<text x="105" y="113" text-anchor="middle" class="small rtl">گوروتین ۱</text>
+<text x="105" y="135" text-anchor="middle" class="small">nums: 1..10</text>
+<text x="105" y="155" text-anchor="middle" class="small rtl">منبع داده</text>
+<!-- Channel 1 -->
+<rect x="190" y="105" width="80" height="30" class="box-action"/>
+<text x="230" y="125" text-anchor="middle" class="small">chan int</text>
+<!-- Stage 2: square -->
+<rect x="280" y="70" width="150" height="100" class="box-go"/>
+<text x="355" y="93" text-anchor="middle" class="title">square()</text>
+<text x="355" y="113" text-anchor="middle" class="small rtl">گوروتین ۲</text>
+<text x="355" y="135" text-anchor="middle" class="small">n * n</text>
+<text x="355" y="155" text-anchor="middle" class="small rtl">دگرگونی</text>
+<!-- Channel 2 -->
+<rect x="440" y="105" width="80" height="30" class="box-action"/>
+<text x="480" y="125" text-anchor="middle" class="small">chan int</text>
+<!-- Stage 3: filterEven -->
+<rect x="530" y="70" width="150" height="100" class="box-go"/>
+<text x="605" y="93" text-anchor="middle" class="title">filterEven()</text>
+<text x="605" y="113" text-anchor="middle" class="small rtl">گوروتین ۳</text>
+<text x="605" y="135" text-anchor="middle" class="small">if n%2 == 0</text>
+<text x="605" y="155" text-anchor="middle" class="small rtl">فیلتر</text>
+<!-- Arrows between stages -->
+<line x1="180" y1="120" x2="190" y2="120" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+<line x1="270" y1="120" x2="280" y2="120" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+<line x1="430" y1="120" x2="440" y2="120" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+<line x1="520" y1="120" x2="530" y2="120" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+<!-- Output -->
+<line x1="680" y1="120" x2="720" y2="120" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+<text x="740" y="125" class="small rtl">خروجی</text>
+<!-- Backpressure explanation -->
+<rect x="30" y="200" width="700" height="100" class="warn-box"/>
+<text x="380" y="225" text-anchor="middle" class="title rtl">Backpressure خودکار</text>
+<text x="380" y="250" text-anchor="middle" class="small rtl">اگر filterEven کند باشد → کانال دوم پر می‌شود → square مسدود می‌شود → کانال اول پر می‌شود → generate مسدود می‌شود</text>
+<text x="380" y="270" text-anchor="middle" class="small rtl">هیچ کد هماهنگی اضافی لازم نیست — رفتار طبیعی کانال‌ها Backpressure را پیاده‌سازی می‌کند</text>
+<text x="380" y="290" text-anchor="middle" class="small rtl">هر مرحله با سرعت مستقل خود کار می‌کند و فقط از طریق کانال‌ها متصل‌اند — شبیه Unix Pipe</text>
+</svg>
+<figcaption>شکل ۵-۱۰: الگوی Pipeline — هر مرحله (generate، square، filterEven) یک Goroutine مستقل است که از یک کانال ورودی می‌خواند و روی یک کانال خروجی می‌نویسد. اگر مرحله‌ی پایین‌دست کند شود، کانال بین آن‌ها پر می‌شود و مرحله‌ی بالادست به‌صورت خودکار متوقف می‌شود (Backpressure) — بدون نیاز به کد هماهنگی اضافی.</figcaption>
+</figure>
 <p>نکته مهم در نمودار بالا این است که هر مرحله به صورت مستقل اجرا می‌شود و فقط از طریق کانال‌ها با مراحل دیگر ارتباط دارد. این یعنی اگر مرحله دوم کند باشد مرحله اول به صورت خودکار کندتر می‌شود چون کانال بین آن‌ها پر می‌شود و ارسال جدید مسدود می‌گردد. </p><p>این رفتار همان <bdi dir="ltr">Backpressure</bdi> است که بدون هیچ کد اضافی فقط با استفاده از کانال‌های بافر‌دار یا بدون بافر پیاده‌سازی می‌شود. همچنین هر مرحله مستقل است و می‌تواند بدون تأثیر روی دیگران تغییر کند یا جایگزین شود.</p>
 <h3 id="سناریوهای-عملیاتی-concurrency-patterns">5.7.10 سناریوهای عملیاتی الگوهای هم‌روندی</h3>
 <p>الگوهای هم‌روندی در موقعیت‌های مختلف عملیاتی کاربرد دارند. در ادامه چهار سناریوی واقعی را بررسی می‌کنیم که هر کدام ترکیبی از چندین الگو را برای حل مسائل پیچیده به کار می‌گیرند. </p><p>این سناریوها نشان می‌دهند که در عمل معمولاً یک الگو به تنهایی کافی نیست و باید الگوها را به صورت خلاقانه ترکیب کرد تا بهترین نتیجه حاصل شود.</p><p>همچنین مقایسه با PHP کمک می‌کند درک بهتری از مزایای این الگوها در Go داشته باشید.</p>
