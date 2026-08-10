@@ -107,9 +107,9 @@ func buildSliceBest(items []int) []int {
 <path d="M0,0 L10,5 L0,10 z" fill="#64748b"/>
 </marker>
 </defs>
-<text x="380" y="28" text-anchor="middle" class="title rtl">پیش‌تخصیص Slice: تخصیص مکرر در برابر تخصیص یک‌باره</text>
-<text x="30" y="62" text-anchor="start" class="title rtl">بدون preallocation (append):</text>
-<text x="730" y="62" text-anchor="end" class="small rtl">~۲۰ تخصیص برای ۱۰۰۰۰ عنصر</text>
+<text x="380" y="28" text-anchor="middle" class="title">Slice Preallocation: Repeated vs One-shot Allocation</text>
+<text x="30" y="62" text-anchor="start" class="title">Without preallocation (append):</text>
+<text x="730" y="62" text-anchor="end" class="small">~20 allocations for 10000 elements</text>
 <rect x="40" y="76" width="50" height="50" class="box-php"/>
 <text x="65" y="106" text-anchor="middle" class="title">cap=1</text>
 <line x1="92" y1="101" x2="108" y2="101" stroke="#64748b" stroke-width="2" marker-end="url(#arrow-slice)"/>
@@ -127,13 +127,13 @@ func buildSliceBest(items []int) []int {
 <text x="495" y="106" text-anchor="start" class="title">...</text>
 <rect x="530" y="76" width="190" height="50" class="box-php"/>
 <text x="625" y="100" text-anchor="middle" class="title">cap=8192</text>
-<text x="625" y="118" text-anchor="middle" class="small rtl">۲۰امین reallocation</text>
-<text x="380" y="150" text-anchor="middle" class="small rtl">هر مرحله: تخصیص آرایه جدید (دو برابر) + کپی داده + رها کردن قدیمی → فشار GC</text>
-<text x="30" y="186" text-anchor="start" class="title rtl">با preallocation (make([]T, 0, n)):</text>
-<text x="730" y="186" text-anchor="end" class="small rtl">۱ تخصیص برای ۱۰۰۰۰ عنصر</text>
+<text x="625" y="118" text-anchor="middle" class="small">20th reallocation</text>
+<text x="380" y="150" text-anchor="middle" class="small">Each step: allocate new array (2×) + copy data + drop old → GC pressure</text>
+<text x="30" y="186" text-anchor="start" class="title">With preallocation (make([]T, 0, n)):</text>
+<text x="730" y="186" text-anchor="end" class="small">1 allocation for 10000 elements</text>
 <rect x="40" y="200" width="680" height="50" class="box-go"/>
-<text x="380" y="225" text-anchor="middle" class="title rtl">capacity = n — یک تخصیص کافی</text>
-<text x="380" y="265" text-anchor="middle" class="small rtl">بدون reallocation، بدون کپی، بدون فشار GC — چند برابر سریع‌تر</text>
+<text x="380" y="225" text-anchor="middle" class="title">capacity = n — one allocation is enough</text>
+<text x="380" y="265" text-anchor="middle" class="small">No reallocation, no copy, no GC pressure — multiple times faster</text>
 </svg>
 <figcaption>شکل ۱۲-۷: مقایسه append بدون preallocation در برابر <bdi dir="ltr">make([]T, 0, n)</bdi> — بدون preallocation، هر بار که capacity پر می‌شود، Go یک آرایه دو برابر بزرگ‌تر تخصیص می‌دهد، داده را کپی می‌کند و آرایه قدیمی را رها می‌کند. با preallocation، یک تخصیص اولیه با capacity کافی انجام می‌شود و دیگر هیچ reallocation ای لازم نیست.</figcaption>
 </figure>
@@ -189,9 +189,9 @@ func goodConcat(parts []string) string {
 <path d="M0,0 L10,5 L0,10 z" fill="#64748b"/>
 </marker>
 </defs>
-<text x="380" y="28" text-anchor="middle" class="title rtl">الحاق رشته: + در برابر strings.Builder</text>
-<text x="30" y="62" text-anchor="start" class="title rtl">+ در حلقه (۱۰۰۰ رشته):</text>
-<text x="730" y="62" text-anchor="end" class="small rtl">~۲۰۰۰ تخصیص · ۵۰۰ μs/op</text>
+<text x="380" y="28" text-anchor="middle" class="title">String Concatenation: + vs strings.Builder</text>
+<text x="30" y="62" text-anchor="start" class="title">+ in loop (1000 strings):</text>
+<text x="730" y="62" text-anchor="end" class="small">~2000 allocations · 500 μs/op</text>
 <rect x="40" y="76" width="60" height="40" class="box-php"/>
 <text x="70" y="100" text-anchor="middle" class="small">"a"</text>
 <line x1="102" y1="96" x2="118" y2="96" stroke="#64748b" stroke-width="2" marker-end="url(#arrow-str)"/>
@@ -206,18 +206,18 @@ func goodConcat(parts []string) string {
 <text x="478" y="100" text-anchor="start" class="small">...</text>
 <rect x="510" y="76" width="210" height="40" class="box-php"/>
 <text x="615" y="100" text-anchor="middle" class="small">"a...thousand"</text>
-<text x="380" y="140" text-anchor="middle" class="small rtl">هر + = رشته‌ی جدید immutable + رها کردن قبلی → ۲۰۰۰ allocation و فشار شدید به GC</text>
-<text x="30" y="180" text-anchor="start" class="title rtl">strings.Builder + Grow():</text>
-<text x="730" y="180" text-anchor="end" class="small rtl">۱ تخصیص · ۱.۵ μs/op · ~۳۰۰× سریع‌تر</text>
+<text x="380" y="140" text-anchor="middle" class="small">Each + = new immutable string + drop old → 2000 allocations &amp; heavy GC pressure</text>
+<text x="30" y="180" text-anchor="start" class="title">strings.Builder + Grow():</text>
+<text x="730" y="180" text-anchor="end" class="small">1 allocation · 1.5 μs/op · ~300× faster</text>
 <rect x="40" y="194" width="180" height="50" class="box-action"/>
 <text x="130" y="218" text-anchor="middle" class="title">b.Grow(16000)</text>
-<text x="130" y="236" text-anchor="middle" class="small rtl">تخصیص بافر اولیه</text>
+<text x="130" y="236" text-anchor="middle" class="small">Allocate initial buffer</text>
 <line x1="222" y1="219" x2="248" y2="219" stroke="#64748b" stroke-width="2" marker-end="url(#arrow-str)"/>
 <rect x="252" y="194" width="468" height="50" class="box-go"/>
 <text x="486" y="218" text-anchor="middle" class="title">b.WriteString("a") · b.WriteString("b") · ... · b.String()</text>
-<text x="486" y="236" text-anchor="middle" class="small rtl">append به []byte داخلی بدون allocation جدید</text>
+<text x="486" y="236" text-anchor="middle" class="small">append to internal []byte without new allocation</text>
 <rect x="40" y="265" width="680" height="40" class="tip-box"/>
-<text x="380" y="290" text-anchor="middle" class="small rtl">قانون عملی: اگر بیش از ۵ الحاق در حلقه دارید، همیشه strings.Builder با Grow را انتخاب کنید</text>
+<text x="380" y="290" text-anchor="middle" class="small">Practical rule: if you have more than 5 concatenations in a loop, always use strings.Builder with Grow</text>
 </svg>
 <figcaption>شکل ۱۲-۸: الحاق رشته با + در برابر strings.Builder — عملگر + در هر مرحله یک رشته‌ی جدید (immutable) می‌سازد و رشته قبلی به GC سپرده می‌شود. با strings.Builder و Grow، یک بافر داخلی []byte با capacity مشخص تخصیص می‌یابد و WriteString فقط داده را append می‌کند بدون allocation جدید. نتیجه: ۳۰۰ برابر سریع‌تر و ۲۰۰۰ برابر کمتر allocation.</figcaption>
 </figure>
@@ -245,7 +245,7 @@ func processBest(data []byte) {
 </figure>
 <p>نکته مهم: از Go 1.20 تبدیل <code>string([]byte)</code> و <code>[]byte(string)</code> در برخی حالات خاص (مثل استفاده در map lookup) به‌صورت بهینه انجام می‌شود، اما در حالت کلی همچنان کپی ایجاد می‌شود. همیشه با بنچمارک بررسی کنید.</p>
 <div class="note"><strong>نکته:</strong> برای جلوگیری از تبدیل مکرر <bdi dir="ltr">string ↔ []byte</bdi> در مسیرهای داغ، یک رویکرد مؤثر طراحی API تابع‌ها به‌گونه‌ای است که همیشه با یک نوع کار کنند. مثلاً اگر داده از شبکه می‌آید (<bdi dir="ltr">[]byte</bdi>)، توابع پردازشی را هم به‌جای <bdi dir="ltr">string</bdi> با <bdi dir="ltr">[]byte</bdi> بنویسید تا تبدیل حذف شود. در کتابخانه استاندارد Go توابعی مثل <bdi dir="ltr">bytes.Contains</bdi> و <bdi dir="ltr">strings.Contains</bdi> معادل یکدیگرند تا نیازی به تبدیل نباشد.</div>
-<h3 id="مدیریت-صحیح-goroutineها">12.3.5 مدیریت صحیح goroutineها</h3>
+<h3 id="مدیریت-صحیح-goroutineها">12.3.5 مدیریت صحیح goroutine ها</h3>
 <p>goroutine‌ها سبک و سریع هستند، اما ایجاد هزاران goroutine بدون مدیریت منجر به نشت حافظه یا خستگی CPU می‌شود. هر goroutine فعال حداقل ۲KB stack مصرف می‌کند و اگر منتظر channel یا lock بماند، حافظه‌ی بیشتری اشغال می‌کند. </p><p>از <bdi dir="ltr">context</bdi> و <bdi dir="ltr">sync.WaitGroup</bdi> برای کنترل عمر goroutine‌ها استفاده کنید و با <bdi dir="ltr">pprof goroutine</bdi> بررسی کنید آیا goroutineهایی بی‌دلیل باز مانده‌اند:</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">// Bad: goroutine without lifetime control — potential leak

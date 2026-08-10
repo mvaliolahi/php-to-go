@@ -95,11 +95,11 @@
 <path d="M0,0 L10,5 L0,10 z" fill="#64748b"/>
 </marker>
 </defs>
-<text x="360" y="28" text-anchor="middle" class="title rtl">ساختار کلاس PHP در برابر struct در Go</text>
+<text x="360" y="28" text-anchor="middle" class="title">PHP Class Structure vs. Go struct</text>
 <!-- PHP class -->
 <rect x="20" y="60" width="330" height="260" class="box-php"/>
 <text x="185" y="85" text-anchor="middle" class="title">PHP — class</text>
-<text x="185" y="105" text-anchor="middle" class="small rtl">فایل Person.php با namespace</text>
+<text x="185" y="105" text-anchor="middle" class="small">Person.php file with namespace</text>
 <line x1="40" y1="118" x2="330" y2="118" stroke="#cbd5e1" stroke-width="1"/>
 <text x="40" y="138" text-anchor="start" class="small">class Person {</text>
 <text x="60" y="156" text-anchor="start" class="small">public string $name;</text>
@@ -115,7 +115,7 @@
 <!-- Go struct -->
 <rect x="370" y="60" width="330" height="260" class="box-go"/>
 <text x="535" y="85" text-anchor="middle" class="title">Go — struct</text>
-<text x="535" y="105" text-anchor="middle" class="small rtl">فایل person.go با package</text>
+<text x="535" y="105" text-anchor="middle" class="small">person.go file with package</text>
 <line x1="390" y1="118" x2="680" y2="118" stroke="#cbd5e1" stroke-width="1"/>
 <text x="390" y="138" text-anchor="start" class="small">package models</text>
 <text x="390" y="156" text-anchor="start" class="small"></text>
@@ -127,7 +127,7 @@
 <text x="390" y="264" text-anchor="start" class="small">func (p Person) Greet() string {</text>
 <text x="410" y="282" text-anchor="start" class="small">return "Hi, " + p.Name</text>
 <text x="390" y="300" text-anchor="start" class="small">}</text>
-<text x="390" y="318" text-anchor="start" class="small rtl">// constructor با NewPerson() جدا</text>
+<text x="390" y="318" text-anchor="start" class="small">// constructor via separate NewPerson()</text>
 </svg>
 <figcaption>شکل ۳-۸: کلاس PHP در برابر struct در Go — کلاس PHP داده و متد و سازنده را در یک بلوک دارد؛ Go این‌ها را تفکیک می‌کند: struct فقط داده، متدها به‌صورت جداگانه با receiver تعریف می‌شوند و سازنده با تابع <code dir="ltr">NewPerson()</code> مستقل پیاده می‌شود</figcaption>
 </figure>
@@ -515,39 +515,39 @@ MakeThemSpeak(animals)
 <path d="M0,0 L10,5 L0,10 z" fill="#64748b"/>
 </marker>
 </defs>
-<text x="360" y="28" text-anchor="middle" class="title rtl">وراثت PHP (is-a) در برابر Embedding Go (has-a)</text>
+<text x="360" y="28" text-anchor="middle" class="title">PHP Inheritance (is-a) vs. Go Embedding (has-a)</text>
 <!-- PHP side -->
 <rect x="20" y="60" width="330" height="260" class="box-php"/>
-<text x="185" y="85" text-anchor="middle" class="title rtl">PHP — وراثت (is-a)</text>
+<text x="185" y="85" text-anchor="middle" class="title">PHP — Inheritance (is-a)</text>
 <line x1="40" y1="98" x2="330" y2="98" stroke="#cbd5e1" stroke-width="1"/>
 <!-- Animal parent -->
 <rect x="100" y="110" width="170" height="60" class="box-php"/>
 <text x="185" y="135" text-anchor="middle" class="title">class Animal</text>
-<text x="185" y="155" text-anchor="middle" class="small rtl">speak()، move()</text>
+<text x="185" y="155" text-anchor="middle" class="small">speak(), move()</text>
 <!-- Dog extends -->
 <rect x="100" y="220" width="170" height="60" class="box-php"/>
 <text x="185" y="245" text-anchor="middle" class="title">class Dog extends Animal</text>
-<text x="185" y="265" text-anchor="middle" class="small rtl">speak() override + parent::speak()</text>
+<text x="185" y="265" text-anchor="middle" class="small">speak() override + parent::speak()</text>
 <!-- Inheritance arrow (open triangle) -->
 <line x1="185" y1="220" x2="185" y2="170" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
 <text x="200" y="200" text-anchor="start" class="small">extends ↑</text>
 <!-- Go side -->
 <rect x="370" y="60" width="330" height="260" class="box-go"/>
-<text x="535" y="85" text-anchor="middle" class="title rtl">Go — embedding (has-a)</text>
+<text x="535" y="85" text-anchor="middle" class="title">Go — embedding (has-a)</text>
 <line x1="390" y1="98" x2="680" y2="98" stroke="#cbd5e1" stroke-width="1"/>
 <!-- Animal struct -->
 <rect x="450" y="110" width="170" height="60" class="box-go"/>
 <text x="535" y="135" text-anchor="middle" class="title">type Animal struct</text>
-<text x="535" y="155" text-anchor="middle" class="small rtl">Speak()، Move()</text>
+<text x="535" y="155" text-anchor="middle" class="small">Speak(), Move()</text>
 <!-- Dog embeds Animal -->
 <rect x="450" y="220" width="170" height="60" class="box-go"/>
 <text x="535" y="245" text-anchor="middle" class="title">type Dog struct</text>
-<text x="535" y="265" text-anchor="middle" class="small rtl">{ Animal; Speak() shadow }</text>
+<text x="535" y="265" text-anchor="middle" class="small">{ Animal; Speak() shadow }</text>
 <!-- Composition arrow (filled diamond) -->
 <line x1="535" y1="220" x2="535" y2="170" stroke="#64748b" stroke-width="2" stroke-dasharray="4 3" marker-end="url(#arrow)"/>
-<text x="550" y="200" text-anchor="start" class="small rtl">embeds ↑</text>
-<text x="185" y="305" text-anchor="middle" class="small rtl">زنجیره‌ی واقعی — parent:: قابل فراخوانی</text>
-<text x="535" y="305" text-anchor="middle" class="small rtl">شکربندی نحوی — d.Animal.Speak()</text>
+<text x="550" y="200" text-anchor="start" class="small">embeds ↑</text>
+<text x="185" y="305" text-anchor="middle" class="small">Real chain — parent:: callable</text>
+<text x="535" y="305" text-anchor="middle" class="small">Syntactic sugar — d.Animal.Speak()</text>
 </svg>
 <figcaption>شکل ۳-۹: وراثت PHP یک رابطه‌ی is-a واقعی با زنجیره‌ی parent:: ایجاد می‌کند؛ embedding در Go یک رابطه‌ی has-a است که در آن متدها فقط «ارتقا» می‌یابند و receiver همیشه struct داخلی (Animal) است نه بیرونی (Dog)</figcaption>
 </figure>

@@ -168,19 +168,19 @@ if affected == 0 {
 <path d="M0,0 L10,5 L0,10 z" fill="#ff9800"/>
 </marker>
 </defs>
-<text x="380" y="28" text-anchor="middle" class="title rtl">چرخه‌ی حیات تراکنش و اصول ACID</text>
+<text x="380" y="28" text-anchor="middle" class="title">Transaction lifecycle &amp; ACID principles</text>
 <rect x="20" y="60" width="120" height="50" class="box-go"/>
 <text x="80" y="83" text-anchor="middle" class="title">db.Begin()</text>
-<text x="80" y="100" text-anchor="middle" class="small rtl">شروع</text>
+<text x="80" y="100" text-anchor="middle" class="small">start</text>
 <rect x="160" y="60" width="100" height="50" class="box-go"/>
 <text x="210" y="90" text-anchor="middle" class="title">*sql.Tx</text>
 <rect x="280" y="50" width="160" height="70" class="box-action"/>
-<text x="360" y="70" text-anchor="middle" class="title rtl">عملیات‌ها</text>
+<text x="360" y="70" text-anchor="middle" class="title">Operations</text>
 <text x="360" y="87" text-anchor="middle" class="small">INSERT / UPDATE</text>
 <text x="360" y="103" text-anchor="middle" class="small">SELECT / DELETE</text>
 <rect x="460" y="60" width="120" height="50" class="warn-box"/>
 <text x="520" y="83" text-anchor="middle" class="title">err != nil?</text>
-<text x="520" y="100" text-anchor="middle" class="small rtl">تصمیم</text>
+<text x="520" y="100" text-anchor="middle" class="small">decision</text>
 <line x1="140" y1="85" x2="160" y2="85" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
 <line x1="260" y1="85" x2="280" y2="85" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
 <line x1="440" y1="85" x2="460" y2="85" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
@@ -188,26 +188,26 @@ if affected == 0 {
 <line x1="500" y1="110" x2="455" y2="160" stroke="#ff9800" stroke-width="2" marker-end="url(#arrow-orange)"/>
 <rect x="380" y="160" width="130" height="50" class="warn-box"/>
 <text x="445" y="183" text-anchor="middle" class="title">tx.Rollback()</text>
-<text x="445" y="200" text-anchor="middle" class="small rtl">لغو تغییرات</text>
+<text x="445" y="200" text-anchor="middle" class="small">Discard changes</text>
 <text x="595" y="138" text-anchor="middle" class="small" fill="#2e7d32">N</text>
 <line x1="540" y1="110" x2="600" y2="160" stroke="#4caf50" stroke-width="2" marker-end="url(#arrow-green)"/>
 <rect x="590" y="160" width="140" height="50" class="box-result"/>
 <text x="660" y="183" text-anchor="middle" class="title">tx.Commit()</text>
-<text x="660" y="200" text-anchor="middle" class="small rtl">ذخیره دائم</text>
+<text x="660" y="200" text-anchor="middle" class="small">Permanent save</text>
 <line x1="20" y1="228" x2="740" y2="228" stroke="#cbd5e1" stroke-width="1" stroke-dasharray="4 4"/>
-<text x="380" y="248" text-anchor="middle" class="title rtl">ویژگی‌های ACID</text>
+<text x="380" y="248" text-anchor="middle" class="title">ACID properties</text>
 <rect x="20" y="258" width="180" height="50" class="box"/>
 <text x="110" y="278" text-anchor="middle" class="title">A — Atomicity</text>
-<text x="110" y="297" text-anchor="middle" class="small rtl">همه یا هیچ</text>
+<text x="110" y="297" text-anchor="middle" class="small">All or nothing</text>
 <rect x="210" y="258" width="180" height="50" class="box"/>
 <text x="300" y="278" text-anchor="middle" class="title">C — Consistency</text>
-<text x="300" y="297" text-anchor="middle" class="small rtl">قیدها نقض نشوند</text>
+<text x="300" y="297" text-anchor="middle" class="small">Constraints preserved</text>
 <rect x="400" y="258" width="180" height="50" class="box"/>
 <text x="490" y="278" text-anchor="middle" class="title">I — Isolation</text>
-<text x="490" y="297" text-anchor="middle" class="small rtl">ایزولاسیون همزمان</text>
+<text x="490" y="297" text-anchor="middle" class="small">Concurrent isolation</text>
 <rect x="590" y="258" width="160" height="50" class="box"/>
 <text x="670" y="278" text-anchor="middle" class="title">D — Durability</text>
-<text x="670" y="297" text-anchor="middle" class="small rtl">commit = دائم</text>
+<text x="670" y="297" text-anchor="middle" class="small">commit = permanent</text>
 </svg>
 <figcaption>شکل ۸-۶: چرخه‌ی حیات تراکنش در <bdi dir="ltr">database/sql</bdi> — تراکنش با <code>db.Begin()</code> شروع و یک <code>*sql.Tx</code> برمی‌گرداند. پس از اجرای عملیات‌ها، اگر خطایی رخ داده باشد <code>tx.Rollback()</code> تمام تغییرات را لغو می‌کند و در غیر این صورت <code>tx.Commit()</code> تغییرات را به‌صورت دائم ذخیره می‌کند. چهار ویژگی <bdi dir="ltr">ACID</bdi> تضمین می‌کنند این رفتار در همه‌ی شرایط برقرار بماند.</figcaption>
 </figure>

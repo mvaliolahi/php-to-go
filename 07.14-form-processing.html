@@ -430,44 +430,44 @@ func contactPostHandler(w http.ResponseWriter, r *http.Request) {
 <path d="M0,0 L10,5 L0,10 z" fill="#ef4444"/>
 </marker>
 </defs>
-<text x="380" y="28" text-anchor="middle" class="title rtl">الگوی POST-Redirect-GET (PRG) — جلوگیری از ارسال مجدد فرم با Refresh</text>
+<text x="380" y="28" text-anchor="middle" class="title">POST-Redirect-GET (PRG) pattern — prevent form resubmission on refresh</text>
 <!-- Browser row -->
 <text x="190" y="62" text-anchor="middle" class="title" fill="#2196f3">Browser</text>
 <text x="570" y="62" text-anchor="middle" class="title" fill="#00ADD8">Go Server</text>
 <!-- Step 1: POST form -->
 <rect x="60" y="80" width="260" height="55" class="box-action"/>
 <text x="190" y="103" text-anchor="middle" class="title">① POST /contact</text>
-<text x="190" y="123" text-anchor="middle" class="small rtl">کاربر فرم را ارسال می‌کند</text>
+<text x="190" y="123" text-anchor="middle" class="small">User submits form</text>
 <line x1="320" y1="107" x2="430" y2="107" stroke="#2196f3" stroke-width="2" marker-end="url(#arrow)"/>
 <text x="375" y="100" text-anchor="middle" class="small" fill="#2196f3">form data</text>
 <!-- Server: process + save -->
 <rect x="430" y="80" width="260" height="55" class="box-go"/>
-<text x="560" y="103" text-anchor="middle" class="title rtl">② پردازش + ذخیره در DB</text>
+<text x="560" y="103" text-anchor="middle" class="title">② Process + save to DB</text>
 <text x="560" y="123" text-anchor="middle" class="small">flash message → session</text>
 <!-- Step 3: 303 redirect -->
 <line x1="430" y1="135" x2="320" y2="135" stroke="#4caf50" stroke-width="2" marker-end="url(#arrow-ok)"/>
 <text x="375" y="153" text-anchor="middle" class="small" fill="#4caf50">303 See Other → /contact</text>
 <rect x="60" y="145" width="260" height="35" class="box-result"/>
-<text x="190" y="168" text-anchor="middle" class="small rtl">③ مرورگر redirect را دنبال می‌کند</text>
+<text x="190" y="168" text-anchor="middle" class="small">③ Browser follows redirect</text>
 <!-- Step 4: GET -->
 <line x1="320" y1="180" x2="430" y2="180" stroke="#2196f3" stroke-width="2" marker-end="url(#arrow)"/>
 <text x="375" y="173" text-anchor="middle" class="small" fill="#2196f3">GET /contact</text>
 <rect x="430" y="165" width="260" height="35" class="box-go"/>
-<text x="560" y="188" text-anchor="middle" class="small rtl">④ رندر فرم خالی + flash</text>
+<text x="560" y="188" text-anchor="middle" class="small">④ Render empty form + flash</text>
 <!-- Final response -->
 <line x1="430" y1="200" x2="320" y2="200" stroke="#4caf50" stroke-width="2" marker-end="url(#arrow-ok)"/>
 <text x="375" y="218" text-anchor="middle" class="small" fill="#4caf50">200 OK + HTML</text>
 <rect x="60" y="210" width="260" height="35" class="box-action"/>
-<text x="190" y="233" text-anchor="middle" class="small rtl">⑤ نمایش صفحه با پیام موفقیت</text>
+<text x="190" y="233" text-anchor="middle" class="small">⑤ Show page with success message</text>
 <!-- Without PRG (bad) -->
-<text x="380" y="280" text-anchor="middle" class="title rtl">بدون PRG (اشتباه):</text>
+<text x="380" y="280" text-anchor="middle" class="title">Without PRG (wrong):</text>
 <rect x="60" y="295" width="630" height="55" class="warn-box"/>
-<text x="375" y="315" text-anchor="middle" class="title rtl">POST /contact → پردازش + ذخیره → 200 OK (HTML)</text>
-<text x="375" y="335" text-anchor="middle" class="small rtl">⚠ کاربر F5 می‌زند → مرورگر هشدار می‌دهد → "ارسال مجدد؟" → اگر بله، رکورد دوباره در DB ذخیره می‌شود (داده تکراری)</text>
+<text x="375" y="315" text-anchor="middle" class="title">POST /contact → process + save → 200 OK (HTML)</text>
+<text x="375" y="335" text-anchor="middle" class="small">⚠ User hits F5 → browser warns → "Resubmit?" → if yes, record is saved again in DB (duplicate data)</text>
 <!-- With PRG (good) -->
 <rect x="60" y="360" width="630" height="50" class="tip-box"/>
-<text x="375" y="380" text-anchor="middle" class="title rtl">با PRG (درست):</text>
-<text x="375" y="398" text-anchor="middle" class="small rtl">✓ POST → 303 Redirect → GET → 200 OK • حالا F5 فقط GET را تکرار می‌کند — بدون عارضه جانبی، بدون داده تکراری</text>
+<text x="375" y="380" text-anchor="middle" class="title">With PRG (right):</text>
+<text x="375" y="398" text-anchor="middle" class="small">✓ POST → 303 Redirect → GET → 200 OK • Now F5 only repeats GET — no side effects, no duplicate data</text>
 </svg>
 <figcaption>شکل ۷-۱۳: الگوی <bdi dir="ltr">POST-Redirect-GET (PRG)</bdi> — پنج مرحله از بالا به پایین: (۱) کاربر فرم را با <code>POST</code> ارسال می‌کند؛ (۲) سرور پردازش می‌کند، در پایگاه‌داده ذخیره می‌کند و یک پیام فلش در سشن می‌گذارد؛ (۳) سرور به جای نمایش مستقیم نتیجه، با کد <code>303 See Other</code> به همان مسیر <code>redirect</code> می‌کند؛ (۴) مرورگر به‌صورت خودکار درخواست <code>GET</code> به مسیر جدید می‌فرستد؛ (۵) سرور فرم خالی را با پیام فلش رندر می‌کند. حالا اگر کاربر دکمه بازنشانی مرورگر را بزند، فقط درخواست <code>GET</code> تکرار می‌شود — بدون عارضه جانبی، بدون داده تکراری در دیتابیس. بدون این الگو (نارنجی)، نمایش صفحه بعد از <code>POST</code> باعث می‌شود <code>F5</code> ارسال مجدد فرم را تکرار کند.</figcaption>
 </figure>

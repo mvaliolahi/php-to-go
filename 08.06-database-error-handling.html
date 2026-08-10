@@ -174,7 +174,7 @@ func isRetryable(err error) bool {
 <path d="M0,0 L10,5 L0,10 z" fill="#64748b"/>
 </marker>
 </defs>
-<text x="380" y="28" text-anchor="middle" class="title rtl">درخت طبقه‌بندی خطاهای دیتابیس: قابل retry یا غیرقابل retry؟</text>
+<text x="380" y="28" text-anchor="middle" class="title">Database error classification tree: retryable or not?</text>
 <rect x="310" y="50" width="140" height="40" class="box"/>
 <text x="380" y="75" text-anchor="middle" class="title">Database Error</text>
 <line x1="380" y1="90" x2="380" y2="105" stroke="#64748b" stroke-width="1.5"/>
@@ -183,22 +183,22 @@ func isRetryable(err error) bool {
 <line x1="565" y1="105" x2="565" y2="125" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
 <rect x="20" y="130" width="350" height="140" class="warn-box"/>
 <text x="195" y="152" text-anchor="middle" class="title">Constraint Violations</text>
-<text x="195" y="170" text-anchor="middle" class="small rtl">دائمی — غیرقابل retry</text>
+<text x="195" y="170" text-anchor="middle" class="small">Permanent — non-retryable</text>
 <text x="195" y="195" text-anchor="middle" class="small">unique_violation        (23505)</text>
 <text x="195" y="215" text-anchor="middle" class="small">foreign_key_violation   (23503)</text>
 <text x="195" y="235" text-anchor="middle" class="small">not_null_violation      (23502)</text>
 <text x="195" y="255" text-anchor="middle" class="small">syntax_error            (42601)</text>
 <rect x="390" y="130" width="350" height="140" class="box-result"/>
 <text x="565" y="152" text-anchor="middle" class="title">Transient Errors</text>
-<text x="565" y="170" text-anchor="middle" class="small rtl">موقتی — قابل retry ✓</text>
+<text x="565" y="170" text-anchor="middle" class="small">Temporary — retryable ✓</text>
 <text x="565" y="195" text-anchor="middle" class="small">deadlock_detected        (40P01)</text>
 <text x="565" y="215" text-anchor="middle" class="small">connection_exception     (08000)</text>
 <text x="565" y="235" text-anchor="middle" class="small">context.DeadlineExceeded</text>
 <text x="565" y="255" text-anchor="middle" class="small">context.Canceled</text>
 <rect x="20" y="290" width="350" height="40" class="warn-box"/>
-<text x="195" y="315" text-anchor="middle" class="small rtl">اقدام: اصلاح داده — هرگز retry نکنید</text>
+<text x="195" y="315" text-anchor="middle" class="small">Action: fix data — never retry</text>
 <rect x="390" y="290" width="350" height="40" class="tip-box"/>
-<text x="565" y="315" text-anchor="middle" class="small rtl">اقدام: Retry با exponential backoff (۳-۵ بار)</text>
+<text x="565" y="315" text-anchor="middle" class="small">Action: retry with exponential backoff (3-5 times)</text>
 </svg>
 <figcaption>شکل ۸-۷: درخت طبقه‌بندی خطاهای دیتابیس — خطاهای <bdi dir="ltr">Constraint</bdi> (نارنجی) ناشی از داده‌های نامعتبر هستند و هرگز با <bdi dir="ltr">retry</bdi> حل نمی‌شوند؛ خطاهای موقتی (سبز) ناشی از زیرساخت یا هم‌زمانی هستند و با <bdi dir="ltr">exponential backoff</bdi> قابل بازیابی‌اند. تابع <code>isRetryable()</code> باید این تمایز را به‌صورت متمرکز مدیریت کند.</figcaption>
 </figure>

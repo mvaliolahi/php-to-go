@@ -103,7 +103,7 @@
 <path d="M0,0 L10,5 L0,10 z" fill="#00ADD8"/>
 </marker>
 </defs>
-<text x="380" y="28" text-anchor="middle" class="title rtl">فلسفه‌ی مدیریت خطا: Exception در برابر Value</text>
+<text x="380" y="28" text-anchor="middle" class="title">Error handling philosophy: Exception vs. Value</text>
 <!-- PHP column header -->
 <text x="190" y="60" text-anchor="middle" class="title">PHP — Exception</text>
 <!-- Go column header -->
@@ -111,33 +111,33 @@
 <!-- PHP column: throw skips layers -->
 <rect x="60" y="80" width="260" height="70" class="box-php"/>
 <text x="190" y="105" text-anchor="middle" class="small">catch (Exception $e)</text>
-<text x="190" y="125" text-anchor="middle" class="small rtl">گیرنده‌ی نهایی</text>
-<text x="190" y="142" text-anchor="middle" class="small rtl">پرش خودکار از پایین</text>
+<text x="190" y="125" text-anchor="middle" class="small">Final handler</text>
+<text x="190" y="142" text-anchor="middle" class="small">Auto-jumps from bottom</text>
 <rect x="60" y="180" width="260" height="70" class="box-php"/>
 <text x="190" y="205" text-anchor="middle" class="small">Service::process()</text>
-<text x="190" y="225" text-anchor="middle" class="small rtl">می‌تواند throw کند</text>
-<text x="190" y="242" text-anchor="middle" class="small rtl">بدون اطلاع فراخوانی‌کننده</text>
+<text x="190" y="225" text-anchor="middle" class="small">May throw</text>
+<text x="190" y="242" text-anchor="middle" class="small">Caller unaware</text>
 <rect x="60" y="280" width="260" height="70" class="box-php"/>
 <text x="190" y="305" text-anchor="middle" class="small">Repository::find()</text>
-<text x="190" y="325" text-anchor="middle" class="small rtl">throw new Exception()</text>
-<text x="190" y="342" text-anchor="middle" class="small rtl">منشأ خطا</text>
+<text x="190" y="325" text-anchor="middle" class="small">throw new Exception()</text>
+<text x="190" y="342" text-anchor="middle" class="small">Error origin</text>
 <!-- Go column: explicit return at each layer -->
 <rect x="440" y="80" width="260" height="70" class="box-go"/>
 <text x="570" y="105" text-anchor="middle" class="small">if err != nil { ... }</text>
-<text x="570" y="125" text-anchor="middle" class="small rtl">گیرنده‌ی نهایی</text>
-<text x="570" y="142" text-anchor="middle" class="small rtl">بررسی صریح در همان نقطه</text>
+<text x="570" y="125" text-anchor="middle" class="small">Final handler</text>
+<text x="570" y="142" text-anchor="middle" class="small">Explicit check at point</text>
 <rect x="440" y="180" width="260" height="70" class="box-go"/>
 <text x="570" y="205" text-anchor="middle" class="small">return fmt.Errorf("...: %w", err)</text>
-<text x="570" y="225" text-anchor="middle" class="small rtl">بازگرداندن صریح</text>
-<text x="570" y="242" text-anchor="middle" class="small rtl">امکان بسته‌بندی با زمینه</text>
+<text x="570" y="225" text-anchor="middle" class="small">Explicit return</text>
+<text x="570" y="242" text-anchor="middle" class="small">Wrap with context</text>
 <rect x="440" y="280" width="260" height="70" class="box-go"/>
 <text x="570" y="305" text-anchor="middle" class="small">return err</text>
-<text x="570" y="325" text-anchor="middle" class="small rtl">منشأ خطا</text>
-<text x="570" y="342" text-anchor="middle" class="small rtl">مقدار عادی بازگشتی</text>
+<text x="570" y="325" text-anchor="middle" class="small">Error origin</text>
+<text x="570" y="342" text-anchor="middle" class="small">Ordinary return value</text>
 <!-- PHP: throw arrow jumps from bottom to top, skipping middle -->
 <path d="M 60 315 Q 30 215 60 115" fill="none" stroke="#777BB4" stroke-width="2.5" stroke-dasharray="6 3" marker-end="url(#arrow-php)"/>
-<text x="30" y="215" text-anchor="middle" class="small rtl" fill="#777BB4">throw</text>
-<text x="30" y="232" text-anchor="middle" class="small rtl" fill="#777BB4">پرش</text>
+<text x="30" y="215" text-anchor="middle" class="small" fill="#777BB4">throw</text>
+<text x="30" y="232" text-anchor="middle" class="small" fill="#777BB4">jump</text>
 <!-- Go: return arrows go up step-by-step -->
 <line x1="500" y1="280" x2="500" y2="250" stroke="#00ADD8" stroke-width="2" marker-end="url(#arrow-go)"/>
 <line x1="500" y1="180" x2="500" y2="150" stroke="#00ADD8" stroke-width="2" marker-end="url(#arrow-go)"/>
@@ -146,8 +146,8 @@
 <!-- Divider -->
 <line x1="380" y1="80" x2="380" y2="350" stroke="#cbd5e1" stroke-width="1" stroke-dasharray="2 4"/>
 <!-- Bottom legend -->
-<text x="190" y="385" text-anchor="middle" class="small rtl">جریان غیرمستقیم — کنترل از دست فراخوانی‌کننده خارج می‌شود</text>
-<text x="570" y="385" text-anchor="middle" class="small rtl">جریان صریح — هر لایه تصمیم می‌گیرد و گزارش می‌دهد</text>
+<text x="190" y="385" text-anchor="middle" class="small">Implicit flow — control leaves the caller</text>
+<text x="570" y="385" text-anchor="middle" class="small">Explicit flow — each layer decides and reports</text>
 </svg>
 <figcaption>شکل ۴-۱: تفاوت فلسفی مدیریت خطا — در PHP استثنا به‌صورت خودکار از پایین‌ترین لایه به بلوک catch پرش می‌کند و لایه‌های میانی ممکن است بی‌اطلاع عبور کنند؛ در Go هر تابع خطا را به‌عنوان مقدار بازگشتی برمی‌گرداند و هر لایه می‌تواند با fmt.Errorf زمینه اضافه کند یا تصمیم به توقف بگیرد. این صراحت، جریان کنترل را قابل پیش‌بینی می‌کند.</figcaption>
 </figure>

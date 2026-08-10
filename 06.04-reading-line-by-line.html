@@ -372,27 +372,27 @@ func readUsersCSV(path string) ([]User, error) {
 <path d="M0,0 L10,5 L0,10 z" fill="#00ADD8"/>
 </marker>
 </defs>
-<text x="380" y="28" text-anchor="middle" class="title rtl">خط لوله‌ی داخلی bufio.Scanner</text>
-<text x="380" y="50" text-anchor="middle" class="small rtl">از io.Reader تا scanner.Text() — جریان داده و بافر داخلی</text>
+<text x="380" y="28" text-anchor="middle" class="title">Internal pipeline of bufio.Scanner</text>
+<text x="380" y="50" text-anchor="middle" class="small">From io.Reader to scanner.Text() — data flow and internal buffer</text>
 <!-- Stage 1: io.Reader -->
 <rect x="30" y="85" width="140" height="80" class="box-action"/>
 <text x="100" y="110" text-anchor="middle" class="title">io.Reader</text>
 <text x="100" y="130" text-anchor="middle" class="small">file / conn / ...</text>
-<text x="100" y="148" text-anchor="middle" class="small rtl">منبع داده</text>
+<text x="100" y="148" text-anchor="middle" class="small">Data source</text>
 <!-- Stage 2: Read into buf -->
 <rect x="220" y="85" width="160" height="80" class="box-go"/>
 <text x="300" y="110" text-anchor="middle" class="title">Read(buf)</text>
-<text x="300" y="130" text-anchor="middle" class="small rtl">پر کردن بافر ۴KB</text>
-<text x="300" y="148" text-anchor="middle" class="small rtl">یک syscall در هر ۴KB</text>
+<text x="300" y="130" text-anchor="middle" class="small">Fill the 4KB buffer</text>
+<text x="300" y="148" text-anchor="middle" class="small">One syscall per 4KB</text>
 <!-- Stage 3: SplitFunc -->
 <rect x="430" y="85" width="160" height="80" class="warn-box"/>
 <text x="510" y="110" text-anchor="middle" class="title">SplitFunc</text>
-<text x="510" y="130" text-anchor="middle" class="small rtl">تقسیم به توکن</text>
-<text x="510" y="148" text-anchor="middle" class="small rtl">ScanLines / Words / ...</text>
+<text x="510" y="130" text-anchor="middle" class="small">Split into tokens</text>
+<text x="510" y="148" text-anchor="middle" class="small">ScanLines / Words / ...</text>
 <!-- Stage 4: token → user -->
 <rect x="640" y="85" width="100" height="80" class="box-result"/>
 <text x="690" y="110" text-anchor="middle" class="title">Token</text>
-<text x="690" y="130" text-anchor="middle" class="small rtl">یک خط/کلمه</text>
+<text x="690" y="130" text-anchor="middle" class="small">One line/word</text>
 <text x="690" y="148" text-anchor="middle" class="small">→ Text()</text>
 <!-- Arrows top row -->
 <line x1="170" y1="125" x2="220" y2="125" stroke="#00ADD8" stroke-width="2" marker-end="url(#arrow-data)"/>
@@ -408,7 +408,7 @@ func readUsersCSV(path string) ([]User, error) {
 <line x1="690" y1="165" x2="640" y2="210" stroke="#64748b" stroke-width="2" stroke-dasharray="3 3" marker-end="url(#arrow)"/>
 <!-- Buffer visualization -->
 <rect x="30" y="210" width="490" height="180" class="box"/>
-<text x="275" y="232" text-anchor="middle" class="title rtl">بافر داخلی Scanner (۴KB پیش‌فرض، ۶۴KB حداکثر توکن)</text>
+<text x="275" y="232" text-anchor="middle" class="title">Scanner internal buffer (4KB default, 64KB max token)</text>
 <line x1="40" y1="240" x2="510" y2="240" stroke="#cbd5e1" stroke-width="1"/>
 <!-- Buffer cells -->
 <rect x="50" y="255" width="40" height="30" fill="rgba(0,173,216,0.15)" stroke="#00ADD8" stroke-width="1" rx="4"/>
@@ -422,21 +422,26 @@ func readUsersCSV(path string) ([]User, error) {
 <rect x="210" y="255" width="40" height="30" fill="rgba(0,173,216,0.15)" stroke="#00ADD8" stroke-width="1" rx="4"/>
 <text x="230" y="275" text-anchor="middle" class="small">o</text>
 <rect x="250" y="255" width="40" height="30" fill="#ef4444" stroke="#ef4444" stroke-width="1" rx="4"/>
-<text x="270" y="275" text-anchor="middle" class="small" fill="#fff">\n</text>
+<text x="270" y="275" text-anchor="middle" class="small" fill="#fff">
+</text>
 <rect x="290" y="255" width="40" height="30" fill="rgba(0,173,216,0.15)" stroke="#00ADD8" stroke-width="1" rx="4"/>
 <text x="310" y="275" text-anchor="middle" class="small">G</text>
 <rect x="330" y="255" width="40" height="30" fill="rgba(0,173,216,0.15)" stroke="#00ADD8" stroke-width="1" rx="4"/>
 <text x="350" y="275" text-anchor="middle" class="small">o</text>
 <rect x="370" y="255" width="40" height="30" fill="#ef4444" stroke="#ef4444" stroke-width="1" rx="4"/>
-<text x="390" y="275" text-anchor="middle" class="small" fill="#fff">\n</text>
+<text x="390" y="275" text-anchor="middle" class="small" fill="#fff">
+</text>
 <rect x="410" y="255" width="40" height="30" fill="rgba(33,150,243,0.1)" stroke="#2196f3" stroke-width="1" stroke-dasharray="2 2" rx="4"/>
 <text x="430" y="275" text-anchor="middle" class="small">…</text>
-<text x="275" y="305" text-anchor="middle" class="small rtl">توکن اول: "Hello" (کاراکترهای قبل از \n) — توکن دوم: "Go" — SplitFunc جداکننده را پیدا می‌کند</text>
+<text x="275" y="305" text-anchor="middle" class="small">First token: "Hello" (chars before 
+) — second token: "Go" — SplitFunc finds the separator</text>
 <!-- Key rules -->
 <line x1="50" y1="320" x2="500" y2="320" stroke="#cbd5e1" stroke-width="1"/>
-<text x="50" y="340" class="small rtl" fill="#4caf50">✓ ScanLines: جداکننده \n و \r\n (هر دو تشخیص داده می‌شوند)</text>
-<text x="50" y="358" class="small rtl" fill="#4caf50">✓ ScanWords: تقسیم بر اساس فاصله‌ی سفید</text>
-<text x="50" y="376" class="small rtl" fill="#ef4444">✗ خط بلندتر از ۶۴KB → خطای bufio.ErrTooLong</text>
+<text x="50" y="340" class="small" fill="#4caf50">✓ ScanLines: 
+ and 
+ separators (both detected)</text>
+<text x="50" y="358" class="small" fill="#4caf50">✓ ScanWords: split on whitespace</text>
+<text x="50" y="376" class="small" fill="#ef4444">✗ Line longer than 64KB → bufio.ErrTooLong error</text>
 </svg>
 <figcaption>شکل ۶-۵: خط لوله‌ی داخلی <code>bufio.Scanner</code> — داده از <code>io.Reader</code> (مرحله ۱) با فراخوانی <code>Read(buf)</code> در بافر ۴ کیلوبایتی (مرحله ۲) پر می‌شود (هر ۴KB یک syscall). سپس <code>SplitFunc</code> (مرحله ۳) مشخص می‌کند چگونه بافر به توکن تقسیم شود: <code>ScanLines</code> بر اساس <code>\n</code> یا <code>\r\n</code>، <code>ScanWords</code> بر اساس فاصله‌ی سفید. توکن نهایی (مرحله ۴) به‌صورت یک خط یا کلمه در اختیار کاربر قرار می‌گیرد. اگر خطی بلندتر از حد پیش‌فرض ۶۴KB باشد، خطای <code>bufio.ErrTooLong</code> صادر می‌شود که با <code>scanner.Buffer()</code> قابل افزایش است.</figcaption>
 </figure>

@@ -196,20 +196,20 @@ if err != nil {
 <path d="M0,0 L10,5 L0,10 z" fill="#2196f3"/>
 </marker>
 </defs>
-<text x="360" y="28" text-anchor="middle" class="title rtl">درخت خطا با errors.Join و Unwrap() []error</text>
+<text x="360" y="28" text-anchor="middle" class="title">Error tree with errors.Join and Unwrap() []error</text>
 <!-- Three input errors at top -->
 <rect x="30" y="60" width="180" height="70" class="warn-box"/>
 <text x="120" y="85" text-anchor="middle" class="title">err1</text>
 <text x="120" y="105" text-anchor="middle" class="small">NameRequiredError</text>
-<text x="120" y="122" text-anchor="middle" class="small rtl">نام خالی است</text>
+<text x="120" y="122" text-anchor="middle" class="small">Name is empty</text>
 <rect x="270" y="60" width="180" height="70" class="warn-box"/>
 <text x="360" y="85" text-anchor="middle" class="title">err2</text>
 <text x="360" y="105" text-anchor="middle" class="small">InvalidEmailError</text>
-<text x="360" y="122" text-anchor="middle" class="small rtl">ایمیل نامعتبر</text>
+<text x="360" y="122" text-anchor="middle" class="small">Invalid email</text>
 <rect x="510" y="60" width="180" height="70" class="warn-box"/>
 <text x="600" y="85" text-anchor="middle" class="title">err3</text>
 <text x="600" y="105" text-anchor="middle" class="small">AgeError</text>
-<text x="600" y="122" text-anchor="middle" class="small rtl">سن منفی است</text>
+<text x="600" y="122" text-anchor="middle" class="small">Negative age</text>
 <!-- Arrows down to join -->
 <path d="M 120 130 Q 120 165 280 195" fill="none" stroke="#64748b" stroke-width="1.8" marker-end="url(#arrow)"/>
 <path d="M 360 130 L 360 195" fill="none" stroke="#64748b" stroke-width="1.8" marker-end="url(#arrow)"/>
@@ -218,12 +218,12 @@ if err != nil {
 <rect x="180" y="200" width="360" height="100" class="box-action"/>
 <text x="360" y="225" text-anchor="middle" class="title">errors.Join(err1, err2, err3)</text>
 <line x1="190" y1="235" x2="530" y2="235" stroke="#cbd5e1" stroke-width="1"/>
-<text x="360" y="258" text-anchor="middle" class="small rtl">نوع: *errors.joinError (داخلی)</text>
+<text x="360" y="258" text-anchor="middle" class="small">Type: *errors.joinError (internal)</text>
 <text x="360" y="278" text-anchor="middle" class="small">Unwrap() []error  →  [err1, err2, err3]</text>
-<text x="360" y="295" text-anchor="middle" class="small rtl">هر شاخه به‌صورت مستقل قابل پیمایش</text>
+<text x="360" y="295" text-anchor="middle" class="small">Each branch walks independently</text>
 <!-- errors.Is / errors.As box (bottom) -->
 <rect x="60" y="330" width="600" height="80" class="box-go"/>
-<text x="360" y="355" text-anchor="middle" class="title rtl">errors.Is / errors.As هر سه شاخه را پیمایش می‌کنند</text>
+<text x="360" y="355" text-anchor="middle" class="title">errors.Is / errors.As walk all three branches</text>
 <text x="360" y="378" text-anchor="middle" class="small">errors.Is(joinedErr, ErrNameRequired) → true ✓</text>
 <text x="360" y="398" text-anchor="middle" class="small">errors.As(joinedErr, &amp;emailErr)         → true ✓</text>
 </svg>
@@ -374,7 +374,7 @@ func GetUser(id int) (*User, error) {
 }
 </code></pre>
 </figure>
-<h3 id="error-wrapping-chain-tree">4.2.8 زنجیره‌ی پیچیدن خطا: درختfmt.Errorf %w</h3>
+<h3 id="error-wrapping-chain-tree">4.2.8 زنجیره‌ی پیچیدن خطا: درخت fmt.Errorf %w</h3>
 <p>در بخش «<a href="#خطای-پیچیده-تر-با-wrapping">خطای پیچیده‌تر با Wrapping</a>» دیدیم که <code dir="ltr">fmt.Errorf</code> با فعل <code dir="ltr">%w</code> چگونه زنجیره‌ی خطا می‌سازد و متد <code dir="ltr">Unwrap()</code> را به‌صورت خودکار پیاده‌سازی می‌کند. در این بخش روی نکته‌ی حیاتی‌ای تمرکز می‌کنیم که منبع رایج باگ‌های پنهان در پروژه‌های <bdi dir="ltr">Go</bdi> است: تفاوت <code dir="ltr">%w</code> با <code dir="ltr">%v</code>. <code dir="ltr">%v</code> فقط پیغام خطا را قالب‌بندی می‌کند و زنجیره را می‌شکند — فراخوانی‌کننده دیگر نمی‌تواند خطای اصلی را با <code dir="ltr">errors.Is()</code> یا <code dir="ltr">errors.As()</code> بررسی کند. نمودار زیر این تفاوت را در کنار مکانیزم <code dir="ltr">Unwrap()</code> سفارشی و ساخت درخت خطا نشان می‌دهد.</p>
 <figure class="diagram" dir="ltr">
 <svg viewBox="0 0 760 460" xmlns="http://www.w3.org/2000/svg">
@@ -389,45 +389,45 @@ func GetUser(id int) (*User, error) {
 <path d="M0,0 L10,5 L0,10 z" fill="#ef4444"/>
 </marker>
 </defs>
-<text x="380" y="28" text-anchor="middle" class="title rtl">تفاوت %w و %v در fmt.Errorf: زنجیره در برابر شکست</text>
+<text x="380" y="28" text-anchor="middle" class="title">%w vs %v in fmt.Errorf: chain vs break</text>
 <!-- Original error (top center) -->
 <rect x="280" y="50" width="200" height="60" class="box-php"/>
 <text x="380" y="75" text-anchor="middle" class="title">err = sql.ErrNoRows</text>
-<text x="380" y="95" text-anchor="middle" class="small rtl">خطای اصلی — منشأ خطا</text>
+<text x="380" y="95" text-anchor="middle" class="small">Original error — error origin</text>
 <!-- Branch label -->
-<text x="190" y="140" text-anchor="middle" class="title" fill="#4caf50">%w — زنجیره حفظ می‌شود</text>
-<text x="570" y="140" text-anchor="middle" class="title" fill="#ef4444">%v — زنجیره شکسته می‌شود</text>
+<text x="190" y="140" text-anchor="middle" class="title" fill="#4caf50">%w — chain preserved</text>
+<text x="570" y="140" text-anchor="middle" class="title" fill="#ef4444">%v — chain broken</text>
 <!-- Left branch: %w -->
 <rect x="60" y="160" width="260" height="80" class="box-result"/>
 <text x="190" y="185" text-anchor="middle" class="small">fmt.Errorf("get user: %w", err)</text>
-<text x="190" y="208" text-anchor="middle" class="small rtl">نوع: *fmt.wrapError</text>
-<text x="190" y="225" text-anchor="middle" class="small rtl">متد Unwrap() error دارد ✓</text>
+<text x="190" y="208" text-anchor="middle" class="small">Type: *fmt.wrapError</text>
+<text x="190" y="225" text-anchor="middle" class="small">Has Unwrap() error ✓</text>
 <!-- Right branch: %v -->
 <rect x="440" y="160" width="260" height="80" class="warn-box"/>
 <text x="570" y="185" text-anchor="middle" class="small">fmt.Errorf("get user: %v", err)</text>
-<text x="570" y="208" text-anchor="middle" class="small rtl">نوع: *errors.errorString</text>
-<text x="570" y="225" text-anchor="middle" class="small rtl">متد Unwrap() ندارد ✗</text>
+<text x="570" y="208" text-anchor="middle" class="small">Type: *errors.errorString</text>
+<text x="570" y="225" text-anchor="middle" class="small">No Unwrap() ✗</text>
 <!-- Arrows from original to each branch -->
 <path d="M 330 110 Q 250 130 190 160" fill="none" stroke="#4caf50" stroke-width="2" marker-end="url(#arrow-ok)"/>
 <path d="M 430 110 Q 510 130 570 160" fill="none" stroke="#ef4444" stroke-width="2" marker-end="url(#arrow-bad)"/>
 <!-- Left outcome box -->
 <rect x="60" y="270" width="260" height="170" class="box-go"/>
-<text x="190" y="295" text-anchor="middle" class="title rtl">نتیجه: زنجیره فعال</text>
+<text x="190" y="295" text-anchor="middle" class="title">Outcome: chain active</text>
 <line x1="70" y1="305" x2="310" y2="305" stroke="#cbd5e1" stroke-width="1"/>
 <text x="190" y="328" text-anchor="middle" class="small">errors.Is(err, sql.ErrNoRows)</text>
-<text x="190" y="348" text-anchor="middle" class="small rtl">→ true ✓</text>
+<text x="190" y="348" text-anchor="middle" class="small">→ true ✓</text>
 <text x="190" y="375" text-anchor="middle" class="small">errors.As(err, &amp;target)</text>
-<text x="190" y="395" text-anchor="middle" class="small rtl">→ کار می‌کند ✓</text>
-<text x="190" y="422" text-anchor="middle" class="small rtl">Unwrap() پیمایش می‌کند</text>
+<text x="190" y="395" text-anchor="middle" class="small">→ works ✓</text>
+<text x="190" y="422" text-anchor="middle" class="small">Unwrap() walks the chain</text>
 <!-- Right outcome box -->
 <rect x="440" y="270" width="260" height="170" class="warn-box"/>
-<text x="570" y="295" text-anchor="middle" class="title rtl">نتیجه: زنجیره قطع شده</text>
+<text x="570" y="295" text-anchor="middle" class="title">Outcome: chain severed</text>
 <line x1="450" y1="305" x2="690" y2="305" stroke="#cbd5e1" stroke-width="1"/>
 <text x="570" y="328" text-anchor="middle" class="small">errors.Is(err, sql.ErrNoRows)</text>
-<text x="570" y="348" text-anchor="middle" class="small rtl">→ false ✗</text>
+<text x="570" y="348" text-anchor="middle" class="small">→ false ✗</text>
 <text x="570" y="375" text-anchor="middle" class="small">errors.As(err, &amp;target)</text>
-<text x="570" y="395" text-anchor="middle" class="small rtl">→ پیدا نمی‌کند ✗</text>
-<text x="570" y="422" text-anchor="middle" class="small rtl">تنها رشته‌ی پیغام باقی می‌ماند</text>
+<text x="570" y="395" text-anchor="middle" class="small">→ not found ✗</text>
+<text x="570" y="422" text-anchor="middle" class="small">Only the message string remains</text>
 </svg>
 <figcaption>شکل ۴-۴: تفاوت حیاتی %w و %v در fmt.Errorf — فعل %w یک *fmt.wrapError می‌سازد که متد Unwrap را پیاده‌سازی می‌کند و زنجیره‌ی خطا را حفظ می‌کند؛ فعل %v فقط رشته‌ی پیغام را قالب‌بندی کرده و یک *errors.errorString جدید می‌سازد که هیچ اتصالی به خطای اصلی ندارد. نتیجه: با %v خطاهای اصلی دیگر با errors.Is یا errors.As قابل شناسایی نیستند.</figcaption>
 </figure>

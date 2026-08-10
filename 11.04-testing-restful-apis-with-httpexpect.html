@@ -483,61 +483,61 @@ assert.Greater(t, value.(int), 10)
 <path d="M0,0 L10,5 L0,10 z" fill="#64748b"/>
 </marker>
 </defs>
-<text x="380" y="28" text-anchor="middle" class="title rtl">هفت مرحله‌ی تست HTTP با httpexpect (in-process)</text>
+<text x="380" y="28" text-anchor="middle" class="title">7 Stages of HTTP Testing with httpexpect (in-process)</text>
 <!-- Stage 1: NewServer -->
 <rect x="30" y="60" width="160" height="80" class="box-go"/>
-<text x="110" y="82" text-anchor="middle" class="title rtl">۱. ساخت سرور تست</text>
+<text x="110" y="82" text-anchor="middle" class="title">1. Test server</text>
 <text x="110" y="103" text-anchor="middle" class="small">httptest.NewServer</text>
 <text x="110" y="120" text-anchor="middle" class="small">handler)</text>
-<text x="110" y="135" text-anchor="middle" class="small rtl">پورت تصادفی، بدون شبکه</text>
+<text x="110" y="135" text-anchor="middle" class="small">Random port, no network</text>
 <!-- Stage 2: Build request -->
 <rect x="210" y="60" width="160" height="80" class="box-action"/>
-<text x="290" y="82" text-anchor="middle" class="title rtl">۲. ساخت درخواست</text>
+<text x="290" y="82" text-anchor="middle" class="title">2. Build request</text>
 <text x="290" y="103" text-anchor="middle" class="small">method · path</text>
 <text x="290" y="120" text-anchor="middle" class="small">body (JSON) · headers</text>
 <text x="290" y="135" text-anchor="middle" class="small">e.POST("/users").WithJSON()</text>
 <!-- Stage 3: Send -->
 <rect x="390" y="60" width="160" height="80" class="box-action"/>
-<text x="470" y="82" text-anchor="middle" class="title rtl">۳. ارسال</text>
-<text x="470" y="103" text-anchor="middle" class="small rtl">درون پروسه (loopback)</text>
+<text x="470" y="82" text-anchor="middle" class="title">3. Send</text>
+<text x="470" y="103" text-anchor="middle" class="small">In-process (loopback)</text>
 <text x="470" y="120" text-anchor="middle" class="small">.Expect()</text>
-<text x="470" y="135" text-anchor="middle" class="small rtl">بدون عبور از پشته‌ی شبکه</text>
+<text x="470" y="135" text-anchor="middle" class="small">Skips network stack</text>
 <!-- Stage 4: Receive -->
 <rect x="570" y="60" width="160" height="80" class="box"/>
-<text x="650" y="82" text-anchor="middle" class="title rtl">۴. دریافت پاسخ</text>
+<text x="650" y="82" text-anchor="middle" class="title">4. Get response</text>
 <text x="650" y="103" text-anchor="middle" class="small">status · body · headers</text>
-<text x="650" y="120" text-anchor="middle" class="small rtl">دستگاه بازگشتی</text>
-<text x="650" y="135" text-anchor="middle" class="small rtl">از هندلر</text>
+<text x="650" y="120" text-anchor="middle" class="small">Returned object</text>
+<text x="650" y="135" text-anchor="middle" class="small">from handler</text>
 <!-- Arrows top row -->
 <line x1="190" y1="100" x2="210" y2="100" stroke="#64748b" stroke-width="2" marker-end="url(#arrow-ht)"/>
 <line x1="370" y1="100" x2="390" y2="100" stroke="#64748b" stroke-width="2" marker-end="url(#arrow-ht)"/>
 <line x1="550" y1="100" x2="570" y2="100" stroke="#64748b" stroke-width="2" marker-end="url(#arrow-ht)"/>
 <!-- Down arrow -->
 <line x1="650" y1="140" x2="650" y2="175" stroke="#64748b" stroke-width="2" marker-end="url(#arrow-ht)"/>
-<text x="685" y="160" text-anchor="middle" class="small rtl">برگشت به تست</text>
+<text x="685" y="160" text-anchor="middle" class="small">Back to test</text>
 <!-- Three validation stages bottom -->
 <rect x="30" y="220" width="220" height="90" class="box-result"/>
-<text x="140" y="245" text-anchor="middle" class="title rtl">۵. اعتبارسنجی Status</text>
+<text x="140" y="245" text-anchor="middle" class="title">5. Validate Status</text>
 <text x="140" y="265" text-anchor="middle" class="small">.Status(http.StatusCreated)</text>
-<text x="140" y="283" text-anchor="middle" class="small rtl">۲۰۰ · ۲۰۱ · ۴xx · ۵xx</text>
-<text x="140" y="300" text-anchor="middle" class="small rtl">سطح اول</text>
+<text x="140" y="283" text-anchor="middle" class="small">200 · 201 · 4xx · 5xx</text>
+<text x="140" y="300" text-anchor="middle" class="small">Layer 1</text>
 <rect x="270" y="220" width="220" height="90" class="box-result"/>
-<text x="380" y="245" text-anchor="middle" class="title rtl">۶. اعتبارسنجی بدنه JSON</text>
+<text x="380" y="245" text-anchor="middle" class="title">6. Validate JSON body</text>
 <text x="380" y="265" text-anchor="middle" class="small">.JSON().Object()</text>
 <text x="380" y="283" text-anchor="middle" class="small">.Value("id").Equal(42)</text>
-<text x="380" y="300" text-anchor="middle" class="small rtl">سطح دوم</text>
+<text x="380" y="300" text-anchor="middle" class="small">Layer 2</text>
 <rect x="510" y="220" width="220" height="90" class="box-result"/>
-<text x="620" y="245" text-anchor="middle" class="title rtl">۷. اعتبارسنجی هدرها</text>
+<text x="620" y="245" text-anchor="middle" class="title">7. Validate headers</text>
 <text x="620" y="265" text-anchor="middle" class="small">.Header("X-Request-ID")</text>
 <text x="620" y="283" text-anchor="middle" class="small">.NotEmpty()</text>
-<text x="620" y="300" text-anchor="middle" class="small rtl">سطح سوم</text>
+<text x="620" y="300" text-anchor="middle" class="small">Layer 3</text>
 <!-- Arrows from stage 4 to validations -->
 <line x1="650" y1="175" x2="140" y2="220" stroke="#64748b" stroke-width="1.5" stroke-dasharray="4 3"/>
 <line x1="650" y1="175" x2="380" y2="220" stroke="#64748b" stroke-width="1.5" stroke-dasharray="4 3"/>
 <line x1="650" y1="175" x2="620" y2="220" stroke="#64748b" stroke-width="1.5" stroke-dasharray="4 3"/>
 <!-- Bottom: fluent API example -->
 <rect x="30" y="340" width="700" height="70" class="tip-box"/>
-<text x="380" y="365" text-anchor="middle" class="title rtl">همه‌ی ۷ مرحله در یک عبارت خوانا (fluent API):</text>
+<text x="380" y="365" text-anchor="middle" class="title">All 7 stages in one readable expression (fluent API):</text>
 <text x="380" y="390" text-anchor="middle" class="small">e.POST("/users").WithJSON(u).Expect().Status(201).JSON().Object().Value("id").Equal(42)</text>
 </svg>
 <figcaption>شکل ۱۱-۵: هفت مرحله‌ی تست HTTP با <bdi dir="ltr">httpexpect</bdi> — از ساخت سرور تست (<bdi dir="ltr">httptest.NewServer</bdi>) تا سه سطح اعتبارسنجی پاسخ (status، body، headers). همه‌ی این مراحل در یک عبارت زنجیره‌ای (<bdi dir="ltr">fluent</bdi>) ترکیب می‌شوند. چون سرور تست <bdi dir="ltr">in-process</bdi> است، درخواست‌ها بدون عبور از پشته‌ی شبکه پردازش می‌شوند و تست چندین برابر سریع‌تر از HTTP واقعی اجرا می‌شود.</figcaption>

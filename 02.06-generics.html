@@ -472,42 +472,42 @@ type NumberLike[T NumberLike[T]] interface {
  </p>
 <figure class="diagram" dir="ltr">
 <svg viewBox="0 0 720 380" xmlns="http://www.w3.org/2000/svg">
-<text x="360" y="28" text-anchor="middle" class="title rtl">مجموعه‌ی محدودیت‌های نوع: نمودار ون</text>
+<text x="360" y="28" text-anchor="middle" class="title">Type Constraint Set: Venn Diagram</text>
 <!-- Big circle: any -->
 <circle cx="220" cy="200" r="160" fill="rgba(33,150,243,0.10)" stroke="#2196f3" stroke-width="2"/>
 <text x="90" y="65" text-anchor="middle" class="title">any</text>
-<text x="90" y="85" text-anchor="middle" class="small rtl">هر نوعی</text>
+<text x="90" y="85" text-anchor="middle" class="small">Any type</text>
 <!-- Medium circle: comparable -->
 <circle cx="220" cy="200" r="115" fill="rgba(76,175,80,0.12)" stroke="#4caf50" stroke-width="2"/>
 <text x="135" y="105" text-anchor="middle" class="title">comparable</text>
-<text x="135" y="125" text-anchor="middle" class="small rtl">== و !=</text>
+<text x="135" y="125" text-anchor="middle" class="small">== and !=</text>
 <!-- Smaller circle: Ordered -->
 <circle cx="220" cy="200" r="70" fill="rgba(255,152,0,0.15)" stroke="#ff9800" stroke-width="2"/>
 <text x="220" y="195" text-anchor="middle" class="title">Ordered</text>
-<text x="220" y="215" text-anchor="middle" class="small rtl">&lt; &gt; ≤ ≥</text>
+<text x="220" y="215" text-anchor="middle" class="small">&lt; &gt; ≤ ≥</text>
 <!-- Examples inside rings -->
 <text x="220" y="180" text-anchor="middle" class="small">int, float, string</text>
 <text x="220" y="245" text-anchor="middle" class="small">bool, ptr</text>
-<text x="220" y="262" text-anchor="middle" class="small rtl">comparable-only</text>
-<text x="80" y="280" text-anchor="middle" class="small rtl">func, chan, slice</text>
-<text x="80" y="298" text-anchor="middle" class="small rtl">any-only</text>
+<text x="220" y="262" text-anchor="middle" class="small">comparable-only</text>
+<text x="80" y="280" text-anchor="middle" class="small">func, chan, slice</text>
+<text x="80" y="298" text-anchor="middle" class="small">any-only</text>
 <!-- Right side: instantiation examples -->
-<text x="540" y="60" text-anchor="middle" class="title rtl">نمونه‌سازی</text>
+<text x="540" y="60" text-anchor="middle" class="title">Instantiation</text>
 <rect x="420" y="75" width="240" height="50" class="box-result"/>
 <text x="540" y="98" text-anchor="middle" class="small">Max[int]</text>
-<text x="540" y="116" text-anchor="middle" class="small rtl">✓ int در Ordered است</text>
+<text x="540" y="116" text-anchor="middle" class="small">✓ int is in Ordered</text>
 <rect x="420" y="135" width="240" height="50" class="box-result"/>
 <text x="540" y="158" text-anchor="middle" class="small">Max[string]</text>
-<text x="540" y="176" text-anchor="middle" class="small rtl">✓ string در Ordered است</text>
+<text x="540" y="176" text-anchor="middle" class="small">✓ string is in Ordered</text>
 <rect x="420" y="195" width="240" height="50" class="warn-box"/>
 <text x="540" y="218" text-anchor="middle" class="small">Max[[]int]</text>
-<text x="540" y="236" text-anchor="middle" class="small rtl">✗ slice قابل مقایسه نیست</text>
+<text x="540" y="236" text-anchor="middle" class="small">✗ slice not comparable</text>
 <rect x="420" y="255" width="240" height="50" class="warn-box"/>
 <text x="540" y="278" text-anchor="middle" class="small">Max[func()]</text>
-<text x="540" y="296" text-anchor="middle" class="small rtl">✗ func قابل مقایسه نیست</text>
+<text x="540" y="296" text-anchor="middle" class="small">✗ func not comparable</text>
 <rect x="420" y="315" width="240" height="40" class="box-join"/>
 <text x="540" y="332" text-anchor="middle" class="small">Stringer = int | float | string</text>
-<text x="540" y="350" text-anchor="middle" class="small rtl">+ متد String() — ترکیب با |</text>
+<text x="540" y="350" text-anchor="middle" class="small">+ String() method — union with |</text>
 </svg>
 <figcaption>شکل ۲-۸: مجموعه‌های تودرتوی محدودیت‌های نوع: هر لایه‌ی درونی زیرمجموعه‌ی بیرونی است و عملگرهای بیشتری فراهم می‌کند — any بزرگ‌ترین، comparable زیرمجموعه‌ی آن و Ordered کوچک‌ترین</figcaption>
 </figure>

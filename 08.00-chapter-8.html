@@ -90,26 +90,26 @@
 <path d="M0,0 L10,5 L0,10 z" fill="#64748b"/>
 </marker>
 </defs>
-<text x="380" y="28" text-anchor="middle" class="title rtl">مدل اجرای PHP (چپ) در برابر Go (راست)</text>
+<text x="380" y="28" text-anchor="middle" class="title">PHP execution model (left) vs. Go (right)</text>
 <line x1="380" y1="50" x2="380" y2="320" stroke="#cbd5e1" stroke-width="1" stroke-dasharray="4 4"/>
-<text x="190" y="60" text-anchor="middle" class="title rtl">PHP — هر درخواست یک اتصال</text>
+<text x="190" y="60" text-anchor="middle" class="title">PHP — one connection per request</text>
 <rect x="120" y="78" width="140" height="48" class="box-php"/>
 <text x="190" y="100" text-anchor="middle" class="title">HTTP Request</text>
-<text x="190" y="118" text-anchor="middle" class="small rtl">پردازش جدید</text>
+<text x="190" y="118" text-anchor="middle" class="small">Fresh process</text>
 <rect x="120" y="150" width="140" height="48" class="box-php"/>
 <text x="190" y="172" text-anchor="middle" class="title">PDO::open()</text>
-<text x="190" y="190" text-anchor="middle" class="small rtl">اتصال تازه</text>
+<text x="190" y="190" text-anchor="middle" class="small">Fresh connection</text>
 <rect x="120" y="222" width="140" height="48" class="box-php"/>
 <text x="190" y="244" text-anchor="middle" class="title">close + end</text>
-<text x="190" y="262" text-anchor="middle" class="small rtl">پایان درخواست</text>
+<text x="190" y="262" text-anchor="middle" class="small">End of request</text>
 <line x1="190" y1="126" x2="190" y2="150" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
 <line x1="190" y1="198" x2="190" y2="222" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
-<text x="570" y="60" text-anchor="middle" class="title rtl">Go — فرآیند بلندمدت با Connection Pool</text>
+<text x="570" y="60" text-anchor="middle" class="title">Go — long-lived process with Connection Pool</text>
 <rect x="460" y="78" width="220" height="48" class="box-go"/>
 <text x="570" y="100" text-anchor="middle" class="title">*sql.DB</text>
-<text x="570" y="118" text-anchor="middle" class="small rtl">یک نمونه در طول عمر برنامه</text>
+<text x="570" y="118" text-anchor="middle" class="small">One instance for app lifetime</text>
 <rect x="460" y="150" width="220" height="80" class="box-go"/>
-<text x="570" y="170" text-anchor="middle" class="title rtl">Connection Pool</text>
+<text x="570" y="170" text-anchor="middle" class="title">Connection Pool</text>
 <rect x="475" y="185" width="58" height="35" class="box"/>
 <text x="504" y="208" text-anchor="middle" class="small">conn 1</text>
 <rect x="540" y="185" width="58" height="35" class="box"/>
@@ -118,7 +118,7 @@
 <text x="634" y="208" text-anchor="middle" class="small">conn N</text>
 <rect x="460" y="252" width="220" height="48" class="box-action"/>
 <text x="570" y="274" text-anchor="middle" class="title">Goroutines (HTTP handlers)</text>
-<text x="570" y="292" text-anchor="middle" class="small rtl">اشتراک اتصال‌ها</text>
+<text x="570" y="292" text-anchor="middle" class="small">Sharing connections</text>
 <line x1="570" y1="126" x2="570" y2="150" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
 <line x1="504" y1="252" x2="510" y2="225" stroke="#64748b" stroke-width="1" marker-end="url(#arrow)"/>
 <line x1="569" y1="252" x2="569" y2="225" stroke="#64748b" stroke-width="1" marker-end="url(#arrow)"/>

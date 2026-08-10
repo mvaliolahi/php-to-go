@@ -107,32 +107,32 @@ if err := rows.Err(); err != nil {
 <path d="M0,0 L10,5 L0,10 z" fill="#64748b"/>
 </marker>
 </defs>
-<text x="380" y="28" text-anchor="middle" class="title rtl">نگاشت سطر SQL به Struct با rows.Scan()</text>
+<text x="380" y="28" text-anchor="middle" class="title">Mapping SQL row to Struct with rows.Scan()</text>
 <rect x="30" y="55" width="260" height="170" class="box-php"/>
-<text x="160" y="78" text-anchor="middle" class="title rtl">سطر دیتابیس</text>
+<text x="160" y="78" text-anchor="middle" class="title">Database row</text>
 <text x="160" y="105" text-anchor="middle" class="small">id    INT      = 42</text>
 <text x="160" y="125" text-anchor="middle" class="small">name  VARCHAR  = "Ali"</text>
 <rect x="50" y="135" width="220" height="22" class="warn-box" fill="rgba(255,152,0,0.05)"/>
 <text x="160" y="151" text-anchor="middle" class="small">email VARCHAR  = NULL</text>
 <rect x="50" y="165" width="220" height="22" class="warn-box" fill="rgba(255,152,0,0.05)"/>
 <text x="160" y="181" text-anchor="middle" class="small">age   INT      = NULL</text>
-<text x="160" y="208" text-anchor="middle" class="small rtl">سبز: مستقیم • نارنجی: Nullable</text>
+<text x="160" y="208" text-anchor="middle" class="small">Green: direct • Orange: Nullable</text>
 <rect x="305" y="125" width="150" height="50" class="box-action"/>
 <text x="380" y="146" text-anchor="middle" class="title">rows.Scan()</text>
-<text x="380" y="164" text-anchor="middle" class="small rtl">تبدیل نوع خودکار</text>
+<text x="380" y="164" text-anchor="middle" class="small">Auto type conversion</text>
 <line x1="290" y1="150" x2="305" y2="150" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
 <line x1="455" y1="150" x2="470" y2="150" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
 <rect x="470" y="55" width="260" height="170" class="box-go"/>
-<text x="600" y="78" text-anchor="middle" class="title rtl">Go Struct</text>
+<text x="600" y="78" text-anchor="middle" class="title">Go Struct</text>
 <text x="600" y="105" text-anchor="middle" class="small">ID    int              = 42</text>
 <text x="600" y="125" text-anchor="middle" class="small">Name  string           = "Ali"</text>
 <rect x="490" y="135" width="220" height="22" class="warn-box" fill="rgba(255,152,0,0.05)"/>
 <text x="600" y="151" text-anchor="middle" class="small">Email sql.NullString  = NULL</text>
 <rect x="490" y="165" width="220" height="22" class="warn-box" fill="rgba(255,152,0,0.05)"/>
 <text x="600" y="181" text-anchor="middle" class="small">Age   sql.NullInt64   = NULL</text>
-<text x="600" y="208" text-anchor="middle" class="small rtl">یا *string / *int (pointer)</text>
+<text x="600" y="208" text-anchor="middle" class="small">or *string / *int (pointer)</text>
 <rect x="30" y="240" width="700" height="40" class="tip-box"/>
-<text x="380" y="265" text-anchor="middle" class="small rtl">ترتیب آرگومان‌های Scan باید دقیقاً با ترتیب ستون‌های SELECT مطابقت داشته باشد</text>
+<text x="380" y="265" text-anchor="middle" class="small">Scan argument order must exactly match SELECT column order</text>
 </svg>
 <figcaption>شکل ۸-۵: نگاشت سطر <bdi dir="ltr">SQL</bdi> به <bdi dir="ltr">Struct</bdi> در <bdi dir="ltr">Go</bdi> — <code>rows.Scan()</code> هر ستون را به فیلد متناظر با تبدیل نوع خودکار نگاشت می‌کند. ستون‌های <bdi dir="ltr">nullable</bdi> (نارنجی) به انواع <code>sql.Null*</code> یا <bdi dir="ltr">pointer</bdi> نیاز دارند؛ در غیر این صورت <bdi dir="ltr">Scan</bdi> خطا می‌دهد.</figcaption>
 </figure>

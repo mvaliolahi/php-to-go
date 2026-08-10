@@ -70,7 +70,7 @@
 </div>
 <p>در سیستم‌عامل‌های Unix-like برنامه‌ها می‌توانند سیگنال‌هایی از سیستم‌عامل یا کاربر دریافت کنند. مثال رایج آن فشردن <code dir="ltr">Ctrl+C</code> است که سیگنال <code dir="ltr">SIGINT</code> را ارسال می‌کند. برنامه‌های حرفه‌ای باید این سیگنال‌ها را دریافت و به‌درستی مدیریت کنند تا منابع را آزاد کنند، اتصالات را ببندند و به‌صورت ایمن خارج شوند.</p>
 <p>این موضوع در Go بسیار مهم‌تر از PHP است زیرا برنامه‌های Go معمولاً بلندمدت اجرا می‌شوند (سرورها، سرویس‌ها) و خاموشی ناگهانی می‌تواند باعث از دست رفتن داده یا خرابی منابع شود.</p>
-<h3 id="گوش-دادن-به-سیگنال">6.7.1 گوش دادن به سیگنال‌ها</h3>
+<h3 id="1">6.7.1 گوش دادن به سیگنال‌ها</h3>
 <p>در Go می‌توان به کمک <code dir="ltr">os/signal</code> به این سیگنال‌ها گوش داد:</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">import (
@@ -95,7 +95,7 @@ func main() {
 <li><code dir="ltr">signal.Notify()</code> سیگنال‌های مشخص‌شده را به کانال ارسال می‌کند</li>
 <li><code dir="ltr">&lt;-sigs</code> برنامه را تا دریافت سیگنال متوقف نگه می‌دارد</li>
 </ul>
-<h3 id="خاموشی-ایمن-graceful-shutdown">6.7.2 Graceful Shutdown</h3>
+<h3 id="2">6.7.2 Graceful Shutdown</h3>
 <p>در برنامه‌های واقعی باید قبل از خروج منابع را آزاد کنید:</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">func main() {
@@ -128,7 +128,7 @@ func cleanup() {
 }
 </code></pre>
 </figure>
-<h3 id="معادل-php-signal">6.7.3 معادل در PHP</h3>
+<h3 id="3">6.7.3 معادل در PHP</h3>
 <figure class="code php" dir="ltr">
 <pre><code class="language-php">&lt;?php
 // Requires pcntl extension
@@ -169,7 +169,7 @@ while (true) {
 <div class="important comparison">
 <strong>توجه:</strong> در PHP پشتیبانی از سیگنال‌ها تنها با افزونه <code dir="ltr">pcntl</code> ممکن است که در محیط‌های وب‌سرور معمولاً غیرفعال است. اما در Go مدیریت سیگنال بخشی از کتابخانه استاندارد است و بدون هیچ وابستگی خارجی کار می‌کند. این تفاوت یکی از دلایل اصلی است که Go برای ساخت سرورها و سرویس‌های بلندمدت انتخاب بهتری است.
 </div>
-<h3 id="عملکرد-داخلی-signal">6.7.4 عملکرد داخلی مدیریت سیگنال در Runtime Go</h3>
+<h3 id="4">6.7.4 عملکرد داخلی مدیریت سیگنال در Runtime Go</h3>
 <p>مدیریت سیگنال در Go بسیار متفاوت از زبان‌های C-like است. در Go signal handlers مستقیماً توسط کد کاربر نوشته نمی‌شوند. در عوض، runtime Go یک مکانیزم داخلی دارد:</p>
 <ol>
 <li><strong>ثبت‌نام در OS:</strong> runtime Go در زمان شروع برنامه، هندلرهایی برای سیگنال‌های مختلف ثبت می‌کند</li>
@@ -188,7 +188,7 @@ signal.Ignore(os.Interrupt) // SIGINT is ignored
 signal.Reset(os.Interrupt) // Ctrl+C kills the program again
 </code></pre>
 </figure>
-<h3 id="signal-notifycontext-pattern">6.7.5 الگوی عملیاتی: signal.NotifyContext با چند سرویس</h3>
+<h3 id="5">6.7.5 الگوی عملیاتی: signal.NotifyContext با چند سرویس</h3>
 <p>در برنامه‌های واقعی معمولاً چندین سرویس همزمان اجرا دارید: سرور HTTP، consumer پیام، cron worker و غیره. <code dir="ltr">signal.NotifyContext</code> بهترین راه برای هماهنگی خاموشی همه آن‌هاست:</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">func main() {
@@ -243,7 +243,7 @@ signal.Reset(os.Interrupt) // Ctrl+C kills the program again
 }
 </code></pre>
 </figure>
-<h2 id="خاموشی-ایمن-وبسرور-graceful-shutdown">Graceful Shutdown وب‌سرور</h2>
+<h3 id="6">6.7.6 Graceful Shutdown وب‌سرور</h3>
 <p>در محیط عملیاتی، خاموش کردن سرور به‌سادگی کشتن فرآیند (<code dir="ltr">kill -9</code>) کار اشتباهی است. وقتی سرور در حال پردازش درخواست‌های فعال باشد، خاموشی ناگهانی باعث از دست رفتن داده، نیمه‌کاره ماندن تراکنش‌ها و قطع ارتباط کاربران می‌شود. </p><p>Graceful Shutdown یعنی سرور ابتدا پذیرش درخواست‌های جدید را متوقف کند، سپس منتظر اتمام درخواست‌های در حال پردازش بماند و در نهایت منابع را آزاد کرده و خارج شود.</p>
 <div class="note">
 <strong>چرا Graceful Shutdown مهم است؟</strong>
@@ -254,7 +254,7 @@ signal.Reset(os.Interrupt) // Ctrl+C kills the program again
 <li>در محیط‌های Docker و Kubernetes، کانتینرها زمان مشخصی برای خاموشی دارند و اگر در این مهلت خاموش نشوند، <code dir="ltr">SIGKILL</code> دریافت می‌کنند</li>
 </ul>
 </div>
-<h3 id="مقایسه-php-fpm-graceful-reload">6.7.6 مقایسه با PHP-FPM Graceful Reload</h3>
+<h3 id="7">6.7.7 مقایسه با PHP-FPM Graceful Reload</h3>
 <p>اگر تجربه کار با PHP-FPM را داشته باشید، احتمالاً با دستور <code dir="ltr">kill -SIGQUIT &lt;master-pid&gt;</code> آشنا هستید. این دستور به PHP-FPM می‌گوید که پردازش‌های worker فعلی را تا اتمام درخواست‌هایشان نگه دارد و در همین حین درخواست‌های جدید را به workerهای جدید ارسال کند. </p><p>اما در Go شما خودتان باید این منطق را پیاده‌سازی کنید — خبر خوب این است که با ابزارهایی مثل <code dir="ltr">http.Server.Shutdown()</code> و <code dir="ltr">context</code> این کار بسیار ساده است.</p>
 <table class="comparison-table" dir="rtl">
 <thead>
@@ -268,7 +268,7 @@ signal.Reset(os.Interrupt) // Ctrl+C kills the program again
 <tr><td>کنترل ریز پایه</td><td>محدود</td><td>کامل (دسترسی به تمام مراحل)</td></tr>
 </tbody>
 </table>
-<h3 id="الگوی-پایه-graceful-shutdown">6.7.7 الگوی پایه Graceful Shutdown</h3>
+<h3 id="8">6.7.8 الگوی پایه Graceful Shutdown</h3>
 <p>الگوی استاندارد خاموشی ایمن در Go از ترکیب سه ابزار تشکیل شده است: <code dir="ltr">os.Signal</code> برای دریافت سیگنال خاموشی، <code dir="ltr">http.Server.Shutdown()</code> برای توقف ایمن سرور و <code dir="ltr">context.WithTimeout()</code> برای تعیین مهلت زمانی. در ادامه الگوی کامل را می‌بینید:</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">package main
@@ -329,7 +329,7 @@ func main() {
 <div class="tip">
 <strong>نکته:</strong> <code dir="ltr">http.ErrServerClosed</code> خطایی نیست که نیاز به گزارش دادن داشته باشد. این خطا فقط نشان می‌دهد که <code dir="ltr">Shutdown()</code> فراخوانی شده است. به همین دلیل در شرط <code dir="ltr">if</code> آن را فیلتر می‌کنیم.
 </div>
-<h3 id="ترکیب-با-waitgroup">6.7.8 ترکیب با WaitGroup برای مدیریت کارهای پس‌زمینه</h3>
+<h3 id="9">6.7.9 ترکیب با WaitGroup برای مدیریت کارهای پس‌زمینه</h3>
 <p>گاهی اوقات علاوه بر درخواست‌های HTTP، گوروتین‌های دیگری هم دارید که باید منتظر اتمام آن‌ها بمانید. مثلاً یک consumer که از Kafka پیام می‌خواند یا یک worker که کارهای پس‌زمینه انجام می‌دهد. در این حالت باید از <code dir="ltr">sync.WaitGroup</code> برای منتظر ماندن استفاده کنید:</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">package main
@@ -403,7 +403,7 @@ func backgroundWorker() {
 <div class="warning">
 <strong>هشدار:</strong> مراقب deadlock باشید! اگر درون handlerِ درخواست HTTP سعی کنید <code dir="ltr">wg.Add(1)</code> را بعد از فراخوانی <code dir="ltr">srv.Shutdown()</code> اجرا کنید، ممکن است <code dir="ltr">wg.Wait()</code> برای همیشه مسدود شود. همیشه <code dir="ltr">wg.Add(1)</code> را قبل از شروع گوروتین یا پردازش فراخوانی کنید.
 </div>
-<h3 id="signal-notifycontext">6.7.9 روش پیشرفته: signal.NotifyContext — Go 1.16+</h3>
+<h3 id="10">6.7.10 روش پیشرفته: signal.NotifyContext — Go 1.16+</h3>
 <p>از نسخه Go 1.16 به بعد، تابع <code dir="ltr">signal.NotifyContext</code> در دسترس است که ترکیب <code dir="ltr">signal.Notify</code> و <code dir="ltr">context.WithCancel</code> را در یک تابع ساده فراهم می‌کند. وقتی سیگنال دریافت شود، Context به‌طور خودکار لغو می‌شود:</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">package main
@@ -468,7 +468,7 @@ go srv.ListenAndServe()
 <div class="tip">
 <strong>نکته:</strong> در پروژه‌های واقعی، بسیاری از توسعه‌دهندگان Go از کتابخانه‌هایی مثل <a href="https://github.com/oklog/run"><code>oklog/run</code></a> یا فریم‌ورک‌هایی مثل <a href="https://github.com/grpc-ecosystem/go-grpc-middleware"><code>grpc-gateway</code></a> استفاده می‌کنند که الگوی Graceful Shutdown را به‌صورت آماده ارائه می‌دهند. اما درک مکانیزم پایه برای عیب‌یابی و سفارشی‌سازی ضروری است.
 </div>
-<h3 id="sighup-الگو">6.7.10 الگوی SIGHUP: بارگذاری مجدد پیکربندی</h3>
+<h3 id="11">6.7.11 الگوی SIGHUP: بارگذاری مجدد پیکربندی</h3>
 <p>یکی از الگوهای کلاسیک در سیستم‌های Unix، ارسال سیگنال <code>SIGHUP</code> برای اطلاع‌رسانی به برنامه مبنی بر نیاز به بارگذاری مجدد فایل پیکربندی است. این الگو به شما اجازه می‌دهد تنظیمات برنامه را بدون خاموشی و راه‌اندازی مجدد تغییر دهید. در Go این الگو با <code dir="ltr">signal.Notify</code> به‌سادگی پیاده‌سازی می‌شود:</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">package main
@@ -548,7 +548,7 @@ func main() {
 <div class="note">
 <strong>درباره SIGHUP:</strong> سیگنال <code dir="ltr">SIGHUP</code> در اصل زمانی ارسال می‌شد که اتصال ترمینال قطع می‌شد (مثلاً بستن پنجره SSH). اما امروزه بسیاری از برنامه‌های سرور (مثل Nginx، PostgreSQL) از <code dir="ltr">SIGHUP</code> برای بارگذاری مجدد پیکربندی استفاده می‌کنند. دستور <code dir="ltr">kill -HUP &lt;pid&gt;</code> این سیگنال را ارسال می‌کند. در Docker با <code dir="ltr">docker kill -s SIGHUP &lt;container&gt;</code> قابل ارسال است.
 </div>
-<h3 id="context-ترکیب">6.7.11 ترکیب سیگنال با Context برای پاکسازی گوروتین‌ها</h3>
+<h3 id="12">6.7.12 ترکیب سیگنال با Context برای پاکسازی گوروتین‌ها</h3>
 <p>کاربرد اصلی مدیریت سیگنال در Go، اطلاع‌رسانی به تمام گوروتین‌های فعال مبنی بر نیاز به توقف است. الگوی استاندارد این است: یک Context مشترک ایجاد کنید که با دریافت سیگنال لغو شود و آن Context را به تمام گوروتین‌ها پاس بدهید. هر گوروتین با <code dir="ltr">&lt;-ctx.Done()</code> متوجه لغو می‌شود و کار پاکسازی خود را انجام می‌دهد:</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">// Goroutine that reacts to Context cancellation
@@ -640,7 +640,7 @@ func main() {
 }
 </code></pre>
 </figure>
-<h3 id="خلاصه-graceful-shutdown">6.7.12 خلاصه الگوی Graceful Shutdown</h3>
+<h3 id="13">6.7.13 خلاصه الگوی Graceful Shutdown</h3>
 <table class="comparison-table" dir="rtl">
 <thead>
 <tr><th>مرحله</th><th>ابزار Go</th><th>توضیح</th></tr>
@@ -654,7 +654,7 @@ func main() {
 <tr><td>۶. خروج</td><td><code><span dir="ltr">log.Println()</span></code> + پایان <code dir="ltr">main</code></td><td>خروج تمیز از برنامه</td></tr>
 </tbody>
 </table>
-<h3 id="دنباله-خاموشی-ایمن">6.7.13 دنباله‌ی خاموشی ایمن: از سیگنال تا خروج</h3>
+<h3 id="14">6.7.14 دنباله‌ی خاموشی ایمن: از سیگنال تا خروج</h3>
 <p>درک دقیق ترتیب مراحل خاموشی ایمن برای ساخت سرورهای مقاوم در برابر خرابی ضروری است. شکل زیر یک نمای زمان‌بندی‌شده از کل فرآیند خاموشی را نشان می‌دهد: از لحظه‌ی دریافت سیگنال تا خروج نهایی. هر مرحله با رنگ مشخص شده — مراحل سبز نشان‌دهنده‌ی خاموشی ایمن و مراحل قرمز نشان‌دهنده‌ی مسیر اجباری هستند. </p><p>همچنین مسیر انتشار لغو <code dir="ltr">Context</code> از کانال سیگنال به تمام گوروتین‌ها قابل مشاهده است. </p><p>بدون خاموشی ایمن، اتصالات ناگهان قطع می‌شوند، داده‌ها نیمه‌کاره رها می‌شوند و منابع آزاد نمی‌شوند — دقیقاً همان مشکلاتی که در محیط‌های عملیاتی باعث از دست رفتن داده و نارضایتی کاربران می‌شوند.</p>
 <figure class="diagram" dir="ltr">
 <svg viewBox="0 0 760 460" xmlns="http://www.w3.org/2000/svg">
@@ -666,71 +666,71 @@ func main() {
 <path d="M0,0 L10,5 L0,10 z" fill="#4caf50"/>
 </marker>
 <marker id="arrow-bad" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-<path d="M0,0 L10,5 L0,10 z" fill="#ef4444"/>
+<path d="M0,0 L10,5,L0,10 z" fill="#ef4444"/>
 </marker>
 </defs>
-<text x="380" y="28" text-anchor="middle" class="title rtl">دنباله‌ی خاموشی ایمن: از سیگنال تا خروج</text>
+<text x="380" y="28" text-anchor="middle" class="title">Graceful shutdown sequence: from signal to exit</text>
 <!-- Horizontal timeline arrow -->
 <line x1="50" y1="65" x2="710" y2="65" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
-<text x="50" y="55" class="small rtl">زمان →</text>
-<text x="380" y="55" text-anchor="middle" class="small rtl">t=0 (دریافت سیگنال) … t=30s (مهلت پیش‌فرض)</text>
+<text x="50" y="55" class="small">time →</text>
+<text x="380" y="55" text-anchor="middle" class="small">t=0 (signal received) … t=30s (default deadline)</text>
 <!-- Step 1: Signal received -->
 <rect x="50" y="90" width="160" height="80" class="warn-box"/>
-<text x="130" y="115" text-anchor="middle" class="title">۱. SIGTERM/SIGINT</text>
+<text x="130" y="115" text-anchor="middle" class="title">1. SIGTERM/SIGINT</text>
 <line x1="60" y1="125" x2="200" y2="125" stroke="#cbd5e1" stroke-width="1"/>
-<text x="130" y="145" text-anchor="middle" class="small rtl">دریافت از OS</text>
-<text x="130" y="162" text-anchor="middle" class="small rtl">(Ctrl+C یا docker stop)</text>
+<text x="130" y="145" text-anchor="middle" class="small">Received from OS</text>
+<text x="130" y="162" text-anchor="middle" class="small">(Ctrl+C or docker stop)</text>
 <!-- Step 2: ctx cancelled -->
 <line x1="210" y1="130" x2="240" y2="130" stroke="#ff9800" stroke-width="2" marker-end="url(#arrow)"/>
 <rect x="240" y="90" width="160" height="80" class="warn-box"/>
-<text x="320" y="115" text-anchor="middle" class="title">۲. ctx.Done() closed</text>
+<text x="320" y="115" text-anchor="middle" class="title">2. ctx.Done() closed</text>
 <line x1="250" y1="125" x2="390" y2="125" stroke="#cbd5e1" stroke-width="1"/>
-<text x="320" y="145" text-anchor="middle" class="small rtl">signal.NotifyContext</text>
-<text x="320" y="162" text-anchor="middle" class="small rtl">کانال ctx.Done می‌بندد</text>
+<text x="320" y="145" text-anchor="middle" class="small">signal.NotifyContext</text>
+<text x="320" y="162" text-anchor="middle" class="small">ctx.Done channel closes</text>
 <!-- Step 3: stop listener -->
 <line x1="400" y1="130" x2="430" y2="130" stroke="#ff9800" stroke-width="2" marker-end="url(#arrow)"/>
 <rect x="430" y="90" width="160" height="80" class="warn-box"/>
-<text x="510" y="115" text-anchor="middle" class="title">۳. srv.Shutdown(ctx)</text>
+<text x="510" y="115" text-anchor="middle" class="title">3. srv.Shutdown(ctx)</text>
 <line x1="440" y1="125" x2="580" y2="125" stroke="#cbd5e1" stroke-width="1"/>
-<text x="510" y="145" text-anchor="middle" class="small rtl">پذیرش جدید متوقف</text>
-<text x="510" y="162" text-anchor="middle" class="small rtl">Listener بسته می‌شود</text>
+<text x="510" y="145" text-anchor="middle" class="small">New accepts stopped</text>
+<text x="510" y="162" text-anchor="middle" class="small">Listener closed</text>
 <!-- Step 4: cleanup goroutines + wait -->
 <line x1="590" y1="130" x2="620" y2="130" stroke="#ff9800" stroke-width="2" marker-end="url(#arrow)"/>
 <rect x="620" y="90" width="120" height="80" class="box-action"/>
-<text x="680" y="115" text-anchor="middle" class="title">۴. cleanup</text>
+<text x="680" y="115" text-anchor="middle" class="title">4. cleanup</text>
 <line x1="630" y1="125" x2="730" y2="125" stroke="#cbd5e1" stroke-width="1"/>
-<text x="680" y="145" text-anchor="middle" class="small rtl">گوروتین‌ها</text>
-<text x="680" y="162" text-anchor="middle" class="small rtl">DB، فایل، queue</text>
+<text x="680" y="145" text-anchor="middle" class="small">goroutines</text>
+<text x="680" y="162" text-anchor="middle" class="small">DB, file, queue</text>
 <!-- Parallel: goroutines reacting to ctx.Done -->
 <rect x="240" y="200" width="500" height="65" class="box-go"/>
-<text x="490" y="225" text-anchor="middle" class="title rtl">گوروتین‌های فعال به‌طور هم‌زمان ctx.Done را دریافت می‌کنند</text>
-<text x="490" y="245" text-anchor="middle" class="small rtl">HTTP Handler → تکمیل درخواست فعال • Worker → اتمام Job • DB Consumer → Rollback تراکنش</text>
-<text x="490" y="260" text-anchor="middle" class="small rtl">هر گوروتین با defer wg.Done() خروج تمیز انجام می‌دهد</text>
+<text x="490" y="225" text-anchor="middle" class="title">Active goroutines simultaneously receive ctx.Done</text>
+<text x="490" y="245" text-anchor="middle" class="small">HTTP Handler → finish active request • Worker → finish Job • DB Consumer → Rollback transaction</text>
+<text x="490" y="260" text-anchor="middle" class="small">Each goroutine does a clean exit via defer wg.Done()</text>
 <line x1="320" y1="170" x2="320" y2="200" stroke="#64748b" stroke-width="1.5" stroke-dasharray="3 3" marker-end="url(#arrow)"/>
 <line x1="510" y1="170" x2="510" y2="200" stroke="#64748b" stroke-width="1.5" stroke-dasharray="3 3" marker-end="url(#arrow)"/>
 <line x1="680" y1="170" x2="680" y2="200" stroke="#64748b" stroke-width="1.5" stroke-dasharray="3 3" marker-end="url(#arrow)"/>
 <!-- Branch: timeout -->
-<text x="380" y="295" text-anchor="middle" class="title rtl">محک نهایی: آیا همه کارها قبل از timeout تمام شدند؟</text>
+<text x="380" y="295" text-anchor="middle" class="title">Final check: did all tasks finish before timeout?</text>
 <line x1="680" y1="265" x2="680" y2="320" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
 <polygon points="680,320 770,360 680,400 590,360" class="warn-box"/>
-<text x="680" y="358" text-anchor="middle" class="title rtl">wg.Wait()</text>
-<text x="680" y="378" text-anchor="middle" class="small rtl">تمام شد؟</text>
-<text x="680" y="395" text-anchor="middle" class="small rtl">انتظار + timeout</text>
+<text x="680" y="358" text-anchor="middle" class="title">wg.Wait()</text>
+<text x="680" y="378" text-anchor="middle" class="small">finished?</text>
+<text x="680" y="395" text-anchor="middle" class="small">wait + timeout</text>
 <!-- Success path (left) -->
 <line x1="590" y1="360" x2="380" y2="360" stroke="#4caf50" stroke-width="2" marker-end="url(#arrow-ok)"/>
-<text x="485" y="350" text-anchor="middle" class="small rtl" fill="#4caf50">بله ✓ (قبل از timeout)</text>
+<text x="485" y="350" text-anchor="middle" class="small" fill="#4caf50">yes ✓ (before timeout)</text>
 <rect x="50" y="335" width="330" height="55" class="box-result"/>
-<text x="215" y="358" text-anchor="middle" class="title rtl">✓ خروج ایمن — OS Exit 0</text>
-<text x="215" y="378" text-anchor="middle" class="small rtl">تمام منابع آزاد شدند، داده‌ها ذخیره شدند</text>
+<text x="215" y="358" text-anchor="middle" class="title">✓ Graceful exit — OS Exit 0</text>
+<text x="215" y="378" text-anchor="middle" class="small">All resources released, data persisted</text>
 <!-- Failure path (right) -->
 <line x1="680" y1="400" x2="680" y2="420" stroke="#ef4444" stroke-width="2" marker-end="url(#arrow-bad)"/>
-<text x="730" y="415" class="small rtl" fill="#ef4444">خیر ✗</text>
+<text x="730" y="415" class="small" fill="#ef4444">no ✗</text>
 <rect x="500" y="420" width="260" height="35" class="box-php"/>
-<text x="630" y="442" text-anchor="middle" class="title rtl">✗ خروج اجباری — داده نیمه‌کاره از دست می‌رود</text>
+<text x="630" y="442" text-anchor="middle" class="title">✗ Forced exit — in-flight data is lost</text>
 </svg>
 <figcaption>شکل ۶-۸: دنباله‌ی خاموشی ایمن از سیگنال تا خروج — مرحله ۱: سیگنال <code>SIGTERM</code>/<code>SIGINT</code> دریافت می‌شود. مرحله ۲: <code>signal.NotifyContext</code> کانال <code>ctx.Done()</code> را می‌بندد و تمام گوروتین‌ها به‌طور هم‌زمان مطلع می‌شوند. مرحله ۳: <code>srv.Shutdown(ctx)</code> Listener را می‌بندد و پذیرش درخواست‌های جدید را متوقف می‌کند. مرحله ۴: گوروتین‌های فعال (Handler، Worker، DB Consumer) کار فعلی را تمام می‌کنند و با <code>defer wg.Done()</code> خارج می‌شوند. در نهایت <code>wg.Wait()</code> با مهلت زمانی (مثلاً ۳۰ ثانیه) منتظر می‌ماند: اگر همه کارها تمام شدند خروج ایمن (سبز) انجام می‌شود، در غیر این صورت خروج اجباری (قرمز) رخ می‌دهد.</figcaption>
 </figure>
-<h3 id="سناریوهای-عملیاتی-signal">6.7.14 سناریوهای عملیاتی</h3>
+<h3 id="15">6.7.15 سناریوهای عملیاتی</h3>
 <p>مدیریت سیگنال‌ها در محیط‌های عملیاتی بسیار فراتر از یک مثال ساده‌ی <code dir="ltr">Ctrl+C</code> است. در واقعیت، سرورها و سرویس‌های شما باید با شرایط متنوعی مقابله کنند: از خاموشی ایمن سرور <bdi dir="ltr">HTTP</bdi> گرفته تا تخلیه‌ی <code dir="ltr">worker pool</code> و چرخش فایل‌های لاگ. </p><p>هر سناریو در ادامه یک چالش واقعی را توصیف می‌کند و نشان می‌دهد که چگونه الگوهای مدیریت سیگنال <bdi dir="ltr">Go</bdi> به حل آن‌ها کمک می‌کنند. </p><p>این سناریوها معمولاً در محیط‌های <bdi dir="ltr">Docker</bdi> و <bdi dir="ltr">Kubernetes</bdi> با مکانیزم خاموشی خودکار این سیستم‌ها ترکیب می‌شوند و درک آن‌ها برای ساخت سرویس‌های مقاوم ضروری است.</p>
 <ul>
 <li><strong>Graceful HTTP server shutdown:</strong> رایج‌ترین سناریو در سرورهای <bdi dir="ltr">Go</bdi>. وقتی <code dir="ltr">SIGTERM</code> دریافت می‌شود، سرور ابتدا پذیرش اتصالات جدید را متوقف می‌کند، سپس منتظر اتمام درخواست‌های فعال می‌ماند و در نهایت خارج می‌شود. این الگو با ترکیب <code dir="ltr">signal.NotifyContext</code>، <code dir="ltr">http.Server.Shutdown()</code> و <code dir="ltr">context.WithTimeout()</code> پیاده‌سازی می‌شود. بدون این الگو، درخواست‌های در حال پردازش ناگهان قطع می‌شوند و کاربران خطای ۵۰۲ دریافت می‌کنند.</li>

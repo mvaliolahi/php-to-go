@@ -347,54 +347,54 @@ func createArticleHandler(w http.ResponseWriter, r *http.Request) {
 <path d="M0,0 L10,5 L0,10 z" fill="#64748b"/>
 </marker>
 </defs>
-<text x="380" y="28" text-anchor="middle" class="title rtl">شش روش استخراج داده از درخواست HTTP در Go — و معادل PHP</text>
+<text x="380" y="28" text-anchor="middle" class="title">Six ways to extract HTTP request data in Go — with PHP equivalent</text>
 <text x="240" y="58" text-anchor="middle" class="title" fill="#00ADD8">Go (net/http)</text>
 <text x="600" y="58" text-anchor="middle" class="title" fill="#777BB4">PHP</text>
 <line x1="60" y1="68" x2="700" y2="68" stroke="#cbd5e1" stroke-width="1"/>
 <rect x="60" y="80" width="360" height="50" class="box-go"/>
 <text x="80" y="100" class="title">① r.URL.Query().Get("q")</text>
-<text x="80" y="118" class="small rtl">منبع: پارامترهای کوئری (بعد از ?) — lazy، همیشه در دسترس</text>
+<text x="80" y="118" class="small">Source: query params (after ?) — lazy, always available</text>
 <line x1="420" y1="105" x2="460" y2="105" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
 <rect x="460" y="80" width="280" height="50" class="box-php"/>
 <text x="480" y="100" class="title">$_GET['q']</text>
-<text x="480" y="118" class="small rtl">خودکار توسط موتور PHP</text>
+<text x="480" y="118" class="small">Auto by PHP engine</text>
 <rect x="60" y="140" width="360" height="50" class="box-go"/>
 <text x="80" y="160" class="title">② r.PathValue("id")</text>
-<text x="80" y="178" class="small rtl">منبع: بخش مسیر (Go 1.22+، الگوی {id})</text>
+<text x="80" y="178" class="small">Source: path segment (Go 1.22+, {id} pattern)</text>
 <line x1="420" y1="165" x2="460" y2="165" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
 <rect x="460" y="140" width="280" height="50" class="box-php"/>
 <text x="480" y="160" class="title">route parameter</text>
-<text x="480" y="178" class="small rtl">در Laravel: $route->parameter('id')</text>
+<text x="480" y="178" class="small">In Laravel: $route->parameter('id')</text>
 <rect x="60" y="200" width="360" height="50" class="box-go"/>
 <text x="80" y="220" class="title">③ r.PostFormValue("name")</text>
-<text x="80" y="238" class="small rtl">منبع: body (application/x-www-form-urlencoded)</text>
+<text x="80" y="238" class="small">Source: body (application/x-www-form-urlencoded)</text>
 <line x1="420" y1="225" x2="460" y2="225" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
 <rect x="460" y="200" width="280" height="50" class="box-php"/>
 <text x="480" y="220" class="title">$_POST['name']</text>
-<text x="480" y="238" class="small rtl">خودکار، فقط body</text>
+<text x="480" y="238" class="small">Auto, body only</text>
 <rect x="60" y="260" width="360" height="50" class="warn-box"/>
 <text x="80" y="280" class="title">④ r.FormValue("name")</text>
-<text x="80" y="298" class="small rtl">منبع: ابتدا query سپس body — مراقب تداخل باشید!</text>
+<text x="80" y="298" class="small">Source: query first then body — beware overlap!</text>
 <line x1="420" y1="285" x2="460" y2="285" stroke="#ef4444" stroke-width="1.5" marker-end="url(#arrow)"/>
 <rect x="460" y="260" width="280" height="50" class="box-php"/>
-<text x="480" y="280" class="title">معادل دقیق ندارد</text>
-<text x="480" y="298" class="small rtl">$_POST فقط body را می‌گیرد</text>
+<text x="480" y="280" class="title">No exact equivalent</text>
+<text x="480" y="298" class="small">$_POST reads body only</text>
 <rect x="60" y="320" width="360" height="50" class="box-go"/>
 <text x="80" y="340" class="title">⑤ json.NewDecoder(r.Body).Decode(&amp;u)</text>
-<text x="80" y="358" class="small rtl">منبع: body (application/json) — DisallowUnknownFields</text>
+<text x="80" y="358" class="small">Source: body (application/json) — DisallowUnknownFields</text>
 <line x1="420" y1="345" x2="460" y2="345" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
 <rect x="460" y="320" width="280" height="50" class="box-php"/>
 <text x="480" y="340" class="title">json_decode(file_get_contents('php://input'))</text>
-<text x="480" y="358" class="small rtl">بدون محدودیت حجم یا اعتبارسنجی</text>
+<text x="480" y="358" class="small">No size limit or validation</text>
 <rect x="60" y="380" width="360" height="50" class="box-go"/>
 <text x="80" y="400" class="title">⑥ r.FormFile("photo") + ParseMultipartForm</text>
-<text x="80" y="418" class="small rtl">منبع: multipart/form-data + DetectContentType</text>
+<text x="80" y="418" class="small">Source: multipart/form-data + DetectContentType</text>
 <line x1="420" y1="405" x2="460" y2="405" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
 <rect x="460" y="380" width="280" height="50" class="box-php"/>
 <text x="480" y="400" class="title">$_FILES['photo']</text>
-<text x="480" y="418" class="small rtl">خودکار، با tmp_name و type</text>
+<text x="480" y="418" class="small">Auto, with tmp_name and type</text>
 <rect x="60" y="445" width="680" height="20" class="warn-box"/>
-<text x="400" y="459" text-anchor="middle" class="small rtl" fill="#4a5568">⚠ تفاوت کلیدی: در Go هر متد منبع مشخصی دارد؛ در PHP همه‌چیز در سوپرگلوبال‌ها آماده است — کنترل بیشتر در برابر راحتی بیشتر</text>
+<text x="400" y="459" text-anchor="middle" class="small" fill="#4a5568">⚠ Key difference: In Go each method has a clear source; in PHP everything is in superglobals — more control vs more convenience</text>
 </svg>
 <figcaption>شکل ۷-۴: شش روش اصلی استخراج داده از درخواست <bdi dir="ltr">HTTP</bdi> در <bdi dir="ltr">Go</bdi> در کنار معادل <bdi dir="ltr">PHP</bdi> آن‌ها. ستون چپ (فیروزه‌ای) متدهای <bdi dir="ltr">Go</bdi> را نشان می‌دهد که هر کدام منبع داده‌ی مشخصی دارند؛ ستون راست (بنفش) سوپرگلوبال‌های خودکار <bdi dir="ltr">PHP</bdi>. ردیف چهارم (نارنجی) هشدار می‌دهد که <code>r.FormValue</code> برخلاف <code>$_POST</code> در <bdi dir="ltr">PHP</bdi>، ابتدا در query string و سپس در body جستجو می‌کند — این رفتار می‌تواند غیرمنتظره باشد و یک منشأ رایج باگ امنیتی است. برای کنترل دقیق از <code>r.PostFormValue</code> یا <code>r.PostForm</code> استفاده کنید.</figcaption>
 </figure>

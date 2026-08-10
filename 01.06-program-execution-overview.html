@@ -102,7 +102,7 @@
 <p>در فصل چهارم این مفهوم به تفصیل توضیح داده خواهد شد ولی در ادامه توضیحات مختصری در این باره داده خواهد شد. در Go اجرای هم‌زمان با استفاده از مفهومی به‌نام <strong dir="ltr">Goroutine</strong> انجام می‌شود. </p><p>یک Goroutine واحدی سبک‌وزن از اجراست که به‌صورت هم‌زمان با سایر بخش‌های برنامه اجرا می‌شود اما برخلاف thread های سیستم‌عامل به‌صورت مستقیم توسط <strong dir="ltr">scheduler</strong> <strong>داخلی Go</strong> مدیریت می‌شود نه توسط سیستم‌عامل.</p>
 <p>یکی از تفاوت‌های کلیدی goroutine با thread های معمولی در مصرف حافظه است در حالی که یک thread سیستم‌عامل به‌طور معمول بین <strong>۵۱۲ کیلوبایت تا چند مگابایت</strong> stack نیاز دارد هر goroutine در Go با تنها <strong>۲ کیلوبایت حافظه</strong> آغاز می‌شود و در صورت نیاز به‌صورت پویا رشد می‌کند.</p>
 <p>این معماری سبک به شما اجازه می‌دهد <strong>هزاران</strong> <strong dir="ltr">task هم‌زمان</strong> را تنها با چند خط کد و بدون بار سنگین روی منابع اجرا کنید ویژگی‌ که Go را برای ساخت سرورهای مقیاس‌پذیر و ابزارهای هم‌زمان بسیار مناسب کرده است.</p>
-<h3 id="مقداردهی-runtime-گو">1.6.1 مقداردهی Runtime Go: از باینری تاmain()</h3>
+<h3 id="مقداردهی-runtime-گو">1.6.1 مقداردهی Runtime Go: از باینری تا main()</h3>
 <p>وقتی فایل باینری Go توسط سیستم‌عامل اجرا می‌شود، قبل از اینکه <code dir="ltr">main()</code> شما اجرا شود مراحل متعددی طی می‌شود. شناخت این مراحل برای درک رفتار برنامه‌های Go ضروری است. </p><p>بسیاری از برنامه‌نویسان <bdi dir="ltr">PHP</bdi> تعجب می‌کنند وقتی می‌فهمند قبل از <code>main()</code> کد قابل‌توجهی اجرا می‌شود — در <bdi dir="ltr">PHP</bdi> هر درخواست مستقیماً از ابتدای فایل شروع می‌شود و هیچ مقداردهی سراسری مشابهی وجود ندارد.</p>
 <p>۱. <strong>بارگذاری باینری:</strong> سیستم‌عامل فایل اجرایی را در حافظه mmap می‌کند. برخلاف PHP که مفسر ابتدا باید راه‌اندازی شود، باینری Go مستقیماً اجرا می‌شود.</p>
 <p>۲. <strong>entry point:</strong> اجرا از تابع <code>_rt0_amd64</code> (یا معادل آن برای معماری دیگر) شروع می‌شود. این تابع به‌صورت خودکار توسط لینکر Go تولید شده و عملیات اولیه‌ی CPU و stack را تنظیم می‌کند.</p>
@@ -327,49 +327,49 @@ func run() error {
 <path d="M0,0 L10,5 L0,10 z" fill="#64748b"/>
 </marker>
 </defs>
-<text x="360" y="28" text-anchor="middle" class="title rtl">توالی شروع برنامه‌ی Go: از باینری تا main()</text>
+<text x="360" y="28" text-anchor="middle" class="title">Go Program Startup Sequence: From binary to main()</text>
 <!-- Sequence: 5 boxes connected by arrows -->
 <rect x="20" y="80" width="130" height="80" class="box-action"/>
-<text x="85" y="105" text-anchor="middle" class="title">۱</text>
-<text x="85" y="125" text-anchor="middle" class="small rtl">بارگذاری باینری</text>
+<text x="85" y="105" text-anchor="middle" class="title">1</text>
+<text x="85" y="125" text-anchor="middle" class="small">Load binary</text>
 <text x="85" y="143" text-anchor="middle" class="small">mmap</text>
 <text x="85" y="158" text-anchor="middle" class="small">by OS</text>
 <rect x="165" y="80" width="130" height="80" class="box-action"/>
-<text x="230" y="105" text-anchor="middle" class="title">۲</text>
-<text x="230" y="125" text-anchor="middle" class="small rtl">نقطه‌ی ورود</text>
-<text x="230" y="143" text-anchor="middle" class="small rtl">Assembly</text>
+<text x="230" y="105" text-anchor="middle" class="title">2</text>
+<text x="230" y="125" text-anchor="middle" class="small">Entry point</text>
+<text x="230" y="143" text-anchor="middle" class="small">Assembly</text>
 <text x="230" y="158" text-anchor="middle" class="small">_rt0_amd64</text>
 <rect x="310" y="80" width="130" height="80" class="box-go"/>
-<text x="375" y="105" text-anchor="middle" class="title">۳</text>
-<text x="375" y="125" text-anchor="middle" class="small rtl">مقداردهی runtime</text>
-<text x="375" y="143" text-anchor="middle" class="small rtl">GC، sysmon</text>
+<text x="375" y="105" text-anchor="middle" class="title">3</text>
+<text x="375" y="125" text-anchor="middle" class="small">Runtime init</text>
+<text x="375" y="143" text-anchor="middle" class="small">GC, sysmon</text>
 <text x="375" y="158" text-anchor="middle" class="small">runtime.main</text>
 <rect x="455" y="80" width="130" height="80" class="box-go"/>
-<text x="520" y="105" text-anchor="middle" class="title">۴</text>
-<text x="520" y="125" text-anchor="middle" class="small rtl">init() پکیج‌ها</text>
-<text x="520" y="143" text-anchor="middle" class="small rtl">depth-first</text>
-<text x="520" y="158" text-anchor="middle" class="small">درخت وابستگی</text>
+<text x="520" y="105" text-anchor="middle" class="title">4</text>
+<text x="520" y="125" text-anchor="middle" class="small">Packages init()</text>
+<text x="520" y="143" text-anchor="middle" class="small">depth-first</text>
+<text x="520" y="158" text-anchor="middle" class="small">dependency tree</text>
 <rect x="600" y="80" width="110" height="80" class="box-result"/>
-<text x="655" y="105" text-anchor="middle" class="title">۵</text>
-<text x="655" y="125" text-anchor="middle" class="small rtl">main()</text>
-<text x="655" y="143" text-anchor="middle" class="small rtl">کد شما</text>
-<text x="655" y="158" text-anchor="middle" class="small rtl">اجرا می‌شود</text>
+<text x="655" y="105" text-anchor="middle" class="title">5</text>
+<text x="655" y="125" text-anchor="middle" class="small">main()</text>
+<text x="655" y="143" text-anchor="middle" class="small">your code</text>
+<text x="655" y="158" text-anchor="middle" class="small">executes</text>
 <!-- Arrows -->
 <line x1="150" y1="120" x2="165" y2="120" stroke="#64748b" stroke-width="2" marker-end="url(#arrowSeq)"/>
 <line x1="295" y1="120" x2="310" y2="120" stroke="#64748b" stroke-width="2" marker-end="url(#arrowSeq)"/>
 <line x1="440" y1="120" x2="455" y2="120" stroke="#64748b" stroke-width="2" marker-end="url(#arrowSeq)"/>
 <line x1="585" y1="120" x2="600" y2="120" stroke="#64748b" stroke-width="2" marker-end="url(#arrowSeq)"/>
 <!-- Annotations -->
-<text x="360" y="200" text-anchor="middle" class="small rtl">مراحل ۱ تا ۴ توسط کامپایلر و runtime مدیریت می‌شوند — قبل از اولین خط کد شما</text>
-<text x="360" y="222" text-anchor="middle" class="small rtl">در PHP هر درخواست از ابتدای فایل شروع می‌شود — هیچ مقداردهی runtime مشابه‌ای وجود ندارد</text>
+<text x="360" y="200" text-anchor="middle" class="small">Steps 1–4 are managed by compiler & runtime — before your first line of code</text>
+<text x="360" y="222" text-anchor="middle" class="small">In PHP each request starts from the top of the file — no similar runtime init</text>
 <!-- Comparison row -->
 <text x="120" y="270" text-anchor="middle" class="title" fill="#1565c0">PHP-FPM</text>
 <rect x="40" y="285" width="200" height="40" class="box-php"/>
-<text x="140" y="310" text-anchor="middle" class="small rtl">مفسر → opcode → اجرا → پایان</text>
-<text x="360" y="270" text-anchor="middle" class="small rtl">در برابر</text>
+<text x="140" y="310" text-anchor="middle" class="small">interpreter → opcode → run → end</text>
+<text x="360" y="270" text-anchor="middle" class="small">vs.</text>
 <text x="580" y="270" text-anchor="middle" class="title" fill="#2e7d32">Go</text>
 <rect x="480" y="285" width="200" height="40" class="box-go"/>
-<text x="580" y="310" text-anchor="middle" class="small rtl">rt0 → runtime → init → main (یک‌بار)</text>
+<text x="580" y="310" text-anchor="middle" class="small">rt0 → runtime → init → main (once)</text>
 </svg>
 <figcaption>شکل ۱-۹: توالی شروع برنامه‌ی Go — مراحل قبل از اجرای main()</figcaption>
 </figure>
@@ -382,16 +382,16 @@ func run() error {
 <path d="M0,0 L10,5 L0,10 z" fill="#64748b"/>
 </marker>
 </defs>
-<text x="360" y="28" text-anchor="middle" class="title rtl">مدل GMP: زمان‌بند goroutine در Go</text>
+<text x="360" y="28" text-anchor="middle" class="title">GMP Model: Go's Goroutine Scheduler</text>
 <!-- M1 (top-left): thread + P + run queue -->
 <text x="60" y="65" text-anchor="start" class="title">M₁</text>
 <text x="60" y="80" text-anchor="start" class="small" fill="#2e7d32">OS thread</text>
 <rect x="50" y="90" width="220" height="200" class="box-go"/>
-<text x="160" y="115" text-anchor="middle" class="small rtl">thread واقعی سیستم‌عامل</text>
+<text x="160" y="115" text-anchor="middle" class="small">Real OS thread</text>
 <!-- P inside M1 -->
 <rect x="70" y="130" width="180" height="140" fill="rgba(255,152,0,0.10)" stroke="#ff9800" stroke-width="1.5" rx="8"/>
 <text x="160" y="150" text-anchor="middle" class="title">P₁</text>
-<text x="160" y="167" text-anchor="middle" class="small rtl">پردازنده‌ی منطقی</text>
+<text x="160" y="167" text-anchor="middle" class="small">Logical processor</text>
 <!-- Goroutines in P1's local queue -->
 <rect x="85" y="180" width="60" height="28" fill="rgba(0,173,216,0.20)" stroke="#00ADD8" stroke-width="1" rx="4"/>
 <text x="115" y="198" text-anchor="middle" class="small">G₁</text>
@@ -399,19 +399,19 @@ func run() error {
 <text x="180" y="198" text-anchor="middle" class="small">G₂</text>
 <rect x="215" y="180" width="30" height="28" fill="rgba(0,173,216,0.20)" stroke="#00ADD8" stroke-width="1" rx="4"/>
 <text x="230" y="198" text-anchor="middle" class="small">G₃</text>
-<text x="160" y="230" text-anchor="middle" class="small rtl">صف محلی</text>
-<text x="160" y="248" text-anchor="middle" class="small rtl">local run queue</text>
+<text x="160" y="230" text-anchor="middle" class="small">Local queue</text>
+<text x="160" y="248" text-anchor="middle" class="small">local run queue</text>
 <!-- M2 (top-right): idle/blocked -->
 <text x="490" y="65" text-anchor="start" class="title">M₂</text>
-<text x="490" y="80" text-anchor="start" class="small" fill="#c0392b">در syscall</text>
+<text x="490" y="80" text-anchor="start" class="small" fill="#c0392b">in syscall</text>
 <rect x="450" y="90" width="220" height="120" class="box-go"/>
-<text x="560" y="115" text-anchor="middle" class="small rtl">thread مسدود در I/O</text>
+<text x="560" y="115" text-anchor="middle" class="small">Thread blocked in I/O</text>
 <rect x="470" y="135" width="180" height="60" fill="rgba(255,152,0,0.10)" stroke="#ff9800" stroke-width="1.5" rx="8" stroke-dasharray="4 3"/>
 <text x="560" y="160" text-anchor="middle" class="title" fill="#c0392b">P₂</text>
-<text x="560" y="180" text-anchor="middle" class="small rtl">منتقل شد به M₃</text>
+<text x="560" y="180" text-anchor="middle" class="small">moved to M₃</text>
 <!-- M3 (bottom-right): P2 stolen -->
 <text x="490" y="240" text-anchor="start" class="title">M₃</text>
-<text x="490" y="255" text-anchor="start" class="small" fill="#2e7d32">تازه‌ساز</text>
+<text x="490" y="255" text-anchor="start" class="small" fill="#2e7d32">freshly spun up</text>
 <rect x="450" y="265" width="220" height="100" class="box-go"/>
 <rect x="470" y="280" width="180" height="70" fill="rgba(255,152,0,0.10)" stroke="#ff9800" stroke-width="1.5" rx="8"/>
 <text x="560" y="305" text-anchor="middle" class="title">P₂</text>
@@ -421,14 +421,14 @@ func run() error {
 <text x="585" y="337" text-anchor="middle" class="small">G₅</text>
 <!-- Global queue (middle) -->
 <rect x="290" y="180" width="140" height="80" class="box"/>
-<text x="360" y="205" text-anchor="middle" class="title rtl">صف سراسری</text>
+<text x="360" y="205" text-anchor="middle" class="title">Global queue</text>
 <rect x="305" y="215" width="40" height="22" fill="rgba(0,173,216,0.20)" stroke="#00ADD8" stroke-width="1" rx="3"/>
 <text x="325" y="231" text-anchor="middle" class="small">G₆</text>
 <rect x="350" y="215" width="40" height="22" fill="rgba(0,173,216,0.20)" stroke="#00ADD8" stroke-width="1" rx="3"/>
 <text x="370" y="231" text-anchor="middle" class="small">G₇</text>
 <rect x="395" y="215" width="30" height="22" fill="rgba(0,173,216,0.20)" stroke="#00ADD8" stroke-width="1" rx="3"/>
 <text x="410" y="231" text-anchor="middle" class="small">…</text>
-<text x="360" y="255" text-anchor="middle" class="small rtl">global queue</text>
+<text x="360" y="255" text-anchor="middle" class="small">global queue</text>
 <!-- Work-stealing arrow from P1 area to global queue -->
 <path d="M 290 198 Q 270 198 270 220" fill="none" stroke="#4caf50" stroke-width="1.5" stroke-dasharray="3 2" marker-end="url(#arrowGmp)"/>
 <text x="240" y="175" text-anchor="middle" class="small" fill="#2e7d32">work-stealing</text>

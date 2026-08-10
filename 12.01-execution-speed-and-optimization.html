@@ -259,42 +259,42 @@ $ go tool pprof http://localhost:6060/debug/pprof/heap
 <path d="M0,0 L10,5 L0,10 z" fill="#64748b"/>
 </marker>
 </defs>
-<text x="380" y="28" text-anchor="middle" class="title rtl">workflow کامل پروفایلینگ — پنج مرحله</text>
+<text x="380" y="28" text-anchor="middle" class="title">Complete Profiling Workflow — 5 Stages</text>
 <rect x="20" y="60" width="130" height="130" class="box-action"/>
-<text x="85" y="86" text-anchor="middle" class="title rtl">۱. بنچمارک</text>
-<text x="85" y="104" text-anchor="middle" class="title rtl">اولیه</text>
+<text x="85" y="86" text-anchor="middle" class="title">1. Initial</text>
+<text x="85" y="104" text-anchor="middle" class="title">benchmark</text>
 <text x="85" y="128" text-anchor="middle" class="small">go test -bench</text>
 <text x="85" y="146" text-anchor="middle" class="small">-benchmem -count=5</text>
-<text x="85" y="168" text-anchor="middle" class="small rtl">تعیین baseline</text>
+<text x="85" y="168" text-anchor="middle" class="small">Establish baseline</text>
 <rect x="170" y="60" width="130" height="130" class="box-go"/>
-<text x="235" y="86" text-anchor="middle" class="title rtl">۲. پروفایل</text>
-<text x="235" y="104" text-anchor="middle" class="title rtl">CPU</text>
+<text x="235" y="86" text-anchor="middle" class="title">2. CPU</text>
+<text x="235" y="104" text-anchor="middle" class="title">profile</text>
 <text x="235" y="128" text-anchor="middle" class="small">-cpuprofile=cpu.prof</text>
 <text x="235" y="146" text-anchor="middle" class="small">top, list, web</text>
-<text x="235" y="168" text-anchor="middle" class="small rtl">flat و cum</text>
+<text x="235" y="168" text-anchor="middle" class="small">flat &amp; cum</text>
 <rect x="320" y="60" width="130" height="130" class="box-go"/>
-<text x="385" y="86" text-anchor="middle" class="title rtl">۳. پروفایل</text>
-<text x="385" y="104" text-anchor="middle" class="title rtl">حافظه</text>
+<text x="385" y="86" text-anchor="middle" class="title">3. Memory</text>
+<text x="385" y="104" text-anchor="middle" class="title">profile</text>
 <text x="385" y="128" text-anchor="middle" class="small">-memprofile=mem.prof</text>
 <text x="385" y="146" text-anchor="middle" class="small">-inuse_objects</text>
 <text x="385" y="168" text-anchor="middle" class="small">-alloc_objects</text>
 <rect x="470" y="60" width="130" height="130" class="box-join"/>
-<text x="535" y="96" text-anchor="middle" class="title rtl">۴. بهینه‌سازی</text>
-<text x="535" y="128" text-anchor="middle" class="small rtl">فقط نقطه‌ای که</text>
-<text x="535" y="146" text-anchor="middle" class="small rtl">pprof شناسایی کرده</text>
-<text x="535" y="168" text-anchor="middle" class="small rtl">یک تابع یا حلقه</text>
+<text x="535" y="96" text-anchor="middle" class="title">4. Optimize</text>
+<text x="535" y="128" text-anchor="middle" class="small">Only the point</text>
+<text x="535" y="146" text-anchor="middle" class="small">pprof identified</text>
+<text x="535" y="168" text-anchor="middle" class="small">One function or loop</text>
 <rect x="620" y="60" width="130" height="130" class="box-result"/>
-<text x="685" y="96" text-anchor="middle" class="title rtl">۵. تأیید</text>
+<text x="685" y="96" text-anchor="middle" class="title">5. Verify</text>
 <text x="685" y="128" text-anchor="middle" class="small">benchstat</text>
-<text x="685" y="146" text-anchor="middle" class="small rtl">p-value &lt; 0.05</text>
-<text x="685" y="168" text-anchor="middle" class="small rtl">اگر بهبود نبود</text>
-<text x="685" y="186" text-anchor="middle" class="small rtl">→ rollback</text>
+<text x="685" y="146" text-anchor="middle" class="small">p-value &lt; 0.05</text>
+<text x="685" y="168" text-anchor="middle" class="small">If no improvement</text>
+<text x="685" y="186" text-anchor="middle" class="small">→ rollback</text>
 <line x1="150" y1="125" x2="170" y2="125" stroke="#64748b" stroke-width="2" marker-end="url(#arrow-prof)"/>
 <line x1="300" y1="125" x2="320" y2="125" stroke="#64748b" stroke-width="2" marker-end="url(#arrow-prof)"/>
 <line x1="450" y1="125" x2="470" y2="125" stroke="#64748b" stroke-width="2" marker-end="url(#arrow-prof)"/>
 <line x1="600" y1="125" x2="620" y2="125" stroke="#64748b" stroke-width="2" marker-end="url(#arrow-prof)"/>
 <path d="M 685 195 Q 685 240, 380 240 Q 85 240, 85 195" fill="none" stroke="#64748b" stroke-width="2" marker-end="url(#arrow-prof)" stroke-dasharray="6,4"/>
-<text x="380" y="258" text-anchor="middle" class="small rtl">اگر بهبود معنادار نبود (p-value &gt; 0.05)، تغییر را برگردانید و دوباره پروفایل بگیرید</text>
+<text x="380" y="258" text-anchor="middle" class="small">If no significant improvement (p-value &gt; 0.05), revert the change and re-profile</text>
 </svg>
 <figcaption>شکل ۱۲-۳: workflow کامل پروفایلینگ — پنج مرحله‌ی متوالی که هر مرحله بدون مرحله‌ی قبلی بی‌معنی است. ابتدا بنچمارک <bdi dir="ltr">baseline</bdi> بگیرید، سپس پروفایل CPU و حافظه، فقط گلوگاه شناسایی‌شده را بهینه کنید، و در نهایت با <bdi dir="ltr">benchstat</bdi> تأیید کنید. اگر بهبود معنادار نبود، رویکرد خود را بازبینی کنید.</figcaption>
 </figure>
@@ -351,25 +351,25 @@ if err != nil {
 <path d="M0,0 L10,5 L0,10 z" fill="#64748b"/>
 </marker>
 </defs>
-<text x="380" y="28" text-anchor="middle" class="title rtl">مقایسه عملکرد Go و PHP در عملیات مختلف</text>
-<text x="380" y="48" text-anchor="middle" class="small rtl">(نسبت سرعت Go به PHP — ارقام نمونه، نتایج واقعی به سخت‌افزار بستگی دارد)</text>
-<text x="220" y="94" text-anchor="end" class="small rtl">پردازش ریاضی (CPU-bound)</text>
+<text x="380" y="28" text-anchor="middle" class="title">Go vs PHP Performance by Operation</text>
+<text x="380" y="48" text-anchor="middle" class="small">(Go-to-PHP speed ratio — sample figures; real results depend on hardware)</text>
+<text x="220" y="94" text-anchor="end" class="small">Math processing (CPU-bound)</text>
 <rect x="230" y="80" width="14" height="22" class="box-php"/>
 <text x="252" y="96" text-anchor="start" class="small">PHP 1×</text>
 <rect x="230" y="106" width="434" height="22" class="box-go"/>
 <text x="672" y="122" text-anchor="start" class="small">Go 31×</text>
-<text x="220" y="169" text-anchor="end" class="small rtl">پردازش Regex</text>
+<text x="220" y="169" text-anchor="end" class="small">Regex processing</text>
 <rect x="230" y="155" width="14" height="22" class="box-php"/>
 <text x="252" y="171" text-anchor="start" class="small">PHP 1×</text>
 <rect x="230" y="181" width="140" height="22" class="box-go"/>
 <text x="378" y="197" text-anchor="start" class="small">Go ~10×</text>
-<text x="220" y="244" text-anchor="end" class="small rtl">خواندن فایل (I/O-bound)</text>
+<text x="220" y="244" text-anchor="end" class="small">File reading (I/O-bound)</text>
 <rect x="230" y="230" width="14" height="22" class="box-php"/>
 <text x="252" y="246" text-anchor="start" class="small">PHP 1×</text>
 <rect x="230" y="256" width="18" height="22" class="box-go"/>
 <text x="256" y="272" text-anchor="start" class="small">Go 1.3×</text>
 <rect x="40" y="295" width="680" height="35" class="tip-box"/>
-<text x="380" y="318" text-anchor="middle" class="small rtl">گلوگاه CPU-bound → زبان تأثیر تعیین‌کننده | گلوگاه I/O-bound → دیسک/شبکه محدود می‌کند</text>
+<text x="380" y="318" text-anchor="middle" class="small">CPU-bound → language matters most | I/O-bound → disk/network limits you</text>
 </svg>
 <figcaption>شکل ۱۲-۴: مقایسه بنچمارک Go و PHP در عملیات مختلف — در عملیات <bdi dir="ltr">CPU-bound</bdi> مثل پردازش ریاضی، Go تا ۳۱ برابر سریع‌تر است چون مستقیماً به باینری بومی کامپایل می‌شود. اما در عملیات <bdi dir="ltr">I/O-bound</bdi> مثل خواندن فایل، گلوگاه دیسک یا شبکه است و تفاوت تنها حدود ۱.۳ برابر است. نتیجه‌ی عملی: قبل از مهاجرت به Go به‌دلیل سرعت، ابتدا بررسی کنید آیا گلوگاه CPU-bound است یا I/O-bound.</figcaption>
 </figure>

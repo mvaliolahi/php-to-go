@@ -334,57 +334,57 @@ fclose($fp);
 <path d="M0,0 L10,5 L0,10 z" fill="#64748b"/>
 </marker>
 </defs>
-<text x="380" y="28" text-anchor="middle" class="title rtl">فلوچارت حالت‌های نوشتن: کدام پرچم؟</text>
+<text x="380" y="28" text-anchor="middle" class="title">Write-mode decision flowchart: which flag?</text>
 <!-- Start -->
 <rect x="280" y="50" width="200" height="50" class="box-action"/>
-<text x="380" y="80" text-anchor="middle" class="title rtl">شروع: نیاز به نوشتن فایل</text>
+<text x="380" y="80" text-anchor="middle" class="title">Start: need to write a file</text>
 <line x1="380" y1="100" x2="380" y2="125" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
 <!-- Decision diamond -->
 <polygon points="380,125 510,175 380,225 250,175" class="warn-box"/>
-<text x="380" y="170" text-anchor="middle" class="title rtl">هدف نوشتن چیست؟</text>
-<text x="380" y="190" text-anchor="middle" class="small rtl">(جایگزینی، اضافه، اتمیک)</text>
+<text x="380" y="170" text-anchor="middle" class="title">Write goal?</text>
+<text x="380" y="190" text-anchor="middle" class="small">(replace, append, atomic)</text>
 <!-- Branch A: Replace → os.Create / O_TRUNC -->
 <line x1="250" y1="175" x2="140" y2="175" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
 <line x1="140" y1="175" x2="140" y2="245" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
-<text x="195" y="165" text-anchor="middle" class="small rtl">جایگزینی محتوا</text>
+<text x="195" y="165" text-anchor="middle" class="small">Replace content</text>
 <rect x="30" y="245" width="220" height="100" class="box-go"/>
 <text x="140" y="270" text-anchor="middle" class="title">os.Create() / O_TRUNC</text>
 <line x1="40" y1="280" x2="240" y2="280" stroke="#cbd5e1" stroke-width="1"/>
-<text x="140" y="298" text-anchor="middle" class="small rtl">فایل از نو ایجاد می‌شود</text>
-<text x="140" y="316" text-anchor="middle" class="small rtl">محتوای قبلی پاک می‌شود</text>
-<text x="140" y="334" text-anchor="middle" class="small rtl" fill="#ef4444">خطر: داده قبلی از بین می‌رود</text>
+<text x="140" y="298" text-anchor="middle" class="small">File is created fresh</text>
+<text x="140" y="316" text-anchor="middle" class="small">Previous contents erased</text>
+<text x="140" y="334" text-anchor="middle" class="small" fill="#ef4444">Risk: prior data is destroyed</text>
 <!-- Branch B: Append → O_APPEND -->
 <line x1="380" y1="225" x2="380" y2="245" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
-<text x="430" y="240" text-anchor="middle" class="small rtl">افزودن به انتها</text>
+<text x="430" y="240" text-anchor="middle" class="small">Append to end</text>
 <rect x="270" y="245" width="220" height="100" class="box-go"/>
 <text x="380" y="270" text-anchor="middle" class="title">O_APPEND | O_CREATE</text>
 <line x1="280" y1="280" x2="480" y2="280" stroke="#cbd5e1" stroke-width="1"/>
-<text x="380" y="298" text-anchor="middle" class="small rtl">داده به انتهای فایل اضافه می‌شود</text>
-<text x="380" y="316" text-anchor="middle" class="small rtl">مناسب برای لاگ‌فایل‌ها</text>
-<text x="380" y="334" text-anchor="middle" class="small rtl" fill="#4caf50">معادل FILE_APPEND در PHP</text>
+<text x="380" y="298" text-anchor="middle" class="small">Data appended to file end</text>
+<text x="380" y="316" text-anchor="middle" class="small">Suitable for log files</text>
+<text x="380" y="334" text-anchor="middle" class="small" fill="#4caf50">Equivalent to PHP FILE_APPEND</text>
 <!-- Branch C: Atomic → temp + Sync + Rename -->
 <line x1="510" y1="175" x2="620" y2="175" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
 <line x1="620" y1="175" x2="620" y2="245" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
-<text x="565" y="165" text-anchor="middle" class="small rtl">داده حساس</text>
+<text x="565" y="165" text-anchor="middle" class="small">Sensitive data</text>
 <rect x="510" y="245" width="220" height="100" class="box-result"/>
 <text x="620" y="270" text-anchor="middle" class="title">Atomic Write</text>
 <line x1="520" y1="280" x2="720" y2="280" stroke="#cbd5e1" stroke-width="1"/>
-<text x="620" y="298" text-anchor="middle" class="small rtl">۱. نوشتن در فایل موقت</text>
-<text x="620" y="316" text-anchor="middle" class="small rtl">۲. f.Sync() → دیسک</text>
-<text x="620" y="334" text-anchor="middle" class="small rtl">۳. os.Rename() اتمیک</text>
+<text x="620" y="298" text-anchor="middle" class="small">1. Write to a temp file</text>
+<text x="620" y="316" text-anchor="middle" class="small">2. f.Sync() → disk</text>
+<text x="620" y="334" text-anchor="middle" class="small">3. os.Rename() atomic</text>
 <!-- PHP equivalents (bottom) -->
 <line x1="140" y1="345" x2="140" y2="375" stroke="#64748b" stroke-width="1" stroke-dasharray="3 3" marker-end="url(#arrow)"/>
 <line x1="380" y1="345" x2="380" y2="375" stroke="#64748b" stroke-width="1" stroke-dasharray="3 3" marker-end="url(#arrow)"/>
 <line x1="620" y1="345" x2="620" y2="375" stroke="#64748b" stroke-width="1" stroke-dasharray="3 3" marker-end="url(#arrow)"/>
 <rect x="30" y="375" width="220" height="50" class="box-php"/>
 <text x="140" y="400" text-anchor="middle" class="title">file_put_contents()</text>
-<text x="140" y="418" text-anchor="middle" class="small rtl">بدون پرچم FILE_APPEND</text>
+<text x="140" y="418" text-anchor="middle" class="small">Without FILE_APPEND flag</text>
 <rect x="270" y="375" width="220" height="50" class="box-php"/>
 <text x="380" y="400" text-anchor="middle" class="title">+ FILE_APPEND</text>
-<text x="380" y="418" text-anchor="middle" class="small rtl">افزودن به انتها</text>
+<text x="380" y="418" text-anchor="middle" class="small">Append to end</text>
 <rect x="510" y="375" width="220" height="50" class="box-php"/>
-<text x="620" y="400" text-anchor="middle" class="title">معادل رسمی ندارد</text>
-<text x="620" y="418" text-anchor="middle" class="small rtl">پیاده‌سازی دستی لازم است</text>
+<text x="620" y="400" text-anchor="middle" class="title">No official equivalent</text>
+<text x="620" y="418" text-anchor="middle" class="small">Manual implementation required</text>
 </svg>
 <figcaption>شکل ۶-۴: فلوچارت حالت‌های باز کردن فایل برای نوشتن — اگر هدف جایگزینی کامل محتواست، <code>os.Create()</code> یا <code>O_TRUNC</code> مناسب است (با خطر پاک شدن داده‌ی قبلی). برای افزودن به انتها (مثل لاگ)، پرچم <code>O_APPEND</code> معادل <code>FILE_APPEND</code> در PHP است. برای داده‌ی حساس (مثل پیکربندی)، الگوی «فایل موقت + <code>Sync()</code> + <code>Rename()</code>» تنها روش اتمیک و قابل‌اطمینان است که در PHP معادل رسمی ندارد. در ردیف پایین، معادل‌های PHP برای مقایسه آورده شده‌اند.</figcaption>
 </figure>

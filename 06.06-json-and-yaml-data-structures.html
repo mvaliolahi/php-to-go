@@ -569,7 +569,7 @@ func main() {
 <span class="quote-book">کتاب The Pragmatic Programmer</span>
 </p>
 </div>
-<h3 id="json-marshal-unmarshal-type-mapping">6.6.13 نگاشت نوع‌هایGoبهJSONدرMarshal/Unmarshal</h3>
+<h3 id="json-marshal-unmarshal-type-mapping">6.6.13 نگاشت نوع‌های Go به JSON در Marshal/Unmarshal</h3>
 <p>درک دقیق نگاشت نوع‌های <bdi dir="ltr">Go</bdi> به نوع‌های <bdi dir="ltr">JSON</bdi> برای جلوگیری از باگ‌های پنهان بسیار مهم است. برخی نگاشت‌ها مستقیم و ساده هستند مانند تبدیل <bdi dir="ltr">string</bdi> به رشته‌ی <bdi dir="ltr">JSON</bdi> یا <bdi dir="ltr">bool</bdi> به <bdi dir="ltr">boolean</bdi>، اما برخی دیگر نیاز به توجه ویژه دارند. مثلاً <bdi dir="ltr">time.Time</bdi> به رشته‌ی <bdi dir="ltr">RFC3339</bdi> تبدیل می‌شود و <bdi dir="ltr">[]byte</bdi> به رشته‌ی <bdi dir="ltr">base64</bdi> تبدیل می‌شود. </p><p>همچنین فیلدهای <bdi dir="ltr">unexported</bdi> (که با حرف کوچک شروع می‌شوند) به‌طور کامل نادیده گرفته می‌شوند و هرگز در خروجی <bdi dir="ltr">JSON</bdi> ظاهر نمی‌شوند. این رفتار می‌تواند برای برنامه‌نویسان <bdi dir="ltr">PHP</bdi> که به دسترسی پویا به همه‌ی کلیدها عادت دارند، غافلگیرکننده باشد.</p>
 <figure class="diagram" dir="ltr">
 <svg viewBox="0 0 760 460" xmlns="http://www.w3.org/2000/svg">
@@ -584,7 +584,7 @@ func main() {
 <path d="M0,0 L10,5 L0,10 z" fill="#ff9800"/>
 </marker>
 </defs>
-<text x="380" y="28" text-anchor="middle" class="title rtl">نگاشت نوع‌های Go به JSON در Marshal/Unmarshal</text>
+<text x="380" y="28" text-anchor="middle" class="title">Go type → JSON mapping in Marshal/Unmarshal</text>
 <text x="170" y="55" text-anchor="middle" class="title">Go</text>
 <text x="590" y="55" text-anchor="middle" class="title">JSON</text>
 <line x1="380" y1="65" x2="380" y2="395" stroke="#cbd5e1" stroke-width="1" stroke-dasharray="4 4"/>
@@ -626,13 +626,13 @@ func main() {
 <line x1="290" y1="345" x2="470" y2="345" stroke="#4caf50" stroke-width="2" marker-end="url(#arrow-ok)"/>
 <!-- Tricky mappings section -->
 <line x1="50" y1="385" x2="710" y2="385" stroke="#cbd5e1" stroke-width="1"/>
-<text x="380" y="405" text-anchor="middle" class="title rtl" fill="#ff9800">نگاشت‌های غیر بدیهی:</text>
+<text x="380" y="405" text-anchor="middle" class="title" fill="#ff9800">Non-obvious mappings:</text>
 <rect x="50" y="415" width="220" height="35" class="warn-box"/>
 <text x="160" y="437" text-anchor="middle" class="small">time.Time → "2006-01-02T15:04:05Z"</text>
 <rect x="290" y="415" width="200" height="35" class="warn-box"/>
 <text x="390" y="437" text-anchor="middle" class="small">[]byte → "base64-encoded"</text>
 <rect x="500" y="415" width="210" height="35" class="warn-box"/>
-<text x="605" y="437" text-anchor="middle" class="small">unexported field → (حذف می‌شود)</text>
+<text x="605" y="437" text-anchor="middle" class="small">unexported field → (omitted)</text>
 </svg>
 <figcaption>شکل ۶-۷: نگاشت نوع‌های <bdi dir="ltr">Go</bdi> به <bdi dir="ltr">JSON</bdi> — شش نگاشت مستقیم (سبز، خط بالایی): <code>string</code> ↔ رشته، <code>int</code>/<code>float</code> ↔ عدد، <code>bool</code> ↔ بولین، <code>nil</code> اشاره‌گر ↔ <code>null</code>، <code>[]T</code> ↔ آرایه، و <code>struct</code>/<code>map</code> ↔ آبجکت. سه نگاشت غیربدیهی (نارنجی، پایین) که اغلب برای برنامه‌نویسان PHP غافلگیرکننده‌اند: <code>time.Time</code> به رشته‌ی RFC3339 تبدیل می‌شود، <code>[]byte</code> به‌صورت base64 رمزگذاری می‌شود (نه آرایه‌ی عدد!)، و فیلدهای <code>unexported</code> (با حرف کوچک) به‌طور کامل از خروجی حذف می‌شوند — حتی اگر <code>struct tag</code> داشته باشند.</figcaption>
 </figure>

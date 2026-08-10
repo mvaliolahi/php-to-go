@@ -341,49 +341,49 @@ written, _ := io.CopyN(dst, src, 1024)
 <path d="M0,0 L10,5 L0,10 z" fill="#64748b"/>
 </marker>
 </defs>
-<text x="380" y="28" text-anchor="middle" class="title rtl">سلسله‌مراتب رابط‌های io: ترکیب به‌جای وراثت</text>
-<text x="380" y="50" text-anchor="middle" class="small rtl">رابط‌های پایه (پایین) با ترکیب یکدیگر، رابط‌های ترکیبی (بالا) را می‌سازند</text>
+<text x="380" y="28" text-anchor="middle" class="title">io interface hierarchy: composition over inheritance</text>
+<text x="380" y="50" text-anchor="middle" class="small">Base interfaces (bottom) compose to form composite interfaces (top)</text>
 <!-- Composite interfaces (top row) -->
 <rect x="40" y="80" width="200" height="80" class="box-go"/>
 <text x="140" y="105" text-anchor="middle" class="title">io.ReadWriter</text>
 <line x1="50" y1="115" x2="230" y2="115" stroke="#cbd5e1" stroke-width="1"/>
 <text x="140" y="132" text-anchor="middle" class="small">Read(p) + Write(p)</text>
-<text x="140" y="150" text-anchor="middle" class="small rtl">مثال: bytes.Buffer</text>
+<text x="140" y="150" text-anchor="middle" class="small">e.g. bytes.Buffer</text>
 <rect x="280" y="80" width="200" height="80" class="box-go"/>
 <text x="380" y="105" text-anchor="middle" class="title">io.ReadCloser</text>
 <line x1="290" y1="115" x2="470" y2="115" stroke="#cbd5e1" stroke-width="1"/>
 <text x="380" y="132" text-anchor="middle" class="small">Read(p) + Close()</text>
-<text x="380" y="150" text-anchor="middle" class="small rtl">مثال: http.Response.Body</text>
+<text x="380" y="150" text-anchor="middle" class="small">e.g. http.Response.Body</text>
 <rect x="520" y="80" width="200" height="80" class="box-go"/>
 <text x="620" y="105" text-anchor="middle" class="title">io.WriteCloser</text>
 <line x1="530" y1="115" x2="710" y2="115" stroke="#cbd5e1" stroke-width="1"/>
 <text x="620" y="132" text-anchor="middle" class="small">Write(p) + Close()</text>
-<text x="620" y="150" text-anchor="middle" class="small rtl">مثال: gzip.Writer</text>
+<text x="620" y="150" text-anchor="middle" class="small">e.g. gzip.Writer</text>
 <!-- Mega composite (middle row, centered) -->
 <rect x="200" y="190" width="360" height="80" class="box-action"/>
 <text x="380" y="215" text-anchor="middle" class="title">io.ReadWriteCloser</text>
 <line x1="210" y1="225" x2="550" y2="225" stroke="#cbd5e1" stroke-width="1"/>
 <text x="380" y="242" text-anchor="middle" class="small">Read(p) + Write(p) + Close()</text>
-<text x="380" y="260" text-anchor="middle" class="small rtl">مثال: *os.File، net.Conn</text>
+<text x="380" y="260" text-anchor="middle" class="small">e.g. *os.File, net.Conn</text>
 <!-- Base interfaces (bottom row) -->
 <rect x="40" y="320" width="200" height="100" class="box-result"/>
 <text x="140" y="345" text-anchor="middle" class="title">io.Reader</text>
 <line x1="50" y1="355" x2="230" y2="355" stroke="#cbd5e1" stroke-width="1"/>
 <text x="140" y="375" text-anchor="middle" class="small">Read(p []byte)</text>
 <text x="140" y="393" text-anchor="middle" class="small">(n int, err error)</text>
-<text x="140" y="411" text-anchor="middle" class="small rtl">یک متد — یک قرارداد</text>
+<text x="140" y="411" text-anchor="middle" class="small">One method — one contract</text>
 <rect x="280" y="320" width="200" height="100" class="warn-box"/>
 <text x="380" y="345" text-anchor="middle" class="title">io.Closer</text>
 <line x1="290" y1="355" x2="470" y2="355" stroke="#cbd5e1" stroke-width="1"/>
 <text x="380" y="375" text-anchor="middle" class="small">Close() error</text>
-<text x="380" y="393" text-anchor="middle" class="small rtl">آزادسازی منبع</text>
-<text x="380" y="411" text-anchor="middle" class="small rtl">(fd، اتصال، فایل)</text>
+<text x="380" y="393" text-anchor="middle" class="small">Release resource</text>
+<text x="380" y="411" text-anchor="middle" class="small">(fd, connection, file)</text>
 <rect x="520" y="320" width="200" height="100" class="box-result"/>
 <text x="620" y="345" text-anchor="middle" class="title">io.Writer</text>
 <line x1="530" y1="355" x2="710" y2="355" stroke="#cbd5e1" stroke-width="1"/>
 <text x="620" y="375" text-anchor="middle" class="small">Write(p []byte)</text>
 <text x="620" y="393" text-anchor="middle" class="small">(n int, err error)</text>
-<text x="620" y="411" text-anchor="middle" class="small rtl">یک متد — یک قرارداد</text>
+<text x="620" y="411" text-anchor="middle" class="small">One method — one contract</text>
 <!-- Arrows: base → composite (showing composition) -->
 <line x1="140" y1="320" x2="140" y2="160" stroke="#64748b" stroke-width="1.5" stroke-dasharray="4 3" marker-end="url(#arrow)"/>
 <line x1="380" y1="320" x2="380" y2="270" stroke="#64748b" stroke-width="1.5" stroke-dasharray="4 3" marker-end="url(#arrow)"/>
@@ -393,7 +393,7 @@ written, _ := io.CopyN(dst, src, 1024)
 <!-- Arrow from base row to middle mega box -->
 <line x1="140" y1="320" x2="280" y2="270" stroke="#64748b" stroke-width="1" stroke-dasharray="2 4"/>
 <line x1="620" y1="320" x2="480" y2="270" stroke="#64748b" stroke-width="1" stroke-dasharray="2 4"/>
-<text x="380" y="298" text-anchor="middle" class="small rtl" fill="#64748b">ترکیب سه‌گانه</text>
+<text x="380" y="298" text-anchor="middle" class="small" fill="#64748b">Triple composition</text>
 </svg>
 <figcaption>شکل ۶-۲: سلسله‌مراتب رابط‌های <code>io</code> — سه رابط پایه‌ی تک‌متدی (Reader، Writer، Closer) در پایین قرار دارند و با ترکیب یکدیگر، رابط‌های قوی‌تری می‌سازند: <code>io.ReadWriter</code>، <code>io.ReadCloser</code> و <code>io.WriteCloser</code> در ردیف میانی، و در نهایت <code>io.ReadWriteCloser</code> به‌عنوان ترکیب هر سه. خطوط نقطه‌چین نشان‌دهنده‌ی ترکیب (composition) هستند. هر نوعی که هر سه متد را پیاده‌سازی کند (مثل <code>*os.File</code> و <code>net.Conn</code>) به‌صورت خودکار <code>io.ReadWriteCloser</code> محسوب می‌شود — بدون اعلان صریح.</figcaption>
 </figure>

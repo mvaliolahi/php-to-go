@@ -147,46 +147,46 @@ err = tmpl.ExecuteTemplate(w, "base.layout.html", data)
 <path d="M0,0 L10,5 L0,10 z" fill="#64748b"/>
 </marker>
 </defs>
-<text x="380" y="28" text-anchor="middle" class="title rtl">وراثت قالب در Go با block و define — معادل @extends و @yield در Blade</text>
+<text x="380" y="28" text-anchor="middle" class="title">Template inheritance in Go with block and define — like @extends/@yield in Blade</text>
 <!-- Left: base.layout.html -->
-<text x="190" y="58" text-anchor="middle" class="title" fill="#00ADD8">base.layout.html (اسکلت)</text>
+<text x="190" y="58" text-anchor="middle" class="title" fill="#00ADD8">base.layout.html (skeleton)</text>
 <rect x="40" y="70" width="300" height="310" class="box-go"/>
 <text x="55" y="95" class="small">&lt;!DOCTYPE html&gt;</text>
 <text x="55" y="115" class="small">&lt;html&gt;&lt;head&gt;</text>
 <text x="55" y="135" class="small">  &lt;title&gt;</text>
 <rect x="65" y="145" width="260" height="22" class="box-result" fill="rgba(76,175,80,0.12)"/>
-<text x="195" y="161" text-anchor="middle" class="small">{{ block "title" . }}پیش‌فرض{{ end }}</text>
+<text x="195" y="161" text-anchor="middle" class="small">{{ block "title" . }}default{{ end }}</text>
 <text x="55" y="185" class="small">  &lt;/title&gt;</text>
 <text x="55" y="205" class="small">  &lt;head&gt;</text>
 <rect x="65" y="210" width="260" height="22" class="warn-box" fill="rgba(255,152,0,0.12)"/>
-<text x="195" y="226" text-anchor="middle" class="small">{{ block "head" . }}{{ end }}  ← اختیاری</text>
+<text x="195" y="226" text-anchor="middle" class="small">{{ block "head" . }}{{ end }}  ← optional</text>
 <text x="55" y="250" class="small">&lt;body&gt;</text>
 <rect x="65" y="255" width="260" height="22" class="box-result" fill="rgba(76,175,80,0.12)"/>
-<text x="195" y="271" text-anchor="middle" class="small">{{ block "content" . }}پیش‌فرض{{ end }}</text>
+<text x="195" y="271" text-anchor="middle" class="small">{{ block "content" . }}default{{ end }}</text>
 <text x="55" y="295" class="small">&lt;/body&gt;</text>
 <rect x="65" y="300" width="260" height="22" class="warn-box" fill="rgba(255,152,0,0.12)"/>
-<text x="195" y="316" text-anchor="middle" class="small">{{ block "scripts" . }}{{ end }}  ← اختیاری</text>
+<text x="195" y="316" text-anchor="middle" class="small">{{ block "scripts" . }}{{ end }}  ← optional</text>
 <text x="55" y="345" class="small">&lt;/html&gt;</text>
-<text x="55" y="368" class="small rtl" fill="#4a5568">سه بلوک با محتوای پیش‌فرض تعریف شده</text>
+<text x="55" y="368" class="small" fill="#4a5568">Three blocks with default content defined</text>
 <!-- Right: home.html (child) -->
-<text x="570" y="58" text-anchor="middle" class="title" fill="#2196f3">home.html (فرزند)</text>
+<text x="570" y="58" text-anchor="middle" class="title" fill="#2196f3">home.html (child)</text>
 <rect x="420" y="70" width="300" height="310" class="box-action"/>
-<text x="435" y="95" class="small rtl">فقط بلوک‌هایی که نیاز به بازنویسی دارند:</text>
+<text x="435" y="95" class="small">Only blocks that need overriding:</text>
 <line x1="435" y1="105" x2="705" y2="105" stroke="#cbd5e1" stroke-width="1"/>
-<text x="435" y="125" class="small rtl">① عنوان صفحه (override شده)</text>
+<text x="435" y="125" class="small">① Page title (overridden)</text>
 <rect x="445" y="135" width="260" height="22" class="box-result" fill="rgba(76,175,80,0.18)"/>
-<text x="575" y="151" text-anchor="middle" class="small">{{ define "title" . }}صفحه اصلی{{ end }}</text>
-<text x="435" y="185" class="small rtl">② محتوای صفحه (override شده)</text>
+<text x="575" y="151" text-anchor="middle" class="small">{{ define "title" . }}Home page{{ end }}</text>
+<text x="435" y="185" class="small">② Page content (overridden)</text>
 <rect x="445" y="195" width="260" height="60" class="box-result" fill="rgba(76,175,80,0.18)"/>
 <text x="575" y="215" text-anchor="middle" class="small">{{ define "content" . }}</text>
-<text x="575" y="232" text-anchor="middle" class="small rtl">&lt;section&gt;خوش آمدید&lt;/section&gt;</text>
+<text x="575" y="232" text-anchor="middle" class="small">&lt;section&gt;Welcome&lt;/section&gt;</text>
 <text x="575" y="249" text-anchor="middle" class="small">{{ end }}</text>
-<text x="435" y="275" class="small rtl">✗ head بازنویسی نشد → پیش‌فرض خالی</text>
-<text x="435" y="295" class="small rtl">✗ scripts بازنویسی نشد → پیش‌فرض خالی</text>
+<text x="435" y="275" class="small">✗ head not overridden → empty default</text>
+<text x="435" y="295" class="small">✗ scripts not overridden → empty default</text>
 <line x1="435" y1="305" x2="705" y2="305" stroke="#cbd5e1" stroke-width="1"/>
-<text x="435" y="325" class="small rtl">ExecuteTemplate(w, "base.layout.html", data)</text>
-<text x="435" y="345" class="small rtl" fill="#4a5568">↓ نام قالب پایه، نه فرزند</text>
-<text x="435" y="368" class="small rtl" fill="#4caf50">→ HTML نهایی با محتوای بازنویسی‌شده</text>
+<text x="435" y="325" class="small">ExecuteTemplate(w, "base.layout.html", data)</text>
+<text x="435" y="345" class="small" fill="#4a5568">↓ base template name, not child</text>
+<text x="435" y="368" class="small" fill="#4caf50">→ Final HTML with overridden content</text>
 <!-- Arrows from child to base (define overrides block) -->
 <path d="M 445 146 Q 380 146 325 156" stroke="#4caf50" stroke-width="1.5" stroke-dasharray="3 3" fill="none" marker-end="url(#arrow)"/>
 <path d="M 445 215 Q 380 215 325 266" stroke="#4caf50" stroke-width="1.5" stroke-dasharray="3 3" fill="none" marker-end="url(#arrow)"/>

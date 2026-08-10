@@ -118,33 +118,33 @@
 <path d="M0,0 L10,5 L0,10 z" fill="#64748b"/>
 </marker>
 </defs>
-<text x="360" y="30" text-anchor="middle" class="title rtl">هرم تست در Go</text>
+<text x="360" y="30" text-anchor="middle" class="title">Testing Pyramid in Go</text>
 <!-- Pyramid layers (triangle split into 3 horizontal bands) -->
 <!-- E2E (top, narrowest) -->
 <polygon points="330,70 390,70 410,150 310,150" class="box-join"/>
 <text x="360" y="105" text-anchor="middle" class="title">E2E</text>
-<text x="360" y="125" text-anchor="middle" class="small">~۱۰٪</text>
-<text x="360" y="143" text-anchor="middle" class="small rtl">کند · گران</text>
+<text x="360" y="125" text-anchor="middle" class="small">~10%</text>
+<text x="360" y="143" text-anchor="middle" class="small">slow · costly</text>
 <!-- Integration (middle) -->
 <polygon points="310,150 410,150 440,240 280,240" class="box-action"/>
-<text x="360" y="185" text-anchor="middle" class="title rtl">یکپارچگی (Integration)</text>
-<text x="360" y="205" text-anchor="middle" class="small">~۲۰٪</text>
-<text x="360" y="225" text-anchor="middle" class="small rtl">متوسط</text>
+<text x="360" y="185" text-anchor="middle" class="title">Integration</text>
+<text x="360" y="205" text-anchor="middle" class="small">~20%</text>
+<text x="360" y="225" text-anchor="middle" class="small">moderate</text>
 <!-- Unit (base, widest) -->
 <polygon points="280,240 440,240 490,340 230,340" class="box-result"/>
-<text x="360" y="275" text-anchor="middle" class="title rtl">واحد (Unit)</text>
-<text x="360" y="295" text-anchor="middle" class="small">~۷۰٪</text>
-<text x="360" y="315" text-anchor="middle" class="small rtl">سریع · ارزان · فراوان</text>
+<text x="360" y="275" text-anchor="middle" class="title">Unit</text>
+<text x="360" y="295" text-anchor="middle" class="small">~70%</text>
+<text x="360" y="315" text-anchor="middle" class="small">fast · cheap · abundant</text>
 <!-- Left axis: count -->
 <line x1="100" y1="70" x2="100" y2="340" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow-py)"/>
-<text x="80" y="100" text-anchor="middle" class="small rtl" transform="rotate(-90 80 100)">کم‌تعداد</text>
-<text x="80" y="330" text-anchor="middle" class="small rtl" transform="rotate(-90 80 330)">فراوان</text>
-<text x="50" y="205" text-anchor="middle" class="small rtl" transform="rotate(-90 50 205)">تعداد تست</text>
+<text x="80" y="100" text-anchor="middle" class="small" transform="rotate(-90 80 100)">few</text>
+<text x="80" y="330" text-anchor="middle" class="small" transform="rotate(-90 80 330)">many</text>
+<text x="50" y="205" text-anchor="middle" class="small" transform="rotate(-90 50 205)">test count</text>
 <!-- Right axis: speed -->
 <line x1="620" y1="70" x2="620" y2="340" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow-py)"/>
-<text x="640" y="100" text-anchor="middle" class="small rtl" transform="rotate(90 640 100)">کند</text>
-<text x="640" y="330" text-anchor="middle" class="small rtl" transform="rotate(90 640 330)">سریع</text>
-<text x="670" y="205" text-anchor="middle" class="small rtl" transform="rotate(90 670 205)">سرعت اجرا</text>
+<text x="640" y="100" text-anchor="middle" class="small" transform="rotate(90 640 100)">slow</text>
+<text x="640" y="330" text-anchor="middle" class="small" transform="rotate(90 640 330)">fast</text>
+<text x="670" y="205" text-anchor="middle" class="small" transform="rotate(90 670 205)">execution speed</text>
 <!-- Go-specific tools on the right side -->
 <text x="540" y="100" text-anchor="middle" class="small">httptest.Server</text>
 <text x="540" y="116" text-anchor="middle" class="small">+ httpexpect</text>
@@ -153,8 +153,8 @@
 <text x="540" y="290" text-anchor="middle" class="small">go test · -race</text>
 <text x="540" y="306" text-anchor="middle" class="small">-cover · fuzzing</text>
 <!-- Bottom note -->
-<text x="360" y="375" text-anchor="middle" class="small rtl">قانون تجربی: اگر بیش از ۳۰٪ تست‌های شما E2E هستند، یعنی منطق کسب‌وکار از لایه‌ی HTTP جدا نشده.</text>
-<text x="360" y="395" text-anchor="middle" class="small rtl">در PHP/Laravel تمایل به نوشتن Feature Test زیاد است، اما در Go به‌دلیل سرعت Unit Test این نسبت بهتر رعایت می‌شود.</text>
+<text x="360" y="375" text-anchor="middle" class="small">Rule of thumb: if more than 30% of your tests are E2E, business logic isn't separated from the HTTP layer.</text>
+<text x="360" y="395" text-anchor="middle" class="small">PHP/Laravel tends to over-rely on Feature Tests; in Go, fast unit tests keep the ratio healthier.</text>
 </svg>
 <figcaption>شکل ۱۱-۱: هرم تست در Go — لایه‌ی پایه Unit Test‌ها سریع و فراوان‌اند (~۷۰٪)، لایه‌ی میان Integration Test‌ها (~۲۰٪) و نوک هرم E2E Test‌ها (~۱۰٪). ابزارهای داخلی Go مانند <bdi dir="ltr">go test</bdi>، <bdi dir="ltr">-race</bdi> و <bdi dir="ltr">fuzzing</bdi> لایه‌ی Unit را قوی می‌سازند، در حالی که <bdi dir="ltr">testcontainers</bdi> و <bdi dir="ltr">httpexpect</bdi> لایه‌های بالاتر را پوشش می‌دهند.</figcaption>
 </figure>

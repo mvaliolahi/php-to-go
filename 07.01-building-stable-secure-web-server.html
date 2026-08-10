@@ -524,11 +524,11 @@ handler := maxBodySizeMiddleware(1 &lt;&lt; 20)(mux)
 <path d="M0,0 L10,5 L0,10 z" fill="#4caf50"/>
 </marker>
 </defs>
-<text x="380" y="28" text-anchor="middle" class="title rtl">داخلی‌های http.Server: لایه‌های محافظتی زمان‌بندی و بدنه</text>
+<text x="380" y="28" text-anchor="middle" class="title">http.Server internals: timing &amp; body protective layers</text>
 <!-- Inbound request -->
 <rect x="30" y="60" width="140" height="50" class="box-action"/>
 <text x="100" y="83" text-anchor="middle" class="title">HTTP Request</text>
-<text x="100" y="100" text-anchor="middle" class="small rtl">از کلاینت</text>
+<text x="100" y="100" text-anchor="middle" class="small">from client</text>
 <line x1="170" y1="85" x2="200" y2="85" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
 <!-- Outer shield: MaxHeaderBytes -->
 <rect x="200" y="60" width="540" height="360" class="box-go" fill="rgba(0,173,216,0.04)"/>
@@ -536,31 +536,31 @@ handler := maxBodySizeMiddleware(1 &lt;&lt; 20)(mux)
 <!-- Layer 1: ReadHeaderTimeout (anti-Slowloris) -->
 <rect x="220" y="95" width="500" height="55" class="warn-box"/>
 <text x="240" y="118" class="title">① ReadHeaderTimeout: 2s</text>
-<text x="240" y="138" class="small rtl">مهلت خواندن هدرها — خط اول دفاع در برابر Slowloris</text>
-<text x="700" y="125" text-anchor="end" class="small" fill="#ef4444">✗ قطع اتصال نیمه‌باز</text>
+<text x="240" y="138" class="small">Deadline to read headers — first defense against Slowloris</text>
+<text x="700" y="125" text-anchor="end" class="small" fill="#ef4444">✗ cut half-open conn</text>
 <line x1="470" y1="150" x2="470" y2="170" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
 <!-- Layer 2: ReadTimeout -->
 <rect x="220" y="170" width="500" height="55" class="warn-box"/>
 <text x="240" y="193" class="title">② ReadTimeout: 5s</text>
-<text x="240" y="213" class="small rtl">مهلت خواندن کل درخواست (شامل body)</text>
-<text x="700" y="200" text-anchor="end" class="small" fill="#ef4444">✗ قطع body بسیار بزرگ</text>
+<text x="240" y="213" class="small">Deadline to read whole request (incl. body)</text>
+<text x="700" y="200" text-anchor="end" class="small" fill="#ef4444">✗ cut oversized body</text>
 <line x1="470" y1="225" x2="470" y2="245" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
 <!-- Layer 3: MaxBytesReader (handler-level) -->
 <rect x="220" y="245" width="500" height="55" class="box-action"/>
 <text x="240" y="268" class="title">③ http.MaxBytesReader(w, r.Body, 1MB)</text>
-<text x="240" y="288" class="small rtl">محدودیت حجم بدنه در سطح هندلر + قطع اتصال</text>
-<text x="700" y="275" text-anchor="end" class="small" fill="#2196f3">↹ در Handler</text>
+<text x="240" y="288" class="small">Per-handler body limit + close conn</text>
+<text x="700" y="275" text-anchor="end" class="small" fill="#2196f3">↹ in Handler</text>
 <line x1="470" y1="300" x2="470" y2="320" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
 <!-- Layer 4: Handler execution -->
 <rect x="220" y="320" width="500" height="55" class="box-go"/>
 <text x="240" y="343" class="title">④ Handler executes (goroutine per request)</text>
-<text x="240" y="363" class="small rtl">منطق کسب‌وکار — WriteTimeout پاسخ را محدود می‌کند</text>
+<text x="240" y="363" class="small">Business logic — WriteTimeout bounds the response</text>
 <line x1="470" y1="375" x2="470" y2="395" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
 <!-- Layer 5: WriteTimeout -->
 <rect x="220" y="395" width="500" height="20" class="warn-box"/>
 <text x="470" y="409" text-anchor="middle" class="small">⑤ WriteTimeout: 10s   •   IdleTimeout: 120s (keep-alive)</text>
 <!-- Side notes -->
-<text x="380" y="432" text-anchor="middle" class="small rtl" fill="#4a5568">بدون این لایه‌ها، مهاجم با هزاران اتصال نیمه‌باز منابع سرور را تخلیه می‌کند</text>
+<text x="380" y="432" text-anchor="middle" class="small" fill="#4a5568">Without these layers, an attacker drains server resources with thousands of half-open connections</text>
 </svg>
 <figcaption>شکل ۷-۲: لایه‌های دفاعی <code>http.Server</code> در برابر درخواست‌های مخرب — هر درخواست <bdi dir="ltr">HTTP</bdi> از چپ وارد می‌شود و پنج لایه‌ی متوالی از آن عبور می‌کند. لایه‌ی ۱ <code>ReadHeaderTimeout</code> مهم‌ترین خط دفاع در برابر <bdi dir="ltr">Slowloris</bdi> است (مهاجم نتواند هدرها را در مهلت ارسال کند → قطع اتصال). لایه‌ی ۲ <code>ReadTimeout</code> کل زمان خواندن درخواست را محدود می‌کند. لایه‌ی ۳ <code>MaxBytesReader</code> در داخل هندلر حجم <code>body</code> را محدود می‌کند و اتصال را در صورت تجاوز قطع می‌نماید. لایه‌ی ۴ هندلر در یک <code>goroutine</code> سبک اجرا می‌شود. لایه‌ی ۵ <code>WriteTimeout</code> زمان نوشتن پاسخ و <code>IdleTimeout</code> اتصال <code>keep-alive</code> بی‌کاربرد را محدود می‌سازد. بدون این مهلت‌ها، سرور در برابر <bdi dir="ltr">DoS</bdi> آسیب‌پذیر است.</figcaption>
 </figure>

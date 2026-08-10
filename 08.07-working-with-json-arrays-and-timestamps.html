@@ -172,8 +172,8 @@ type Product struct {
 <path d="M0,0 L10,5 L0,10 z" fill="#64748b"/>
 </marker>
 </defs>
-<text x="360" y="28" text-anchor="middle" class="title rtl">ماتریس تبدیل نوع SQL به Go</text>
-<text x="360" y="50" text-anchor="middle" class="small rtl">سبز: مستقیم • نارنجی: هشدار دقت • قرمز: نیاز به کد اضافی</text>
+<text x="360" y="28" text-anchor="middle" class="title">SQL → Go type mapping matrix</text>
+<text x="360" y="50" text-anchor="middle" class="small">Green: direct • Orange: precision warning • Red: extra code needed</text>
 <text x="160" y="80" text-anchor="middle" class="title">SQL Type</text>
 <text x="560" y="80" text-anchor="middle" class="title">Go Type</text>
 <rect x="40" y="90" width="240" height="32" class="box-result"/>
@@ -204,14 +204,14 @@ type Product struct {
 <rect x="40" y="275" width="240" height="32" class="warn-box"/>
 <text x="160" y="295" text-anchor="middle" class="small">DECIMAL / NUMERIC</text>
 <rect x="440" y="275" width="240" height="32" class="warn-box"/>
-<text x="560" y="295" text-anchor="middle" class="small">float64 ⚠ یا decimal.Decimal</text>
+<text x="560" y="295" text-anchor="middle" class="small">float64 ⚠ or decimal.Decimal</text>
 <line x1="280" y1="291" x2="440" y2="291" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
 <rect x="40" y="312" width="240" height="32" class="box-php" fill="rgba(239,68,68,0.08)" stroke="#ef4444"/>
 <text x="160" y="332" text-anchor="middle" class="small">JSON / JSONB</text>
 <rect x="440" y="312" width="240" height="32" class="box-php" fill="rgba(239,68,68,0.08)" stroke="#ef4444"/>
 <text x="560" y="332" text-anchor="middle" class="small">json.RawMessage + sql.Scanner</text>
 <line x1="280" y1="328" x2="440" y2="328" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
-<text x="360" y="365" text-anchor="middle" class="small rtl">ستون‌های NULL: به sql.Null* (مثل sql.NullString) یا اشاره‌گر (مثل *string) نیاز دارند</text>
+<text x="360" y="365" text-anchor="middle" class="small">NULL columns: need sql.Null* (e.g. sql.NullString) or pointer (e.g. *string)</text>
 </svg>
 <figcaption>شکل ۸-۸: ماتریس تبدیل نوع <bdi dir="ltr">SQL</bdi> به <bdi dir="ltr">Go</bdi> — پنج نوع اول (سبز) نگاشت مستقیم و بی‌خطر دارند؛ <bdi dir="ltr">DECIMAL/NUMERIC</bdi> (نارنجی) با <code>float64</code> دقت از دست می‌دهد و برای داده‌های مالی به <code>decimal.Decimal</code> نیاز دارد؛ <bdi dir="ltr">JSON/JSONB</bdi> (قرمز) به <code>sql.Scanner</code> سفارشی نیاز دارد؛ و ستون‌های <bdi dir="ltr">NULL</bdi> با انواع <code>sql.Null*</code> یا اشاره‌گر مدیریت می‌شوند.</figcaption>
 </figure>

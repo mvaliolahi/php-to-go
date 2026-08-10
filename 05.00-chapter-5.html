@@ -99,14 +99,14 @@
 <tr><td>مقیاس‌پذیری</td><td>محدود به تعداد فرآیندها</td><td>صدها هزار <bdi dir="ltr">Goroutine</bdi></td></tr>
 </tbody>
 </table>
-<h3 id="تغییر-پارادایم-از-thread-به-goroutine">5.0.3 تغییر پارادایم: ازThreadبهGoroutine</h3>
+<h3 id="تغییر-پارادایم-از-thread-به-goroutine">5.0.3 تغییر پارادایم: از Thread به Goroutine</h3>
 <p>در زبان‌هایی مانند Java یا C++، <bdi dir="ltr">Thread</bdi>‌های سیستم‌عامل ابزار اصلی هم‌روندی هستند. هر <bdi dir="ltr">Thread</bdi> حداقل ۱ مگابایت <bdi dir="ltr">Stack</bdi> اختصاصی دارد (در لینوکس پیش‌فرض ۸ مگابایت)، ساخت آن نیازمند <bdi dir="ltr">syscall</bdi> است، و زمان‌بندی آن توسط کرنل سیستم‌عامل انجام می‌شود. این محدودیت‌ها باعث می‌شوند ایجاد ده‌ها هزار <bdi dir="ltr">Thread</bdi> عملاً غیرممکن باشد.</p>
 <p><bdi dir="ltr">Goroutine</bdi>‌ها این محدودیت‌ها را از سه جهت اساسی حل می‌کنند. نخست، <bdi dir="ltr">Stack</bdi> اولیه‌ی بسیار کوچک (۲ کیلوبایت) که به‌صورت پویا رشد می‌کند، اجازه می‌دهد صدها هزار <bdi dir="ltr">Goroutine</bdi> همزمان اجرا شوند. دوم، <bdi dir="ltr">Scheduler</bdi> داخلی Go به‌جای کرنل سیستم‌عامل، زمان‌بندی را در <bdi dir="ltr">User Space</bdi> انجام می‌دهد که بسیار سریع‌تر است. </p><p>سوم، مدل <bdi dir="ltr">M:N Scheduler</bdi> تعداد بسیار زیادی <bdi dir="ltr">Goroutine</bdi> را روی تعداد محدودی <bdi dir="ltr">Thread</bdi> سیستم‌عامل نگاشت می‌کند و بهره‌وری منابع را به حداکثر می‌رساند.</p>
-<h3 id="مقدمه‌ای-بر-csp">5.0.4 مقدمه‌ای برCSP</h3>
+<h3 id="مقدمه‌ای-بر-csp">5.0.4 مقدمه‌ای بر CSP</h3>
 <p>مدل <bdi dir="ltr">CSP</bdi> (<bdi dir="ltr">Communicating Sequential Processes</bdi>) یک مدل ریاضی برای توصیف سیستم‌های همزمان است که توسط تونی هور (<bdi dir="ltr">Tony Hoare</bdi>) در سال ۱۹۷۸ ارائه شد. ایده‌ی اصلی <bdi dir="ltr">CSP</bdi> ساده اما قدرتمند است: به‌جای اینکه فرآیندهای همزمان از حافظه‌ی مشترک استفاده کنند، از طریق کانال‌های ارتباطی پیام رد و بدل می‌کنند. </p><p>هر فرآیند به‌صورت <bdi dir="ltr">Sequential</bdi> اجرا می‌شود، اما فرآیندهای مختلف می‌توانند همزمان با یکدیگر ارتباط برقرار کنند.</p>
 <p>Go این مدل را با دو سازوکار بنیادی پیاده‌سازی کرده است: <bdi dir="ltr">Goroutine</bdi>‌ها (فرآیندهای سبک‌وزن) و <bdi dir="ltr">Channel</bdi>‌ها (کانال‌های ارتباطی). شعار معروف Go این است: <bdi dir="ltr">"Share memory by communicating, don't communicate by sharing memory"</bdi> — حافظه را با ارتباط به اشتراک نه با اشتراک حافظه ارتباط برقرار کنید. </p><p>این رویکرد مزایای متعددی دارد: از بین رفتن نیاز به قفل‌های دستی، کاهش خطاهای <bdi dir="ltr">Race Condition</bdi>، و سادگی ذهنی در طراحی سیستم‌های همزمان.</p>
 <div class="note"><strong>یادداشت:</strong> در ادامه این فصل علاوه بر مفاهیم کاربردی هم‌روندی، به جزئیات داخلی <bdi dir="ltr">Runtime</bdi> زبان Go نیز خواهیم پرداخت. درک ساختارهایی مانند مدل <bdi dir="ltr">GMP Scheduler</bdi> (شامل <bdi dir="ltr">G</bdi>، <bdi dir="ltr">M</bdi> و <bdi dir="ltr">P</bdi>)، ساختار داخلی <code dir="ltr">runtime.g</code> برای <bdi dir="ltr">Goroutine</bdi>، ساختار <code>hchan</code> برای <bdi dir="ltr">Channel</bdi>، مکانیزم انتشار لغو در <bdi dir="ltr">Context</bdi> و یکپارچگی <bdi dir="ltr">ThreadSanitizer</bdi> با فلگ <code>-race</code> به شما کمک می‌کند کدی کارآمدتر و مطمئن‌تر بنویسید. این دانش داخلی تفاوت اصلی بین استفاده‌ی سطحی و تسلط عمیق بر هم‌روندی در Go است.</div>
-<h3 id="الگوی-fork-join">5.0.5 الگویFork-Join</h3>
+<h3 id="الگوی-fork-join">5.0.5 الگوی Fork-Join</h3>
 <p>یکی از پایه‌ای‌ترین الگوهایی که Go بر آن تکیه دارد الگوی <bdi dir="ltr">Fork-Join</bdi> است. این الگو نقطه‌ی ورود ساده اما قدرتمندی برای درک مدل هم‌روندی در Go است. در نظر بگیرید که با یک <bdi dir="ltr">Task</bdi> بزرگ روبه‌رو هستید — مثلاً پردازش یک فایل عظیم یا ارسال نوتیفیکیشن به هزاران کاربر. </p><p>در مدل <bdi dir="ltr">Fork-Join</bdi> ابتدا این <bdi dir="ltr">Task</bdi> بزرگ را به چند بخش کوچک‌تر تقسیم می‌کنید (<bdi dir="ltr">Fork</bdi>)، سپس هر بخش را به‌طور هم‌زمان اجرا می‌کنید، و در پایان منتظر می‌مانید تا همه‌ی آن‌ها به اتمام برسند (<bdi dir="ltr">Join</bdi>) و نتیجه‌ی نهایی پس از ادغام نتایج آماده می‌شود.</p>
 <p>در زبان PHP به‌خصوص در فریم‌ورک‌هایی مانند Laravel معمولاً اجرای هم‌زمان کارها از طریق <bdi dir="ltr">Queue</bdi> و <bdi dir="ltr">Worker</bdi> انجام می‌شود. مثلاً برای ارسال ایمیل به هزار کاربر شما یک <bdi dir="ltr">Job Queue</bdi> می‌سازید، <bdi dir="ltr">Job</bdi>‌ها را <bdi dir="ltr">dispatch</bdi> می‌کنید و <bdi dir="ltr">Horizon</bdi> یا <bdi dir="ltr">Supervisor</bdi> آن‌ها را مدیریت می‌کنند. </p><p>این مدل برای بسیاری از پروژه‌ها جواب می‌دهد اما نیاز به یک صف خارجی مثل Redis، فرآیندهای مستقل، مدیریت خطاها، اجرای مجدد <bdi dir="ltr">Job</bdi>‌های ناموفق و پیچیدگی‌های دیگری نیز دارد.</p>
 <p>در Go این <bdi dir="ltr">Fork</bdi> یا تقسیم‌بندی با استفاده از <bdi dir="ltr">Goroutine</bdi>‌ها انجام می‌شود — با اضافه کردن تنها یک کلمه‌ی کلیدی <code>go</code>. برای مرحله‌ی <bdi dir="ltr">Join</bdi> ابزارهایی مانند <code>sync.WaitGroup</code> یا <bdi dir="ltr">Channel</bdi> به کار می‌روند. </p><p>نکته‌ی مهم اینجاست که برخلاف PHP، در Go نیازی به پردازش‌های جداگانه یا صف خارجی نیست — همه‌چیز در درون خود برنامه و تنها با چند خط کد انجام می‌شود.</p>
@@ -146,7 +146,7 @@ func main() {
 <p><strong>هم‌روندی یا <bdi dir="ltr">Concurrency</bdi></strong> به توانایی یک سیستم برای مدیریت و پیشبرد چند <bdi dir="ltr">Task</bdi> در یک بازه‌ی زمانی مشترک گفته می‌شود. </p><p>در این حالت ممکن است همه‌ی <bdi dir="ltr">Task</bdi>‌ها واقعاً به طور هم‌زمان روی پردازنده اجرا نشوند، بلکه سیستم با استفاده از <bdi dir="ltr">Scheduling</bdi> و <bdi dir="ltr">Context Switching</bdi> بین آن‌ها جابه‌جا می‌شود و این توهم را ایجاد می‌کند که کارها هم‌زمان پیش می‌روند.</p>
 <p><strong>هم‌روندی یا <bdi dir="ltr">Parallelism</bdi></strong> به اجرای واقعی چند <bdi dir="ltr">Task</bdi> در یک لحظه فیزیکی و بر روی چند واحد پردازشی مستقل گفته می‌شود. در هم‌روندی وظایف واقعاً هم‌زمان اجرا می‌شوند و این امر منجر به افزایش توان محاسباتی می‌گردد.</p>
 <p>به زبان ساده: هم‌روندی بیشتر به <strong>ساختار و سازمان‌دهی</strong> مربوط است — چگونه چند کار را در یک بازه زمانی مدیریت کنیم — و هم‌روندی بیشتر به <strong>اجرای فیزیکی</strong> اشاره دارد — چگونه چند کار را در یک لحظه روی منابع سخت‌افزاری مستقل اجرا کنیم. </p><p>Go هر دو را پشتیبانی می‌کند: هم‌روندی از طریق <bdi dir="ltr">Goroutine</bdi>‌ها و <bdi dir="ltr">Channel</bdi>‌ها، و هم‌روندی از طریق اجرای واقعی روی چند هسته <bdi dir="ltr">CPU</bdi> با کمک <code>runtime.GOMAXPROCS</code>.</p>
-<h3 id="انواع-task-ها">5.0.7 انواعTask‌ها و تأثیر آن بر طراحی</h3>
+<h3 id="انواع-task-ها">5.0.7 انواع Task‌ها و تأثیر آن بر طراحی</h3>
 <p>برای درک ارزش واقعی هم‌روندی در Go باید تفاوت دو نوع <bdi dir="ltr">Task</bdi> را درک کنید:</p>
 <p><strong><bdi dir="ltr">I/O-bound</bdi>:</strong> کارهایی که زمان اصلی آن‌ها صرف انتظار برای منابع خارجی می‌شود — خواندن از دیتابیس، دریافت داده از <bdi dir="ltr">API</bdi> خارجی، تعامل با فایل یا شبکه. در این نوع <bdi dir="ltr">Task</bdi>‌ها هم‌روندی می‌تواند <bdi dir="ltr">Latency</bdi> را به شدت کاهش دهد. </p><p>به‌جای اجرای ترتیبی ۵ درخواست <bdi dir="ltr">API</bdi> که هر کدام ۱ ثانیه طول می‌کشد (مجموع ۵ ثانیه)، می‌توان ۵ <bdi dir="ltr">Goroutine</bdi> راه‌اندازی کرد که هر سه به‌صورت همزمان منتظر پاسخ باشند و کل عملیات در حدود ۱ ثانیه تمام شود.</p>
 <p><strong><bdi dir="ltr">CPU-bound</bdi>:</strong> وظایفی که بیشتر زمان خود را صرف محاسبه و پردازش در <bdi dir="ltr">CPU</bdi> می‌کنند — رمزنگاری داده‌ها، تولید <bdi dir="ltr">Thumbnail</bdi> از عکس‌ها، فشرده‌سازی فایل‌ها. در این نوع <bdi dir="ltr">Task</bdi>‌ها هم‌روندی مهم‌تر از هم‌روندی است. </p><p>Go از طریق اجرای هم‌زمان واقعی روی چند هسته <bdi dir="ltr">CPU</bdi> با کمک <bdi dir="ltr">Runtime Scheduler</bdi> داخلی می‌تواند این دسته از <bdi dir="ltr">Task</bdi>‌ها را نیز با بهره‌وری بالا انجام دهد.</p>
@@ -170,45 +170,45 @@ func main() {
 <path d="M0,0 L10,5 L0,10 z" fill="#64748b"/>
 </marker>
 </defs>
-<text x="380" y="28" text-anchor="middle" class="title rtl">نقشه‌ی راه فصل پنجم: از گوروتین تا مدیریت نشتی</text>
-<text x="380" y="50" text-anchor="middle" class="small rtl">۹ بخش — سه لایه: مبانی (فیروزه‌ای) › همگام‌سازی (نارنجی) › الگوها و کاربرد (آبی)</text>
+<text x="380" y="28" text-anchor="middle" class="title">Chapter 5 roadmap: from goroutine to leak management</text>
+<text x="380" y="50" text-anchor="middle" class="small">9 sections — three layers: foundations (teal) › synchronization (orange) › patterns &amp; usage (blue)</text>
 <!-- Row 1: foundations -->
 <rect x="50" y="75" width="200" height="65" class="box-go"/>
-<text x="150" y="100" text-anchor="middle" class="title">۵.۱ Goroutine</text>
-<text x="150" y="122" text-anchor="middle" class="small rtl">واحد سبک هم‌روندی</text>
+<text x="150" y="100" text-anchor="middle" class="title">5.1 Goroutine</text>
+<text x="150" y="122" text-anchor="middle" class="small">Lightweight concurrency unit</text>
 <rect x="280" y="75" width="200" height="65" class="box-go"/>
-<text x="380" y="100" text-anchor="middle" class="title">۵.۲ Channel</text>
-<text x="380" y="122" text-anchor="middle" class="small rtl">ارتباط امن بین گوروتین‌ها</text>
+<text x="380" y="100" text-anchor="middle" class="title">5.2 Channel</text>
+<text x="380" y="122" text-anchor="middle" class="small">Safe communication between goroutines</text>
 <rect x="510" y="75" width="200" height="65" class="box-go"/>
-<text x="610" y="100" text-anchor="middle" class="title">۵.۳ Select</text>
-<text x="610" y="122" text-anchor="middle" class="small rtl">چندگانه‌سازی کانال‌ها</text>
+<text x="610" y="100" text-anchor="middle" class="title">5.3 Select</text>
+<text x="610" y="122" text-anchor="middle" class="small">Multiplexing channels</text>
 <!-- Row 1 arrows -->
 <line x1="250" y1="107" x2="280" y2="107" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
 <line x1="480" y1="107" x2="510" y2="107" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
 <!-- Row 2: synchronization -->
 <rect x="50" y="170" width="200" height="65" class="box-go"/>
-<text x="150" y="195" text-anchor="middle" class="title">۵.۴ Context</text>
-<text x="150" y="217" text-anchor="middle" class="small rtl">لغو، timeout، درخت فراخوانی</text>
+<text x="150" y="195" text-anchor="middle" class="title">5.4 Context</text>
+<text x="150" y="217" text-anchor="middle" class="small">Cancel, timeout, call tree</text>
 <rect x="280" y="170" width="200" height="65" class="box-go"/>
-<text x="380" y="195" text-anchor="middle" class="title">۵.۵ WaitGroup</text>
-<text x="380" y="217" text-anchor="middle" class="small rtl">انتظار برای اتمام گروه</text>
+<text x="380" y="195" text-anchor="middle" class="title">5.5 WaitGroup</text>
+<text x="380" y="217" text-anchor="middle" class="small">Wait for a group to finish</text>
 <rect x="510" y="170" width="200" height="65" class="warn-box"/>
-<text x="610" y="195" text-anchor="middle" class="title">۵.۶ Race Condition</text>
-<text x="610" y="217" text-anchor="middle" class="small rtl">Mutex، Atomic، -race</text>
+<text x="610" y="195" text-anchor="middle" class="title">5.6 Race Condition</text>
+<text x="610" y="217" text-anchor="middle" class="small">Mutex, Atomic, -race</text>
 <!-- Row 2 arrows (right to left, zigzag from row 1) -->
 <path d="M 610 140 Q 610 155 510 155 L 150 155 Q 150 162 150 170" fill="none" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
 <line x1="250" y1="202" x2="280" y2="202" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
 <line x1="480" y1="202" x2="510" y2="202" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
 <!-- Row 3: patterns + leak -->
 <rect x="50" y="265" width="200" height="65" class="box-action"/>
-<text x="150" y="290" text-anchor="middle" class="title">۵.۷ Patterns</text>
-<text x="150" y="312" text-anchor="middle" class="small rtl">Worker Pool، Fan-out، Pipeline</text>
+<text x="150" y="290" text-anchor="middle" class="title">5.7 Patterns</text>
+<text x="150" y="312" text-anchor="middle" class="small">Worker Pool, Fan-out, Pipeline</text>
 <rect x="280" y="265" width="200" height="65" class="box-action"/>
-<text x="380" y="290" text-anchor="middle" class="title">۵.۸ Practical</text>
-<text x="380" y="312" text-anchor="middle" class="small rtl">HTTP، DB، Background Worker</text>
+<text x="380" y="290" text-anchor="middle" class="title">5.8 Practical</text>
+<text x="380" y="312" text-anchor="middle" class="small">HTTP, DB, Background Worker</text>
 <rect x="510" y="265" width="200" height="65" class="warn-box"/>
-<text x="610" y="290" text-anchor="middle" class="title">۵.۹ Goroutine Leak</text>
-<text x="610" y="312" text-anchor="middle" class="small rtl">تشخیص و راه‌حل با pprof</text>
+<text x="610" y="290" text-anchor="middle" class="title">5.9 Goroutine Leak</text>
+<text x="610" y="312" text-anchor="middle" class="small">Detection and fix with pprof</text>
 <!-- Row 3 arrows (right to left, zigzag from row 2) -->
 <path d="M 610 235 Q 610 250 510 250 L 150 250 Q 150 257 150 265" fill="none" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
 <line x1="250" y1="297" x2="280" y2="297" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>

@@ -368,33 +368,33 @@ service:
 <path d="M0,0 L10,5 L0,10 z" fill="#64748b"/>
 </marker>
 </defs>
-<text x="380" y="28" text-anchor="middle" class="title rtl">خط لوله OTel Collector — Receivers → Processors → Exporters</text>
-<text x="110" y="65" text-anchor="middle" class="title rtl">Receivers</text>
+<text x="380" y="28" text-anchor="middle" class="title">OTel Collector pipeline — Receivers → Processors → Exporters</text>
+<text x="110" y="65" text-anchor="middle" class="title">Receivers</text>
 <rect x="40" y="80" width="140" height="80" class="box-go"/>
 <text x="110" y="108" text-anchor="middle" class="title">otlp</text>
 <text x="110" y="128" text-anchor="middle" class="small">gRPC :4317</text>
 <text x="110" y="146" text-anchor="middle" class="small">HTTP :4318</text>
-<text x="290" y="65" text-anchor="middle" class="title rtl">Processors</text>
+<text x="290" y="65" text-anchor="middle" class="title">Processors</text>
 <rect x="220" y="80" width="140" height="80" class="box-action"/>
 <text x="290" y="108" text-anchor="middle" class="title">batch</text>
 <text x="290" y="128" text-anchor="middle" class="small">filter</text>
 <text x="290" y="146" text-anchor="middle" class="small">resource</text>
-<text x="540" y="65" text-anchor="middle" class="title rtl">Exporters</text>
+<text x="540" y="65" text-anchor="middle" class="title">Exporters</text>
 <rect x="400" y="80" width="110" height="80" class="box-result"/>
 <text x="455" y="108" text-anchor="middle" class="title">tempo</text>
-<text x="455" y="128" text-anchor="middle" class="small rtl">Traces</text>
+<text x="455" y="128" text-anchor="middle" class="small">Traces</text>
 <rect x="520" y="80" width="110" height="80" class="box-result"/>
 <text x="575" y="108" text-anchor="middle" class="title">prometheus</text>
-<text x="575" y="128" text-anchor="middle" class="small rtl">Metrics</text>
+<text x="575" y="128" text-anchor="middle" class="small">Metrics</text>
 <rect x="640" y="80" width="90" height="80" class="box-result"/>
 <text x="685" y="108" text-anchor="middle" class="title">loki</text>
-<text x="685" y="128" text-anchor="middle" class="small rtl">Logs</text>
+<text x="685" y="128" text-anchor="middle" class="small">Logs</text>
 <line x1="180" y1="120" x2="220" y2="120" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
 <line x1="360" y1="105" x2="400" y2="120" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
 <line x1="360" y1="120" x2="520" y2="120" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
 <line x1="360" y1="135" x2="640" y2="120" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
 <rect x="40" y="180" width="690" height="40" class="tip-box"/>
-<text x="380" y="205" text-anchor="middle" class="small rtl">یک SDK، سه خط لوله مستقل — هر نوع داده (trace/metric/log) مسیر خود را طی می‌کند</text>
+<text x="380" y="205" text-anchor="middle" class="small">One SDK, three independent pipelines — each data type (trace/metric/log) goes its own way</text>
 </svg>
 <figcaption>شکل ۹-۶: خط لوله <bdi dir="ltr">OTel Collector</bdi> — داده‌ها از <bdi dir="ltr">Receivers</bdi> (مانند <code>otlp</code>) دریافت، توسط <bdi dir="ltr">Processors</bidi> (<code>batch</code>، <code>filter</code>، <code>resource</code>) پردازش و توسط <bdi dir="ltr">Exporters</bidi> به سه مقصد ارسال می‌شوند: <bdi dir="ltr">Traces</bdi> به <bdi dir="ltr">Tempo</bdi>، <bdi dir="ltr">Metrics</bdi> به <bdi dir="ltr">Prometheus</bdi> و <bdi dir="ltr">Logs</bdi> به <bdi dir="ltr">Loki</bdi>. ترتیب <bdi dir="ltr">Processors</bdi> مهم است — <code>batch</code> معمولاً اول قرار می‌گیرد.</figcaption>
 </figure>
@@ -527,7 +527,7 @@ func main() {
     json.NewEncoder(w).Encode(health)
 }</code></pre>
 </figure>
-<h3 id="درخت-اسپن-و-انتشار-کانتکست">9.3.14 درختSpanو انتشارContext</h3>
+<h3 id="درخت-اسپن-و-انتشار-کانتکست">9.3.14 درخت Span و انتشار Context</h3>
 <p>درک ساختار درختی <bdi dir="ltr">Span</bdi>‌ها و <bdi dir="ltr">context propagation</bdi> برای عیب‌یابی مؤثر در سیستم‌های توزیع‌شده حیاتی است. هر <bdi dir="ltr">trace</bdi> یک درخت از <bdi dir="ltr">Span</bdi>‌هاست که ریشه آن <bdi dir="ltr">root span</bdi> (معمولاً درخواست ورودی <bdi dir="ltr">HTTP</bdi>) و شاخه‌های آن عملیات فرعی در سرویس‌های مختلف هستند. </p><p>هر <bdi dir="ltr">Span</bdi> شامل شناسه یکتای خود (<bdi dir="ltr">span ID</bdi>)، شناسه والد (<bdi dir="ltr">parent span ID</bdi>) و شناسه کل <bdi dir="ltr">trace</bdi> (<bdi dir="ltr">trace ID</bdi>) است. </p><p>انتشار <bdi dir="ltr">Context</bdi> از طریق هدرهای <bdi dir="ltr">HTTP</bdi> (مثل <bdi dir="ltr">traceparent</bdi> و <bdi dir="ltr">tracestate</bdi>) طبق استاندارد <bdi dir="ltr">W3C Trace Context</bdi> انجام می‌شود و تضمین می‌کند که تمام سرویس‌های درگیر در یک درخواست، بخشی از همان <bdi dir="ltr">trace</bdi> باشند. بدون این انتشار خودکار، هر سرویس <bdi dir="ltr">trace</bdi> مستقلی ایجاد می‌کند و ردیابی مسیر کامل درخواست غیرممکن می‌شود.</p>
 <figure class="diagram" dir="ltr">
 <svg viewBox="0 0 760 390" xmlns="http://www.w3.org/2000/svg">
@@ -536,8 +536,8 @@ func main() {
 <path d="M0,0 L10,5 L0,10 z" fill="#64748b"/>
 </marker>
 </defs>
-<text x="380" y="28" text-anchor="middle" class="title rtl">درخت Span و انتشار Context بین سرویس‌ها</text>
-<text x="380" y="48" text-anchor="middle" class="small">trace_id: 4bf92f3577b34da6a3ce929d0e0e4736 — یکسان در تمام Span‌ها</text>
+<text x="380" y="28" text-anchor="middle" class="title">Span tree &amp; Context propagation across services</text>
+<text x="380" y="48" text-anchor="middle" class="small">trace_id: 4bf92f3577b34da6a3ce929d0e0e4736 — same across all Spans</text>
 <line x1="210" y1="65" x2="210" y2="245" stroke="#ff9800" stroke-width="1.5" stroke-dasharray="4 4"/>
 <line x1="390" y1="65" x2="390" y2="245" stroke="#ff9800" stroke-width="1.5" stroke-dasharray="4 4"/>
 <line x1="560" y1="65" x2="560" y2="245" stroke="#ff9800" stroke-width="1.5" stroke-dasharray="4 4"/>
@@ -577,19 +577,19 @@ func main() {
 <text x="390" y="262" text-anchor="middle" class="small" fill="#e65100">traceparent ↓</text>
 <text x="560" y="262" text-anchor="middle" class="small" fill="#e65100">traceparent ↓</text>
 <line x1="40" y1="285" x2="720" y2="285" stroke="#cbd5e1" stroke-width="1" stroke-dasharray="4 4"/>
-<text x="380" y="305" text-anchor="middle" class="title rtl">سه رکن Observability — همبسته با trace_id</text>
+<text x="380" y="305" text-anchor="middle" class="title">Three Observability pillars — correlated via trace_id</text>
 <rect x="40" y="315" width="680" height="65" class="box"/>
 <line x1="266" y1="320" x2="266" y2="375" stroke="#cbd5e1" stroke-width="1"/>
 <line x1="493" y1="320" x2="493" y2="375" stroke="#cbd5e1" stroke-width="1"/>
 <text x="153" y="340" text-anchor="middle" class="title">Tracing</text>
-<text x="153" y="358" text-anchor="middle" class="small rtl">مسیر درخواست بین سرویس‌ها</text>
-<text x="153" y="375" text-anchor="middle" class="small rtl">کجا زمان صرف می‌شود</text>
+<text x="153" y="358" text-anchor="middle" class="small">Request path across services</text>
+<text x="153" y="375" text-anchor="middle" class="small">Where time is spent</text>
 <text x="380" y="340" text-anchor="middle" class="title">Metrics</text>
-<text x="380" y="358" text-anchor="middle" class="small rtl">اعداد تجمیعی</text>
-<text x="380" y="375" text-anchor="middle" class="small rtl">نرخ، latency، خطا</text>
+<text x="380" y="358" text-anchor="middle" class="small">Aggregated numbers</text>
+<text x="380" y="375" text-anchor="middle" class="small">Rate, latency, error</text>
 <text x="606" y="340" text-anchor="middle" class="title">Logging</text>
-<text x="606" y="358" text-anchor="middle" class="small rtl">جزئیات رویدادها</text>
-<text x="606" y="375" text-anchor="middle" class="small rtl">پیام‌های متنی</text>
+<text x="606" y="358" text-anchor="middle" class="small">Event details</text>
+<text x="606" y="375" text-anchor="middle" class="small">Text messages</text>
 </svg>
 <figcaption>شکل ۹-۷: درخت <bdi dir="ltr">Span</bdi> و انتشار <bdi dir="ltr">Context</bdi> بین سرویس‌ها — ریشه درخت یک <bdi dir="ltr">root span</bdi> در <bdi dir="ltr">gateway</bdi> است (<code>HTTP GET /api/order</code>) که چهار <bdi dir="ltr">child span</bdi> در سرویس‌های مختلف دارد. خطوط نقطه‌چین نارنجی مرزهای سرویسی را نشان می‌دهند — هر بار که درخواست از یک سرویس به سرویس دیگر عبور می‌کند، <bdi dir="ltr">trace context</bdi> از طریق هدر <code>traceparent</code> (طبق استاندارد <bdi dir="ltr">W3C Trace Context</bdi>) منتقل می‌شود. تمام <bdi dir="ltr">Span</bdi>‌ها یک <bdi dir="ltr">trace_id</bdi> یکسان دارند. <bdi dir="ltr">user-service</bdi> با ۱۸۰ میلی‌ثانیه گلوگاه است. بخش پایینی نقش هر یک از سه رکن <bdi dir="ltr">observability</bdi> را نشان می‌دهد: <bdi dir="ltr">tracing</bdi> برای مسیریابی، <bdi dir="ltr">metrics</bdi> برای اعداد تجمیعی و <bdi dir="ltr">logging</bdi> برای جزئیات رویدادها.</figcaption>
 </figure>

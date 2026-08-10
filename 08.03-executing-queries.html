@@ -113,33 +113,33 @@ if err := rows.Err(); err != nil {
 <path d="M0,0 L10,5 L0,10 z" fill="#64748b"/>
 </marker>
 </defs>
-<text x="380" y="28" text-anchor="middle" class="title rtl">خط لوله اجرای کوئری: Prepare → Query → Next/Scan → Close</text>
+<text x="380" y="28" text-anchor="middle" class="title">Query execution pipeline: Prepare → Query → Next/Scan → Close</text>
 <rect x="30" y="60" width="160" height="100" class="box-go"/>
 <text x="110" y="84" text-anchor="middle" class="title">① Prepare()</text>
-<text x="110" y="105" text-anchor="middle" class="small rtl">پارس و کامپایل SQL</text>
+<text x="110" y="105" text-anchor="middle" class="small">Parse &amp; compile SQL</text>
 <text x="110" y="123" text-anchor="middle" class="small">→ *sql.Stmt</text>
-<text x="110" y="145" text-anchor="middle" class="small rtl">یک‌بار برای کوئری تکراری</text>
+<text x="110" y="145" text-anchor="middle" class="small">Once for repeated query</text>
 <rect x="210" y="60" width="160" height="100" class="box-go"/>
 <text x="290" y="84" text-anchor="middle" class="title">② Query()</text>
-<text x="290" y="105" text-anchor="middle" class="small rtl">جایگزینی پارامترها</text>
+<text x="290" y="105" text-anchor="middle" class="small">Substitute parameters</text>
 <text x="290" y="123" text-anchor="middle" class="small">→ *sql.Rows</text>
-<text x="290" y="145" text-anchor="middle" class="small rtl">باز کردن cursor</text>
+<text x="290" y="145" text-anchor="middle" class="small">Open cursor</text>
 <rect x="390" y="60" width="160" height="100" class="box-go"/>
 <text x="470" y="84" text-anchor="middle" class="title">③ Next() + Scan()</text>
-<text x="470" y="105" text-anchor="middle" class="small rtl">حلقه روی سطرها</text>
+<text x="470" y="105" text-anchor="middle" class="small">Loop over rows</text>
 <text x="470" y="123" text-anchor="middle" class="small">SQL → Go types</text>
-<text x="470" y="145" text-anchor="middle" class="small rtl">تبدیل نوع خودکار</text>
+<text x="470" y="145" text-anchor="middle" class="small">Auto type conversion</text>
 <rect x="570" y="60" width="160" height="100" class="box-result"/>
 <text x="650" y="84" text-anchor="middle" class="title">④ Close()</text>
-<text x="650" y="105" text-anchor="middle" class="small rtl">آزاد کردن اتصال</text>
+<text x="650" y="105" text-anchor="middle" class="small">Release connection</text>
 <text x="650" y="123" text-anchor="middle" class="small">defer rows.Close()</text>
-<text x="650" y="145" text-anchor="middle" class="small rtl">بستن cursor</text>
+<text x="650" y="145" text-anchor="middle" class="small">Close cursor</text>
 <line x1="190" y1="110" x2="210" y2="110" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
 <line x1="370" y1="110" x2="390" y2="110" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
 <line x1="550" y1="110" x2="570" y2="110" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
 <rect x="30" y="195" width="700" height="60" class="warn-box"/>
-<text x="380" y="218" text-anchor="middle" class="title rtl">هشدار: فراموش کردن Close() یعنی نشت اتصال</text>
-<text x="380" y="240" text-anchor="middle" class="small rtl">اتصال از Pool برنمی‌گردد → Pool پر می‌شود → خطای connection pool exhausted → برنامه قفل می‌شود</text>
+<text x="380" y="218" text-anchor="middle" class="title">Warning: forgetting Close() means connection leak</text>
+<text x="380" y="240" text-anchor="middle" class="small">Connection doesn't return to Pool → Pool fills up → connection pool exhausted error → app locks up</text>
 </svg>
 <figcaption>شکل ۸-۴: خط لوله‌ی اجرای یک کوئری در <bdi dir="ltr">database/sql</bdi> — <bdi dir="ltr">Prepare</bdi> کوئری را یک‌بار کامپایل می‌کند، <bdi dir="ltr">Query</bdi> <bdi dir="ltr">cursor</bdi> نتایج را باز می‌کند، حلقه‌ی <bdi dir="ltr">Next/Scan</bdi> سطرها را می‌خواند و نوع‌های <bdi dir="ltr">SQL</bdi> را به <bdi dir="ltr">Go</bdi> تبدیل می‌کند، و در نهایت <bdi dir="ltr">Close</bdi> اتصال را به <bdi dir="ltr">Pool</bdi> برمی‌گرداند. فراموش کردن <code>rows.Close()</code> باعث نشت اتصال و در نهایت قفل شدن برنامه می‌شود.</figcaption>
 </figure>

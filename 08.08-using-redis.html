@@ -136,7 +136,7 @@ func main() {
 <path d="M0,0 L10,5 L0,10 z" fill="#ff9800"/>
 </marker>
 </defs>
-<text x="380" y="28" text-anchor="middle" class="title rtl">الگوی Cache-Aside: ابتدا کش، در صورت MISS از دیتابیس</text>
+<text x="380" y="28" text-anchor="middle" class="title">Cache-Aside pattern: cache first, on MISS read from DB</text>
 <rect x="20" y="60" width="120" height="50" class="box-go"/>
 <text x="80" y="83" text-anchor="middle" class="title">Handler</text>
 <text x="80" y="100" text-anchor="middle" class="small">getUserByID(id)</text>
@@ -148,7 +148,7 @@ func main() {
 <line x1="340" y1="85" x2="460" y2="85" stroke="#4caf50" stroke-width="2" marker-end="url(#arrow-green)"/>
 <rect x="460" y="60" width="180" height="50" class="box-result"/>
 <text x="550" y="83" text-anchor="middle" class="title">✓ Return cached</text>
-<text x="550" y="100" text-anchor="middle" class="small rtl">سریع، بدون دسترسی DB</text>
+<text x="550" y="100" text-anchor="middle" class="small">Fast, no DB access</text>
 <text x="290" y="130" text-anchor="middle" class="small" fill="#c0392b">MISS</text>
 <line x1="260" y1="110" x2="260" y2="140" stroke="#ff9800" stroke-width="2" marker-end="url(#arrow-orange)"/>
 <rect x="180" y="140" width="160" height="50" class="box-php"/>
@@ -161,9 +161,9 @@ func main() {
 <line x1="340" y1="245" x2="460" y2="245" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
 <rect x="460" y="220" width="180" height="50" class="box-result"/>
 <text x="550" y="243" text-anchor="middle" class="title">✓ Return user</text>
-<text x="550" y="260" text-anchor="middle" class="small rtl">ذخیره در کش برای خواندن بعدی</text>
+<text x="550" y="260" text-anchor="middle" class="small">Stored in cache for next read</text>
 <rect x="20" y="290" width="720" height="40" class="tip-box"/>
-<text x="380" y="315" text-anchor="middle" class="small rtl">همیشه TTL تعیین کنید — بدون TTL داده‌ی کهنه برای همیشه در Redis باقی می‌ماند</text>
+<text x="380" y="315" text-anchor="middle" class="small">Always set a TTL — without TTL stale data stays in Redis forever</text>
 </svg>
 <figcaption>شکل ۸-۹: الگوی <bdi dir="ltr">Cache-Aside</bdi> در <bdi dir="ltr">Redis</bdi> — هندلر ابتدا کلید را از کش می‌خواند. اگر <bdi dir="ltr">HIT</bdi> بود (سبز) مستقیم برمی‌گردد؛ اگر <bdi dir="ltr">MISS</bdi> بود (نارنجی) از دیتابیس می‌خواند، نتیجه را با <bdi dir="ltr">TTL</bdi> در کش ذخیره می‌کند و برمی‌گرداند. تعیین <bdi dir="ltr">TTL</bdi> از انباشت داده‌ی کهنه جلوگیری می‌کند.</figcaption>
 </figure>
@@ -232,7 +232,7 @@ go func() {
 }()</code></pre>
 </figure>
 <div class="comparison"><strong>مقایسه با PHP:</strong> در <bdi dir="ltr">Laravel</bdi> از <bdi dir="ltr">Redis Facade</bdi> یا <code>Cache</code> استفاده می‌شود. <bdi dir="ltr">phpredis</bdi> <bdi dir="ltr">Connection Pool</bdi> ندارد اما <bdi dir="ltr">go-redis</bdi> به صورت <bdi dir="ltr">built-in</bdi> <bdi dir="ltr">Connection Pool</bdi> و <bdi dir="ltr">Pipeline</bdi> دارد. <bdi dir="ltr">Pub/Sub</bdi> در <bdi dir="ltr">Go</bdi> به دلیل مدل <bdi dir="ltr">concurrency</bdi> بهتر بسیار ساده‌تر مدیریت می‌شود.</div>
-<h3 id="redis-connection-pipeline-architecture">8.8.7 معماری اتصال و خط لوله دستوراتRedis</h3>
+<h3 id="redis-connection-pipeline-architecture">8.8.7 معماری اتصال و خط لوله دستورات Redis</h3>
 <p>درک معماری اتصال <bdi dir="ltr">Redis</bdi> در <bdi dir="ltr">Go</bdi> برای نوشتن برنامه‌های کارآمد و مقیاس‌پذیر ضروری است. کلاینت <bdi dir="ltr">go-redis</bdi> از یک <bdi dir="ltr">Connection Pool</bdi> داخلی استفاده می‌کند که چندین اتصال همزمان به سرور <bdi dir="ltr">Redis</bdi> برقرار می‌کند. هر درخواست از یک اتصال آزاد در استخر استفاده می‌کند و پس از اتمام آن را برمی‌گرداند. </p><p>این مکانیزم در محیط‌های با بار بالا بسیار مهم است زیرا ایجاد و تخریب مکرر اتصال‌ها هزینه‌ی شبکه‌ی بالایی دارد. </p><p>علاوه بر دستورات تک‌تکی، <bdi dir="ltr">Pipeline</bdi> امکان ارسال دسته‌ای چندین دستور در یک درخواست شبکه‌ای را فراهم می‌کند که تأخیر را به‌شدت کاهش می‌دهد.</p>
 <h3 id="redis-سناریوهای-عملیاتی">8.8.8 سناریوهای عملیاتی</h3>
 <p>در سیستم‌های واقعی، <bdi dir="ltr">Redis</bdi> فراتر از یک کش ساده عمل می‌کند و نقش‌های متعددی در معماری نرم‌افزار ایفا می‌کند. شناخت الگوهای مختلف استفاده از <bdi dir="ltr">Redis</bdi> به شما کمک می‌کند راه‌حل‌های مقیاس‌پذیر و کارآمد طراحی کنید. </p><p>هر الگوی استفاده مزایا و محدودیت‌های خاص خود را دارد و انتخاب الگوی مناسب به نیازهای عملیاتی و مشخصات بار سیستم بستگی دارد. </p><p>در ادامه پنج سناریوی عملیاتی کلیدی بررسی می‌شوند که هر مهندس نرم‌افزار باید در ابزار خود داشته باشد.</p>

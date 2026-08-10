@@ -369,7 +369,7 @@ func MustParseConfig(path string) *Config {
 </code></pre>
 </figure>
 <div class="warning"><strong>هشدار:</strong> الگوی <bdi dir="ltr">MustXxx</bdi> فقط برای مقادیری استفاده کنید که در زمان کامپایل یا راه‌اندازی مشخص هستند (مثل template‌ها و regex‌ها). هرگز از آن برای مقادیری که از ورودی کاربر یا شبکه می‌آیند استفاده نکنید.</div>
-<h3 id="dependency-injection">3.7.7 تزریق وابستگی با Constructorها</h3>
+<h3 id="dependency-injection">3.7.7 تزریق وابستگی با Constructor ها</h3>
 <p>در PHP تزریق وابستگی (<bdi dir="ltr">DI</bdi>) معمولاً به‌صورت خودکار توسط Service Container انجام می‌شود. اما در Go تزریق وابستگی صریح و دستی است — و این یک مزیت محسوب می‌شود:</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">// Define dependencies as interfaces
@@ -404,7 +404,7 @@ func main() {
 </figure>
 <div class="tip"><strong>نکته:</strong> اگر تزریق وابستگی صریح بیش از حد طولانی شد، از الگوی <bdi dir="ltr">Functional Options</bdi> یا <bdi dir="ltr">Builder</bdi> استفاده کنید. اما هرگز یک Container/DI framework خودکار اضافه نکنید — این ضد الگوی Go است. شفافیت وابستگی‌ها یک مزیت است نه مشکل.</div>
 <div class="note"><strong>نکته‌ی حرفه‌ای — قرارداد نام‌گذاری <code dir="ltr">NewX()</code> و قانون zero-value:</strong> در Go برخلاف PHP که <code>__construct()</code> یک قرارداد زبانی است، نام <code dir="ltr">NewX()</code> فقط یک قرارداد نوشتاری است که در کتابخانه استاندارد ریشه دارد (مثل <code>errors.New</code>، <code>http.NewServeMux</code>، <code>time.NewTimer</code>). همیشه از پیشوند <code>New</code> استفاده کنید، نه <code>Create</code>، <code>Make</code> یا <code>Build</code>. دو استثنای مهم وجود دارد: ۱) وقتی zero value معتبر است، سازنده ننویسید (مثل <code>sync.Mutex{}</code> یا <code>bytes.Buffer{}</code> که کاملاً کاربردی هستند)؛ ۲) وقتی چند سازنده با رفتار متفاوت لازم دارید، از پیشوندهای توصیفی استفاده کنید (مثل <code>NewAdminUser</code>، <code>NewGuestUser</code>). رعایت این قراردادها باعث می‌شود کد شما برای دیگر Go کارها آشنا و قابل پیش‌بینی باشد.</div>
-<h3 id="مقایسه-newx-و-zero-value">3.7.8 مقایسه‌ی الگویNewX()و مقدار صفر</h3>
+<h3 id="مقایسه-newx-و-zero-value">3.7.8 مقایسه‌ی الگوی NewX() و مقدار صفر</h3>
 <p>یکی از مهم‌ترین تصمیماتی که در طراحی <bdi dir="ltr">API</bdi> یک پکیج Go باید بگیرید این است که آیا کاربر باید شیء را با <bdi dir="ltr">NewX()</bdi> بسازد یا مستقیماً با <bdi dir="ltr">X{}</bdi> مقداردهی اولیه کند. این تصمیم به ماهیت <bdi dir="ltr">struct</bdi> و نوع استفاده‌ی مورد انتظار بستگی دارد. </p><p>برخی <bdi dir="ltr">struct</bdi>ها مانند <bdi dir="ltr">sync.Mutex</bdi> و <bdi dir="ltr">bytes.Buffer</bdi> بدون هیچ مقداردهی اولیه‌ای کاملاً کاربردی هستند و مقدار صفر (<bdi dir="ltr">zero value</bdi>) آن‌ها معتبر و مفید است. </p><p>اما اکثر <bdi dir="ltr">struct</bdi>ها به مقداردهی اولیه نیاز دارند و استفاده از <bdi dir="ltr">NewX()</bdi> بهترین روش برای اطمینان از صحت وضعیت اولیه شیء است.</p>
 <figure class="diagram" dir="ltr">
 <svg viewBox="0 0 720 360" xmlns="http://www.w3.org/2000/svg">
@@ -413,46 +413,46 @@ func main() {
 <path d="M0,0 L10,5 L0,10 z" fill="#64748b"/>
 </marker>
 </defs>
-<text x="360" y="28" text-anchor="middle" class="title rtl">سه الگوی مقداردهی اولیه در Go</text>
+<text x="360" y="28" text-anchor="middle" class="title">Three Initialization Patterns in Go</text>
 <!-- NewX (left, green) -->
 <rect x="20" y="60" width="220" height="200" class="box-result"/>
 <text x="130" y="85" text-anchor="middle" class="title">NewX()</text>
-<text x="130" y="105" text-anchor="middle" class="small rtl">سازنده‌ی صریح</text>
+<text x="130" y="105" text-anchor="middle" class="small">Explicit constructor</text>
 <line x1="30" y1="118" x2="230" y2="118" stroke="#cbd5e1" stroke-width="1"/>
-<text x="30" y="140" text-anchor="start" class="small rtl">✓ اعتبارسنجی ورودی</text>
-<text x="30" y="160" text-anchor="start" class="small rtl">✓ مقادیر پیش‌فرض</text>
-<text x="30" y="180" text-anchor="start" class="small rtl">✓ مدیریت خطا</text>
-<text x="30" y="200" text-anchor="start" class="small rtl">✓ فیلدهای unexported</text>
-<text x="30" y="220" text-anchor="start" class="small rtl">✓ بازگشت interface</text>
+<text x="30" y="140" text-anchor="start" class="small">✓ Validate input</text>
+<text x="30" y="160" text-anchor="start" class="small">✓ Default values</text>
+<text x="30" y="180" text-anchor="start" class="small">✓ Error handling</text>
+<text x="30" y="200" text-anchor="start" class="small">✓ Unexported fields</text>
+<text x="30" y="220" text-anchor="start" class="small">✓ Return interface</text>
 <line x1="30" y1="230" x2="230" y2="230" stroke="#cbd5e1" stroke-width="1"/>
 <text x="130" y="250" text-anchor="middle" class="small">NewServer(addr) (*Server, error)</text>
 <!-- Zero value (right, orange) -->
 <rect x="260" y="60" width="220" height="200" class="box-join"/>
 <text x="370" y="85" text-anchor="middle" class="title">X{}</text>
-<text x="370" y="105" text-anchor="middle" class="small rtl">مقدار صفر (zero value)</text>
+<text x="370" y="105" text-anchor="middle" class="small">Zero value</text>
 <line x1="270" y1="118" x2="470" y2="118" stroke="#cbd5e1" stroke-width="1"/>
-<text x="270" y="140" text-anchor="start" class="small rtl">✓ سادگی</text>
-<text x="270" y="160" text-anchor="start" class="small rtl">✓ بدون وابستگی</text>
-<text x="270" y="180" text-anchor="start" class="small rtl">✓ قابل‌کپی کردن</text>
-<text x="270" y="200" text-anchor="start" class="small rtl">✗ بدون اعتبارسنجی</text>
-<text x="270" y="220" text-anchor="start" class="small rtl">✗ بدون پیش‌فرض</text>
+<text x="270" y="140" text-anchor="start" class="small">✓ Simplicity</text>
+<text x="270" y="160" text-anchor="start" class="small">✓ No dependencies</text>
+<text x="270" y="180" text-anchor="start" class="small">✓ Copyable</text>
+<text x="270" y="200" text-anchor="start" class="small">✗ No validation</text>
+<text x="270" y="220" text-anchor="start" class="small">✗ No defaults</text>
 <line x1="270" y1="230" x2="470" y2="230" stroke="#cbd5e1" stroke-width="1"/>
-<text x="370" y="250" text-anchor="middle" class="small">var m sync.Mutex  // یا bytes.Buffer{}</text>
+<text x="370" y="250" text-anchor="middle" class="small">var m sync.Mutex  // or bytes.Buffer{}</text>
 <!-- Factory (bottom, blue) -->
 <rect x="500" y="60" width="200" height="200" class="box-action"/>
 <text x="600" y="85" text-anchor="middle" class="title">Factory</text>
-<text x="600" y="105" text-anchor="middle" class="small rtl">کارخانه‌ی interface</text>
+<text x="600" y="105" text-anchor="middle" class="small">Interface factory</text>
 <line x1="510" y1="118" x2="690" y2="118" stroke="#cbd5e1" stroke-width="1"/>
-<text x="510" y="140" text-anchor="start" class="small rtl">✓ پیاده‌سازی مخفی</text>
-<text x="510" y="160" text-anchor="start" class="small rtl">✓ چندگانه‌ی runtime</text>
-<text x="510" y="180" text-anchor="start" class="small rtl">✓ بر اساس پارامتر</text>
-<text x="510" y="200" text-anchor="start" class="small rtl">✓ encapsulation قوی</text>
+<text x="510" y="140" text-anchor="start" class="small">✓ Hidden implementation</text>
+<text x="510" y="160" text-anchor="start" class="small">✓ Runtime multiple</text>
+<text x="510" y="180" text-anchor="start" class="small">✓ Based on parameter</text>
+<text x="510" y="200" text-anchor="start" class="small">✓ Strong encapsulation</text>
 <line x1="510" y1="220" x2="690" y2="220" stroke="#cbd5e1" stroke-width="1"/>
 <text x="600" y="245" text-anchor="middle" class="small">NewStorage(cfg) Storage</text>
 <!-- PHP comparison (bottom) -->
 <rect x="20" y="290" width="680" height="50" class="box-php"/>
-<text x="360" y="312" text-anchor="middle" class="title rtl">PHP — فقط __construct() اجباری</text>
-<text x="360" y="330" text-anchor="middle" class="small rtl">در Go انتخاب بین سه الگو بر اساس نیاز پروژه — در PHP فقط یک راه دارید</text>
+<text x="360" y="312" text-anchor="middle" class="title">PHP — only __construct() required</text>
+<text x="360" y="330" text-anchor="middle" class="small">In Go, choose between three patterns based on project need — in PHP, only one way</text>
 </svg>
 <figcaption>شکل ۳-۱۱: سه الگوی مقداردهی اولیه در Go — <code dir="ltr">NewX()</code> برای اعتبارسنجی، <code dir="ltr">X{}</code> برای structهایی با zero value معتبر (مثل sync.Mutex)، و Factory برای برگرداندن interface با پیاده‌سازی متفاوت</figcaption>
 </figure>

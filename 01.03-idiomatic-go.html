@@ -254,46 +254,46 @@ if err != nil {
 <path d="M0,0 L10,5 L0,10 z" fill="#64748b"/>
 </marker>
 </defs>
-<text x="360" y="28" text-anchor="middle" class="title rtl">Escape Analysis: تصمیم‌گیری کامپایلر Go</text>
+<text x="360" y="28" text-anchor="middle" class="title">Escape Analysis: Go Compiler Decision</text>
 <!-- Start node -->
 <rect x="280" y="55" width="160" height="50" class="box-action"/>
-<text x="360" y="85" text-anchor="middle" class="small rtl">مقدار جدید در تابع</text>
+<text x="360" y="85" text-anchor="middle" class="small">New value in function</text>
 <line x1="360" y1="105" x2="360" y2="130" stroke="#64748b" stroke-width="2" marker-end="url(#arrowEsc)"/>
 <!-- Decision 1 -->
 <rect x="260" y="130" width="200" height="50" class="box"/>
-<text x="360" y="152" text-anchor="middle" class="small rtl">آیا اشاره‌گر آن از تابع</text>
-<text x="360" y="168" text-anchor="middle" class="small rtl">خارج می‌شود؟</text>
+<text x="360" y="152" text-anchor="middle" class="small">Does its pointer escape</text>
+<text x="360" y="168" text-anchor="middle" class="small">the function?</text>
 <!-- No branch: left -->
 <line x1="260" y1="155" x2="200" y2="155" stroke="#64748b" stroke-width="2" marker-end="url(#arrowEsc)"/>
-<text x="225" y="148" text-anchor="middle" class="small" fill="#4caf50">خیر</text>
+<text x="225" y="148" text-anchor="middle" class="small" fill="#4caf50">No</text>
 <!-- Yes branch: right -->
 <line x1="460" y1="155" x2="520" y2="155" stroke="#64748b" stroke-width="2" marker-end="url(#arrowEsc)"/>
-<text x="490" y="148" text-anchor="middle" class="small" fill="#ef4444">بله</text>
+<text x="490" y="148" text-anchor="middle" class="small" fill="#ef4444">Yes</text>
 <!-- Decision 2 (only if "No" — used by interface) -->
 <rect x="60" y="220" width="200" height="50" class="box"/>
-<text x="160" y="242" text-anchor="middle" class="small rtl">آیا به interface{}</text>
-<text x="160" y="258" text-anchor="middle" class="small rtl">اختصاص می‌یابد؟</text>
+<text x="160" y="242" text-anchor="middle" class="small">Is it assigned to</text>
+<text x="160" y="258" text-anchor="middle" class="small">interface{}?</text>
 <line x1="160" y1="220" x2="160" y2="195" stroke="#64748b" stroke-width="2"/>
 <line x1="160" y1="195" x2="100" y2="195" stroke="#64748b" stroke-width="2"/>
 <line x1="100" y1="195" x2="100" y2="155" stroke="#64748b" stroke-width="2"/>
 <!-- No from decision 2: stack -->
 <line x1="160" y1="270" x2="160" y2="300" stroke="#4caf50" stroke-width="2" marker-end="url(#arrowEsc)"/>
-<text x="180" y="288" text-anchor="start" class="small" fill="#4caf50">خیر</text>
+<text x="180" y="288" text-anchor="start" class="small" fill="#4caf50">No</text>
 <rect x="60" y="300" width="200" height="50" class="tip-box"/>
 <text x="160" y="322" text-anchor="middle" class="title" fill="#2e7d32">Stack</text>
-<text x="160" y="340" text-anchor="middle" class="small rtl">سریع، بدون GC</text>
+<text x="160" y="340" text-anchor="middle" class="small">Fast, no GC</text>
 <!-- Yes from decision 2: heap -->
 <line x1="260" y1="245" x2="320" y2="245" stroke="#ef4444" stroke-width="2" marker-end="url(#arrowEsc)"/>
-<text x="285" y="238" text-anchor="middle" class="small" fill="#ef4444">بله</text>
+<text x="285" y="238" text-anchor="middle" class="small" fill="#ef4444">Yes</text>
 <!-- Yes from decision 1: heap -->
 <rect x="500" y="220" width="200" height="50" class="warn-box"/>
 <text x="600" y="242" text-anchor="middle" class="title" fill="#e65100">Heap</text>
-<text x="600" y="260" text-anchor="middle" class="small rtl">نیازمند GC</text>
+<text x="600" y="260" text-anchor="middle" class="small">Needs GC</text>
 <line x1="520" y1="155" x2="600" y2="155" stroke="#64748b" stroke-width="2"/>
 <line x1="600" y1="155" x2="600" y2="220" stroke="#64748b" stroke-width="2"/>
 <!-- Merge to heap -->
 <line x1="320" y1="245" x2="500" y2="245" stroke="#ef4444" stroke-width="2"/>
-<text x="360" y="330" text-anchor="middle" class="small rtl">کد idiomatic: اشاره‌گر برنگردانید مگر اینکه واقعاً لازم باشد</text>
+<text x="360" y="365" text-anchor="middle" class="small">Idiomatic code: don't return pointers unless really needed</text>
 </svg>
 <figcaption>شکل ۱-۵: نمودار جریان تصمیم‌گیری کامپایلر Go برای تخصیص Stack یا Heap</figcaption>
 </figure>
@@ -480,7 +480,7 @@ func newUser() *User {
 <span class="quote-book">کتاب The Pragmatic Programmer</span>
 </p>
 </div>
-<h3 id="مراحل-رفکتورینگ-از-php-style-به-idiomatic-go">1.3.10 مراحل ریفکتورینگ: از کدPHP-ستایل بهIdiomatic Go</h3>
+<h3 id="مراحل-رفکتورینگ-از-php-style-به-idiomatic-go">1.3.10 مراحل ریفکتورینگ: از کد PHP-ستایل به Idiomatic Go</h3>
 <p>وقتی برنامه‌نویس <bdi dir="ltr">PHP</bdi> شروع به نوشتن کد <bdi dir="ltr">Go</bdi> می‌کند، غالباً الگوهای فکری <bdi dir="ltr">PHP</bdi> را با خود می‌آورد. این الگوها در <bdi dir="ltr">Go</bdi> نه‌تنها غیرضروری‌اند بلکه باعث کد شکننده و ناخوانا می‌شوند. در ادامه یک نمودار گام‌به‌گام از تبدیل کد <bdi dir="ltr">PHP</bdi>-ستایل به <bdi dir="ltr">Idiomatic Go</bdi> را بررسی می‌کنیم. </p><p>هر مرحله نشان‌دهنده‌ی یک تغییر بنیادین در نحوه‌ی تفکر است نه فقط یک تغییر نحوی. </p><p>این مراحل باید به‌ترتیب اجرا شوند چون هرکدام بر پایه‌ی قبلی ساخته می‌شود و بدون انجام مرحله‌ی قبل ممکن است مفهوم پیدا نکند.</p>
 <p>هر یک از این مراحل بازتابی از یک اصل بنیادین <bdi dir="ltr">Go</bdi> است. مرحله‌ی اول (مدیریت خطا) اصل صراحت را نشان می‌دهد — خطاها باید بخشی از نوع بازگشتی باشند نه مکانیزمی پنهان. مرحله‌ی دوم (دسترسی مستقیم به فیلدها) اصل سادگی را نشان می‌دهد — وقتی <bdi dir="ltr">getter/setter</bdi> منطق اضافه‌ای ندارد مستقیماً از فیلد استفاده کنید. </p><p>مرحله‌ی سوم (ترکیب به‌جای ارث‌بری) اصل استقلال را نشان می‌دهد — هر <bdi dir="ltr">struct</bdi> فقط آنچه نیاز دارد را ترکیب می‌کند. </p><p>و مرحله‌ی چهارم (<bdi dir="ltr">interface</bdi> در سمت مصرف‌کننده) اصل وارونگی وابستگی را نشان می‌دهد — مصرف‌کننده تصمیم می‌گیرد چه <bdi dir="ltr">interface</bdi>‌ای لازم دارد نه تولیدکننده.</p>
 <figure class="diagram" dir="ltr">
@@ -490,44 +490,44 @@ func newUser() *User {
 <path d="M0,0 L10,5 L0,10 z" fill="#64748b"/>
 </marker>
 </defs>
-<text x="360" y="28" text-anchor="middle" class="title rtl">چهار گام ریفکتورینگ از PHP-ستایل به Idiomatic Go</text>
+<text x="360" y="28" text-anchor="middle" class="title">Four Refactoring Steps from PHP-style to Idiomatic Go</text>
 <!-- Step 1 -->
 <rect x="20" y="80" width="160" height="120" class="box-php"/>
-<text x="100" y="105" text-anchor="middle" class="title">۱</text>
-<text x="100" y="130" text-anchor="middle" class="small rtl">مدیریت خطا</text>
+<text x="100" y="105" text-anchor="middle" class="title">1</text>
+<text x="100" y="130" text-anchor="middle" class="small">Error handling</text>
 <text x="100" y="150" text-anchor="middle" class="small">panic → error</text>
-<text x="100" y="170" text-anchor="middle" class="small rtl">صراحت</text>
-<text x="100" y="188" text-anchor="middle" class="small rtl">به‌جای try/catch</text>
+<text x="100" y="170" text-anchor="middle" class="small">Explicitness</text>
+<text x="100" y="188" text-anchor="middle" class="small">instead of try/catch</text>
 <!-- Step 2 -->
 <rect x="200" y="80" width="160" height="120" class="box"/>
-<text x="280" y="105" text-anchor="middle" class="title">۲</text>
-<text x="280" y="130" text-anchor="middle" class="small rtl">دسترسی به فیلدها</text>
+<text x="280" y="105" text-anchor="middle" class="title">2</text>
+<text x="280" y="130" text-anchor="middle" class="small">Field access</text>
 <text x="280" y="150" text-anchor="middle" class="small">GetName → Name</text>
-<text x="280" y="170" text-anchor="middle" class="small rtl">سادگی</text>
-<text x="280" y="188" text-anchor="middle" class="small rtl">حذف getter/setter</text>
+<text x="280" y="170" text-anchor="middle" class="small">Simplicity</text>
+<text x="280" y="188" text-anchor="middle" class="small">drop getter/setter</text>
 <!-- Step 3 -->
 <rect x="380" y="80" width="160" height="120" class="box-go"/>
-<text x="460" y="105" text-anchor="middle" class="title">۳</text>
-<text x="460" y="130" text-anchor="middle" class="small rtl">ترکیب به‌جای ارث‌بری</text>
+<text x="460" y="105" text-anchor="middle" class="title">3</text>
+<text x="460" y="130" text-anchor="middle" class="small">Composition over inheritance</text>
 <text x="460" y="150" text-anchor="middle" class="small">extends → embedding</text>
-<text x="460" y="170" text-anchor="middle" class="small rtl">استقلال</text>
-<text x="460" y="188" text-anchor="middle" class="small rtl">بدون سلسله‌مراتب</text>
+<text x="460" y="170" text-anchor="middle" class="small">Independence</text>
+<text x="460" y="188" text-anchor="middle" class="small">no hierarchy</text>
 <!-- Step 4 -->
 <rect x="560" y="80" width="140" height="120" class="box-result"/>
-<text x="630" y="105" text-anchor="middle" class="title">۴</text>
-<text x="630" y="130" text-anchor="middle" class="small rtl">interface سمت</text>
-<text x="630" y="148" text-anchor="middle" class="small rtl">مصرف‌کننده</text>
+<text x="630" y="105" text-anchor="middle" class="title">4</text>
+<text x="630" y="130" text-anchor="middle" class="small">Consumer-side</text>
+<text x="630" y="148" text-anchor="middle" class="small">interface</text>
 <text x="630" y="168" text-anchor="middle" class="small">implements → implicit</text>
-<text x="630" y="188" text-anchor="middle" class="small rtl">وارونگی وابستگی</text>
+<text x="630" y="188" text-anchor="middle" class="small">dependency inversion</text>
 <!-- Arrows -->
 <line x1="180" y1="140" x2="200" y2="140" stroke="#64748b" stroke-width="2" marker-end="url(#arrowRef)"/>
 <line x1="360" y1="140" x2="380" y2="140" stroke="#64748b" stroke-width="2" marker-end="url(#arrowRef)"/>
 <line x1="540" y1="140" x2="560" y2="140" stroke="#64748b" stroke-width="2" marker-end="url(#arrowRef)"/>
-<text x="360" y="245" text-anchor="middle" class="small rtl">هر گام یک تغییر ذهنی است نه فقط تغییر نحوی — به‌ترتیب اجرا شوند</text>
+<text x="360" y="245" text-anchor="middle" class="small">Each step is a mindset shift, not just syntax — execute in order</text>
 </svg>
 <figcaption>شکل ۱-۶: چهار گام ریفکتورینگ از کد PHP-ستایل به Idiomatic Go</figcaption>
 </figure>
-<h3 id="سناریوهای-عملیاتی-idiomatic-go">1.3.11 سناریوهای عملیاتی: مسیر عملی به‌سوی کدIdiomatic Go</h3>
+<h3 id="سناریوهای-عملیاتی-idiomatic-go">1.3.11 سناریوهای عملیاتی: مسیر عملی به‌سوی کد Idiomatic Go</h3>
 <ul>
 <li><strong>چک‌لیست <bdi dir="ltr">Code Review</bdi> برای <bdi dir="ltr">Idiomatic Go</bdi>:</strong> آیا خطاها صریحاً بررسی شده‌اند؟ آیا <bdi dir="ltr">getter/setter</bdi> غیرضروری وجود دارد؟ آیا از ارث‌بری به‌جای ترکیب استفاده شده است؟ آیا <bdi dir="ltr">interface</bdi> در سمت تولیدکننده تعریف شده به‌جای سمت مصرف‌کننده؟ آیا نام‌گذاری‌ها از قراردادهای <bdi dir="ltr">Go</bdi> پیروی می‌کنند (مثلاً <code>getUserID</code> نه <code>getUserId</code>)؟ آیا از <code>context.Context</code> به‌عنوان اولین آرگومان استفاده شده است؟ این چک‌لیست به‌تدریج به بخشی طبیعی از فرآیند بازبینی تبدیل می‌شود.</li>
 <li><strong>ریفکتورینگ کد <bdi dir="ltr">PHP</bdi>-ستایل موجود:</strong> اگر پروژه‌ای دارید که با سبک <bdi dir="ltr">PHP</bdi> نوشته شده ابتدا مدیریت خطا را اصلاح کنید — تمام <bdi dir="ltr">panic</bdi>‌ها را به <bdi dir="ltr">error return</bdi> تبدیل کنید. سپس <bdi dir="ltr">getter/setter</bdi>‌های بدون منطق را حذف و دسترسی مستقیم جایگزین کنید. بعد ارث‌بری‌های زنجیره‌ای را به ترکیب تبدیل کنید. در نهایت <bdi dir="ltr">interface</bdi>‌ها را به سمت مصرف‌کننده منتقل کنید. هر مرحله را جداگانه و با تست تأیید کنید.</li>

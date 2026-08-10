@@ -342,7 +342,7 @@ addr := fmt.Sprintf("%s:%d", host, port) // hostport هشدار میدهد
 // ✅ صحیح: استفاده از net.JoinHostPort
 addr := net.JoinHostPort(host, strconv.Itoa(port))</code></pre>
 </figure>
-<h3 id="data-race-خط-زمانی-داخل‌درج">5.6.5 خط زمانی داخل‌درجData Race— تجزیه گام‌به‌گام</h3>
+<h3 id="data-race-خط-زمانی-داخل‌درج">5.6.5 خط زمانی داخل‌درج Data Race— تجزیه گام‌به‌گام</h3>
 <p>برای درک عمیق‌تر <bdi dir="ltr">Data Race</bdi> باید ببینیم دقیقاً چه اتفاقی در سطح دستورات ماشین افتاده است. عملیات <bdi dir="ltr">counter++</bdi> در ظاهر یک دستور است اما در واقع سه مرحله مجزا دارد: خواندن مقدار فعلی از حافظه، افزایش مقدار در ثبات پردازنده، و نوشتن مقدار جدید در حافظه. </p><p>وقتی دو <bdi dir="ltr">goroutine</bdi> این سه مرحله را به صورت درهم‌آمیخته اجرا کنند، ممکن است هر دو مقدار یکسانی را بخوانند و سپس هر دو مقدار یکسانی را بنویسند که نتیجه‌ی آن از بین رفتن یکی از افزایش‌هاست. </p><p>این مشکل به نام <bdi dir="ltr">lost update</bdi> شناخته می‌شود و در سیستم‌های پایگاه داده نیز وقتی رخ می‌دهد که دو تراکنش همزمان روی یک رکورد تغییر ایجاد کنند بدون اینکه از قفل استفاده کنند.</p>
 <figure class="diagram" dir="ltr">
 <svg viewBox="0 0 760 460" xmlns="http://www.w3.org/2000/svg">
@@ -357,9 +357,9 @@ addr := net.JoinHostPort(host, strconv.Itoa(port))</code></pre>
 <path d="M0,0 L10,5 L0,10 z" fill="#4caf50"/>
 </marker>
 </defs>
-<text x="380" y="28" text-anchor="middle" class="title rtl">تجزیه‌ی گام‌به‌گام counter++ — چرا Data Race رخ می‌دهد و چطور Mutex حل می‌کند</text>
+<text x="380" y="28" text-anchor="middle" class="title">Step-by-step decomposition of counter++ — why a data race happens and how Mutex fixes it</text>
 <!-- TOP: Race scenario -->
-<text x="380" y="55" text-anchor="middle" class="small rtl" fill="#ef4444">بدون همگام‌سازی — Lost Update (نتیجه‌ی نهایی غلط: ۱ به‌جای ۲)</text>
+<text x="380" y="55" text-anchor="middle" class="small" fill="#ef4444">Without synchronization — Lost Update (final wrong result: 1 instead of 2)</text>
 <!-- Time axis top -->
 <line x1="60" y1="80" x2="700" y2="80" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
 <text x="710" y="85" class="small">time</text>
@@ -388,11 +388,11 @@ addr := net.JoinHostPort(host, strconv.Itoa(port))</code></pre>
 <line x1="260" y1="215" x2="360" y2="215" stroke="#64748b" stroke-width="1" stroke-dasharray="3 3"/>
 <line x1="440" y1="215" x2="540" y2="215" stroke="#64748b" stroke-width="1" stroke-dasharray="3 3"/>
 <!-- Memory box -->
-<text x="380" y="265" text-anchor="middle" class="small rtl" fill="#ef4444">حافظه‌ی مشترک: counter — مقدار نهایی: ۱ (هر دو G مقدار ۰ را خواندند و ۱ را نوشتند)</text>
+<text x="380" y="265" text-anchor="middle" class="small" fill="#ef4444">Shared memory: counter — final value: 1 (both Gs read 0 and wrote 1)</text>
 <!-- Divider -->
 <line x1="30" y1="285" x2="730" y2="285" stroke="#cbd5e1" stroke-width="1" stroke-dasharray="4 4"/>
 <!-- BOTTOM: With Mutex -->
-<text x="380" y="310" text-anchor="middle" class="small rtl" fill="#4caf50">با Mutex — بخش بحرانی سریال‌سازی شده (نتیجه‌ی صحیح: ۲)</text>
+<text x="380" y="310" text-anchor="middle" class="small" fill="#4caf50">With Mutex — critical section serialized (correct result: 2)</text>
 <line x1="60" y1="335" x2="700" y2="335" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
 <text x="710" y="340" class="small">time</text>
 <!-- G1 lane with Mutex -->
@@ -405,11 +405,11 @@ addr := net.JoinHostPort(host, strconv.Itoa(port))</code></pre>
 <text x="220" y="415" text-anchor="middle" class="small">WRITE 1</text>
 <rect x="280" y="375" width="80" height="55" class="box-result"/>
 <text x="320" y="395" text-anchor="middle" class="small">Unlock()</text>
-<text x="320" y="415" text-anchor="middle" class="small rtl">آزاد شد ✓</text>
+<text x="320" y="415" text-anchor="middle" class="small">released ✓</text>
 <!-- G2 lane with Mutex (waiting) -->
 <text x="50" y="455" text-anchor="end" class="title">G2</text>
 <rect x="80" y="438" width="280" height="22" class="warn-box"/>
-<text x="220" y="453" text-anchor="middle" class="small rtl" fill="#ff9800">منتظر قفل (مسدود)... Mutex بسته است</text>
+<text x="220" y="453" text-anchor="middle" class="small" fill="#ff9800">Waiting for lock (blocked)... Mutex is held</text>
 <rect x="380" y="430" width="80" height="55" class="box-go"/>
 <text x="420" y="450" text-anchor="middle" class="small">Lock()</text>
 <text x="420" y="470" text-anchor="middle" class="small">READ (1)</text>
@@ -418,7 +418,7 @@ addr := net.JoinHostPort(host, strconv.Itoa(port))</code></pre>
 <text x="520" y="470" text-anchor="middle" class="small">WRITE 2</text>
 <rect x="580" y="430" width="80" height="55" class="box-result"/>
 <text x="620" y="450" text-anchor="middle" class="small">Unlock()</text>
-<text x="620" y="470" text-anchor="middle" class="small rtl">✓</text>
+<text x="620" y="470" text-anchor="middle" class="small">✓</text>
 <line x1="360" y1="450" x2="380" y2="450" stroke="#4caf50" stroke-width="2" marker-end="url(#arrow-ok)"/>
 </svg>
 <figcaption>شکل ۵-۸: تجزیه‌ی گام‌به‌گام <code>counter++</code> در دو سناریو — در نیمه‌ی بالا (بدون همگام‌سازی)، G1 و G2 هر دو مقدار <code>0</code> را می‌خوانند، هر دو آن را افزایش می‌دهند و هر دو <code>1</code> را می‌نویسند؛ نتیجه‌ی نهایی <code>1</code> است به‌جای <code>2</code> (lost update). در نیمه‌ی پایین (با Mutex)، G1 قفل را می‌گیرد و G2 تا اتمام کار G1 مسدود می‌شود؛ سپس G2 مقدار صحیح <code>1</code> را می‌خواند و <code>2</code> را می‌نویسد — عملیات سریال‌سازی شده و نتیجه صحیح است.</figcaption>

@@ -156,7 +156,7 @@ func consumer(id int, jobs &lt;-chan Job) { // receive only
 </p>
 </div>
 <div class="tip"><strong>نکته‌ی حرفه‌ای:</strong> کانال‌ها ابزار <bdi dir="ltr">decoupling</bdi> <bdi dir="ltr">Goroutine</bdi>‌ها هستند — فرستنده نیازی ندارد بداند گیرنده کیست و گیرنده هم نیازی ندارد بداند فرستنده کیست. این جداکردن دقیقاً همان اصل وابستگی معکوس در معماری تمیز است: داده از طریق کانال جریان دارد، اما وابستگی کد در جهت مخالف قرار می‌گیرد.</div>
-<h3 id="nil-channel">5.2.4 رفتار کانالnil</h3>
+<h3 id="nil-channel">5.2.4 رفتار کانال nil</h3>
 <p>کانال <bdi dir="ltr">nil</bdi> رفتار ویژه‌ای دارد: هر ارسال یا دریافت روی آن <strong>برای همیشه بلاک</strong> می‌شود. این رفتار در ابتدا ممکن است عجیب به نظر برسد، اما در عمل بسیار مفید است — می‌توان با تنظیم یک کانال روی <bdi dir="ltr">nil</bdi> آن را از <code>select</code> غیرفعال کرد.</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">var ch chan int // nil channel
@@ -287,12 +287,12 @@ func main() {
 <path d="M0,0 L10,5 L0,10 z" fill="#00ADD8"/>
 </marker>
 </defs>
-<text x="380" y="28" text-anchor="middle" class="title rtl">ساختار داخلی hchan: کانال بدون بافر در برابر بافر‌دار</text>
+<text x="380" y="28" text-anchor="middle" class="title">Internal hchan structure: unbuffered vs buffered channel</text>
 <!-- Vertical divider -->
 <line x1="380" y1="50" x2="380" y2="430" stroke="#cbd5e1" stroke-width="1" stroke-dasharray="4 4"/>
 <!-- LEFT: Unbuffered -->
-<text x="190" y="60" text-anchor="middle" class="title rtl">Unbuffered: make(chan T)</text>
-<text x="190" y="80" text-anchor="middle" class="small rtl">ظرفیت صفر — دست‌دهی همگام</text>
+<text x="190" y="60" text-anchor="middle" class="title">Unbuffered: make(chan T)</text>
+<text x="190" y="80" text-anchor="middle" class="small">Zero capacity — synchronous handoff</text>
 <!-- Sender goroutine -->
 <rect x="40" y="110" width="140" height="60" class="box-action"/>
 <text x="110" y="135" text-anchor="middle" class="title">G1 (sender)</text>
@@ -312,12 +312,12 @@ func main() {
 <text x="270" y="400" text-anchor="middle" class="small">msg := &lt;-ch</text>
 <!-- Direct handshake arrow G1 → G2 -->
 <path d="M 110 170 Q 110 250 270 355" fill="none" stroke="#00ADD8" stroke-width="2.5" marker-end="url(#arrow-data)"/>
-<text x="170" y="270" text-anchor="middle" class="small rtl" fill="#00ADD8">کپی مستقیم</text>
-<text x="170" y="288" text-anchor="middle" class="small rtl" fill="#00ADD8">Stack → Stack</text>
-<text x="190" y="425" text-anchor="middle" class="small rtl" fill="#ef4444">تا G2 آماده نشود، G1 مسدود می‌ماند</text>
+<text x="170" y="270" text-anchor="middle" class="small" fill="#00ADD8">Direct copy</text>
+<text x="170" y="288" text-anchor="middle" class="small" fill="#00ADD8">Stack → Stack</text>
+<text x="190" y="425" text-anchor="middle" class="small" fill="#ef4444">Until G2 is ready, G1 stays blocked</text>
 <!-- RIGHT: Buffered -->
-<text x="570" y="60" text-anchor="middle" class="title rtl">Buffered: make(chan T, 3)</text>
-<text x="570" y="80" text-anchor="middle" class="small rtl">ظرفیت ۳ — صف میانی (Ring Buffer)</text>
+<text x="570" y="60" text-anchor="middle" class="title">Buffered: make(chan T, 3)</text>
+<text x="570" y="80" text-anchor="middle" class="small">Capacity 3 — intermediate queue (Ring Buffer)</text>
 <!-- Sender goroutine -->
 <rect x="420" y="110" width="140" height="60" class="box-action"/>
 <text x="490" y="135" text-anchor="middle" class="title">G1 (sender)</text>
@@ -329,8 +329,8 @@ func main() {
 <text x="430" y="245" class="small">buf: [ A | B | _ ]</text>
 <text x="430" y="263" class="small">qcount: 2, dataqsiz: 3</text>
 <text x="430" y="281" class="small">sendx: 2, recvx: 0</text>
-<text x="430" y="299" class="small">sendq: [] (خالی)</text>
-<text x="430" y="317" class="small">recvq: [] (خالی)</text>
+<text x="430" y="299" class="small">sendq: [] (empty)</text>
+<text x="430" y="317" class="small">recvq: [] (empty)</text>
 <!-- Receiver goroutine -->
 <rect x="580" y="355" width="140" height="60" class="box-result"/>
 <text x="650" y="380" text-anchor="middle" class="title">G2 (receiver)</text>
@@ -341,11 +341,11 @@ func main() {
 <!-- Buffer to receiver -->
 <line x1="650" y1="320" x2="650" y2="355" stroke="#00ADD8" stroke-width="2" marker-end="url(#arrow-data)"/>
 <text x="700" y="340" text-anchor="middle" class="small" fill="#00ADD8">recv</text>
-<text x="570" y="425" text-anchor="middle" class="small rtl" fill="#4caf50">تا بافر پر نشده، G1 مسدود نمی‌شود — تولید و مصرف decoupled می‌شوند</text>
+<text x="570" y="425" text-anchor="middle" class="small" fill="#4caf50">Until buffer is full, G1 is not blocked — producer and consumer decoupled</text>
 </svg>
 <figcaption>شکل ۵-۴: ساختار داخلی <code>hchan</code> برای دو نوع کانال — در کانال بدون بافر (چپ)، فرستنده مستقیماً روی Stack گیرنده داده را کپی می‌کند و تا آماده‌شدن گیرنده مسدود می‌ماند. در کانال بافر‌دار (راست)، داده ابتدا در <code>Ring Buffer</code> داخلی (<code>buf</code>) قرار می‌گیرد و فرستنده بدون انتظار ادامه می‌دهد. صف‌های <code>sendq</code> و <code>recvq</code> تنها زمانی پر می‌شوند که فرستنده/گیرنده‌ای مسدود شده باشد.</figcaption>
 </figure>
-<h3 id="سناریوهای-عملیاتی-channel">5.2.8 سناریوهای عملیاتیChannel</h3>
+<h3 id="سناریوهای-عملیاتی-channel">5.2.8 سناریوهای عملیاتی Channel</h3>
 <p>کانال‌ها در Go فقط وسیله‌ی انتقال داده نیستند — آن‌ها ابزار قدرتمندی برای طراحی سیستم‌های همزمان هستند. هر الگوی استفاده از کانال مسئله‌ی خاصی را حل می‌کند و انتخاب الگوی مناسب تأثیر مستقیم بر سادگی و قابلیت اطمینان کد دارد. در این بخش با پنج سناریو عملیاتی رایج آشنا می‌شویم که هر توسعه‌دهنده Go باید بشناسد.</p><p>این الگوها در پروژه‌های واقعی بارها و بارها تکرار می‌شوند و درک عمیق آن‌ها برای نوشتن کد همزمان اصولی ضروری است.</p>
 <ul>
 <li><strong>سیگنال‌دهی با <bdi dir="ltr">Empty Struct Channel</bdi> (<code>chan struct{}</code>):</strong> وقتی فقط نیاز به سیگنال دادن دارید و هیچ داده‌ای برای انتقال نیست، از <code>chan struct{}</code> استفاده کنید. <code>struct{}</code> صفر بایت حافظه مصرف می‌کند و ارسال/دریافت روی آن فقط یک رویداد سیگنالی ایجاد می‌کند. این الگو برای اعلام پایان کار، <bdi dir="ltr">Shutdown Signal</bdi>، یا <bdi dir="ltr">Notification</bdi> ایده‌آل است. مثال رایج: <code>done := make(chan struct{})</code> و سپس <code>close(done)</code> برای سیگنال توقف به تمام گیرنده‌ها.</li>

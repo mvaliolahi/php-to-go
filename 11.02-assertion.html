@@ -296,7 +296,7 @@ func TestAdvancedAssertions(t *testing.T) {
 }
 </code></pre>
 </figure>
-<h3 id="assertion-های-سفارشی-پیشرفته">11.2.8 Assertionهای سفارشی پیشرفته</h3>
+<h3 id="assertion-های-سفارشی-پیشرفته">11.2.8 Assertion های سفارشی پیشرفته</h3>
 <p>در پروژه‌های واقعی، معمولاً custom types دارید که assertionهای عمومی برای آن‌ها کافی نیست. مثلاً ممکن است بخواهید دو <code>time.Time</code> را تا سطح ثانیه مقایسه کنید، یا دو struct را بدون در نظر گرفتن فیلدهای خاص مقایسه کنید. در این موارد نوشتن assertion سفارشی راه‌حل مناسب است:</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">package testutil
@@ -437,53 +437,53 @@ func NoError(t *testing.T, err error) {
 <path d="M0,0 L10,5 L0,10 z" fill="#64748b"/>
 </marker>
 </defs>
-<text x="360" y="28" text-anchor="middle" class="title rtl">جریان Assertion: از ورودی تا نتیجه</text>
+<text x="360" y="28" text-anchor="middle" class="title">Assertion Flow: Input to Result</text>
 <!-- Inputs row -->
 <rect x="50" y="60" width="170" height="60" class="box-go"/>
 <text x="135" y="85" text-anchor="middle" class="title">Expected</text>
-<text x="135" y="105" text-anchor="middle" class="small rtl">مقدار مورد انتظار</text>
+<text x="135" y="105" text-anchor="middle" class="small">expected value</text>
 <rect x="50" y="135" width="170" height="60" class="box-php"/>
 <text x="135" y="160" text-anchor="middle" class="title">Actual (got)</text>
-<text x="135" y="180" text-anchor="middle" class="small rtl">مقدار واقعی تابع</text>
+<text x="135" y="180" text-anchor="middle" class="small">actual function output</text>
 <!-- Comparison methods (4 stacked boxes) -->
-<text x="380" y="50" text-anchor="middle" class="title rtl">روش مقایسه</text>
+<text x="380" y="50" text-anchor="middle" class="title">Comparison method</text>
 <rect x="290" y="60" width="180" height="32" class="box"/>
-<text x="380" y="80" text-anchor="middle" class="small">== (ساده)</text>
+<text x="380" y="80" text-anchor="middle" class="small">== (simple)</text>
 <rect x="290" y="100" width="180" height="32" class="box"/>
 <text x="380" y="120" text-anchor="middle" class="small">reflect.DeepEqual</text>
 <rect x="290" y="140" width="180" height="32" class="box"/>
 <text x="380" y="160" text-anchor="middle" class="small">Contains / HasPrefix</text>
 <rect x="290" y="180" width="180" height="32" class="box-action"/>
-<text x="380" y="200" text-anchor="middle" class="small">cmp.Diff (تفاضلی)</text>
+<text x="380" y="200" text-anchor="middle" class="small">cmp.Diff (structural)</text>
 <!-- Arrows from inputs to methods -->
 <line x1="220" y1="90" x2="290" y2="76" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow-as)"/>
 <line x1="220" y1="165" x2="290" y2="196" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow-as)"/>
 <!-- Result column -->
 <rect x="540" y="60" width="150" height="65" class="box-result"/>
-<text x="615" y="85" text-anchor="middle" class="title rtl">موفق ✓</text>
-<text x="615" y="105" text-anchor="middle" class="small rtl">تست ادامه می‌یابد</text>
+<text x="615" y="85" text-anchor="middle" class="title">Pass ✓</text>
+<text x="615" y="105" text-anchor="middle" class="small">Test continues</text>
 <rect x="540" y="145" width="150" height="85" class="warn-box"/>
-<text x="615" y="170" text-anchor="middle" class="title rtl">شکست ✗</text>
-<text x="615" y="190" text-anchor="middle" class="small rtl">گزارش diff</text>
-<text x="615" y="208" text-anchor="middle" class="small rtl">+ trace فراخوانی</text>
-<text x="615" y="222" text-anchor="middle" class="small rtl">t.Errorf / t.Fatal</text>
+<text x="615" y="170" text-anchor="middle" class="title">Fail ✗</text>
+<text x="615" y="190" text-anchor="middle" class="small">Report diff</text>
+<text x="615" y="208" text-anchor="middle" class="small">+ caller trace</text>
+<text x="615" y="222" text-anchor="middle" class="small">t.Errorf / t.Fatal</text>
 <!-- Arrows to results -->
 <line x1="470" y1="76" x2="540" y2="80" stroke="#4caf50" stroke-width="2" marker-end="url(#arrow-as)"/>
 <line x1="470" y1="196" x2="540" y2="175" stroke="#ff9800" stroke-width="2" marker-end="url(#arrow-as)"/>
 <!-- Quality bar at bottom -->
 <rect x="50" y="270" width="640" height="100" class="box"/>
-<text x="360" y="295" text-anchor="middle" class="title rtl">کیفیت گزارش شکست: از ضعیف به قوی</text>
+<text x="360" y="295" text-anchor="middle" class="title">Failure report quality: weak to strong</text>
 <line x1="50" y1="278" x2="50" y2="350" stroke="#cbd5e1" stroke-width="0"/>
 <!-- Quality gradient bars -->
 <rect x="80" y="315" width="100" height="22" fill="rgba(239,68,68,0.15)" stroke="#ef4444" stroke-width="1" rx="4"/>
-<text x="130" y="331" text-anchor="middle" class="small">== "نامساوی"</text>
+<text x="130" y="331" text-anchor="middle" class="small">== "not equal"</text>
 <rect x="200" y="315" width="130" height="22" fill="rgba(255,152,0,0.15)" stroke="#ff9800" stroke-width="1" rx="4"/>
 <text x="265" y="331" text-anchor="middle" class="small">DeepEqual: true/false</text>
 <rect x="350" y="315" width="130" height="22" fill="rgba(33,150,243,0.15)" stroke="#2196f3" stroke-width="1" rx="4"/>
-<text x="415" y="331" text-anchor="middle" class="small">testify: diff خودکار</text>
+<text x="415" y="331" text-anchor="middle" class="small">testify: auto diff</text>
 <rect x="500" y="315" width="160" height="22" fill="rgba(76,175,80,0.15)" stroke="#4caf50" stroke-width="1" rx="4"/>
-<text x="580" y="331" text-anchor="middle" class="small">cmp.Diff: diff ساختاری</text>
-<text x="360" y="362" text-anchor="middle" class="small rtl">cmp.Diff دقیقاً نشان می‌دهد کدام فیلد، با چه مقدار مورد انتظار و واقعی، متفاوت است — استاندارد تیم Go در گوگل.</text>
+<text x="580" y="331" text-anchor="middle" class="small">cmp.Diff: structural diff</text>
+<text x="360" y="362" text-anchor="middle" class="small">cmp.Diff shows exactly which field differs with expected vs actual — the Google Go team standard.</text>
 </svg>
 <figcaption>شکل ۱۱-۳: جریان Assertion — ورودی‌های Expected و Actual به یکی از روش‌های مقایسه وارد می‌شوند و نتیجه یا «موفق» (ادامه تست) یا «شکست» (گزارش diff) است. کیفیت گزارش شکست از <bdi dir="ltr">==</bdi> (فقط «نامساوی») تا <bdi dir="ltr">cmp.Diff</bdi> (نمایش دقیق فیلد متفاوت) متغیر است؛ به همین دلیل برای <bdi dir="ltr">struct</bdi>های پیچیده <bdi dir="ltr">cmp.Diff</bdi> ترجیح داده می‌شود.</figcaption>
 </figure>

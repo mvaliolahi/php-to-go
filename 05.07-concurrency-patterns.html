@@ -80,7 +80,7 @@
 </p>
 </div>
 <div class="tip"><strong>نکته‌ی حرفه‌ای:</strong> الگوهای ضد رایج در کد همزمان Go: ۱) شروع <bdi dir="ltr">Goroutine</bdi> بدون لغو <bdi dir="ltr">Context</bdi> — وقتی کاربر ارتباط را قطع می‌کند <bdi dir="ltr">Goroutine</bdi> همچنان اجرا می‌شود؛ ۲) نوشتن بدون محدودیت روی کانال بافر‌دار — اگر تولید سریع‌تر از مصرف باشد، حافظه نشت می‌کند؛ ۳) مشکل «<bdi dir="ltr">fan-out</bdi> بدون <bdi dir="ltr">fan-in</bdi>» — شروع چندین <bdi dir="ltr">Goroutine</bdi> بدون جمع‌آوری نتایج آن‌ها باعث نشت می‌شود.</div>
-<h3 id="worker-pool">5.7.1 Worker Pool</h3>
+<h3 id="1">5.7.1 Worker Pool</h3>
 <div class="quote-box">
 <p class="quote-text">استخر کارگر الگویی است که در آن تعداد ثابتی از گوروتین‌ها (کارگران) از یک کانال ورودی مشترک می‌خوانند و نتایج را در یک کانال خروجی مشترک می‌نویسند. این الگو تعداد عملیات همزمان را محدود می‌کند و از تخلیه منابع جلوگیری می‌کند.</p>
 <p class="quote-source">
@@ -182,7 +182,7 @@ func main() {
 </code></pre>
 </figure>
 <p>نکات کلیدی این پیاده‌سازی: ابتدا تعداد <bdi dir="ltr">Worker</bdi>‌ها با <code>wg.Add(1)</code> ثبت می‌شود. هر <bdi dir="ltr">Worker</bdi> با <code>select</code> هم‌زمان کانال کارها و سیگنال لغو <bdi dir="ltr">Context</bdi> را گوش می‌دهد. وقتی کانال <code>jobs</code> بسته شود (<code>ok == false</code>)، <bdi dir="ltr">Worker</bdi> خروج می‌شود. <bdi dir="ltr">Goroutine</bdi> جداگانه‌ای پس از اتمام همه <bdi dir="ltr">Worker</bdi>‌ها کانال نتایج را می‌بندد. خطاها به‌صورت ساختاریافته در <code>Result.Err</code> ذخیره می‌شوند و در بخش جمع‌آوری مدیریت می‌گردند.</p>
-<h3 id="fan-out-fan-in">5.7.2 Fan-out / Fan-in</h3>
+<h3 id="2">5.7.2 Fan-out / Fan-in</h3>
 <p>گاهی لازم است یک کار را به چند <bdi dir="ltr">Goroutine</bdi> تقسیم کنیم (<bdi dir="ltr">Fan-out</bdi>) که موازی روی بخش‌های مختلف داده کار کنند و بعد نتایج همه را جمع کنیم (<bdi dir="ltr">Fan-in</bdi>). مثلاً اگر بخواهید چند <bdi dir="ltr">API</bdi> را همزمان صدا بزنید و نتایجشان را تجمیع کنید. </p><p>تفاوت با <bdi dir="ltr">Worker Pool</bdi> در این است که هر <bdi dir="ltr">Goroutine</bdi> کار متفاوتی انجام می‌دهد، نه اینکه همه از یک صف کار بکشند.</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">package main
@@ -257,7 +257,7 @@ func main() {
 </code></pre>
 </figure>
 <p>تابع <code>merge</code> الگوی استاندارد <bdi dir="ltr">Fan-in</bdi> در Go است. این تابع تعدادی کانال ورودی می‌گیرد و یک کانال خروجی برمی‌گرداند. برای هر کانال ورودی یک <bdi dir="ltr">Goroutine</bdi> شروع می‌شود که مقادیر را به کانال خروجی هدایت می‌کند. وقتی تمام کانال‌های ورودی بسته شوند، کانال خروجی نیز بسته می‌شود. این الگو در کتابخانه‌های استاندارد Go و بسیاری از پروژه‌های متن‌باز استفاده می‌شود.</p>
-<h3 id="pipeline">5.7.3 Pipeline</h3>
+<h3 id="3">5.7.3 Pipeline</h3>
 <p>در این الگو خروجی یک مرحله به ورودی مرحله بعد می‌رود. هر مرحله یک <bdi dir="ltr">Goroutine</bdi> دارد که داده را می‌گیرد، پردازش می‌کند و به مرحله بعد می‌فرستد. </p><p>این روش برای پردازش داده‌های زنجیره‌ای و چندمرحله‌ای فوق‌العاده مؤثر است — پاک‌سازی، نرمال‌سازی و اعتبارسنجی داده‌ها، تحلیل <bdi dir="ltr">Stream</bdi>، سیستم‌های <bdi dir="ltr">ETL</bdi> و پردازش تصویری.</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">package main
@@ -333,7 +333,7 @@ func main() {
 </code></pre>
 </figure>
 <p>نکته‌ی مهم در <bdi dir="ltr">Pipeline</bdi> پشتیبانی از لغو است. هر مرحله <code>ctx.Done()</code> را بررسی می‌کند و اگر سیگنال لغو رسید بلافاصله خروج می‌شود. بدون این بررسی، اگر <bdi dir="ltr">Context</bdi> لغو شود مراحل بالادست ممکن است برای همیشه مسدود بمانند و باعث نشت <bdi dir="ltr">Goroutine</bdi> شوند.</p>
-<h3 id="rate-limiting">5.7.4 الگوی Rate Limiting</h3>
+<h3 id="4">5.7.4 الگوی Rate Limiting</h3>
 <p>بسیاری از <bdi dir="ltr">API</bdi>‌ها محدودیت نرخ درخواست دارند. مثلاً <bdi dir="ltr">GitHub API</bdi> اجازه می‌دهد ۵۰۰۰ درخواست در ساعت بفرستید. در Laravel این محدودیت معمولاً با <bdi dir="ltr">Redis</bdi> و <bdi dir="ltr">Middleware</bdi> مدیریت می‌شود. در Go دو رویکرد اصلی برای <bdi dir="ltr">Rate Limiting</bdi> وجود دارد: استفاده از <code>time.Ticker</code> (ساده) و <bdi dir="ltr">Token Bucket</bdi> (پیشرفته).</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">package main
@@ -372,7 +372,7 @@ func advancedRateLimit(ctx context.Context) {
 </code></pre>
 </figure>
 <p>بسته‌ی <code>golang.org/x/time/rate</code> یک <bdi dir="ltr">Token Bucket Limiter</bdi> کامل ارائه می‌دهد. پارامتر اول نرخ تولید توکن (تعداد توکن در ثانیه) و پارامتر دوم حداکثر تعداد توکن‌های ذخیره‌شده (<bdi dir="ltr">Burst</bdi>) است. متد <code>Wait()</code> تا زمان دسترسی به توکن منتظر می‌ماند و از <bdi dir="ltr">Context</bdi> پشتیبانی می‌کند. متد <code>Allow()</code> بلافاصله برمی‌گردد و نشان می‌دهد آیا توکن موجود است یا نه.</p>
-<h3 id="semaphore">5.7.5 الگوی Semaphore</h3>
+<h3 id="5">5.7.5 الگوی Semaphore</h3>
 <p>سمافور الگویی برای محدود کردن <bdi dir="ltr">Concurrency</bdi> است. در Go می‌توان از کانال بافر‌دار به‌عنوان سمافور استفاده کرد. این الگو شبیه <bdi dir="ltr">Worker Pool</bdi> است اما ساده‌تر — به‌جای ساخت <bdi dir="ltr">Worker</bdi>‌های ثابت، فقط تعداد <bdi dir="ltr">Goroutine</bdi>‌های همزمان را محدود می‌کند.</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">package main
@@ -406,7 +406,7 @@ func main() {
 </code></pre>
 </figure>
 <p>در هر لحظه فقط ۳ <bdi dir="ltr">Goroutine</bdi> می‌توانند بخش بحرانی را اجرا کنند. بقیه در خط <code>sem &lt;- struct{}{}</code> مسدود می‌شوند تا یک جای خالی آزاد شود. این الگو برای محدود کردن تعداد اتصالات دیتابیس همزمان، درخواست‌های <bdi dir="ltr">HTTP</bdi> همزمان، یا عملیات <bdi dir="ltr">I/O</bdi> سنگین بسیار مفید است.</p>
-<h3 id="graceful-shutdown">5.7.6 الگوی Graceful Shutdown</h3>
+<h3 id="6">5.7.6 الگوی Graceful Shutdown</h3>
 <p>یکی از الگوهای کلیدی در سیستم‌های واقعی، <bdi dir="ltr">Graceful Shutdown</bdi> است. وقتی سیگنال توقف (<bdi dir="ltr">SIGTERM</bdi>) به برنامه ارسال می‌شود، باید تمام <bdi dir="ltr">Goroutine</bdi>‌های فعال به‌صورت تمیز متوقف شوند، اتصالات دیتابیس بسته شوند، و داده‌های در حال پردازش ذخیره گردند.</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">package main
@@ -474,7 +474,7 @@ func main() {
 </code></pre>
 </figure>
 <p>این الگو از <code>signal.NotifyContext</code> استفاده می‌کند که یک <bdi dir="ltr">Context</bdi> می‌سازد که به‌طور خودکار با دریافت سیگنال سیستم‌عامل لغو می‌شود. تمام <bdi dir="ltr">Worker</bdi>‌ها <code>ctx.Done()</code> را بررسی می‌کنند و به‌صورت کنترل‌شده خروج می‌کنند. تایم‌اوت اضطراری تضمین می‌کند که اگر <bdi dir="ltr">Worker</bdi>‌ای گیر کند، برنامه نهایتاً متوقف شود.</p>
-<h3 id="tee">5.7.7 الگوی Tee</h3>
+<h3 id="7">5.7.7 الگوی Tee</h3>
 <p>گاهی نیاز دارید داده‌های یک کانال را به دو یا چند کانال مستقل تقسیم کنید. مثلاً داده‌های یک سنسور را همزمان به سیستم پردازش و سیستم Logging بفرستید.</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">// tee: split one channel into two independent channels
@@ -533,7 +533,7 @@ func main() {
 }
 </code></pre>
 </figure>
-<h3 id="errgroup">5.7.8 مدیریت خطا با errgroup</h3>
+<h3 id="8">5.7.8 مدیریت خطا با errgroup</h3>
 <p>یکی از چالش‌های الگوهای هم‌روندی مدیریت خطاهاست. وقتی چند <bdi dir="ltr">Goroutine</bdi> به صورت موازی کار می‌کنند و یکی از آن‌ها خطا می‌دهد، چگونه باید سایر <bdi dir="ltr">Goroutine</bdi>‌ها را متوقف کرد و خطا را به <bdi dir="ltr">Caller</bdi> برگرداند؟ پکیج <code>golang.org/x/sync/errgroup</code> به‌طور خاص برای حل این مشکل طراحی شده است.</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">import (
@@ -586,7 +586,7 @@ func fetchAll(ctx context.Context, urls []string) ([]string, error) {
 </ul>
 برای عملیات‌هایی که همه باید موفق شوند (مثل فراخوانی همزمان چند API)، errgroup بهترین انتخاب است. برای عملیات‌هایی که خطای یکی مانع ادامه دیگران نیست، از WaitGroup با Channel خطا استفاده کنید.
 </div>
-<h3 id="انتخاب-الگوی-مناسب">5.7.9 انتخاب الگوی مناسب</h3>
+<h3 id="9">5.7.9 انتخاب الگوی مناسب</h3>
 <table class="comparison-table" dir="rtl">
 <thead>
 <tr><th>الگو</th><th>چه زمانی استفاده کنیم</th><th>مقابل PHP</th></tr>
@@ -602,7 +602,7 @@ func fetchAll(ctx context.Context, urls []string) ([]string, error) {
 <tr><td><bdi dir="ltr">errgroup</bdi></td><td>مدیریت خطا در عملیات موازی</td><td>—</td></tr>
 </tbody>
 </table>
-<h2 id="نمودار-fan-out-fan-in">نمودار الگوی <bdi dir="ltr">Fan-Out / Fan-In</bdi></h2>
+<h3 id="10">5.7.10 الگوی <bdi dir="ltr">Fan-Out / Fan-In</bdi></h3>
 <p>الگوی <bdi dir="ltr">Fan-Out / Fan-In</bdi> که در بخش قبل معرفی شد، شبیه سیستم صف در <bdi dir="ltr">Laravel</bdi> است اما با این تفاوت مهم که در Go همه چیز در داخل یک فرآیند انجام می‌شود و نیاز به سیستم خارجی مثل <bdi dir="ltr">Redis</bdi> یا <bdi dir="ltr">Supervisor</bdi> ندارد. نمودار زیر ساختار این الگو را به همراه واریانت <bdi dir="ltr">Worker Pool</bdi> نشان می‌دهد.</p>
 <figure class="diagram" dir="ltr">
 <svg viewBox="0 0 760 360" xmlns="http://www.w3.org/2000/svg">
@@ -611,26 +611,26 @@ func fetchAll(ctx context.Context, urls []string) ([]string, error) {
 <path d="M0,0 L10,5 L0,10 z" fill="#64748b"/>
 </marker>
 </defs>
-<text x="380" y="28" text-anchor="middle" class="title rtl">دو مدل توزیع کار: Fan-Out/Fan-In (چپ) و Worker Pool (راست)</text>
+<text x="380" y="28" text-anchor="middle" class="title">Two work-distribution models: Fan-Out/Fan-In (left) and Worker Pool (right)</text>
 <!-- Vertical divider -->
 <line x1="380" y1="50" x2="380" y2="340" stroke="#cbd5e1" stroke-width="1" stroke-dasharray="4 4"/>
 <!-- LEFT: Fan-Out / Fan-In -->
-<text x="190" y="60" text-anchor="middle" class="title rtl">Fan-Out / Fan-In</text>
-<text x="190" y="80" text-anchor="middle" class="small rtl">هر Worker کانال خروجی مستقل دارد</text>
+<text x="190" y="60" text-anchor="middle" class="title">Fan-Out / Fan-In</text>
+<text x="190" y="80" text-anchor="middle" class="small">Each worker has its own output channel</text>
 <!-- Source -->
 <rect x="120" y="105" width="140" height="50" class="box-action"/>
 <text x="190" y="128" text-anchor="middle" class="title">Source</text>
-<text x="190" y="148" text-anchor="middle" class="small rtl">تقسیم کار</text>
+<text x="190" y="148" text-anchor="middle" class="small">Split work</text>
 <!-- Three independent workers, each with own output channel -->
 <rect x="40" y="190" width="100" height="50" class="box-go"/>
 <text x="90" y="213" text-anchor="middle" class="title">G1</text>
-<text x="90" y="233" text-anchor="middle" class="small rtl">API-1</text>
+<text x="90" y="233" text-anchor="middle" class="small">API-1</text>
 <rect x="140" y="190" width="100" height="50" class="box-go"/>
 <text x="190" y="213" text-anchor="middle" class="title">G2</text>
-<text x="190" y="233" text-anchor="middle" class="small rtl">API-2</text>
+<text x="190" y="233" text-anchor="middle" class="small">API-2</text>
 <rect x="240" y="190" width="100" height="50" class="box-go"/>
 <text x="290" y="213" text-anchor="middle" class="title">G3</text>
-<text x="290" y="233" text-anchor="middle" class="small rtl">API-3</text>
+<text x="290" y="233" text-anchor="middle" class="small">API-3</text>
 <!-- Arrows from source to each worker -->
 <line x1="160" y1="155" x2="90" y2="190" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
 <line x1="190" y1="155" x2="190" y2="190" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
@@ -638,18 +638,18 @@ func fetchAll(ctx context.Context, urls []string) ([]string, error) {
 <!-- merge() -->
 <rect x="100" y="270" width="180" height="50" class="box-result"/>
 <text x="190" y="293" text-anchor="middle" class="title">merge() — Fan-In</text>
-<text x="190" y="313" text-anchor="middle" class="small rtl">تجمیع در یک کانال</text>
+<text x="190" y="313" text-anchor="middle" class="small">Aggregate into one channel</text>
 <!-- Arrows from each worker to merge -->
 <line x1="90" y1="240" x2="150" y2="270" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
 <line x1="190" y1="240" x2="190" y2="270" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
 <line x1="290" y1="240" x2="230" y2="270" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
 <!-- RIGHT: Worker Pool -->
-<text x="570" y="60" text-anchor="middle" class="title rtl">Worker Pool</text>
-<text x="570" y="80" text-anchor="middle" class="small rtl">همه از یک کانال می‌خوانند</text>
+<text x="570" y="60" text-anchor="middle" class="title">Worker Pool</text>
+<text x="570" y="80" text-anchor="middle" class="small">All read from one channel</text>
 <!-- Single jobs channel -->
 <rect x="460" y="105" width="220" height="50" class="box-action"/>
 <text x="570" y="128" text-anchor="middle" class="title">jobs chan Job</text>
-<text x="570" y="148" text-anchor="middle" class="small rtl">یک کانال ورودی مشترک</text>
+<text x="570" y="148" text-anchor="middle" class="small">A single shared input channel</text>
 <!-- Three workers reading from same channel -->
 <rect x="420" y="190" width="100" height="50" class="box-go"/>
 <text x="470" y="213" text-anchor="middle" class="title">Worker 1</text>
@@ -667,7 +667,7 @@ func fetchAll(ctx context.Context, urls []string) ([]string, error) {
 <!-- Single results channel -->
 <rect x="460" y="270" width="220" height="50" class="box-result"/>
 <text x="570" y="293" text-anchor="middle" class="title">results chan Result</text>
-<text x="570" y="313" text-anchor="middle" class="small rtl">یک کانال خروجی مشترک</text>
+<text x="570" y="313" text-anchor="middle" class="small">A single shared output channel</text>
 <!-- Arrows from workers to results -->
 <line x1="470" y1="240" x2="510" y2="270" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
 <line x1="580" y1="240" x2="570" y2="270" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
@@ -676,7 +676,7 @@ func fetchAll(ctx context.Context, urls []string) ([]string, error) {
 <figcaption>شکل ۵-۹: مقایسه‌ی دو الگوی توزیع کار — در Fan-Out/Fan-In (چپ)، هر Goroutine کانال خروجی مستقل خود را دارد و تابع <code>merge()</code> نتایج را در یک کانال تجمیع می‌کند؛ تعداد Goroutine‌ها به تعداد کارهاست. در Worker Pool (راست)، تمام Workerها از یک کانال <code>jobs</code> مشترک می‌خوانند و به یک کانال <code>results</code> مشترک می‌نویسند؛ تعداد Workerها ثابت و محدود است.</figcaption>
 </figure>
 <p>در نمودار بالا دو مدل از توزیع کار را مشاهده می‌کنید. مدل اول <bdi dir="ltr">Fan-Out / Fan-In</bdi> ساده است که هر <bdi dir="ltr">Goroutine</bdi> کانال خروجی مستقل خود را دارد و تابع <bdi dir="ltr">merge()</bdi> نتایج را تجمیع می‌کند. مدل دوم <bdi dir="ltr">Worker Pool</bdi> است که در آن تمام <bdi dir="ltr">Worker</bdi>‌ها از یک کانال ورودی مشترک می‌خوانند و به یک کانال خروجی مشترک می‌نویسند. </p><p>تفاوت اصلی این است که در <bdi dir="ltr">Worker Pool</bdi> تعداد <bdi dir="ltr">Goroutine</bdi>‌ها ثابت و محدود است اما در <bdi dir="ltr">Fan-Out</bdi> ساده ممکن است به تعداد کارها <bdi dir="ltr">Goroutine</bdi> ساخته شود. انتخاب بین این دو مدل به ماهیت کار و محدودیت‌های منابع سیستم بستگی دارد.</p>
-<h2 id="نمودار-pipeline">نمودار الگوی <bdi dir="ltr">Pipeline</bdi></h2>
+<h3 id="11">5.7.11 الگوی <bdi dir="ltr">Pipeline</bdi></h3>
 <p>الگوی <bdi dir="ltr">Pipeline</bdi> که در بخش قبل معرفی شد، مزیت کلیدی دارد که هر مرحله به صورت مستقل و همزمان با مراحل دیگر اجرا می‌شود. مکانیزم <bdi dir="ltr">Backpressure</bdi> از طریق مسدود شدن کانال‌ها به صورت طبیعی پیاده‌سازی می‌شود — اگر مرحله پایین‌دست کند باشد، مرحله بالادست به صورت خودکند کندتر می‌شود. در نمودار زیر این الگو را به‌تفصیل مشاهده می‌کنید.</p>
 <figure class="diagram" dir="ltr">
 <svg viewBox="0 0 760 320" xmlns="http://www.w3.org/2000/svg">
@@ -685,31 +685,31 @@ func fetchAll(ctx context.Context, urls []string) ([]string, error) {
 <path d="M0,0 L10,5 L0,10 z" fill="#64748b"/>
 </marker>
 </defs>
-<text x="380" y="28" text-anchor="middle" class="title rtl">الگوی Pipeline — هر مرحله یک Goroutine، با Backpressure خودکار</text>
+<text x="380" y="28" text-anchor="middle" class="title">Pipeline pattern — each stage is a goroutine, with automatic backpressure</text>
 <!-- Stage 1: generate -->
 <rect x="30" y="70" width="150" height="100" class="box-go"/>
 <text x="105" y="93" text-anchor="middle" class="title">generate()</text>
-<text x="105" y="113" text-anchor="middle" class="small rtl">گوروتین ۱</text>
+<text x="105" y="113" text-anchor="middle" class="small">Goroutine 1</text>
 <text x="105" y="135" text-anchor="middle" class="small">nums: 1..10</text>
-<text x="105" y="155" text-anchor="middle" class="small rtl">منبع داده</text>
+<text x="105" y="155" text-anchor="middle" class="small">Data source</text>
 <!-- Channel 1 -->
 <rect x="190" y="105" width="80" height="30" class="box-action"/>
 <text x="230" y="125" text-anchor="middle" class="small">chan int</text>
 <!-- Stage 2: square -->
 <rect x="280" y="70" width="150" height="100" class="box-go"/>
 <text x="355" y="93" text-anchor="middle" class="title">square()</text>
-<text x="355" y="113" text-anchor="middle" class="small rtl">گوروتین ۲</text>
+<text x="355" y="113" text-anchor="middle" class="small">Goroutine 2</text>
 <text x="355" y="135" text-anchor="middle" class="small">n * n</text>
-<text x="355" y="155" text-anchor="middle" class="small rtl">دگرگونی</text>
+<text x="355" y="155" text-anchor="middle" class="small">Transform</text>
 <!-- Channel 2 -->
 <rect x="440" y="105" width="80" height="30" class="box-action"/>
 <text x="480" y="125" text-anchor="middle" class="small">chan int</text>
 <!-- Stage 3: filterEven -->
 <rect x="530" y="70" width="150" height="100" class="box-go"/>
 <text x="605" y="93" text-anchor="middle" class="title">filterEven()</text>
-<text x="605" y="113" text-anchor="middle" class="small rtl">گوروتین ۳</text>
+<text x="605" y="113" text-anchor="middle" class="small">Goroutine 3</text>
 <text x="605" y="135" text-anchor="middle" class="small">if n%2 == 0</text>
-<text x="605" y="155" text-anchor="middle" class="small rtl">فیلتر</text>
+<text x="605" y="155" text-anchor="middle" class="small">Filter</text>
 <!-- Arrows between stages -->
 <line x1="180" y1="120" x2="190" y2="120" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
 <line x1="270" y1="120" x2="280" y2="120" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
@@ -717,18 +717,18 @@ func fetchAll(ctx context.Context, urls []string) ([]string, error) {
 <line x1="520" y1="120" x2="530" y2="120" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
 <!-- Output -->
 <line x1="680" y1="120" x2="720" y2="120" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
-<text x="740" y="125" class="small rtl">خروجی</text>
+<text x="740" y="125" class="small">Output</text>
 <!-- Backpressure explanation -->
 <rect x="30" y="200" width="700" height="100" class="warn-box"/>
-<text x="380" y="225" text-anchor="middle" class="title rtl">Backpressure خودکار</text>
-<text x="380" y="250" text-anchor="middle" class="small rtl">اگر filterEven کند باشد → کانال دوم پر می‌شود → square مسدود می‌شود → کانال اول پر می‌شود → generate مسدود می‌شود</text>
-<text x="380" y="270" text-anchor="middle" class="small rtl">هیچ کد هماهنگی اضافی لازم نیست — رفتار طبیعی کانال‌ها Backpressure را پیاده‌سازی می‌کند</text>
-<text x="380" y="290" text-anchor="middle" class="small rtl">هر مرحله با سرعت مستقل خود کار می‌کند و فقط از طریق کانال‌ها متصل‌اند — شبیه Unix Pipe</text>
+<text x="380" y="225" text-anchor="middle" class="title">Automatic backpressure</text>
+<text x="380" y="250" text-anchor="middle" class="small">If filterEven is slow → second channel fills → square blocks → first channel fills → generate blocks</text>
+<text x="380" y="270" text-anchor="middle" class="small">No extra coordination code needed — natural channel behavior implements backpressure</text>
+<text x="380" y="290" text-anchor="middle" class="small">Each stage runs at its own pace and connects only via channels — like a Unix pipe</text>
 </svg>
 <figcaption>شکل ۵-۱۰: الگوی Pipeline — هر مرحله (generate، square، filterEven) یک Goroutine مستقل است که از یک کانال ورودی می‌خواند و روی یک کانال خروجی می‌نویسد. اگر مرحله‌ی پایین‌دست کند شود، کانال بین آن‌ها پر می‌شود و مرحله‌ی بالادست به‌صورت خودکار متوقف می‌شود (Backpressure) — بدون نیاز به کد هماهنگی اضافی.</figcaption>
 </figure>
 <p>نکته مهم در نمودار بالا این است که هر مرحله به صورت مستقل اجرا می‌شود و فقط از طریق کانال‌ها با مراحل دیگر ارتباط دارد. این یعنی اگر مرحله دوم کند باشد مرحله اول به صورت خودکار کندتر می‌شود چون کانال بین آن‌ها پر می‌شود و ارسال جدید مسدود می‌گردد. </p><p>این رفتار همان <bdi dir="ltr">Backpressure</bdi> است که بدون هیچ کد اضافی فقط با استفاده از کانال‌های بافر‌دار یا بدون بافر پیاده‌سازی می‌شود. همچنین هر مرحله مستقل است و می‌تواند بدون تأثیر روی دیگران تغییر کند یا جایگزین شود.</p>
-<h3 id="سناریوهای-عملیاتی-concurrency-patterns">5.7.10 سناریوهای عملیاتی الگوهای هم‌روندی</h3>
+<h3 id="12">5.7.12 سناریوهای عملیاتی الگوهای هم‌روندی</h3>
 <p>الگوهای هم‌روندی در موقعیت‌های مختلف عملیاتی کاربرد دارند. در ادامه چهار سناریوی واقعی را بررسی می‌کنیم که هر کدام ترکیبی از چندین الگو را برای حل مسائل پیچیده به کار می‌گیرند. </p><p>این سناریوها نشان می‌دهند که در عمل معمولاً یک الگو به تنهایی کافی نیست و باید الگوها را به صورت خلاقانه ترکیب کرد تا بهترین نتیجه حاصل شود.</p><p>همچنین مقایسه با PHP کمک می‌کند درک بهتری از مزایای این الگوها در Go داشته باشید.</p>
 <ul>
 <li><strong>فراخوانی موازی <tspan direction="ltr" unicode-bidi="embed">HTTP</tspan> با <tspan direction="ltr" unicode-bidi="embed">Fan-Out</tspan>:</strong> وقتی باید چند <tspan direction="ltr" unicode-bidi="embed">API</tspan> خارجی را همزمان فراخوانی کنید الگوی <tspan direction="ltr" unicode-bidi="embed">Fan-Out / Fan-In</tspan> بهترین انتخاب است. هر فراخوانی <tspan direction="ltr" unicode-bidi="embed">API</tspan> در یک <tspan direction="ltr" unicode-bidi="embed">Goroutine</tspan> مستقل اجرا می‌شود و نتایج با <tspan direction="ltr" unicode-bidi="embed">merge()</tspan> تجمیع می‌شوند. در <tspan direction="ltr" unicode-bidi="embed">PHP</tspan> باید از <tspan direction="ltr" unicode-bidi="embed">curl_multi</tspan> یا <tspan direction="ltr" unicode-bidi="embed">Promise</tspan>‌ها در <tspan direction="ltr" unicode-bidi="embed">ReactPHP</tspan> استفاده کنید اما در Go این الگو به صورت بومی و با کد بسیار ساده‌تر پیاده‌سازی می‌شود. با <tspan direction="ltr" unicode-bidi="embed">errgroup</tspan> حتی می‌توانید مدیریت خطا را نیز اضافه کنید.</li>

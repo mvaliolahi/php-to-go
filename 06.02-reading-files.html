@@ -340,49 +340,49 @@ func readLastNLines(path string, n int) ([]string, error) {
 <path d="M0,0 L10,5 L0,10 z" fill="#4caf50"/>
 </marker>
 </defs>
-<text x="380" y="28" text-anchor="middle" class="title rtl">فلوچارت تصمیم‌گیری: کدام روش خواندن فایل؟</text>
+<text x="380" y="28" text-anchor="middle" class="title">Decision flowchart: which file-reading method?</text>
 <!-- Start node -->
 <rect x="290" y="50" width="180" height="50" class="box-action"/>
-<text x="380" y="80" text-anchor="middle" class="title rtl">شروع: نیاز به خواندن فایل</text>
+<text x="380" y="80" text-anchor="middle" class="title">Start: need to read a file</text>
 <!-- Decision: size known? -->
 <line x1="380" y1="100" x2="380" y2="125" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
 <polygon points="380,125 500,170 380,215 260,170" class="warn-box"/>
-<text x="380" y="165" text-anchor="middle" class="title rtl">اندازه و نوع دسترسی؟</text>
-<text x="380" y="185" text-anchor="middle" class="small rtl">(تصمیم بر اساس نیاز)</text>
+<text x="380" y="165" text-anchor="middle" class="title">Size and access pattern?</text>
+<text x="380" y="185" text-anchor="middle" class="small">(decision by need)</text>
 <!-- Branch 1: small file → os.ReadFile -->
 <line x1="260" y1="170" x2="180" y2="170" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
 <line x1="180" y1="170" x2="180" y2="245" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
-<text x="220" y="160" text-anchor="middle" class="small rtl">کوچک &lt; ۱MB</text>
+<text x="220" y="160" text-anchor="middle" class="small">small &lt; 1MB</text>
 <rect x="60" y="245" width="240" height="70" class="box-result"/>
 <text x="180" y="270" text-anchor="middle" class="title">os.ReadFile(path)</text>
-<text x="180" y="290" text-anchor="middle" class="small rtl">کل فایل در حافظه — ساده</text>
-<text x="180" y="306" text-anchor="middle" class="small rtl">مصرف: برابر با حجم فایل</text>
+<text x="180" y="290" text-anchor="middle" class="small">Whole file in memory — simple</text>
+<text x="180" y="306" text-anchor="middle" class="small">Cost: equal to file size</text>
 <!-- Branch 2: medium/text → bufio.Scanner -->
 <line x1="380" y1="215" x2="380" y2="245" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
-<text x="430" y="232" text-anchor="middle" class="small rtl">متنی، خط‌به‌خط</text>
+<text x="430" y="232" text-anchor="middle" class="small">text, line-by-line</text>
 <rect x="260" y="245" width="240" height="70" class="box-result"/>
 <text x="380" y="270" text-anchor="middle" class="title">bufio.Scanner</text>
-<text x="380" y="290" text-anchor="middle" class="small rtl">خط‌به‌خط — حافظه ثابت</text>
-<text x="380" y="306" text-anchor="middle" class="small rtl">مصرف: یک خط (حد ۶۴KB)</text>
+<text x="380" y="290" text-anchor="middle" class="small">Line-by-line — constant memory</text>
+<text x="380" y="306" text-anchor="middle" class="small">Cost: one line (~64KB)</text>
 <!-- Branch 3: large/stream → io.Reader -->
 <line x1="500" y1="170" x2="580" y2="170" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
 <line x1="580" y1="170" x2="580" y2="245" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
-<text x="540" y="160" text-anchor="middle" class="small rtl">بزرگ / باینری</text>
+<text x="540" y="160" text-anchor="middle" class="small">large / binary</text>
 <rect x="460" y="245" width="240" height="70" class="box-result"/>
 <text x="580" y="270" text-anchor="middle" class="title">io.Reader + bufio</text>
-<text x="580" y="290" text-anchor="middle" class="small rtl">جریانی — کنترل کامل</text>
-<text x="580" y="306" text-anchor="middle" class="small rtl">مصرف: ۴KB یا ۳۲KB</text>
+<text x="580" y="290" text-anchor="middle" class="small">Streaming — full control</text>
+<text x="580" y="306" text-anchor="middle" class="small">Cost: 4KB or 32KB</text>
 <!-- Special case: random access → SectionReader / mmap -->
 <line x1="380" y1="215" x2="380" y2="345" stroke="#ff9800" stroke-width="2" stroke-dasharray="4 3" marker-end="url(#arrow)"/>
-<text x="430" y="280" text-anchor="middle" class="small rtl" fill="#ff9800">دسترسی تصادفی؟</text>
+<text x="430" y="280" text-anchor="middle" class="small" fill="#ff9800">random access?</text>
 <rect x="260" y="345" width="240" height="60" class="warn-box"/>
 <text x="380" y="370" text-anchor="middle" class="title">io.SectionReader / mmap</text>
-<text x="380" y="390" text-anchor="middle" class="small rtl">خواندن بخش خاص بدون بارگذاری کل فایل</text>
+<text x="380" y="390" text-anchor="middle" class="small">Read a specific range without loading the whole file</text>
 <!-- Bottom legend -->
 <line x1="180" y1="315" x2="180" y2="345" stroke="#4caf50" stroke-width="2" stroke-dasharray="2 3" marker-end="url(#arrow-ok)"/>
 <line x1="380" y1="315" x2="380" y2="345" stroke="#4caf50" stroke-width="2" stroke-dasharray="2 3" marker-end="url(#arrow-ok)" opacity="0"/>
 <line x1="580" y1="315" x2="580" y2="345" stroke="#4caf50" stroke-width="2" stroke-dasharray="2 3" marker-end="url(#arrow-ok)" opacity="0"/>
-<text x="380" y="416" text-anchor="middle" class="small rtl" fill="#4caf50">قانون ساده: از ساده‌ترین ابزار شروع کنید — فقط وقتی محدودیت را حس کردید، ابزار پیشرفته‌تر بردارید</text>
+<text x="380" y="416" text-anchor="middle" class="small" fill="#4caf50">Simple rule: start with the simplest tool — only escalate when you hit a limit</text>
 </svg>
 <figcaption>شکل ۶-۳: فلوچارت تصمیم‌گیری برای انتخاب روش خواندن فایل در Go — اگر فایل کوچک است (زیر ۱ مگابایت)، <code>os.ReadFile</code> ساده‌ترین انتخاب است. برای فایل‌های متنی متوسط و پردازش خط‌به‌خط، <code>bufio.Scanner</code> بهترین تعادل بین سادگی و بهره‌وری حافظه را دارد. برای فایل‌های بزرگ یا باینری، <code>io.Reader</code> با <code>bufio.NewReader</code> کنترل کامل می‌دهد. در صورت نیاز به دسترسی تصادفی به بخشی از فایل، <code>io.SectionReader</code> یا <code>mmap</code> مناسب‌ترند.</figcaption>
 </figure>

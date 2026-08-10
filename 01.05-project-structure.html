@@ -240,43 +240,43 @@ use (
 <path d="M0,0 L10,5 L0,10 z" fill="#ef4444"/>
 </marker>
 </defs>
-<text x="360" y="28" text-anchor="middle" class="title rtl">جریان وابستگی یک‌طرفه: cmd → internal → pkg</text>
+<text x="360" y="28" text-anchor="middle" class="title">One-way Dependency Flow: cmd → internal → pkg</text>
 <!-- Top: cmd -->
 <rect x="260" y="55" width="200" height="70" class="box-action"/>
 <text x="360" y="83" text-anchor="middle" class="title">cmd/</text>
-<text x="360" y="105" text-anchor="middle" class="small rtl">نقاط ورود برنامه</text>
-<text x="360" y="120" text-anchor="middle" class="small rtl">main.go</text>
+<text x="360" y="105" text-anchor="middle" class="small">Program entry points</text>
+<text x="360" y="120" text-anchor="middle" class="small">main.go</text>
 <!-- Middle: internal -->
 <rect x="260" y="155" width="200" height="70" class="box-php"/>
 <text x="360" y="183" text-anchor="middle" class="title">internal/</text>
-<text x="360" y="205" text-anchor="middle" class="small rtl">منطق کسب‌وکار</text>
-<text x="360" y="220" text-anchor="middle" class="small rtl">مختص این پروژه</text>
+<text x="360" y="205" text-anchor="middle" class="small">Business logic</text>
+<text x="360" y="220" text-anchor="middle" class="small">Specific to this project</text>
 <!-- Bottom: pkg -->
 <rect x="260" y="255" width="200" height="60" class="box-result"/>
 <text x="360" y="280" text-anchor="middle" class="title">pkg/</text>
-<text x="360" y="300" text-anchor="middle" class="small rtl">کتابخانه‌ی قابل استفاده‌ی مجدد</text>
+<text x="360" y="300" text-anchor="middle" class="small">Reusable library</text>
 <!-- Allowed downward arrows (left side) -->
 <line x1="340" y1="125" x2="340" y2="155" stroke="#4caf50" stroke-width="2" marker-end="url(#arrowDep)"/>
 <line x1="340" y1="225" x2="340" y2="255" stroke="#4caf50" stroke-width="2" marker-end="url(#arrowDep)"/>
-<text x="355" y="143" text-anchor="start" class="small" fill="#2e7d32">✓ مجاز</text>
-<text x="355" y="243" text-anchor="start" class="small" fill="#2e7d32">✓ مجاز</text>
+<text x="355" y="143" text-anchor="start" class="small" fill="#2e7d32">✓ allowed</text>
+<text x="355" y="243" text-anchor="start" class="small" fill="#2e7d32">✓ allowed</text>
 <!-- Forbidden upward arrows (right side, dashed red with X) -->
 <line x1="380" y1="155" x2="380" y2="125" stroke="#ef4444" stroke-width="2" stroke-dasharray="4 3"/>
-<text x="395" y="143" text-anchor="start" class="small" fill="#c0392b">✗ ممنوع</text>
+<text x="395" y="143" text-anchor="start" class="small" fill="#c0392b">✗ forbidden</text>
 <line x1="380" y1="255" x2="380" y2="225" stroke="#ef4444" stroke-width="2" stroke-dasharray="4 3"/>
-<text x="395" y="243" text-anchor="start" class="small" fill="#c0392b">✗ ممنوع</text>
+<text x="395" y="243" text-anchor="start" class="small" fill="#c0392b">✗ forbidden</text>
 <!-- Left side annotation: independent -->
-<text x="120" y="90" text-anchor="middle" class="small rtl">به همه وابسته است</text>
+<text x="120" y="90" text-anchor="middle" class="small">Depends on all</text>
 <line x1="200" y1="95" x2="260" y2="95" stroke="#64748b" stroke-width="1.5" stroke-dasharray="2 2"/>
-<text x="120" y="190" text-anchor="middle" class="small rtl">فقط به pkg وابسته</text>
+<text x="120" y="190" text-anchor="middle" class="small">Depends only on pkg</text>
 <line x1="200" y1="195" x2="260" y2="195" stroke="#64748b" stroke-width="1.5" stroke-dasharray="2 2"/>
-<text x="120" y="285" text-anchor="middle" class="small rtl">مستقل — بدون</text>
-<text x="120" y="302" text-anchor="middle" class="small rtl">وابستگی به داخل پروژه</text>
+<text x="120" y="285" text-anchor="middle" class="small">Independent — no</text>
+<text x="120" y="302" text-anchor="middle" class="small">inward dependency</text>
 <line x1="200" y1="290" x2="260" y2="290" stroke="#64748b" stroke-width="1.5" stroke-dasharray="2 2"/>
 </svg>
 <figcaption>شکل ۱-۸: جریان وابستگی یک‌طرفه در ساختار پروژه‌ی Go — وابستگی معکوس توسط کامپایلر ممنوع است</figcaption>
 </figure>
-<h3 id="سناریوهای-عملیاتی-ساختار-پروژه">1.5.8 سناریوهای عملیاتی: سازمان‌دهی پروژه‌هایGo</h3>
+<h3 id="سناریوهای-عملیاتی-ساختار-پروژه">1.5.8 سناریوهای عملیاتی: سازمان‌دهی پروژه‌های Go</h3>
 <ul>
 <li><strong>سازمان‌دهی یک پروژه‌ی جدید <bdi dir="ltr">Go</bdi>:</strong> ابتدا مسطح شروع کنید — فقط یک <code>main.go</code> و یک <code>go.mod</code> کافی است. وقتی فایل‌ها بزرگ‌تر شدند پکیج‌ها را استخراج کنید. وقتی پروژه بیشتر از یک باینری نیاز داشت <bdi dir="ltr">cmd/</bdi> بسازید. وقتی کدی داشتید که فقط داخل پروژه استفاده می‌شود آن را به <bdi dir="ltr">internal/</bdi> منتقل کنید. و وقتی پکیجی داشتید که پروژه‌های دیگر هم ممکن است استفاده کنند آن را در <bdi dir="ltr">pkg/</bdi> قرار دهید. قانون کلی: <strong>ساختار را بر اساس نیاز ایجاد کنید نه بر اساس پیش‌بینی</strong>.</li>
 <li><strong>چه زمانی از <bdi dir="ltr">internal</bdi> و چه زمانی از <bdi dir="ltr">pkg</bdi> استفاده کنیم:</strong> <bdi dir="ltr">internal/</bdi> برای کدی است که فقط درون پروژه‌ی شما معنا دارد — مثلاً <bdi dir="ltr">handler</bdi>‌های <bdi dir="ltr">HTTP</bdi> مختص سرویس شما، یا منطق کسب‌وکار خاص. <bdi dir="ltr">pkg/</bdi> برای کدی است که به‌طور بالقوه در پروژه‌های دیگر هم قابل استفاده است — مثلاً یک <bdi dir="ltr">validator</bdi> عمومی یا یک <bdi dir="ltr">logger</bdi> سفارشی. اگر شک دارید ابتدا در <bdi dir="ltr">internal/</bdi> قرار دهید و بعداً اگر لازم شد به <bdi dir="ltr">pkg/</bdi> منتقل کنید.</li>

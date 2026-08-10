@@ -400,7 +400,7 @@ for i := range 3 {
 }
 </code></pre>
 </figure>
-<h3 id="foreach-range-comparison">2.3.13 مقایسه‌ی بصریPHP foreachدر برابرGo range</h3>
+<h3 id="foreach-range-comparison">2.3.13 مقایسه‌ی بصری PHP foreach در برابر Go range</h3>
 <p>پیمایش مجموعه‌ها یکی از پرکاربردترین عملیات در برنامه‌نویسی است. در <bdi dir="ltr">PHP</bdi> دستور <bdi dir="ltr">foreach</bdi> ابزار اصلی برای پیمایش آرایه‌ها و اشیاء است و مقادیر را به‌صورت ارجاع یا کپی در اختیار بدنه‌ی حلقه قرار می‌دهد. </p><p>در <bdi dir="ltr">Go</bdi> دستور <bdi dir="ltr">range</bdi> با برگرداندن کپی مقادیر رویکرد متفاوتی دارد و قابلیت‌های منحصربه‌فردی مانند پیمایش <bdi dir="ltr">rune</bdi> رشته و دریافت از <bdi dir="ltr">channel</bdi> فراهم می‌کند. شکل زیر تفاوت‌های کلیدی این دو رویکرد را در کنار هم نمایش می‌دهد.</p>
 <figure class="diagram" dir="ltr">
 <svg viewBox="0 0 720 340" xmlns="http://www.w3.org/2000/svg">
@@ -409,32 +409,32 @@ for i := range 3 {
 <path d="M0,0 L10,5 L0,10 z" fill="#64748b"/>
 </marker>
 </defs>
-<text x="360" y="28" text-anchor="middle" class="title rtl">مقایسه‌ی بصری: PHP foreach در برابر Go range</text>
+<text x="360" y="28" text-anchor="middle" class="title">Visual Comparison: PHP foreach vs. Go range</text>
 <!-- PHP lane -->
 <text x="180" y="68" text-anchor="middle" class="title">PHP foreach</text>
 <rect x="60" y="85" width="240" height="65" class="box-php"/>
 <text x="180" y="108" text-anchor="middle" class="small">foreach ($arr as $k =&gt; &amp;$v)</text>
-<text x="180" y="128" text-anchor="middle" class="small rtl">دسترسی با ارجاع &amp;</text>
+<text x="180" y="128" text-anchor="middle" class="small">Reference access with &amp;</text>
 <rect x="60" y="170" width="240" height="65" class="box-php"/>
-<text x="180" y="193" text-anchor="middle" class="small rtl">ترتیب درج حفظ می‌شود</text>
-<text x="180" y="213" text-anchor="middle" class="small rtl">map همیشه مرتب است</text>
+<text x="180" y="193" text-anchor="middle" class="small">Insertion order preserved</text>
+<text x="180" y="213" text-anchor="middle" class="small">Map always ordered</text>
 <rect x="60" y="255" width="240" height="65" class="warn-box"/>
-<text x="180" y="278" text-anchor="middle" class="small rtl">تله: &amp;$v باید unset شود</text>
-<text x="180" y="298" text-anchor="middle" class="small rtl">تغییرات روی آرایه اصلی اعمال می‌شوند</text>
+<text x="180" y="278" text-anchor="middle" class="small">Trap: &amp;$v must be unset</text>
+<text x="180" y="298" text-anchor="middle" class="small">Changes apply to original array</text>
 <!-- Go lane -->
 <text x="540" y="68" text-anchor="middle" class="title">Go range</text>
 <rect x="420" y="85" width="240" height="65" class="box-go"/>
 <text x="540" y="108" text-anchor="middle" class="small">for k, v := range arr</text>
-<text x="540" y="128" text-anchor="middle" class="small rtl">v همیشه یک کپی است</text>
+<text x="540" y="128" text-anchor="middle" class="small">v is always a copy</text>
 <rect x="420" y="170" width="240" height="65" class="box-go"/>
-<text x="540" y="193" text-anchor="middle" class="small rtl">ترتیب slice حفظ می‌شود</text>
-<text x="540" y="213" text-anchor="middle" class="small rtl">map عمداً تصادفی است</text>
+<text x="540" y="193" text-anchor="middle" class="small">Slice order preserved</text>
+<text x="540" y="213" text-anchor="middle" class="small">Map intentionally random</text>
 <rect x="420" y="255" width="240" height="65" class="warn-box"/>
-<text x="540" y="278" text-anchor="middle" class="small rtl">تله: تغییر v روی arr اثر ندارد</text>
-<text x="540" y="298" text-anchor="middle" class="small rtl">برای تغییر از arr[k] استفاده کنید</text>
+<text x="540" y="278" text-anchor="middle" class="small">Trap: changing v has no effect on arr</text>
+<text x="540" y="298" text-anchor="middle" class="small">Use arr[k] to modify</text>
 <!-- divider arrow -->
 <line x1="360" y1="80" x2="360" y2="320" stroke="#cbd5e1" stroke-width="1.5" stroke-dasharray="4 4"/>
-<text x="360" y="330" text-anchor="middle" class="small rtl">تفاوت بنیادین: ارجاع در برابر کپی</text>
+<text x="360" y="330" text-anchor="middle" class="small">Fundamental difference: reference vs. copy</text>
 </svg>
 <figcaption>شکل ۲-۴: PHP foreach با ارجاع به عناصر اصلی، Go range همیشه کپی برمی‌گرداند — برای تغییر عناصر در Go باید از ایندکس استفاده کنید</figcaption>
 </figure>

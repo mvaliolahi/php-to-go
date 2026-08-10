@@ -294,7 +294,7 @@ type User struct {
 <div class="tip">
 <strong>نکته‌ی حرفه‌ای:</strong> در Go چون ارث‌بری وجود ندارد، مشکل <strong dir="ltr">fragile base class</strong> نیز وجود ندارد — یعنی تغییر در struct پایه نمی‌تواند رفتار struct فرزند را به‌صورت غیرمنتظره تغییر دهد. این یکی از دلایل اصلی پایداری کد در پروژه‌های بزرگ Go است.
 </div>
-<h3 id="جریان-مدیریت-خطا-exception-در-برابر-error-value">1.2.7 جریان مدیریت خطا:Exceptionدر برابرError Value</h3>
+<h3 id="جریان-مدیریت-خطا-exception-در-برابر-error-value">1.2.7 جریان مدیریت خطا:Exception در برابر Error Value</h3>
 <p>یکی از عمیق‌ترین تفاوت‌های ساختاری بین <bdi dir="ltr">PHP</bdi> و <bdi dir="ltr">Go</bdi> در نحوه‌ی جریان مدیریت خطا نهفته است. در <bdi dir="ltr">PHP</bdi> وقتی <bdi dir="ltr">exception</bdi> پرتاب می‌شود، جریان کنترل به‌صورت <strong>نامرئی</strong> از تابع فراخوان‌دهنده خارج شده و در <bdi dir="ltr">call stack</bdi> بالا می‌رود تا اولین بلوک <bdi dir="ltr">catch</bdi> مناسب را بیابد. </p><p>این فرآیند برای برنامه‌نویس پنهان است — از نگاه امضای تابع نمی‌توان فهمید که آیا آن تابع ممکن است <bdi dir="ltr">exception</bdi> پرتاب کند یا خیر. اما در <bdi dir="ltr">Go</bdi> خطاها بخشی از نوع بازگشتی تابع هستند و جریان کنترل هرگز به‌صورت پنهانی تغییر نمی‌کند. </p><p>هر تابعی که ممکن است شکست بخورد، <bdi dir="ltr">error</bdi> را صریحاً برمی‌گرداند و فراخوان‌دهنده موظف است آن را بررسی کند.</p>
 <p>این تفاوت فقط یک مسئله‌ی سبک کدنویسی نیست بلکه تأثیر مستقیم بر <strong>قابلیت پیش‌بینی</strong> و <strong>قابلیت نگهداری</strong> کد دارد. وقتی در <bdi dir="ltr">PHP</bdi> کدی می‌خوانید هرگز مطمئن نیستید که آیا فراخوانی تابعی ممکن است جریان برنامه را به‌صورت ناگهانی تغییر دهد یا خیر. </p><p>اما در <bdi dir="ltr">Go</bdi> با نگاه به امضای تابع فوراً می‌دانید چه خطاهایی ممکن است رخ دهد و می‌توانید برای هرکدام تصمیم‌گیری صریحی داشته باشید.</p>
 <p>همان‌طور که نمودار بالا نشان می‌دهد، تفاوت بنیادین بین این دو رویکرد در <strong>دیدپذیری جریان کنترل</strong> است. در <bdi dir="ltr">PHP</bdi> وقتی تابعی <bdi dir="ltr">exception</bdi> پرتاب می‌کند، هیچ اثری در امضای تابع باقی نمی‌ماند — نه <bdi dir="ltr">@throws</bdi> در <bdi dir="ltr">PHPDoc</bdi> الزامی است و نه کامپایلر بررسی می‌کند که آیا فراخوان‌دهنده <bdi dir="ltr">exception</bdi> را مدیریت کرده یا خیر. </p><p>این یعنی یک <bdi dir="ltr">exception</bdi> بررسی‌نشده ممکن است تا سطح بالاترین لایه‌ی برنامه بالا برود و بدون هیچ هشداری باعث توقف کل برنامه شود.</p>
@@ -305,44 +305,44 @@ type User struct {
 <path d="M0,0 L10,5 L0,10 z" fill="#64748b"/>
 </marker>
 </defs>
-<text x="360" y="28" text-anchor="middle" class="title rtl">جریان مدیریت خطا: Exception در برابر Error Value</text>
+<text x="360" y="28" text-anchor="middle" class="title">Error Flow: Exception vs. Error Value</text>
 <!-- PHP lane -->
 <text x="60" y="70" text-anchor="start" class="title">PHP — Exception</text>
 <rect x="60" y="85" width="140" height="50" class="box-php"/>
-<text x="130" y="115" text-anchor="middle" class="small rtl">لایه‌ی کنترلر</text>
+<text x="130" y="115" text-anchor="middle" class="small">Controller layer</text>
 <rect x="220" y="85" width="140" height="50" class="box-php"/>
-<text x="290" y="115" text-anchor="middle" class="small rtl">سرویس</text>
+<text x="290" y="115" text-anchor="middle" class="small">Service</text>
 <rect x="380" y="85" width="140" height="50" class="box-php"/>
-<text x="450" y="115" text-anchor="middle" class="small rtl">ریپازیتوری</text>
+<text x="450" y="115" text-anchor="middle" class="small">Repository</text>
 <rect x="540" y="85" width="140" height="50" class="warn-box"/>
-<text x="610" y="108" text-anchor="middle" class="small rtl">throw</text>
+<text x="610" y="108" text-anchor="middle" class="small">throw</text>
 <text x="610" y="125" text-anchor="middle" class="small">exception</text>
 <!-- Exception propagation: invisible curve up -->
 <path d="M 610 85 Q 610 50 450 50 Q 130 50 130 85" fill="none" stroke="#ef4444" stroke-width="2" stroke-dasharray="5 3" marker-end="url(#arrowErr)"/>
-<text x="370" y="42" text-anchor="middle" class="small" fill="#ef4444">پخش نامرئی در call stack</text>
-<text x="360" y="160" text-anchor="middle" class="small rtl">امضای تابع چیزی نشان نمی‌دهد — خطا تا بالاترین لایه بالا می‌رود</text>
+<text x="370" y="42" text-anchor="middle" class="small" fill="#ef4444">Invisible spread in call stack</text>
+<text x="360" y="160" text-anchor="middle" class="small">Function signature shows nothing — error bubbles to top layer</text>
 <!-- Go lane -->
 <text x="60" y="210" text-anchor="start" class="title">Go — Error Value</text>
 <rect x="60" y="225" width="140" height="50" class="box-go"/>
-<text x="130" y="255" text-anchor="middle" class="small rtl">Handler</text>
+<text x="130" y="255" text-anchor="middle" class="small">Handler</text>
 <rect x="220" y="225" width="140" height="50" class="box-go"/>
-<text x="290" y="255" text-anchor="middle" class="small rtl">Service</text>
+<text x="290" y="255" text-anchor="middle" class="small">Service</text>
 <rect x="380" y="225" width="140" height="50" class="box-go"/>
-<text x="450" y="255" text-anchor="middle" class="small rtl">Repository</text>
+<text x="450" y="255" text-anchor="middle" class="small">Repository</text>
 <rect x="540" y="225" width="140" height="50" class="tip-box"/>
-<text x="610" y="248" text-anchor="middle" class="small rtl">return err</text>
+<text x="610" y="248" text-anchor="middle" class="small">return err</text>
 <text x="610" y="265" text-anchor="middle" class="small">(value, error)</text>
 <!-- Visible local arrows back -->
 <line x1="540" y1="250" x2="520" y2="250" stroke="#4caf50" stroke-width="2" marker-end="url(#arrowErr)" transform="rotate(180 530 250)"/>
 <line x1="380" y1="250" x2="360" y2="250" stroke="#4caf50" stroke-width="2" marker-end="url(#arrowErr)" transform="rotate(180 370 250)"/>
 <line x1="220" y1="250" x2="200" y2="250" stroke="#4caf50" stroke-width="2" marker-end="url(#arrowErr)" transform="rotate(180 210 250)"/>
-<text x="450" y="305" text-anchor="middle" class="small" fill="#4caf50">بررسی صریح در همان نقطه — if err != nil</text>
-<text x="360" y="335" text-anchor="middle" class="small rtl">امضای تابع خطا را نشان می‌دهد — جریان کنترل محلی و قابل‌پیش‌بینی</text>
+<text x="450" y="305" text-anchor="middle" class="small" fill="#4caf50">Explicit check at the spot — if err != nil</text>
+<text x="360" y="335" text-anchor="middle" class="small">Function signature shows error — local &amp; predictable control flow</text>
 </svg>
 <figcaption>شکل ۱-۴: مقایسه‌ی جریان مدیریت خطا در PHP (Exception نامرئی) و Go (Error Value صریح)</figcaption>
 </figure>
 <p>اما در <bdi dir="ltr">Go</bdi> خطاها مقادیر معمولی هستند. وقتی تابعی ممکن است شکست بخورد، نوع بازگشتی آن شامل <bdi dir="ltr">error</bdi> است و فراخوان‌دهنده <strong>ملزم</strong> است آن را بررسی کند. حتی اگر بررسی را فراموش کنید، ابزارهایی مانند <bdi dir="ltr">errcheck</bdi> و <bdi dir="ltr">golangci-lint</bdi> بلافاصله هشدار می‌دهند. </p><p>این رویکرد هرچند در ابتدا پرکاربردتر به‌نظر می‌رسد اما در عمل باعث می‌شود که <strong>هر مسیر شکست در کد صریحاً قابل ردیابی باشد</strong> و هیچ خطایی پنهان نماند.</p>
-<h3 id="سناریوهای-عملیاتی-مدیریت-خطا">1.2.8 سناریوهای عملیاتی: مهاجرت ذهنی ازtry/catchبهif err != nil</h3>
+<h3 id="سناریوهای-عملیاتی-مدیریت-خطا">1.2.8 سناریوهای عملیاتی: مهاجرت ذهنی از try/catch به if err != nil</h3>
 <ul>
 <li><strong>مهاجرت از تفکر <bdi dir="ltr">try/catch</bdi>:</strong> برنامه‌نویسان <bdi dir="ltr">PHP</bdi> معمولاً عادت دارند خطاها را در یک بلوک <bdi dir="ltr">catch</bdi> متمرکز مدیریت کنند. در <bdi dir="ltr">Go</bdi> باید ذهن خود را بازسازی کنید — هر خطا باید در همان نقطه‌ای که رخ داده بررسی و مدیریت شود. این کار در ابتدا تکراری به‌نظر می‌رسد اما مزیت بزرگش این است که <strong>هر تصمیم خطا محلی و صریح</strong> است و خطای مدیریت‌نشده به‌سادگی قابل شناسایی خواهد بود.</li>
 <li><strong>چه زمانی از <bdi dir="ltr">panic</bdi> استفاده کنیم:</strong> هرگز از <bdi dir="ltr">panic</bdi> برای مدیریت خطاهای عادی استفاده نکنید. <bdi dir="ltr">panic</bdi> فقط برای شرایط غیرممکن و غیرقابل‌بازگشت مناسب است — مثلاً وقتی یک مقدار <bdi dir="ltr">nil</bdi> جایی تزریق شده که قطعاً نباید <bdi dir="ltr">nil</bdi> باشد. اگر در مورد استفاده از <bdi dir="ltr">panic</bdi> شک دارید احتمالاً باید از <bdi dir="ltr">error</bdi> استفاده کنید. قانون ساده: <bdi dir="ltr">panic</bdi> یعنی «برنامه‌نویس اشتباه کرده» نه «کاربر اشتباه کرده».</li>

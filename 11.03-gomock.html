@@ -585,23 +585,23 @@ func TestCreateArticle(t *testing.T) {
 <path d="M0,0 L10,5 L0,10 z" fill="#64748b"/>
 </marker>
 </defs>
-<text x="380" y="28" text-anchor="middle" class="title rtl">خط لوله تولید و تزریق Mock: Go در برابر PHP</text>
+<text x="380" y="28" text-anchor="middle" class="title">Mock Generation &amp; Injection Pipeline: Go vs. PHP</text>
 <!-- Go pipeline (top) -->
 <text x="60" y="78" text-anchor="start" class="title">Go + gomock</text>
 <rect x="30" y="90" width="160" height="80" class="box-go"/>
-<text x="110" y="115" text-anchor="middle" class="title rtl">۱. تعریف Interface</text>
+<text x="110" y="115" text-anchor="middle" class="title">1. Define interface</text>
 <text x="110" y="135" text-anchor="middle" class="small">type UserRepository</text>
 <text x="110" y="152" text-anchor="middle" class="small">interface { ... }</text>
 <rect x="210" y="90" width="160" height="80" class="box-action"/>
-<text x="290" y="115" text-anchor="middle" class="title rtl">۲. mockgen</text>
+<text x="290" y="115" text-anchor="middle" class="title">2. mockgen</text>
 <text x="290" y="135" text-anchor="middle" class="small">go generate ./...</text>
-<text x="290" y="152" text-anchor="middle" class="small rtl">تولید خودکار کد</text>
+<text x="290" y="152" text-anchor="middle" class="small">Auto-generates code</text>
 <rect x="390" y="90" width="160" height="80" class="box-go"/>
-<text x="470" y="115" text-anchor="middle" class="title rtl">۳. فایل mock</text>
+<text x="470" y="115" text-anchor="middle" class="title">3. Mock file</text>
 <text x="470" y="135" text-anchor="middle" class="small">mock_user_repo.go</text>
-<text x="470" y="152" text-anchor="middle" class="small rtl">type-safe · commit در git</text>
+<text x="470" y="152" text-anchor="middle" class="small">type-safe · committed</text>
 <rect x="570" y="90" width="160" height="80" class="box-result"/>
-<text x="650" y="115" text-anchor="middle" class="title rtl">۴. تزریق در تست</text>
+<text x="650" y="115" text-anchor="middle" class="title">4. Inject in test</text>
 <text x="650" y="135" text-anchor="middle" class="small">NewMockUserRepository</text>
 <text x="650" y="152" text-anchor="middle" class="small">EXPECT().Return(...)</text>
 <!-- Go arrows -->
@@ -611,23 +611,23 @@ func TestCreateArticle(t *testing.T) {
 <!-- PHP pipeline (bottom) -->
 <text x="60" y="218" text-anchor="start" class="title">PHP + PHPUnit</text>
 <rect x="30" y="230" width="240" height="80" class="box-php"/>
-<text x="150" y="255" text-anchor="middle" class="title rtl">۱. ساخت Mock</text>
+<text x="150" y="255" text-anchor="middle" class="title">1. Create mock</text>
 <text x="150" y="275" text-anchor="middle" class="small">$this-&gt;createMock(</text>
 <text x="150" y="292" text-anchor="middle" class="small">UserRepository::class)</text>
 <rect x="290" y="230" width="240" height="80" class="box-php"/>
-<text x="410" y="255" text-anchor="middle" class="title rtl">۲. تعریف رفتار</text>
+<text x="410" y="255" text-anchor="middle" class="title">2. Define behavior</text>
 <text x="410" y="275" text-anchor="middle" class="small">$mock-&gt;method('find')</text>
 <text x="410" y="292" text-anchor="middle" class="small">-&gt;willReturn($user)</text>
 <rect x="550" y="230" width="180" height="80" class="box"/>
-<text x="640" y="255" text-anchor="middle" class="title rtl">۳. استفاده در تست</text>
-<text x="640" y="275" text-anchor="middle" class="small rtl">تزریق در constructor</text>
-<text x="640" y="292" text-anchor="middle" class="small rtl">یا service container</text>
+<text x="640" y="255" text-anchor="middle" class="title">3. Use in test</text>
+<text x="640" y="275" text-anchor="middle" class="small">Inject via constructor</text>
+<text x="640" y="292" text-anchor="middle" class="small">or service container</text>
 <!-- PHP arrows -->
 <line x1="270" y1="270" x2="290" y2="270" stroke="#64748b" stroke-width="2" marker-end="url(#arrow-mk)"/>
 <line x1="530" y1="270" x2="550" y2="270" stroke="#64748b" stroke-width="2" marker-end="url(#arrow-mk)"/>
 <!-- Comparison notes -->
 <rect x="30" y="335" width="700" height="38" class="tip-box"/>
-<text x="380" y="358" text-anchor="middle" class="small rtl">مزیت Go: اگر interface تغییر کند و mock بازتولید نشود، کامپایلر خطا می‌دهد. PHPUnit این ایمنی را ندارد و خطا فقط در زمان اجرا دیده می‌شود.</text>
+<text x="380" y="358" text-anchor="middle" class="small">Go advantage: if the interface changes and the mock isn't regenerated, the compiler errors out. PHPUnit lacks this safety — errors only surface at runtime.</text>
 </svg>
 <figcaption>شکل ۱۱-۴: خط لوله تولید و تزریق Mock در Go و PHP — در Go، <bdi dir="ltr">interface</bdi> توسط ابزار <bdi dir="ltr">mockgen</bdi> به فایل <bdi dir="ltr">mock</bdi> تبدیل می‌شود (که در <bdi dir="ltr">git</bdi> commit می‌شود)، سپس در تست تزریق می‌شود. در PHP، mock در زمان اجرا با <bdi dir="ltr">createMock()</bdi> ساخته می‌شود. مزیت Go: type-safety کامپایل‌زمان و کشف خودکار تغییرات interface.</figcaption>
 </figure>

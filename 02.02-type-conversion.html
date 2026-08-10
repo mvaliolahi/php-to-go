@@ -258,35 +258,35 @@ s = fmt.Sprintf("%d", 42) // Wrong — slower — generic
 <path d="M0,0 L10,5 L0,10 z" fill="#64748b"/>
 </marker>
 </defs>
-<text x="360" y="28" text-anchor="middle" class="title rtl">PHP Type Juggling در برابر تبدیل صریح Go</text>
+<text x="360" y="28" text-anchor="middle" class="title">PHP Type Juggling vs. Go Explicit Conversion</text>
 <!-- PHP lane -->
 <text x="180" y="68" text-anchor="middle" class="title">PHP — Type Juggling</text>
 <rect x="60" y="85" width="240" height="55" class="box-php"/>
 <text x="180" y="108" text-anchor="middle" class="small">"5" + 3</text>
-<text x="180" y="126" text-anchor="middle" class="small rtl">عملیات ترکیبی رشته+عدد</text>
+<text x="180" y="126" text-anchor="middle" class="small">Mixed string+number operation</text>
 <rect x="60" y="165" width="240" height="55" class="warn-box"/>
-<text x="180" y="188" text-anchor="middle" class="small rtl">تبدیل خودکار و خاموش</text>
-<text x="180" y="206" text-anchor="middle" class="small rtl">"5" → int(5)</text>
+<text x="180" y="188" text-anchor="middle" class="small">Silent automatic conversion</text>
+<text x="180" y="206" text-anchor="middle" class="small">"5" → int(5)</text>
 <rect x="60" y="245" width="240" height="55" class="box-result"/>
 <text x="180" y="268" text-anchor="middle" class="small">8</text>
-<text x="180" y="286" text-anchor="middle" class="small rtl">نتیجه درست — اما با تله</text>
+<text x="180" y="286" text-anchor="middle" class="small">Correct result — but with traps</text>
 <line x1="180" y1="140" x2="180" y2="165" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
 <line x1="180" y1="220" x2="180" y2="245" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
-<text x="180" y="320" text-anchor="middle" class="small rtl">"foo" + 3 ⇒ 3 — باگ خاموش</text>
+<text x="180" y="320" text-anchor="middle" class="small">"foo" + 3 ⇒ 3 — silent bug</text>
 <!-- Go lane -->
 <text x="540" y="68" text-anchor="middle" class="title">Go — Explicit Conversion</text>
 <rect x="420" y="85" width="240" height="55" class="box-go"/>
 <text x="540" y="108" text-anchor="middle" class="small">"5" + 3</text>
-<text x="540" y="126" text-anchor="middle" class="small rtl">نوع‌های ناسازگار</text>
+<text x="540" y="126" text-anchor="middle" class="small">Incompatible types</text>
 <rect x="420" y="165" width="240" height="55" class="warn-box"/>
 <text x="540" y="188" text-anchor="middle" class="small">compile error</text>
-<text x="540" y="206" text-anchor="middle" class="small rtl">mismatched types</text>
+<text x="540" y="206" text-anchor="middle" class="small">mismatched types</text>
 <rect x="420" y="245" width="240" height="55" class="box-action"/>
 <text x="540" y="268" text-anchor="middle" class="small">strconv.Atoi("5") + 3</text>
-<text x="540" y="286" text-anchor="middle" class="small rtl">تبدیل صریح با بررسی خطا</text>
+<text x="540" y="286" text-anchor="middle" class="small">Explicit conversion with error check</text>
 <line x1="540" y1="140" x2="540" y2="165" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
 <line x1="540" y1="220" x2="540" y2="245" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
-<text x="540" y="320" text-anchor="middle" class="small rtl">خطای Atoi("abc") هرگز خاموش نیست</text>
+<text x="540" y="320" text-anchor="middle" class="small">Atoi("abc") error is never silent</text>
 </svg>
 <figcaption>شکل ۲-۳: PHP با تبدیل خودکار، باگ خاموش تولید می‌کند؛ Go با خطای کامپایل و تبدیل صریح، خطا را آشکار می‌سازد</figcaption>
 </figure>

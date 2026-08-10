@@ -149,7 +149,7 @@ func embeddedCacheMiddleware(next http.Handler) http.Handler {
 </code></pre>
 </figure>
 <div class="tip"><strong>نکته:</strong> برای تنظیم نسخه برنامه در زمان بیلد، از <bdi dir="ltr">ldflags</bdi> استفاده کنید: <code dir="ltr">go build -ldflags "-X main.appVersion=1.2.3"</code>. این روش امکان تغییر نسخه بدون تغییر سورس کد را فراهم می‌کند و هنگام استقرار نسخه جدید، مرورگرها فایل‌های جدید را بارگذاری خواهند کرد.</div>
-<h3 id="زنجیره-embedfs-و-httpfs-و-fileserver">7.12.3 زنجیره‌یembed.FSوhttp.FSوFileServer</h3>
+<h3 id="زنجیره-embedfs-و-httpfs-و-fileserver">7.12.3 زنجیره‌ی embed.FS و http.FS و FileServer</h3>
 <p>سرو کردن فایل‌های استاتیک در <bdi dir="ltr">Go</bdi> با <code dir="ltr">embed</code> شامل یک زنجیره‌ی تبدیل مشخص است که هر حلقه‌ی آن وظیفه‌ی خاصی دارد. دستور <code dir="ltr">//go:embed</code> فایل‌ها را در زمان کامپایل به باینری جاسازی می‌کند و یک <code dir="ltr">embed.FS</code> تولید می‌کند که رابط <code dir="ltr">fs.FS</code> را پیاده‌سازی می‌کند. </p><p>تابع <code dir="ltr">http.FS()</code> این رابط عمومی را به <code dir="ltr">http.FileSystem</code> تبدیل می‌کند و <code dir="ltr">http.FileServer</code> آن را به یک <code dir="ltr">http.Handler</code> تبدیل می‌کند. </p><p>مسیرهای <code dir="ltr">embed.FS</code> نسبت به فایل منبع تعیین می‌شوند و مزیت اصلی این روش، تولید باینری واحد با تمام فایل‌های استاتیک است.</p>
 <figure class="diagram" dir="ltr">
 <svg viewBox="0 0 760 380" xmlns="http://www.w3.org/2000/svg">
@@ -158,60 +158,60 @@ func embeddedCacheMiddleware(next http.Handler) http.Handler {
 <path d="M0,0 L10,5 L0,10 z" fill="#64748b"/>
 </marker>
 </defs>
-<text x="380" y="28" text-anchor="middle" class="title rtl">زنجیره‌ی تبدیل embed.FS → http.FileServer — هر حلقه یک رابط را به بعدی تبدیل می‌کند</text>
+<text x="380" y="28" text-anchor="middle" class="title">Conversion chain embed.FS → http.FileServer — each link converts one interface</text>
 <!-- Step 1: //go:embed -->
 <rect x="30" y="70" width="140" height="120" class="box-php"/>
 <text x="100" y="95" text-anchor="middle" class="title">① //go:embed</text>
-<text x="100" y="115" text-anchor="middle" class="small rtl">directive</text>
-<text x="100" y="138" text-anchor="middle" class="small rtl">در زمان کامپایل</text>
+<text x="100" y="115" text-anchor="middle" class="small">directive</text>
+<text x="100" y="138" text-anchor="middle" class="small">at compile time</text>
 <text x="100" y="158" text-anchor="middle" class="small">static/css/style.css</text>
-<text x="100" y="178" text-anchor="middle" class="small rtl">به باینری می‌رود</text>
+<text x="100" y="178" text-anchor="middle" class="small">goes into binary</text>
 <!-- Arrow -->
 <line x1="170" y1="130" x2="200" y2="130" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
 <!-- Step 2: embed.FS -->
 <rect x="200" y="70" width="140" height="120" class="box-go"/>
 <text x="270" y="95" text-anchor="middle" class="title">② embed.FS</text>
-<text x="270" y="115" text-anchor="middle" class="small rtl">ساختار داده در حافظه</text>
+<text x="270" y="115" text-anchor="middle" class="small">in-memory struct</text>
 <line x1="210" y1="125" x2="330" y2="125" stroke="#cbd5e1" stroke-width="1"/>
 <text x="270" y="143" text-anchor="middle" class="small">implements fs.FS</text>
-<text x="270" y="160" text-anchor="middle" class="small rtl">readonly / فقط‌خواندنی</text>
-<text x="270" y="178" text-anchor="middle" class="small rtl">paths: static/...</text>
+<text x="270" y="160" text-anchor="middle" class="small">readonly</text>
+<text x="270" y="178" text-anchor="middle" class="small">paths: static/...</text>
 <line x1="340" y1="130" x2="370" y2="130" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
 <!-- Step 3: fs.Sub -->
 <rect x="370" y="70" width="140" height="120" class="warn-box"/>
 <text x="440" y="95" text-anchor="middle" class="title">③ fs.Sub(staticFS, "static")</text>
-<text x="440" y="115" text-anchor="middle" class="small rtl">حذف پیشوند static/</text>
+<text x="440" y="115" text-anchor="middle" class="small">strip static/ prefix</text>
 <line x1="380" y1="125" x2="500" y2="125" stroke="#cbd5e1" stroke-width="1"/>
-<text x="440" y="143" text-anchor="middle" class="small rtl">نتیجه: fs.FS</text>
-<text x="440" y="160" text-anchor="middle" class="small rtl">path = css/style.css</text>
-<text x="440" y="178" text-anchor="middle" class="small rtl">(نه static/static/...)</text>
+<text x="440" y="143" text-anchor="middle" class="small">result: fs.FS</text>
+<text x="440" y="160" text-anchor="middle" class="small">path = css/style.css</text>
+<text x="440" y="178" text-anchor="middle" class="small">(not static/static/...)</text>
 <line x1="510" y1="130" x2="540" y2="130" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
 <!-- Step 4: http.FS -->
 <rect x="540" y="70" width="180" height="120" class="box-action"/>
 <text x="630" y="95" text-anchor="middle" class="title">④ http.FS(contentFS)</text>
-<text x="630" y="115" text-anchor="middle" class="small rtl">پل بین رابط‌ها</text>
+<text x="630" y="115" text-anchor="middle" class="small">bridge between interfaces</text>
 <line x1="550" y1="125" x2="710" y2="125" stroke="#cbd5e1" stroke-width="1"/>
-<text x="630" y="143" text-anchor="middle" class="small rtl">fs.FS → http.FileSystem</text>
-<text x="630" y="160" text-anchor="middle" class="small rtl"> Open(name) → File</text>
-<text x="630" y="178" text-anchor="middle" class="small rtl">+ متدهای HTTP-aware</text>
+<text x="630" y="143" text-anchor="middle" class="small">fs.FS → http.FileSystem</text>
+<text x="630" y="160" text-anchor="middle" class="small"> Open(name) → File</text>
+<text x="630" y="178" text-anchor="middle" class="small">+ HTTP-aware methods</text>
 <!-- Down arrow to step 5 -->
 <line x1="630" y1="190" x2="630" y2="220" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
 <!-- Step 5: http.FileServer -->
 <rect x="370" y="220" width="350" height="65" class="box-go"/>
 <text x="545" y="245" text-anchor="middle" class="title">⑤ http.FileServer(http.FileSystem)</text>
-<text x="545" y="263" text-anchor="middle" class="small rtl">تبدیل به http.Handler — تشخیص MIME، ETag، Range، Last-Modified</text>
-<text x="545" y="278" text-anchor="middle" class="small rtl">path traverse protection داخلی</text>
+<text x="545" y="263" text-anchor="middle" class="small">Wrap as http.Handler — MIME, ETag, Range, Last-Modified</text>
+<text x="545" y="278" text-anchor="middle" class="small">Built-in path traversal protection</text>
 <line x1="370" y1="252" x2="340" y2="252" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)" transform="rotate(180 355 252)"/>
 <!-- Step 6: StripPrefix + register -->
 <rect x="30" y="220" width="320" height="65" class="box-result"/>
 <text x="190" y="245" text-anchor="middle" class="title">⑥ http.StripPrefix("/static/", fileServer)</text>
-<text x="190" y="263" text-anchor="middle" class="small rtl">حذف پیشوند /static/ از URL درخواست</text>
+<text x="190" y="263" text-anchor="middle" class="small">Strip /static/ prefix from request URL</text>
 <text x="190" y="278" text-anchor="middle" class="small">mux.Handle("/static/", handler)</text>
 <!-- Bottom: full pipeline summary -->
 <rect x="30" y="305" width="700" height="60" class="tip-box"/>
-<text x="380" y="325" text-anchor="middle" class="title rtl">خلاصه‌ی زنجیره: هر تابع یک رابط را به بعدی تبدیل می‌کند</text>
-<text x="380" y="345" text-anchor="middle" class="small rtl">embed.FS (fs.FS) → fs.Sub (fs.FS) → http.FS (http.FileSystem) → http.FileServer (http.Handler) → http.StripPrefix (http.Handler) → mux</text>
-<text x="380" y="360" text-anchor="middle" class="small rtl" fill="#4a5568">⚠ اگر fs.Sub یا StripPrefix را فراموش کنید، FileServer در مسیر static/static/... می‌گردد و 404 برمی‌گرداند</text>
+<text x="380" y="325" text-anchor="middle" class="title">Chain summary: each function converts one interface to the next</text>
+<text x="380" y="345" text-anchor="middle" class="small">embed.FS (fs.FS) → fs.Sub (fs.FS) → http.FS (http.FileSystem) → http.FileServer (http.Handler) → http.StripPrefix (http.Handler) → mux</text>
+<text x="380" y="360" text-anchor="middle" class="small" fill="#4a5568">⚠ If you forget fs.Sub or StripPrefix, FileServer looks under static/static/... and returns 404</text>
 </svg>
 <figcaption>شکل ۷-۱۲: زنجیره‌ی تبدیل <code>embed.FS</code> به <code>http.Handler</code> — شش حلقه‌ی متوالی: (۱) directive <code>//go:embed</code> در زمان کامپایل فایل‌ها را در باینری جاسازی می‌کند؛ (۲) <code>embed.FS</code> یک سیستم فایل فقط‌خواندنی است که رابط <code>fs.FS</code> را پیاده می‌کند؛ (۳) <code>fs.Sub(staticFS, "static")</code> زیرپوشه‌ی <code>static</code> را استخراج می‌کند تا پیشوند اضافی حذف شود؛ (۴) <code>http.FS()</code> پل بین رابط عمومی <code>fs.FS</code> و رابط خاص <code>http.FileSystem</code> است؛ (۵) <code>http.FileServer()</code> آن را به <code>http.Handler</code> تبدیل می‌کند با تشخیص خودکار <code>MIME</code>، <code>ETag</code>، <code>Range</code> و محافظت از path traversal؛ (۶) <code>http.StripPrefix</code> پیشوند <code>/static/</code> را از URL برمی‌دارد و در نهایت با <code>mux.Handle("/static/", handler)</code> ثبت می‌شود. اگر <code>fs.Sub</code> یا <code>StripPrefix</code> فراموش شوند، <code>FileServer</code> در مسیر اشتباه <code>static/static/...</code> جستجو می‌کند و ۴۰۴ برمی‌گرداند.</figcaption>
 </figure>

@@ -391,7 +391,7 @@ public function sumProvider()
 <p>لازم به ذکر است الگوی Table-driven در این نوع تست‌ها بسیار کاربردی است چون می‌توان برای ورودی‌های مختلف (مسیر، متد، بادی، هدرها) خروجی‌های متفاوتی را تعریف و تست کرد.</p>
 <div class="tip"><strong>نکته درباره پکیج <span dir="ltr">httptest</span>:</strong> <code dir="ltr">net/http/httptest</code> دو ابزار اصلی دارد: <code dir="ltr">NewRequest</code> و <code dir="ltr">NewRecorder</code> برای تست هندلر به‌صورت <strong>مستقیم</strong> و بدون اجرای سرور (سریع، مناسب Unit Test) و <code dir="ltr">NewServer</code> برای ساخت سرور واقعی روی پورت تصادفی (کندتر اما برای middleware، cookie و redirect لازم، مناسب Integration/E2E). در <span dir="ltr">PHP/Laravel</span> این تفکیک وجود ندارد و <code dir="ltr">$this-&gt;get()</code> همیشه یک سرور راه می‌اندازد. در Go انتخاب از آن شماست که کدام سطح را تست کنید — همین که هندلر مستقیماً قابل فراخوانی است، بزرگ‌ترین مزیت <span dir="ltr">Go</span> در تست <span dir="ltr">HTTP</span> محسوب می‌شود.</div>
 <p>تست‌نویسی در Go تنها به تست‌های ساده محدود نمی‌شود. این زبان امکانات قدرتمند و درعین‌حال مینیمالی برای تست‌های موازی تست‌های benchmark و حتی تست‌های مبتنی بر Mock فراهم کرده است. در این بخش با چند مفهوم کلیدی و ابزار مهم آشنا می‌شویم.</p>
-<h3 id="تستهای-موازی-tparallel">11.1.9 تست‌های موازیt.Parallel()</h3>
+<h3 id="تستهای-موازی-tparallel">11.1.9 تست‌های موازی t.Parallel()</h3>
 <p>در بسیاری از پروژه‌های بزرگ تست‌های مستقل زیادی داریم که اجرای دنباله‌دار آن‌ها در زمان طولانی تمام می‌شود. Go با استفاده از قابلیت هم‌روندی تست‌ها اجازه می‌دهد از چند هسته پردازنده به طور مؤثر استفاده کنیم و سرعت اجرای تست‌ها را به‌طور قابل‌توجهی افزایش دهیم.</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">func TestParallel(t *testing.T) {
@@ -473,7 +473,7 @@ func BenchmarkAdd(b *testing.B) {
 </code></pre>
 </figure>
 <div class="tip"><strong>نکته درباره <span dir="ltr">Benchmark</span> در <span dir="ltr">Go</span>:</strong> در <span dir="ltr">PHP</span> برای بنچمارک باید به ابزارهای خارجی مثل <span dir="ltr">PHPBench</span> پناه ببرید، اما در <span dir="ltr">Go</span> بنچمارک داخلی است و با <code dir="ltr">testing.B</code> تعریف می‌شود. برای نتایج معتبر: <strong>۱)</strong> حتماً از <code dir="ltr">b.ResetTimer()</code> پس از راه‌اندازی گران استفاده کنید تا زمان setup از اندازه‌گیری حذف شود. <strong>۲)</strong> با <code dir="ltr">b.ReportAllocs()</code> تعداد تخصیص حافظه را ببینید. <strong>۳)</strong> برای مقایسه دو پیاده‌سازی از <code dir="ltr">benchstat</code> استفاده کنید تا تفاوت آماری معنی‌دار باشد. <strong>۴)</strong> در <span dir="ltr">Go 1.24+</span> به‌جای <code dir="ltr">for i := 0; i &lt; b.N; i++</code> از <code dir="ltr">for b.Loop()</code> استفاده کنید تا راه‌اندازی فقط یک‌بار اجرا شود و جلوگیری از بهینه‌سازی کامپایلر خودکار باشد.</div>
-<h3 id="mock-کردن-interfaceها">11.1.11 Mock کردن Interfaceها</h3>
+<h3 id="mock-کردن-interfaceها">11.1.11 Mock کردن Interface ها</h3>
 <p>Go به دلیل ماهیت انعطاف‌پذیر interfaceها، برای تست‌نویسی بر پایه Mock بسیار مناسب است. شما می‌توانید به‌راحتی نسخه‌ی شبیه‌سازی‌شده‌ای از هر interface بسازید و رفتار آن را کنترل کنید تا وابستگی به سرویس‌های خارجی (مثلاً پایگاه‌داده، API) از بین برود.</p>
 <div class="note"><strong>ارجاع:</strong> این بخش مقدمه‌ای بر مفهوم <span dir="ltr">mock</span> است. در بخش ۱۱.۳ (gomock) به‌طور کامل به ابزار <span dir="ltr">gomock</span>، تولید خودکار <span dir="ltr">mock</span> با <span dir="ltr">mockgen</span>، الگوهای <span dir="ltr">EXPECT</span> و مقایسه <span dir="ltr">mock</span> دستی با <span dir="ltr">gomock</span> پرداخته می‌شود.</div>
 <p><strong>تعریف یک</strong> <strong dir="ltr">interface و نسخه mock</strong></p>
@@ -800,23 +800,23 @@ func BenchmarkNew(b *testing.B) {
 <path d="M0,0 L10,5 L0,10 z" fill="#64748b"/>
 </marker>
 </defs>
-<text x="380" y="28" text-anchor="middle" class="title rtl">چرخه حیات اجرای تست در Go</text>
+<text x="380" y="28" text-anchor="middle" class="title">Test Execution Lifecycle in Go</text>
 <!-- Top row: 4 stages -->
 <rect x="30" y="70" width="150" height="80" class="box-go"/>
-<text x="105" y="100" text-anchor="middle" class="title">۱. Discovery</text>
-<text x="105" y="120" text-anchor="middle" class="small rtl">کشف فایل‌های</text>
+<text x="105" y="100" text-anchor="middle" class="title">1. Discovery</text>
+<text x="105" y="120" text-anchor="middle" class="small">Discover</text>
 <text x="105" y="138" text-anchor="middle" class="small">*_test.go</text>
 <rect x="210" y="70" width="150" height="80" class="box-go"/>
-<text x="285" y="100" text-anchor="middle" class="title">۲. Compile</text>
-<text x="285" y="120" text-anchor="middle" class="small rtl">به‌همراه کد اصلی</text>
-<text x="285" y="138" text-anchor="middle" class="small rtl">+ instrumentation</text>
+<text x="285" y="100" text-anchor="middle" class="title">2. Compile</text>
+<text x="285" y="120" text-anchor="middle" class="small">With main code</text>
+<text x="285" y="138" text-anchor="middle" class="small">+ instrumentation</text>
 <rect x="390" y="70" width="150" height="80" class="box-action"/>
-<text x="465" y="100" text-anchor="middle" class="title">۳. TestMain</text>
-<text x="465" y="120" text-anchor="middle" class="small rtl">setup سراسری</text>
-<text x="465" y="138" text-anchor="middle" class="small rtl">(پایگاه داده، لاگ)</text>
+<text x="465" y="100" text-anchor="middle" class="title">3. TestMain</text>
+<text x="465" y="120" text-anchor="middle" class="small">Global setup</text>
+<text x="465" y="138" text-anchor="middle" class="small">(DB, logging)</text>
 <rect x="570" y="70" width="160" height="80" class="box"/>
-<text x="650" y="100" text-anchor="middle" class="title">۴. Run Tests</text>
-<text x="650" y="120" text-anchor="middle" class="small rtl">ترتیبی یا</text>
+<text x="650" y="100" text-anchor="middle" class="title">4. Run Tests</text>
+<text x="650" y="120" text-anchor="middle" class="small">Sequential or</text>
 <text x="650" y="138" text-anchor="middle" class="small">t.Parallel()</text>
 <!-- Arrows top row -->
 <line x1="180" y1="110" x2="210" y2="110" stroke="#64748b" stroke-width="2" marker-end="url(#arrow-tl)"/>
@@ -826,18 +826,18 @@ func BenchmarkNew(b *testing.B) {
 <line x1="650" y1="150" x2="650" y2="200" stroke="#64748b" stroke-width="2" marker-end="url(#arrow-tl)"/>
 <!-- Middle: per-test box -->
 <rect x="200" y="200" width="360" height="110" class="box-go"/>
-<text x="380" y="225" text-anchor="middle" class="title rtl">چرخه هر تابع تست: TestXxx(t *testing.T)</text>
+<text x="380" y="225" text-anchor="middle" class="title">Per-test cycle: TestXxx(t *testing.T)</text>
 <line x1="220" y1="238" x2="540" y2="238" stroke="#cbd5e1" stroke-width="1"/>
-<text x="280" y="262" text-anchor="middle" class="small rtl">① setup محلی</text>
-<text x="380" y="262" text-anchor="middle" class="small rtl">→ اجرای منطق</text>
-<text x="480" y="262" text-anchor="middle" class="small rtl">→ t.Cleanup</text>
-<text x="380" y="290" text-anchor="middle" class="small rtl">t.Helper برای گزارش خط فراخوانی‌کننده · t.Run برای زیرتست</text>
+<text x="280" y="262" text-anchor="middle" class="small">① local setup</text>
+<text x="380" y="262" text-anchor="middle" class="small">→ run logic</text>
+<text x="480" y="262" text-anchor="middle" class="small">→ t.Cleanup</text>
+<text x="380" y="290" text-anchor="middle" class="small">t.Helper to report caller line · t.Run for subtests</text>
 <line x1="380" y1="200" x2="380" y2="180" stroke="#64748b" stroke-width="2" marker-end="url(#arrow-tl)"/>
-<text x="380" y="172" text-anchor="middle" class="small rtl">هر تابع Test</text>
+<text x="380" y="172" text-anchor="middle" class="small">Each Test func</text>
 <!-- Bottom: report -->
 <line x1="380" y1="310" x2="380" y2="335" stroke="#64748b" stroke-width="2" marker-end="url(#arrow-tl)"/>
 <rect x="250" y="335" width="260" height="38" class="box-result"/>
-<text x="380" y="358" text-anchor="middle" class="title rtl">۵. گزارش: PASS / FAIL / SKIP</text>
+<text x="380" y="358" text-anchor="middle" class="title">5. Report: PASS / FAIL / SKIP</text>
 </svg>
 <figcaption>شکل ۱۱-۲: چرخه حیات اجرای تست در Go — ابزار <bdi dir="ltr">go test</bdi> ابتدا فایل‌های <bdi dir="ltr">*_test.go</bdi> را کشف، سپس همراه با کد اصلی کامپایل (با instrumentation برای coverage) می‌کند. <bdi dir="ltr">TestMain</bdi> اگر تعریف شده باشد setup سراسری را اجرا می‌کند، سپس هر تابع <bdi dir="ltr">Test*</bdi> به‌ترتیب یا موازی با <bdi dir="ltr">t.Parallel()</bdi> اجرا می‌شود و در پایان گزارش <bdi dir="ltr">PASS/FAIL/SKIP</bdi> چاپ می‌شود. <bdi dir="ltr">t.Cleanup</bdi> برخلاف <bdi dir="ltr">defer</bdi> حتی در شکست یا skip هم منابع را آزاد می‌کند.</figcaption>
 </figure>
