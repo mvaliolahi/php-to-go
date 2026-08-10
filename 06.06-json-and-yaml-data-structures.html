@@ -68,7 +68,7 @@
 <h2 id="ساختارهای-دادهای-json-و-yaml">ساختارهای داده‌ای JSON و YAML</h2><div class="abstract">
 <strong>چکیده:</strong> این بخش serialize و deserialize JSON و YAML در Go را پوشش می‌دهد: struct tags، custom marshaler و handling پیشرفته. تفاوت با json_encode/json_decode در PHP و مدیریت type بررسی می‌شود. الگوهای tagged struct و omitEmpty توضیح داده می‌شود.
 </div>
-<p>در دنیای مدرن نرم‌افزار، تبادل داده بین سرویس‌ها و پیکربندی برنامه‌ها عمدتاً با فرمت‌های JSON و YAML انجام می‌شود. در PHP کار با این فرمت‌ها بسیار ساده است: <code dir="ltr">json_decode()</code> و <code dir="ltr">json_encode()</code> برای JSON و افزونه‌های YAML در دسترس هستند. </p><p>در Go اما رویکرد متفاوتی وجود دارد: تبدیل داده‌ها به و از struct‌ها با استفاده از struct tag ها. </p><p>این رویکرد ابتدا ممکن است پیچیده به نظر برسد اما مزیت‌های بزرگی دارد: نوع‌داری ایستا، عملکرد بالا و امنیت بیشتر.</p>
+<p>در دنیای مدرن نرم‌افزار، تبادل داده بین سرویس‌ها و پیکربندی برنامه‌ها عمدتاً با فرمت‌های JSON و YAML انجام می‌شود. در PHP کار با این فرمت‌ها بسیار ساده است: <code dir="ltr">json_decode()</code> و <code dir="ltr">json_encode()</code> برای JSON و افزونه‌های YAML در دسترس هستند. </p><p>در Go اما رویکرد متفاوتی وجود دارد: تبدیل داده‌ها به و از struct‌ها با استفاده از struct tag‌ها. </p><p>این رویکرد ابتدا ممکن است پیچیده به نظر برسد اما مزیت‌های بزرگی دارد: نوع‌داری ایستا، عملکرد بالا و امنیت بیشتر.</p>
 <h3 id="کار-با-json">6.6.1 کار با JSON</h3>
 <p>ساختار <code>encoding/json</code> برای تبدیل بین JSON و struct بسیار مفید است. برخلاف PHP که <code dir="ltr">json_decode()</code> یک آرایه یا شیء پویا برمی‌گرداند، در Go داده‌ها به یک struct با نوع مشخص نگاشت می‌شوند.</p>
 <div class="quote-box">
@@ -101,7 +101,7 @@ func main() {
 }
 </code></pre>
 </figure>
-<p>نکته مهم: <strong dir="ltr">struct tag</strong> ها (مثل <code>`json:"name"`</code>) مشخص می‌کنند که هر فیلد struct به کدام کلید JSON نگاشت شود. بدون این tag‌ها، نام فیلد باید به‌طور دقیق با کلید JSON (حتی بزرگ/کوچکی حروف) یکسان باشد.</p>
+<p>نکته مهم: <strong dir="ltr">struct tag</strong>‌ها (مثل <code>`json:"name"`</code>) مشخص می‌کنند که هر فیلد struct به کدام کلید JSON نگاشت شود. بدون این tag‌ها، نام فیلد باید به‌طور دقیق با کلید JSON (حتی بزرگ/کوچکی حروف) یکسان باشد.</p>
 <p><strong  id="تبدیل-struct-به-json">تبدیل struct به JSON (Marshal)</strong></p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">user := User{Name: "Ali", Age: 30}
@@ -507,7 +507,7 @@ fmt.Println(string(out))
 </code></pre>
 </figure>
 <div class="tip">
-<strong>نکته‌ی عملی:</strong> در پروژه‌های واقعی، معمولاً فایل پیکربندی YAML را از دیسک می‌خوانید. الگوی رایج این است: فایل پیکربندی پیش‌فرض را با <code>//go:embed</code> جاسازی کنید و فایل پیکربندی کاربر را از دیسک بخوانید و با پیش‌فرض ادغام کنید. به این ترتیب برنامه بدون فایل پیکربندی هم کار می‌کند.
+<strong>نکته‌ی عملی:</strong> در پروژه‌های واقعی، معمولاً فایل پیکربندی YAML را از دیسک می‌خوانید. الگوی رایج این است: فایل پیکربندی پیش‌فرض را با <code>//go:embed</code> جاسازی کنید (توضیحات کامل در <a href="06.05-embedding-files-in-program.html">بخش ۶.۵</a>) و فایل پیکربندی کاربر را از دیسک بخوانید و با پیش‌فرض ادغام کنید. به این ترتیب برنامه بدون فایل پیکربندی هم کار می‌کند.
 </div>
 <h3 id="json-v2-go-1.25">6.6.12 بسته experimental encoding/json/v2 — Go 1.25</h3>
 <p>

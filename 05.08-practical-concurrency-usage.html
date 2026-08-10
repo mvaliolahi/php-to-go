@@ -26,7 +26,7 @@
 <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24"><line x1="3" x2="21" y1="6" y2="6"></line><line x1="3" x2="21" y1="12" y2="12"></line><line x1="3" x2="21" y1="18" y2="18"></line></svg>
 </button>
 <a class="header-logo" href="00.00-front-matter.html"><span class="logo-php">PHP</span> to <span class="logo-go">Go</span></a>
-<span class="header-crumbs">همزمانی › کاربردهای عملی Concurrency</span>
+<span class="header-crumbs">هم‌روندی › کاربردهای عملی Concurrency</span>
 </div>
 <div class="header-right">
 <nav class="header-nav">
@@ -66,7 +66,7 @@
 <div class="content-wrap text">
 <div class="chapter">فصل ۵.۸</div>
 <h2 id="کاربردهای-عملی-concurrency">کاربردهای عملی Concurrency</h2><div class="abstract">
-<strong>چکیده:</strong> این بخش کاربردهای عملی هم‌روندی Go در سناریوهای واقعی را پوشش می‌دهد: HTTP handler، batch processing و background worker. الگوهای انتخاب بین goroutine، pool و channel بررسی می‌شود. هشدار درباره‌ی over-concurrency ارائه می‌شود.
+<strong>چکیده:</strong> این بخش کاربردهای عملی هم‌روندی Go در سناریوهای واقعی را پوشش می‌دهد: HTTP handler، batch processing و background worker. الگوهای انتخاب بین goroutine، pool و channel بررسی می‌شود. همگام‌سازی با <a href="05.05-waitgroup.html">WaitGroup</a> و لغو عملیات با <a href="05.04-context.html">Context</a> در این بخش استفاده می‌شوند؛ توضیحات کامل هرکدام در بخش‌های ۵.۵ و ۵.۴ آمده است. هشدار درباره‌ی over-concurrency ارائه می‌شود.
 </div>
 <h3 id="ارسال-موازی-ایمیل-یا-نوتیفیکیشن">5.8.1 ارسال موازی ایمیل‌ یا نوتیفیکیشن‌</h3>
 <p>در Laravel وقتی می‌خواهید چند ایمیل یا نوتیفیکیشن را بفرستید معمولا این کارها را به Queue می‌فرستید و Workerها به ترتیب آن‌ها را پردازش می‌کنند. این کار باعث می‌شود ارسال ایمیل‌ها async شود و کاربر سریع پاسخ بگیرد.</p><p>اما اگر بخواهید مثلا در یک فرآیند واحد چند ایمیل را همزمان و سریع ارسال کنید باید منتظر تکمیل هر ایمیل بمانید یا پیچیدگی بیشتری به صف اضافه کنید.</p>
@@ -142,7 +142,7 @@ func main() {
 <p>مشابه اما ساده‌تر و مقیاس‌پذیرتر از راهکارهای multi-curl در PHP.
 </p>
 <h3 id="ترکیب-با-context-در-کاربردهای-عملی">5.8.3 ترکیب با Context در کاربردهای عملی</h3>
-<p>در کاربردهای واقعی، هرگز نباید goroutineها را بدون Context راه‌اندازی کرد. در اینجا مثال fetch موازی را با مدیریت timeout و cancellation بازنویسی می‌کنیم:</p>
+<p>در کاربردهای واقعی، هرگز نباید goroutineها را بدون Context راه‌اندازی کرد. <a href="05.04-context.html">Context</a> (که در بخش ۵.۴ به‌تفصیل معرفی شده) مکانیزم استاندارد Go برای لغو، timeout و انتقال مقادیر در درخت فراخوانی هم‌روند است؛ در اینجا مثال fetch موازی را با مدیریت timeout و cancellation بازنویسی می‌کنیم:</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">func fetchURLs(ctx context.Context, urls []string) ([]string, error) {
     var wg sync.WaitGroup

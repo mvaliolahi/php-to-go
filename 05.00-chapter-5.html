@@ -5,7 +5,7 @@
 <script>!function(){try{var t=localStorage.getItem('php2go-theme');if(t==='dark'||(!t&&window.matchMedia('(prefers-color-scheme:dark)').matches)){document.documentElement.setAttribute('data-theme','dark')}}catch(e){}}();</script>
 <meta charset="utf-8"/>
 <meta content="ie=edge" http-equiv="x-ua-compatible"/>
-<title>۵. همزمانی — PHP to Go</title>
+<title>۵. هم‌روندی — PHP to Go</title>
 <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport"/>
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
@@ -26,7 +26,7 @@
 <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24"><line x1="3" x2="21" y1="6" y2="6"></line><line x1="3" x2="21" y1="12" y2="12"></line><line x1="3" x2="21" y1="18" y2="18"></line></svg>
 </button>
 <a class="header-logo" href="00.00-front-matter.html"><span class="logo-php">PHP</span> to <span class="logo-go">Go</span></a>
-<span class="header-crumbs">همزمانی</span>
+<span class="header-crumbs">هم‌روندی</span>
 </div>
 <div class="header-right">
 <nav class="header-nav">
@@ -68,9 +68,9 @@
 <h2 id="فصل-پنجم">فصل پنجم</h2><div class="abstract">
 <strong>چکیده:</strong> این فصل هم‌روندی Go را که یکی از قوی‌ترین ویژگی‌های زبان است، باز می‌کند. از goroutine و channel تا select و context بررسی می‌شود. الگوهای هم‌روندی، race condition و نشتی goroutine با مثال‌های عملی پوشش داده می‌شود.
 </div>
-<p><bdi dir="ltr">Concurrency</bdi> قلب تپنده‌ی زبان Go است. اگر از PHP به Go مهاجرت می‌کنید، این فصل یکی از کلیدی‌ترین تغییرات پارادایمی را که تجربه خواهید کرد پوشش می‌دهد. </p><p>در PHP مدل اجرایی به‌طور ذاتی همزمان نیست — هر درخواست HTTP در یک <bdi dir="ltr">Process</bdi> مستقل اجرا می‌شود و ارتباط بین فرآیندها تنها از طریق واسطه‌هایی مانند دیتابیس، Redis یا صف‌های پیام ممکن است. </p><p>اما Go از نخستین روز طراحی‌اش بر اساس مدل <bdi dir="ltr">CSP</bdi> (<bdi dir="ltr">Communicating Sequential Processes</bdi>) بنا شده است و هم‌روندی را نه به‌عنوان یک افزونه‌ی خارجی، بلکه به‌عنوان بخشی ذاتی و جدایی‌ناپذیر از زبان ارائه می‌دهد.</p>
+<p><bdi dir="ltr">Concurrency</bdi> قلب تپنده‌ی زبان Go است. اگر از PHP به Go مهاجرت می‌کنید، این فصل یکی از کلیدی‌ترین تغییرات پارادایمی را که تجربه خواهید کرد پوشش می‌دهد. </p><p>در PHP مدل اجرایی به‌طور ذاتی هم‌روند نیست — هر درخواست HTTP در یک <bdi dir="ltr">Process</bdi> مستقل اجرا می‌شود و ارتباط بین فرآیندها تنها از طریق واسطه‌هایی مانند دیتابیس، Redis یا صف‌های پیام ممکن است. </p><p>اما Go از نخستین روز طراحی‌اش بر اساس مدل <bdi dir="ltr">CSP</bdi> (<bdi dir="ltr">Communicating Sequential Processes</bdi>) بنا شده است و هم‌روندی را نه به‌عنوان یک افزونه‌ی خارجی، بلکه به‌عنوان بخشی ذاتی و جدایی‌ناپذیر از زبان ارائه می‌دهد.</p>
 <div class="quote-box">
-<p class="quote-text">هم‌روندی هم‌روندی نیست. هم‌روندی درباره پرداختن به چیزهای زیاد در آنِ واحد است. هم‌روندی درباره انجام چیزهای زیاد در آنِ واحد است. این مفاهیم مرتبط اما متمایز هستند. هم‌روندی درباره ساختار است، هم‌روندی درباره اجرا.</p>
+<p class="quote-text">هم‌روندی با هم‌زمانی متفاوت است. هم‌روندی درباره پرداختن به چیزهای زیاد در آنِ واحد است. هم‌زمانی درباره انجام چیزهای زیاد در آنِ واحد است. این مفاهیم مرتبط اما متمایز هستند. هم‌روندی درباره ساختار است، هم‌زمانی درباره اجرا.</p>
 <p class="quote-source">
 <span class="quote-author">Rob Pike</span>
 <span class="quote-role">طراح‌ارشد زبان Go</span>
@@ -82,7 +82,7 @@
 <h3 id="چرا-همزمانی-ابرقوه-go-است">5.0.1 چرا هم‌روندی ابرقوه‌ی Go است</h3>
 <p>برای درک اینکه چرا هم‌روندی در Go آن‌قدر خاص است باید مدل اجرایی PHP را به‌دقت بررسی کنیم. در PHP هر درخواست HTTP به یک فرآیند اختصاصی نیاز دارد — چه از طریق <bdi dir="ltr">PHP-FPM</bdi> و چه از طریق <bdi dir="ltr">Apache mod_php</bdi>. هر فرآیند حدود ۸ مگابایت حافظه مصرف می‌کند و ساخت آن نیازمند <bdi dir="ltr">syscall</bdi> سیستم‌عامل است. </p><p>وقتی ۱۰۰۰ درخواست همزمان داشته باشید، به ۱۰۰۰ فرآیند نیاز دارید که مجموعاً حدود ۸ گیگابایت حافظه مصرف می‌کنند. </p><p>علاوه بر این، <bdi dir="ltr">Context Switch</bdi> بین فرآیندها هزینه‌ی بالایی دارد چون سیستم‌عامل باید وضعیت کامل فرآیند شامل جدول صفحات حافظه، <bdi dir="ltr">TLB</bdi>، و تمام ثبت‌کننده‌ها را ذخیره و بازیابی کند.</p>
 <p>در Go، یک برنامه‌ی وب می‌تواند ده‌ها هزار درخواست HTTP را درون یک فرآیند واحد مدیریت کند. </p><p>هر درخواست در یک <bdi dir="ltr">Goroutine</bdi> سبک‌وزن (با حافظه‌ی اولیه تنها ۲ کیلوبایت) اجرا می‌شود و زمان تعویض زمینه بین <bdi dir="ltr">Goroutine</bdi>‌ها تنها حدود ۱۰۰ تا ۲۰۰ نانوثانیه است — در مقایسه با ۱ تا ۲ میکروثانیه برای تعویض <bdi dir="ltr">Thread</bdi> سیستم‌عامل. </p><p>این تفاوت به‌معنای آن است که Go می‌تواند ده‌ها برابر بیشتر از PHP درخواست همزمان را با همان منابع سخت‌افزاری مدیریت کند.</p>
-<h3 id="مدل-همزمان-php-در-برابر-go">5.0.2 مدل همزمان PHP در برابر Go</h3>
+<h3 id="مدل-همزمان-php-در-برابر-go">5.0.2 مدل هم‌روندی PHP در برابر Go</h3>
 <p>مدل هم‌روندی PHP عموماً مبتنی بر <strong>فرآیندهای مستقل</strong> است. در Laravel برای اجرای غیرهمزمان کارها از <bdi dir="ltr">Queue</bdi> و <bdi dir="ltr">Worker</bdi>‌ها استفاده می‌کنید. این سیستم شامل اجزای متعددی است: یک درایور صف مانند Redis یا دیتابیس، فرآیندهای <bdi dir="ltr">Worker</bdi> که با <bdi dir="ltr">Supervisor</bdi> مدیریت می‌شوند، و سیستم‌های مانیتورینگ مانند <bdi dir="ltr">Horizon</bdi>. </p><p>هر یک از این اجزا نقطه‌ی شکست بالقوه‌ای هستند و مدیریت آن‌ها پیچیدگی عملیاتی قابل‌توجهی ایجاد می‌کند.</p>
 <p>در مقابل، Go همه‌ی این نیازها را درون خود برنامه و بدون وابستگی به ابزارهای خارجی برآورده می‌کند. به‌جای صف Redis، از <bdi dir="ltr">Channel</bdi> داخلی استفاده می‌شود. به‌جای <bdi dir="ltr">Supervisor</bdi>، <bdi dir="ltr">Scheduler</bdi> داخلی <bdi dir="ltr">Runtime</bdi> مدیریت می‌کند. </p><p>به‌جای <bdi dir="ltr">Horizon</bdi>، <bdi dir="ltr">pprof</bdi> و ابزارهای داخلی نظارت می‌کنند. </p><p>این یکپارچگی نه‌تنها پیچیدگی عملیاتی را کاهش می‌دهد، بلکه کنترل دقیق‌تری بر رفتار سیستم فراهم می‌سازد.</p>
 <table class="comparison-table" dir="rtl">
@@ -141,15 +141,15 @@ func main() {
 }
 </code></pre>
 </figure>
-<h3 id="همزمانی-در-برابر-موازی‌سازی">5.0.6 هم‌روندی در برابر هم‌روندی</h3>
-<p>یکی از سردرگمی‌های رایج در شروع یادگیری این مباحث اشتباه گرفتن <bdi dir="ltr">Concurrency</bdi> با <bdi dir="ltr">Parallelism</bdi> است. هرچند در زبان فارسی هر دو به‌نوعی به «اجرای هم‌زمان» ترجمه می‌شوند اما مفهومی کاملاً متفاوت دارند.</p>
+<h3 id="هم‌روندی-در-برابر-هم‌زمانی">5.0.6 هم‌روندی در برابر هم‌زمانی</h3>
+<p>یکی از سردرگمی‌های رایج در شروع یادگیری این مباحث اشتباه گرفتن <bdi dir="ltr">Concurrency</bdi> با <bdi dir="ltr">Parallelism</bdi> است. در زبان فارسی این دو مفهوم گاهی به یک معنا ترجمه می‌شوند اما از نظر فنی کاملاً متمایز هستند و درک تفاوت آن‌ها برای نوشتن کد Go کارآمد ضروری است.</p>
 <p><strong>هم‌روندی یا <bdi dir="ltr">Concurrency</bdi></strong> به توانایی یک سیستم برای مدیریت و پیشبرد چند <bdi dir="ltr">Task</bdi> در یک بازه‌ی زمانی مشترک گفته می‌شود. </p><p>در این حالت ممکن است همه‌ی <bdi dir="ltr">Task</bdi>‌ها واقعاً به طور هم‌زمان روی پردازنده اجرا نشوند، بلکه سیستم با استفاده از <bdi dir="ltr">Scheduling</bdi> و <bdi dir="ltr">Context Switching</bdi> بین آن‌ها جابه‌جا می‌شود و این توهم را ایجاد می‌کند که کارها هم‌زمان پیش می‌روند.</p>
-<p><strong>هم‌روندی یا <bdi dir="ltr">Parallelism</bdi></strong> به اجرای واقعی چند <bdi dir="ltr">Task</bdi> در یک لحظه فیزیکی و بر روی چند واحد پردازشی مستقل گفته می‌شود. در هم‌روندی وظایف واقعاً هم‌زمان اجرا می‌شوند و این امر منجر به افزایش توان محاسباتی می‌گردد.</p>
-<p>به زبان ساده: هم‌روندی بیشتر به <strong>ساختار و سازمان‌دهی</strong> مربوط است — چگونه چند کار را در یک بازه زمانی مدیریت کنیم — و هم‌روندی بیشتر به <strong>اجرای فیزیکی</strong> اشاره دارد — چگونه چند کار را در یک لحظه روی منابع سخت‌افزاری مستقل اجرا کنیم. </p><p>Go هر دو را پشتیبانی می‌کند: هم‌روندی از طریق <bdi dir="ltr">Goroutine</bdi>‌ها و <bdi dir="ltr">Channel</bdi>‌ها، و هم‌روندی از طریق اجرای واقعی روی چند هسته <bdi dir="ltr">CPU</bdi> با کمک <code>runtime.GOMAXPROCS</code>.</p>
+<p><strong>هم‌زمانی یا <bdi dir="ltr">Parallelism</bdi></strong> به اجرای واقعی چند <bdi dir="ltr">Task</bdi> در یک لحظه فیزیکی و بر روی چند واحد پردازشی مستقل گفته می‌شود. در هم‌زمانی وظایف واقعاً هم‌زمان اجرا می‌شوند و این امر منجر به افزایش توان محاسباتی می‌گردد.</p>
+<p>به زبان ساده: هم‌روندی بیشتر به <strong>ساختار و سازمان‌دهی</strong> مربوط است — چگونه چند کار را در یک بازه زمانی مدیریت کنیم — و هم‌زمانی بیشتر به <strong>اجرای فیزیکی</strong> اشاره دارد — چگونه چند کار را در یک لحظه روی منابع سخت‌افزاری مستقل اجرا کنیم. </p><p>Go هر دو را پشتیبانی می‌کند: هم‌روندی از طریق <bdi dir="ltr">Goroutine</bdi>‌ها و <bdi dir="ltr">Channel</bdi>‌ها، و هم‌زمانی از طریق اجرای واقعی روی چند هسته <bdi dir="ltr">CPU</bdi> با کمک <code>runtime.GOMAXPROCS</code>.</p>
 <h3 id="انواع-task-ها">5.0.7 انواع Task‌ها و تأثیر آن بر طراحی</h3>
 <p>برای درک ارزش واقعی هم‌روندی در Go باید تفاوت دو نوع <bdi dir="ltr">Task</bdi> را درک کنید:</p>
 <p><strong><bdi dir="ltr">I/O-bound</bdi>:</strong> کارهایی که زمان اصلی آن‌ها صرف انتظار برای منابع خارجی می‌شود — خواندن از دیتابیس، دریافت داده از <bdi dir="ltr">API</bdi> خارجی، تعامل با فایل یا شبکه. در این نوع <bdi dir="ltr">Task</bdi>‌ها هم‌روندی می‌تواند <bdi dir="ltr">Latency</bdi> را به شدت کاهش دهد. </p><p>به‌جای اجرای ترتیبی ۵ درخواست <bdi dir="ltr">API</bdi> که هر کدام ۱ ثانیه طول می‌کشد (مجموع ۵ ثانیه)، می‌توان ۵ <bdi dir="ltr">Goroutine</bdi> راه‌اندازی کرد که هر سه به‌صورت همزمان منتظر پاسخ باشند و کل عملیات در حدود ۱ ثانیه تمام شود.</p>
-<p><strong><bdi dir="ltr">CPU-bound</bdi>:</strong> وظایفی که بیشتر زمان خود را صرف محاسبه و پردازش در <bdi dir="ltr">CPU</bdi> می‌کنند — رمزنگاری داده‌ها، تولید <bdi dir="ltr">Thumbnail</bdi> از عکس‌ها، فشرده‌سازی فایل‌ها. در این نوع <bdi dir="ltr">Task</bdi>‌ها هم‌روندی مهم‌تر از هم‌روندی است. </p><p>Go از طریق اجرای هم‌زمان واقعی روی چند هسته <bdi dir="ltr">CPU</bdi> با کمک <bdi dir="ltr">Runtime Scheduler</bdi> داخلی می‌تواند این دسته از <bdi dir="ltr">Task</bdi>‌ها را نیز با بهره‌وری بالا انجام دهد.</p>
+<p><strong><bdi dir="ltr">CPU-bound</bdi>:</strong> وظایفی که بیشتر زمان خود را صرف محاسبه و پردازش در <bdi dir="ltr">CPU</bdi> می‌کنند — رمزنگاری داده‌ها، تولید <bdi dir="ltr">Thumbnail</bdi> از عکس‌ها، فشرده‌سازی فایل‌ها. در این نوع <bdi dir="ltr">Task</bdi>‌ها هم‌زمانی مهم‌تر از هم‌روندی است. </p><p>Go از طریق اجرای هم‌زمان واقعی روی چند هسته <bdi dir="ltr">CPU</bdi> با کمک <bdi dir="ltr">Runtime Scheduler</bdi> داخلی می‌تواند این دسته از <bdi dir="ltr">Task</bdi>‌ها را نیز با بهره‌وری بالا انجام دهد.</p>
 <div class="tip"><strong>به‌عنوان یک برنامه‌نویس PHP:</strong> اگر تاکنون برای اجرای کارها از <bdi dir="ltr">Queue</bdi> و <bdi dir="ltr">Redis</bdi> استفاده می‌کردید، از این پس در Go می‌توانید همان کار را با <bdi dir="ltr">Goroutine</bdi> و <bdi dir="ltr">Channel</bdi> انجام دهید. اگر مجبور بودید برای موازی شدن از <bdi dir="ltr">Worker</bdi>‌های <bdi dir="ltr">CLI</bdi> در کنار سرور اصلی استفاده کنید، Go به شما امکان مدیریت همه چیز در یک فرآیند واحد را می‌دهد. و اگر <bdi dir="ltr">API</bdi>‌ها باعث تأخیر در پاسخ‌دهی شما می‌شود، Go می‌تواند این <bdi dir="ltr">API</bdi>‌ها را به‌صورت <bdi dir="ltr">Non-blocking</bdi> و همزمان فراخوانی کند.</div>
 <div class="note"><strong>یادداشت:</strong> پیش از ورود به جزئیات فنی، دو مفهوم را به‌خاطر بسپارید: نخست، هم‌روندی در Go بر پایه‌ی <bdi dir="ltr">CSP</bdi> ساخته شده و ابزار اصلی آن <bdi dir="ltr">Goroutine</bdi> و <bdi dir="ltr">Channel</bdi> است، نه <bdi dir="ltr">Thread</bdi> و قفل. دوم، هر <bdi dir="ltr">Goroutine</bdi> که شروع می‌کنید باید مسیر خروج مشخصی داشته باشد (با <code>context.Context</code> یا بستن کانال)؛ در غیر این صورت نشت <bdi dir="ltr">Goroutine</bdi> رخ می‌دهد که در بخش ۵.۹ به‌تفصیل بررسی شده است.</div>
 <h3 id="آنچه-در-این-فصل-خواهید-آموخت">5.0.8 آنچه در این فصل خواهید آموخت</h3>

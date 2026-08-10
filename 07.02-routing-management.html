@@ -76,7 +76,7 @@
 <tr><td>تعریف مسیر</td><td dir="ltr">Route::<span dir="ltr">get('/about', [Controller::class, 'about'])</span></td><td dir="ltr">mux.HandleFunc("/about", aboutHandler)</td></tr>
 <tr><td>پارامتر دینامیک</td><td dir="ltr">Route::<span dir="ltr">get('/user/{id}')</span></td><td>تجزیه دستی <span dir="ltr">r.URL</span>.Path یا فریم‌ورک</td></tr>
 <tr><td>گروه‌بندی مسیرها</td><td dir="ltr">Route::<span dir="ltr">prefix('admin')</span>-&gt;<span dir="ltr">group(...)</span></td><td>دستی یا با فریم‌ورک (Gin, Chi)</td></tr>
-<tr><td>میدلور در مسیر</td><td dir="ltr">Route::<span dir="ltr">middleware('auth')</span>-&gt;<span dir="ltr">get(...)</span></td><td>توابع زنجیره‌ای <span dir="ltr">http.Handler</span></td></tr>
+<tr><td>Middleware در مسیر</td><td dir="ltr">Route::<span dir="ltr">middleware('auth')</span>-&gt;<span dir="ltr">get(...)</span></td><td>توابع زنجیره‌ای <span dir="ltr">http.Handler</span> (<a href="07.04-middleware-management.html">بخش ۷.۴</a>)</td></tr>
 <tr><td>نام‌گذاری مسیر</td><td dir="ltr">Route::<span dir="ltr">get(...)</span>-&gt;<span dir="ltr">name('profile')</span></td><td>بدون پشتیبانی پیش‌فرض</td></tr>
 <tr><td dir="ltr">RESTful Resource</td><td dir="ltr">Route::<span dir="ltr">resource('posts', PostController)</span></td><td>تعریف دستی هر متد</td></tr>
 </tbody>
@@ -138,7 +138,7 @@ func getUser(w http.ResponseWriter, r *http.Request) {
 </code></pre>
 </figure>
 <p>جلوگیری از بارگذاری اضافی favicon:</p>
-<p>در پروژه‌های واقعی مدیریت امن Routeها اهمیت زیادی دارد. اگرچه Router داخلی Go ساده و سبک است اما برای Routeهای داینامیک و ساختارمند توصیه می‌شود از کتابخانه‌هایی مانند یا استفاده کنید که امکان تعریف پارامتر، میدلور، کنترل دقیق متدها و دیگر امکانات پیشرفته را فراهم می‌کنند.</p><p>با این حال در صورت نیاز به سادگی و کنترل کامل، روش‌های دستی نیز با رعایت نکات امنیتی می‌توانند پاسخگو باشند.</p>
+<p>در پروژه‌های واقعی مدیریت امن Routeها اهمیت زیادی دارد. اگرچه Router داخلی Go ساده و سبک است اما برای Routeهای داینامیک و ساختارمند توصیه می‌شود از کتابخانه‌هایی مانند <a href="https://github.com/go-chi/chi">Chi</a> یا <a href="https://github.com/julienschmidt/httprouter">HttpRouter</a> استفاده کنید که امکان تعریف پارامتر، Middleware، کنترل دقیق متدها و دیگر امکانات پیشرفته را فراهم می‌کنند.</p><p>با این حال در صورت نیاز به سادگی و کنترل کامل، روش‌های دستی نیز با رعایت نکات امنیتی می‌توانند پاسخگو باشند. الگوی کامل Middleware در <a href="07.04-middleware-management.html">بخش ۷.۴</a> بررسی شده است.</p>
 <div class="note"><strong>نکته:</strong> برای پروژه‌های بزرگ‌تر با مسیرهای دینامیک، کتابخانه‌هایی مثل <a href="https://github.com/go-chi/chi">Chi</a> یا <a href="https://github.com/julienschmidt/httprouter">HttpRouter</a> پیشنهاد می‌شوند که از پارامترهای مسیر پشتیبانی می‌کنند.</div>
 <h3 id="مقایسه-کتابخانههای-مسیریابی-شخص-ثالث">7.2.5 مقایسه کتابخانه‌های مسیریابی شخص ثالث</h3>
 <p>اگرچه <bdi dir="ltr">ServeMux</bdi> در <bdi dir="ltr">Go 1.22+</bdi> قابلیت‌های خوبی پیدا کرده، اما برخی پروژه‌ها به امکانات بیشتری نیاز دارند. جدول زیر مقایسه‌ای بین محبوب‌ترین کتابخانه‌های مسیریابی Go ارائه می‌دهد:</p>
@@ -190,7 +190,7 @@ func main() {
 }
 </code></pre>
 </figure>
-<div class="tip"><strong>نکته:</strong> مزیت اصلی <bdi dir="ltr">chi</bdi> نسبت به <bdi dir="ltr">ServeMux</bdi>، گروه‌بندی مسیرها با <code dir="ltr">r.Route()</code> و اعمال <bdi dir="ltr">middleware</bdi> روی هر گروه است. این ویژگی در <bdi dir="ltr">ServeMux</bdi> باید به صورت دستی با بسته‌بندی هندلرها پیاده‌سازی شود. با این حال اگر پروژه شما ساده است، <bdi dir="ltr">ServeMux</bdi> جدید — Go 1.22+ بدون وابستگی خارجی کافی خواهد بود.</div>
+<div class="tip"><strong>نکته:</strong> مزیت اصلی <bdi dir="ltr">chi</bdi> نسبت به <bdi dir="ltr">ServeMux</bdi>، گروه‌بندی مسیرها با <code dir="ltr">r.Route()</code> و اعمال <bdi dir="ltr">Middleware</bdi> روی هر گروه است (الگوی کامل Middleware در <a href="07.04-middleware-management.html">بخش ۷.۴</a>). این ویژگی در <bdi dir="ltr">ServeMux</bdi> باید به صورت دستی با بسته‌بندی هندلرها پیاده‌سازی شود. با این حال اگر پروژه شما ساده است، <bdi dir="ltr">ServeMux</bdi> جدید — Go 1.22+ بدون وابستگی خارجی کافی خواهد بود.</div>
 <h3 id="گروهبندی-مسیرها-و-middleware-اختصاصی">7.2.7 گروه‌بندی مسیرها و Middleware اختصاصی</h3>
 <p>یکی از الگوهای کلیدی در طراحی مسیریابی، گروه‌بندی مسیرها بر اساس ویژگی‌های مشترک است. مثلاً مسیرهای <bdi dir="ltr">API</bdi> نیاز به <bdi dir="ltr">CORS</bdi> دارند، مسیرهای ادمین نیاز به احراز هویت دارند و مسیرهای عمومی فقط هدرهای امنیتی نیاز دارند. با <bdi dir="ltr">ServeMux</bdi> خالص می‌توان این الگو را به صورت زیر پیاده‌سازی کرد:</p>
 <figure class="code go" dir="ltr">

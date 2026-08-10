@@ -402,7 +402,7 @@ http_request_duration_seconds_bucket{le="+Inf"} 100
 http_request_duration_seconds_sum 1.5
 http_request_duration_seconds_count 100</code></pre>
 </figure>
-<div class="tip"><strong>نکته داخلی:</strong> پکیج <code>prometheus/client_golang</code> از <code>sync/atomic</code> برای <bdi dir="ltr">Counter</bdi> استفاده می‌کند (بدون قفل) و از <code>sync.Mutex</code> برای <bdi dir="ltr">Gauge</bdi>. این تفاوت باعث عملکرد بالاتر <bdi dir="ltr">Counter</bdi> در محیط‌های همزمان می‌شود.</div>
+<div class="tip"><strong>نکته داخلی:</strong> پکیج <code>prometheus/client_golang</code> از <code>sync/atomic</code> برای <bdi dir="ltr">Counter</bdi> استفاده می‌کند (بدون قفل) و از <code>sync.Mutex</code> برای <bdi dir="ltr">Gauge</bdi>. این تفاوت باعث عملکرد بالاتر <bdi dir="ltr">Counter</bdi> در محیط‌های هم‌روند می‌شود.</div>
 <div class="comparison"><strong>مقایسه با PHP:</strong> در PHP متریک‌ها باید در حافظه مشترک (<bdi dir="ltr">APCu</bdi>، <bdi dir="ltr">Redis</bdi>) ذخیره شوند. اما در Go چون همه <bdi dir="ltr">goroutine</bdi> ها در یک <bdi dir="ltr">process</bdi> هستند متریک‌ها مستقیماً در حافظه برنامه نگهداری می‌شوند و عملکرد بسیار بالاتری دارند.</div>
 <h3 id="پیکربندی-prometheus">9.2.4 پیکربندی Prometheus</h3>
 <figure class="code yaml" dir="ltr">

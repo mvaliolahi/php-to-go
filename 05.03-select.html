@@ -26,7 +26,7 @@
 <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24"><line x1="3" x2="21" y1="6" y2="6"></line><line x1="3" x2="21" y1="12" y2="12"></line><line x1="3" x2="21" y1="18" y2="18"></line></svg>
 </button>
 <a class="header-logo" href="00.00-front-matter.html"><span class="logo-php">PHP</span> to <span class="logo-go">Go</span></a>
-<span class="header-crumbs">همزمانی › Select</span>
+<span class="header-crumbs">هم‌روندی › Select</span>
 </div>
 <div class="header-right">
 <nav class="header-nav">
@@ -66,9 +66,9 @@
 <div class="content-wrap text">
 <div class="chapter">فصل ۵.۳</div>
 <h2 id="select">Select</h2><div class="abstract">
-<strong>چکیده:</strong> select برای چندگانه‌سازی channel‌ها و مدیریت چند عمل همزمان استفاده می‌شود. این بخش الگوهای select با default، timeout و done را پوشش می‌دهد. کاربردهای عملی برای timeout و cancellation بررسی می‌شود.
+<strong>چکیده:</strong> select برای چندگانه‌سازی channel‌ها و مدیریت چند عمل هم‌روند استفاده می‌شود. این بخش الگوهای select با default، timeout و done را پوشش می‌دهد. کاربردهای عملی برای timeout و cancellation بررسی می‌شود.
 </div>
-<p>دستور select یک ساختار کنترلی ویژه برای مدیریت هم‌زمان چند کانال است. این دستور شبیه حالتی عمل می‌کند که در یک سیستم صف مانند Laravel چندین worker در حال گوش دادن به صف باشند و هر کدام که زودتر آماده شود job را دریافت کند.</p><p>select به شما اجازه می‌دهد عملیات ارسال و دریافت روی کانال‌های مختلف را به صورت هم‌زمان تحت نظر داشته باشید و اولین کانالی که داده‌ای برای پردازش آماده کند انتخاب می‌شود.</p><p>اگر چند کانال به طور هم‌زمان آماده باشند Go یکی از آن‌ها را به صورت تصادفی اجرا می‌کند تا تعادل میان کانال‌ها حفظ شود. در صورتی که هیچ کانالی آماده نباشد اگر بخش default تعریف شده باشد اجرای آن بلاک بلافاصله انجام می‌شود و در غیر این صورت select منتظر می‌ماند تا یکی از کانال‌ها آماده شود.</p><p>این قابلیت امکان پیاده‌سازی الگوهایی مانند multiplexing برای دریافت داده از منابع مختلف، مدیریت زمان‌بندی و اعمال timeout یا cancellation و همچنین طراحی سیستم‌های non locking را فراهم می‌کند.</p>
+<p>دستور select یک ساختار کنترلی ویژه برای مدیریت هم‌روند چند کانال است. این دستور شبیه حالتی عمل می‌کند که در یک سیستم صف مانند Laravel چندین worker در حال گوش دادن به صف باشند و هر کدام که زودتر آماده شود job را دریافت کند.</p><p>select به شما اجازه می‌دهد عملیات ارسال و دریافت روی کانال‌های مختلف را به صورت هم‌زمان تحت نظر داشته باشید و اولین کانالی که داده‌ای برای پردازش آماده کند انتخاب می‌شود.</p><p>اگر چند کانال به طور هم‌زمان آماده باشند Go یکی از آن‌ها را به صورت تصادفی اجرا می‌کند تا تعادل میان کانال‌ها حفظ شود. در صورتی که هیچ کانالی آماده نباشد اگر بخش default تعریف شده باشد اجرای آن بلاک بلافاصله انجام می‌شود و در غیر این صورت select منتظر می‌ماند تا یکی از کانال‌ها آماده شود.</p><p>این قابلیت امکان پیاده‌سازی الگوهایی مانند multiplexing برای دریافت داده از منابع مختلف، مدیریت زمان‌بندی و اعمال timeout یا cancellation و همچنین طراحی سیستم‌های non locking را فراهم می‌کند.</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">select {
     case msg1 := &lt;-ch1:
@@ -81,7 +81,7 @@
 </code></pre>
 </figure>
 <p>وقتی داده‌ای از ch1 دریافت شد اجرا می‌شود، وقتی می‌توان داده‌ای به ch2 ارسال کرد اجرا می‌شود، و اگر هیچ موردی آماده نبود اجرا می‌شود (non-blocking).</p>
-<p><strong>مثال</strong> <strong dir="ltr">Multiplexing هم‌زمان دو کانال با Select</strong></p>
+<p><strong>مثال</strong> <strong dir="ltr">Multiplexing هم‌روند دو کانال با Select</strong></p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">package main
 
@@ -234,7 +234,7 @@ func processWithTimeout(ctx context.Context) {
 </ul>
 </div>
 <h3 id="select-ارزیابی-و-multiplexing-جزئیات">5.3.4 ارزیابی و Multiplexing در Select — جزئیات عملیاتی</h3>
-<p>همان‌طور که در ابتدای این بخش دیدیم، <bdi dir="ltr">select</bdi> تمام <bdi dir="ltr">case</bdi>‌ها را به‌صورت تصادفی بررسی می‌کند و اولین <bdi dir="ltr">case</bdi> آماده را اجرا می‌کند. این رفتار دقیقاً مشابه الگوی <bdi dir="ltr">epoll</bdi> در سیستم‌عامل لینوکس است که در آن چندین <bdi dir="ltr">file descriptor</bdi> به صورت همزمان تحت نظر قرار می‌گیرند و اولین رویداد آماده پردازش می‌شود. </p><p>در نمودار زیر خط زمانی یک <bdi dir="ltr">select</bdi> در حلقه را مشاهده می‌کنید که در هر تکرار <bdi dir="ltr">case</bdi> متفاوتی انتخاب می‌شود.</p>
+<p>پیش‌تر اشاره شد که <bdi dir="ltr">select</bdi> تمام <bdi dir="ltr">case</bdi>‌ها را به‌صورت تصادفی بررسی می‌کند و اولین <bdi dir="ltr">case</bdi> آماده را اجرا می‌کند. این رفتار دقیقاً مشابه الگوی <bdi dir="ltr">epoll</bdi> در سیستم‌عامل لینوکس است که در آن چندین <bdi dir="ltr">file descriptor</bdi> به صورت همزمان تحت نظر قرار می‌گیرند و اولین رویداد آماده پردازش می‌شود. </p><p>در نمودار زیر خط زمانی یک <bdi dir="ltr">select</bdi> در حلقه را مشاهده می‌کنید که در هر تکرار <bdi dir="ltr">case</bdi> متفاوتی انتخاب می‌شود.</p>
 <figure class="diagram" dir="ltr">
 <svg viewBox="0 0 760 380" xmlns="http://www.w3.org/2000/svg">
 <defs>

@@ -159,7 +159,7 @@ while (true) {
 <tbody>
 <tr><td>پکیج/افزونه مورد نیاز</td><td><code dir="ltr">pcntl</code> (افزونه، معمولاً غیرفعال)</td><td><code dir="ltr">os/signal</code> (داخلی)</td></tr>
 <tr><td>روش گوش دادن</td><td dir="ltr"><code dir="ltr">pcntl_signal()</code> + <code dir="ltr">declare(ticks=1)</code></td><td><code><span dir="ltr">signal.Notify()</span></code> + کانال</td></tr>
-<tr><td>مدل مدیریت</td><td>Callback</td><td>کانال (انتخاب همزمان با <code dir="ltr">select</code>)</td></tr>
+<tr><td>مدل مدیریت</td><td>Callback</td><td>کانال (انتخاب هم‌روند با <code dir="ltr">select</code>)</td></tr>
 <tr><td>ترکیب با goroutine</td><td>معادل ندارد (PHP تک‌نخی)</td><td>خوب با <code dir="ltr">select</code> و goroutine ترکیب می‌شود</td></tr>
 <tr><td>سیگنال‌های پشتیبانی‌شده</td><td>محدود به pcntl</td><td>تمام سیگنال‌های Unix</td></tr>
 <tr><td>خاموشی ایمن</td><td>دستی در callback</td><td>الگوی استاندارد با <code dir="ltr">context</code> و <code dir="ltr">select</code></td></tr>
@@ -189,7 +189,7 @@ signal.Reset(os.Interrupt) // Ctrl+C kills the program again
 </code></pre>
 </figure>
 <h3 id="5">6.7.5 الگوی عملیاتی</h3>
-<p>در برنامه‌های واقعی معمولاً چندین سرویس همزمان اجرا دارید: سرور HTTP، consumer پیام، cron worker و غیره. <code dir="ltr">signal.NotifyContext</code> بهترین راه برای هماهنگی خاموشی همه آن‌هاست:</p>
+<p>در برنامه‌های واقعی معمولاً چندین سرویس هم‌روند اجرا دارید: سرور HTTP، consumer پیام، cron worker و غیره. <code dir="ltr">signal.NotifyContext</code> بهترین راه برای هماهنگی خاموشی همه آن‌هاست (برای درک عمیق‌تر Context به <a href="05.04-context.html">بخش ۵.۴</a> مراجعه کنید):</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">func main() {
     // Context cancelled on SIGINT/SIGTERM
@@ -448,7 +448,7 @@ func main() {
 }
 </code></pre>
 </figure>
-<p>مزیت <code dir="ltr">signal.NotifyContext</code> این است که Context لغو‌شده را می‌توان مستقیماً به سایر گوروتین‌ها پاس داد. به این ترتیب تمام بخش‌های برنامه به‌طور همزمان از سیگنال خاموشی مطلع می‌شوند:</p>
+<p>مزیت <code dir="ltr">signal.NotifyContext</code> این است که Context لغو‌شده را می‌توان مستقیماً به سایر گوروتین‌ها پاس داد. به این ترتیب تمام بخش‌های برنامه به‌طور هم‌روند از سیگنال خاموشی مطلع می‌شوند:</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
 defer stop()
@@ -728,7 +728,7 @@ func main() {
 <rect x="500" y="420" width="260" height="35" class="box-php"/>
 <text x="630" y="442" text-anchor="middle" class="title">✗ Forced exit — in-flight data is lost</text>
 </svg>
-<figcaption>شکل ۶-۸: دنباله‌ی خاموشی ایمن از سیگنال تا خروج — مرحله ۱: سیگنال <code>SIGTERM</code>/<code>SIGINT</code> دریافت می‌شود. مرحله ۲: <code>signal.NotifyContext</code> کانال <code>ctx.Done()</code> را می‌بندد و تمام گوروتین‌ها به‌طور هم‌زمان مطلع می‌شوند. مرحله ۳: <code>srv.Shutdown(ctx)</code> Listener را می‌بندد و پذیرش درخواست‌های جدید را متوقف می‌کند. مرحله ۴: گوروتین‌های فعال (Handler، Worker، DB Consumer) کار فعلی را تمام می‌کنند و با <code>defer wg.Done()</code> خارج می‌شوند. در نهایت <code>wg.Wait()</code> با مهلت زمانی (مثلاً ۳۰ ثانیه) منتظر می‌ماند: اگر همه کارها تمام شدند خروج ایمن (سبز) انجام می‌شود، در غیر این صورت خروج اجباری (قرمز) رخ می‌دهد.</figcaption>
+<figcaption>شکل ۶-۸: دنباله‌ی خاموشی ایمن از سیگنال تا خروج — مرحله ۱: سیگنال <code>SIGTERM</code>/<code>SIGINT</code> دریافت می‌شود. مرحله ۲: <code>signal.NotifyContext</code> کانال <code>ctx.Done()</code> را می‌بندد و تمام گوروتین‌ها به‌طور هم‌روند مطلع می‌شوند. مرحله ۳: <code>srv.Shutdown(ctx)</code> Listener را می‌بندد و پذیرش درخواست‌های جدید را متوقف می‌کند. مرحله ۴: گوروتین‌های فعال (Handler، Worker، DB Consumer) کار فعلی را تمام می‌کنند و با <code>defer wg.Done()</code> خارج می‌شوند. در نهایت <code>wg.Wait()</code> با مهلت زمانی (مثلاً ۳۰ ثانیه) منتظر می‌ماند: اگر همه کارها تمام شدند خروج ایمن (سبز) انجام می‌شود، در غیر این صورت خروج اجباری (قرمز) رخ می‌دهد.</figcaption>
 </figure>
 <h3 id="15">6.7.15 سناریوهای عملیاتی</h3>
 <p>مدیریت سیگنال‌ها در محیط‌های عملیاتی بسیار فراتر از یک مثال ساده‌ی <code dir="ltr">Ctrl+C</code> است. در واقعیت، سرورها و سرویس‌های شما باید با شرایط متنوعی مقابله کنند: از خاموشی ایمن سرور <bdi dir="ltr">HTTP</bdi> گرفته تا تخلیه‌ی <code dir="ltr">worker pool</code> و چرخش فایل‌های لاگ. </p><p>هر سناریو در ادامه یک چالش واقعی را توصیف می‌کند و نشان می‌دهد که چگونه الگوهای مدیریت سیگنال <bdi dir="ltr">Go</bdi> به حل آن‌ها کمک می‌کنند. </p><p>این سناریوها معمولاً در محیط‌های <bdi dir="ltr">Docker</bdi> و <bdi dir="ltr">Kubernetes</bdi> با مکانیزم خاموشی خودکار این سیستم‌ها ترکیب می‌شوند و درک آن‌ها برای ساخت سرویس‌های مقاوم ضروری است.</p>

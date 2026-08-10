@@ -26,7 +26,7 @@
 <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24"><line x1="3" x2="21" y1="6" y2="6"></line><line x1="3" x2="21" y1="12" y2="12"></line><line x1="3" x2="21" y1="18" y2="18"></line></svg>
 </button>
 <a class="header-logo" href="00.00-front-matter.html"><span class="logo-php">PHP</span> to <span class="logo-go">Go</span></a>
-<span class="header-crumbs">همزمانی › Goroutine Leak</span>
+<span class="header-crumbs">هم‌روندی › Goroutine Leak</span>
 </div>
 <div class="header-right">
 <nav class="header-nav">
@@ -66,7 +66,7 @@
 <div class="content-wrap text">
 <div class="chapter">فصل ۵.۹</div>
 <h2 id="goroutine-leak">Goroutine Leak</h2><div class="abstract">
-<strong>چکیده:</strong> نشتی goroutine یکی از رایج‌ترین باگ‌های پنهان در برنامه‌های Go است. این بخش علل نشتی، تشخیص با pprof و راه‌حل‌ها را پوشش می‌دهد. الگوی context و done channel برای جلوگیری بررسی می‌شود.
+<strong>چکیده:</strong> نشتی <a href="05.01-goroutine.html">Goroutine</a> یکی از رایج‌ترین باگ‌های پنهان در برنامه‌های Go است. این بخش علل نشتی، تشخیص با pprof و راه‌حل‌ها را پوشش می‌دهد. الگوی <a href="05.04-context.html">Context</a> و done channel برای جلوگیری بررسی می‌شود.
 </div>
 <p>درست مثل memory leak در زبان‌هایی مانند C یا جاوا در Go نیز ممکن است با مشکلی به‌نام <strong dir="ltr">Goroutine Leak</strong> روبه‌رو شوید. Leak به‌معنای باقی ماندن goroutineهایی است که هرگز به پایان نمی‌رسند و همچنان در پس‌زمینه بدون هیچ فایده‌ای اجرا می‌شوند یا در انتظار یک عملیات blocking باقی مانده‌اند.</p>
 <div class="quote-box">
@@ -97,7 +97,7 @@ func main() {
 </code></pre>
 </figure>
 <p>&lt;-ch // منتظر دریافت از channel که هیچ‌گاه داده‌ای نمی‌آید</p>
-<p>چگونه از نشت جلوگیری کنیم؟ پاسخ کوتاه: همیشه <bdi dir="ltr">Goroutine</bdi>‌ها را با <bdi dir="ltr">Context</bdi> یا کانال‌های کنترل مدیریت کنید و <code>runtime.NumGoroutine()</code> را برای نظارت به‌کار ببرید. قوانین طلایی کامل در انتهای این فصل (بخش «خلاصه قوانین طلایی») آمده است.</p>
+<p>چگونه از نشت جلوگیری کنیم؟ پاسخ کوتاه: همیشه <a href="05.01-goroutine.html">Goroutine</a>‌ها را با <a href="05.04-context.html">Context</a> یا کانال‌های کنترل مدیریت کنید و <code>runtime.NumGoroutine()</code> را برای نظارت به‌کار ببرید. قوانین طلایی کامل در انتهای این فصل (بخش «خلاصه قوانین طلایی») آمده است.</p>
 <h3 id="علل-رایج-leak">5.9.1 علل رایج نشت Goroutine</h3>
 <p>نشتی Goroutine معمولاً از یکی از دلایل زیر ناشی می‌شود:</p>
 <p><strong>۱. انتظار روی کانالی که هرگز داده دریافت نمی‌کند:</strong> وقتی Goroutine منتظر دریافت از کانالی است که هیچ‌گاه داده‌ای نمی‌آید یا بسته نمی‌شود.</p>
@@ -113,7 +113,7 @@ func leakPattern1() {
 }
 </code></pre>
 </figure>
-<p><strong>۲. فراموش کردن Context:</strong> وقتی Goroutine‌ای بدون بررسی <code dir="ltr">ctx.Done()</code> در حلقه بی‌نهایت اجرا می‌شود.</p>
+<p><strong>۲. فراموش کردن Context:</strong> وقتی Goroutine‌ای بدون بررسی <code dir="ltr">ctx.Done()</code> در حلقه بی‌نهایت اجرا می‌شود. (برای معرفی کامل <a href="05.04-context.html">Context</a> و مکانیزم لغو آن به بخش ۵.۴ مراجعه کنید.)</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">// Leak pattern: without checking ctx.Done()
 func leakPattern2() {

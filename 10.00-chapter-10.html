@@ -100,13 +100,13 @@
 <tr><td>Execution Tracing</td><td>ندارد</td><td dir="ltr">go tool trace</td></tr>
 </tbody>
 </table>
-<p>همان‌طور که مشاهده می‌کنید، هرچند Xdebug تجربه دیباگ ساده‌تری ارائه می‌دهد، اما ابزارهای Go قابلیت‌هایی دارند که در PHP قابل دستیابی نیست. به‌ویژه <bdi dir="ltr">go tool trace</bdi> برای تحلیل هم‌روندی و <bdi dir="ltr">pprof</bdi> برای پروفایلینگ حافظه، ابزارهایی هستند که در اکوسیستم PHP معادل واقعی ندارند.</p>
+<p>جدول بالا نشان می‌دهد که هرچند Xdebug تجربه‌ی دیباگ ساده‌تری ارائه می‌دهد، اما ابزارهای Go قابلیت‌هایی دارند که در PHP قابل دستیابی نیست. به‌ویژه <bdi dir="ltr">go tool trace</bdi> برای تحلیل هم‌روندی و <bdi dir="ltr">pprof</bdi> برای پروفایلینگ حافظه، ابزارهایی هستند که در اکوسیستم PHP معادل واقعی ندارند.</p>
 <h3 id="نمای-کلی-ابزارهای-دیباگ-go">10.0.3 نمای کلی ابزارهای دیباگ Go</h3>
 <p>Go ابزارهای متنوعی برای دیباگ و ریشه‌یابی در اختیار توسعه‌دهندگان قرار می‌دهد که هر کدام برای نوع خاصی از مشکلات مناسب هستند. شناخت ابزار مناسب برای هر مشکل، کلید دیباگ مؤثر است:</p>
 <p><strong>ابزارهای پروفایلینگ و مانیتورینگ:</strong> ابزار <bdi dir="ltr">pprof</bdi> برای تحلیل مصرف CPU و حافظه، <bdi dir="ltr">go tool trace</bdi> برای تحلیل هم‌روندی و رویدادهای scheduler، و متغیر محیطی <bdi dir="ltr">GODEBUG</bdi> برای کنترل رفتار runtime بدون تغییر کد. این ابزارها بدون توقف برنامه قابل استفاده هستند و برای محیط production ایده‌آل می‌باشند.</p>
 <p><strong>ابزارهای دیباگ تعاملی:</strong> <bdi dir="ltr">Delve</bdi> دیباگر تخصصی Go است که امکان اجرای خط‌به‌خط، تعیین breakpoint، بررسی متغیرها و تحلیل goroutine‌ها را فراهم می‌کند. برخلاف GDB که دیباگر عمومی است، Delve ساختارهای داخلی Go را به‌درستی پشتیبانی می‌کند.</p>
 <p><strong>ابزارهای تحلیل ایستا:</strong> <bdi dir="ltr">go vet</bdi> برای شناسایی مشکلات رایج کد، <bdi dir="ltr">staticcheck</bdi> برای تحلیل عمیق‌تر ایستا، و <bdi dir="ltr">race detector</bdi> (<bdi dir="ltr">go test -race</bdi>) برای شناسایی race condition‌ها. این ابزارها قبل از اجرای کد مشکلات احتمالی را شناسایی می‌کنند.</p>
-<p><strong>ابزارهای تحلیل در زمان کامپایل:</strong> فلگ <bdi dir="ltr">-gcflags="-m"</bdi> برای مشاهده تصمیمات کامپایلر درباره escape analysis و inlining، و <bdi dir="ltr">-race</bdi> برای فعال‌سازی race detector در زمان کامپایل.</p>
+<p><strong>ابزارهای تحلیل در زمان کامپایل:</strong> فلگ <bdi dir="ltr">-gcflags="-m"</bdi> برای مشاهده‌ی تصمیمات کامپایلر درباره‌ی <bdi dir="ltr">Escape Analysis</bdi> (که در <a href="02.05-pointers.html">بخش ۲.۵</a> به‌تفصیل بررسی شده) و <bdi dir="ltr">inlining</bdi>، و <bdi dir="ltr">-race</bdi> برای فعال‌سازی race detector در زمان کامپایل.</p>
 <figure class="diagram" dir="ltr">
 <svg viewBox="0 0 760 400" xmlns="http://www.w3.org/2000/svg">
 <defs>
@@ -154,7 +154,7 @@
 <figcaption>شکل ۱۰-۱: ابزارهای دیباگ Go در چهار دسته جای می‌گیرند. ابزارهای بدون توقف (سبز) برای production، ابزارهای تعاملی (فیروزه‌ای) برای development، تحلیل ایستا (آبی) قبل از اجرا، و فلگ‌های زمان کامپایل (نارنجی) برای فهم تصمیمات کامپایلر. در PHP همه‌ی این کارها در Xdebug ادغام شده‌اند که به‌سبب overhead دائمی در production قابل استفاده نیست.</figcaption>
 </figure>
 <div class="note"><strong>نکته:</strong> ابزارهای دیباگ Go به دو دسته اصلی تقسیم می‌شوند: ابزارهای بدون توقف مانند <bdi dir="ltr">pprof</bdi>، <bdi dir="ltr">go tool trace</bdi> و <bdi dir="ltr">GODEBUG</bdi> که حتی در محیط production هم قابل استفاده‌اند، و ابزارهای تعاملی مانند <bdi dir="ltr">Delve</bdi> که مختص توسعه‌اند. در PHP این تفکیک وجود ندارد چون <bdi dir="ltr">Xdebug</bdi> هر دو کار را در یک extension انجام می‌دهد اما به‌سبب overhead دائمی ۲۰-۴۰٪، عملاً در production قابل استفاده نیست. این تفاوت معماری یکی از اولین چیزهایی است که باید هنگام مهاجرت در ذهن نگه دارید.</div>
-<div class="note"><strong>نکته:</strong> در این فصل فرض بر این است که شما با مفاهیم پایه Go مانند goroutine، channel، interface و error handling آشنا هستید. اگر نیاز به مرور دارید، فصل‌های ۴ (خطایابی) و ۶ (هم‌روندی) را مراجعه کنید.</div>
+<div class="note"><strong>نکته:</strong> در این فصل فرض بر این است که شما با مفاهیم پایه‌ی Go آشنا هستید: <bdi dir="ltr">Goroutine</bdi> (معرفی‌شده در <a href="05.01-goroutine.html">بخش ۵.۱</a>)، <bdi dir="ltr">Channel</bdi> (معرفی‌شده در <a href="05.02-channel.html">بخش ۵.۲</a>)، واسط (معرفی‌شده در <a href="03.06-interface.html">بخش ۳.۶</a>) و مدیریت خطا (معرفی‌شده در <a href="04.01-understanding-errors-in-go.html">بخش ۴.۱</a>). برای مرور این مفاهیم به بخش‌های مرجع مراجعه کنید.</div>
 </div>
 </main>
 </div>

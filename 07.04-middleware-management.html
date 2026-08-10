@@ -86,7 +86,7 @@
 <p>Middleware در Go به قطعات کدی گفته می‌شود که بین دریافت Request و اجرای هندلر اصلی قرار می‌گیرند و قابلیت‌های کمکی را به شکل متمرکز و سازمان‌دهی شده فراهم می‌کنند. استفاده از Middleware ضمن افزایش قابلیت نگهداری کد، امنیت و قابلیت توسعه پروژه را به شکل قابل‌توجهی افزایش می‌دهد.</p>
 <h3 id="تعریف-middleware-در-go">7.4.1 تعریف Middleware در Go</h3>
 <div class="quote-box">
-<p class="quote-text">میدلور HTTP را به‌عنوان توابع ساده بنویسید که یک http.Handler دریافت می‌کنند و یک http.Handler برمی‌گردانند. این الگو بسیار زیباست زیرا به‌طور طبیعی ترکیب‌پذیر است — می‌توانید میدلورها را بدون هیچ جادوی فریمورک زنجیره کنید و سیستم نوعی صحت را تضمین می‌کند.</p>
+<p class="quote-text">Middleware HTTP را به‌عنوان توابع ساده بنویسید که یک http.Handler دریافت می‌کنند و یک http.Handler برمی‌گردانند. این الگو بسیار زیباست زیرا به‌طور طبیعی ترکیب‌پذیر است — می‌توانید Middlewareها را بدون هیچ جادوی فریمورک زنجیره کنید و سیستم نوعی صحت را تضمین می‌کند.</p>
 <p class="quote-source">
 <span class="quote-author">Mat Ryer</span>
 <span class="quote-role">نویسنده و سخنران برجسته Go</span>
@@ -122,7 +122,7 @@
 </p>
 </div>
 <div class="tip">
-<strong>نکته‌ی حرفه‌ای:</strong> میدلور در <bdi dir="ltr">Go</bdi> یک الگوی متعامد است — هر میدلور یک دغدغه عرضی (لاگ‌گیری، احراز هویت، محدود کردن نرخ) را مستقلاً مدیریت می‌کند. ترتیب میدلورها اهمیت دارد: لاگ‌گیری باید همه‌چیز را بپوشاند، احراز هویت درونی‌تر باشد و بازیابی از <bdi dir="ltr">panic</bdi> بیرونی‌ترین باشد.
+<strong>نکته‌ی حرفه‌ای:</strong> Middleware در <bdi dir="ltr">Go</bdi> یک الگوی متعامد است — هر Middleware یک دغدغه عرضی (لاگ‌گیری، احراز هویت، محدود کردن نرخ) را مستقلاً مدیریت می‌کند. ترتیب Middlewareها اهمیت دارد: لاگ‌گیری باید همه‌چیز را بپوشاند، احراز هویت درونی‌تر باشد و بازیابی از <bdi dir="ltr">panic</bdi> (که در <a href="04.03-panic.html">بخش ۴.۳</a> بررسی شده) بیرونی‌ترین باشد.
 </div>
 <h3 id="پیادهسازی-middleware-روی-servemux">7.4.3 پیاده‌سازی Middleware روی ServeMux</h3>
 <p>در برنامه‌های Go معمولاً از http.ServeMux برای مدیریت روت‌ها استفاده می‌شود. چون ServeMux یک http.Handler است می‌توان آن را به عنوان ورودی به Middleware داد و Middleware را روی کل سرور اعمال کرد.</p>
@@ -293,7 +293,7 @@ func requestLogger(next http.Handler) http.Handler {
 <div class="tip">
 <strong>نکته:</strong> بسته‌بندی <code dir="ltr">http.ResponseWriter</code> الگوی رایجی در Go است. با ایجاد ساختاری که <code dir="ltr">http.ResponseWriter</code> را embed می‌کند، می‌توانیم رفتار آن را بدون تغییر رابط اصلی، گسترش دهیم.
 </div>
-<p><strong  id="middleware-بازیابی-از-panic">Middleware بازیابی از Panic</strong> — اگر در هندلری panic رخ دهد، کل سرور از کار نمی‌افتد (Go 1.22+)، اما کاربر خطای زشتی می‌بیند. این middleware خطاهای panic را شکار کرده و پاسخ 500 مناسب برمی‌گرداند:</p>
+<p><strong  id="middleware-بازیابی-از-panic">Middleware بازیابی از Panic</strong> — اگر در هندلری panic رخ دهد، سرور Go به‌صورت خودکار آن را بازیابی می‌کند و کل سرور از کار نمی‌افتد، اما کاربر خطای زشتی می‌بیند. این Middleware خطاهای panic را شکار کرده و پاسخ ۵۰۰ مناسب برمی‌گرداند (panic در <a href="04.03-panic.html">بخش ۴.۳</a> به‌تفصیل بررسی شده است):</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">func recoverPanic(next http.Handler) http.Handler {
     return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -395,7 +395,7 @@ func main() {
 <strong>توصیه:</strong> برای پروژه‌های کوچک و یادگیری، تابع <code>chainMiddleware</code> دستی کافیست. اما در پروژه‌های production با middleware‌های متعدد و مسیرهای مختلف، استفاده از <code>alice</code> خوانایی و قابلیت نگهداری کد را به شکل قابل‌توجهی افزایش می‌دهد.
 </div>
 <h3 id="انتقال-داده-بین-middleware-ها-با-context">7.4.9 انتقال داده بین Middleware‌ها با Context</h3>
-<p>یکی از چالش‌های رایج در middleware، انتقال داده بین لایه‌های مختلف است. مثلاً middleware احراز هویت باید شناسه کاربر را به هندلر اصلی برساند. در Go این کار با <code dir="ltr">r.WithContext()</code> انجام می‌شود:</p>
+<p>یکی از چالش‌های رایج در middleware، انتقال داده بین لایه‌های مختلف است. مثلاً middleware احراز هویت باید شناسه کاربر را به هندلر اصلی برساند. در Go این کار با <code dir="ltr">r.WithContext()</code> انجام می‌شود (برای آشنایی عمیق با Context به <a href="05.04-context.html">بخش ۵.۴</a> مراجعه کنید):</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">import "context"
 
