@@ -77,19 +77,19 @@
 
 {{define "content"}}
 &lt;form action="/contact" method="POST" novalidate&gt;
-    &lt;label for="name"&gt;نام:&lt;/label&gt;
+    &lt;label for="name"&gt;Name:&lt;/label&gt;
     &lt;input type="text" id="name" name="name" value="{{.FormData.Name}}"&gt;
     {{with .FormErrors.name}}&lt;span class="error"&gt;{{.}}&lt;/span&gt;{{end}}
 
-    &lt;label for="email"&gt;ایمیل:&lt;/label&gt;
+    &lt;label for="email"&gt;Email:&lt;/label&gt;
     &lt;input type="email" id="email" name="email" value="{{.FormData.Email}}"&gt;
     {{with .FormErrors.email}}&lt;span class="error"&gt;{{.}}&lt;/span&gt;{{end}}
 
-    &lt;label for="message"&gt;پیام:&lt;/label&gt;
+    &lt;label for="message"&gt;Message:&lt;/label&gt;
     &lt;textarea id="message" name="message"&gt;{{.FormData.Message}}&lt;/textarea&gt;
     {{with .FormErrors.message}}&lt;span class="error"&gt;{{.}}&lt;/span&gt;{{end}}
 
-    &lt;button type="submit"&gt;ارسال&lt;/button&gt;
+    &lt;button type="submit"&gt;Send&lt;/button&gt;
 &lt;/form&gt;
 {{end}}
 </code></pre>
@@ -97,17 +97,17 @@
 <figure class="code php" dir="ltr">
 <pre><code class="language-php">&lt;!-- Laravel Blade --&gt;
 &lt;form action="{{ route('contact.store') }}" method="POST"&gt;
-@csrf &lt;!-- حفاظت CSRF خودکار --&gt;
+@csrf &lt;!-- automatic CSRF protection --&gt;
 
-&lt;label&gt;نام:&lt;/label&gt;
+&lt;label&gt;Name:&lt;/label&gt;
 &lt;input type="text" name="name" value="{{ old('name') }}"&gt;
 @error('name') &lt;span class="error"&gt;{{ $message }}&lt;/span&gt; @enderror
 
-&lt;label&gt;ایمیل:&lt;/label&gt;
+&lt;label&gt;Email:&lt;/label&gt;
 &lt;input type="email" name="email" value="{{ old('email') }}"&gt;
 @error('email') &lt;span class="error"&gt;{{ $message }}&lt;/span&gt; @enderror
 
-&lt;button type="submit"&gt;ارسال&lt;/button&gt;
+&lt;button type="submit"&gt;Send&lt;/button&gt;
 &lt;/form&gt;
 </code></pre>
 </figure>
@@ -128,7 +128,7 @@
         // 1. ParseForm reads all parameters (query + body)
         err := r.ParseForm()
         if err != nil {
-            http.Error(w, "خطا در خواندن فرم", http.StatusBadRequest)
+            http.Error(w, "Error reading form", http.StatusBadRequest)
             return
         }
 
@@ -280,21 +280,21 @@ func contactPostHandler(w http.ResponseWriter, r *http.Request) {
     v := validator.New()
 
     if !validator.NotBlank(form.Name) {
-        v.AddError("name", "نام نمی‌تواند خالی باشد")
+        v.AddError("name", "Name cannot be empty")
     } else if !validator.MaxChars(form.Name, 255) {
-        v.AddError("name", "نام نمی‌تواند بیشتر از ۲۵۵ کاراکتر باشد")
+        v.AddError("name", "Name cannot be longer than 255 characters")
     }
 
     if !validator.NotBlank(form.Email) {
-        v.AddError("email", "ایمیل نمی‌تواند خالی باشد")
+        v.AddError("email", "Email cannot be empty")
     } else if !validator.Matches(form.Email, emailRX) {
-        v.AddError("email", "فرمت ایمیل نامعتبر است")
+        v.AddError("email", "Email format is invalid")
     }
 
     if !validator.NotBlank(form.Message) {
-        v.AddError("message", "پیام نمی‌تواند خالی باشد")
+        v.AddError("message", "Message cannot be empty")
     } else if !validator.MinChars(form.Message, 10) {
-        v.AddError("message", "پیام باید حداقل ۱۰ کاراکتر باشد")
+        v.AddError("message", "Message must be at least 10 characters")
     }
 
     // If there are errors, re-display form with errors
@@ -311,7 +311,7 @@ func contactPostHandler(w http.ResponseWriter, r *http.Request) {
     // ...
 
     // Send flash message and redirect to success page
-    sessionManager.Put(r.Context(), "flash", "پیام شما با موفقیت ارسال شد")
+    sessionManager.Put(r.Context(), "flash", "Your message was sent successfully")
     http.Redirect(w, r, "/contact", http.StatusSeeOther)
 }
 </code></pre>
@@ -330,7 +330,7 @@ type templateData struct {
 </figure>
 <p>در قالب HTML از این داده‌ها استفاده می‌کنیم:</p>
 <figure class="code html" dir="ltr">
-<pre><code class="language-xml"><!-- نمایش خطاها و پر کردن مجدد فیلدها -->
+<pre><code class="language-xml"><!-- Display errors and repopulate fields -->
 {{with .FormErrors.name}}
     &lt;div class="error"&gt;{{.}}&lt;/div&gt;
 {{end}}
@@ -346,7 +346,7 @@ type templateData struct {
 {{end}}
 &lt;textarea name="message"&gt;{{.FormData.Message}}&lt;/textarea&gt;
 
-<!-- نمایش flash message -->
+<!-- Display flash message -->
 {{if .Flash}}
 &lt;div class="alert alert-success"&gt;{{.Flash}}&lt;/div&gt;
 {{end}}
@@ -380,7 +380,7 @@ public function store(ContactRequest $request)
     Contact::create($request-&gt;validated());
 
     return redirect()-&gt;route('contact.index')
-    -&gt;with('success', 'پیام شما ارسال شد');
+    -&gt;with('success', 'Your message was sent');
 }
 </code></pre>
 </figure>
@@ -409,7 +409,7 @@ func contactPostHandler(w http.ResponseWriter, r *http.Request) {
     // _, err := db.Exec("INSERT INTO contacts ...", form.Name, form.Email, form.Message)
 
     // Send flash message and redirect
-    sessionManager.Put(r.Context(), "flash", "پیام شما ارسال شد")
+    sessionManager.Put(r.Context(), "flash", "Your message was sent")
     http.Redirect(w, r, "/contact", http.StatusSeeOther)
 }
 </code></pre>
@@ -511,20 +511,20 @@ func contactHandler(w http.ResponseWriter, r *http.Request) {
 </code></pre>
 </figure>
 <figure class="code html" dir="ltr">
-<pre><code class="language-xml"><!-- در قالب HTML -->
+<pre><code class="language-xml"><!-- In HTML template -->
 &lt;form action="/contact" method="POST"&gt;
-    {{.CSRFField}} &lt;!-- فیلد مخفی csrf_token --&gt;
+    {{.CSRFField}} &lt;!-- hidden csrf_token field --&gt;
     &lt;input type="text" name="name"&gt;
-    &lt;button type="submit"&gt;ارسال&lt;/button&gt;
+    &lt;button type="submit"&gt;Send&lt;/button&gt;
 &lt;/form&gt;
 </code></pre>
 </figure>
 <figure class="code php" dir="ltr">
 <pre><code class="language-php">// Laravel — automatic CSRF protection
 &lt;form action="{{ route('contact.store') }}" method="POST"&gt;
-@csrf &lt;!-- معادل {{.CSRFField}} در Go --&gt;
+@csrf &lt;!-- equivalent to {{.CSRFField}} in Go --&gt;
 &lt;input type="text" name="name"&gt;
-&lt;button type="submit"&gt;ارسال&lt;/button&gt;
+&lt;button type="submit"&gt;Send&lt;/button&gt;
 &lt;/form&gt;
 </code></pre>
 </figure>
@@ -533,7 +533,7 @@ func contactHandler(w http.ResponseWriter, r *http.Request) {
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">func uploadHandler(w http.ResponseWriter, r *http.Request) {
     if r.Method != http.MethodPost {
-        http.Error(w, "متد مجاز نیست", http.StatusMethodNotAllowed)
+        http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
         return
     }
 
@@ -543,7 +543,7 @@ func contactHandler(w http.ResponseWriter, r *http.Request) {
     // Read uploaded file
     file, header, err := r.FormFile("photo")
     if err != nil {
-        http.Error(w, "خطا در دریافت فایل", http.StatusBadRequest)
+        http.Error(w, "Error receiving file", http.StatusBadRequest)
         return
     }
     defer file.Close()
@@ -552,7 +552,7 @@ func contactHandler(w http.ResponseWriter, r *http.Request) {
     buffer := make([]byte, 512)
     _, err = file.Read(buffer)
     if err != nil {
-        http.Error(w, "خطا در خواندن فایل", http.StatusInternalServerError)
+        http.Error(w, "Error reading file", http.StatusInternalServerError)
         return
     }
     contentType := http.DetectContentType(buffer)
@@ -564,7 +564,7 @@ func contactHandler(w http.ResponseWriter, r *http.Request) {
         "image/gif": true,
     }
     if !allowed[contentType] {
-        http.Error(w, "فقط فایل‌های تصویری مجاز هستند", http.StatusBadRequest)
+        http.Error(w, "Only image files are allowed", http.StatusBadRequest)
         return
     }
 
@@ -574,13 +574,13 @@ func contactHandler(w http.ResponseWriter, r *http.Request) {
     // Save file
     dst, err := os.Create(filepath.Join("./uploads", header.Filename))
     if err != nil {
-        http.Error(w, "خطا در ذخیره فایل", http.StatusInternalServerError)
+        http.Error(w, "Error saving file", http.StatusInternalServerError)
         return
     }
     defer dst.Close()
     io.Copy(dst, file)
 
-    fmt.Fprintf(w, "فایل %s با موفقیت آپلود شد", header.Filename)
+    fmt.Fprintf(w, "File %s uploaded successfully", header.Filename)
 }
 </code></pre>
 </figure>

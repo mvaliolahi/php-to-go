@@ -96,9 +96,9 @@
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">import "log"
 func main() {
-    log.Println("برنامه شروع شد")
-    log.Println("این فقط یک پیام اطلاع‌رسانی است")
-    log.Fatal("خطای بحرانی!") // os.Exit(1)
+    log.Println("Program started")
+    log.Println("This is just an informational message")
+    log.Fatal("Critical error!") // os.Exit(1)
 }</code></pre>
 </figure>
 <p>توجه: <bdi dir="ltr">log.Fatal</bdi> بعد از چاپ پیام برنامه را متوقف می‌کند.</p>
@@ -111,11 +111,11 @@ func main() {
 func main() {
     file, err := os.Create("app.log")
     if err != nil {
-        log.Fatalf("خطا در ایجاد فایل لاگ: %v", err)
+        log.Fatalf("Error creating log file: %v", err)
     }
     defer file.Close()
     log.SetOutput(file)
-    log.Println("این پیام در فایل ذخیره می‌شود.")
+    log.Println("This message will be saved to the file.")
 }</code></pre>
 </figure>
 <h3 id="format">9.1.3 تنظیم فرمت لاگ</h3>
@@ -147,7 +147,7 @@ func main() {
 
 func main() {
     // Default logger with Text format
-    slog.Info("سرور شروع شد", "port", 8080, "env", "production")
+    slog.Info("Server started", "port", 8080, "env", "production")
 
     // JSON logger — suitable for production
     logger := slog.New(slog.NewJSONHandler(os.Stdout, &amp;slog.HandlerOptions{
@@ -155,7 +155,7 @@ func main() {
     }))
     slog.SetDefault(logger)
 
-    slog.Info("درخواست دریافت شد",
+    slog.Info("Request received",
     slog.String("method", "GET"),
     slog.String("path", "/api/users"),
     slog.Int("status", 200),
@@ -187,7 +187,7 @@ func withTraceLogger(ctx context.Context) *slog.Logger {
 
 // Usage in handler
 logger := withTraceLogger(r.Context())
-logger.Info("پردازش درخواست", "user_id", userID)</code></pre>
+logger.Info("Processing request", "user_id", userID)</code></pre>
 </figure>
 <h3 id="سطوح-لاگ-و-فیلترینگ">9.1.6 سطوح لاگ و فیلترینگ</h3>
 <p>سطوح لاگ ابزار قدرتمندی برای کنترل حجم خروجی هستند. در محیط <bdi dir="ltr">development</bdi> سطح <bdi dir="ltr">Debug</bdi> فعال است اما در <bdi dir="ltr">production</bdi> فقط <bdi dir="ltr">Info</bdi> و بالاتر:</p>
@@ -500,21 +500,21 @@ func setupRotatingLogger() *slog.Logger {
 <pre><code class="language-go">import "log/slog"
 
 func setupLogging() *slog.Logger {
-    // Handler برای فایل
+    // Handler for file
     fileHandler, _ := slog.NewJSONHandler(
     os.OpenFile("app.json", os.O_APPEND|os.O_CREATE, 0644),
     &amp;slog.HandlerOptions{Level: slog.LevelInfo},
 )
 
-    // Handler برای stdout
+    // Handler for stdout
     textHandler := slog.NewTextHandler(os.Stdout,
     &amp;slog.HandlerOptions{Level: slog.LevelDebug},
 )
 
-    // Handler برای سیستم نظارت (مثل Datadog)
+    // Handler for monitoring system (e.g., Datadog)
     monitoringHandler := NewDatadogHandler()
 
-    // ترکیب همه handler‌ها
+    // Combine all handlers
     multiHandler := slog.NewMultiHandler(
     fileHandler,
     textHandler,

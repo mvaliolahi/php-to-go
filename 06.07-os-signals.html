@@ -83,9 +83,9 @@
 func main() {
     sigs := make(chan os.Signal, 1)
     signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
-    fmt.Println("برنامه در حال اجراست... (Ctrl+C برای خروج)")
+    fmt.Println("Program is running... (Ctrl+C to exit)")
     &lt;-sigs
-    fmt.Println("سیگنال دریافت شد. خروج ایمن...")
+    fmt.Println("Signal received. Graceful exit...")
 }
 </code></pre>
 </figure>
@@ -107,9 +107,9 @@ func main() {
     done := make(chan bool, 1)
     go func() {
         // Main program work goes here
-        fmt.Println("برنامه در حال اجراست...")
+        fmt.Println("Program is running...")
         &lt;-sigs
-        fmt.Println("در حال پاکسازی...")
+        fmt.Println("Cleaning up...")
 
         // Close connections, save data, etc.
         cleanup()
@@ -117,14 +117,14 @@ func main() {
         done &lt;- true
     }()
 
-    fmt.Println("Ctrl+C برای خروج")
+    fmt.Println("Ctrl+C to exit")
     &lt;-done
-    fmt.Println("خروج ایمن انجام شد.")
+    fmt.Println("Graceful exit completed.")
 }
 
 func cleanup() {
-    fmt.Println("بستن اتصالات دیتابیس...")
-    fmt.Println("ذخیره وضعیت...")
+    fmt.Println("Closing database connections...")
+    fmt.Println("Saving state...")
 }
 </code></pre>
 </figure>
@@ -135,16 +135,16 @@ func cleanup() {
 declare(ticks=1);
 
 pcntl_signal(SIGINT, function($signo) {
-    echo "سیگنال دریافت شد. پاکسازی...\n";
+    echo "Signal received. Cleaning up...\n";
     cleanup();
     exit(0);
 });
 
 function cleanup() {
-    echo "بستن اتصالات...\n";
+    echo "Closing connections...\n";
 }
 
-echo "برنامه در حال اجراست... (Ctrl+C برای خروج)\n";
+echo "Program is running... (Ctrl+C to exit)\n";
 
 while (true) {
     // Main program loop
@@ -220,7 +220,7 @@ signal.Reset(os.Interrupt) // Ctrl+C kills the program again
 
     // Wait for shutdown signal
     &lt;-ctx.Done()
-    log.Println("سیگنال خاموشی دریافت شد")
+    log.Println("Shutdown signal received")
 
     // 30 second deadline for jobs to finish
     shutdownCtx, cancel := context.WithTimeout(
@@ -236,9 +236,9 @@ signal.Reset(os.Interrupt) // Ctrl+C kills the program again
 
     select {
         case &lt;-done:
-        log.Println("خاموشی ایمن انجام شد")
+        log.Println("Graceful shutdown completed")
         case &lt;-shutdownCtx.Done():
-        log.Println("مهلت زمانی تمام شد. خروج اجباری.")
+        log.Println("Deadline exceeded. Forced exit.")
     }
 }
 </code></pre>
@@ -289,23 +289,23 @@ func main() {
 
     http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
         time.Sleep(3 * time.Second) // simulate time-consuming work
-        w.Write([]byte("پاسخ سرور"))
+        w.Write([]byte("Server response"))
     })
 
     // 2. Run server in separate goroutine
     go func() {
         if err := srv.ListenAndServe(); err != nil &amp;&amp; err != http.ErrServerClosed {
-            log.Fatalf("خطای سرور: %v", err)
+            log.Fatalf("Server error: %v", err)
         }
     }()
 
-    log.Println("سرور روی پورت 8080 شروع شد")
+    log.Println("Server started on port 8080")
 
     // 3. Wait for shutdown signal
     quit := make(chan os.Signal, 1)
     signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
     sig := &lt;-quit
-    log.Printf("سیگنال %v دریافت شد. شروع خاموشی ایمن...", sig)
+    log.Printf("Signal %v received. Starting graceful shutdown...", sig)
 
     // 4. Set deadline for active requests to finish
     ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
@@ -313,9 +313,9 @@ func main() {
 
     // 5. Graceful server shutdown
     if err := srv.Shutdown(ctx); err != nil {
-        log.Fatalf("خاموشی اجباری سرور: %v", err)
+        log.Fatalf("Forced server shutdown: %v", err)
     }
-    log.Println("سرور با موفقیت خاموش شد")
+    log.Println("Server shut down successfully")
 }
 </code></pre>
 </figure>
@@ -354,13 +354,13 @@ func main() {
         wg.Add(1)
         defer wg.Done()
         time.Sleep(2 * time.Second) // simulate time-consuming work
-        w.Write([]byte("پاسخ سرور"))
+        w.Write([]byte("Server response"))
     })
 
     // Run server
     go func() {
         if err := srv.ListenAndServe(); err != nil &amp;&amp; err != http.ErrServerClosed {
-            log.Fatalf("خطای سرور: %v", err)
+            log.Fatalf("Server error: %v", err)
         }
     }()
 
@@ -376,25 +376,25 @@ func main() {
     signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
     &lt;-quit
 
-    log.Println("شروع خاموشی ایمن...")
+    log.Println("Starting graceful shutdown...")
 
     // Server shutdown with 30 second deadline
     ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
     defer cancel()
 
     if err := srv.Shutdown(ctx); err != nil {
-        log.Printf("خاموشی اجباری سرور: %v", err)
+        log.Printf("Forced server shutdown: %v", err)
     }
 
     // Wait for all active jobs to finish
     wg.Wait()
-    log.Println("تمام کارها انجام شد. خروج.")
+    log.Println("All tasks finished. Exiting.")
 }
 
 func backgroundWorker() {
     // Simulate background work
     for i := 0; i &lt; 5; i++ {
-        log.Printf("کار پس‌زمینه %d انجام شد", i)
+        log.Printf("Background job %d done", i)
         time.Sleep(1 * time.Second)
     }
 }
@@ -426,25 +426,25 @@ func main() {
 
     go func() {
         if err := srv.ListenAndServe(); err != nil &amp;&amp; err != http.ErrServerClosed {
-            log.Fatalf("خطای سرور: %v", err)
+            log.Fatalf("Server error: %v", err)
         }
     }()
 
-    log.Println("سرور شروع شد. Ctrl+C برای خروج.")
+    log.Println("Server started. Ctrl+C to exit.")
 
     // Wait for Context cancellation (signal received)
     &lt;-ctx.Done()
 
-    log.Println("سیگنال خاموشی دریافت شد")
+    log.Println("Shutdown signal received")
 
     // 30 second deadline for active requests to finish
     shutdownCtx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
     defer cancel()
 
     if err := srv.Shutdown(shutdownCtx); err != nil {
-        log.Fatalf("خاموشی اجباری: %v", err)
+        log.Fatalf("Forced shutdown: %v", err)
     }
-    log.Println("خاموشی ایمن انجام شد")
+    log.Println("Graceful shutdown completed")
 }
 </code></pre>
 </figure>
@@ -505,7 +505,7 @@ func loadConfig(path string) (*Config, error) {
 func reloadConfig(path string) {
     newCfg, err := loadConfig(path)
     if err != nil {
-        log.Printf("خطا در بارگذاری پیکربندی: %v", err)
+        log.Printf("Error loading config: %v", err)
         return // keep previous configuration
     }
 
@@ -513,7 +513,7 @@ func reloadConfig(path string) {
     *config = *newCfg
     config.mu.Unlock()
 
-    log.Println("پیکربندی با موفقیت بارگذاری مجدد شد")
+    log.Println("Config reloaded successfully")
 }
 
 func main() {
@@ -534,10 +534,10 @@ func main() {
         sig := &lt;-sigs
         switch sig {
             case syscall.SIGHUP:
-            log.Println("SIGHUP دریافت شد — بارگذاری مجدد پیکربندی")
+            log.Println("SIGHUP received — reloading config")
             reloadConfig("config.yaml")
             case syscall.SIGINT, syscall.SIGTERM:
-            log.Printf("%v دریافت شد — شروع خاموشی ایمن\n", sig)
+            log.Printf("%v received — starting graceful shutdown\n", sig)
             gracefulShutdown()
             return
         }
@@ -556,7 +556,7 @@ func worker(ctx context.Context, id int) {
     for {
         select {
             case &lt;-ctx.Done():
-            log.Printf("Worker %d: سیگنال توقف دریافت شد، پاکسازی...\n", id)
+            log.Printf("Worker %d: stop signal received, cleaning up...\n", id)
             // Cleanup this goroutine's resources
             return
             default:
@@ -571,7 +571,7 @@ func dbConsumer(ctx context.Context, db *sql.DB) {
     for {
         select {
             case &lt;-ctx.Done():
-            log.Println("DB Consumer: در حال اتمام تراکنش فعال...")
+            log.Println("DB Consumer: finishing active transaction...")
             // Complete active transaction
             tx.Rollback()
             db.Close()
@@ -607,13 +607,13 @@ func main() {
     srv := &amp;http.Server{Addr: ":8080"}
     go func() {
         if err := srv.ListenAndServe(); err != nil &amp;&amp; err != http.ErrServerClosed {
-            log.Fatalf("خطای سرور: %v", err)
+            log.Fatalf("Server error: %v", err)
         }
     }()
 
     // 4. Wait for shutdown signal
     &lt;-ctx.Done()
-    log.Println("سیگنال خاموشی دریافت شد")
+    log.Println("Shutdown signal received")
 
     // 5. Server shutdown with timeout
     shutdownCtx, cancel := context.WithTimeout(context.Background(),
@@ -621,7 +621,7 @@ func main() {
     defer cancel()
 
     if err := srv.Shutdown(shutdownCtx); err != nil {
-        log.Printf("خاموشی اجباری: %v", err)
+        log.Printf("Forced shutdown: %v", err)
     }
 
     // 6. Wait for all goroutines to finish
@@ -633,9 +633,9 @@ func main() {
 
     select {
         case &lt;-done:
-        log.Println("خاموشی ایمن کامل شد")
+        log.Println("Graceful shutdown completed")
         case &lt;-shutdownCtx.Done():
-        log.Println("مهلت زمانی تمام شد. برخی گوروتین‌ها متوقف نشدند.")
+        log.Println("Deadline exceeded. Some goroutines did not stop.")
     }
 }
 </code></pre>

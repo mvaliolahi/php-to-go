@@ -316,7 +316,7 @@ use (
  به‌صورت import خالی به فایلی به نام tools.go) را منسوخ می‌کند:
  </p>
 <figure class="code go" dir="ltr">
-<pre><code class="language-go">// go.mod با دستورالعمل tool
+<pre><code class="language-go">// go.mod with tool directive
 module myproject
 
 go 1.24
@@ -328,16 +328,16 @@ github.com/swaggo/swag/cmd/swag
 )</code></pre>
 </figure>
 <figure class="code bash" dir="ltr">
-<pre><code class="language-bash"># اضافه کردن ابزار جدید
+<pre><code class="language-bash"># Add a new tool
 go get -tool github.com/golangci/golangci-lint/cmd/golangci-lint
 
-# اجرای ابزار
+# Run a tool
 go tool golangci-lint
 
-# ارتقای تمام ابزارها
+# Upgrade all tools
 go get tool
 
-# نصب تمام ابزارها در GOBIN
+# Install all tools in GOBIN
 go install tool</code></pre>
 </figure>
 <p>
@@ -352,13 +352,13 @@ go install tool</code></pre>
  که برای احراز هویت درخواست‌های HTTP استفاده می‌شوند:
  </p>
 <figure class="code bash" dir="ltr">
-<pre><code class="language-bash"># استفاده از فایل netrc برای احراز هویت
+<pre><code class="language-bash"># Use netrc file for authentication
 export GOAUTH="off://$HOME/.netrc"
 
-# استفاده از دستور اجرایی برای دریافت توکن
+# Use executable command to fetch token
 export GOAUTH="exec:/usr/local/bin/git-credential"
 
-# ترکیب چند روش احراز هویت
+# Combine multiple authentication methods
 export GOAUTH="off://$HOME/.netrc,exec:/usr/local/bin/git-credential"</code></pre>
 </figure>
 <h3 id="ignore-directive-go-1.25">3.2.16 دستورالعمل ignore در go.mod — Go 1.25</h3>

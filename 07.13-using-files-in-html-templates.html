@@ -77,10 +77,10 @@
 <h3 id="نسخه‌گذاری-فایلهای-استاتیک-cache-busting">7.13.1 Cache Busting</h3>
 <p>وقتی از هدرهای کش قوی استفاده می‌کنید مرورگر فایل‌ها را برای مدت طولانی ذخیره می‌کند. مشکل اینجاست که اگر فایل CSS یا JS را تغییر دهید کاربران ممکن است نسخه قدیمی را ببینند. راه‌حل استاندارد افزودن نسخه یا هش به نام فایل است:</p>
 <figure class="code html" dir="ltr">
-<pre><code class="language-xml"><!-- روش ۱: پارامتر query -->
+<pre><code class="language-xml"><!-- Method 1: query parameter -->
 &lt;link rel="stylesheet" href="/static/css/style.css?v=1.2.3"&gt;
 
-<!-- روش ۲: هش محتوا (پیشنهادی) -->
+<!-- Method 2: content hash (recommended) -->
 &lt;link rel="stylesheet" href="/static/css/style.a1b2c3.css"&gt;
 </code></pre>
 </figure>
@@ -128,7 +128,7 @@ var funcs = template.FuncMap{
 </code></pre>
 </figure>
 <figure class="code html" dir="ltr">
-<pre><code class="language-xml"><!-- استفاده در قالب -->
+<pre><code class="language-xml"><!-- Usage in template -->
 &lt;style&gt;{{ inlineCSS "critical.css" }}&lt;/style&gt;
 &lt;script&gt;{{ inlineJS "app.js" }}&lt;/script&gt;
 </code></pre>
@@ -144,14 +144,14 @@ var funcs = template.FuncMap{
     &lt;h3&gt;{{ .Name }}&lt;/h3&gt;
     &lt;p class="price"&gt;{{ .Price | formatPrice }}&lt;/p&gt;
     {{ if .InStock }}
-    &lt;button&gt;افزودن به سبد&lt;/button&gt;
+    &lt;button&gt;Add to cart&lt;/button&gt;
     {{ else }}
-    &lt;span class="out-of-stock"&gt;ناموجود&lt;/span&gt;
+    &lt;span class="out-of-stock"&gt;Out of stock&lt;/span&gt;
     {{ end }}
 &lt;/div&gt;
 {{ end }}
 
-<!-- استفاده در صفحه -->
+<!-- Usage in page -->
 {{ range .Products }}
     {{ template "partial.product-card" . }}
 {{ end }}

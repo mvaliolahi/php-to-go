@@ -91,16 +91,16 @@ import (
 )
 func worker(id int, wg *sync.WaitGroup) {
     defer wg.Done() // decrement counter when work is done
-    fmt.Printf("worker %d شروع به کار کرد\n", id)
+    fmt.Printf("worker %d started\n", id)
     time.Sleep(time.Second) // simulate time-consuming work
-    fmt.Printf("worker %d کارش تمام شد\n", id)
+    fmt.Printf("worker %d finished\n", id)
 }
 func main() {
     var wg sync.WaitGroup
     for i := 1; i &lt;= 3; i++ {
         go worker(i, &amp;wg)
     }
-    fmt.Println("همه کارها انجام شدند")
+    fmt.Println("All tasks done")
 }
 </code></pre>
 </figure>
@@ -152,7 +152,7 @@ go func() {
     close(results)
 }()
 for r := range results {
-    fmt.Println("نتیجه:", r)
+    fmt.Println("Result:", r)
 }
 </code></pre>
 </figure>
@@ -314,7 +314,7 @@ go func() {
 <li><strong>انتظار برای <bdi dir="ltr">goroutine</bdi>های راه‌اندازی:</strong> وقتی سرویسی دارید که باید چندین <bdi dir="ltr">goroutine</bdi> زمینه‌ای (مانند <bdi dir="ltr">health check</bdi>، <bdi dir="ltr">metrics collector</bdi>، <bdi dir="ltr">cache warmer</bdi>) را قبل از شروع به کار اصلی اجرا کند، <bdi dir="ltr">WaitGroup</bdi> تضمین می‌کند که همه آماده شوند و سپس سرویس ترافیک را قبول کند.</li>
 </ul>
 <figure class="code go" dir="ltr">
-<pre><code class="language-go">// انتظار برای چند درخواست HTTP همزمان
+<pre><code class="language-go">// Wait for multiple concurrent HTTP requests
 func fetchAll(urls []string) ([]string, error) {
     var wg sync.WaitGroup
     results := make([]string, len(urls))

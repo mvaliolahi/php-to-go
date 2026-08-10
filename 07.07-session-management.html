@@ -107,7 +107,7 @@ func generateSessionID() (string, error) {
 func loginHandler(w http.ResponseWriter, r *http.Request) {
     sessionID, err := generateSessionID()
     if err != nil {
-        http.Error(w, "خطا در ایجاد سشن", http.StatusInternalServerError)
+        http.Error(w, "Error creating session", http.StatusInternalServerError)
         return
     }
     mu.Lock()
@@ -122,22 +122,22 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
         MaxAge: 3600,
     }
     http.SetCookie(w, cookie)
-    fmt.Fprintln(w, "وارد شدید")
+    fmt.Fprintln(w, "Logged in")
 }
 func profileHandler(w http.ResponseWriter, r *http.Request) {
     cookie, err := r.Cookie("session_id")
     if err != nil {
-        http.Error(w, "لطفا وارد شوید", http.StatusUnauthorized)
+        http.Error(w, "Please log in", http.StatusUnauthorized)
         return
     }
     mu.Lock()
     user, ok := sessions[cookie.Value]
     mu.Unlock()
     if !ok {
-        http.Error(w, "سشن نامعتبر است", http.StatusUnauthorized)
+        http.Error(w, "Session is invalid", http.StatusUnauthorized)
         return
     }
-    fmt.Fprintf(w, "خوش آمدید، %s", user)
+    fmt.Fprintf(w, "Welcome, %s", user)
 }
 func main() {
     mux := http.NewServeMux()
@@ -147,7 +147,7 @@ func main() {
         Addr: ":8080",
         Handler: mux,
     }
-    log.Println("سرور اجرا شد")
+    log.Println("Server started")
     log.Fatal(server.ListenAndServe())
 }
 </code></pre>
@@ -169,7 +169,7 @@ func main() {
     // Generate new session ID
     sessionID, err := generateSessionID()
     if err != nil {
-        http.Error(w, "خطا در ایجاد سشن", http.StatusInternalServerError)
+        http.Error(w, "Error creating session", http.StatusInternalServerError)
         return
     }
 
@@ -281,11 +281,11 @@ func profileHandler(w http.ResponseWriter, r *http.Request) {
     // Read info from session
     userID := sessionManager.GetString(r.Context(), "userID")
     if userID == "" {
-        http.Error(w, "لطفاً وارد شوید", http.StatusUnauthorized)
+        http.Error(w, "Please log in", http.StatusUnauthorized)
         return
     }
     role := sessionManager.GetString(r.Context(), "role")
-    fmt.Fprintf(w, "خوش آمدید %s — نقش: %s", userID, role)
+    fmt.Fprintf(w, "Welcome %s — role: %s", userID, role)
 }
 
 func logoutHandler(w http.ResponseWriter, r *http.Request) {
@@ -354,7 +354,7 @@ func createHandler(w http.ResponseWriter, r *http.Request) {
     // ... registration operation ...
 
     // Save flash message to display in next request
-    sessionManager.Put(r.Context(), "flash", "مقاله با موفقیت ایجاد شد")
+    sessionManager.Put(r.Context(), "flash", "Article created successfully")
 
     http.Redirect(w, r, "/articles", http.StatusSeeOther)
 }
@@ -374,7 +374,7 @@ func listHandler(w http.ResponseWriter, r *http.Request) {
 </code></pre>
 </figure>
 <figure class="code html" dir="ltr">
-<pre><code class="language-html"><!-- نمایش flash message در قالب HTML -->
+<pre><code class="language-html"><!-- Display flash message in HTML template -->
 {{if .Flash}}
 &lt;div class="alert alert-success"&gt;
     {{.Flash}}
@@ -385,10 +385,10 @@ func listHandler(w http.ResponseWriter, r *http.Request) {
 <figure class="code php" dir="ltr">
 <pre><code class="language-php">// Laravel — Flash Messages
 return redirect()-&gt;route('articles.index')
--&gt;with('success', 'مقاله با موفقیت ایجاد شد');
+-&gt;with('success', 'Article created successfully');
 
 // Or with session helper:
-session()-&gt;flash('success', 'مقاله با موفقیت ایجاد شد');
+session()-&gt;flash('success', 'Article created successfully');
 
 // In Blade template:
 @if(session('success'))
@@ -527,7 +527,7 @@ sessionManager.Store = postgresstore.New(db)
 func initSessionStore(redisURL string) *scs.SessionManager {
     opt, err := redis.ParseURL(redisURL)
     if err != nil {
-        log.Fatalf("خطا در پارس Redis URL: %v", err)
+        log.Fatalf("Error parsing Redis URL: %v", err)
     }
     client := redis.NewClient(opt)
 

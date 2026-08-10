@@ -73,7 +73,7 @@
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">go sayHello() // run function in a new goroutine
 go func() { // run anonymous function in goroutine
-    fmt.Println("سلام")
+    fmt.Println("Hello")
 }()
 </code></pre>
 </figure>
@@ -206,12 +206,12 @@ import (
 )
 
 func sayHello() {
-    fmt.Println("سلام از Goroutine")
+    fmt.Println("Hello from Goroutine")
 }
 
 func main() {
     go sayHello()
-    fmt.Println("سلام از Main")
+    fmt.Println("Hello from Main")
     time.Sleep(1 * time.Second) // without this line, sayHello may not run!
 }
 </code></pre>
@@ -229,9 +229,9 @@ import (
 
 func task(i int, wg *sync.WaitGroup) {
     defer wg.Done()
-    fmt.Printf("شروع کار %d\n", i)
+    fmt.Printf("Start task %d\n", i)
     time.Sleep(500 * time.Millisecond)
-    fmt.Printf("پایان کار %d\n", i)
+    fmt.Printf("End task %d\n", i)
 }
 
 func main() {
@@ -241,7 +241,7 @@ func main() {
         go task(i, &amp;wg) // correct way: Add before go
     }
     wg.Wait() // wait for all to finish
-    fmt.Println("همه کارها تمام شدند")
+    fmt.Println("All tasks finished")
 }
 </code></pre>
 </figure>
@@ -318,7 +318,7 @@ func main() {
     for resp := range results {
         fmt.Printf("%s → %d (%v)\n", resp.URL, resp.Code, resp.Took)
     }
-    fmt.Printf("زمان کل: %v\n", time.Since(start))
+    fmt.Printf("Total time: %v\n", time.Since(start))
 }
 </code></pre>
 </figure>
@@ -335,7 +335,7 @@ import (
 func main() {
     // runtime.GOMAXPROCS sets the number of CPU cores
     fmt.Println("GOMAXPROCS:", runtime.GOMAXPROCS(0))
-    fmt.Println("تعداد CPUها:", runtime.NumCPU())
+    fmt.Println("NumCPU:", runtime.NumCPU())
 
     go func() {
         for i := 0; i &lt; 5; i++ {
@@ -364,7 +364,7 @@ import (
 )
 
 func main() {
-    fmt.Println("شروع - Goroutineها:", runtime.NumGoroutine())
+    fmt.Println("Start - Goroutines:", runtime.NumGoroutine())
 
     var wg sync.WaitGroup
     for i := 0; i &lt; 100; i++ {
@@ -375,9 +375,9 @@ func main() {
         }(i)
     }
 
-    fmt.Println("بعد از ساخت - Goroutineها:", runtime.NumGoroutine())
+    fmt.Println("After creation - Goroutines:", runtime.NumGoroutine())
     wg.Wait()
-    fmt.Println("بعد از اتمام - Goroutineها:", runtime.NumGoroutine())
+    fmt.Println("After completion - Goroutines:", runtime.NumGoroutine())
 }
 </code></pre>
 </figure>
@@ -411,15 +411,15 @@ func main() {
 <li>در تمام سیستم‌عامل‌ها، runtime به‌صورت دوره‌ای <code>GOMAXPROCS</code> را به‌روزرسانی می‌کند اگر تعداد CPU‌های منطقی یا محدودیت cgroup تغییر کند.</li>
 </ul>
 <figure class="code go" dir="ltr">
-<pre><code class="language-go">// مثال: تأثیر GOMAXPROCS خودکار در کانتینر
-// با محدودیت CPU: 2 core در Kubernetes
-// قبل از Go 1.25: GOMAXPROCS = 64 (تعداد CPU‌های میزبان!)
-// بعد از Go 1.25: GOMAXPROCS = 2 (محدودیت cgroup)
+<pre><code class="language-go">// Example: effect of automatic GOMAXPROCS in a container
+// With CPU limit: 2 cores in Kubernetes
+// Before Go 1.25: GOMAXPROCS = 64 (host CPU count!)
+// After Go 1.25: GOMAXPROCS = 2 (cgroup limit)
 
 fmt.Println("GOMAXPROCS:", runtime.GOMAXPROCS(0))
 
-// غیرفعال کردن رفتار جدید (اگر نیاز بود)
-// تنظیم متغیر محیطی: GODEBUG=containermaxprocs=0</code></pre>
+// Disable the new behavior (if needed)
+// Set environment variable: GODEBUG=containermaxprocs=0</code></pre>
 </figure>
 <p>
  هر دو رفتار جدید به‌طور خودکار غیرفعال می‌شوند اگر <code>GOMAXPROCS</code> به‌صورت دستی

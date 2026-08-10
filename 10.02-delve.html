@@ -279,10 +279,10 @@ $ dlv debug -- --panic
 <pre><code class="language-go">(dlv) break runtime.panic
 (dlv) continue
 # When panic occurs, the program stops
-(dlv) stack # مشاهده مسیر خطا
-(dlv) args # مشاهده آرگومان‌های تابع فعلی
-(dlv) locals # مشاهده متغیرهای محلی
-(dlv) goroutines # بررسی وضعیت سایر goroutine‌ها
+(dlv) stack # view error path / stack trace
+(dlv) args # view current function arguments
+(dlv) locals # view local variables
+(dlv) goroutines # inspect other goroutines
 </code></pre>
 </figure>
 <p>این روش دقیق‌تر از صرفاً خواندن خروجی panic است چون امکان بررسی وضعیت کامل برنامه را در لحظه خطا می‌دهد. می‌توانید مقادیر تمام متغیرها، وضعیت سایر goroutine‌ها و محتوای channel‌ها را در همان لحظه‌ای که panic رخ داده بررسی کنید.</p>

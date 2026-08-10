@@ -135,7 +135,7 @@
 <li><strong>تعداد پرداخت‌ها:</strong> در یک سیستم مالی، هر تراکنش موفق یک واحد اضافه می‌شود. <bdi dir="ltr">increase()[24h]</bdi> تعداد تراکنش‌های روزانه را نشان می‌دهد.</li>
 </ul>
 <figure class="code go" dir="ltr">
-<pre><code class="language-go">// Counter: شمارش درخواست‌های HTTP به تفکیک متد و مسیر و وضعیت
+<pre><code class="language-go">// Counter: count HTTP requests by method, path, and status
 var httpRequestsTotal = prometheus.NewCounterVec(
 prometheus.CounterOpts{
     Name: "http_requests_total",
@@ -144,7 +144,7 @@ prometheus.CounterOpts{
 []string{"method", "path", "status"},
 )
 
-// استفاده در middleware
+// Usage in middleware
 func metricsMiddleware(next http.Handler) http.Handler {
     return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
         start := time.Now()
@@ -152,7 +152,7 @@ func metricsMiddleware(next http.Handler) http.Handler {
 
         next.ServeHTTP(wrapped, r)
 
-        // هر درخواست: یک واحد اضافه شود
+        // Each request: increment by one
         httpRequestsTotal.WithLabelValues(
         r.Method,
         r.URL.Path,
@@ -174,7 +174,7 @@ func metricsMiddleware(next http.Handler) http.Handler {
 <li><strong>دمای CPU / فضای دیسک:</strong> منابع سیستمی که مقدارشان بالا و پایین می‌رود. برای این موارد Gauge مناسب است چون مقدار مطلق مهم است.</li>
 </ul>
 <figure class="code go" dir="ltr">
-<pre><code class="language-go">// Gauge: اندازه‌گیری وضعیت لحظه‌ای
+<pre><code class="language-go">// Gauge: instantaneous state measurement
 var (
 activeConnections = prometheus.NewGauge(prometheus.GaugeOpts{
     Name: "http_active_connections",
@@ -194,11 +194,11 @@ memoryUsage = prometheus.NewGaugeFunc(prometheus.GaugeOpts{
 })
 )
 
-// استفاده: اتصال ورودی
+// Usage: incoming connection
 activeConnections.Inc()
 defer activeConnections.Dec()
 
-// تنظیم مستقیم مقدار
+// Set value directly
 dbConnections.WithLabelValues("primary").Set(float64(dbPool.Stats().OpenConnections))</code></pre>
 </figure>
 <!-- ===== Histogram ===== -->
@@ -210,7 +210,7 @@ dbConnections.WithLabelValues("primary").Set(float64(dbPool.Stats().OpenConnecti
 <li><strong>مدت کوئری دیتابیس:</strong> <code>Observe(queryDuration.Seconds())</code> — شناسایی کوئری‌های کند با بررسی p99 به تفکیک نام کوئری.</li>
 </ul>
 <figure class="code go" dir="ltr">
-<pre><code class="language-go">// Histogram: اندازه‌گیری توزیع زمان پاسخ
+<pre><code class="language-go">// Histogram: response time distribution measurement
 var httpDuration = prometheus.NewHistogramVec(
 prometheus.HistogramOpts{
     Name:    "http_request_duration_seconds",
@@ -221,20 +221,20 @@ prometheus.HistogramOpts{
 []string{"method", "path"},
 )
 
-// استفاده در middleware
+// Usage in middleware
 func durationMiddleware(next http.Handler) http.Handler {
     return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
         start := time.Now()
         next.ServeHTTP(w, r)
         duration := time.Since(start).Seconds()
 
-        // هر درخواست: مدت زمان آن ثبت شود
+        // Each request: record its duration
         httpDuration.WithLabelValues(r.Method, r.URL.Path).Observe(duration)
     })
 }
 
-// نکته مهم: Bucketها را بر اساس SLA خود انتخاب کنید
-// اگر SLA شما "p99 &lt; 500ms" است، حتماً 0.5 در Buckets باشد</code></pre>
+// Important: choose Buckets based on your SLA
+// If your SLA is "p99 &lt; 500ms", make sure 0.5 is in Buckets</code></pre>
 </figure>
 <div class="important"><strong>انتخاب Bucket مناسب:</strong> Bucket پیش‌فرض Prometheus (<code>DefBuckets</code>) شامل بازه‌های <code>{0.005, 0.01, 0.025, 0.05, 0.1, 0.25, 0.5, 1, 2.5, 5, 10}</code> ثانیه است. این بازه‌ها برای اکثر API‌ها مناسب هستند، اما اگر SLA شما متفاوت است باید Bucket سفارشی تعریف کنید. مثلاً اگر SLA شما «p99 زیر 100ms» است، باید بازه‌های ریزتری مثل <code>{0.01, 0.025, 0.05, 0.075, 0.1, 0.15, 0.25}</code> داشته باشید تا دقت محاسبه percentile بالا باشد. Bucketها قابل تغییر پس از تعریف نیستند — فقط با ری‌استارت و از دست رفتن داده‌های قبلی قابل تغییر هستند.</div>
 <!-- ===== Summary ===== -->
@@ -246,7 +246,7 @@ func durationMiddleware(next http.Handler) http.Handler {
 <li><strong>percentile دقیق‌تر:</strong> Summary percentile دقیق محاسبه می‌کند (نه تقریبی از bucketها). اگر دقت عدد مهم‌تر از تجمیع‌پذیری است، Summary بهتر است.</li>
 </ul>
 <figure class="code go" dir="ltr">
-<pre><code class="language-go">// Summary: محاسبه percentile سمت کلاینت
+<pre><code class="language-go">// Summary: client-side percentile computation
 var rpcDuration = prometheus.NewSummaryVec(
 prometheus.SummaryOpts{
     Name:       "rpc_duration_seconds",
@@ -258,10 +258,10 @@ prometheus.SummaryOpts{
 []string{"service", "method"},
 )
 
-// استفاده
+// Usage
 rpcDuration.WithLabelValues("UserService", "GetUser").Observe(duration.Seconds())
 
-// خروجی در /metrics:
+// Output in /metrics:
 // rpc_duration_seconds{service="UserService",method="GetUser",quantile="0.5"} 0.012
 // rpc_duration_seconds{service="UserService",method="GetUser",quantile="0.9"} 0.045
 // rpc_duration_seconds{service="UserService",method="GetUser",quantile="0.99"} 0.120</code></pre>
@@ -346,14 +346,14 @@ var (
 requestsTotal = prometheus.NewCounterVec(
 prometheus.CounterOpts{
     Name: "http_requests_total",
-    Help: "تعداد کل درخواست‌های HTTP",
+    Help: "Total number of HTTP requests",
 },
 []string{"method", "path", "status"},
 )
 requestDuration = prometheus.NewHistogramVec(
 prometheus.HistogramOpts{
     Name: "http_request_duration_seconds",
-    Help: "مدت زمان پاسخ‌دهی",
+    Help: "HTTP response duration",
     Buckets: prometheus.DefBuckets,
 },
 []string{"method", "path"},
@@ -361,7 +361,7 @@ prometheus.HistogramOpts{
 activeConnections = prometheus.NewGauge(
 prometheus.GaugeOpts{
     Name: "http_active_connections",
-    Help: "تعداد اتصال‌های فعال",
+    Help: "Number of active connections",
 },
 )
 )
@@ -383,7 +383,7 @@ func main() {
     })
 
     http.Handle("/metrics", promhttp.Handler())
-    log.Println("سرور روی پورت 9000 اجرا شد")
+    log.Println("Server started on port 9000")
     log.Fatal(http.ListenAndServe(":9000", nil))
 }</code></pre>
 </figure>

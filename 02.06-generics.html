@@ -409,10 +409,10 @@ result := Map[int, string]([]int{1, 2, 3}, func(n int) string {
 <pre><code class="language-go">// Go 1.24: Generic Type Alias
 type MapAlias[K comparable, V any] = map[K]V
 
-// استفاده از نام مستعار
+// Using the type alias
 var scores MapAlias[string, int] = map[string]int{"Alice": 95, "Bob": 87}
 
-// نام مستعار برای نوع محدودتر
+// Alias for a more constrained type
 type SortedMap[K constraints.Ordered, V any] = map[K]V</code></pre>
 </figure>
 <p>
@@ -436,7 +436,7 @@ func algo[A Adder[A]](x, y A) A {
     return x.Add(y)
 }
 
-// مثال عملی: انواع قابل مقایسه و ترکیب‌پذیر
+// Practical example: comparable and combinable types
 type NumberLike[T NumberLike[T]] interface {
     ~int | ~int64 | ~float64
     Add(T) T

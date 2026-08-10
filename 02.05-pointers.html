@@ -343,17 +343,17 @@ for _, v := range values {
  استفاده می‌کنند، بسیار مفید است:
  </p>
 <figure class="code go" dir="ltr">
-<pre><code class="language-go">// قبل از Go 1.26: نیاز به متغیر موقت
+<pre><code class="language-go">// Before Go 1.26: requires a temporary variable
 age := yearsSince(born)
 person := Person{
     Name: name,
-    Age:  &amp;age, // اشاره‌گر به متغیر موقت
+    Age:  &amp;age, // pointer to temporary variable
 }
 
-// Go 1.26: مقداردهی مستقیم با new
+// Go 1.26: direct initialization with new
 person := Person{
     Name: name,
-    Age:  new(yearsSince(born)), // عبارت مستقیم!
+    Age:  new(yearsSince(born)), // direct expression!
 }</code></pre>
 </figure>
 <p>

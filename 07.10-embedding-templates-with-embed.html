@@ -88,7 +88,7 @@ func init() {
     "templates/home.html",
 )
     if err != nil {
-        log.Fatalf("خطا در بارگذاری قالب‌ها: %v", err)
+        log.Fatalf("Error loading templates: %v", err)
     }
 }
 </code></pre>
@@ -244,18 +244,18 @@ tmpl, err := template.ParseFS(templateFS, "templates/*.html", "templates/**/*.ht
 }
 func homeHandler(w http.ResponseWriter, r *http.Request) {
     data := PageData{
-        Title: "صفحه اصلی",
-        User: "علی",
+        Title: "Home",
+        User: "Ali",
     }
     err := tmpl.ExecuteTemplate(w, "layout.html", data)
     if err != nil {
-        http.Error(w, "خطا در نمایش صفحه", http.StatusInternalServerError)
+        http.Error(w, "Error rendering page", http.StatusInternalServerError)
         log.Println("template error:", err)
     }
 }
 func main() {
     http.HandleFunc("/", homeHandler)
-    log.Println("سرور روی پورت 8080 در حال اجراست")
+    log.Println("Server running on port 8080")
     err := http.ListenAndServe(":8080", nil)
     if err != nil {
         log.Fatal(err)

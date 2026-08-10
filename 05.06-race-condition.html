@@ -313,24 +313,24 @@ func main() {
 <li><strong>hostport</strong>: استفاده از <code>fmt.Sprintf("%s:%d", host, port)</code> برای ساخت آدرس شبکه‌ای را گزارش می‌دهد، زیرا این روش با IPv6 کار نمی‌کند. به‌جای آن از <code>net.JoinHostPort</code> استفاده کنید.</li>
 </ul>
 <figure class="code go" dir="ltr">
-<pre><code class="language-go">// ❌ مشکل: Add داخل goroutine
+<pre><code class="language-go">// ❌ Wrong: Add inside goroutine
 go func() {
-    wg.Add(1) // تحلیل‌گر waitgroup هشدار میدهد
+    wg.Add(1) // waitgroup analyzer warns
     defer wg.Done()
     doWork()
 }()
 
-// ✅ صحیح: Add قبل از شروع goroutine
+// ✅ Correct: Add before starting the goroutine
 wg.Add(1)
 go func() {
     defer wg.Done()
     doWork()
 }()
 
-// ❌ مشکل: ساخت آدرس با Sprintf
-addr := fmt.Sprintf("%s:%d", host, port) // hostport هشدار میدهد
+// ❌ Wrong: building address with Sprintf
+addr := fmt.Sprintf("%s:%d", host, port) // hostport warns
 
-// ✅ صحیح: استفاده از net.JoinHostPort
+// ✅ Correct: use net.JoinHostPort
 addr := net.JoinHostPort(host, strconv.Itoa(port))</code></pre>
 </figure>
 <h3 id="data-race-خط-زمانی-داخل‌درج">5.6.5 خط زمانی داخل‌درج Data Race— تجزیه گام‌به‌گام</h3>
@@ -423,7 +423,7 @@ addr := net.JoinHostPort(host, strconv.Itoa(port))</code></pre>
 <li><strong>مقداردهی تنبل با <bdi dir="ltr">sync.Once</bdi>:</strong> وقتی نیاز دارید یک منبع (مانند اتصال دیتابیس یا تنظیمات) فقط یک‌بار مقداردهی شود و چند <bdi dir="ltr">goroutine</bdi> همزمان بخواهند از آن استفاده کنند، <bdi dir="ltr">sync.Once</bdi> تضمین می‌کند که تابع مقداردهی فقط یک‌بار اجرا شود. بدون <bdi dir="ltr">sync.Once</bdi> ممکن است چند <bdi dir="ltr">goroutine</bdi> همزمان منبع را مقداردهی کنند که باعث نشت منبع یا رفتار غیرمنتظره می‌شود.</li>
 </ul>
 <figure class="code go" dir="ltr">
-<pre><code class="language-go">// مقداردهی تنبل با sync.Once
+<pre><code class="language-go">// Lazy initialization with sync.Once
 var (
 instance *Database
 once     sync.Once
@@ -436,21 +436,21 @@ func GetDB() *Database {
     return instance
 }
 
-// محافظت از map با RWMutex
+// Protecting a map with RWMutex
 type SafeMap struct {
     mu   sync.RWMutex
     data map[string]string
 }
 
 func (m *SafeMap) Get(key string) (string, bool) {
-    m.mu.RLock()         // چند خواننده همزمان مجاز
+    m.mu.RLock()         // multiple concurrent readers allowed
     defer m.mu.RUnlock()
     val, ok := m.data[key]
     return val, ok
 }
 
 func (m *SafeMap) Set(key, value string) {
-    m.mu.Lock()          // فقط یک نویسنده
+    m.mu.Lock()          // only one writer
     defer m.mu.Unlock()
     m.data[key] = value
 }

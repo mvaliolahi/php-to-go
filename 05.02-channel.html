@@ -218,7 +218,7 @@ go func() {
 }()
 // Wait for work to finish
 &lt;-done
-fmt.Println("کار تمام شد")
+fmt.Println("Work finished")
 </code></pre>
 </figure>
 <p><strong>الگوی Fan-in با Select:</strong> دریافت از چند کانال.</p>
@@ -248,7 +248,7 @@ fmt.Println("کار تمام شد")
 
 func worker(id int, jobs &lt;-chan Job, results chan&lt;- int) {
     for job := range jobs {
-        fmt.Printf("Worker %d: پردازش Job %d\n", id, job.ID)
+        fmt.Printf("Worker %d: processing Job %d\n", id, job.ID)
         time.Sleep(time.Second)
         results &lt;- job.ID * 2
     }
@@ -268,7 +268,7 @@ func main() {
     close(jobs)
 
     for a := 1; a &lt;= 10; a++ {
-        fmt.Println("نتیجه:", &lt;-results)
+        fmt.Println("Result:", &lt;-results)
     }
 }
 </code></pre>

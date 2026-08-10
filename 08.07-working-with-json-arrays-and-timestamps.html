@@ -90,13 +90,13 @@ var settings Settings
 json.Unmarshal(jsonData, &amp;settings)</code></pre>
 </figure>
 <p><strong>کوئری‌های JSONB:</strong> می‌توانید مستقیماً روی فیلدهای <bdi dir="ltr">JSONB</bdi> کوئری بزنید:</p>
-<figure class="code sql" dir="ltr"><pre><code class="language-sql">-- یافتن کاربران با تم تیره
+<figure class="code sql" dir="ltr"><pre><code class="language-sql">-- Find users with dark theme
 SELECT * FROM user_settings WHERE settings-&gt;&gt;'theme' = 'dark';
 
--- بررسی وجود کلید
+-- Check key existence
 SELECT * FROM user_settings WHERE settings ? 'language';
 
--- به‌روزرسانی یک فیلد JSON
+-- Update a JSON field
 UPDATE user_settings
 SET settings = jsonb_set(settings, '{theme}', '"light"')
 WHERE user_id = 42;</code></pre></figure>
@@ -125,7 +125,7 @@ err := db.QueryRow("SELECT event_time FROM logs WHERE id=$1", logID).Scan(&amp;e
 // Display in local timezone
 loc, _ := time.LoadLocation("Asia/Tehran")
 localTime := eventTime.In(loc)
-fmt.Println("زمان:", localTime.Format("2006-01-02 15:04:05"))</code></pre>
+fmt.Println("Time:", localTime.Format("2006-01-02 15:04:05"))</code></pre>
 </figure>
 <div class="important"><strong>نکته مهم درباره زمان:</strong> همیشه زمان‌ها را به <bdi dir="ltr">UTC</bdi> در دیتابیس ذخیره کنید و فقط هنگام نمایش به <bdi dir="ltr">timezone</bdi> محلی تبدیل کنید. برای MySQL حتماً پارامتر <bdi dir="ltr">parseTime=true</bdi> را در <bdi dir="ltr">DSN</bdi> تنظیم کنید. برای زمان‌های <bdi dir="ltr">nullable</bdi> از <code>sql.NullTime</code> (Go 1.17+) یا <code>*time.Time</code> استفاده کنید.</div>
 <h3 id="custom-types">8.7.4 تبدیل سفارشی با sql.Scanner و driver.Valuer</h3>

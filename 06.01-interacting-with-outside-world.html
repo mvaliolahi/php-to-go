@@ -117,7 +117,7 @@ teeReader := io.TeeReader(reader, writer)
 
 // MultiWriter: writes to multiple Writers simultaneously (like tee for writing)
 multiWriter := io.MultiWriter(os.Stdout, logFile)
-fmt.Fprintf(multiWriter, "این پیام هم در خروجی و هم در لاگ ثبت می‌شود\n")
+fmt.Fprintf(multiWriter, "This message is logged to both stdout and the log file\n")
 
 // LimitReader: reads up to N bytes
 limitedReader := io.LimitReader(bigFile, 1024) // max 1KB
@@ -151,7 +151,7 @@ file, _ := os.Create("output.txt")
 defer file.Close()
 writer := bufio.NewWriter(file)
 for i := 0; i &lt; 100000; i++ {
-    fmt.Fprintf(writer, "خط %d\n", i)
+    fmt.Fprintf(writer, "Line %d\n", i)
 }
 writer.Flush() // without this, data is lost!
 </code></pre>
@@ -185,7 +185,7 @@ written, err := io.Copy(dst, src)
 if err != nil {
     log.Fatal(err)
 }
-fmt.Printf("%d بایت کپی شد\n", written)
+fmt.Printf("%d bytes copied\n", written)
 </code></pre>
 </figure>
 <figure class="code go" dir="ltr">
@@ -201,7 +201,7 @@ defer out.Close()
 
 // Only 32KB memory used, even if file is gigabytes
 written, _ := io.Copy(out, resp.Body)
-fmt.Printf("دانلود شد: %d بایت\n", written)
+fmt.Printf("Downloaded: %d bytes\n", written)
 </code></pre>
 </figure>
 <div class="tip">
@@ -241,7 +241,7 @@ teeReader := io.TeeReader(resp.Body, &amp;buf)
 data, _ := io.ReadAll(teeReader)
 
 // Now buf contains the same data
-log.Printf("داده دریافتی: %s", buf.String())
+log.Printf("Received data: %s", buf.String())
 </code></pre>
 </figure>
 <figure class="code go" dir="ltr">
@@ -256,7 +256,7 @@ tee := io.TeeReader(file, &amp;progress)
 processData(tee)
 
 // Check number of processed bytes
-fmt.Printf("پردازش شد: %d بایت\n", progress.Len())
+fmt.Printf("Processed: %d bytes\n", progress.Len())
 </code></pre>
 </figure>
 <h3 id="multiwriter-در-عمل">6.1.7 نوشتن هم‌زمان در چند مقصد</h3>
@@ -269,8 +269,8 @@ defer logFile.Close()
 multi := io.MultiWriter(os.Stdout, logFile)
 
 // Now every write to multi is logged in both console and file
-fmt.Fprintf(multi, "سرور شروع شد در %s\n", time.Now().Format(time.RFC3339))
-fmt.Fprintf(multi, "درخواست جدید از %s\n", clientIP)
+fmt.Fprintf(multi, "Server started at %s\n", time.Now().Format(time.RFC3339))
+fmt.Fprintf(multi, "New request from %s\n", clientIP)
 </code></pre>
 </figure>
 <figure class="code go" dir="ltr">
@@ -284,7 +284,7 @@ multi := io.MultiWriter(file, hash)
 // Data is both written to file and hash computed
 io.Copy(multi, tarReader)
 
-fmt.Printf("فایل ذخیره شد. SHA256: %x\n", hash.Sum(nil))
+fmt.Printf("File saved. SHA256: %x\n", hash.Sum(nil))
 </code></pre>
 </figure>
 <div class="comparison">
@@ -302,7 +302,7 @@ section := io.NewSectionReader(file, 1000, 500) // from byte 1000 to 1500
 // Pipe: direct Reader to Writer connection (without intermediate buffer)
 pr, pw := io.Pipe()
 go func() {
-    pw.Write([]byte("داده از گوروتین دیگر"))
+    pw.Write([]byte("data from another goroutine"))
     pw.Close()
 }()
 data, _ := io.ReadAll(pr) // "data from another goroutine"

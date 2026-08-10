@@ -117,20 +117,20 @@ func worker(id int, ctx context.Context, jobs &lt;-chan Job, results chan&lt;- R
     for {
         select {
             case &lt;-ctx.Done():
-            fmt.Printf("Worker %d: لغو شد\n", id)
+            fmt.Printf("Worker %d: canceled\n", id)
             return
             case job, ok := &lt;-jobs:
             if !ok {
                 return // channel closed
             }
-            fmt.Printf("Worker %d: پردازش Job %d\n", id, job.ID)
+            fmt.Printf("Worker %d: processing Job %d\n", id, job.ID)
             time.Sleep(100 * time.Millisecond) // simulate work
 
             // Simulate error for even jobs
             var err error
-            output := fmt.Sprintf("نتیجه Job %d", job.ID)
+            output := fmt.Sprintf("Result of Job %d", job.ID)
             if job.ID%2 == 0 {
-                err = fmt.Errorf("خطا در Job %d", job.ID)
+                err = fmt.Errorf("Error in Job %d", job.ID)
             }
             results &lt;- Result{JobID: job.ID, Output: output, Err: err}
         }
@@ -170,14 +170,14 @@ func main() {
     var successes, failures int
     for result := range results {
         if result.Err != nil {
-            fmt.Printf("خطا: %v\n", result.Err)
+            fmt.Printf("Error: %v\n", result.Err)
             failures++
         } else {
-            fmt.Printf("موفق: %s\n", result.Output)
+            fmt.Printf("Success: %s\n", result.Output)
             successes++
         }
     }
-    fmt.Printf("موفق: %d | ناموفق: %d\n", successes, failures)
+    fmt.Printf("Success: %d | Failure: %d\n", successes, failures)
 }
 </code></pre>
 </figure>
@@ -197,10 +197,10 @@ import (
 func fetchSource(ctx context.Context, name string, ch chan&lt;- string) {
     select {
         case &lt;-ctx.Done():
-        ch &lt;- fmt.Sprintf("%s: لغو شد", name)
+        ch &lt;- fmt.Sprintf("%s: canceled", name)
         return
         case &lt;-time.After(time.Duration(100+time.Now().UnixNano()%500) * time.Millisecond):
-        ch &lt;- fmt.Sprintf("%s: داده دریافت شد", name)
+        ch &lt;- fmt.Sprintf("%s: data received", name)
     }
 }
 
@@ -351,7 +351,7 @@ func rateLimitedRequests(urls []string) {
 
     for _, url := range urls {
         &lt;-limiter.C // wait for next tick
-        fmt.Printf("درخواست به %s ارسال شد\n", url)
+        fmt.Printf("Request sent to %s\n", url)
     }
 }
 
@@ -363,10 +363,10 @@ func advancedRateLimit(ctx context.Context) {
     for i := 0; i &lt; 20; i++ {
         // Wait for token (or error if Context is cancelled)
         if err := limiter.Wait(ctx); err != nil {
-            fmt.Println("لغو شد:", err)
+            fmt.Println("Canceled:", err)
             return
         }
-        fmt.Printf("درخواست %d ارسال شد\n", i)
+        fmt.Printf("Request %d sent\n", i)
     }
 }
 </code></pre>
@@ -395,9 +395,9 @@ func main() {
             sem &lt;- struct{}{} // acquire semaphore (blocks if full)
             defer func() { &lt;-sem }() // release semaphore
 
-            fmt.Printf("گوریوتین %d شروع\n", id)
+            fmt.Printf("Goroutine %d started\n", id)
             time.Sleep(1 * time.Second)
-            fmt.Printf("گوریوتین %d پایان\n", id)
+            fmt.Printf("Goroutine %d finished\n", id)
         }(i)
     }
 
@@ -426,10 +426,10 @@ func worker(ctx context.Context, id int, wg *sync.WaitGroup) {
     for {
         select {
             case &lt;-ctx.Done():
-            fmt.Printf("Worker %d: خاموش کردن کنترل‌شده\n", id)
+            fmt.Printf("Worker %d: graceful shutdown\n", id)
             return
             default:
-            fmt.Printf("Worker %d: در حال کار...\n", id)
+            fmt.Printf("Worker %d: working...\n", id)
             time.Sleep(500 * time.Millisecond)
         }
     }
@@ -449,11 +449,11 @@ func main() {
         go worker(ctx, i, &amp;wg)
     }
 
-    fmt.Println("برنامه در حال اجرا... (Ctrl+C برای توقف)")
+    fmt.Println("Program running... (Ctrl+C to stop)")
 
     // Wait for signal
     &lt;-ctx.Done()
-    fmt.Println("\nسیگنال توقف دریافت شد، در حال خاموش کردن...")
+    fmt.Println("\nStop signal received, shutting down...")
 
     // Wait for all Workers to finish
     // With emergency timeout
@@ -465,9 +465,9 @@ func main() {
 
     select {
         case &lt;-done:
-        fmt.Println("خاموش کردن موفق")
+        fmt.Println("Shutdown successful")
         case &lt;-time.After(10 * time.Second):
-        fmt.Println("تایم‌اوت! خاموش کردن اجباری")
+        fmt.Println("Timeout! Forced shutdown")
         os.Exit(1)
     }
 }
@@ -522,13 +522,13 @@ func main() {
     // Consumer 1
     go func() {
         for val := range ch1 {
-            fmt.Printf("پردازش: %d\n", val)
+            fmt.Printf("Processing: %d\n", val)
         }
     }()
 
     // Consumer 2
     for val := range ch2 {
-        fmt.Printf("لاگ: %d\n", val)
+        fmt.Printf("Log: %d\n", val)
     }
 }
 </code></pre>
@@ -565,7 +565,7 @@ func fetchAll(ctx context.Context, urls []string) ([]string, error) {
     }
 
     if err := g.Wait(); err != nil {
-        return nil, fmt.Errorf("خطا در fetch: %w", err)
+        return nil, fmt.Errorf("Error in fetch: %w", err)
     }
     close(results)
 

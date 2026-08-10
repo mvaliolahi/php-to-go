@@ -94,13 +94,13 @@
 <!-- In HTML content, < becomes &lt; -->
 &lt;p&gt;{{.Name}}&lt;/p&gt;
 
-<!-- در مقدار CSS — escape مخصوص CSS -->
+<!-- In CSS value — CSS-specific escape -->
 &lt;div style="color: {{.Color}}"&gt;
 
-<!-- در مقدار جاوااسکریپت — تبدیل به \uXXXX -->
+<!-- In JavaScript value — converted to \uXXXX -->
 &lt;script&gt;var name = "{{.Name}}";&lt;/script&gt;
 
-<!-- در URL — encode مخصوص URL -->
+<!-- In URL — URL-specific encode -->
 &lt;a href="/search?q={{.Query}}"&gt;
 </code></pre>
 </figure>
@@ -203,7 +203,7 @@ data := PageData{
         return t.Format("2006/01/02")
     },
     "formatPrice": func(price float64) string {
-        return fmt.Sprintf("%0.0f تومان", price)
+        return fmt.Sprintf("%0.0f IRR", price)
     },
     "truncate": func(s string, n int) string {
         if utf8.RuneCountInString(s) &lt;= n {
@@ -225,15 +225,15 @@ func loadTemplates() *template.Template {
 <h3 id="pipeline-ها-در-قالبها">7.8.5 Pipeline‌ها در قالب‌ها</h3>
 <p><bdi dir="ltr">Pipeline</bdi> در قالب‌های Go امکان زنجیره‌سازی توابع را فراهم می‌کند. خروجی هر تابع به عنوان ورودی تابع بعدی استفاده می‌شود. این ویژگی مشابه <bdi dir="ltr">pipe</bdi> در لینوکس عمل می‌کند:</p>
 <figure class="code html" dir="ltr">
-<pre><code class="language-xml"><!-- pipeline: ابتدا نام را دریافت، سپس truncate، سپس toUpper -->
+<pre><code class="language-xml"><!-- pipeline: first read name, then truncate, then toUpper -->
 {{ .Name | truncate 20 | toUpper }}
 
-<!-- pipeline: فرمت قیمت -->
+<!-- pipeline: price format -->
 {{ .Price | formatPrice }}
 
-<!-- pipeline شرطی -->
+<!-- conditional pipeline -->
 {{ if .Bio }}
-    &lt;p&gt;بیوگرافی: {{ .Bio | truncate 100 }}&lt;/p&gt;
+    &lt;p&gt;Bio: {{ .Bio | truncate 100 }}&lt;/p&gt;
 {{ end }}
 </code></pre>
 </figure>

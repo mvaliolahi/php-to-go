@@ -75,7 +75,7 @@
 }
 
 func (e *DivideByZeroError) Error() string {
-    return fmt.Sprintf("تقسیم %v بر صفر مجاز نیست", e.Dividend)
+    return fmt.Sprintf("division of %v by zero is not allowed", e.Dividend)
 }
 
 func divideV2(a, b float64) (float64, error) {
@@ -87,7 +87,7 @@ func divideV2(a, b float64) (float64, error) {
 
 result, err := divideV2(10, 0)
 if err != nil {
-    fmt.Println("خطا:", err)
+    fmt.Println("error:", err)
 }
 </code></pre>
 </figure>
@@ -101,7 +101,7 @@ if err != nil {
 <pre><code class="language-go">func readConfig(path string) error {
     _, err := os.ReadFile(path)
     if err != nil {
-        return fmt.Errorf("خطا در خواندن تنظیمات %s: %w", path, err)
+        return fmt.Errorf("error reading %s settings: %w", path, err)
     }
     return nil
 }
@@ -134,7 +134,7 @@ func (e *wrapError) Unwrap() error {
 
 // Manual chain traversal
 for e := err; e != nil; {
-    fmt.Println("لایه:", e)
+    fmt.Println("layer:", e)
     e = errors.Unwrap(e)
 }
 
@@ -150,13 +150,13 @@ for e := err; e != nil; {
     var errs []error
 
     if name == "" {
-        errs = append(errs, errors.New("نام الزامی است"))
+        errs = append(errs, errors.New("Name is required"))
     }
     if email == "" {
-        errs = append(errs, errors.New("ایمیل الزامی است"))
+        errs = append(errs, errors.New("Email is required"))
     }
     if !strings.Contains(email, "@") {
-        errs = append(errs, errors.New("ایمیل نامعتبر است"))
+        errs = append(errs, errors.New("Invalid email"))
     }
 
     return errors.Join(errs...)
@@ -177,7 +177,7 @@ if err != nil {
 if err != nil {
     var nameErr *NameRequiredError
     if errors.As(err, &amp;nameErr) {
-        fmt.Println("خطای نام:", nameErr)
+        fmt.Println("name error:", nameErr)
     }
 }
 </code></pre>
@@ -269,7 +269,7 @@ if errors.Is(err, store.ErrNotFound) {
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">err := readConfig("config.yaml")
 if errors.Is(err, os.ErrNotExist) {
-    fmt.Println("فایل تنظیمات وجود ندارد")
+    fmt.Println("config file does not exist")
 }
 </code></pre>
 </figure>

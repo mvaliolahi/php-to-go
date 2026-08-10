@@ -74,7 +74,7 @@
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">err := os.WriteFile("output.txt", []byte("Hello, World!"), 0644)
 if err != nil {
-    fmt.Println("خطا در نوشتن فایل:", err)
+    fmt.Println("Error writing file:", err)
 }
 </code></pre>
 </figure>
@@ -89,7 +89,7 @@ if err != nil {
 }
 defer file.Close()
 
-if _, err := file.WriteString("لاگ جدید\n"); err != nil {
+if _, err := file.WriteString("New log entry\n"); err != nil {
     log.Fatal(err)
 }
 </code></pre>
@@ -121,8 +121,8 @@ if err != nil {
 defer file.Close()
 
 writer := bufio.NewWriter(file)
-writer.WriteString("خط اول\n")
-writer.WriteString("خط دوم\n")
+writer.WriteString("First line\n")
+writer.WriteString("Second line\n")
 writer.Flush() // write buffer to file
 </code></pre>
 </figure>
@@ -138,7 +138,7 @@ defer logFile.Close()
 
 // MultiWriter: each Write goes to both destinations
 multi := io.MultiWriter(os.Stdout, logFile)
-fmt.Fprintf(multi, "این پیام هم در کنسول و هم در فایل لاگ ثبت می‌شود\n")
+fmt.Fprintf(multi, "This message is logged to both console and the log file\n")
 </code></pre>
 </figure>
 <figure class="code go" dir="ltr">
@@ -165,14 +165,14 @@ data, _ := io.ReadAll(tee)
     tmpPath := path + ".tmp." + randomSuffix()
     f, err := os.OpenFile(tmpPath, os.O_WRONLY|os.O_CREATE|os.O_EXCL, perm)
     if err != nil {
-        return fmt.Errorf("ایجاد فایل موقت: %w", err)
+        return fmt.Errorf("creating temp file: %w", err)
     }
 
     // 2. Write data
     if _, err := f.Write(data); err != nil {
         f.Close()
         os.Remove(tmpPath) // cleanup temp file
-        return fmt.Errorf("نوشتن داده: %w", err)
+        return fmt.Errorf("writing data: %w", err)
     }
 
     // 3. Flush to disk (guarantee data durability)
@@ -185,7 +185,7 @@ data, _ := io.ReadAll(tee)
     // 4. Close temp file
     if err := f.Close(); err != nil {
         os.Remove(tmpPath)
-        return fmt.Errorf("بستن فایل موقت: %w", err)
+        return fmt.Errorf("closing temp file: %w", err)
     }
 
     // 5. Atomic rename: temp file replaces original file
@@ -250,8 +250,8 @@ if err != nil {
 defer logFile.Close()
 
 // Each write is appended to end of file
-logFile.WriteString("2024-01-15 10:30:00 درخواست دریافت شد\n")
-logFile.WriteString("2024-01-15 10:30:01 پاسخ ارسال شد\n")
+logFile.WriteString("2024-01-15 10:30:00 request received\n")
+logFile.WriteString("2024-01-15 10:30:01 response sent\n")
 </code></pre>
 </figure>
 <figure class="code go" dir="ltr">
@@ -289,7 +289,7 @@ os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 defer logger.file.Close()
 
 // Safe for use from multiple goroutines
-logger.Log("سرور شروع شد")
+logger.Log("Server started")
 </code></pre>
 </figure>
 <div class="note">
@@ -302,12 +302,12 @@ logger.Log("سرور شروع شد")
 file_put_contents("output.txt", "Hello, World!");
 
 // Write with FILE_APPEND (append to end of file)
-file_put_contents("log.txt", "خط جدید\n", FILE_APPEND);
+file_put_contents("log.txt", "New line\n", FILE_APPEND);
 
 // Write with fwrite
 $fp = fopen("log.txt", "w");
-fwrite($fp, "خط اول\n");
-fwrite($fp, "خط دوم\n");
+fwrite($fp, "First line\n");
+fwrite($fp, "Second line\n");
 fclose($fp);
 </code></pre>
 </figure>

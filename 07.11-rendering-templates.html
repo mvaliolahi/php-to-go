@@ -72,19 +72,19 @@
 <p>قالب‌ها با استفاده از یک context معمولاً struct یا map داده‌ها را دریافت می‌کنند و بر اساس آن رندر می‌شوند. داده‌ها باید به گونه‌ای طراحی شوند که کاملاً قابل فهم و ساخت‌یافته باشند.</p>
 <p><strong  id="نقش-نقطه-در-قالبها">نقش نقطه (.) در قالب‌ها</strong> — نماد نقطه (<code>.</code>) در قالب‌های Go به داده‌های context فعلی اشاره دارد. وقتی <code dir="ltr">tmpl.ExecuteTemplate(w, "layout.html", data)</code> فراخوانی می‌شود، <code>.</code> به <code>data</code> اشاره دارد. در داخل <code>{{ range .Items }}</code> نقطه به هر عنصر از slice اشاره می‌کند. در داخل <code>{{ with .User }}</code> نقطه به مقدار <code>.User</code> تغییر می‌کند:</p>
 <figure class="code html" dir="ltr">
-<pre><code class="language-xml"><!-- . = کل داده‌ها -->
+<pre><code class="language-xml"><!-- . = all data -->
 &lt;h1&gt;{{.Title}}&lt;/h1&gt;
 
-<!-- در range، . = هر عنصر -->
+<!-- inside range, . = each element -->
 {{range .Items}}
     &lt;li&gt;{{.Name}} — {{.Price}}&lt;/li&gt;
 {{end}}
 
-<!-- در with، . = مقدار مشخص‌شده -->
+<!-- inside with, . = specified value -->
 {{with .User}}
-    &lt;p&gt;خوش آمدید {{.}}&lt;/p&gt;
+    &lt;p&gt;Welcome {{.}}&lt;/p&gt;
 {{end}}
-<!-- بعد از end، . به مقدار قبلی برمی‌گردد -->
+<!-- after end, . reverts to the previous value -->
 </code></pre>
 </figure>
 <div class="tip"><strong>نکته:</strong> دستور <code>{{ with }}</code> دو کار انجام می‌دهد: مقدار را بررسی می‌کند (اگر خالی باشد بلوک اجرا نمی‌شود) و همزمان نقطه را به آن مقدار تغییر می‌دهد. این معادل ترکیب <code>@if</code> و <code dir="ltr">@php($variable = ...)</code> در Blade است.</div>
@@ -103,17 +103,17 @@ type Item struct {
 }
 func homeHandler(w http.ResponseWriter, r *http.Request) {
     data := PageData{
-        Title: "صفحه اصلی",
-        User: "علی",
+        Title: "Home",
+        User: "Ali",
         Items: []Item{
-            {"کتاب Go", 250000},
-            {"کیبورد مکانیکی", 1500000},
+            {"Go book", 250000},
+            {"Mechanical keyboard", 1500000},
         },
         IsAdmin: false,
     }
     err := tmpl.ExecuteTemplate(w, "layout.html", data)
     if err != nil {
-        http.Error(w, "خطا در نمایش صفحه", http.StatusInternalServerError)
+        http.Error(w, "Error rendering page", http.StatusInternalServerError)
         log.Println("template error:", err)
     }
 }
@@ -126,7 +126,7 @@ func homeHandler(w http.ResponseWriter, r *http.Request) {
 <figure class="code html" dir="ltr">
 <pre><code class="language-html">&lt;ul&gt;
 {{ range .Items }}
-    &lt;li&gt;{{ .Name }} — قیمت: {{ printf "%.0f" .Price }} تومان&lt;/li&gt;
+    &lt;li&gt;{{ .Name }} — Price: {{ printf "%.0f" .Price }} IRR&lt;/li&gt;
 {{ else }}
 {{ end }}
 &lt;/ul&gt;
@@ -139,9 +139,9 @@ func homeHandler(w http.ResponseWriter, r *http.Request) {
 <p>قالب‌ها امکان شرطی‌سازی را دارند. مثلاً بر اساس وضعیت کاربر، منوهای متفاوت نمایش داده می‌شود:</p>
 <figure class="code html" dir="ltr">
 <pre><code class="language-html">{{ if .IsAdmin }}
-    &lt;p&gt;خوش آمدید، مدیر عزیز!&lt;/p&gt;
+    &lt;p&gt;Welcome, dear admin!&lt;/p&gt;
 {{ else }}
-    &lt;p&gt;خوش آمدید، کاربر محترم.&lt;/p&gt;
+    &lt;p&gt;Welcome, valued user.&lt;/p&gt;
 {{ end }}
 </code></pre>
 </figure>
@@ -151,7 +151,7 @@ func homeHandler(w http.ResponseWriter, r *http.Request) {
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">import "strings"
 func formatPrice(price float64) string {
-    return fmt.Sprintf("%0.0f تومان", price)
+    return fmt.Sprintf("%0.0f IRR", price)
 }
 func toUpper(s string) string {
     return strings.ToUpper(s)
@@ -164,15 +164,15 @@ func loadTemplates() {
     var err error
     tmpl, err = tmpl.ParseFS(templateFS, "templates/*.html")
     if err != nil {
-        log.Fatalf("خطا در بارگذاری قالب‌ها: %v", err)
+        log.Fatalf("Error loading templates: %v", err)
     }
 }
 </code></pre>
 </figure>
 <p><strong>استفاده در قالب</strong></p>
 <figure class="code html" dir="ltr">
-<pre><code class="language-html">&lt;p&gt;قیمت: {{ formatPrice .Price }}&lt;/p&gt;
-&lt;p&gt;نام محصول: {{ toUpper .Name }}&lt;/p&gt;
+<pre><code class="language-html">&lt;p&gt;Price: {{ formatPrice .Price }}&lt;/p&gt;
+&lt;p&gt;Product name: {{ toUpper .Name }}&lt;/p&gt;
 </code></pre>
 </figure>
 <h3 id="partial-templates-و-ساختاردهی-قالبها">7.11.5 Partial Templates و ساختاردهی قالب‌ها</h3>
@@ -180,13 +180,13 @@ func loadTemplates() {
 <figure class="code html" dir="ltr">
 <pre><code class="language-html">{{ define "header" }}
 &lt;header&gt;
-    &lt;h1&gt;خوش آمدید {{ .User }}&lt;/h1&gt;
+    &lt;h1&gt;Welcome {{ .User }}&lt;/h1&gt;
 &lt;/header&gt;
 {{ end }}
 {{ define "footer" }}
 &lt;footer&gt;
     &lt;hr&gt;
-    &lt;p&gt;تمام حقوق محفوظ است &amp;copy; {{ .Year }}&lt;/p&gt;
+    &lt;p&gt;All rights reserved &amp;copy; {{ .Year }}&lt;/p&gt;
 &lt;/footer&gt;
 {{ end }}
 &lt;body&gt;
@@ -222,8 +222,8 @@ func renderTemplate(w http.ResponseWriter, name string, data any) {
     err := tmpl.ExecuteTemplate(buf, name, data)
     if err != nil {
         // Render error — log and show generic error
-        log.Printf("خطای رندر قالب %s: %v", name, err)
-        http.Error(w, "خطای داخلی سرور", http.StatusInternalServerError)
+        log.Printf("Template render error %s: %v", name, err)
+        http.Error(w, "Internal server error", http.StatusInternalServerError)
         return
     }
 

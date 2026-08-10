@@ -388,30 +388,30 @@ func (d *BigData) Process() { ... } // good: pointer receiver
  روش‌های قبلی (ایجاد slice از فیلدها یا متدها) مصرف می‌کنند:
  </p>
 <figure class="code go" dir="ltr">
-<pre><code class="language-go">// متدهای جدید Type
+<pre><code class="language-go">// New Type methods
 t := reflect.TypeOf(MyStruct{})
 
-// پیمایش فیلدها بدون ایجاد slice
+// Iterate fields without creating a slice
 for field := range t.Fields() {
     fmt.Println(field.Name, field.Type)
 }
 
-// پیمایش متدها
+// Iterate methods
 for method := range t.Methods() {
     fmt.Println(method.Name, method.Type)
 }
 
-// پیمایش پارامترهای ورودی تابع
+// Iterate function input parameters
 for in := range t.Ins() {
     fmt.Println("input:", in)
 }
 
-// پیمایش پارامترهای خروجی تابع
+// Iterate function output parameters
 for out := range t.Outs() {
     fmt.Println("output:", out)
 }
 
-// متدهای جدید Value
+// New Value methods
 v := reflect.ValueOf(myInstance)
 for field := range v.Fields() {
     fmt.Println(field.Type, field.Value)

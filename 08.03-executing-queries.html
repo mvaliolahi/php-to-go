@@ -88,7 +88,7 @@
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">rows, err := db.Query("SELECT id, name, email FROM users WHERE age &gt; $1", 18)
 if err != nil {
-    log.Fatal("خطا در اجرای کوئری:", err)
+    log.Fatal("Error executing query:", err)
 }
 defer rows.Close()
 for rows.Next() {
@@ -96,9 +96,9 @@ for rows.Next() {
     var name, email string
     err := rows.Scan(&amp;id, &amp;name, &amp;email)
     if err != nil {
-        log.Println("خطا در خواندن سطر:", err)
+        log.Println("Error reading row:", err)
     }
-    fmt.Printf("کاربر: %d - %s (%s)\n", id, name, email)
+    fmt.Printf("User: %d - %s (%s)\n", id, name, email)
 }
 if err := rows.Err(); err != nil {
     log.Fatal(err)
@@ -155,29 +155,29 @@ if err := rows.Err(); err != nil {
 <figure class="code go" dir="ltr"><pre><code class="language-go">var name string
 err := db.QueryRow("SELECT name FROM users WHERE id = $1", 42).Scan(&amp;name)
 if err == sql.ErrNoRows {
-    log.Println("کاربر پیدا نشد")
+    log.Println("User not found")
 } else if err != nil {
-    log.Fatal("خطا در کوئری:", err)
+    log.Fatal("Error in query:", err)
 }</code></pre></figure>
 <h3 id="عملیات-نوشتاری">8.3.4 عملیات نوشتاری با Exec</h3>
 <figure class="code go" dir="ltr"><pre><code class="language-go">res, err := db.Exec("UPDATE users SET name = $1 WHERE id = $2", "Meysam", 42)
 if err != nil {
-    log.Fatal("خطا در اجرای Update:", err)
+    log.Fatal("Error executing Update:", err)
 }
 affected, err := res.RowsAffected()
 if err != nil {
-    log.Fatal("خطا در دریافت تعداد ردیف‌ها:", err)
+    log.Fatal("Error getting row count:", err)
 }
-fmt.Printf("%d ردیف تغییر یافت\n", affected)</code></pre></figure>
+fmt.Printf("%d row(s) affected\n", affected)</code></pre></figure>
 <h3 id="prepared-statements">8.3.5 استفاده از Prepared Statements</h3>
 <p>از ابزارهای مهم امنیتی و بهینه‌سازی، <bdi dir="ltr">Prepared Statements</bdi> است. کوئری تنها یک‌بار پارس و کامپایل می‌شود و در دفعات بعد فقط مقادیر جایگزین می‌شوند:</p>
 <figure class="code go" dir="ltr"><pre><code class="language-go">stmt, err := db.Prepare("INSERT INTO users(name, email) VALUES ($1, $2)")
 if err != nil {
-    log.Fatal("خطا در ساخت statement:", err)
+    log.Fatal("Error creating statement:", err)
 }
 defer stmt.Close()
-_, err = stmt.Exec("حسین", "hossein@example.com")
-_, err = stmt.Exec("سارا", "sara@example.com")</code></pre></figure>
+_, err = stmt.Exec("Hossein", "hossein@example.com")
+_, err = stmt.Exec("Sara", "sara@example.com")</code></pre></figure>
 <div class="important"><strong>اتصال و Stmt:</strong> در <code>database/sql</code> هر <bdi dir="ltr">Prepared Statement</bdi> به یک اتصال خاص متصل می‌شود. برای جلوگیری از مشکل در برنامه‌های با بار بالا از <bdi dir="ltr">tx.Prepare()</bdi> در داخل تراکنش استفاده کنید.</div>
 <div class="note"><strong>رفتار پنهان <code dir="ltr">Prepare</code> در <code dir="ltr">database/sql</code>:</strong> برخلاف <bdi dir="ltr">PDO</bdi> در <bdi dir="ltr">PHP</bdi> که <bdi dir="ltr">prepared statement</bdi> را به‌صورت شفاف روی اتصال جاری نگه می‌دارد، در <bdi dir="ltr">Go</bdi> پکیج <code dir="ltr">database/sql</code> برای هر <bdi dir="ltr">Stmt</bdi> فقط در صورتی <bdi dir="ltr">PREPARE</bdi> واقعی روی سرور اجرا می‌کند که همان اتصال دوباره استفاده شود؛ در غیر این‌صورت روی اتصال دیگری دوباره <bdi dir="ltr">PREPARE</bdi> می‌شود. به همین دلیل <code dir="ltr">db.Prepare</code> در تراکنش‌های کوتاه و پرتکرار می‌تواند سربار غیرمنتظره ایجاد کند. اگر کوئری فقط یک‌بار اجرا می‌شود، <code dir="ltr">db.Query/Exec</code> با پارامترهای <bdi dir="ltr">bind</bdi> کافی است — <code dir="ltr">Prepare</code> را برای مواردی نگه دارید که همان کوئری ده‌ها بار در یک نشست اجرا می‌شود.</div>
 <h3 id="پارامترهای-نام‌دار-با-sqlx">8.3.6 پارامترهای نام‌دار با sqlx</h3>

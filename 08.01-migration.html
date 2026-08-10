@@ -113,9 +113,9 @@ DROP TABLE users;</code></pre></figure>
 <h3 id="اجرای-migration-از-خط-فرمان">8.1.5 اجرای Migration از خط فرمان</h3>
 <figure class="code bash" dir="ltr"><pre><code class="language-bash">$ migrate -path ./migrations -database "postgres://user:password@localhost:5432/mydb?sslmode=disable" up</code></pre></figure>
 <h3 id="rollback">8.1.6 Rollback</h3>
-<figure class="code bash" dir="ltr"><pre><code class="language-bash">$ migrate -path ./migrations -database "..." down 2 # دو تا آخر
-$ migrate -path ./migrations -database "..." goto 3 # رفتن به نسخه ۳
-$ migrate -path ./migrations -database "..." down -all # بازگشت کامل</code></pre></figure>
+<figure class="code bash" dir="ltr"><pre><code class="language-bash">$ migrate -path ./migrations -database "..." down 2 # last two
+$ migrate -path ./migrations -database "..." goto 3 # go to version 3
+$ migrate -path ./migrations -database "..." down -all # full rollback</code></pre></figure>
 <h3 id="مدیریت-نسخه-migration">8.1.7 مدیریت نسخه Migration</h3>
 <p>یکی از چالش‌های مهم در کار تیمی مدیریت نسخه‌های <bdi dir="ltr">Migration</bdi> است. در <bdi dir="ltr">golang-migrate</bdi> شماره‌گذاری متوالی است و اگر دو توسعه‌دهنده همزمان <bdi dir="ltr">Migration</bdi> جدیدی با شماره‌ی یکسان ایجاد کنند تداخل پیش می‌آید. راه‌حل‌ها: قفل دیتابیس (<bdi dir="ltr">advisory lock</bdi>)، اجرای <bdi dir="ltr">Migration</bdi> در <bdi dir="ltr">CI/CD</bdi>، و هماهنگی تیمی.</p>
 <div class="warning"><strong>وضعیت Dirty:</strong> اگر Migration‌ای در حین اجرا با خطا مواجه شود دیتابیس وارد حالت dirty می‌شود. برای رفع مشکل ابتدا علت خطا را برطرف کنید و سپس با <code>migrate force VERSION</code> وضعیت dirty را پاک کنید. هرگز بدون رفع علت اصلی خطا از force استفاده نکنید.</div>
@@ -133,12 +133,12 @@ func runMigrations() {
     "postgres://user:password@localhost:5432/mydb?sslmode=disable",
 )
     if err != nil {
-        log.Fatalf("خطا در ساخت migrate: %v", err)
+        log.Fatalf("Error creating migrate: %v", err)
     }
     if err := m.Up(); err != nil &amp;&amp; err != migrate.ErrNoChange {
-        log.Fatalf("خطا در اجرای migration: %v", err)
+        log.Fatalf("Error running migration: %v", err)
     }
-    log.Println("Migrationها با موفقیت اجرا شدند")
+    log.Println("Migrations executed successfully")
 }</code></pre></figure>
 <h3 id="استفاده-از-goose">8.1.9 استفاده از goose</h3>
 <figure class="code sql" dir="ltr"><pre><code class="language-sql">-- +goose Up

@@ -150,7 +150,7 @@ var ErrNotExist = errors.New("file does not exist")
 
 // Usage
 if errors.Is(err, os.ErrNotExist) {
-    fmt.Println("فایل وجود ندارد")
+    fmt.Println("file does not exist")
 }
 </code></pre>
 </figure>
@@ -163,16 +163,16 @@ if errors.Is(err, os.ErrNotExist) {
 }
 
 func (e *NotFoundError) Error() string {
-    return fmt.Sprintf("فایل پیدا نشد: %s", e.Path)
+    return fmt.Sprintf("file not found: %s", e.Path)
 }
 
 func handleError(err error) {
     // Type assertion with success check
     if nf, ok := err.(*NotFoundError); ok {
-        fmt.Println("مسیر نامعتبر:", nf.Path)
+        fmt.Println("invalid path:", nf.Path)
         return
     }
-    fmt.Println("خطای عمومی:", err)
+    fmt.Println("generic error:", err)
 }
 </code></pre>
 </figure>
@@ -208,13 +208,13 @@ switch e := err.(type) {
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">// errors.Is: does target error exist in the chain? (compare with ==)
 if errors.Is(err, os.ErrNotExist) {
-    fmt.Println("فایل پیدا نشد")
+    fmt.Println("file not found")
 }
 
 // errors.As: does a specific type exist in the chain? (like instanceof)
 var nf *NotFoundError
 if errors.As(err, &amp;nf) {
-    fmt.Println("مسیر:", nf.Path)
+    fmt.Println("path:", nf.Path)
 }
 </code></pre>
 </figure>
@@ -254,7 +254,7 @@ func withStack(err error) error {
 )
 func divide(a, b float64) (float64, error) {
     if b == 0 {
-        return 0, errors.New("تقسیم بر صفر مجاز نیست")
+        return 0, errors.New("division by zero is not allowed")
     }
     return a / b, nil
 }
@@ -262,9 +262,9 @@ func divide(a, b float64) (float64, error) {
 func main() {
     result, err := divide(10, 0)
     if err != nil {
-        fmt.Println("خطا:", err)
+        fmt.Println("error:", err)
     } else {
-        fmt.Println("نتیجه:", result)
+        fmt.Println("result:", result)
     }
 }
 </code></pre>
@@ -392,18 +392,18 @@ func validateAll(data Data) error {
  مستقیماً نوع هدف را مشخص می‌کند:
  </p>
 <figure class="code go" dir="ltr">
-<pre><code class="language-go">// روش قدیمی با errors.As
+<pre><code class="language-go">// Old approach with errors.As
 var timeoutErr *TimeoutError
 if errors.As(err, &amp;timeoutErr) {
     fmt.Println("timeout:", timeoutErr.Duration)
 }
 
-// روش جدید با errors.AsType (Go 1.26)
+// New approach with errors.AsType (Go 1.26)
 if timeoutErr, ok := errors.AsType[*TimeoutError](err); ok {
     fmt.Println("timeout:", timeoutErr.Duration)
 }
 
-// همچنین برای انواع بدون اشاره‌گر
+// Also for non-pointer types
 if code, ok := errors.AsType[ErrorCode](err); ok {
     fmt.Println("error code:", code)
 }</code></pre>

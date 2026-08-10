@@ -95,13 +95,13 @@ n, ok := i.(int) // ok = false, n = 0
 <pre><code class="language-go">func describe(v interface{}) {
     switch v := v.(type) {
         case string:
-        fmt.Println("رشته:", v)
+        fmt.Println("string:", v)
         case int:
-        fmt.Println("عدد صحیح:", v)
+        fmt.Println("integer:", v)
         case float64:
-        fmt.Println("عدد اعشاری:", v)
+        fmt.Println("float:", v)
         default:
-        fmt.Println("نوع ناشناخته")
+        fmt.Println("unknown type")
     }
 }
 </code></pre>
@@ -152,7 +152,7 @@ n := val.(int) // Correct — success — actual type is int
 // Safe Type Assertion with comma-ok
 s, ok := val.(string) // ok = false, s = "" — no panic
 if !ok {
-    fmt.Println("مقدار string نیست")
+    fmt.Println("value is not a string")
 }
 </code></pre>
 </figure>
@@ -197,13 +197,13 @@ Pending
 func (s Status) String() string {
     switch s {
         case Active:
-        return "فعال"
+        return "Active"
         case Inactive:
-        return "غیرفعال"
+        return "Inactive"
         case Pending:
-        return "در انتظار"
+        return "Pending"
         default:
-        return "نامشخص"
+        return "Unknown"
     }
 }
 

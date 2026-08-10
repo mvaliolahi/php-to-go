@@ -80,22 +80,22 @@
 <p>در پروژه‌های بزرگ‌تر، بهتر است قالب‌ها را در زیرپوشه‌ها سازمان‌دهی کنید:</p>
 <figure class="code bash" dir="ltr">
 <pre><code class="language-bash">templates/
-├── base.layout.html # طرح اصلی (اسکلت)
+├── base.layout.html # base layout (skeleton)
 ├── partials/
-│ ├── header.html # هدر مشترک
-│ ├── footer.html # فوتر مشترک
-│ └── nav.html # ناوبری مشترک
+│ ├── header.html # shared header
+│ ├── footer.html # shared footer
+│ └── nav.html # shared navigation
 └── pages/
-    ├── home.html # صفحه اصلی
-    ├── about.html # صفحه درباره
-    └── contact.html # صفحه تماس</code></pre>
+    ├── home.html # home page
+    ├── about.html # about page
+    └── contact.html # contact page</code></pre>
 </figure>
 <p>در این ساختار، همه فایل‌ها با <code dir="ltr">template.ParseFS</code> به صورت یکجا بارگذاری می‌شوند و <code>{{ define }}</code> و <code>{{ block }}</code> به صورت خودکار شناسایی می‌شوند:</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">// Load all templates with ParseFS
 tmpl, err := template.ParseFS(templateFS, "templates/*.html", "templates/**/*.html")
 if err != nil {
-    log.Fatalf("خطا در بارگذاری قالب‌ها: %v", err)
+    log.Fatalf("Error loading templates: %v", err)
 }
 
 // Render home page with base layout
@@ -106,13 +106,13 @@ err = tmpl.ExecuteTemplate(w, "base.layout.html", data)
 <h3 id="الگوی-وراثت-قالب-با-block-و-define">7.9.3 الگوی وراثت قالب با block و define</h3>
 <p>وراثت قالب یکی از الگوهای کلیدی برای جلوگیری از تکرار کد است. در Laravel Blade از <code dir="ltr">@extends</code> و <code dir="ltr">@yield/@section</code> استفاده می‌شود. در Go این الگو با ترکیب <code dir="ltr">{{ block }}</code> و <code dir="ltr">{{ define }}</code> پیاده‌سازی می‌شود. قالب پایه بلوک‌هایی با محتوای پیش‌فرض تعریف می‌کند و هر صفحه می‌تواند آن‌ها را بازنویسی کند:</p>
 <figure class="code html" dir="ltr">
-<pre><code class="language-xml"><!-- templates/base.layout.html — طرح اصلی -->
+<pre><code class="language-xml"><!-- templates/base.layout.html — base layout -->
 {{ define "base.layout.html" }}
 &lt;!DOCTYPE html&gt;
 &lt;html lang="fa" dir="rtl"&gt;
 &lt;head&gt;
     &lt;meta charset="UTF-8"&gt;
-    &lt;title&gt;{{ block "title" . }}برنامه من{{ end }}&lt;/title&gt;
+    &lt;title&gt;{{ block "title" . }}My App{{ end }}&lt;/title&gt;
     {{ block "head" . }}{{ end }}
 &lt;/head&gt;
 &lt;body&gt;
@@ -128,13 +128,13 @@ err = tmpl.ExecuteTemplate(w, "base.layout.html", data)
 </code></pre>
 </figure>
 <figure class="code html" dir="ltr">
-<pre><code class="language-xml"><!-- templates/pages/home.html — صفحه اصلی -->
-{{ define "title" . }}صفحه اصلی{{ end }}
+<pre><code class="language-xml"><!-- templates/pages/home.html — home page -->
+{{ define "title" . }}Home{{ end }}
 
 {{ define "content" . }}
 &lt;section class="hero"&gt;
-    &lt;h1&gt;خوش آمدید&lt;/h1&gt;
-    &lt;p&gt;این صفحه اصلی است.&lt;/p&gt;
+    &lt;h1&gt;Welcome&lt;/h1&gt;
+    &lt;p&gt;This is the home page.&lt;/p&gt;
 &lt;/section&gt;
 {{ end }}
 </code></pre>
@@ -199,17 +199,17 @@ err = tmpl.ExecuteTemplate(w, "base.layout.html", data)
 <pre><code class="language-xml">&lt;!-- templates/partials/pagination.html --&gt;
 {{ define "partial.pagination.html" }}
 {{ if .HasPrev }}
-    &lt;a href="?page={{ .PrevPage }}"&gt;قبلی&lt;/a&gt;
+    &lt;a href="?page={{ .PrevPage }}"&gt;Previous&lt;/a&gt;
 {{ end }}
-&lt;span&gt;صفحه {{ .CurrentPage }} از {{ .TotalPages }}&lt;/span&gt;
+&lt;span&gt;Page {{ .CurrentPage }} of {{ .TotalPages }}&lt;/span&gt;
 {{ if .HasNext }}
-    &lt;a href="?page={{ .NextPage }}"&gt;بعدی&lt;/a&gt;
+    &lt;a href="?page={{ .NextPage }}"&gt;Next&lt;/a&gt;
 {{ end }}
 {{ end }}
 </code></pre>
 </figure>
 <figure class="code html" dir="ltr">
-<pre><code class="language-xml"><!-- استفاده در صفحه -->
+<pre><code class="language-xml"><!-- Usage in page -->
 {{ template "partial.pagination.html" .Pagination }}
 </code></pre>
 </figure>

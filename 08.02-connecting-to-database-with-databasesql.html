@@ -81,13 +81,13 @@ func main() {
     dsn := "host=localhost user=postgres password=secret dbname=example sslmode=disable"
     db, err := sql.Open("postgres", dsn)
     if err != nil {
-        log.Fatalf("خطا در باز کردن اتصال: %v", err)
+        log.Fatalf("Error opening connection: %v", err)
     }
     defer db.Close()
     if err := db.Ping(); err != nil {
-        log.Fatalf("اتصال به پایگاه‌داده برقرار نشد: %v", err)
+        log.Fatalf("Database connection failed: %v", err)
     }
-    log.Println("اتصال موفق به دیتابیس برقرار شد")
+    log.Println("Database connection established successfully")
 }</code></pre>
 </figure>
 <p>پس از ساخت و اجرای <a href="08.01-migration.html">Migration</a>‌ها، زمان اتصال به دیتابیس فرامی‌رسد. پکیج <bdi dir="ltr">database/sql</bdi> یک رابط استاندارد برای اتصال به پایگاه‌های داده رابطه‌ای فراهم می‌کند. </p><p>برخلاف <bdi dir="ltr">Laravel</bdi> که از <bdi dir="ltr">ORM</bdi> قدرتمندی مانند <bdi dir="ltr">Eloquent</bdi> استفاده می‌کند، این پکیج هیچ مدل یا ساختار جدایی ارائه نمی‌دهد و به‌جای آن تمرکز را بر کنترل کامل، سرعت و کارایی بالا قرار می‌دهد.</p>
@@ -107,7 +107,7 @@ for rows.Next() {
     var name string
     err := rows.Scan(&amp;id, &amp;name)
     if err != nil {
-        log.Println("خطا در خواندن داده:", err)
+        log.Println("Error reading data:", err)
     }
     log.Printf("User: %d - %s\n", id, name)
 }</code></pre>
@@ -149,15 +149,15 @@ users := []struct {
     Name string
     Email string
 }{
-    {"علی", "ali@example.com"},
-    {"سارا", "sara@example.com"},
-    {"مهدی", "mehdi@example.com"},
+    {"Ali", "ali@example.com"},
+    {"Sara", "sara@example.com"},
+    {"Mehdi", "mehdi@example.com"},
 }
 
 for _, u := range users {
     _, err := stmt.Exec(u.Name, u.Email)
     if err != nil {
-        log.Printf("خطا در درج %s: %v", u.Name, err)
+        log.Printf("Error inserting %s: %v", u.Name, err)
     }
 }</code></pre>
 </figure>
@@ -180,7 +180,7 @@ err := db.QueryRow(
 if user.Email.Valid {
     fmt.Println("Email:", user.Email.String)
 } else {
-    fmt.Println("Email: تنظیم نشده")
+    fmt.Println("Email: not set")
 }</code></pre>
 </figure>
 <p>روش جایگزین استفاده از <strong>pointer</strong> هاست. یک <bdi dir="ltr">pointer</bdi> با مقدار <code>nil</code> نشان‌دهنده‌ی <bdi dir="ltr">NULL</bdi> است:</p>

@@ -72,11 +72,11 @@
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">select {
     case msg1 := &lt;-ch1:
-    // وقتی داده‌ای از ch1 دریافت شد
+    // when data is received from ch1
     case ch2 &lt;- "data":
-    // وقتی می‌توان داده‌ای به ch2 ارسال کرد
+    // when data can be sent to ch2
     default:
-    // اگر هیچ case ای آماده نبود (non-blocking)
+    // if no case is ready (non-blocking)
 }
 </code></pre>
 </figure>
@@ -94,18 +94,18 @@ func main() {
     ch2 := make(chan string)
     go func() {
         time.Sleep(1 * time.Second)
-        ch1 &lt;- "داده از کانال 1"
+        ch1 &lt;- "data from channel 1"
     }()
     go func() {
         time.Sleep(2 * time.Second)
-        ch2 &lt;- "داده از کانال 2"
+        ch2 &lt;- "data from channel 2"
     }()
     for i := 0; i &lt; 2; i++ {
         select {
             case msg := &lt;-ch1:
-            fmt.Println("پیام دریافت شده:", msg)
+            fmt.Println("Message received:", msg)
             case msg := &lt;-ch2:
-            fmt.Println("پیام دریافت شده:", msg)
+            fmt.Println("Message received:", msg)
         }
     }
 }
@@ -117,11 +117,11 @@ func main() {
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">select {
     case msg := &lt;-ch1:
-    fmt.Println("پیام از ch1:", msg)
+    fmt.Println("Message from ch1:", msg)
     case msg := &lt;-ch2:
-    fmt.Println("پیام از ch2:", msg)
+    fmt.Println("Message from ch2:", msg)
     default:
-    fmt.Println("هیچ کانالی آماده نیست، ادامه می‌دهم")
+    fmt.Println("No channel is ready, continuing")
 }
 </code></pre>
 </figure>
@@ -132,9 +132,9 @@ func main() {
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">select {
     case msg := &lt;-ch:
-    fmt.Println("دریافت شد:", msg)
+    fmt.Println("Received:", msg)
     case &lt;-time.After(2 * time.Second):
-    fmt.Println("Timeout! هیچ داده‌ای در زمان مشخص دریافت نشد.")
+    fmt.Println("Timeout! No data received within the specified time.")
 }
 </code></pre>
 </figure>
@@ -155,7 +155,7 @@ func fetchWithTimeout(ctx context.Context, url string) (string, error) {
         case result := &lt;-ch:
         return result, nil
         case &lt;-time.After(2 * time.Second):
-        return "", fmt.Errorf("timeout بعد از ۲ ثانیه")
+        return "", fmt.Errorf("timeout after 2 seconds")
         case &lt;-ctx.Done():
         return "", ctx.Err()
     }
@@ -174,10 +174,10 @@ func processWithTimeout(ctx context.Context) {
             case &lt;-ctx.Done():
             return
             case &lt;-timer.C:
-            fmt.Println("تایم‌اوت!")
+            fmt.Println("Timeout!")
             return
             case data := &lt;-dataCh:
-            fmt.Println("داده:", data)
+            fmt.Println("Data:", data)
             if !timer.Stop() {
                 &lt;-timer.C // drain channel if already ticked
             }
@@ -194,23 +194,23 @@ func processWithTimeout(ctx context.Context) {
     for ch1 != nil || ch2 != nil {
         select {
             case &lt;-ctx.Done():
-            fmt.Println("لغو شد")
+            fmt.Println("Canceled")
             return
             case val, ok := &lt;-ch1:
             if !ok {
                 ch1 = nil // disable this case
                 continue
             }
-            fmt.Println("از ch1:", val)
+            fmt.Println("From ch1:", val)
             case val, ok := &lt;-ch2:
             if !ok {
                 ch2 = nil
                 continue
             }
-            fmt.Println("از ch2:", val)
+            fmt.Println("From ch2:", val)
         }
     }
-    fmt.Println("هر دو کانال بسته شدند")
+    fmt.Println("Both channels closed")
 }
 </code></pre>
 </figure>
@@ -304,15 +304,15 @@ func processWithTimeout(ctx context.Context) {
 <li><strong>لغو عملیات با <bdi dir="ltr">select</bdi> و <bdi dir="ltr">context.Done()</bdi>:</strong> با اضافه کردن <bdi dir="ltr">case &lt;-ctx.Done()</bdi> به <bdi dir="ltr">select</bdi>، می‌توانید عملیات جاری را به صورت ایمن لغو کنید. این الگو به شما اجازه می‌دهد درخواست‌های شبکه، پردازش‌های طولانی یا عملیات <bdi dir="ltr">I/O</bdi> را با سیگنال لغو متوقف کنید و منابع سیستم را آزاد نمایید. در <bdi dir="ltr">PHP</bdi> معادل این کار <bdi dir="ltr">pcntl_signal</bdi> یا <bdi dir="ltr">process timeout</bdi> است اما بسیار ساده‌تر و ایمن‌تر.</li>
 </ul>
 <figure class="code go" dir="ltr">
-<pre><code class="language-go">// الگوی non-blocking send با default
+<pre><code class="language-go">// Non-blocking send pattern with default
 select {
     case ch &lt;- data:
-    fmt.Println("داده ارسال شد")
+    fmt.Println("Data sent")
     default:
-    fmt.Println("کانال پر است، داده دور انداخته شد")
+    fmt.Println("Channel is full, data discarded")
 }
 
-// الگوی cancellation با context
+// Cancellation pattern with context
 select {
     case result := &lt;-ch:
     return result, nil

@@ -280,7 +280,7 @@ func PutBuffer(buf *bytes.Buffer) {
     buf := GetBuffer()
     defer PutBuffer(buf)
 
-    data := map[string]string{"message": "سلام دنیا"}
+    data := map[string]string{"message": "Hello world"}
     if err := json.NewEncoder(buf).Encode(data); err != nil {
         http.Error(w, err.Error(), http.StatusInternalServerError)
         return
@@ -424,11 +424,11 @@ func useResource() {
  که به‌طور سنگین از map استفاده می‌کنند، مشهودتر است.
  </p>
 <figure class="code go" dir="ltr">
-<pre><code class="language-go">// رفتار map تغییری نکرده، فقط پیاده‌سازی داخلی بهبود یافته
+<pre><code class="language-go">// Map behavior unchanged, only internal implementation improved
 m := make(map[string]int)
 m["key"] = 42
 
-// اگر نیاز به غیرفعال کردن Swiss Tables بود (برای دیباگ)
+// If you need to disable Swiss Tables (for debugging)
 // GOEXPERIMENT=noswissmap go build .
 // GOEXPERIMENT=nospinbitmutex go build .</code></pre>
 </figure>
@@ -444,11 +444,11 @@ m["key"] = 42
  و جدیدتر) انتظار می‌رود، زیرا GC اکنون از دستورالعمل‌های برداری برای اسکن اشیاء کوچک
  استفاده می‌کند.</p>
 <figure class="code bash" dir="ltr">
-<pre><code class="language-bash"># غیرفعال کردن GC جدید (در صورت نیاز)
+<pre><code class="language-bash"># Disable the new GC (if needed)
 GOEXPERIMENT=nogreenteagc go build -o myapp .
 
-# توجه: این تنظیم در Go 1.27 حذف خواهد شد
-# اگر به هر دلیلی نیاز به غیرفعال کردن دارید، لطفاً issue ثبت کنید</code></pre>
+# Note: this setting will be removed in Go 1.27
+# If you need to disable it for any reason, please file an issue</code></pre>
 </figure>
 <div class="warning">
 <strong>توجه مهم:</strong> تابع <code>debug.FreeOSMemory()</code> در نسخه‌های اخیر Go

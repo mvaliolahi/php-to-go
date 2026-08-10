@@ -78,10 +78,10 @@
 func main() {
     data, err := os.ReadFile("notes.txt")
     if err != nil {
-        fmt.Println("خطا در خواندن فایل:", err)
+        fmt.Println("Error reading file:", err)
         return
     }
-    fmt.Println("محتوای فایل:")
+    fmt.Println("File content:")
     fmt.Println(string(data))
 }
 </code></pre></figure>
@@ -90,9 +90,9 @@ func main() {
 <figure class="code php" dir="ltr"><pre><code class="language-php">&lt;?php
 $content = file_get_contents("notes.txt");
 if ($content === false) {
-    echo "خطا در خواندن فایل\n";
+    echo "Error reading file\n";
 } else {
-    echo "محتوای فایل:\n";
+    echo "File content:\n";
     echo $content;
 }
 </code></pre></figure>
@@ -198,7 +198,7 @@ func mmapRead(path string) ([]byte, error) {
     data, err := syscall.Mmap(int(f.Fd()), 0, int(size),
     syscall.PROT_READ, syscall.MAP_SHARED)
     if err != nil {
-        return nil, fmt.Errorf("mmap خطا: %w", err)
+        return nil, fmt.Errorf("mmap error: %w", err)
     }
 
     // Note: must call Munmap after finishing work
@@ -224,35 +224,35 @@ func mmapRead(path string) ([]byte, error) {
 <pre><code class="language-go">info, err := os.Stat("config.yaml")
 if err != nil {
     if os.IsNotExist(err) {
-        fmt.Println("فایل وجود ندارد")
+        fmt.Println("File does not exist")
         return
     }
     log.Fatal(err)
 }
 
-fmt.Printf("نام: %s\n", info.Name())
-fmt.Printf("اندازه: %d بایت\n", info.Size())
-fmt.Printf("مجوز: %s\n", info.Mode())
-fmt.Printf("آخرین تغییر: %s\n", info.ModTime().Format("2006-01-02 15:04:05"))
-fmt.Printf("دایرکتوری؟ %v\n", info.IsDir())
+fmt.Printf("Name: %s\n", info.Name())
+fmt.Printf("Size: %d bytes\n", info.Size())
+fmt.Printf("Permission: %s\n", info.Mode())
+fmt.Printf("Last modified: %s\n", info.ModTime().Format("2006-01-02 15:04:05"))
+fmt.Printf("Directory? %v\n", info.IsDir())
 
 // Check file type
 mode := info.Mode()
 if mode.IsRegular() {
-    fmt.Println("فایل معمولی")
+    fmt.Println("Regular file")
 }
 if mode&amp;os.ModeSymlink != 0 {
-    fmt.Println("لینک نمادین")
+    fmt.Println("Symbolic link")
 }
 if mode&amp;os.ModeDevice != 0 {
-    fmt.Println("فایل دستگاه")
+    fmt.Println("Device file")
 }
 </code></pre>
 </figure>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">// Check file exists before reading
 if _, err := os.Stat("data.txt"); os.IsNotExist(err) {
-    fmt.Println("فایل data.txt وجود ندارد، استفاده از پیش‌فرض")
+    fmt.Println("File data.txt does not exist, using default")
     return
 }
 
@@ -264,7 +264,7 @@ lineCount := 0
 for scanner.Scan() {
     lineCount++
 }
-fmt.Printf("تعداد خطوط: %d\n", lineCount)
+fmt.Printf("Line count: %d\n", lineCount)
 </code></pre>
 </figure>
 <div class="note">
@@ -297,7 +297,7 @@ data, err := io.ReadAll(section)
 if err != nil {
     log.Fatal(err)
 }
-fmt.Printf("خوانده شد: %d بایت\n", len(data))
+fmt.Printf("Read: %d bytes\n", len(data))
 </code></pre>
 </figure>
 <figure class="code go" dir="ltr">

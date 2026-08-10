@@ -89,9 +89,9 @@ func main() {
     ctx := context.Background()
     pong, err := rdb.Ping(ctx).Result()
     if err != nil {
-        log.Fatalf("خطا در اتصال: %v", err)
+        log.Fatalf("Error connecting: %v", err)
     }
-    fmt.Println("اتصال موفق:", pong)
+    fmt.Println("Connection successful:", pong)
 }</code></pre>
 </figure>
 <h3 id="cache-aside">8.8.2 الگوی Cache-Aside</h3>
@@ -195,7 +195,7 @@ func main() {
         return err
     }
     if !ok {
-        return fmt.Errorf("قفل در دسترس نیست")
+        return fmt.Errorf("lock unavailable")
     }
     // Release lock at end
     defer rdb.Del(ctx, lockKey)
@@ -221,14 +221,14 @@ fmt.Println(incrCmd.Val()) // 1</code></pre>
 <h3 id="pub-sub">8.8.6 Pub/Sub</h3>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">// Publish message
-rdb.Publish(ctx, "notifications", "سلام جهان")
+rdb.Publish(ctx, "notifications", "Hello world")
 
 // Subscription
 pubsub := rdb.Subscribe(ctx, "notifications")
 ch := pubsub.Channel()
 go func() {
     for msg := range ch {
-        fmt.Println("پیام:", msg.Payload)
+        fmt.Println("Message:", msg.Payload)
     }
 }()</code></pre>
 </figure>

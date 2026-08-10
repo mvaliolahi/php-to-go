@@ -224,11 +224,11 @@ $ go test -memprofile=mem.prof -bench=. ./...
 
 # Interactive analysis in terminal
 $ go tool pprof cpu.prof
-(pprof) top10 # ۱۰ نقطه داغ CPU
-(pprof) list funcName # کد خط‌به‌خط با مصرف CPU
-(pprof) web # نمودار گرافیکی (نیاز به graphviz)
-(pprof) png # خروجی PNG نمودار
-(pprof) svg # خروجی SVG
+(pprof) top10 # top 10 CPU hotspots
+(pprof) list funcName # line-by-line code with CPU usage
+(pprof) web # graphical chart (requires graphviz)
+(pprof) png # PNG output of chart
+(pprof) svg # SVG output
 
 # Visual analysis in browser (best method!)
 $ go tool pprof -http=:8080 cpu.prof
@@ -306,14 +306,14 @@ $ go tool pprof http://localhost:6060/debug/pprof/heap
  تخصیص می‌دهد. این بهبود به‌خصوص برای ورودی‌های بزرگ‌تر مشهودتر است.
  </p>
 <figure class="code go" dir="ltr">
-<pre><code class="language-go">// io.ReadAll در Go 1.26 بسیار سریعتر شده
-// بدون تغییر در API - فقط بهبود عملکرد داخلی
+<pre><code class="language-go">// io.ReadAll in Go 1.26 is much faster
+// No API change — only internal performance improvement
 data, err := io.ReadAll(response.Body)
 if err != nil {
     log.Fatal(err)
 }
 
-// مقایسه بنچمارک (داده‌های نمونه):
+// Benchmark comparison (sample data):
 // Go 1.25: 1200 ns/op, 4096 B/op, 2 allocs/op
 // Go 1.26:  580 ns/op, 2048 B/op, 1 allocs/op</code></pre>
 </figure>

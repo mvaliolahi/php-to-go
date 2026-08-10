@@ -71,11 +71,11 @@
 <p>وقتی شرایطی پیش می‌آید که برنامه باید فوراً متوقف شود — مثل خرابی غیرمنتظره سخت‌افزاری، نقض invariant داخلی، یا خطای برنامه‌نویسی — از panic استفاده می‌کنیم.</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">func fail() {
-    panic("اتفاق بحرانی رخ داده!")
+    panic("a critical error occurred!")
 }
 func main() {
     fail()
-    fmt.Println("این خط هرگز اجرا نمی‌شود")
+    fmt.Println("this line will never execute")
 }
 </code></pre>
 </figure>
@@ -117,20 +117,20 @@ type _panic struct {
 <pre><code class="language-go">func safeDivide(a, b float64) (result float64) {
     defer func() {
         if r := recover(); r != nil {
-            fmt.Println("بازیابی از panic:", r)
+            fmt.Println("recovered from panic:", r)
             result = 0
         }
     }()
 
     if b == 0 {
-        panic("تقسیم بر صفر")
+        panic("division by zero")
     }
 
     return a / b
 }
 
 func main() {
-    fmt.Println("نتیجه:", safeDivide(10, 0))
+    fmt.Println("result:", safeDivide(10, 0))
 }
 </code></pre>
 </figure>
@@ -141,16 +141,16 @@ func main() {
 <pre><code class="language-go">func main() {
     defer func() {
         if r := recover(); r != nil {
-            fmt.Println("بازیابی:", r)
+            fmt.Println("recovery:", r)
             // Only second panic is recovered
         }
     }()
 
     defer func() {
-        panic("panic دوم در defer")
+        panic("second panic in defer")
     }()
 
-    panic("panic اول")
+    panic("first panic")
 }
 // Output: recovery: second panic in defer
 </code></pre>
@@ -164,7 +164,7 @@ func safeHandler(h http.Handler) http.Handler {
     return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
         defer func() {
             if err := recover(); err != nil {
-                log.Printf("panic در handler: %v\n%s", err,
+                log.Printf("panic in handler: %v\n%s", err,
                 debug.Stack())
                 http.Error(w, "Internal Server Error", 500)
             }
@@ -246,13 +246,13 @@ http.ListenAndServe(":8080", handler)
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">func main() {
     go func() {
-        panic("خطا در goroutine فرعی")
+        panic("error in child goroutine")
         // Wrong — this panic stops the entire program!
         // recover only works in the same goroutine
     }()
 
     time.Sleep(time.Second)
-    fmt.Println("این خط هرگز اجرا نمی‌شود")
+    fmt.Println("this line will never execute")
 }
 </code></pre>
 </figure>
@@ -332,7 +332,7 @@ http.ListenAndServe(":8080", handler)
 func readFile(filename string) ([]byte, error) {
     data, err := os.ReadFile(filename)
     if err != nil {
-        return nil, fmt.Errorf("خطا در باز کردن فایل %s: %w", filename, err)
+        return nil, fmt.Errorf("error opening file %s: %w", filename, err)
     }
     return data, nil
 }
@@ -354,16 +354,16 @@ func main() {
 <pre><code class="language-go">func safeOperation() {
     defer func() {
         if r := recover(); r != nil {
-            fmt.Println("بازیابی از panic:", r)
+            fmt.Println("recovered from panic:", r)
         }
     }()
-    panic("خطای غیرمنتظره!")
-    fmt.Println("این خط اجرا نمی‌شود")
+    panic("unexpected error!")
+    fmt.Println("this line will not execute")
 }
 
 func main() {
     safeOperation()
-    fmt.Println("برنامه ادامه می‌یابد")
+    fmt.Println("program continues")
 }
 </code></pre>
 </figure>

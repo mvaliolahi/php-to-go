@@ -125,14 +125,14 @@ func main() {
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">myapp/
 ├── cmd/
-│ └── myapp/main.go [صحیح] می‌تواند myapp/internal/service را import کند
+│ └── myapp/main.go [OK] can import myapp/internal/service
 ├── internal/
-│ ├── service/ [اشتباه] از خارج myapp/ قابل import نیست
+│ ├── service/ [wrong] cannot be imported from outside myapp/
 │ │ └── service.go
 │ └── handler/
-│ └── handler.go [صحیح] می‌تواند myapp/internal/service را import کند
+│ └── handler.go [OK] can import myapp/internal/service
 ├── pkg/
-│ └── utils/ [اشتباه] نمی‌تواند myapp/internal/service را import کند
+│ └── utils/ [wrong] cannot import myapp/internal/service
 │ └── utils.go
 └── go.mod
 </code></pre>

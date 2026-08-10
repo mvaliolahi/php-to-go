@@ -299,9 +299,9 @@ for ($i = 0; $i &lt; 10; $i++) {
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">// common pattern: read from map with error check
 if val, ok := cache[key]; ok {
-    fmt.Println("یافت شد:", val)
+    fmt.Println("found:", val)
 } else {
-    fmt.Println("یافت نشد")
+    fmt.Println("not found")
 }
 // val and ok are only accessible in this block
 
@@ -313,9 +313,9 @@ if err := doSomething(); err != nil {
 
 // combined pattern: type conversion and check
 if n, err := strconv.Atoi(input); err == nil {
-    fmt.Println("عدد:", n)
+    fmt.Println("number:", n)
 } else {
-    fmt.Println("ورودی نامعتبر")
+    fmt.Println("invalid input")
 }
 </code></pre>
 </figure>
@@ -326,21 +326,21 @@ if n, err := strconv.Atoi(input); err == nil {
 <pre><code class="language-go">// switch without fallthrough — default behavior
 switch day := time.Now().Weekday(); day {
     case time.Saturday, time.Sunday: // multiple values in one case
-    fmt.Println("آخر هفته")
+    fmt.Println("weekend")
     default:
-    fmt.Println("روز کاری")
+    fmt.Println("workday")
 }
 
 // switch with fallthrough — execute next case without condition check
 switch num := 2; num {
     case 1:
-    fmt.Println("یک")
+    fmt.Println("one")
     fallthrough // force execution of next case!
     case 2:
-    fmt.Println("دو")
+    fmt.Println("two")
     fallthrough
     case 3:
-    fmt.Println("سه")
+    fmt.Println("three")
 }
 // Output: two three (even if num == 2)
 </code></pre>

@@ -139,7 +139,7 @@ res, err := tx.ExecContext(ctx,
 newBalance, accountID, currentVersion)
 affected, _ := res.RowsAffected()
 if affected == 0 {
-    return fmt.Errorf("تغییر توسط کاربر دیگری انجام شده — دوباره تلاش کنید")
+    return fmt.Errorf("modified by another user — please retry")
 }</code></pre></figure>
 <h3 id="saga-pattern">8.5.4 الگوی Saga برای تراکنش‌های توزیع‌شده</h3>
 <p>در سیستم‌های میکروسرویس تراکنش‌های <bdi dir="ltr">ACID</bdi> بین چند دیتابیس امکان‌پذیر نیست. الگوی <bdi dir="ltr">Saga</bdi> راه‌حلی است که در آن هر سرویس تراکنش محلی خود را دارد و در صورت خطا عملیات جبرانی (<bdi dir="ltr">compensating action</bdi>) اجرا می‌شود:</p>

@@ -91,10 +91,10 @@ go func(ctx context.Context) {
     for {
         select {
             case &lt;-ctx.Done():
-            fmt.Println("عملیات لغو شد")
+            fmt.Println("Operation canceled")
             return
             default:
-            fmt.Println("در حال کار کردن...")
+            fmt.Println("Working...")
             time.Sleep(500 * time.Millisecond)
         }
     }
@@ -112,9 +112,9 @@ cancel()
 defer cancel()
 select {
     case &lt;-time.After(5 * time.Second):
-    fmt.Println("عملیات کامل شد")
+    fmt.Println("Operation completed")
     case &lt;-ctx.Done():
-    fmt.Println("تایم‌اوت اتفاق افتاد:", ctx.Err())
+    fmt.Println("Timeout occurred:", ctx.Err())
 }
 </code></pre>
 </figure>
@@ -126,13 +126,13 @@ select {
     dataCh := make(chan string)
     go func() {
         time.Sleep(5 * time.Second)
-        dataCh &lt;- "داده آماده است"
+        dataCh &lt;- "Data is ready"
     }()
     select {
         case data := &lt;-dataCh:
-        fmt.Fprintf(w, "داده: %s", data)
+        fmt.Fprintf(w, "Data: %s", data)
         case &lt;-ctx.Done():
-        http.Error(w, "درخواست لغو شد یا تایم‌اوت", http.StatusRequestTimeout)
+        http.Error(w, "Request canceled or timed out", http.StatusRequestTimeout)
     }
 }
 </code></pre>
@@ -146,7 +146,7 @@ select {
     for i := 0; i &lt; 5; i++ {
         select {
             case &lt;-ctx.Done():
-            fmt.Println("لغو شد")
+            fmt.Println("Canceled")
             return
             case ch &lt;- i:
             time.Sleep(1 * time.Second)
@@ -163,7 +163,7 @@ select {
     ch := make(chan int)
     go doWork(ctx, ch)
     for val := range ch {
-        fmt.Println("دریافت:", val)
+        fmt.Println("Received:", val)
     }
 }
 </code></pre>
@@ -189,10 +189,10 @@ select {
 
     select {
         case &lt;-time.After(5 * time.Second):
-        w.Write([]byte("عملیات کامل شد"))
+        w.Write([]byte("Operation completed"))
         case &lt;-ctx.Done():
         // Client disconnected or timeout occurred
-        log.Println("درخواست لغو شد:", ctx.Err())
+        log.Println("Request canceled:", ctx.Err())
     }
 }
 </code></pre>
@@ -232,12 +232,12 @@ func protectedHandler(w http.ResponseWriter, r *http.Request) {
 
     userID, ok := ctx.Value(userIDKey).(int)
     if !ok {
-        http.Error(w, "احراز هویت نشده", http.StatusUnauthorized)
+        http.Error(w, "Not authenticated", http.StatusUnauthorized)
         return
     }
 
     role, _ := ctx.Value(userRoleKey).(string)
-    fmt.Fprintf(w, "کاربر %d با نقش %s", userID, role)
+    fmt.Fprintf(w, "User %d with role %s", userID, role)
 }
 </code></pre>
 </figure>
@@ -261,7 +261,7 @@ func requireRole(role string, next http.Handler) http.Handler {
         userRole, _ := ctx.Value(userRoleKey).(string)
 
         if userRole != role {
-            http.Error(w, "دسترسی غیرمجاز", http.StatusForbidden)
+            http.Error(w, "Unauthorized access", http.StatusForbidden)
             return
         }
 
@@ -308,7 +308,7 @@ func main() {
     user, err := fetchUser(ctx, userID)
     if err != nil {
         if ctx.Err() == context.DeadlineExceeded {
-            http.Error(w, "مهلت زمانی تمام شد", http.StatusGatewayTimeout)
+            http.Error(w, "Deadline exceeded", http.StatusGatewayTimeout)
             return
         }
         http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -318,7 +318,7 @@ func main() {
     orders, err := fetchOrders(ctx, user.ID)
     if err != nil {
         if ctx.Err() == context.Canceled {
-            log.Println("درخواست توسط کاربر لغو شد")
+            log.Println("Request canceled by user")
             return
         }
         http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -392,7 +392,7 @@ ctx := context.WithValue(parent, "requestID", "abc-123")
     // Start server in goroutine
     go func() {
         if err := srv.ListenAndServe(); err != http.ErrServerClosed {
-            log.Fatalf("خطای سرور: %v", err)
+            log.Fatalf("Server error: %v", err)
         }
     }()
 
@@ -400,16 +400,16 @@ ctx := context.WithValue(parent, "requestID", "abc-123")
     quit := make(chan os.Signal, 1)
     signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
     &lt;-quit
-    log.Println("در حال خاموش کردن سرور...")
+    log.Println("Shutting down server...")
 
     // Graceful shutdown with 30 second timeout
     ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
     defer cancel()
 
     if err := srv.Shutdown(ctx); err != nil {
-        log.Fatalf("خطا در خاموش کردن: %v", err)
+        log.Fatalf("Error shutting down: %v", err)
     }
-    log.Println("سرور با موفقیت خاموش شد")
+    log.Println("Server shut down successfully")
 }
 </code></pre>
 </figure>
@@ -424,15 +424,15 @@ ctx := context.WithValue(parent, "requestID", "abc-123")
 <pre><code class="language-go">func handler(w http.ResponseWriter, r *http.Request) {
     ctx := r.Context()
 
-    // ادامه عملیات ثبت لاگ حتی بعد از لغو درخواست
+    // Continue logging even after the request is canceled
     bgCtx := context.WithoutCancel(ctx)
     go func() {
-        // این عملیات لغو نمیشود وقتی درخواست لغو میشود
+        // This operation is not canceled when the request is canceled
         logRequest(bgCtx, r)
         sendMetrics(bgCtx, r)
     }()
 
-    // پردازش اصلی درخواست
+    // Main request processing
     processRequest(ctx)
 }</code></pre>
 </figure>
@@ -447,14 +447,14 @@ ctx := context.WithValue(parent, "requestID", "abc-123")
 <pre><code class="language-go">var ErrDatabaseTimeout = errors.New("database query timeout")
 
 func queryWithTimeout(ctx context.Context) {
-    // ایجاد context با timeout و علت مشخص
+    // Create context with timeout and specific cause
     ctx, cancel := context.WithTimeoutCause(ctx, 5*time.Second, ErrDatabaseTimeout)
     defer cancel()
 
     result, err := db.Query(ctx, "SELECT ...")
     if err != nil {
         if cause := context.Cause(ctx); cause != nil {
-            // علت دقیق لغو را بررسی کنید
+            // Check the exact cause of cancellation
             if errors.Is(cause, ErrDatabaseTimeout) {
                 log.Error("query timed out", "cause", cause)
             }
@@ -470,14 +470,14 @@ func queryWithTimeout(ctx context.Context) {
  </p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">func watchFile(ctx context.Context, path string) {
-    // اجرای پاکسازی بعد از لغو context
+    // Run cleanup after context is canceled
     stop := context.AfterFunc(ctx, func() {
         log.Println("context canceled, cleaning up file watch:", path)
         cleanupWatch(path)
     })
-    defer stop() // توقف پاکسازی اگر context هنوز لغو نشده
+    defer stop() // stop cleanup if context is not yet canceled
 
-    // نظارت روی فایل
+    // Watch the file
     for {
         select {
             case &lt;-ctx.Done():

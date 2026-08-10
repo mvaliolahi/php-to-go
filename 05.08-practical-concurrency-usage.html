@@ -239,7 +239,7 @@ func main() {
         close(results)
     }()
     for r := range results {
-        fmt.Println("نتیجه Query:", r)
+        fmt.Println("Query result:", r)
     }
 }
 </code></pre>
@@ -288,13 +288,13 @@ func (p *Processor) Start(ctx context.Context) {
             for {
                 select {
                     case &lt;-ctx.Done():
-                    log.Printf("Worker %d: خاموش شدن\n", id)
+                    log.Printf("Worker %d: shutting down\n", id)
                     return
                     case job, ok := &lt;-p.jobs:
                     if !ok {
                         return
                     }
-                    log.Printf("Worker %d: پردازش Job %d (%s)\n", id, job.ID, job.Type)
+                    log.Printf("Worker %d: processing Job %d (%s)\n", id, job.ID, job.Type)
                     time.Sleep(time.Duration(100+rand.Intn(400)) * time.Millisecond)
                 }
             }
@@ -307,7 +307,7 @@ func (p *Processor) Submit(job Job) bool {
         case p.jobs &lt;- job:
         return true
         default:
-        log.Printf("صف پر است! Job %d رد شد\n", job.ID)
+        log.Printf("Queue is full! Job %d dropped\n", job.ID)
         return false
     }
 }
@@ -333,9 +333,9 @@ func main() {
     }()
 
     &lt;-ctx.Done()
-    log.Println("در حال خاموش کردن...")
+    log.Println("Shutting down...")
     proc.Stop()
-    log.Println("پردازنده متوقف شد")
+    log.Println("Processor stopped")
 }
 </code></pre>
 </figure>

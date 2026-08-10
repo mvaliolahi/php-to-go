@@ -122,9 +122,9 @@ import (
 
 func sendNotification(userID int, wg *sync.WaitGroup) {
     defer wg.Done() // decrement counter
-    fmt.Printf("ارسال پیام به کاربر %d شروع شد...\n", userID)
+    fmt.Printf("Sending message to user %d started...\n", userID)
     time.Sleep(time.Duration(1+userID%3) * time.Second)
-    fmt.Printf("پیام به کاربر %d ارسال شد.\n", userID)
+    fmt.Printf("Message to user %d sent.\n", userID)
 }
 
 func main() {
@@ -137,7 +137,7 @@ func main() {
     }
 
     wg.Wait() // Join: wait for all to finish
-    fmt.Println("همه پیام‌ها ارسال شدند.")
+    fmt.Println("All messages have been sent.")
 }
 </code></pre>
 </figure>

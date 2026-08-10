@@ -193,7 +193,7 @@ for {
 // Split by word (space)
 scanner.Split(bufio.ScanWords)
 for scanner.Scan() {
-    fmt.Println("کلمه:", scanner.Text())
+    fmt.Println("Word:", scanner.Text())
 }
 </code></pre>
 </figure>
@@ -280,10 +280,10 @@ func main() {
             break
         }
         if err != nil {
-            log.Printf("خطا در خط %d: %v", reader.FieldsPerRecord, err)
+            log.Printf("Error on line %d: %v", reader.FieldsPerRecord, err)
             continue
         }
-        fmt.Printf("نام: %s، ایمیل: %s\n", record[0], record[1])
+        fmt.Printf("Name: %s, Email: %s\n", record[0], record[1])
     }
 }
 </code></pre>
@@ -307,16 +307,16 @@ defer outFile.Close()
 writer := csv.NewWriter(outFile)
 defer writer.Flush() // important!
 
-header := []string{"نام", "ایمیل", "سن"}
+header := []string{"Name", "Email", "Age"}
 writer.Write(header)
 
-record := []string{"علی", "ali@example.com", "30"}
+record := []string{"Ali", "ali@example.com", "30"}
 writer.Write(record)
 
 // Or write all at once
 writer.WriteAll([][]string{
-    {"نام", "ایمیل", "سن"},
-    {"سارا", "sara@example.com", "25"},
+    {"Name", "Email", "Age"},
+    {"Sara", "sara@example.com", "25"},
 })
 </code></pre>
 </figure>

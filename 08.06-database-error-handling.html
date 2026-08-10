@@ -93,11 +93,11 @@ var pqErr *pq.Error
 if errors.As(err, &amp;pqErr) {
     switch pqErr.Code.Name() {
         case "unique_violation":
-        return fmt.Errorf("کلید تکراری: %s", pqErr.Detail)
+        return fmt.Errorf("duplicate key: %s", pqErr.Detail)
         case "foreign_key_violation":
-        return fmt.Errorf("نقض کلید خارجی: %s", pqErr.Detail)
+        return fmt.Errorf("foreign key violation: %s", pqErr.Detail)
         case "not_null_violation":
-        return fmt.Errorf("مقدار NULL غیرمجاز: %s", pqErr.Column)
+        return fmt.Errorf("NULL value not allowed: %s", pqErr.Column)
         case "deadlock_detected":
         // retry logic
     }
@@ -105,7 +105,7 @@ if errors.As(err, &amp;pqErr) {
 
 // Check timeout error
 if errors.Is(err, context.DeadlineExceeded) {
-    return fmt.Errorf("عملیات زمان‌بر متوقف شد")
+    return fmt.Errorf("long-running operation timed out")
 }
 
 // Check sql.ErrNoRows
@@ -131,7 +131,7 @@ if errors.Is(err, sql.ErrNoRows) {
         log.Printf("Retry %d after %v: %v", i+1, backoff, err)
         time.Sleep(backoff)
     }
-    return fmt.Errorf("پس از %d تلاش: %w", maxRetries, err)
+    return fmt.Errorf("after %d retries: %w", maxRetries, err)
 }
 
 func isRetryable(err error) bool {
@@ -160,7 +160,7 @@ func isRetryable(err error) bool {
         }
         return tx.Commit()
     }
-    return fmt.Errorf("deadlock پس از ۳ تلاش")
+    return fmt.Errorf("deadlock after 3 retries")
 }</code></pre></figure>
 <div class="comparison"><strong>مقایسه با Laravel:</strong> در <bdi dir="ltr">Laravel</bdi> خطاها به <bdi dir="ltr">Exception</bdi> تبدیل می‌شوند و با <code>try/catch</code> مدیریت می‌شوند اما نوع دقیق خطا (مثل <code>unique_violation</code>) کمتر در دسترس است. در <bdi dir="ltr">Go</bdi> با <code>errors.As</code> و درایور خاص دیتابیس کنترل بسیار دقیق‌تری روی نوع خطا دارید.</div>
 <div class="note"><strong>درخت تصمیم خطای دیتابیس برای مهاجران <bdi dir="ltr">PHP</bdi>:</strong> در <bdi dir="ltr">Laravel</bdi> معمولاً <code>QueryException</code> را به‌صورت یک‌جا <code>catch</code> می‌کنیم و تصمیم نمی‌گیریم که آیا خطا موقتی است یا دائمی. در <bdi dir="ltr">Go</bdi> این تمایز حیاتی است: قبل از پیاده‌سازی <bdi dir="ltr">retry</bdi> از خود بپرسید «آیا داده‌ها مشکل دارند یا زیرساخت؟». خطاهای <code>unique_violation</code>، <code>foreign_key_violation</code>، <code>not_null_violation</code> و <code>syntax_error</code> دائمی‌اند و با <bdi dir="ltr">retry</bdi> فقط منابع هدر می‌رود؛ در مقابل <code>deadlock_detected</code>، <code>connection_exception</code>، <code>context.DeadlineExceeded</code> و <code>context.Canceled</code> موقتی‌اند و <bdi dir="ltr">retry</bdi> با <bdi dir="ltr">exponential backoff</bdi> تنها راه درست پاسخ است. درخت کامل این طبقه‌بندی را در شکل ۸-۶-ب می‌بینید.</div>

@@ -126,7 +126,7 @@ var templates embed.FS
 <figure class="code html" dir="ltr">
 <pre><code class="language-html">&lt;!DOCTYPE html&gt;
 &lt;html&gt;
-&lt;head&gt;&lt;title&gt;سلام&lt;/title&gt;&lt;/head&gt;
+&lt;head&gt;&lt;title&gt;Hello&lt;/title&gt;&lt;/head&gt;
 &lt;body&gt;
     &lt;h1&gt;{{.Title}}&lt;/h1&gt;
 &lt;/body&gt;
@@ -150,16 +150,16 @@ var htmlTemplate string
 func handler(w http.ResponseWriter, r *http.Request) {
     tmpl, err := template.New("webpage").Parse(htmlTemplate)
     if err != nil {
-        http.Error(w, "خطا در بارگذاری قالب", http.StatusInternalServerError)
+        http.Error(w, "Error loading template", http.StatusInternalServerError)
         return
     }
-    data := struct{ Title string }{Title: "صفحه اصلی"}
+    data := struct{ Title string }{Title: "Home"}
     tmpl.Execute(w, data)
 }
 
 func main() {
     http.HandleFunc("/", handler)
-    log.Println("در حال اجرا روی http://localhost:8080")
+    log.Println("Running on http://localhost:8080")
     log.Fatal(http.ListenAndServe(":8080", nil))
 }
 </code></pre>
@@ -206,7 +206,7 @@ type FS interface {
 tmpl, _ := template.ParseFS(templates, "*.html") // HTML templates
 http.FS(templates) // serve files via HTTP
 fs.WalkDir(templates, ".", func(path string, d fs.DirEntry, err error) error {
-    fmt.Println("فایل embed:", path)
+    fmt.Println("Embedded file:", path)
     return nil
 })
 </code></pre>
@@ -304,7 +304,7 @@ func main() {
     // /static/js/app.js
     // /static/img/logo.png
 
-    log.Println("سرور در حال اجرا روی :8080")
+    log.Println("Server running on :8080")
     log.Fatal(http.ListenAndServe(":8080", nil))
 }
 </code></pre>
@@ -323,7 +323,7 @@ func main() {
 
     http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
         tmpl.ExecuteTemplate(w, "index.html", map[string]string{
-            "Title": "صفحه اصلی",
+            "Title": "Home",
         })
     })
 
@@ -381,13 +381,13 @@ func main() {
     // Root route
     http.HandleFunc("/", homeHandler)
 
-    log.Println("سرور در حال اجرا روی :8080")
+    log.Println("Server running on :8080")
     log.Fatal(http.ListenAndServe(":8080", nil))
 }
 
 func homeHandler(w http.ResponseWriter, r *http.Request) {
     tmpl.ExecuteTemplate(w, "index.html", map[string]any{
-        "Title": "میکروسرویس Go",
+        "Title": "Go Microservice",
         "Version": "1.0.0",
     })
 }
@@ -499,7 +499,7 @@ func main() {
         fileServer.ServeHTTP(w, r)
     }))
 
-    log.Println("سرور SPA در حال اجرا روی :8080")
+    log.Println("SPA server running on :8080")
     log.Fatal(http.ListenAndServe(":8080", nil))
 }
 </code></pre>

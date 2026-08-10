@@ -182,13 +182,13 @@ go http.ListenAndServe(":6060", nil)
     for {
         select {
             case &lt;-ctx.Done():
-            fmt.Println("خروج کنترل‌شده از goroutine")
+            fmt.Println("Graceful exit from goroutine")
             return
             case val, ok := &lt;-ch:
             if !ok {
                 return // channel closed
             }
-            fmt.Println("پردازش:", val)
+            fmt.Println("Processing:", val)
         }
     }
 }
@@ -215,7 +215,7 @@ func badHandler(w http.ResponseWriter, r *http.Request) {
         result := slowDatabaseQuery() // takes 30 seconds
         fmt.Println(result) // wasted!
     }()
-    w.Write([]byte("درخواست دریافت شد"))
+    w.Write([]byte("Request received"))
 }
 
 // Correct — right: use request Context
@@ -224,13 +224,13 @@ func goodHandler(w http.ResponseWriter, r *http.Request) {
     go func() {
         select {
             case &lt;-ctx.Done():
-            log.Println("درخواست لغو شد")
+            log.Println("Request canceled")
             return
             case result := &lt;-queryAsync():
-            log.Println("نتیجه:", result)
+            log.Println("Result:", result)
         }
     }()
-    w.Write([]byte("درخواست دریافت شد"))
+    w.Write([]byte("Request received"))
 }
 </code></pre>
 </figure>
@@ -247,12 +247,12 @@ func goodHandler(w http.ResponseWriter, r *http.Request) {
             return
             case &lt;-ticker.C:
             count := runtime.NumGoroutine()
-            log.Printf("تعداد Goroutine فعال: %d\n", count)
+            log.Printf("Active goroutine count: %d\n", count)
             // Send to Prometheus or monitoring system
             // goroutineGauge.Set(float64(count))
 
             if count &gt; 10000 {
-                log.Printf("توجه: هشدار: تعداد Goroutine بیش از حد مجاز!")
+                log.Printf("Warning: goroutine count exceeds the allowed limit!")
             }
         }
     }
@@ -285,13 +285,13 @@ func goodHandler(w http.ResponseWriter, r *http.Request) {
  و گوروتین G هرگز بیدار نخواهد شد.
  </p>
 <figure class="code go" dir="ltr">
-<pre><code class="language-go">// مثال: نشتی گوروتین که پروفایل جدید شناسایی میکند
+<pre><code class="language-go">// Example: goroutine leak that the new profile detects
 func processWorkItems(ws []workItem) ([]workResult, error) {
     ch := make(chan result)
     for _, w := range ws {
         go func() {
             res, err := processWorkItem(w)
-            ch &lt;- result{res, err} // اگر برگشت زودهنگام باشد، اینجا نشتی رخ میدهد
+            ch &lt;- result{res, err} // if there's an early return, a leak occurs here
         }()
     }
 
@@ -299,7 +299,7 @@ func processWorkItems(ws []workItem) ([]workResult, error) {
     for range len(ws) {
         r := &lt;-ch
         if r.err != nil {
-            // برگشت زودهنگام: تمام گوروتین‌های باقیمانده نشت میکنند!
+            // Early return: all remaining goroutines leak!
             return nil, r.err
         }
         results = append(results, r.res)
@@ -308,14 +308,14 @@ func processWorkItems(ws []workItem) ([]workResult, error) {
 }</code></pre>
 </figure>
 <figure class="code bash">
-<pre><code class="language-bash"># فعال‌سازی پروفایل نشتی گوروتین
+<pre><code class="language-bash"># Enable goroutine leak profile
 GOEXPERIMENT=goroutineleakprofile go build -o myapp .
 ./myapp
 
-# دسترسی به پروفایل از طریق HTTP
+# Access the profile via HTTP
 curl http://localhost:6060/debug/pprof/goroutineleak &gt; leak.prof
 
-# تحلیل پروفایل
+# Analyze the profile
 go tool pprof leak.prof</code></pre>
 </figure>
 <p>

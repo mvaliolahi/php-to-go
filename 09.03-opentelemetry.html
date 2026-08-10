@@ -115,18 +115,18 @@ func initMetrics() error {
 
     // Counter
     requestCounter, _ := meter.Int64Counter("app.requests_total",
-    metric.WithDescription("تعداد کل درخواست‌ها"),
+    metric.WithDescription("Total number of requests"),
 )
 
     // Histogram
     requestDuration, _ := meter.Float64Histogram("app.request_duration",
-    metric.WithDescription("مدت زمان پاسخ‌دهی"),
+    metric.WithDescription("Response duration"),
     metric.WithUnit("ms"),
 )
 
     // Gauge (UpDownCounter)
     activeConns, _ := meter.Int64UpDownCounter("app.active_connections",
-    metric.WithDescription("تعداد اتصال‌های فعال"),
+    metric.WithDescription("Number of active connections"),
 )
 
     // Usage

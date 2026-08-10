@@ -105,7 +105,7 @@ mux.HandleFunc("DELETE /users/{id}", deleteUser)
 // Read path parameter
 func getUser(w http.ResponseWriter, r *http.Request) {
     id := r.PathValue("id")
-    fmt.Fprintf(w, "کاربر: %s", id)
+    fmt.Fprintf(w, "User: %s", id)
 }
 </code></pre>
 </figure>
@@ -115,10 +115,10 @@ func getUser(w http.ResponseWriter, r *http.Request) {
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">func aboutHandler(w http.ResponseWriter, r *http.Request) {
     if r.Method != http.MethodGet {
-        http.Error(w, "متد مجاز نیست", http.StatusMethodNotAllowed)
+        http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
         return
     }
-    fmt.Fprintln(w, "درباره ما")
+    fmt.Fprintln(w, "About us")
 }
 </code></pre>
 </figure>

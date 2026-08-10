@@ -97,7 +97,7 @@ func main() {
     if err != nil {
         panic(err)
     }
-    fmt.Printf("سلام %s! سن شما %d سال است.\n", user.Name, user.Age)
+    fmt.Printf("Hello %s! You are %d years old.\n", user.Name, user.Age)
 }
 </code></pre>
 </figure>
@@ -125,7 +125,7 @@ fmt.Println(string(output))
 // Convert JSON to array/object
 $json = '{"name": "Sara", "age": 27}';
 $data = json_decode($json, true); // associative array
-echo "سلام {$data['name']}! سن شما {$data['age']} سال است.\n";
+echo "Hello {$data['name']}! You are {$data['age']} years old.\n";
 
 // Convert array to JSON
 $user = ["name" =&gt; "Ali", "age" =&gt; 30];
@@ -177,8 +177,8 @@ func main() {
     if err != nil {
         panic(err)
     }
-    fmt.Println("پورت:", cfg.Port)
-    fmt.Println("محیط:", cfg.Env)
+    fmt.Println("Port:", cfg.Port)
+    fmt.Println("Env:", cfg.Env)
 }
 </code></pre>
 </figure>
@@ -214,14 +214,14 @@ func main() {
 var event Event
 json.Unmarshal(input, &amp;event)
 
-fmt.Println("نوع رویداد:", event.Type)
+fmt.Println("Event type:", event.Type)
 
 // Now depending on event type, we decode Data
 switch event.Type {
     case "user_created":
     var user User
     json.Unmarshal(event.Data, &amp;user)
-    fmt.Printf("کاربر: %s\n", user.Name)
+    fmt.Printf("User: %s\n", user.Name)
     case "order_placed":
     var order Order
     json.Unmarshal(event.Data, &amp;order)
@@ -349,16 +349,16 @@ for decoder.More() {
     switch v := token.(type) {
         case json.Delim:
         if v == '{' {
-            fmt.Println("شروع آبجکت")
+            fmt.Println("Start object")
         } else if v == '}' {
-            fmt.Println("پایان آبجکت")
+            fmt.Println("End object")
         }
         case string:
-        fmt.Printf("رشته: %s\n", v)
+        fmt.Printf("String: %s\n", v)
         case float64:
-        fmt.Printf("عدد: %f\n", v)
+        fmt.Printf("Number: %f\n", v)
         case bool:
-        fmt.Printf("بولین: %v\n", v)
+        fmt.Printf("Boolean: %v\n", v)
         case nil:
         fmt.Println("null")
     }
@@ -421,7 +421,7 @@ func (fd *FlexibleDate) UnmarshalJSON(data []byte) error {
         }
     }
 
-    return fmt.Errorf("فرمت تاریخ نامعتبر: %s", s)
+    return fmt.Errorf("invalid date format: %s", s)
 }
 
 // Usage
@@ -431,7 +431,7 @@ type Event struct {
 }
 
 var event Event
-json.Unmarshal([]byte(`{"name":"کنفرانس","date":"2024-03-15"}`), &amp;event)
+json.Unmarshal([]byte(`{"name":"Conference","date":"2024-03-15"}`), &amp;event)
 </code></pre>
 </figure>
 <figure class="code go" dir="ltr">
@@ -446,7 +446,7 @@ func (e *Email) UnmarshalJSON(data []byte) error {
 
     // Email format validation
     if !strings.Contains(s, "@") {
-        return fmt.Errorf("ایمیل نامعتبر: %s", s)
+        return fmt.Errorf("invalid email: %s", s)
     }
 
     *e = Email(s)
@@ -524,7 +524,7 @@ fmt.Println(string(out))
  قابل‌توجهی سریع‌تر است.
  </p>
 <figure class="code go" dir="ltr">
-<pre><code class="language-go">// فعال‌سازی: GOEXPERIMENT=jsonv2 go build .
+<pre><code class="language-go">// Enable: GOEXPERIMENT=jsonv2 go build .
 
 import (
 "encoding/json/v2"
@@ -539,16 +539,16 @@ type Person struct {
 func main() {
     p := Person{Name: "Alice", Age: 30}
 
-    // Marshal با API جدید
+    // Marshal with the new API
     data, err := json.MarshalOptions{
         Indent: "  ",
     }.Marshal(p)
 
-    // Unmarshal با گزینه‌های پیشرفته
+    // Unmarshal with advanced options
     var result Person
     err = json.UnmarshalOptions{}.Unmarshal(data, &amp;result)
 
-    // دسترسی سطح‌پایین به token‌ها
+    // Low-level access to tokens
     dec := jsontext.NewDecoder(bytes.NewReader(data))
     for {
         tok, err := dec.ReadToken()

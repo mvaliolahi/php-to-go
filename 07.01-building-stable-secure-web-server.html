@@ -107,7 +107,7 @@ func homeHandler(w http.ResponseWriter, r *http.Request) {
         http.NotFound(w, r)
         return
     }
-    fmt.Fprintln(w, "سلام، به وب‌سرور Go خوش آمدید!")
+    fmt.Fprintln(w, "Hello, welcome to the Go web server!")
 }
 func main() {
     mux := http.NewServeMux()
@@ -119,10 +119,10 @@ func main() {
         WriteTimeout: 10 * time.Second,
         IdleTimeout: 120 * time.Second,
     }
-    log.Println("سرور در حال اجرا روی http://localhost:8080")
+    log.Println("Server running on http://localhost:8080")
     err := server.ListenAndServe()
     if err != nil {
-        log.Fatalf("خطای سرور: %v", err)
+        log.Fatalf("Server error: %v", err)
     }
 }
 </code></pre>
@@ -186,7 +186,7 @@ func main() {
     mux := http.NewServeMux()
     mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
         time.Sleep(3 * time.Second) // simulate time-consuming work
-        w.Write([]byte("پاسخ سرور"))
+        w.Write([]byte("Server response"))
     })
 
     server := &amp;http.Server{
@@ -199,9 +199,9 @@ func main() {
 
     // Run server in separate goroutine
     go func() {
-        log.Println("سرور در حال اجرا روی :8080")
+        log.Println("Server running on :8080")
         if err := server.ListenAndServe(); err != http.ErrServerClosed {
-            log.Fatalf("خطای سرور: %v", err)
+            log.Fatalf("Server error: %v", err)
         }
     }()
 
@@ -209,16 +209,16 @@ func main() {
     quit := make(chan os.Signal, 1)
     signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
     sig := &lt;-quit
-    log.Printf("دریافت سیگنال %v، در حال خاموش شدن آرام...", sig)
+    log.Printf("Signal %v received, performing graceful shutdown...", sig)
 
     // Give 30 second deadline to active requests
     ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
     defer cancel()
 
     if err := server.Shutdown(ctx); err != nil {
-        log.Printf("خطا در خاموش شدن: %v", err)
+        log.Printf("Error during shutdown: %v", err)
     }
-    log.Println("سرور با موفقیت متوقف شد")
+    log.Println("Server stopped successfully")
 }
 </code></pre>
 </figure>
@@ -414,7 +414,7 @@ func rateLimitMiddleware(rl *rateLimiter) func(http.Handler) http.Handler {
             ip := r.RemoteAddr
             if !rl.allow(ip) {
                 w.Header().Set("Retry-After", "60")
-                http.Error(w, "تعداد درخواست‌ها بیش از حد مجاز است",
+                http.Error(w, "Too many requests",
                 http.StatusTooManyRequests)
                 return
             }
@@ -477,16 +477,16 @@ handler := maxBodySizeMiddleware(1 &lt;&lt; 20)(mux)
     }
 
     go func() {
-        log.Println("سرور در حال اجرا روی :8080")
+        log.Println("Server running on :8080")
         if err := server.ListenAndServe(); err != http.ErrServerClosed {
-            log.Fatalf("خطای سرور: %v", err)
+            log.Fatalf("Server error: %v", err)
         }
     }()
 
     quit := make(chan os.Signal, 1)
     signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
     sig := &lt;-quit
-    log.Printf("دریافت سیگنال %v، در حال خاموش شدن...", sig)
+    log.Printf("Signal %v received, shutting down...", sig)
 
     // 30 second deadline for active requests to finish
     ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
@@ -494,17 +494,17 @@ handler := maxBodySizeMiddleware(1 &lt;&lt; 20)(mux)
 
     // First shut down the server (new requests are rejected)
     if err := server.Shutdown(ctx); err != nil {
-        log.Printf("خطا در خاموش شدن سرور: %v", err)
+        log.Printf("Error shutting down server: %v", err)
     }
 
     // Then release resources
-    log.Println("بستن اتصال دیتابیس...")
+    log.Println("Closing database connection...")
     db.Close()
 
-    log.Println("بستن اتصال Redis...")
+    log.Println("Closing Redis connection...")
     redisClient.Close()
 
-    log.Println("سرور با موفقیت متوقف شد")
+    log.Println("Server stopped successfully")
 }
 </code></pre>
 </figure>

@@ -81,15 +81,15 @@
         SameSite: http.SameSiteLaxMode, // CSRF protection
     }
     http.SetCookie(w, cookie)
-    fmt.Fprintln(w, "کوکی تنظیم شد")
+    fmt.Fprintln(w, "Cookie set")
 }
 func getCookieHandler(w http.ResponseWriter, r *http.Request) {
     cookie, err := r.Cookie("session_token")
     if err != nil {
-        http.Error(w, "کوکی یافت نشد", http.StatusUnauthorized)
+        http.Error(w, "Cookie not found", http.StatusUnauthorized)
         return
     }
-    fmt.Fprintf(w, "کوکی session_token: %s", cookie.Value)
+    fmt.Fprintf(w, "session_token cookie: %s", cookie.Value)
 }
 </code></pre>
 </figure>
@@ -144,7 +144,7 @@ func setSignedCookie(w http.ResponseWriter, r *http.Request) {
     }
     encoded, err := s.Encode("session", value)
     if err != nil {
-        http.Error(w, "خطا در رمزگذاری", http.StatusInternalServerError)
+        http.Error(w, "Error encoding", http.StatusInternalServerError)
         return
     }
     http.SetCookie(w, &amp;http.Cookie{
@@ -161,15 +161,15 @@ func setSignedCookie(w http.ResponseWriter, r *http.Request) {
 func readSignedCookie(w http.ResponseWriter, r *http.Request) {
     cookie, err := r.Cookie("session")
     if err != nil {
-        http.Error(w, "کوکی یافت نشد", http.StatusUnauthorized)
+        http.Error(w, "Cookie not found", http.StatusUnauthorized)
         return
     }
     value := make(map[string]string)
     if err := s.Decode("session", cookie.Value, &amp;value); err != nil {
-        http.Error(w, "کوکی نامعتبر", http.StatusForbidden)
+        http.Error(w, "Invalid cookie", http.StatusForbidden)
         return
     }
-    fmt.Fprintf(w, "کاربر: %s، نقش: %s", value["user_id"], value["role"])
+    fmt.Fprintf(w, "User: %s, role: %s", value["user_id"], value["role"])
 }
 </code></pre>
 </figure>
@@ -194,7 +194,7 @@ func csrfMiddleware(next http.Handler) http.Handler {
             // Generate CSRF token and set in cookie
             token, err := generateCSRFToken()
             if err != nil {
-                http.Error(w, "خطای داخلی", http.StatusInternalServerError)
+                http.Error(w, "Internal error", http.StatusInternalServerError)
                 return
             }
             http.SetCookie(w, &amp;http.Cookie{
@@ -214,7 +214,7 @@ func csrfMiddleware(next http.Handler) http.Handler {
         // Mutating requests (POST, PUT, DELETE) — verify token
         cookieToken, err := r.Cookie("csrf_token")
         if err != nil {
-            http.Error(w, "توکن CSRF موجود نیست", http.StatusForbidden)
+            http.Error(w, "CSRF token missing", http.StatusForbidden)
             return
         }
         headerToken := r.Header.Get("X-CSRF-Token")
@@ -222,7 +222,7 @@ func csrfMiddleware(next http.Handler) http.Handler {
             headerToken = r.FormValue("csrf_token")
         }
         if cookieToken.Value == "" || cookieToken.Value != headerToken {
-            http.Error(w, "توکن CSRF نامعتبر", http.StatusForbidden)
+            http.Error(w, "Invalid CSRF token", http.StatusForbidden)
             return
         }
         next.ServeHTTP(w, r)

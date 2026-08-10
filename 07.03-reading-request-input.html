@@ -79,14 +79,14 @@
 <pre><code class="language-go">func searchHandler(w http.ResponseWriter, r *http.Request) {
     query := r.URL.Query().Get("query")
     if query == "" {
-        http.Error(w, "پارامتر query لازم است", http.StatusBadRequest)
+        http.Error(w, "query parameter is required", http.StatusBadRequest)
         return
     }
     page := r.URL.Query().Get("page")
     if page == "" {
         page = "1" // default value
     }
-    fmt.Fprintf(w, "جستجو برای: %s، صفحه: %s\n", query, page)
+    fmt.Fprintf(w, "Search for: %s, page: %s\n", query, page)
 }
 </code></pre>
 </figure>
@@ -106,10 +106,10 @@
 mux.HandleFunc("GET /user/{id}", func(w http.ResponseWriter, r *http.Request) {
     userID := r.PathValue("id")
     if userID == "" {
-        http.Error(w, "شناسه کاربر لازم است", http.StatusBadRequest)
+        http.Error(w, "User ID is required", http.StatusBadRequest)
         return
     }
-    fmt.Fprintf(w, "شناسه کاربر: %s\n", userID)
+    fmt.Fprintf(w, "User ID: %s\n", userID)
 })
 </code></pre>
 </figure>
@@ -130,7 +130,7 @@ type User struct {
 }
 func createUserHandler(w http.ResponseWriter, r *http.Request) {
     if r.Method != http.MethodPost {
-        http.Error(w, "متد مجاز نیست", http.StatusMethodNotAllowed)
+        http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
         return
     }
     var user User
@@ -139,14 +139,14 @@ func createUserHandler(w http.ResponseWriter, r *http.Request) {
     decoder.DisallowUnknownFields() // prevent unexpected extra fields
     err := decoder.Decode(&amp;user)
     if err != nil {
-        http.Error(w, "داده نامعتبر: "+err.Error(), http.StatusBadRequest)
+        http.Error(w, "Invalid data: "+err.Error(), http.StatusBadRequest)
         return
     }
     if user.Name == "" || user.Email == "" {
-        http.Error(w, "فیلدهای نام و ایمیل لازم هستند", http.StatusBadRequest)
+        http.Error(w, "Name and email fields are required", http.StatusBadRequest)
         return
     }
-    fmt.Fprintf(w, "کاربر جدید ساخته شد: %s (%s)\n", user.Name, user.Email)
+    fmt.Fprintf(w, "New user created: %s (%s)\n", user.Name, user.Email)
 }
 </code></pre>
 </figure>
@@ -156,16 +156,16 @@ func createUserHandler(w http.ResponseWriter, r *http.Request) {
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">func submitFormHandler(w http.ResponseWriter, r *http.Request) {
     if err := r.ParseForm(); err != nil {
-        http.Error(w, "خطا در خواندن فرم: "+err.Error(), http.StatusBadRequest)
+        http.Error(w, "Error reading form: "+err.Error(), http.StatusBadRequest)
         return
     }
     name := r.FormValue("name")
     email := r.FormValue("email")
     if name == "" || email == "" {
-        http.Error(w, "نام و ایمیل لازم است", http.StatusBadRequest)
+        http.Error(w, "Name and email are required", http.StatusBadRequest)
         return
     }
-    fmt.Fprintf(w, "فرم با موفقیت دریافت شد: %s (%s)\n", name, email)
+    fmt.Fprintf(w, "Form received successfully: %s (%s)\n", name, email)
 }
 </code></pre>
 </figure>
@@ -194,15 +194,15 @@ func createUserHandler(w http.ResponseWriter, r *http.Request) {
 func (r *CreateArticleRequest) Validate() map[string]string {
     errors := make(map[string]string)
     if strings.TrimSpace(r.Title) == "" {
-        errors["title"] = "عنوان الزامی است"
+        errors["title"] = "Title is required"
     } else if utf8.RuneCountInString(r.Title) &gt; 200 {
-        errors["title"] = "عنوان نمی‌تواند بیش از ۲۰۰ کاراکتر باشد"
+        errors["title"] = "Title cannot be longer than 200 characters"
     }
     if strings.TrimSpace(r.Content) == "" {
-        errors["content"] = "محتوا الزامی است"
+        errors["content"] = "Content is required"
     }
     if len(r.Tags) &gt; 10 {
-        errors["tags"] = "حداکثر ۱۰ برچسب مجاز است"
+        errors["tags"] = "Maximum 10 tags allowed"
     }
     return errors
 }
@@ -210,7 +210,7 @@ func (r *CreateArticleRequest) Validate() map[string]string {
 func createArticleHandler(w http.ResponseWriter, r *http.Request) {
     // Check Content-Type
     if r.Header.Get("Content-Type") != "application/json" {
-        http.Error(w, "Content-Type باید application/json باشد",
+        http.Error(w, "Content-Type must be application/json",
         http.StatusUnsupportedMediaType)
         return
     }
@@ -226,16 +226,16 @@ func createArticleHandler(w http.ResponseWriter, r *http.Request) {
         var unmarshalErr *json.UnmarshalTypeError
         switch {
             case errors.As(err, &amp;syntaxErr):
-            http.Error(w, "JSON نامعتبر", http.StatusBadRequest)
+            http.Error(w, "Invalid JSON", http.StatusBadRequest)
             case errors.As(err, &amp;unmarshalErr):
-            http.Error(w, fmt.Sprintf("نوع نامعتبر برای فیلد %s", unmarshalErr.Field),
+            http.Error(w, fmt.Sprintf("Invalid type for field %s", unmarshalErr.Field),
             http.StatusBadRequest)
             case strings.HasPrefix(err.Error(), "json: unknown field"):
-            http.Error(w, fmt.Sprintf("فیلد ناشناخته: %s",
+            http.Error(w, fmt.Sprintf("Unknown field: %s",
             strings.TrimPrefix(err.Error(), "json: unknown field ")),
             http.StatusBadRequest)
             default:
-            http.Error(w, "خطا در خواندن داده", http.StatusBadRequest)
+            http.Error(w, "Error reading data", http.StatusBadRequest)
         }
         return
     }
@@ -260,13 +260,13 @@ func createArticleHandler(w http.ResponseWriter, r *http.Request) {
 <pre><code class="language-go">func uploadHandler(w http.ResponseWriter, r *http.Request) {
     // Limit upload size to 5 megabytes
     if err := r.ParseMultipartForm(5 &lt;&lt; 20); err != nil {
-        http.Error(w, "حجم فایل بیش از حد مجاز", http.StatusBadRequest)
+        http.Error(w, "File size exceeds the allowed limit", http.StatusBadRequest)
         return
     }
 
     file, header, err := r.FormFile("document")
     if err != nil {
-        http.Error(w, "فایل یافت نشد", http.StatusBadRequest)
+        http.Error(w, "File not found", http.StatusBadRequest)
         return
     }
     defer file.Close()
@@ -282,7 +282,7 @@ func createArticleHandler(w http.ResponseWriter, r *http.Request) {
         "image/png": true,
     }
     if !allowedTypes[contentType] {
-        http.Error(w, "نوع فایل مجاز نیست", http.StatusBadRequest)
+        http.Error(w, "File type not allowed", http.StatusBadRequest)
         return
     }
 
@@ -295,13 +295,13 @@ func createArticleHandler(w http.ResponseWriter, r *http.Request) {
 
     dst, err := os.Create(filepath.Join("./uploads", safeName))
     if err != nil {
-        http.Error(w, "خطای داخلی", http.StatusInternalServerError)
+        http.Error(w, "Internal error", http.StatusInternalServerError)
         return
     }
     defer dst.Close()
 
     io.Copy(dst, file)
-    fmt.Fprintf(w, "فایل آپلود شد: %s", safeName)
+    fmt.Fprintf(w, "File uploaded: %s", safeName)
 }
 </code></pre>
 </figure>
@@ -309,7 +309,7 @@ func createArticleHandler(w http.ResponseWriter, r *http.Request) {
 <p>گاهی اوقات یک هندلر باید بر اساس هدر <code dir="ltr">Accept</code> کلاینت، پاسخ را در فرمت‌های مختلف (<bdi dir="ltr">JSON</bdi>، <bdi dir="ltr">HTML</bdi>، <bdi dir="ltr">XML</bdi>) برگرداند. این مفهوم که در <bdi dir="ltr">Laravel</bdi> با <code dir="ltr">Accept</code> header و <bdi dir="ltr">wantsJson()</bdi> مدیریت می‌شود، در Go باید به صورت دستی پیاده‌سازی شود:</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">func userHandler(w http.ResponseWriter, r *http.Request) {
-    user := User{Name: "علی", Email: "ali@example.com"}
+    user := User{Name: "Ali", Email: "ali@example.com"}
 
     accept := r.Header.Get("Accept")
     switch {

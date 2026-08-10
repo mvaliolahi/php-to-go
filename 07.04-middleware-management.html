@@ -130,9 +130,9 @@
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">func loggingMiddleware(next http.Handler) http.Handler {
     return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-        log.Printf("شروع درخواست: %s %s", r.Method, r.URL.Path)
+        log.Printf("Request start: %s %s", r.Method, r.URL.Path)
         next.ServeHTTP(w, r)
-        log.Printf("پایان درخواست: %s %s", r.Method, r.URL.Path)
+        log.Printf("Request end: %s %s", r.Method, r.URL.Path)
     })
 }
 func main() {
@@ -171,13 +171,13 @@ handlerChain := chainMiddleware(mux, recoverMiddleware, securityHeadersMiddlewar
     // closure: inner function has access to next variable
     return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
         // --- Before handler ---
-        log.Println("درخواست دریافت شد:", r.URL.Path)
+        log.Println("Request received:", r.URL.Path)
 
         // Call next handler
         next.ServeHTTP(w, r)
 
         // --- After handler ---
-        log.Println("پاسخ ارسال شد")
+        log.Println("Response sent")
     })
 }
 </code></pre>
@@ -299,9 +299,9 @@ func requestLogger(next http.Handler) http.Handler {
     return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
         defer func() {
             if err := recover(); err != nil {
-                log.Printf("panic بازیابی شد: %v", err)
+                log.Printf("panic recovered: %v", err)
                 w.Header().Set("Connection", "close")
-                http.Error(w, "خطای داخلی سرور", http.StatusInternalServerError)
+                http.Error(w, "Internal server error", http.StatusInternalServerError)
             }
         }()
         next.ServeHTTP(w, r)
@@ -407,14 +407,14 @@ func authMiddleware(next http.Handler) http.Handler {
     return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
         cookie, err := r.Cookie("session_id")
         if err != nil {
-            http.Error(w, "لطفاً وارد شوید", http.StatusUnauthorized)
+            http.Error(w, "Please log in", http.StatusUnauthorized)
             return
         }
 
         // Check session in database (hypothetical)
         userID := validateSession(cookie.Value)
         if userID == "" {
-            http.Error(w, "سشن نامعتبر", http.StatusUnauthorized)
+            http.Error(w, "Invalid session", http.StatusUnauthorized)
             return
         }
 
@@ -430,10 +430,10 @@ func authMiddleware(next http.Handler) http.Handler {
 func dashboardHandler(w http.ResponseWriter, r *http.Request) {
     userID, ok := r.Context().Value(userIDKey).(string)
     if !ok {
-        http.Error(w, "خطای داخلی", http.StatusInternalServerError)
+        http.Error(w, "Internal error", http.StatusInternalServerError)
         return
     }
-    fmt.Fprintf(w, "داشبورد کاربر: %s", userID)
+    fmt.Fprintf(w, "User dashboard: %s", userID)
 }
 </code></pre>
 </figure>
