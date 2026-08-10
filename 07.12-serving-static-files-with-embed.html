@@ -149,7 +149,7 @@ func embeddedCacheMiddleware(next http.Handler) http.Handler {
 </figure>
 <div class="tip"><strong>نکته:</strong> برای تنظیم نسخه برنامه در زمان بیلد، از <bdi dir="ltr">ldflags</bdi> استفاده کنید: <code dir="ltr">go build -ldflags "-X main.appVersion=1.2.3"</code>. این روش امکان تغییر نسخه بدون تغییر سورس کد را فراهم می‌کند و هنگام استقرار نسخه جدید، مرورگرها فایل‌های جدید را بارگذاری خواهند کرد.</div>
 <h3 id="زنجیره-embedfs-و-httpfs-و-fileserver">7.12.3 زنجیره‌ی embed.FS و http.FS و FileServer</h3>
-<p>سرو کردن فایل‌های استاتیک در <bdi dir="ltr">Go</bdi> با <code dir="ltr">embed</code> شامل یک زنجیره‌ی تبدیل مشخص است که هر حلقه‌ی آن وظیفه‌ی خاصی دارد. دستور <code dir="ltr">//go:embed</code> فایل‌ها را در زمان کامپایل به باینری جاسازی می‌کند و یک <code dir="ltr">embed.FS</code> تولید می‌کند که رابط <code dir="ltr">fs.FS</code> را پیاده‌سازی می‌کند. </p><p>تابع <code dir="ltr">http.FS()</code> این رابط عمومی را به <code dir="ltr">http.FileSystem</code> تبدیل می‌کند و <code dir="ltr">http.FileServer</code> آن را به یک <code dir="ltr">http.Handler</code> تبدیل می‌کند. </p><p>مسیرهای <code dir="ltr">embed.FS</code> نسبت به فایل منبع تعیین می‌شوند و مزیت اصلی این روش، تولید باینری واحد با تمام فایل‌های استاتیک است.</p>
+<p>سرو کردن فایل‌های استاتیک در <bdi dir="ltr">Go</bdi> با <code dir="ltr">embed</code> شامل یک زنجیره‌ی تبدیل مشخص است که هر حلقه‌ی آن وظیفه‌ی خاصی دارد. دستور <code dir="ltr">//go:embed</code> فایل‌ها را در زمان کامپایل به باینری جاسازی می‌کند و یک <code dir="ltr">embed.FS</code> تولید می‌کند که رابط <code dir="ltr">fs.FS</code> را پیاده‌سازی می‌کند (توضیحات کامل در <a href="06.05-embedding-files-in-program.html">بخش ۶.۵</a>). اساس <code dir="ltr">http.FileServer</code> و هدرهای کش و <bdi dir="ltr">ETag</b> مرتبط با آن در <a href="07.05-serving-static-files.html">بخش ۷.۵</a> بررسی شده است؛ در اینجا روی زنجیره‌ی تبدیل متمرکز می‌شویم. </p><p>تابع <code dir="ltr">http.FS()</code> این رابط عمومی را به <code dir="ltr">http.FileSystem</code> تبدیل می‌کند و <code dir="ltr">http.FileServer</code> آن را به یک <code dir="ltr">http.Handler</code> تبدیل می‌کند. </p><p>مسیرهای <code dir="ltr">embed.FS</code> نسبت به فایل منبع تعیین می‌شوند و مزیت اصلی این روش، تولید باینری واحد با تمام فایل‌های استاتیک است.</p>
 <figure class="diagram" dir="ltr">
 <svg viewBox="0 0 760 380" xmlns="http://www.w3.org/2000/svg">
 <defs>
@@ -226,10 +226,10 @@ func embeddedCacheMiddleware(next http.Handler) http.Handler {
 <div class="summary">
 <strong>خلاصه‌ی نکات کلیدی:</strong>
 <ul>
-<li>http.FileServer(http.FS(embed.FS))</li>
+<li>http.FileServer(http.FS(embed.FS)) — توضیحات کامل در <a href="06.05-embedding-files-in-program.html">بخش ۶.۵</a> و <a href="07.05-serving-static-files.html">بخش ۷.۵</a></li>
 <li>static asset در باینری جاسازی می‌شود</li>
 <li>deployment تک‌فایلی برای SPA</li>
-<li>Cache-Control با h@Setter</li>
+<li>Cache-Control با هدر صریح</li>
 <li>ETag برای caching کارآمد</li>
 </ul>
 </div></div>

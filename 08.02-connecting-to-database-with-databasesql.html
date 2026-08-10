@@ -90,7 +90,7 @@ func main() {
     log.Println("اتصال موفق به دیتابیس برقرار شد")
 }</code></pre>
 </figure>
-<p>بعد از ساخت و اجرای Migration ها زمان اتصال به دیتابیس فرا می رسد. پکیج <bdi dir="ltr">database/sql</bdi> یک رابط استاندارد برای اتصال به پایگاه‌های داده رابطه‌ای فراهم می‌کند. </p><p>برخلاف <bdi dir="ltr">Laravel</bdi> که از <bdi dir="ltr">ORM</bdi> قدرتمندی مانند <bdi dir="ltr">Eloquent</bdi> استفاده می‌کند این پکیج هیچ مدل یا ساختار جدایی ارائه نمی‌دهد و به‌جای آن تمرکز را بر کنترل کامل، سرعت و کارایی بالا قرار می‌دهد.</p>
+<p>پس از ساخت و اجرای <a href="08.01-migration.html">Migration</a>‌ها، زمان اتصال به دیتابیس فرامی‌رسد. پکیج <bdi dir="ltr">database/sql</bdi> یک رابط استاندارد برای اتصال به پایگاه‌های داده رابطه‌ای فراهم می‌کند. </p><p>برخلاف <bdi dir="ltr">Laravel</bdi> که از <bdi dir="ltr">ORM</bdi> قدرتمندی مانند <bdi dir="ltr">Eloquent</bdi> استفاده می‌کند، این پکیج هیچ مدل یا ساختار جدایی ارائه نمی‌دهد و به‌جای آن تمرکز را بر کنترل کامل، سرعت و کارایی بالا قرار می‌دهد.</p>
 <p><bdi dir="ltr">sql.Open</bdi> صرفاً یک شیء اتصال را مقداردهی اولیه می‌کند و اتصال واقعی در لحظه‌ی اجرای <bdi dir="ltr">Ping</bdi> یا اولین کوئری برقرار می‌شود.</p>
 <div class="warning"><strong>تله‌ی رایج:</strong> <code dir="ltr">sql.Open()</code> اتصال واقعی برقرار نمی‌کند. اگر DSN اشتباه باشد، <code dir="ltr">sql.Open</code> خطایی نمی‌دهد. همیشه پس از <code dir="ltr">sql.Open</code> حتماً <code dir="ltr">db.Ping()</code> را فراخوانی کنید تا از صحت اتصال مطمئن شوید.</div>
 <div class="note"><strong>چرا <code dir="ltr">database/sql</code> به‌جای <bdi dir="ltr">ORM</bdi>؟</strong> مهاجران <bdi dir="ltr">Laravel/Eloquent</bdi> غالباً انتظار دارند <code>User::find($id)</code> یا <code>$model-&gt;save()</code> را در <bdi dir="ltr">Go</bdi> هم پیدا کنند. پکیج <code dir="ltr">database/sql</code> عمداً این انتزاع را ارائه نمی‌دهد تا کنترل دقیق کوئری، اتصال و خطا را در دست توسعه‌دهنده نگه دارد. اگر پروژه‌ی شما <bdi dir="ltr">CRUD</bdi> غالب و ساده دارد، کتابخانه‌هایی مثل <bdi dir="ltr">sqlc</bdi> (تولید کد از <bdi dir="ltr">SQL</bdi>) یا <bdi dir="ltr">GORM</bdi> (<bdi dir="ltr">ORM</bdi> کامل) گزینه‌های معقول‌اند؛ اما برای کوئری‌های پیچیده، گزارش‌گیری و عملیات حساس، همان <code dir="ltr">database/sql</code> + <code dir="ltr">sqlx</code> شفاف‌ترین و کارآمدترین انتخاب است.</div>
@@ -122,7 +122,7 @@ db.SetMaxIdleConns(10)
 db.SetConnMaxLifetime(time.Minute * 5)</code></pre>
 </figure>
 <p><strong  id="نکات-کلیدی-برای-بهینهسازی-connection-pool">نکات کلیدی برای بهینه‌سازی Connection Pool</strong> — راهنمای تفصیلی مقدار پیشنهادی هر پارامتر (<bdi dir="ltr">MaxOpenConns</bdi>، <bdi dir="ltr">MaxIdleConns</bdi>، <bdi dir="ltr">ConnMaxLifetime</bdi>) و جدول سناریوهای سبک/متوسط/سنگین را در بخش <a href="#تنظیم-دقیق-connection-pool-برای-production">بهینه‌سازی تنظیمات Connection Pool برای Production</a> در ادامه‌ی همین فصل پیدا می‌کنید. در اینجا تنها نکته‌ای را می‌آوریم که در آن بخش پوشش داده نشده است.</p>
-<p><strong>استفاده از <bdi dir="ltr">Context</bdi>:</strong> همیشه کوئری‌ها را با <bdi dir="ltr">Context</bdi> اجرا کنید تا امکان لغو عملیات فراهم شود:</p>
+<p><strong>استفاده از <bdi dir="ltr">Context</bdi>:</strong> همیشه کوئری‌ها را با <bdi dir="ltr">Context</bdi> (که در <a href="05.04-context.html">بخش ۵.۴</a> معرفی شده) اجرا کنید تا امکان لغو عملیات و اعمال مهلت زمانی فراهم شود:</p>
 <figure class="code go" dir="ltr"><pre><code class="language-go">ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 defer cancel()
 row := db.QueryRowContext(ctx, "SELECT * FROM users WHERE id = $1", 42)</code></pre></figure>
@@ -233,7 +233,7 @@ stats.WaitDuration,
 )</code></pre>
 </figure>
 <p>مقادیر کلیدی: <bdi dir="ltr">WaitCount</bdi> در حال افزایش یعنی باید <bdi dir="ltr">MaxOpenConns</bdi> را افزایش دهید. تعداد <bdi dir="ltr">Idle</bdi> همیشه صفر یعنی <bdi dir="ltr">MaxIdleConns</bdi> خیلی کم تنظیم شده.</p>
-<div class="tip"><strong>نکته پیشرفته:</strong> این آمار را به‌صورت متریک Prometheus ثبت کنید تا در Grafana قابل مشاهده باشند. همچنین health check endpoint اضافه کنید:</div>
+<div class="tip"><strong>نکته پیشرفته:</strong> این آمار را به‌صورت متریک <bdi dir="ltr">Prometheus</bdi> ثبت کنید تا در <a href="09.02-prometheus-and-grafana.html">Grafana</a> قابل مشاهده باشند. همچنین <bdi dir="ltr">health check endpoint</bdi> اضافه کنید:</div>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">http.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
     ctx, cancel := context.WithTimeout(r.Context(), 2*time.Second)

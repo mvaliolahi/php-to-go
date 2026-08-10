@@ -332,7 +332,7 @@ func processData(input []byte) ([]byte, error) {
 </figure>
 <p>نکته مهم: همیشه نتیجه‌ی نهایی را کپی کنید قبل از اینکه بافر را به pool برگردانید. اگر مستقیماً <code>buf</code> را برگردانید و سپس <code>Put</code> کنید، goroutine دیگری ممکن است همان بافر را بگیرد و داده‌های شما را بازنویسی کند.</p>
 <h3 id="استفاده-آگاهانه-از-pointers">12.5.7 استفاده آگاهانه از pointers</h3>
-<p>اشاره‌گرها زمانی مفید هستند که بخواهید از کپی داده‌های بزرگ جلوگیری کنید یا داده‌ها بین goroutineها به اشتراک گذاشته شوند. اما استفاده بیش از حد از pointer باعث <bdi dir="ltr">heap allocation</bdi> بیشتر و فشار به GC می‌شود. </p><p>قانون ساده: داده‌های کوچک (کمتر از ۶۴ بایت) را <strong dir="ltr">by value</strong> منتقل کنید و فقط داده‌های بزرگ را با pointer:</p>
+<p>اشاره‌گرها زمانی مفید هستند که بخواهید از کپی داده‌های بزرگ جلوگیری کنید یا داده‌ها بین goroutineها به اشتراک گذاشته شوند. اما استفاده‌ی بیش از حد از pointer باعث <bdi dir="ltr">heap allocation</bdi> بیشتر و فشار به زباله‌روب (GC — به‌تفصیل در <a href="12.04-memory-optimization-and-gc.html">بخش ۱۲.۴</a>) می‌شود. مفهوم اشاره‌گر و تأثیر آن بر <bdi dir="ltr">Escape Analysis</bdi> در <a href="02.05-pointers.html">بخش ۲.۵</a> به‌طور کامل بررسی شده است. </p><p>قانون ساده: داده‌های کوچک (کمتر از ۶۴ بایت) را <strong dir="ltr">by value</strong> منتقل کنید و فقط داده‌های بزرگ را با pointer:</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">// Small — by value is better (32 bytes)
 type Point struct{ X, Y, Z, W float64 }
@@ -367,7 +367,7 @@ func (d *BigData) Process() { ... } // good: pointer receiver
 }
 </code></pre>
 </figure>
-<div class="note"><strong>نکته:</strong> nil کردن فقط برای متغیرهای محلیِ طولانی‌مدت یا فیلدهای struct با طول عمر بلند ضروری است. برای متغیرهای کوتاه‌عمر داخل یک تابع، معمولاً نیازی به nil کردن نیست چون compiler از طریق escape analysis تشخیص می‌دهد که متغیر دیگر استفاده نمی‌شود و آن را روی stack نگه می‌دارد. اما اگر متغیر در یک closure یا goroutine captured شده باشد، باید دستی nil کنید تا ارجاع قطع شود.</div>
+<div class="note"><strong>نکته:</strong> nil کردن فقط برای متغیرهای محلیِ طولانی‌مدت یا فیلدهای struct با طول عمر بلند ضروری است. برای متغیرهای کوتاه‌عمر داخل یک تابع، معمولاً نیازی به nil کردن نیست چون کامپایلر از طریق <bdi dir="ltr">Escape Analysis</bdi> (تشریح‌شده در <a href="02.05-pointers.html">بخش ۲.۵</a>) تشخیص می‌دهد که متغیر دیگر استفاده نمی‌شود و آن را روی stack نگه می‌دارد. اما اگر متغیر در یک closure یا goroutine captured شده باشد، باید دستی nil کنید تا ارجاع قطع شود.</div>
 <h3 id="چک-لیست-نهایی">12.5.9 چک‌لیست نهایی</h3>
 <p>این چک‌لیست را قبل از هر deployment در production مرور کنید:</p>
 <p>۱. آیا فیلدهای struct را از بزرگ به کوچک مرتب کرده‌اید؟</p>

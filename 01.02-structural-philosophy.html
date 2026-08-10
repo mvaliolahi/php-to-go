@@ -222,20 +222,11 @@ type Admin struct {
 <strong>نکته‌ی حرفه‌ای — تله‌ی method promotion برای مهاجران PHP:</strong> در PHP متدهای <code>protected</code> والد می‌توانند متدهای <code>protected</code> بازنویسی‌شده‌ی فرزند را صدا بزنند (late binding). اما در Go، وقتی <code>BaseModel</code> درون <code>User</code> embedding می‌شود و متد <code>Touch()</code> از <code>BaseModel</code> به <code>User</code> promoted می‌شود، بدنه‌ی <code>Touch()</code> همچنان روی گیرنده‌ی <code>*BaseModel</code> اجرا می‌شود نه <code>*User</code>. یعنی اگر <code>BaseModel</code> متدی صدا بزند که <code>User</code> نیز نسخه‌ی خودش را دارد، نسخه‌ی <code>BaseModel</code> اجرا خواهد شد — نه نسخه‌ی <code>User</code>. این دقیقاً نقطه‌ی مقابل رفتار polymorphic در PHP است. راه‌حل idiomatic: به‌جای embedding + override، از interface در سمت مصرف‌کننده استفاده کنید تا رفتار چندریختی واقعی به‌دست آید.
 </div>
 <h3 id="interface-از-داخل-کامپایلر">1.2.4 Interface از داخل کامپایلر: duck typing در سطح کامپایل</h3>
-<p>یکی از عمیق‌ترین تفاوت‌های ساختاری بین PHP و Go نحوه‌ی برخورد با interface است. در PHP وقتی کلاسی یک interface را پیاده می‌کند باید صراحتاً بنویسید <code>class UserService implements UserServiceInterface</code>. </p><p>کامپایلر (یا به‌عبارت دقیق‌تر آنالیزور PHP) بررسی می‌کند که آیا همه‌ی متدهای تعریف‌شده در interface وجود دارند یا خیر. این بررسی در <strong>زمان اجرا</strong> و از طریق class method table در Zend Engine انجام می‌شود.</p>
-<p>در Go اما interface‌ها <strong dir="ltr">implicit</strong> هستند. هیچ کلمه‌ی کلیدی <code>implements</code> وجود ندارد. کامپایلر Go با ساخت <strong dir="ltr">itab</strong> (interface table) در زمان کامپایل بررسی می‌کند که آیا نوع موردنظر تمام متدهای interface را پیاده‌سازی کرده یا خیر. itab یک ساختار داده‌ی سطح‌پایین است که به‌صورت کش‌شونده عمل می‌کند:</p>
-<figure class="code go" dir="ltr">
-<pre><code class="language-go">// internal itab structure (simplified)
-type itab struct {
-    inter *interfacetype // interface type
-    _type *_type // concrete type (actual struct)
-    fun [1]uintptr // array of method pointers
-}
-</code></pre>
-</figure>
-<p>وقتی شما یک struct را به متغیری از نوع interface اختصاص می‌دهید، کامپایلر Go آن را به دو بخش تقسیم می‌کند: <strong dir="ltr">eface</strong> برای interface‌های خالی (<code>interface{}</code>) و <strong dir="ltr">iface</strong> برای interface‌های با متد. هرکدام شامل دو اشاره‌گر هستند: یکی به <strong>نوع واقعی داده</strong> (_type) و دیگری به <strong dir="ltr">data</strong>. </p><p>همین ساختار دو قسمتی باعث می‌شود interface در Go بتواند هر مقداری را نگه دارد — عیناً مانند <code>mixed</code> در PHP 8 اما بدون overhead اجرایی.</p>
+<p>یکی از عمیق‌ترین تفاوت‌های ساختاری بین PHP و Go نحوه‌ی برخورد با interface است. در PHP وقتی کلاسی یک interface را پیاده می‌کند باید صراحتاً بنویسید <code>class UserService implements UserServiceInterface</code> و بررسی آن در <strong>زمان اجرا</strong> و از طریق class method table در Zend Engine انجام می‌شود.</p>
+<p>در Go اما interface‌ها <strong dir="ltr">implicit</strong> هستند. هیچ کلمه‌ی کلیدی <code>implements</code> وجود ندارد. کامپایلر Go با ساخت <strong dir="ltr">itab</strong> (interface table) در زمان کامپایل بررسی می‌کند که آیا نوع موردنظر تمام متدهای interface را پیاده‌سازی کرده یا خیر. این بررسی در <strong>زمان کامپایل</strong> انجام می‌شود و هیچ هزینه‌ی اجرایی در runtime ندارد — کامپایلر <code>itab</code> را یک‌بار می‌سازد و کش می‌کند.</p>
+<p>وقتی شما یک struct را به متغیری از نوع interface اختصاص می‌دهید، کامپایلر Go آن را به دو بخش تقسیم می‌کند: اشاره‌گری به <strong>نوع واقعی داده</strong> و اشاره‌گری به <strong>مقدار</strong>. همین ساختار دو قسمتی باعث می‌شود interface در Go بتواند هر مقداری را نگه دارد — عیناً مانند <code>mixed</code> در PHP 8 اما بدون overhead اجرایی.</p>
 <div class="note">
-<strong>تفاوت با PHP:</strong> در PHP وقتی type hint می‌کنید <code>UserServiceInterface $service</code>، Zend Engine در زمان اجرا بررسی می‌کند که آیا شیء موردنظر این interface را implements instanceof check. در Go این بررسی در <strong>زمان کامپایل</strong> انجام می‌شود و هیچ هزینه‌ی اجرایی در runtime ندارد. کامپایلر itab را یک‌بار می‌سازد و کش می‌کند.
+<strong>ارجاع متقابل:</strong> ساختار دقیق <code>itab</code>، تفکیک <bdi dir="ltr">eface</bdi> و <bdi dir="ltr">iface</bdi>، تله‌ی <bdi dir="ltr">nil interface</bdi>، و الگوهای پیشرفته‌ی طراحی interface در <a href="03.06-interface.html">بخش ۳.۶</a> به‌تفصیل بررسی شده‌اند. در این فصل فقط به تفاوت فلسفی بسنده می‌کنیم.
 </div>
 <h3 id="خطایابی-صریح-و-تفاوت-با-exception">1.2.5 خطایابی صریح و تفاوت با Exception</h3>
 <div class="quote-box">
@@ -248,7 +239,7 @@ type itab struct {
 </p>
 </div>
 <p>در PHP وقتی exception پرتاب می‌شود، Zend Engine stack trace را طی می‌کند تا اولین بلوک <code>catch</code> مناسب را پیدا کند. این فرآیند شامل <strong dir="ltr">stack unwinding</strong> است — یعنی تمام فریم‌های اجرایی بین نقطه‌ی پرتاب و نقطه‌ی دریافت از stack حذف می‌شوند و destructors اشیاء محلی فراخوانی می‌گردند. این عملیات در PHP هزینه‌دار است چون هر destructor ممکن است خودش exception دیگری پرتاب کند.</p>
-<p>در Go خطاها مقادیر معمولی هستند. وقتی تابعی <code>error</code> برمی‌گرداند، هیچ جستجوی stack‌ای انجام نمی‌شود. فرآیند خطایابی کاملاً <strong>محلی</strong> و <strong>صراحت</strong> ‌آمیز است:</p>
+<p>در Go خطاها مقادیر معمولی هستند. وقتی تابعی <code>error</code> برمی‌گرداند، هیچ جستجوی stack‌ای انجام نمی‌شود. فرآیند خطایابی کاملاً <strong>محلی</strong> و <strong>صراحت</strong> ‌آمیز است — <code>error</code> در Go چیزی جز یک interface ساده با متد <code>Error() string</code> نیست:</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">// error in Go is just a simple interface
 type error interface {
@@ -271,6 +262,9 @@ func (e *MyError) Error() string {
 <strong>مقایسه‌ی مکانیزم خطایابی</strong>
 <p><strong dir="ltr">PHP Exception:</strong> پرتاب → جستجوی بلوک catch در call stack → stack unwinding → اجرای catch. هزینه‌ی اجرایی بالا، جریان کنترل غیرمحلی، ریسک فراموشی catch.</p>
 <p><strong dir="ltr">Go error:</strong> بازگشت مقدار error → بررسی فوری توسط فراخوان‌دهنده → تصمیم‌گیری محلی. هزینه‌ی اجرایی صفر، جریان کنترل محلی و قابل‌پیش‌بینی، کامپایلر شما را وادار به بررسی می‌کند.</p>
+</div>
+<div class="note">
+<strong>ارجاع متقابل:</strong> برای مطالعه‌ی عمیق <code>error wrapping</code>، <code>errors.Is</code>/<code>errors.As</code>، <bdi dir="ltr">sentinel error</bdi> و <bdi dir="ltr">custom error type</bdi> به <a href="04.01-understanding-errors-in-go.html">بخش ۴.۱</a> مراجعه کنید. همچنین درباره‌ی تفاوت <code>panic</code> و <code>error</code> و زمان استفاده‌ی هرکدام به <a href="04.03-panic.html">بخش ۴.۳</a> نگاهی بیندازید.
 </div>
 <h3 id="composition-در-برابر-inheritance-عملکرد">1.2.6 ترکیب در برابر ارث‌بری: تأثیر بر حافظه و عملکرد</h3>
 <p>عدم وجود ارث‌بری در Go فقط یک تصمیم فلسفی نیست — تأثیر مستقیم بر <strong>طراحی حافظه</strong> و <strong>عملکرد</strong> دارد. در PHP ارث‌بری به‌صورت زنجیره‌ای پیاده‌سازی می‌شود: هر کلاس به کلاس والدش اشاره دارد و هنگام فراخوانی متد، Zend Engine زنجیره‌ی ارث‌بری را طی می‌کند تا متد موردنظر را بیابد. این فرآیند در زمان اجرا هزینه دارد.</p>

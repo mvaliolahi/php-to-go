@@ -33,7 +33,7 @@
 <span class="nav-arrow">‹</span>
 <a href="04.02-custom-errors.html"><span class="nav-label">۴.۲ ساخت خطاهای سفارشی</span></a>
 <a href="00.01-contents.html">فهرست</a>
-<a href="05.00-chapter-5.html"><span class="nav-label">۵. همزمانی</span></a>
+<a href="05.00-chapter-5.html"><span class="nav-label">۵. هم‌روندی</span></a>
 <span class="nav-arrow">›</span>
 </nav>
 <button aria-label="جستجو" class="header-btn search-toggle">
@@ -68,7 +68,7 @@
 <h2 id="panic">panic</h2><div class="abstract">
 <strong>چکیده:</strong> panic مکانیزم Go برای خطاهای غیرقابل بازیافت است و نباید جایگزین error شود. این بخش زمان استفاده‌ی صحیح از panic، recover و الگوهای طراحی پوشش می‌دهد. تفاوت با exception در PHP و خطرات misuse بررسی می‌شود.
 </div>
-<p>وقتی شرایطی پیش می‌آید که برنامه باید فوراً متوقف شود مثل خرابی غیرمنتظره سخت‌افزاری violation داخلی یا خطای برنامه‌نویسی از panic استفاده می‌کنیم.</p>
+<p>وقتی شرایطی پیش می‌آید که برنامه باید فوراً متوقف شود — مثل خرابی غیرمنتظره سخت‌افزاری، نقض invariant داخلی، یا خطای برنامه‌نویسی — از panic استفاده می‌کنیم.</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">func fail() {
     panic("اتفاق بحرانی رخ داده!")
@@ -79,7 +79,7 @@ func main() {
 }
 </code></pre>
 </figure>
-<p>panic چیزی شبیه throw exception بدون try/catch است. اگر جلوی آن را نگیرید برنامه متوقف می‌شود و stack trace چاپ می‌گردد. برخلاف PHP که هر استثنایی باید توسط catch گرفته شود در Go panic کل پشته فراخوانی را از پایین به بالا unwind می‌کند تا به تابعی با recover برسد یا برنامه متوقف شود.</p>
+<p>panic چیزی شبیه throw exception بدون try/catch است. اگر جلوی آن را نگیرید برنامه متوقف می‌شود و stack trace چاپ می‌گردد. برخلاف PHP که هر استثنایی باید توسط catch گرفته شود، در Go panic کل پشته فراخوانی را از پایین به بالا unwind می‌کند تا به تابعی با recover برسد یا برنامه متوقف شود.</p>
 <div class="note"><strong>چرا panic جایگزین throw نیست:</strong> وسوسه‌انگیز است که برنامه‌نویسان PHP برای هر خطایی از <code dir="ltr">panic</code> استفاده کنند، اما این ضدالگوی قطعی در Go است. قانون ساده: اگر شرایط را می‌توان با <code>error</code> بازگرداند و در لایه‌ی بالاتر مدیریت کرد، هرگز <code dir="ltr">panic</code> نکنید. <code dir="ltr">panic</code> فقط برای «این هرگز نباید رخ دهد» است — یعنی نقض invariant داخلی، مقدار <code>nil</code> غیرمنتظره، یا خطای برنامه‌نویس. در کتابخانه‌ها حتی همین موارد را هم ترجیحاً به‌صورت <code>error</code> برگردانید تا مصرف‌کننده مجبور به <code dir="ltr">recover</code> نشود.</div>
 <h3 id="panic-در-سطح-اجرا">4.3.1 panic در سطح اجرا: مکانیزم داخلی</h3>
 <div class="quote-box">
@@ -134,7 +134,7 @@ func main() {
 }
 </code></pre>
 </figure>
-<p>در PHP همیشه از try/catch استفاده می‌کنید اما در Go این بازیابی باید صریح و ساختار یافته باشد.</p>
+<p>در PHP همیشه از try/catch استفاده می‌کنید اما در Go این بازیابی باید صریح و ساختار‌یافته باشد.</p>
 <h3 id="panic-chaining">4.3.3 وقتی چند panic رخ می‌دهد</h3>
 <p>وقتی panic در حال unwind پشته است و در یکی از توابع <code>defer</code> panic جدیدی رخ می‌دهد، panic دوم به زنجیره اضافه می‌شود. وقتی <code>recover</code> فراخوانی می‌شود، فقط آخرین panic بازیابی می‌شود:</p>
 <figure class="code go" dir="ltr">
@@ -448,7 +448,7 @@ func main() {
 <a href="00.01-contents.html">فهرست</a>
 </div>
 <div class="footer-nav">
-<a data-next="" href="05.00-chapter-5.html">۵. همزمانی</a>
+<a data-next="" href="05.00-chapter-5.html">۵. هم‌روندی</a>
 <span class="nav-arrow">›</span>
 </div>
 </div>

@@ -453,7 +453,7 @@ s.Log("started") // equivalent to s.Logger.Log("started")
 </code></pre>
 </figure>
 <p>متدهای ارتقایافته در واقع یک <bdi dir="ltr">syntactic sugar</bdi> هستند — کامپایلر فراخوانی <code>s.Log()</code> را به <code>s.Logger.Log()</code> تبدیل می‌کند. اما نکته‌ی مهم این است که receiver همیشه struct داخلی است نه بیرونی. یعنی اگر <code>Log</code> بخواهد به فیلدهای <code>Service</code> دسترسی داشته باشد، نمی‌تواند — چون receiver آن <code>Logger</code> است نه <code>Service</code>.</p>
-<p><strong  id="polymorphism-via-interfaces">چندریختی از طریق Interfaceها</strong> — در PHP <bdi dir="ltr">polymorphism</bdi> از طریق وراثت و <bdi dir="ltr">interface</bdi> حاصل می‌شود. در Go نیز polymorphism وجود دارد اما فقط از طریق <bdi dir="ltr">interface</bdi> و بدون نیاز به وراثت:</p>
+<p><strong  id="polymorphism-via-interfaces">چندریختی از طریق Interfaceها</strong> — در PHP <bdi dir="ltr">polymorphism</bdi> از طریق وراثت و <bdi dir="ltr">interface</bdi> حاصل می‌شود. در Go نیز polymorphism وجود دارد اما فقط از طریق <a href="03.06-interface.html">واسط</a> و بدون نیاز به وراثت. مفهوم واسط، پیاده‌سازی ضمنی و تله‌ی <bdi dir="ltr">typed nil</bdi> در <a href="03.06-interface.html">بخش ۳.۶</a> به‌طور کامل بررسی شده‌اند.</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">// Define behavior
 type Speaker interface {
@@ -479,7 +479,7 @@ animals := []Speaker{Dog{Name: "Rex"}, Cat{Name: "Mimi"}}
 MakeThemSpeak(animals)
 </code></pre>
 </figure>
-<div class="tip"><strong>نکته‌ی طراحی:</strong> در Go به‌جای ساختن سلسله‌مراتب <code>Animal → Dog/Cat</code>، مستقیماً <bdi dir="ltr">interface</bdi> <code>Speaker</code> را تعریف می‌کنیم و هر structی که متد <code>Speak()</code> داشته باشد به‌صورت خودکار در جمع <code>[]Speaker</code> پذیرفته می‌شود. این رویکرد انعطاف‌پذیرتر است چون هر struct جدید بدون تغییر در کد موجود می‌تواند به جمع اضافه شود.</div>
+<div class="tip"><strong>نکته‌ی طراحی:</strong> در Go به‌جای ساختن سلسله‌مراتب <code>Animal → Dog/Cat</code>، مستقیماً <a href="03.06-interface.html">واسط</a> <code>Speaker</code> را تعریف می‌کنیم و هر structی که متد <code>Speak()</code> داشته باشد به‌صورت خودکار در جمع <code>[]Speaker</code> پذیرفته می‌شود. این رویکرد انعطاف‌پذیرتر است چون هر struct جدید بدون تغییر در کد موجود می‌تواند به جمع اضافه شود.</div>
 <table class="comparison-table" dir="rtl">
 <thead>
 <tr><th>ویژگی</th><th>PHP</th><th>Go (ترکیب + Interface)</th></tr>

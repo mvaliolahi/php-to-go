@@ -77,9 +77,9 @@
 <span class="quote-book">Observability: A Manifesto</span>
 </p>
 </div>
-<p>در ادامه، نقشه‌ی راه کلیِ این فصل را در نمودار زیر می‌بینید و سپس وارد جزئیات هر بخش می‌شویم.</p>
+<p>در ادامه، نقشه‌ی راه کلیِ این فصل را در نمودار زیر مرور می‌کنیم و سپس وارد جزئیات هر بخش می‌شویم.</p>
 <h3 id="چرا-observability-مهم-است">9.0.1 چرا Observability مهم است</h3>
-<p><bdi dir="ltr">Observability</bdi> یعنی توانایی درک وضعیت داخلی سیستم از طریق خروجی‌های آن — Logs، Metrics و <bdi dir="ltr">Trace</bdi> ها. در برنامه‌های <bdi dir="ltr">PHP</bdi> به دلیل مدل اجرای مبتنی بر درخواست، دیباگ نسبتاً ساده است: هر درخواست یک فرآیند مجزا است و لاگ‌های آن مستقل هستند. </p><p>اما در <bdi dir="ltr">Go</bdi> برنامه شما یک فرآیند بلندمدت است که هزاران درخواست را همزمان پردازش می‌کند. بدون ابزارهای مناسب <bdi dir="ltr">Observability</bdi>، ردیابی مشکل در چنین سیستمی بسیار دشوار خواهد بود.</p>
+<p><bdi dir="ltr">Observability</bdi> یعنی توانایی درک وضعیت داخلی سیستم از طریق خروجی‌های آن — Logs، Metrics و <bdi dir="ltr">Trace</bdi>‌ها. در برنامه‌های <bdi dir="ltr">PHP</bdi> به دلیل مدل اجرای مبتنی بر درخواست، دیباگ نسبتاً ساده است: هر درخواست یک فرآیند مجزا است و لاگ‌های آن مستقل هستند. </p><p>اما در <bdi dir="ltr">Go</bdi> برنامه شما یک فرآیند بلندمدت است که هزاران درخواست را به‌صورت هم‌روند پردازش می‌کند. بدون ابزارهای مناسب <bdi dir="ltr">Observability</bdi>، ردیابی مشکل در چنین سیستمی بسیار دشوار خواهد بود.</p>
 <p>سه رکن اصلی <bdi dir="ltr">Observability</bdi> عبارتند از:</p>
 <p><strong>Logs:</strong> ثبت وقایع و خطاها به صورت متنی. Logs به شما می‌گویند <em>چه اتفاقی افتاده</em>. مثلاً «خطای اتصال به دیتابیس در ساعت ۱۰:۳۰».</p>
 <p><strong>Metrics:</strong> اندازه‌گیری کمی عملکرد سیستم. Metrics به شما می‌گویند <em>چقدر</em> از چیزی اتفاق افتاده. مثلاً «۱۵۰ درخواست در ثانیه» یا «میانگین زمان پاسخ ۵۰ میلی‌ثانیه».</p>
@@ -119,9 +119,9 @@
 <figcaption>شکل ۹-۱: سه رکن Observability — Logs به شما می‌گویند <strong>چه</strong> اتفاقی افتاده، Metrics <strong>چقدر</strong> از چیزی اتفاق افتاده و Traces <strong>کجا و چرا</strong> یک درخواست کند بوده. این سه رکن با افزودن <code>trace_id</code> به لاگ‌ها و <bdi dir="ltr">exemplar</bdi>‌های متریک، در <bdi dir="ltr">Grafana</bdi> به‌صورت یکپارچه قابل پیمایش هستند.</figcaption>
 </figure>
 <div class="tip"><strong>نکته‌ی اولویت‌بندی:</strong> اگر در حال migrations از <bdi dir="ltr">PHP</bdi> به <bdi dir="ltr">Go</bdi> هستید و منابع محدودی دارید، با <bdi dir="ltr">Logging</bdi> شروع کنید (پایه‌ای‌ترین ابزار)، سپس <bdi dir="ltr">Metrics</bdi> اضافه کنید (برای مانیتورینگ بلندمدت) و در نهایت <bdi dir="ltr">Tracing</bdi> را پیاده‌سازی کنید (وقتی چند سرویس دارید). هر سه رکن لازم نیستند همزمان پیاده شوند؛ حتی فقط <bdi dir="ltr">Logging</bdi> ساختاریافته و چند <bdi dir="ltr">Metric</bdi> کلیدی، به‌مراتب بهتر از هیچ <bdi dir="ltr">Observability</bdi>ی است.</div>
-<div class="important"><strong>تفاوت با PHP:</strong> در <bdi dir="ltr">PHP</bdi> معمولاً <bdi dir="ltr">Monolog</bdi> برای Logs و <bdi dir="ltr">New Relic</bdi> یا <bdi dir="ltr">Datadog</bdi> برای مانیتورینگ کافی است. اما در <bdi dir="ltr">Go</bdi> به دلیل مدل <bdi dir="ltr">concurrent</bdi> و معماری میکروسرویس، نیاز به سیستم <bdi dir="ltr">Observability</bdi> جامع‌تری دارید. خوشبختانه اکوسیستم <bdi dir="ltr">Go</bdi> ابزارهای قدرتمندی دارد که همگی متن‌باز هستند.</div>
+<div class="important"><strong>تفاوت با PHP:</strong> در <bdi dir="ltr">PHP</bdi> معمولاً <bdi dir="ltr">Monolog</bdi> برای Logs و <bdi dir="ltr">New Relic</bdi> یا <bdi dir="ltr">Datadog</bdi> برای مانیتورینگ کافی است. اما در <bdi dir="ltr">Go</bdi> به دلیل مدل هم‌روند و معماری میکروسرویس، نیاز به سیستم <bdi dir="ltr">Observability</bdi> جامع‌تری دارید. خوشبختانه اکوسیستم <bdi dir="ltr">Go</bdi> ابزارهای قدرتمندی دارد که همگی متن‌باز هستند.</div>
 <h3 id="سناریو-واقعی-چرا-بدون-مشاهدهپذیری-گم-میشویم">9.0.2 سناریو واقعی: چرا بدون Observability گم می‌شویم</h3>
-<p>فرض کنید برنامه‌ای نوشته‌اید که هر ۵ دقیقه یک <bdi dir="ltr">batch job</bdi> اجرا می‌کند و نتایج را در دیتابیس ذخیره می‌کند. یک روز کاربران گزارش می‌دهند که داده‌ها آپدیت نمی‌شوند. در <bdi dir="ltr">PHP</bdi> کافیست لاگ‌های <bdi dir="ltr">cron</bdi> را بررسی کنید یا <bdi dir="ltr">error_log</bdi> را بخوانید — چون هر اجرا مستقل است و در یک فایل لاگ می‌شود. </p><p>اما در <bdi dir="ltr">Go</bdi> برنامه شما یک فرآیند بلندمدت است که ممکن است هزاران <bdi dir="ltr">goroutine</bdi> همزمان اجرا کند. بدون ابزار مناسب:</p>
+<p>فرض کنید برنامه‌ای نوشته‌اید که هر ۵ دقیقه یک <bdi dir="ltr">batch job</bdi> اجرا می‌کند و نتایج را در دیتابیس ذخیره می‌کند. یک روز کاربران گزارش می‌دهند که داده‌ها آپدیت نمی‌شوند. در <bdi dir="ltr">PHP</bdi> کافیست لاگ‌های <bdi dir="ltr">cron</bdi> را بررسی کنید یا <bdi dir="ltr">error_log</bdi> را بخوانید — چون هر اجرا مستقل است و در یک فایل لاگ می‌شود. </p><p>اما در <bdi dir="ltr">Go</bdi> برنامه شما یک فرآیند بلندمدت است که ممکن است هزاران <bdi dir="ltr">goroutine</bdi> به‌صورت هم‌روند اجرا کند. بدون ابزار مناسب:</p>
 <ul>
 <li>بدون <strong>Logs</strong> نمی‌دانید آیا <bdi dir="ltr">job</bdi> اصلاً اجرا شده یا نه، و اگر خطایی رخ داده چه بوده.</li>
 <li>بدون <strong>Metrics</strong> نمی‌توانید ببینید آیا زمان اجرای <bdi dir="ltr">job</bdi> به‌مرور افزایش یافته (نشانه‌ای از مشکل دیتابیس) یا تعداد خطاها بالا رفته.</li>
@@ -136,7 +136,7 @@
 <tbody>
 <tr><td>Logs</td><td><bdi dir="ltr">Monolog</bdi></td><td><bdi dir="ltr">slog / zap / zerolog</bdi></td><td>لاگ‌سازی بدون تخصیص حافظه (<bdi dir="ltr">zero-alloc</bdi>)</td></tr>
 <tr><td>Metrics</td><td><bdi dir="ltr">promphp</bdi> (با Redis)</td><td><bdi dir="ltr">Prometheus client_golang</bdi></td><td>Metrics در حافظه فرآیند (بدون <bdi dir="ltr">Redis</bdi>)</td></tr>
-<tr><td>ردیابی</td><td><bdi dir="ltr">Xdebug / New Relic</bdi></td><td><bdi dir="ltr">OpenTelemetry SDK</bdi></td><td>انتشار <bdi dir="ltr">context</bdi> بین <bdi dir="ltr">goroutine</bdi></td></tr>
+<tr><td>ردیابی</td><td><bdi dir="ltr">Xdebug / New Relic</bdi></td><td><bdi dir="ltr">OpenTelemetry SDK</bdi></td><td>انتشار <a href="05.04-context.html">Context</a> بین <bdi dir="ltr">goroutine</bdi></td></tr>
 <tr><td>مصورسازی</td><td><bdi dir="ltr">Datadog / New Relic</bdi></td><td><bdi dir="ltr">Grafana</bdi></td><td>متن‌باز و رایگان</td></tr>
 </tbody>
 </table>

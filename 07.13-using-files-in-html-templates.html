@@ -74,7 +74,7 @@
 &lt;script src="/static/js/app.js" defer&gt;&lt;/script&gt;
 </code></pre>
 </figure>
-<h3 id="نسخه‌گذاری-فایلهای-استاتیک-cache-busting)">7.13.1 Cache Busting</h3>
+<h3 id="نسخه‌گذاری-فایلهای-استاتیک-cache-busting">7.13.1 Cache Busting</h3>
 <p>وقتی از هدرهای کش قوی استفاده می‌کنید مرورگر فایل‌ها را برای مدت طولانی ذخیره می‌کند. مشکل اینجاست که اگر فایل CSS یا JS را تغییر دهید کاربران ممکن است نسخه قدیمی را ببینند. راه‌حل استاندارد افزودن نسخه یا هش به نام فایل است:</p>
 <figure class="code html" dir="ltr">
 <pre><code class="language-xml"><!-- روش ۱: پارامتر query -->
@@ -96,12 +96,12 @@ type PageData struct {
 </code></pre>
 </figure>
 <h3 id="تولید-هدر-کش-برای-فایلهای-جاسازیشده">7.13.2 تولید هدر کش برای فایل‌های جاسازی‌شده</h3>
-<p>چون فایل‌های جاسازی‌شده با <code dir="ltr">embed</code> هرگز تغییر نمی‌کنند (مگر با کامپایل مجدد)، می‌توانید هدرهای کش بسیار بلندمدت تنظیم کنید. </p><p>پیاده‌سازی کامل <code dir="ltr">embeddedCacheMiddleware</code> با هدر <code dir="ltr">Cache-Control: public, max-age=31536000, immutable</code> و ترفند <code dir="ltr">ldflags</code> برای تزریق نسخه برنامه را در بخش ۷.۱۲ دیدید؛ همان الگو اینجا نیز کاربرد دارد.</p>
+<p>چون فایل‌های جاسازی‌شده با <code dir="ltr">embed</code> هرگز تغییر نمی‌کنند (مگر با کامپایل مجدد)، می‌توانید هدرهای کش بسیار بلندمدت تنظیم کنید (توضیحات کامل embed در <a href="06.05-embedding-files-in-program.html">بخش ۶.۵</a>). </p><p>پیاده‌سازی کامل <code dir="ltr">embeddedCacheMiddleware</code> با هدر <code dir="ltr">Cache-Control: public, max-age=31536000, immutable</code> و ترفند <code dir="ltr">ldflags</code> برای تزریق نسخه برنامه را در <a href="07.12-serving-static-files-with-embed.html">بخش ۷.۱۲</a> دیدید؛ همان الگو اینجا نیز کاربرد دارد.</p>
 <div class="tip"><strong>نکته:</strong> هدر <code>immutable</code> به مرورگر می‌گوید که فایل هرگز تغییر نمی‌کند و نیازی به revalidation ندارد. این هدر فقط زمانی مناسب است که مطمئن باشید فایل واقعاً تغییر نمی‌کند — مثل فایل‌های جاسازی‌شده در باینری. ترکیب آن با <code>cache busting</code> (هش در نام فایل یا پارامتر کوئری نسخه) تضمین می‌کند که پس از بیلد جدید، مرورگرها فایل جدید را بارگذاری کنند.</div>
 <h3 id="نکات-امنیتی">7.13.3 نکات امنیتی</h3>
 <p>استفاده از embed برای سرو کردن فایل‌های استاتیک در Go، روش مدرن، ایمن و قابل‌اتکایی است که مخصوصاً برای single binary deployment بسیار مفید است. ترکیب این روش با caching سمت مرورگر باعث افزایش قابل‌توجه سرعت لود صفحات، کاهش مصرف پهنای باند و بهبود تجربه کاربری می‌شود.</p>
 <h3 id="جاسازی-css-و-js-درون-قالبها">7.13.4 جاسازی CSS و JS درون قالب‌ها</h3>
-<p>گاهی اوقات برای کاهش تعداد درخواست‌های HTTP یا برای تولید صفحات مستقل، نیاز دارید CSS و JS را مستقیماً درون قالب <bdi dir="ltr">HTML</bdi> قرار دهید. با ترکیب <code dir="ltr">embed.FS</code> و توابع سفارشی قالب، می‌توانید فایل‌های <bdi dir="ltr">CSS</bdi> و <bdi dir="ltr">JS</bdi> را بخوانید و درون تگ‌های <code dir="ltr">&lt;style&gt;</code> و <code dir="ltr">&lt;script&gt;</code> قرار دهید:</p>
+<p>گاهی اوقات برای کاهش تعداد درخواست‌های HTTP یا برای تولید صفحات مستقل، نیاز دارید CSS و JS را مستقیماً درون قالب <bdi dir="ltr">HTML</bdi> قرار دهید. با ترکیب <code dir="ltr">embed.FS</code> و توابع سفارشی قالب، می‌توانید فایل‌های <bdi dir="ltr">CSS</bdi> و <bdi dir="ltr">JS</bdi> را بخوانید و درون تگ‌های <code dir="ltr">&lt;style&gt;</code> و <code dir="ltr">&lt;script&gt;</code> قرار دهید (مبانی <code dir="ltr">embed.FS</code> در <a href="06.05-embedding-files-in-program.html">بخش ۶.۵</a>):</p>
 <div class="note"><strong>یادداشت:</strong> این الگو را فقط برای <bdi dir="ltr">critical CSS</bdi> (سبک‌های بالای صفحه که برای رندر اولیه لازم هستند) یا اسکریپت‌های کوچکِ راه‌انداز استفاده کنید — نه برای همه‌ی فایل‌ها. درlining همه‌ی <bdi dir="ltr">CSS/JS</bdi> باعث می‌شود حجم <bdi dir="ltr">HTML</bdi> به‌شدت افزایش یابد و مرورگر نتواند هیچ فایلی را کش کند. الگوی بهینه: <bdi dir="ltr">critical CSS</bdi> را inline کنید و بقیه‌ی فایل‌ها را به‌صورت لینک خارجی با هدر <code dir="ltr">Cache-Control: immutable</code> سرو کنید (روش بخش ۷.۱۲).</div>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">//go:embed static/css/*.css static/js/*.js
@@ -158,7 +158,7 @@ var funcs = template.FuncMap{
 </code></pre>
 </figure>
 <h3 id="درخت-شمول-فایلهای-قالب">7.13.6 درخت شمول فایل‌های قالب</h3>
-<p>هر صفحه‌ی <bdi dir="ltr">HTML</bdi> در <bdi dir="ltr">Go</bdi> از ترکیب چندین فایل قالب ساخته می‌شود. قالب پایه (<code dir="ltr">base.html</code>) بلوک‌های اصلی را تعریف و قالب‌های جزئی را با <code dir="ltr">{{ template }}</code> فراخوانی می‌کند. هر قالب جزئی ممکن است خود قالب‌های دیگری را فراخوانی کند و یک درخت شمول (<bdi dir="ltr">inclusion tree</bdi>) تشکیل شود. </p><p>درک این درخت برای دیباگ و سازمان‌دهی قالب‌ها ضروری است. مهم‌ترین نکته این است که تمام فایل‌های قالب باید با هم بارگذاری شوند — مثلاً با <code dir="ltr">ParseGlob</code> یا <code dir="ltr">ParseFS</code> — تا تعاریف <code dir="ltr">{{ define }}</code> همه فایل‌ها در دسترس باشد. </p><p>ترتیب بارگذاری فایل‌ها مهم نیست، اما ترتیب رندر مهم است: همیشه باید <code dir="ltr">ExecuteTemplate</code> با نام قالب پایه فراخوانی شود.</p>
+<p>هر صفحه‌ی <bdi dir="ltr">HTML</bdi> در <bdi dir="ltr">Go</bdi> از ترکیب چندین فایل قالب ساخته می‌شود. قالب پایه (<code dir="ltr">base.html</code>) بلوک‌های اصلی را تعریف و قالب‌های جزئی را با <code dir="ltr">{{ template }}</code> فراخوانی می‌کند. هر قالب جزئی ممکن است خود قالب‌های دیگری را فراخوانی کند و یک درخت شمول (<bdi dir="ltr">inclusion tree</bdi>) تشکیل شود. </p><p>درک این درخت برای دیباگ و سازمان‌دهی قالب‌ها ضروری است. مهم‌ترین نکته این است که تمام فایل‌های قالب باید با هم بارگذاری شوند — مثلاً با <code dir="ltr">ParseGlob</code> یا <code dir="ltr">ParseFS</code> — تا تعاریف <code dir="ltr">{{ define }}</code> همه فایل‌ها در دسترس باشد (الگوی ترکیب <code dir="ltr">ParseFS</code> با <code dir="ltr">embed.FS</code> در <a href="07.10-embedding-templates-with-embed.html">بخش ۷.۱۰</a> بررسی شده است). </p><p>ترتیب بارگذاری فایل‌ها مهم نیست، اما ترتیب رندر مهم است: همیشه باید <code dir="ltr">ExecuteTemplate</code> با نام قالب پایه فراخوانی شود.</p>
 <h3 id="سناریوهای-عملیاتی-قالبهای-فایل">7.13.7 سناریوهای عملیاتی</h3>
 <ul>
 <li><strong>سازمان‌دهی ساختار صفحات پیچیده:</strong> در پروژه‌های بزرگ، هر صفحه ممکن است ده‌ها قالب جزئی داشته باشد. قالب‌ها را بر اساس عملکرد تفکیک کنید: <code dir="ltr">layouts/</code> برای قالب‌های پایه، <code dir="ltr">pages/</code> برای محتوای صفحات، <code dir="ltr">partials/</code> برای اجزای مشترک و <code dir="ltr">components/</code> برای ویجت‌های قابل استفاده مجدد. با <code dir="ltr">ParseFS</code> تمام فایل‌ها یکجا بارگذاری می‌شوند.</li>

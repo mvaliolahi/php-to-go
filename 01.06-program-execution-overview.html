@@ -71,7 +71,7 @@
 <p>در PHP معمولاً تعامل مستقیمی با مفاهیم سطح پایین سیستم‌عامل نداریم. برنامه‌نویس کدی می‌نویسد که در بستر وب‌سرور اجرا می‌شود. فایل‌هایی را می‌خواند با پایگاه داده ارتباط برقرار می‌کند و پس از تولید خروجی فرآیند اجرا خاتمه می‌یابد. </p><p>این مدل اجرایی ساده برای توسعه‌ی سریع اپلیکیشن‌های تحت وب بسیار مناسب است اما جزئیات سطح سیستم‌عامل را از دید برنامه‌نویس پنهان می‌کند و به‌همین دلیل بسیاری از برنامه‌نویسان PHP هرگز نیازی به درک مفاهیمی مانند <bdi dir="ltr">process</bdi>، <bdi dir="ltr">thread</bdi> و <bdi dir="ltr">scheduling</bdi> نداشته‌اند.</p>
 <p>در مقابل Go زبانی است که با هدف توسعه‌ی نرم‌افزارهای سیستمی، سرورهای مقیاس‌پذیر، ابزارهای خط فرمان و میکروسرویس‌ها طراحی شده است. </p><p>به همین دلیل هنگام کار با <bdi dir="ltr">Go</bdi> مفاهیمی مانند <bdi dir="ltr">process</bdi>، <bdi dir="ltr">thread</bdi>، <bdi dir="ltr">scheduling</bdi>، <bdi dir="ltr">CPU cores</bdi> و تعامل با سیستم‌عامل نه به‌عنوان جزئیات حاشیه‌ای بلکه به‌عنوان بخشی از جریان اصلی توسعه از دایره‌ی درک برنامه‌نویس تبدیل می‌شوند. </p><p>درک این مفاهیم هم برای نوشتن کد بهینه ضروری است و هم برای <bdi dir="ltr">debugging</bdi> مسائل پیچیده‌ای مانند <bdi dir="ltr">race condition</bdi>، <bdi dir="ltr">deadlock</bdi> و نشت حافظه نیز لازم است.</p>
 <p>در این بخش تلاش خواهیم کرد حداقل اطلاعات لازم برای درک نحوه‌ی اجرای برنامه‌ها در سطح سیستم‌عامل را بررسی کنیم. هدف ما این است که بفهمیم وقتی یک برنامه‌ی Go را اجرا می‌کنیم دقیقاً چه فرایندهایی از بارگذاری اولیه تا زمان‌بندی اجرا، مصرف منابع و مدیریت حافظه در بطن سیستم رخ می‌دهد.</p>
-<p>در فصل ۳ نحوه‌ی اجرای برنامه تشریح خواهد شد ولی همانطور که گفته شد عموما فرایند اجرای یک برنامه به صورت زیر می‌باشد.</p>
+<p>در <a href="03.04-understanding-program-lifecycle.html">بخش ۳.۴</a> نحوه‌ی اجرای برنامه به‌طور مفصل تشریح شده است. در ادامه، مرور کوتاهی از مراحل کلی اجرای یک برنامه‌ی <bdi dir="ltr">Go</bdi> ارائه می‌شود:</p>
 <p>۱. سیستم‌عامل برنامه‌ی <bdi dir="ltr">binary</bdi> تولید‌شده توسط <bdi dir="ltr">Go</bdi> را به‌صورت یک <bdi dir="ltr">process</bdi> بارگذاری می‌کند.
 ۲. این <bdi dir="ltr">process</bdi> شامل یک <bdi dir="ltr">main thread</bdi> است که تابع <code dir="ltr">main()</code> را اجرا می‌کند.
 ۳. وقتی شما یک <bdi dir="ltr">Goroutine</bdi> ایجاد می‌کنید زمان‌بند <bdi dir="ltr">Go</bdi> آن را در صف اجرای داخلی قرار می‌دهد.
@@ -96,8 +96,8 @@
 <p>اجرای هم‌زمان واقعی روی سیستم چندهسته‌ای ممکن است.</p>
 <p>هر Thread به‌طور جداگانه توسط سیستم‌عامل زمان‌بندی می‌شود.</p>
 <p>در PHP کنترل Thread ها عملاً در اختیار شما نیست. اما در Go شما می‌توانید به‌صورت مستقیم یا غیرمستقیم با Thread ها کار کنید.</p>
-<p><strong>هم‌زمانی</strong> — در فصل چهارم این مفهوم به تفصیل توضیح داده خواهد شد ولی در ادامه توضیحات مختصری در این باره داده خواهد شد. در Go اجرای هم‌زمان با استفاده از مفهومی به‌نام <strong dir="ltr">Goroutine</strong> انجام می‌شود. </p><p>یک Goroutine واحدی سبک‌وزن از اجراست که به‌صورت هم‌زمان با سایر بخش‌های برنامه اجرا می‌شود اما برخلاف thread های سیستم‌عامل به‌صورت مستقیم توسط <strong dir="ltr">scheduler</strong> <strong>داخلی Go</strong> مدیریت می‌شود نه توسط سیستم‌عامل.</p>
-<p>یکی از تفاوت‌های کلیدی goroutine با thread های معمولی در مصرف حافظه است در حالی که یک thread سیستم‌عامل به‌طور معمول بین <strong>۵۱۲ کیلوبایت تا چند مگابایت</strong> stack نیاز دارد هر goroutine در Go با تنها <strong>۲ کیلوبایت حافظه</strong> آغاز می‌شود و در صورت نیاز به‌صورت پویا رشد می‌کند.</p>
+<p><strong>هم‌روندی</strong> — در <a href="05.01-goroutine.html">بخش ۵.۱</a> این مفهوم به‌تفصیل توضیح داده شده است. در Go اجرای هم‌روند با استفاده از مفهومی به‌نام <strong dir="ltr">Goroutine</strong> انجام می‌شود. </p><p>یک Goroutine واحدی سبک‌وزن از اجراست که به‌صورت هم‌روند با سایر بخش‌های برنامه اجرا می‌شود اما برخلاف thread های سیستم‌عامل به‌صورت مستقیم توسط <strong dir="ltr">scheduler</strong> <strong>داخلی Go</strong> مدیریت می‌شود نه توسط سیستم‌عامل.</p>
+<p>یکی از تفاوت‌های کلیدی goroutine با thread های معمولی در مصرف حافظه است: یک thread سیستم‌عامل به‌طور معمول بین <strong>۵۱۲ کیلوبایت تا چند مگابایت</strong> stack نیاز دارد در حالی که هر goroutine در Go با تنها <strong>۲ کیلوبایت حافظه</strong> آغاز می‌شود و در صورت نیاز به‌صورت پویا رشد می‌کند.</p>
 <p>این معماری سبک به شما اجازه می‌دهد <strong>هزاران</strong> <strong dir="ltr">task هم‌زمان</strong> را تنها با چند خط کد و بدون بار سنگین روی منابع اجرا کنید ویژگی‌ که Go را برای ساخت سرورهای مقیاس‌پذیر و ابزارهای هم‌زمان بسیار مناسب کرده است.</p>
 <h3 id="مقداردهی-runtime-گو">1.6.1 مقداردهی Runtime Go: از باینری تا main()</h3>
 <p>وقتی فایل باینری Go توسط سیستم‌عامل اجرا می‌شود، قبل از اینکه <code dir="ltr">main()</code> شما اجرا شود مراحل متعددی طی می‌شود. شناخت این مراحل برای درک رفتار برنامه‌های Go ضروری است. </p><p>بسیاری از برنامه‌نویسان <bdi dir="ltr">PHP</bdi> تعجب می‌کنند وقتی می‌فهمند قبل از <code>main()</code> کد قابل‌توجهی اجرا می‌شود — در <bdi dir="ltr">PHP</bdi> هر درخواست مستقیماً از ابتدای فایل شروع می‌شود و هیچ مقداردهی سراسری مشابهی وجود ندارد.</p>
@@ -114,6 +114,19 @@
 </div>
 <h3 id="مدل-gmp-زمان‌بند-goroutine">1.6.2 مدل GMP</h3>
 <div class="quote-box">
+<p class="quote-text">زمان‌بند باید بین انصاف، کارایی و مقیاس‌پذیری تعادل برقرار کند. مدل GMP این را از طریق اجازه سرقت کار بین Ps به دست می‌آورد، به این معنی که پردازنده‌های بیکار می‌توانند کار را از پردازنده‌های مشغول بگیرند، که به تعادل بار بهتر بدون هماهنگی مرکزی منجر می‌شود.</p>
+<p class="quote-source">
+<span class="quote-author">Dmitry Vyukov</span>
+<span class="quote-role">طراح زمان‌بند Go</span>
+</p>
+</div>
+<p>زمان‌بند Go از مدل <strong dir="ltr">GMP</strong> (Goroutine-Machine-Processor) استفاده می‌کند که در آن Goroutine‌های سبک روی Thread‌های واقعی سیستم‌عامل نگاشت می‌شوند. این مدل که تأثیر مستقیم بر عملکرد برنامه دارد، سه مؤلفه‌ی اصلی دارد: <strong dir="ltr">G (Goroutine)</strong> واحد سبک اجرا (حدود ۲ کیلوبایت در ابتدا) شامل stack و instruction pointer؛ <strong dir="ltr">M (Machine)</strong> یک thread واقعی سیستم‌عامل که روی یک هسته‌ی CPU اجرا می‌شود؛ و <strong dir="ltr">P (Processor)</strong> یک منبع مجازی که نماینده‌ی یک هسته‌ی منطقی CPU است و تعدادش برابر با <code>GOMAXPROCS</code> تنظیم می‌شود. این معماری به Go اجازه می‌دهد ده‌ها هزار Goroutine را به‌طور کارآمد مدیریت کند.</p>
+<p>در مقابل، <bdi dir="ltr">PHP-FPM</bdi> از تعداد ثابتی از worker process‌ها (مثلاً ۵۰) استفاده می‌کند که هرکدام حدود ۲۰–۵۰ مگابایت حافظه مصرف می‌کنند. وقتی همه‌ی worker‌ها مشغول باشند، درخواست‌ها در صف می‌مانند. در Go، وقتی یک goroutine مسدود می‌شود (مثلاً روی I/O)، thread آزاد شده و goroutine دیگری روی آن اجرا می‌شود — بدون هیچ صف‌بندی در سطح سیستم‌عامل.</p>
+<div class="note">
+<strong>ارجاع متقابل:</strong> برای درک عمیق‌تر مکانیزم <bdi dir="ltr">work-stealing</bdi>، <bdi dir="ltr">asynchronous preemption</bdi> (از Go 1.14)، تنظیم <code>GOMAXPROCS</code> در محیط‌های کانتینری، و سناریوهای عیب‌یابی زمان‌بند به <a href="05.01-goroutine.html">بخش ۵.۱</a> مراجعه کنید.
+</div>
+<h3 id="garbage-collector-گو">1.6.3 Garbage Collector Go</h3>
+<div class="quote-box">
 <p class="quote-text">هدف ما برای جمع‌آور زباله Go دستیابی به تأخیر کم — به‌طور خاص، مکث stop-the-world زیر ۵۰۰ میکروثانیه — در حالی که throughput معقول حفظ شود — بود. ما این را از طریق الگوریتم همزمان و نشانه‌گذاری و پاک‌سازی سه‌رنگی به دست آوردیم که در کنار mutator اجرا می‌شود.</p>
 <p class="quote-source">
 <span class="quote-author">Rick Hudson</span>
@@ -122,62 +135,10 @@
 <span class="quote-book">GopherCon 2018 — Go GC: Solving the Latency Problem</span>
 </p>
 </div>
-<div class="quote-box">
-<p class="quote-text">زمان‌بند باید بین انصاف، کارایی و مقیاس‌پذیری تعادل برقرار کند. مدل GMP این را از طریق اجازه سرقت کار بین Ps به دست می‌آورد، به این معنی که پردازنده‌های بیکار می‌توانند کار را از پردازنده‌های مشغول بگیرند، که به تعادل بار بهتر بدون هماهنگی مرکزی منجر می‌شود.</p>
-<p class="quote-source">
-<span class="quote-author">Dmitry Vyukov</span>
-<span class="quote-role">طراح زمان‌بند Go</span>
-</p>
-</div>
-<p>زمان‌بند Go از مدل <strong dir="ltr">GMP</strong> استفاده می‌کند — از مهم‌ترین مفاهیم داخلی Go که تأثیر مستقیم بر عملکرد برنامه دارد:</p>
-<p><strong dir="ltr">G (Goroutine):</strong> هر goroutine یک ساختار داده‌ی داخلی است (حدود ۲ کیلوبایت در ابتدا) شامل stack، instruction pointer، اطلاعات debugging و غیره. هر goroutine مستقل از thread سیستم‌عامل مدیریت می‌شود.</p>
-<p><strong dir="ltr">M (Machine):</strong> نشان‌دهنده‌ی یک <strong>thread واقعی سیستم‌عامل</strong> است. M توسط سیستم‌عامل زمان‌بندی می‌شود و روی یک هسته‌ی CPU اجرا می‌شود. Go تعداد M‌ها را بر اساس نیاز تنظیم می‌کند (تا حداکثر <code>GOMAXPROCS</code>).</p>
-<p><strong dir="ltr">P (Processor):</strong> یک منبع مجازی است که نماینده‌ی یک هسته‌ی منطقی CPU است. هر P یک local run queue از goroutine‌ها دارد. تعداد P برابر با <code>GOMAXPROCS</code> است (پیش‌فرض: تعداد هسته‌های CPU).</p>
-<figure class="code go" dir="ltr">
-<pre><code class="language-go">// Set P count (default: number of CPU cores)
-runtime.GOMAXPROCS(4)
-
-// View active goroutine count
-fmt.Println(runtime.NumGoroutine())
-
-// View OS thread count
-fmt.Println(runtime.ThreadCreateProfile(nil))
-</code></pre>
-</figure>
-<div class="comparison">
-<strong>مدل GMP در برابر PHP-FPM Pool</strong>
-<p><strong dir="ltr">PHP-FPM Pool:</strong> تعداد ثابتی از worker process‌ها (مثلاً ۵۰) که هرکدام یک درخواست را پردازش می‌کنند. اگر تمام worker‌ها مشغول باشند، درخواست‌ها در صف می‌مانند. هر process حدود ۲۰-۵۰ مگابایت حافظه مصرف می‌کند.</p>
-<p><strong dir="ltr">Go GMP:</strong> هزاران goroutine سبک (هرکدام ۲ کیلوبایت) بین چندین thread واقعی توزیع می‌شوند. وقتی یک goroutine مسدود می‌شود (مثلاً I/O)، thread آزاد شده و goroutine دیگری روی آن اجرا می‌شود. بدون صف‌بندی در سطح سیستم‌عامل — زمان‌بند Go تصمیم می‌گیرد.</p>
-</div>
-<p>فرآیند زمان‌بندی به این صورت کار می‌کند:</p>
-<p>۱. وقتی goroutine جدیدی ایجاد می‌شود (<code dir="ltr">go func()</code>)، در صف محلی P فعلی قرار می‌گیرد.</p>
-<p>۲. M (thread) یک P را در اختیار می‌گیرد و goroutine‌ها را از صف محلی P اجرا می‌کند.</p>
-<p>۳. اگر صف محلی خالی باشد، M از <strong dir="ltr">global queue</strong> یا صف محلی P‌های work stealing goroutine می‌گیرد.</p>
-<p>۴. وقتی goroutine مسدود I/O می‌شود، M آن را آزاد می‌کند و P به M دیگری اختصاص می‌یابد تا کار ادامه یابد.</p>
-<div class="tip">
-<strong>نکته‌ی حرفه‌ای:</strong> در Go 1.14 به بعد، زمان‌بند از <strong dir="ltr">asynchronous preemption</strong> پشتیبانی می‌کند. یعنی حتی اگر یک goroutine در حلقه‌ی بی‌نهایت بدون هیچ نقطه‌ی yielding باشد، زمان‌بند می‌تواند آن را preempt کند و goroutine‌های دیگر نیز فرصت اجرا پیدا کنند. در نسخه‌های قبلی، یک goroutine بدون yielding می‌توانست کل thread را مسدود کند.
-</div>
-<h3 id="garbage-collector-گو">1.6.3 Garbage Collector Go</h3>
-<p>Go از garbage collector <strong dir="ltr">concurrent</strong> و <strong dir="ltr">tri-color</strong> استفاده می‌کند که در نسخه‌های مختلف به‌شدت بهینه شده است. از Go 1.5 به بعد، GC به‌صورت همزمان با برنامه‌ی شما اجرا می‌شود — یعنی نیازی به stop-the-world برای مدت طولانی نیست.</p>
-<p>نکته‌ی مهم: هدف GC در Go <strong>کمترین latency</strong> است نه کمترین مصرف حافظه. به‌همین دلیل Go ممکن است حافظه‌ی بیشتری نسبت به برنامه‌ای با مدیریت دستی حافظه مصرف کند اما در عوض pause time‌های بسیار کوتاه (معمولاً زیر ۱ میلی‌ثانیه) دارد.</p>
-<figure class="code go" dir="ltr">
-<pre><code class="language-go">// View GC statistics
-// By setting environment variable:
-// GODEBUG=gctrace=1 go run main.go
-
-// Sample output:
-// gc 1 @0.003s 5%: 0.018+0.45+0.003 ms clock, 4-&gt;4-&gt;1 MB, 5 MB goal, 8 P
-// │ │ │ │ │ │
-// No Time %CPU GC pause time heap P count
-
-// Set GC frequency (default: 100 = 2x heap growth each time)
-debug.SetGCPercent(200) // GC runs less, more memory used
-</code></pre>
-</figure>
-<div class="comparison">
-<strong>GC در Go در برابر GC در PHP</strong>
-<p><strong dir="ltr">PHP GC:</strong> در هر فرآیند PHP-FPM، garbage collector زمانی فعال می‌شود که تعداد root‌های cyclic به آستانه‌ی مشخصی برسد. چون هر درخواست ایزوله است، حافظه در پایان هر درخواست به‌هرحال آزاد می‌شود. GC در PHP برای حل مشکل <strong dir="ltr">reference cycles</strong> طراحی شده نه برای مدیریت بلندمدت حافظه.</p>
-<p><strong dir="ltr">Go GC:</strong> برنامه‌ی Go دائمی است و حافظه به‌صورت خودکار آزاد نمی‌شود. Go GC به‌صورت همزمان اجرا می‌شود و هدف آن حفظ latency زیر ۵۰۰ میکروثانیه است. می‌توان با <code>runtime/debug.SetGCPercent</code> فرکانس GC را تنظیم کرد.</p>
+<p>Go از garbage collector <strong dir="ltr">concurrent</strong> و <strong dir="ltr">tri-color</strong> استفاده می‌کند که از Go 1.5 به بعد به‌صورت همزمان با برنامه‌ی شما اجرا می‌شود — یعنی نیازی به <bdi dir="ltr">stop-the-world</bdi> طولانی نیست. هدف اصلی GC در Go <strong>کمترین latency</strong> است (معمولاً زیر ۵۰۰ میکروثانیه) نه کمترین مصرف حافظه. به‌همین دلیل Go ممکن است حافظه‌ی بیشتری نسبت به مدیریت دستی مصرف کند اما در عوض pause time‌های بسیار کوتاهی دارد.</p>
+<p>تفاوت کلیدی با <bdi dir="ltr">PHP</bdi>: در PHP-FPM، چون هر درخواست ایزوله است، حافظه در پایان هر درخواست به‌هرحال آزاد می‌شود و GC فقط برای حل <bdi dir="ltr">reference cycles</bdi> طراحی شده است. اما برنامه‌ی Go دائمی است و حافظه به‌صورت خودکار آزاد نمی‌شود؛ تنظیم فرکانس GC با <code>runtime/debug.SetGCPercent</code> امکان‌پذیر است.</p>
+<div class="note">
+<strong>ارجاع متقابل:</strong> برای آشنایی با الگوریتم <bdi dir="ltr">tri-color mark-sweep</bdi>، خواندن خروجی <code>GODEBUG=gctrace=1</code>، تنظیم <code>GOGC</code>/<code>GOMEMLIMIT</code>، و الگوهای کاهش تخصیص‌های <bdi dir="ltr">heap</bdi> به <a href="12.04-memory-optimization-and-gc.html">بخش ۱۲.۴</a> مراجعه کنید.
 </div>
 <h3 id="stack-دینامیک-در-go">1.6.4 Stack دینامیک در Go</h3>
 <p>یکی از نوآوری‌های مهم Go <strong dir="ltr">dynamic stack</strong> است. هر goroutine با stack بسیار کوچکی (۲ کیلوبایت) شروع می‌شود. اگر stack پر شود، runtime Go به‌صورت شفاف یک stack بزرگ‌تر تخصیص می‌دهد و داده‌ها را کپی می‌کند:</p>
@@ -199,56 +160,13 @@ debug.SetGCPercent(200) // GC runs less, more memory used
 <strong>مقایسه با PHP:</strong> در PHP هر فراخوانی تابع حدود ۲۵۶ کیلوبایت stack مصرف می‌کند (limit پیش‌فرض <code dir="ltr">xdebug.max_nesting_level</code>). خطای «<bdi dir="ltr">Maximum function nesting level reached</bdi>» در PHP نتیجه‌ی stack overflow است. در Go چون stack دینامیک است، خطای stack overflow فقط در صورت مصرف بیش از ۱ گیگابایت (پیش‌فرض) رخ می‌دهد.
 </div>
 <h3 id="init-ترتیب-و-بهترین-روش‌ها">1.6.5 تابع init() و ترتیب مقداردهی</h3>
-<p><bdi dir="ltr">Go</bdi> اجازه می‌دهد تابعی به نام <code>init()</code> در هر پکیج تعریف کنید که قبل از <code>main()</code> اجرا شود. این تابع برای مقداردهی اولیه‌ی متغیرهای پکیج مفید است اما باید با احتیاط استفاده شود:</p>
-<figure class="code go" dir="ltr">
-<pre><code class="language-go">// init execution order:
-// 1. Package variables are initialized
-// 2. init() functions of dependent packages are executed (depth-first)
-// 3. init() of current package runs
-// 4. main() runs
-
-package config
-
-var DBUrl string
-
-func init() {
-    // Runs before main — initialization from environment variable
-    DBUrl = os.Getenv("DATABASE_URL")
-    if DBUrl == "" {
-        DBUrl = "postgres://localhost:5432/mydb"
-    }
-}
-</code></pre>
-</figure>
+<p><bdi dir="ltr">Go</bdi> اجازه می‌دهد تابعی به نام <code>init()</code> در هر پکیج تعریف کنید که قبل از <code>main()</code> اجرا شود. ترتیب اجرا به این صورت است: (۱) متغیرهای پکیج مقداردهی می‌شوند، (۲) <code>init()</code> پکیج‌های وابسته به‌صورت <bdi dir="ltr">depth-first</bdi> اجرا می‌شود، (۳) <code>init()</code> پکیج جاری اجرا می‌شود، (۴) در نهایت <code>main()</code> فراخوانی می‌شود.</p>
+<p>این تابع برای مقداردهی اولیه‌ی متغیرهای پکیج مفید است اما باید با احتیاط استفاده شود. الگوی رایج در پروژه‌های حرفه‌ای این است که به‌جای <code>init()</code> از تابع <code>NewX()</code> استفاده کنید که وابستگی‌ها را صریحاً دریافت می‌کند — این رویکرد هم تست‌نویسی را ساده‌تر می‌کند و هم وابستگی‌های پنهان را آشکار می‌سازد. کارهای سنگین مقداردهی (اتصال به شبکه، فایل، پایگاه داده) را به <code>main()</code> یا <code>NewX()</code> موکول کنید تا خطاها به‌صورت صریح مدیریت شوند.</p>
 <div class="warning">
-<strong>بهترین روش‌ها برای init():</strong> (۱) حداقل استفاده کنید — ترجیحاً از تابع <code>NewX()</code> صریح استفاده کنید، (۲) هرگز به ترتیب اجرای init بین پکیج‌ها وابسته نباشید — ترتیب فقط درون یک فایل تضمین شده، (۳) در init به منابع خارجی (شبکه، فایل) متصل نشوید، (۴) هرگز log.Fatal یا os.Exit در init نگذارید. به‌طور کلی هرچه <code>init()</code> سبک‌تر باشد بهتر — کارهای سنگین مقداردهی را به تابع <code>main()</code> یا <code>NewX()</code> موکول کنید تا کنترل بیشتری روی جریان برنامه داشته باشید و خطاها را به‌صورت صریح مدیریت کنید.
-<p>یک الگوی رایج در پروژه‌های حرفه‌ای این است که به‌جای <code>init()</code> از تابع <code>NewX()</code> استفاده کنید که وابستگی‌ها را صریحاً دریافت می‌کند. این رویکرد هم تست‌نویسی را ساده‌تر می‌کند و هم وابستگی‌های پنهان را آشکار می‌سازد:</p>
-<figure class="code go" dir="ltr">
-<pre><code class="language-go">// Wrong — Avoid: hidden initialization in init
-var db *sql.DB
-
-func init() {
-    var err error
-    db, err = sql.Open("postgres", os.Getenv("DB_URL"))
-    if err != nil {
-        log.Fatal(err) // Immediate exit without running defer!
-    }
-}
-
-// Correct — Prefer: explicit initialization with New function
-type App struct {
-    db *sql.DB
-}
-
-func NewApp(dbURL string) (*App, error) {
-    db, err := sql.Open("postgres", dbURL)
-    if err != nil {
-        return nil, fmt.Errorf("open db: %w", err)
-    }
-    return &amp;App{db: db}, nil
-}
-</code></pre>
-</figure>
+<strong>قواعد کلی برای <code>init()</code>:</strong> (۱) حداقل استفاده کنید — ترجیحاً از تابع <code>NewX()</code> صریح استفاده کنید. (۲) هرگز به ترتیب اجرای <code>init()</code> بین پکیج‌ها وابسته نباشید — ترتیب فقط درون یک فایل تضمین شده است. (۳) در <code>init()</code> به منابع خارجی (شبکه، فایل) متصل نشوید. (۴) هرگز <code>log.Fatal</code> یا <code>os.Exit</code> در <code>init()</code> نگذارید چون <code>defer</code>‌ها اجرا نمی‌شوند.
+</div>
+<div class="note">
+<strong>ارجاع متقابل:</strong> بررسی کامل چرخه‌ی حیات برنامه‌ی <bdi dir="ltr">Go</bdi>، ترتیب مقداردهی پکیج‌ها، و الگوی جایگزین <code>NewX()</code> در <a href="03.04-understanding-program-lifecycle.html">بخش ۳.۴</a> ارائه شده است.
 </div>
 <h3 id="مسیرهای-خروج-برنامه">1.6.6 مسیرهای خروج از برنامه</h3>
 <p>در <bdi dir="ltr">Go</bdi> سه راه اصلی برای خروج از برنامه وجود دارد که هرکدام رفتار متفاوتی دارند:</p>
@@ -290,32 +208,11 @@ func run() error {
 </code></pre>
 </figure>
 <h3 id="signal-handling">1.6.7 مدیریت سیگنال‌های سیستم‌عامل</h3>
-<p>در <bdi dir="ltr">PHP</bdi> برنامه‌نویس معمولاً نگران سیگنال‌های سیستم‌عامل نیست — هر درخواست مستقل است و خروج فرآیند مشکل‌ساز نیست. اما در <bdi dir="ltr">Go</bdi> برنامه دائمی است و باید سیگنال‌هایی مثل <bdi dir="ltr">SIGTERM</bdi> (برای graceful shutdown) را مدیریت کند. </p><p>مدیریت صحیح سیگنال‌ها تفاوت بین یک سرور که تمیز خاموش می‌شود و سروری که اتصالات نیمی از کاربران را ناگهان قطع می‌کند را مشخص می‌کند. </p><p>در محیط‌های <bdi dir="ltr">Kubernetes</bdi>، مدیریت <bdi dir="ltr">SIGTERM</bdi> حیاتی است چون <bdi dir="ltr">Kubernetes</bdi> قبل از حذف <bdi dir="ltr">pod</bdi> سیگنال <bdi dir="ltr">SIGTERM</bdi> ارسال می‌کند و فقط مدت کوتاهی (<bdi dir="ltr">terminationGracePeriodSeconds</bdi>) فرصت می‌دهد قبل از ارسال <bdi dir="ltr">SIGKILL</bdi>.</p>
-<figure class="code go" dir="ltr">
-<pre><code class="language-go">func main() {
-    // Create channel for receiving signal
-    quit := make(chan os.Signal, 1)
-    signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
-
-    // Start HTTP server
-    srv := &amp;http.Server{Addr: ":8080"}
-    go func() {
-        if err := srv.ListenAndServe(); err != http.ErrServerClosed {
-            log.Fatalf("server error: %v", err)
-        }
-    }()
-
-    // Wait for signal
-    sig := &lt;-quit
-    log.Printf("received signal: %v, shutting down...", sig)
-
-    // Graceful shutdown with timeout
-    ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-    defer cancel()
-    srv.Shutdown(ctx)
-}
-</code></pre>
-</figure>
+<p>در <bdi dir="ltr">PHP</bdi> برنامه‌نویس معمولاً نگران سیگنال‌های سیستم‌عامل نیست — هر درخواست مستقل است و خروج فرآیند مشکل‌ساز نیست. اما در <bdi dir="ltr">Go</bdi> برنامه دائمی است و باید سیگنال‌هایی مثل <bdi dir="ltr">SIGTERM</bdi> (برای <bdi dir="ltr">graceful shutdown</bdi>) و <bdi dir="ltr">SIGINT</bdi> را مدیریت کند. مدیریت صحیح سیگنال‌ها تفاوت بین یک سرور که تمیز خاموش می‌شود و سروری که اتصالات نیمی از کاربران را ناگهان قطع می‌کند را مشخص می‌کند.</p>
+<p>در محیط‌های <bdi dir="ltr">Kubernetes</bdi> این موضوع حیاتی است: <bdi dir="ltr">Kubernetes</bdi> قبل از حذف <bdi dir="ltr">pod</bdi> سیگنال <bdi dir="ltr">SIGTERM</bdi> ارسال می‌کند و فقط مدت کوتاهی (<bdi dir="ltr">terminationGracePeriodSeconds</bdi>) فرصت می‌دهد قبل از ارسال <bdi dir="ltr">SIGKILL</bdi>. الگوی رایج، استفاده از <code>signal.Notify</code> برای دریافت سیگنال روی یک channel و سپس فراخوانی <code>srv.Shutdown(ctx)</code> با یک timeout مناسب است.</p>
+<div class="note">
+<strong>ارجاع متقابل:</strong> پیاده‌سازی کامل <bdi dir="ltr">graceful shutdown</bdi>، الگوی ترکیب <code>signal.Notify</code> با <code>context.Context</code>، و مدیریت سیگنال‌ها در <bdi dir="ltr">Kubernetes</bdi> در <a href="06.07-os-signals.html">بخش ۶.۷</a> پوشش داده شده است.
+</div>
 <h3 id="نمودار-شروع-برنامه">1.6.8 نمودار توالی شروع برنامه Go</h3>
 <figure class="diagram" dir="ltr">
 <svg viewBox="0 0 720 340" xmlns="http://www.w3.org/2000/svg">
@@ -371,7 +268,7 @@ func run() error {
 <figcaption>شکل ۱-۹: توالی شروع برنامه‌ی Go — مراحل قبل از اجرای main()</figcaption>
 </figure>
 <h3 id="نمودار-gmp-جزئیات">1.6.9 نمودار تفصیلی مدل GMP: زمان‌بند Go در عمل</h3>
-<p>مدل <bdi dir="ltr">GMP</bdi> قلب تپنده‌ی هم‌زمانی <bdi dir="ltr">Go</bdi> است و درک بصری آن به شما کمک می‌کند تا رفتار برنامه‌های <bdi dir="ltr">Go</bdi> را در شرایط مختلف پیش‌بینی کنید. </p><p>در نمودار زیر سه مؤلفه‌ی اصلی مدل را مشاهده می‌کنید: <bdi dir="ltr">G</bdi> (رنگ فیروزه‌ای #00ADD8) نشان‌دهنده‌ی <bdi dir="ltr">goroutine</bdi> ‌هاست که واحدهای سبک‌وزن اجرا هستند و تعدادشان می‌تواند به میلیون‌ها برسد. <bdi dir="ltr">M</bdi> (رنگ سبز #4CAF50) نماینده‌ی <bdi dir="ltr">thread</bdi> ‌های واقعی سیستم‌عامل است که تعدادشان توسط <bdi dir="ltr">OS</bdi> محدود می‌شود. <bdi dir="ltr">P</bdi> (رنگ نارنجی #FF9800) نشان‌دهنده‌ی پردازنده‌های منطقی است که تعدادشان برابر با <code dir="ltr">GOMAXPROCS</code> تنظیم می‌شود. هر <bdi dir="ltr">P</bdi> یک صف محلی از <bdi dir="ltr">goroutine</bdi> ‌ها دارد و <bdi dir="ltr">M</bdi> با گرفتن یک <bdi dir="ltr">P</bdi> می‌تواند <bdi dir="ltr">goroutine</bdi> ‌ها را اجرا کند. </p><p>مکانیزم <bdi dir="ltr">work-stealing</bdi> تضمین می‌کند که هیچ <bdi dir="ltr">P</bdi> بیکاری وجود نداشته باشد و وقتی <bdi dir="ltr">goroutine</bdi> ‌ای در <bdi dir="ltr">syscall</bdi> مسدود شود، <bdi dir="ltr">P</bdi> از <bdi dir="ltr">M</bdi> جدا شده و به <bdi dir="ltr">M</bdi> دیگری اختصاص می‌یابد تا سایر <bdi dir="ltr">goroutine</bdi> ‌ها بتوانند ادامه دهند.</p>
+<p>مدل <bdi dir="ltr">GMP</bdi> قلب تپنده‌ی هم‌روندی <bdi dir="ltr">Go</bdi> است و درک بصری آن به شما کمک می‌کند تا رفتار برنامه‌های <bdi dir="ltr">Go</bdi> را در شرایط مختلف پیش‌بینی کنید. </p><p>در نمودار زیر سه مؤلفه‌ی اصلی مدل را مشاهده می‌کنید: <bdi dir="ltr">G</bdi> (رنگ فیروزه‌ای #00ADD8) نشان‌دهنده‌ی <bdi dir="ltr">goroutine</bdi> ‌هاست که واحدهای سبک‌وزن اجرا هستند و تعدادشان می‌تواند به میلیون‌ها برسد. <bdi dir="ltr">M</bdi> (رنگ سبز #4CAF50) نماینده‌ی <bdi dir="ltr">thread</bdi> ‌های واقعی سیستم‌عامل است که تعدادشان توسط <bdi dir="ltr">OS</bdi> محدود می‌شود. <bdi dir="ltr">P</bdi> (رنگ نارنجی #FF9800) نشان‌دهنده‌ی پردازنده‌های منطقی است که تعدادشان برابر با <code dir="ltr">GOMAXPROCS</code> تنظیم می‌شود. هر <bdi dir="ltr">P</bdi> یک صف محلی از <bdi dir="ltr">goroutine</bdi> ‌ها دارد و <bdi dir="ltr">M</bdi> با گرفتن یک <bdi dir="ltr">P</bdi> می‌تواند <bdi dir="ltr">goroutine</bdi> ‌ها را اجرا کند. </p><p>مکانیزم <bdi dir="ltr">work-stealing</bdi> تضمین می‌کند که هیچ <bdi dir="ltr">P</bdi> بیکاری وجود نداشته باشد و وقتی <bdi dir="ltr">goroutine</bdi> ‌ای در <bdi dir="ltr">syscall</bdi> مسدود شود، <bdi dir="ltr">P</bdi> از <bdi dir="ltr">M</bdi> جدا شده و به <bdi dir="ltr">M</bdi> دیگری اختصاص می‌یابد تا سایر <bdi dir="ltr">goroutine</bdi> ‌ها بتوانند ادامه دهند. تحلیل عمیق این مکانیزم‌ها در <a href="05.01-goroutine.html">بخش ۵.۱</a> ارائه شده است.</p>
 <figure class="diagram" dir="ltr">
 <svg viewBox="0 0 720 380" xmlns="http://www.w3.org/2000/svg">
 <defs>
@@ -443,15 +340,13 @@ func run() error {
 <figcaption>شکل ۱-۱۰: مدل GMP — زمان‌بند Go با مکانیزم work-stealing و handoff</figcaption>
 </figure>
 <h3 id="سناریوهای-عملیاتی-gmp">1.6.10 سناریوهای عملیاتی: تنظیم و عیب‌یابی زمان‌بند Go</h3>
-<p>درک تئوریک مدل <bdi dir="ltr">GMP</bdi> ارزشمند است اما در عمل با سناریوهایی مواجه می‌شوید که نیاز به تصمیم‌گیری آگاهانه درباره‌ی پارامترهای زمان‌بند دارید. برنامه‌نویسان <bdi dir="ltr">PHP</bdi> معمولاً هیچ کنترلی روی زمان‌بند ندارند — <bdi dir="ltr">PHP-FPM</bdi> تعداد <bdi dir="ltr">worker</bdi> ‌ها را مدیریت می‌کند و سیستم‌عامل زمان‌بندی را انجام می‌دهد. </p><p>اما در <bdi dir="ltr">Go</bdi> شما مسئول درک و تنظیم رفتار زمان‌بند هستید. </p><p>در ادامه مهم‌ترین سناریوهای عملیاتی را بررسی می‌کنیم که هرکدام مستقیماً بر عملکرد و پایداری برنامه‌ی شما تأثیر می‌گذارند و بدون توجه به آن‌ها ممکن است با مشکلات عجیب و غیرمنتظره مواجه شوید.</p>
-<ul>
-<li><strong>تنظیم <bdi dir="ltr">GOMAXPROCS</bdi> در محیط‌های کانتینری:</strong> پیش‌فرض <code dir="ltr">GOMAXPROCS</code> برابر با تعداد هسته‌های <bdi dir="ltr">CPU</bdi> سیستم میزبان است. در محیط‌های کانتینری (<bdi dir="ltr">Docker</bdi> و <bdi dir="ltr">Kubernetes</bdi>) این عدد ممکن است بسیار بیشتر از سهم <bdi dir="ltr">CPU</bdi> واقعی کانتینر باشد. مثلاً اگر کانتینر شما فقط ۲ هسته <bdi dir="ltr">CPU</bdi> اجازه دارد اما روی سروری با ۳۲ هسته اجرا می‌شود، <bdi dir="ltr">Go</bdi> به‌طور پیش‌فرض ۳۲ <bdi dir="ltr">P</bdi> ایجاد می‌کند که منجر به <bdi dir="ltr">context switch</bdi> بیش از حد و کاهش عملکرد می‌شود. باید <code dir="ltr">GOMAXPROCS</code> را متناسب با محدودیت <bdi dir="ltr">CPU</bdi> کانتینر تنظیم کنید.</li>
-<li><strong>درک اینکه چرا <bdi dir="ltr">goroutine</bdi> ‌ها ارزان هستند — فقط <bdi dir="ltr">2KB</bdi> <bdi dir="ltr">stack</bdi>:</strong> یک <bdi dir="ltr">thread</bdi> سیستم‌عامل معمولاً بین ۵۱۲ کیلوبایت تا چند مگابایت حافظه مصرف می‌کند اما یک <bdi dir="ltr">goroutine</bdi> با تنها ۲ کیلوبایت شروع می‌شود. این یعنی می‌توانید صدها هزار <bdi dir="ltr">goroutine</bdi> هم‌زمان داشته باشید در حالی که تنها هزار <bdi dir="ltr">thread</bdi> سیستم‌عامل می‌تواند حافظه‌ی قابل‌توجهی مصرف کند. اما فراموش نکنید که هر <bdi dir="ltr">goroutine</bdi> مقداری <bdi dir="ltr">overhead</bdi> دارد — میلیون‌ها <bdi dir="ltr">goroutine</bdi> بی‌مصرف همچنان مشکل‌ساز خواهد بود.</li>
-<li><strong>مسدودسازی <bdi dir="ltr">syscall</bdi> و محدودیت <bdi dir="ltr">thread</bdi>:</strong> وقتی <bdi dir="ltr">goroutine</bdi> ‌ای یک <bdi dir="ltr">syscall</bdi> مسدودکننده انجام می‌دهد (مثل خواندن فایل یا اتصال شبکه‌ی <bdi dir="ltr">CGO</bdi>)، زمان‌بند <bdi dir="ltr">Go</bdi> یک <bdi dir="ltr">thread</bdi> جدید سیستم‌عامل ایجاد می‌کند تا سایر <bdi dir="ltr">goroutine</bdi> ‌ها مسدود نشوند. اگر تعداد زیادی <bdi dir="ltr">goroutine</bdi> همزمان در <bdi dir="ltr">syscall</bdi> مسدود شوند، تعداد <bdi dir="ltr">thread</bdi> ‌ها به سرعت افزایش می‌یابد و ممکن است به محدودیت سیستم‌عامل برسید. محدودیت پیش‌فرض <code dir="ltr">runtime/debug.SetMaxThreads</code> برابر ۱۰۰۰۰ است — اگر به این حد برسید برنامه فوراً <code dir="ltr">crash</code> می‌کند.</li>
-<li><strong><bdi dir="ltr">Work-Stealing</bdi> و جلوگیری از گرسنگی:</strong> مکانیزم <bdi dir="ltr">work-stealing</bdi> تضمین می‌کند که <bdi dir="ltr">P</bdi> ‌های بیکار از صف محلی <bdi dir="ltr">P</bdi> ‌های مشغول <bdi dir="ltr">goroutine</bdi> بدزدند. این کار بدون هیچ هماهنگی مرکزی انجام می‌شود و تعادل بار را به‌صورت خودکار حفظ می‌کند. اگر <bdi dir="ltr">P</bdi> ‌ای بیکار بماند، ابتدا از صف سراسری می‌گیرد و اگر آن هم خالی بود از صف محلی <bdi dir="ltr">P</bdi> ‌های دیگر نصف <bdi dir="ltr">goroutine</bdi> ‌ها را سرقت می‌کند. این مکانیزم از <bdi dir="ltr">starvation</bdi> جلوگیری می‌کند و کارایی کلی سیستم را بهینه می‌سازد.</li>
-</ul>
+<p>درک تئوریک مدل <bdi dir="ltr">GMP</bdi> ارزشمند است اما در عمل با سناریوهایی مواجه می‌شوید که نیاز به تصمیم‌گیری آگاهانه درباره‌ی پارامترهای زمان‌بند دارید. برنامه‌نویسان <bdi dir="ltr">PHP</bdi> معمولاً هیچ کنترلی روی زمان‌بند ندارند — <bdi dir="ltr">PHP-FPM</bdi> تعداد <bdi dir="ltr">worker</bdi> ‌ها را مدیریت می‌کند و سیستم‌عامل زمان‌بندی را انجام می‌دهد. اما در <bdi dir="ltr">Go</bdi> شما مسئول درک و تنظیم رفتار زمان‌بند هستید.</p>
+<p>مهم‌ترین چالش عملی، تنظیم <bdi dir="ltr">GOMAXPROCS</bdi> در محیط‌های کانتینری (<bdi dir="ltr">Docker</bdi>/<bdi dir="ltr">Kubernetes</bdi>) است: پیش‌فرض آن برابر با تعداد هسته‌های <bdi dir="ltr">CPU</bdi> سیستم میزبان است که ممکن است بسیار بیشتر از سهم <bdi dir="ltr">CPU</bdi> واقعی کانتینر باشد. این ناهماهنگی می‌تواند به <bdi dir="ltr">context switch</bdi> بیش از حد و کاهش ۳۰–۴۰ درصدی عملکرد منجر شود. راه‌حل رایج، استفاده از کتابخانه‌ی <code dir="ltr">go.uber.org/automaxprocs</code> است که به‌طور خودکار <code dir="ltr">GOMAXPROCS</code> را بر اساس <bdi dir="ltr">cgroup</bdi> کانتینر تنظیم می‌کند.</p>
 <div class="tip">
-<strong>نکته‌ی حیاتی درباره‌ی <bdi dir="ltr">GOMAXPROCS</bdi> در کانتینرها:</strong> اگر برنامه‌ی <bdi dir="ltr">Go</bdi> خود را در <bdi dir="ltr">Docker</bdi> یا <bdi dir="ltr">Kubernetes</bdi> اجرا می‌کنید، حتماً <code dir="ltr">GOMAXPROCS</code> را بر اساس محدودیت <bdi dir="ltr">CPU</bdi> کانتینر تنظیم کنید، نه تعداد هسته‌های سرور میزبان. بهترین راه استفاده از کتابخانه‌ی <code dir="ltr">go.uber.org/automaxprocs</code> است که به‌طور خودکار <code dir="ltr">GOMAXPROCS</code> را بر اساس <bdi dir="ltr">cgroup</bdi> محدودیت <bdi dir="ltr">CPU</bdi> تنظیم می‌کند. کافیست در تابع <code dir="ltr">main</code> خود بنویسید: <code dir="ltr">_ = automaxprocs.Set()</code>. بدون این تنظیم، برنامه‌ی شما ممکن است تا ۳۰-۴۰ درصد عملکرد کمتری نسبت به حالت بهینه داشته باشد — به‌خصوص در محیط‌های <bdi dir="ltr">Kubernetes</bdi> با محدودیت‌های <bdi dir="ltr">CPU</bdi> پایین.
+<strong>نکته‌ی حیاتی:</strong> اگر برنامه‌ی <bdi dir="ltr">Go</bdi> خود را در <bdi dir="ltr">Docker</bdi> یا <bdi dir="ltr">Kubernetes</bdi> اجرا می‌کنید، حتماً از <code dir="ltr">go.uber.org/automaxprocs</code> استفاده کنید. کافیست در تابع <code dir="ltr">main</code> خود بنویسید: <code dir="ltr">_ = automaxprocs.Set()</code>.
+</div>
+<div class="note">
+<strong>ارجاع متقابل:</strong> سناریوهای پیشرفته‌ی عیب‌یابی زمان‌بند — از جمله محدودیت <code>runtime/debug.SetMaxThreads</code>، نشتی <bdi dir="ltr">goroutine</bdi>، و راه‌های تشخیص <bdi dir="ltr">starvation</bdi> — در <a href="05.01-goroutine.html">بخش ۵.۱</a> و <a href="05.09-goroutine-leak.html">بخش ۵.۹</a> پوشش داده شده‌اند.
 </div>
 </div>
 </main>

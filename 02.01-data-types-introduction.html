@@ -71,7 +71,7 @@
 <p><strong>ساختار داده</strong> یکی از بنیادی‌ترین مفاهیم در علوم کامپیوتر است که ابزار اصلی برای نمایش مفاهیم ذخیره‌سازی اطلاعات و کنترل منطق برنامه محسوب می‌شود.
 </p><p>در زبان‌های پویا مانند <strong dir="ltr">PHP</strong> سیستم نوع‌دهی بر پایه <strong dir="ltr">Dynamic Typing</strong> عمل می‌کند به این معنا که نوع متغیرها در زمان اجرا تعیین می‌شود و برنامه‌نویس نیازی به تعریف صریح نوع آن‌ها ندارد. </p><p>این ویژگی سادگی و سرعت توسعه را افزایش می‌دهد اما در عین حال می‌تواند منجر به بروز خطاهایی شود که تنها در زمان اجرا آشکار می‌شوند.</p>
 <p>از سویی زبان <strong dir="ltr">Go</strong> با بهره‌گیری از <strong dir="ltr">Static Typing</strong> و طراحی دقیق و سخت‌گیرانه‌اش برنامه‌نویس را ملزم می‌کند که پیش از استفاده از هر متغیر نوع آن را به‌طور صریح مشخص کند. این رویکرد باعث می‌شود بسیاری از خطاها در همان مرحله‌ی کامپایل شناسایی شوند و کیفیت و پایداری کد به‌طور قابل‌توجهی افزایش یابد.</p>
-<p>این تفاوت بنیادین در فلسفه‌ی نوع‌دهی اهمیت درک عمیق و صحیح انواع داده‌ای <strong dir="ltr">Primitive</strong> مانند اعداد، رشته‌ها و مقادیر بولی و <strong dir="ltr">Composite</strong> مانند آرایه‌ها، اسلایس‌ها، ساختارها و مپ را در Go دوچندان می‌کند. بدون درک درست از این مفاهیم نوشتن کدی مؤثر، مقیاس‌پذیر و کم‌خطا دشوار خواهد بود.</p>
+<p>این تفاوت بنیادین در فلسفه‌ی نوع‌دهی اهمیت درک عمیق و صحیح انواع داده‌ای <strong dir="ltr">Primitive</strong> مانند اعداد، رشته‌ها و مقادیر بولی و <strong dir="ltr">Composite</strong> مانند آرایه‌ها، slice‌ها، struct‌ها و map را در Go دوچندان می‌کند. بدون درک درست از این مفاهیم نوشتن کدی مؤثر، مقیاس‌پذیر و کم‌خطا دشوار خواهد بود.</p>
 <p>در این فصل با رویکردی مقایسه‌ای سیستم نوع‌دهی Go را بررسی می‌کنیم و تفاوت آن با PHP آشکار می‌سازیم و می‌آموزیم چگونه می‌توان به‌صورت عملی با انواع داده‌ای مختلف در Go کار کرد و از قابلیت‌های آن برای تولید نرم‌افزارهای قدرتمند و پایدار بهره گرفت.</p>
 <div class="quote-box">
 <p class="quote-text">نسبت زمان صرف‌شده برای خواندن کد به نوشتن آن به‌وضوح بیش از ۱۰ به ۱ است. خوانا کردن کد، نوشتن آن را آسان‌تر می‌کند.</p>
@@ -258,7 +258,7 @@ fmt.Println(arr)
 </code></pre>
 </figure>
 <div class="tip"><strong>نکته‌ی حرفه‌ای — array یا slice؟</strong> در <bdi dir="ltr">PHP</bdi> تنها یک ساختار آرایه دارید، اما در <bdi dir="ltr">Go</bdi> انتخاب بین <code>array</code> و <code>slice</code> عمدی است. از <code>array</code> فقط وقتی استفاده کنید که طول ثابت در زمان کامپایل معنای دامنه‌ای دارد (مثلاً آدرس IPv4 به‌صورت <code>[4]byte</code> یا ماتریس <code>[3][3]float64</code>)؛ در غیر این صورت <code>slice</code> انتخاب idiomatic است. آرایه‌ها با انتساب کامل کپی می‌شوند و این رفتار برای برنامه‌نویسان <bdi dir="ltr">PHP</bdi> غیرمنتظره است.</div>
-<p><strong  id="slice">Slice</strong> — slice از ویژگی‌های مهم Go است و تقریباً جایگزین آرایه‌های دینامیک در PHP محسوب می‌شود. اما همان‌طور که دیدیم آرایه‌ها طول ثابتی دارند و به‌ندرت به‌صورت روزمره استفاده می‌شوند. به جای آن Go ساختاری به نام Slice ارائه کرده که قدرت و انعطاف‌پذیری آرایه‌های PHP را با امنیت و کارایی بیشتر فراهم می‌کند.</p><p>در حقیقت در پشت صحنه یک slice به یک آرایه‌ی واقعی اشاره می‌کند و فقط بخش مشخصی از آن را نمایان می‌سازد.</p><p>تغییر در مقادیر slice می‌تواند آرایه زیربنایی را نیز تغییر دهد.</p>
+<p><strong  id="slice">Slice</strong> — slice از ویژگی‌های مهم Go است و تقریباً جایگزین آرایه‌های دینامیک در PHP محسوب می‌شود. آرایه‌ها در Go طول ثابتی دارند و به‌ندرت به‌صورت روزمره استفاده می‌شوند. به جای آن Go ساختاری به نام Slice ارائه کرده که قدرت و انعطاف‌پذیری آرایه‌های PHP را با امنیت و کارایی بیشتر فراهم می‌کند.</p><p>در پشت صحنه یک slice به یک آرایه‌ی واقعی اشاره می‌کند و فقط بخش مشخصی از آن را نمایان می‌سازد.</p><p>تغییر در مقادیر slice می‌تواند آرایه‌ی زیربنایی را نیز تغییر دهد.</p>
 <div class="note"><strong>ساختار داخلی Slice در runtime:</strong> هر slice در Go در واقع یک ساختار سه فیلدی به نام SliceHeader است:
 <br/><br/>
 <figure class="code go" dir="ltr">
@@ -277,7 +277,7 @@ fmt.Println(arr)
 <li>قابلیت اضافه و حذف کردن عنصر دارد</li>
 <li>برای اکثر کارهایی که در <bdi dir="ltr">PHP</bdi> با آرایه انجام می‌دهید معادل مناسب و حرفه‌ای است</li>
 </ul>
-<p><strong  id="تعریف-مستقیم">تعریف مستقیم</strong></p>
+<p><strong  id="تعریف-مستقیم">تعریف مستقیم</strong> — روش اصلی ساخت slice با مقدار اولیه:</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">names := []string{"Meysam", "Amin", "Reza"}
 </code></pre>
@@ -287,19 +287,19 @@ fmt.Println(arr)
 <pre><code class="language-php">$names = ['Meysam', 'Amin', 'Reza'];
 </code></pre>
 </figure>
-<p><strong  id="ساخت-با-make">ساخت با make</strong></p>
+<p><strong  id="ساخت-با-make">ساخت با make</strong> — وقتی طول یا ظرفیت اولیه مشخص است:</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">users := make([]string, 0, 100) // initial length 0, capacity 100
 </code></pre>
 </figure>
-<p><strong  id="طول-و-ظرفیت">طول و ظرفیت</strong></p>
+<p><strong  id="طول-و-ظرفیت">طول و ظرفیت</strong> — طول با <code>len</code> و ظرفیت با <code>cap</code>:</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">nums := []int{1, 2, 3}
 fmt.Println(len(nums)) // 3
 fmt.Println(cap(nums)) // 3
 </code></pre>
 </figure>
-<p><strong  id="افزودن-عنصر-با-append">افزودن عنصر با append</strong></p>
+<p><strong  id="افزودن-عنصر-با-append">افزودن عنصر با append</strong> — تابع <code>append</code> عنصری جدید به انتهای slice می‌افزاید:</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">nums := []int{1, 2}
 nums = append(nums, 3, 4)
@@ -356,7 +356,7 @@ u := User{Name: "Meysam", Age: 34}
 </code></pre>
 </figure>
 <p>در بخش بعدی با مفهوم struct آشنا خواهید شد، برای چنین مواردی تعریف یک نوع داده‌ی struct راه‌حل بهتر و idiomatic است:</p>
-<p><strong  id="خواندن-از-map">خواندن از map</strong></p>
+<p><strong  id="خواندن-از-map">خواندن از map</strong> — مقدار یک کلید با اندیس‌گذاری خوانده می‌شود:</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">m := map[string]int{
     "apple": 2,
@@ -365,7 +365,7 @@ u := User{Name: "Meysam", Age: 34}
 count := m["apple"]
 </code></pre>
 </figure>
-<p><strong  id="بررسی-وجود-کلید">بررسی وجود کلید</strong></p>
+<p><strong  id="بررسی-وجود-کلید">بررسی وجود کلید</strong> — الگوی comma-ok برای تشخیص وجود کلید:</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">count, ok := m["orange"]
 if ok {
@@ -376,17 +376,17 @@ if ok {
 </code></pre>
 </figure>
 <p>این مفهوم برای برنامه‌نویسان <bdi dir="ltr">PHP</bdi> جدید است چون در <bdi dir="ltr">PHP</bdi> معمولاً از تابع <code dir="ltr">isset()</code> استفاده می‌شود.</p>
-<p><strong  id="افزودن-یا-تغییر-مقدار">افزودن یا تغییر مقدار</strong></p>
+<p><strong  id="افزودن-یا-تغییر-مقدار">افزودن یا تغییر مقدار</strong> — انتساب ساده به کلید:</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">m["cherry"] = 5
 </code></pre>
 </figure>
-<p><strong  id="حذف-کلید-از-map">حذف کلید از map</strong></p>
+<p><strong  id="حذف-کلید-از-map">حذف کلید از map</strong> — تابع داخلی <code>delete</code>:</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">delete(m, "banana")
 </code></pre>
 </figure>
-<p><strong  id="پیمایش-map">پیمایش Map</strong></p>
+<p><strong  id="پیمایش-map">پیمایش Map</strong> — با <code>range</code> روی کلید و مقدار:</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">for k, v := range m {
     fmt.Printf("key=%s, value=%d\n", k, v)
@@ -635,7 +635,7 @@ func safeAdd(a, b int) (int, bool) {
 </figure>
 <div class="important"><strong>توصیه‌ی عملی:</strong> اگر با اعداد ورودی کاربر یا مقادیر دیتابیس کار می‌کنید، حتماً بازه‌ی مجاز را بررسی کنید. برای کارهای حساس (مثلاً محاسبات مالی) از بسته‌ی <code>math/big</code> یا کتابخانه‌های تخصصی استفاده کنید. هرگز به سرریز نشدن اعداد اعتماد نکنید.</div>
 <h3 id="const-iota">2.1.7 الگوهای پیشرفته‌ی iota</h3>
-<p>همان‌طور که در بخش <a href="#const">ثابت‌ها</a> دیدید، <bdi dir="ltr">Go</bdi> از <code>iota</code> به‌عنوان شمارنده‌ی خودکار در بلوک‌های <code>const</code> استفاده می‌کند. در ادامه الگوهای قدرتمندتری را بررسی می‌کنیم که در <bdi dir="ltr">PHP</bdi> معادل مستقیمی ندارند و باید مقادیر را دستی بنویسید.</p>
+<p>همان‌طور که در بخش <a href="#const">ثابت‌ها</a> اشاره شد، <bdi dir="ltr">Go</bdi> از <code>iota</code> به‌عنوان شمارنده‌ی خودکار در بلوک‌های <code>const</code> استفاده می‌کند. در ادامه الگوهای قدرتمندتری را بررسی می‌کنیم که در <bdi dir="ltr">PHP</bdi> معادل مستقیمی ندارند و باید مقادیر را دستی بنویسید.</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">// base pattern — auto counter
 type Direction int

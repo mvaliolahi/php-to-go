@@ -68,7 +68,7 @@
 <h2 id="تعامل-با-دنیای-بیرون">تعامل با دنیای بیرون</h2><div class="abstract">
 <strong>چکیده:</strong> این بخش نمای کلی از تعامل Go با سیستم‌عامل، فایل و شبکه را ارائه می‌دهد. تفاوت با PHP در مدیریت state و connection pooling بررسی می‌شود. الگوهای CLI و server بررسی می‌شود.
 </div>
-<p>برنامه‌های واقعی فقط در حافظه‌ی خود اجرا نمی‌شوند. آن‌ها باید با دنیای بیرون ارتباط برقرار کنند: فایل بخوانند و بنویسند، اطلاعات ورودی از کاربران یا سیستم دریافت کنند، داده‌هایی مانند JSON و YAML را پردازش کنند، وضعیت خود را در لاگ ثبت کنند یا حتی به سیگنال‌هایی از سیستم‌عامل واکنش نشان دهند.</p><p>در این بخش با مفاهیم کلیدی تعامل Go با سیستم‌عامل و داده‌ها آشنا خواهید شد به شکلی که هم بتوانید این امکانات را استفاده کنید و هم منطق پشت آن‌ها را درک کنید.</p>
+<p>برنامه‌های واقعی فقط در حافظه‌ی خود اجرا نمی‌شوند. آن‌ها باید با دنیای بیرون ارتباط برقرار کنند: فایل بخوانند و بنویسند، اطلاعات ورودی از کاربران یا سیستم دریافت کنند، داده‌هایی مانند JSON و YAML را پردازش کنند، وضعیت خود را در لاگ ثبت کنند یا حتی به سیگنال‌هایی از سیستم‌عامل واکنش نشان دهند.</p><p>در این بخش با مفاهیم کلیدی تعامل Go با سیستم‌عامل و داده‌ها آشنا می‌شوید به شکلی که هم بتوانید از این امکانات استفاده کنید و هم منطق پشت آن‌ها را درک کنید.</p>
 <div class="quote-box">
 <p class="quote-text">کدتان را طوری طراحی کنید که مستقیماً به دنیای بیرون وابسته نباشد. منابع بیرونی را پشت انتزاع‌هایی که خودتان کنترل می‌کنید، بپیچانید.</p>
 <p class="quote-source">
@@ -110,7 +110,7 @@ type Writer interface {
 <strong>مقایسه با PHP:</strong> در PHP هر تابع I/O امضای متفاوتی دارد: <code dir="ltr">fread()</code> برای فایل، <code dir="ltr">stream_get_contents()</code> برای stream، <code dir="ltr">curl_exec()</code> برای HTTP. هیچ قرارداد یکسان وجود ندارد. اما در Go با پذیرش <code dir="ltr">io.Reader</code> یا <code dir="ltr">io.Writer</code>، یک تابع واحد می‌تواند با فایل، شبکه، بافر یا هر منبع دیگر کار کند. این مفهوم شبیه <code>Stream Wrapper</code> در PHP است اما بسیار قوی‌تر و ساخت‌یافته‌تر.
 </div>
 <h3 id="دکوراتورهای-io">6.1.2 دکوراتورهای io: ترکیب‌پذیری در عمل</h3>
-<p>پکیج <code>io</code> decorator برای ترکیب و تغییر رفتار Reader و Writer فراهم می‌کند. این دکوراتورها همان الگوی طراحی Decorator معروف هستند: یک Reader جدید می‌سازند که رفتار Reader قبلی را تغییر می‌دهد بدون اینکه نوع اصلی را دستخوش تغییر کند:</p>
+<p>پکیج <code>io</code> decorator برای ترکیب و تغییر رفتار Reader و Writer فراهم می‌کند. این دکوراتورها همان الگوی طراحی Decorator معروف هستند: یک Reader جدید می‌سازند که رفتار Reader قبلی را تغییر می‌دهد، بدون اینکه نوع اصلی را دستخوش تغییر کند:</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">// TeeReader: simultaneously reads and copies to Writer (like Unix tee)
 teeReader := io.TeeReader(reader, writer)
@@ -208,7 +208,7 @@ fmt.Printf("دانلود شد: %d بایت\n", written)
 <strong>نکته:</strong> اگر نوع Reader مقصد متد <code dir="ltr">WriteTo(w Writer)</code> را پیاده‌سازی کرده باشد یا نوع Writer مقصد متد <code dir="ltr">ReadFrom(r Reader)</code> را داشته باشد، <code dir="ltr">io.Copy</code> به‌جای بافر ۳۲KB از آن متدها استفاده می‌کند که کارآمدتر است. مثلاً <code>*os.File</code> هر دو متد را پیاده‌سازی می‌کند و در لینوکس از <code>sendfile(2)</code> سیستم‌کال برای کپی مستقیم فایل‌به‌فایل استفاده می‌کند — یعنی داده اصلاً به فضای کاربر نمی‌آید.
 </div>
 <h3 id="ioreadall">6.1.5 خواندن کامل با احتیاط</h3>
-<p>تابع <code dir="ltr">io.ReadAll()</code> تمام داده‌های یک Reader را می‌خواند و به‌صورت <code>[]byte</code> برمی‌گرداند. این تابع جایگزین <code>iotest.ReadAll()</code> قدیمی شده و رفتار بهتری دارد: اگر Reader متد <code dir="ltr">WriteTo</code> را پیاده‌سازی کرده باشد، از آن استفاده می‌کند. اما مراقب باشید — <code dir="ltr">io.ReadAll()</code> کل داده را در حافظه بارگذاری می‌کند:</p>
+<p>تابع <code dir="ltr">io.ReadAll()</code> تمام داده‌های یک Reader را می‌خواند و به‌صورت <code>[]byte</code> برمی‌گرداند. این تابع جایگزین <code>ioutil.ReadAll()</code> قدیمی شده (از Go 1.16 به بعد <code>io/ioutil</code> منسوخ شده است) و رفتار بهتری دارد: اگر Reader متد <code dir="ltr">WriteTo</code> را پیاده‌سازی کرده باشد، از آن استفاده می‌کند. اما مراقب باشید — <code dir="ltr">io.ReadAll()</code> کل داده را در حافظه بارگذاری می‌کند:</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">// Read full response body (only for small and medium responses)
 resp, _ := http.Get("https://api.example.com/data")

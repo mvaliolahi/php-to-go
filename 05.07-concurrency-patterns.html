@@ -26,7 +26,7 @@
 <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24"><line x1="3" x2="21" y1="6" y2="6"></line><line x1="3" x2="21" y1="12" y2="12"></line><line x1="3" x2="21" y1="18" y2="18"></line></svg>
 </button>
 <a class="header-logo" href="00.00-front-matter.html"><span class="logo-php">PHP</span> to <span class="logo-go">Go</span></a>
-<span class="header-crumbs">همزمانی › Concurrency Patterns</span>
+<span class="header-crumbs">هم‌روندی › Concurrency Patterns</span>
 </div>
 <div class="header-right">
 <nav class="header-nav">
@@ -68,7 +68,7 @@
 <h2 id="concurrency-patterns">Concurrency Patterns</h2><div class="abstract">
 <strong>چکیده:</strong> این بخش الگوهای رایج هم‌روندی Go را جمع‌آوری می‌کند: fan-in/fan-out، pipeline، worker pool و generator. هر الگو با مثال کامل و کاربرد عملی توضیح داده می‌شود. انتخاب الگوی مناسب بر اساس سناریو بررسی می‌شود.
 </div>
-<p>الگوهای هم‌روندی ابزارهای ساختمانی هستند که با ترکیب <bdi dir="ltr">Goroutine</bdi>، <bdi dir="ltr">Channel</bdi>، <bdi dir="ltr">Select</bdi> و <bdi dir="ltr">Context</bdi> مسائل پیچیده‌ی هم‌روندی را به راه‌حل‌های ساده، خوانا و قابل اعتماد تبدیل می‌کنند. این الگوها سنگ‌بنای بسیاری از سرویس‌های مدرن در Go هستند — چه قصد ساخت <bdi dir="ltr">API</bdi> داشته باشید، چه <bdi dir="ltr">Worker</bdi>، چه سیستم‌های پردازش داده. تسلط به این الگوها تفاوت اصلی بین نوشتن کد همزمانِ کارآمد و کد پر از باگ و نشت حافظه است.</p>
+<p>الگوهای هم‌روندی ابزارهای ساختمانی هستند که با ترکیب <a href="05.01-goroutine.html">Goroutine</a> (بخش ۵.۱)، <a href="05.02-channel.html">Channel</a> (بخش ۵.۲)، <a href="05.03-select.html">Select</a> (بخش ۵.۳) و <a href="05.04-context.html">Context</a> (بخش ۵.۴) مسائل پیچیده‌ی هم‌روندی را به راه‌حل‌های ساده، خوانا و قابل اعتماد تبدیل می‌کنند. این الگوها سنگ‌بنای بسیاری از سرویس‌های مدرن در Go هستند — چه قصد ساخت <bdi dir="ltr">API</bdi> داشته باشید، چه <bdi dir="ltr">Worker</bdi>، چه سیستم‌های پردازش داده. تسلط به این الگوها تفاوت اصلی بین نوشتن کد هم‌روندِ کارآمد و کد پر از باگ و نشت حافظه است.</p>
 <p>در PHP الگوهای مشابهی وجود دارند اما معمولاً به ابزارهای خارجی وابسته‌اند. مثلاً <bdi dir="ltr">Worker Pool</bdi> در Laravel با <bdi dir="ltr">Queue</bdi> و <bdi dir="ltr">Supervisor</bdi> پیاده‌سازی می‌شود، <bdi dir="ltr">Rate Limiting</bdi> با <bdi dir="ltr">Redis</bdi> و <bdi dir="ltr">Middleware</bdi> انجام می‌شود، و <bdi dir="ltr">Pipeline</bdi> با زنجیره‌ی <bdi dir="ltr">Job</bdi>‌ها ساخته می‌شود. در Go همه‌ی این الگوها با ابزارهای داخلی زبان و تنها با چند خط کد قابل پیاده‌سازی هستند.</p>
 <div class="quote-box">
 <p class="quote-text">از ابتدا برای هم‌روندی طراحی کنید. اضافه کردن هم‌روندی به یک طراحی موجود بسیار سخت‌تر از طراحی برای آن از همان ابتداست.</p>
@@ -577,7 +577,7 @@ func fetchAll(ctx context.Context, urls []string) ([]string, error) {
 }
 </code></pre>
 </figure>
-<p><code dir="ltr">errgroup.Group</code> ترکیبی از <bdi dir="ltr">WaitGroup</bdi> و <bdi dir="ltr">Context</bdi> است. وقتی یکی از <bdi dir="ltr">Goroutine</bdi>‌ها خطا برمی‌گرداند، <bdi dir="ltr">Context</bdi> داخلی لغو می‌شود و سایر <bdi dir="ltr">Goroutine</bdi>‌ها از طریق <code dir="ltr">ctx.Done()</code> مطلع می‌شوند. این الگو در عمل معادل استفاده همزمان از <code dir="ltr">sync.WaitGroup</code> + <code dir="ltr">context.WithCancel</code> است اما با کد بسیار تمیزتر و مدیریت خودکار خطا.</p>
+<p><code dir="ltr">errgroup.Group</code> ترکیبی از <a href="05.05-waitgroup.html">WaitGroup</a> (بخش ۵.۵) و <a href="05.04-context.html">Context</a> (بخش ۵.۴) است. وقتی یکی از <bdi dir="ltr">Goroutine</bdi>‌ها خطا برمی‌گرداند، <bdi dir="ltr">Context</bdi> داخلی لغو می‌شود و سایر <bdi dir="ltr">Goroutine</bdi>‌ها از طریق <code dir="ltr">ctx.Done()</code> مطلع می‌شوند. این الگو در عمل معادل استفاده همزمان از <code dir="ltr">sync.WaitGroup</code> + <code dir="ltr">context.WithCancel</code> است اما با کد بسیار تمیزتر و مدیریت خودکار خطا.</p>
 <div class="tip"><strong>مقایسه errgroup با WaitGroup:</strong>
 <ul>
 <li><strong dir="ltr">WaitGroup:</strong> فقط منتظر اتمام می‌ماند. خطاها باید دستی جمع‌آوری شوند.</li>

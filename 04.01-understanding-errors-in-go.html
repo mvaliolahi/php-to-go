@@ -202,7 +202,7 @@ switch e := err.(type) {
 }
 </code></pre>
 </figure></figure></div>
-<div class="warning"><strong>هشدار:</strong> هرگز از <code dir="ltr">err.(*SomeType)</code> بدون comma-ok استفاده نکنید. اگر نوع مطابقت نداشته باشد، panic رخ می‌دهد. همیشه بنویسید <code>if e, ok := err.(*SomeType); ok</code>.</div>
+<div class="warning"><strong>هشدار:</strong> هرگز از <code dir="ltr">err.(*SomeType)</code> بدون comma-ok استفاده نکنید. اگر نوع مطابقت نداشته باشد، panic رخ می‌دهد (برای توضیح کامل‌تر panic و <code>recover</code> به <a href="04.03-panic.html">بخش ۴.۳</a> مراجعه کنید). همیشه بنویسید <code>if e, ok := err.(*SomeType); ok</code>.</div>
 <h3 id="errors-is-و-errors-as">4.1.4 errors.Is و errors.As: جستجو در زنجیره‌ی خطا</h3>
 <p>وقتی خطاها با <code dir="ltr">fmt.Errorf("%w", err)</code> wrap می‌شوند، type assertion ساده دیگر کار نمی‌کند — زیرا نوع بیرونی دیگر همان نوع اصلی نیست. <code dir="ltr">errors.Is</code> و <code dir="ltr">errors.As</code> این مشکل را حل می‌کنند:</p>
 <figure class="code go" dir="ltr">

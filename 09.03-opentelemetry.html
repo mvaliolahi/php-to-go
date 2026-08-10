@@ -83,7 +83,7 @@
 </p>
 </div>
 <div class="tip">
-<strong>نکته‌ی حرفه‌ای:</strong> همان‌طور که در آغاز فصل دیدیم، سه رکن <bdi dir="ltr">Observability</bdi> اهداف متفاوتی دارند. <bdi dir="ltr">OpenTelemetry</bdi> هر سه را با یک <bdi dir="ltr">API</bdi> ابزارسازی واحد در اختیارتان می‌گذارد تا به‌جای یادگیری سه ابزار مجزا، یک مدل یکپارچه برای <bdi dir="ltr">Logs</bdi>، <bdi dir="ltr">Metrics</bdi> و <bdi dir="ltr">Traces</bdi> داشته باشید.
+<strong>نکته‌ی حرفه‌ای:</strong> همان‌طور که در آغاز فصل اشاره شد، سه رکن <bdi dir="ltr">Observability</bdi> اهداف متفاوتی دارند. <bdi dir="ltr">OpenTelemetry</bdi> هر سه را با یک <bdi dir="ltr">API</bdi> ابزارسازی واحد در اختیارتان می‌گذارد تا به‌جای یادگیری سه ابزار مجزا، یک مدل یکپارچه برای <bdi dir="ltr">Logs</bdi>، <bdi dir="ltr">Metrics</bdi> و <bdi dir="ltr">Traces</bdi> داشته باشید.
 </div>
 <h3 id="اجزای-اصلی">9.3.1 اجزای اصلی OpenTelemetry</h3>
 <div class="case-study">
@@ -138,8 +138,8 @@ func initMetrics() error {
     return nil
 }</code></pre>
 </figure>
-<h3 id="trace-context-propagation">9.3.3 انتشار Context ترس بین سرویس‌ها</h3>
-<p>یکی از ویژگی‌های کلیدی <bdi dir="ltr">OpenTelemetry</bdi> انتشار خودکار <bdi dir="ltr">Trace Context</bdi> بین سرویس‌هاست. وقتی سرویس A درخواستی به سرویس B ارسال می‌کند <bdi dir="ltr">Trace ID</bdi> و <bdi dir="ltr">Span ID</bdi> به‌صورت خودکار در <bdi dir="ltr">HTTP headers</bdi> (طبق استاندارد <bdi dir="ltr">W3C Trace Context</bdi>) منتقل می‌شوند:</p>
+<h3 id="trace-context-propagation">9.3.3 انتشار Trace Context بین سرویس‌ها</h3>
+<p>یکی از ویژگی‌های کلیدی <bdi dir="ltr">OpenTelemetry</bdi> انتشار خودکار <bdi dir="ltr">Trace Context</bdi> (ساخته‌شده روی <code>context.Context</code> که در <a href="05.04-context.html">بخش ۵.۴</a> معرفی شده) بین سرویس‌هاست. وقتی سرویس A درخواستی به سرویس B ارسال می‌کند <bdi dir="ltr">Trace ID</bdi> و <bdi dir="ltr">Span ID</bdi> به‌صورت خودکار در <bdi dir="ltr">HTTP headers</bdi> (طبق استاندارد <bdi dir="ltr">W3C Trace Context</bdi>) منتقل می‌شوند:</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">import (
 "go.opentelemetry.io/otel"
@@ -164,7 +164,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
     // Continue processing with ctx containing service A's trace context
 }</code></pre>
 </figure>
-<div class="important"><strong>اهمیت انتشار Context:</strong> بدون انتشار <bdi dir="ltr">Trace Context</bdi> هر سرویس <bdi dir="ltr">Trace</bdi> مستقلی ایجاد می‌کند و نمی‌توانید مسیر کامل یک درخواست را در سیستم توزیع‌شده ردیابی کنید. این یکی از تفاوت‌های کلیدی <bdi dir="ltr">OpenTelemetry</bdi> با ابزارهای سنتی <bdi dir="ltr">PHP</bdi> است که در آن هر درخواست یک فرآیند مجزا است و <bdi dir="ltr">Context</bdi> بین سرویس‌ها به‌طور طبیعی منتقل نمی‌شود.</div>
+<div class="important"><strong>اهمیت انتشار Context:</strong> بدون انتشار <bdi dir="ltr">Trace Context</bdi> هر سرویس <bdi dir="ltr">Trace</bdi> مستقلی ایجاد می‌کند و نمی‌توانید مسیر کامل یک درخواست را در سیستم توزیع‌شده ردیابی کنید. این یکی از تفاوت‌های کلیدی <bdi dir="ltr">OpenTelemetry</bdi> با ابزارهای سنتی <bdi dir="ltr">PHP</bdi> است که در آن هر درخواست یک فرآیند مجزا است و <bdi dir="ltr">Context</bdi> (مرجع: <a href="05.04-context.html">بخش ۵.۴</a>) بین سرویس‌ها به‌طور طبیعی منتقل نمی‌شود.</div>
 <div class="tip"><strong>نکته پیکربندی Propagator:</strong> قبل از ساخت اولین <bdi dir="ltr">Span</bdi>، حتماً <bdi dir="ltr">W3C Trace Context</bdi> را به‌عنوان <bdi dir="ltr">propagator</bdi> سراسری تنظیم کنید: <code dir="ltr">otel.SetTextMapPropagator(propagation.TraceContext{})</code> و در سمت گیرنده نیز <code dir="ltr">propagation.Baggage{}</code> را برای انتقال <bdi dir="ltr">baggage</bdi>ها اضافه کنید. این کار را در <code dir="ltr">init()</code> انجام دهید؛ اگر بعد از اولین درخواست انجام شود، <bdi dir="ltr">Span</bdi>‌های قبلی بدون <bdi dir="ltr">parent</bdi> می‌مانند. ساده‌ترین راه برای فریم‌ورک‌های وب، استفاده از <code dir="ltr">otelhttp.NewHandler</code> است که انتشار را به‌صورت خودکار انجام می‌دهد (به بخش <bdi dir="ltr">Auto-Instrumentation</bdi> در ادامه مراجعه کنید).</div>
 <h3 id="معماری-داخلی-sdk">9.3.4 معماری داخلی SDK</h3>
 <p><strong dir="ltr">TracerProvider</strong> : نقطه ورودی اصلی <bdi dir="ltr">SDK</bdi>. <strong dir="ltr">SpanProcessor</strong> : پردازشگر <bdi dir="ltr">Span</bdi> ها (<bdi dir="ltr">BatchSpanProcessor</bdi> برای <bdi dir="ltr">production</bdi>، <bdi dir="ltr">SimpleSpanProcessor</bdi> برای <bdi dir="ltr">development</bdi>). <strong dir="ltr">Sampler</strong> : تصمیم می‌گیرد کدام <bdi dir="ltr">Span</bdi> ها ثبت شوند.</p>
@@ -297,7 +297,7 @@ func withTraceID(ctx context.Context) slog.Attr {
 handler := slog.NewJSONHandler(os.Stdout, &amp;slog.HandlerOptions{}).
 WithAttrs([]slog.Attr{slog.Any("trace_id", getTraceID)})</code></pre>
 </figure>
-<div class="comparison"><strong>مقایسه با PHP:</strong> در PHP هر درخواست یک process مجزا است و <bdi dir="ltr">Context</bdi> بین درخواست‌ها به‌صورت طبیعی به اشتراک گذاشته نمی‌شود. اما در Go با <code dir="ltr">context.Context</code> می‌توان <bdi dir="ltr">Span</bdi> ها را بین توابع و حتی <bdi dir="ltr">goroutine</bdi> ها به‌صورت خودکار منتقل کرد. این تفاوت بنیادین باعث می‌شود <bdi dir="ltr">OpenTelemetry</bdi> در <bdi dir="ltr">Go</bdi> بسیار طبیعی‌تر و مؤثرتر عمل کند.</div>
+<div class="comparison"><strong>مقایسه با PHP:</strong> در PHP هر درخواست یک process مجزا است و <bdi dir="ltr">Context</bdi> بین درخواست‌ها به‌صورت طبیعی به اشتراک گذاشته نمی‌شود. اما در Go با <a href="05.04-context.html"><code dir="ltr">context.Context</code></a> می‌توان <bdi dir="ltr">Span</bdi> ها را بین توابع و حتی <bdi dir="ltr">goroutine</bdi> ها به‌صورت خودکار منتقل کرد. این تفاوت بنیادین باعث می‌شود <bdi dir="ltr">OpenTelemetry</bdi> در <bdi dir="ltr">Go</bdi> بسیار طبیعی‌تر و مؤثرتر عمل کند.</div>
 <h3 id="پیکربندی-collector">9.3.9 پیکربندی OTel Collector</h3>
 <p><bdi dir="ltr">OTel Collector</bdi> مرکز مدیریت داده‌های Observability است. سه بخش اصلی آن <bdi dir="ltr">Receivers</bdi> (دریافت)، <bdi dir="ltr">Processors</bdi> (پردازش) و <bdi dir="ltr">Exporters</bdi> (ارسال) هستند. فایل پیکربندی زیر یک نمونه عملی برای محیط <bdi dir="ltr">production</bdi> است:</p>
 <figure class="code yaml" dir="ltr">
@@ -528,7 +528,7 @@ func main() {
 }</code></pre>
 </figure>
 <h3 id="درخت-اسپن-و-انتشار-کانتکست">9.3.14 درخت Span و انتشار Context</h3>
-<p>درک ساختار درختی <bdi dir="ltr">Span</bdi>‌ها و <bdi dir="ltr">context propagation</bdi> برای عیب‌یابی مؤثر در سیستم‌های توزیع‌شده حیاتی است. هر <bdi dir="ltr">trace</bdi> یک درخت از <bdi dir="ltr">Span</bdi>‌هاست که ریشه آن <bdi dir="ltr">root span</bdi> (معمولاً درخواست ورودی <bdi dir="ltr">HTTP</bdi>) و شاخه‌های آن عملیات فرعی در سرویس‌های مختلف هستند. </p><p>هر <bdi dir="ltr">Span</bdi> شامل شناسه یکتای خود (<bdi dir="ltr">span ID</bdi>)، شناسه والد (<bdi dir="ltr">parent span ID</bdi>) و شناسه کل <bdi dir="ltr">trace</bdi> (<bdi dir="ltr">trace ID</bdi>) است. </p><p>انتشار <bdi dir="ltr">Context</bdi> از طریق هدرهای <bdi dir="ltr">HTTP</bdi> (مثل <bdi dir="ltr">traceparent</bdi> و <bdi dir="ltr">tracestate</bdi>) طبق استاندارد <bdi dir="ltr">W3C Trace Context</bdi> انجام می‌شود و تضمین می‌کند که تمام سرویس‌های درگیر در یک درخواست، بخشی از همان <bdi dir="ltr">trace</bdi> باشند. بدون این انتشار خودکار، هر سرویس <bdi dir="ltr">trace</bdi> مستقلی ایجاد می‌کند و ردیابی مسیر کامل درخواست غیرممکن می‌شود.</p>
+<p>درک ساختار درختی <bdi dir="ltr">Span</bdi>‌ها و <bdi dir="ltr">context propagation</bdi> (که در <a href="05.04-context.html">بخش ۵.۴</a> معرفی شد) برای عیب‌یابی مؤثر در سیستم‌های توزیع‌شده حیاتی است. هر <bdi dir="ltr">trace</bdi> یک درخت از <bdi dir="ltr">Span</bdi>‌هاست که ریشه آن <bdi dir="ltr">root span</bdi> (معمولاً درخواست ورودی <bdi dir="ltr">HTTP</bdi>) و شاخه‌های آن عملیات فرعی در سرویس‌های مختلف هستند. </p><p>هر <bdi dir="ltr">Span</bdi> شامل شناسه یکتای خود (<bdi dir="ltr">span ID</bdi>)، شناسه والد (<bdi dir="ltr">parent span ID</bdi>) و شناسه کل <bdi dir="ltr">trace</bdi> (<bdi dir="ltr">trace ID</bdi>) است. </p><p>انتشار <bdi dir="ltr">Context</bdi> از طریق هدرهای <bdi dir="ltr">HTTP</bdi> (مثل <bdi dir="ltr">traceparent</bdi> و <bdi dir="ltr">tracestate</bdi>) طبق استاندارد <bdi dir="ltr">W3C Trace Context</bdi> انجام می‌شود و تضمین می‌کند که تمام سرویس‌های درگیر در یک درخواست، بخشی از همان <bdi dir="ltr">trace</bdi> باشند. بدون این انتشار خودکار، هر سرویس <bdi dir="ltr">trace</bdi> مستقلی ایجاد می‌کند و ردیابی مسیر کامل درخواست غیرممکن می‌شود.</p>
 <figure class="diagram" dir="ltr">
 <svg viewBox="0 0 760 390" xmlns="http://www.w3.org/2000/svg">
 <defs>

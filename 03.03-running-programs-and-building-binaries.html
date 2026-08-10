@@ -97,14 +97,14 @@
 <p><strong>۱. Parsing:</strong> کد منبع Go به token تجزیه می‌شود و سپس AST ساخته می‌شود. در این مرحله خطاهای نحوی شناسایی می‌شوند.</p>
 <p><strong>۲. Type Checking:</strong> کامپایلر نوع تمام عبارت‌ها را استنتاج و بررسی می‌کند. مطمئن می‌شود که انواع با هم سازگار هستند، interface ها به‌درستی پیاده‌سازی شده‌اند و قواعد تایپ سیستم رعایت شده‌اند.</p>
 <p><strong>۳. SSA Generation (تولید SSA):</strong> AST به فرم میانی <strong dir="ltr">Static Single Assignment (SSA)</strong> تبدیل می‌شود. در SSA هر متغیر فقط یک بار مقداردهی می‌شود که این امکان بهینه‌سازی‌های قدرتمندی را فراهم می‌کند. می‌توانید SSA تولیدشده را با <code>GOSSAFUNC=main go build</code> مشاهده کنید.</p>
-<p><strong>۴. Optimization:</strong> چندین پاس بهینه‌سازی روی SSA اعمال می‌شود شامل: dead code elimination، inlining، فرار از escape analysis و بهینه‌سازی حلقه‌ها.</p>
+<p><strong>۴. Optimization:</strong> چندین پاس بهینه‌سازی روی SSA اعمال می‌شود شامل: dead code elimination، inlining، تحلیل <a href="02.05-pointers.html#escape-analysis"><bdi dir="ltr">Escape Analysis</bdi></a> (که در <a href="02.05-pointers.html#escape-analysis">بخش ۲.۵</a> به‌تفصیل بررسی شده) و بهینه‌سازی حلقه‌ها.</p>
 <p><strong>۵. Code Generation:</strong> SSA بهینه‌شده به دستورالعمل‌های ماشین متناسب با معماری هدف (amd64, arm64,...) تبدیل می‌شود.</p>
 <p><strong>۶. Linking:</strong> لینکر تمام آبجکت‌فایل‌ها و کتابخانه‌ی runtime را با هم ترکیب می‌کند و یک باینری نهایی تولید می‌شود. لینکر Go کاملاً توسط خود تیم Go نوشته شده و به ابزارهای خارجی وابسته نیست.</p>
-<div class="tip"><strong>نکته فنی:</strong> برای مشاهده‌ی مراحل کامپایل می‌توانید از پرچم‌های زیر استفاده کنید: <code>go build -gcflags="-m"</code> برای مشاهده‌ی تصمیمات escape analysis و inlining، <code>go build -gcflags="-S"</code> برای مشاهده‌ی خروجی اسمبلی و <code>go build -x</code> برای مشاهده‌ی تمام دستورات اجراشده.</div>
+<div class="tip"><strong>نکته فنی:</strong> برای مشاهده‌ی مراحل کامپایل می‌توانید از پرچم‌های زیر استفاده کنید: <code>go build -gcflags="-m"</code> برای مشاهده‌ی تصمیمات <a href="02.05-pointers.html#escape-analysis"><bdi dir="ltr">escape analysis</bdi></a> و inlining، <code>go build -gcflags="-S"</code> برای مشاهده‌ی خروجی اسمبلی و <code>go build -x</code> برای مشاهده‌ی تمام دستورات اجراشده.</div>
 <h3 id="لینکر-در-go">3.3.3 لینکر در Go</h3>
 <p>لینکر Go یکی از منحصربه‌فردترین بخش‌های toolchain است. برخلاف زبان‌هایی مثل C که از لینکر سیستم ld استفاده می‌کنند، Go لینکر اختصاصی خود را دارد. این لینکر:</p>
 <p><strong>۱. باینری استاتیک تولید می‌کند:</strong> به‌صورت پیش‌فرض، فایل اجرایی Go هیچ وابستگی دینامیک به کتابخانه‌های سیستمی (مثل glibc) ندارد. این یعنی باینری روی هر توزیع لینوکسی قابل اجراست.</p>
-<p><strong>۲. runtime را لینک می‌کند:</strong> Go runtime (شامل garbage collector، scheduler و سیستم goroutine) مستقیماً در باینری تعبیه می‌شود. به همین دلیل باینری Go نسبتاً بزرگ است (معمولاً ۵ تا ۱۵ مگابایت) حتی برای برنامه‌های ساده.</p>
+<p><strong>۲. runtime را لینک می‌کند:</strong> Go runtime (شامل <a href="12.04-memory-optimization-and-gc.html">زباله‌روب</a>، scheduler و سیستم goroutine) مستقیماً در باینری تعبیه می‌شود. به همین دلیل باینری Go نسبتاً بزرگ است (معمولاً ۵ تا ۱۵ مگابایت) حتی برای برنامه‌های ساده.</p>
 <p><strong>۳. اندازه باینری را می‌توان کاهش داد:</strong></p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">// Remove debug info and symbol table
@@ -266,7 +266,7 @@ atomic.AddInt64(&amp;counter, 1) // safe
 </figure>
 <div class="warning"><strong>هشدار:</strong> Race detector فقط در زمان توسعه و تست استفاده می‌شود، نه در تولید. این ابزار overhead حافظه‌ی ۵ تا ۱۰ برابری و کاهش سرعت ۲ تا ۲۰ برابری دارد. اما ارزش آن بی‌نظیر است — مسابقه داده‌ای که در تست کشف نشود، در تولید باگ‌های غیرقابل تکرار ایجاد می‌کند.</div>
 <h3 id="binary-optimization">3.3.9 بهینه‌سازی اندازه‌ی باینری</h3>
-<p>یکی از انتقادهای رایج به Go اندازه‌ی نسبتاً بزرگ باینری‌های آن است. یک برنامه‌ی ساده‌ی <code dir="ltr">Hello World</code> ممکن است ۵ تا ۸ مگابایت باشد. دلیل اصلی این اندازه، تعبیه‌ی <bdi dir="ltr">Go runtime</bdi> (شامل <bdi dir="ltr">GC</bdi>، <bdi dir="ltr">scheduler</bdi> و <bdi dir="ltr">goroutine stack</bdi>) در باینری است. اما راه‌هایی برای کاهش اندازه وجود دارد:</p>
+<p>یکی از انتقادهای رایج به Go اندازه‌ی نسبتاً بزرگ باینری‌های آن است. یک برنامه‌ی ساده‌ی <code dir="ltr">Hello World</code> ممکن است ۵ تا ۸ مگابایت باشد. دلیل اصلی این اندازه، تعبیه‌ی <bdi dir="ltr">Go runtime</bdi> (شامل <a href="12.04-memory-optimization-and-gc.html"><bdi dir="ltr">Garbage Collector</bdi></a>، <bdi dir="ltr">scheduler</bdi> و <bdi dir="ltr">goroutine stack</bdi>) در باینری است. اما راه‌هایی برای کاهش اندازه وجود دارد:</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">// Step 1: remove debug information
 go build -ldflags="-s -w" -o myapp

@@ -68,7 +68,7 @@
 <h2 id="gomock">gomock</h2><div class="abstract">
 <strong>چکیده:</strong> این بخش gomock را پوشش می‌دهد: mock generation، expectation و verification. الگوی mock interface و dependency injection بررسی می‌شود. تفاوت با Mockery در PHP مشخص می‌گردد.
 </div>
-<p>پیش در در مورد mock کردن توضیحاتی داده شد ولی در پروژه‌های واقعی اغلب نیاز داریم در هنگام تست، dependency های خارجی مثل دیتابیس، سرویس‌های دیگر یا APIها را <strong dir="ltr">mock</strong> کنیم تا side affect ها را کنترل کنیم. </p><p>یعنی به‌جای اجرای واقعی آن‌ها یک نسخه‌ی شبیه‌سازی‌شده ایجاد می‌کنیم که رفتار مورد انتظار را تقلید می‌کند. این کار:</p>
+<p>پیش‌تر در مورد mock کردن توضیحاتی داده شد، ولی در پروژه‌های واقعی اغلب نیاز داریم در هنگام تست، dependencyهای خارجی مثل دیتابیس، سرویس‌های دیگر یا APIها را <strong dir="ltr">mock</strong> کنیم تا side effectها را کنترل کنیم. </p><p>یعنی به‌جای اجرای واقعی آن‌ها یک نسخه‌ی شبیه‌سازی‌شده ایجاد می‌کنیم که رفتار مورد انتظار را تقلید می‌کند. این کار:</p>
 <p>تست‌ها را سریع‌تر و قابل پیش‌بینی‌تر می‌کند</p>
 <p>از وابستگی به منابع بیرونی مثل پایگاه‌داده یا سرویس های شخص ثالث جلوگیری می‌کند</p>
 <p>امکان تست سناریوهای خطا و edge caseها را فراهم می‌کند
@@ -84,7 +84,7 @@
 </p>
 </div>
 <div class="tip">
-<strong>نکته‌ی حرفه‌ای:</strong> در <bdi dir="ltr">Go</bdi> بهترین mockها interfaceهای حداقلی هستند که توسط مصرف‌کننده تعریف شده‌اند. به‌جای ساخت یک interface بزرگ که کل <bdi dir="ltr">API</bdi> خارجی را بازتاب می‌دهد، یک interface کوچک با فقط متدهایی که کدتان واقعاً فراخوانی می‌کند تعریف کنید.
+<strong>نکته‌ی حرفه‌ای:</strong> در <bdi dir="ltr">Go</bdi> بهترین mockها واسط‌های حداقلی هستند (مفهوم واسط در <a href="03.06-interface.html">بخش ۳.۶</a> معرفی شده) که توسط مصرف‌کننده تعریف شده‌اند. به‌جای ساخت یک واسط بزرگ که کل <bdi dir="ltr">API</bdi> خارجی را بازتاب می‌دهد، یک واسط کوچک با فقط متدهایی که کدتان واقعاً فراخوانی می‌کند تعریف کنید.
 </div>
 <h3 id="نصب-gomock-و-ابزار-mockgen">11.3.1 نصب gomock و ابزار mockgen</h3>
 <figure class="code go" dir="ltr">
@@ -98,8 +98,8 @@
 </figure>
 <h3 id="ساختار-کلی-تست-با-gomock">11.3.2 ساختار کلی تست با gomock</h3>
 <p>برای استفاده از gomock باید مراحل زیر را طی کنید:</p>
-<p>تعریف یک <strong dir="ltr">interface</strong></p>
-<p>ساخت فایل mock از آن interface با ابزار mockgen</p>
+<p>تعریف یک <strong dir="ltr">interface</strong> (واسط)</p>
+<p>ساخت فایل mock از آن واسط با ابزار mockgen</p>
 <p>استفاده از mock در تست
 </p>
 <p><strong>مثال تست سرویس کاربر</strong> — در نظر بگیرید یک سرویس داریم که وابسته به یک Repository است.</p>
@@ -175,7 +175,7 @@ func TestGetName(t *testing.T) {
 <div class="comparison"><strong>مقایسه با PHP:</strong> در PHP معمولاً از PHPUnit Mock یا Mockery برای شبیه‌سازی وابستگی‌ها استفاده می‌شود. در PHPUnit با <code dir="ltr">$this-&gt;createMock(Repository::class)</code> یک Mock می‌سازید و با <code dir="ltr">$mock-&gt;method('find')-&gt;willReturn($user)</code> رفتار آن را تعریف می‌کنید. در Go اما mock به‌صورت خودکار از interface تولید می‌شود و type-safety کامل دارد. یعنی اگر interface تغییر کند، mock هم باید دوباره تولید شود و کامپایلر خطا را نشان می‌دهد.</div>
 <div class="tip"><strong>نکته درباره بهترین روش‌های gomock:</strong> <strong>۱)</strong> از نسخه <code dir="ltr">go.uber.org/mock</code> استفاده کنید (فورک رسمی گوگل که اکنون در Uber نگهداری می‌شود)؛ پکیج قدیمی <code dir="ltr">github.com/golang/mock</code> دیگر فعال نیست. <strong>۲)</strong> برای پایداری بازتولید mock، از <code dir="ltr">//go:generate mockgen ...</code> در همان فایلی که interface تعریف شده استفاده کنید و دستور <code dir="ltr">go generate ./...</code> را در <code dir="ltr">Makefile</code> قرار دهید. <strong>۳)</strong> فایل‌های تولیدشده mock را در git commit کنید تا CI نیازی به <code dir="ltr">mockgen</code> نداشته باشد. <strong>۴)</strong> از Go 1.20+ دیگر نیازی به <code dir="ltr">defer ctrl.Finish()</code> نیست چون <code dir="ltr">t.Cleanup</code> خودکار است. <strong>۵)</strong> هرگز interfaceهایی که مالک آن‌ها نیستید (مثل <code dir="ltr">http.ResponseWriter</code>) را مستقیماً mock نکنید — آنها را در interface بومی خودتان بپیچید.</div>
 <h3 id="مثال-کاربردی-gomock-با-الگوی-repository">11.3.5 مثال کاربردی</h3>
-<p>در فصل ۸ با الگوی Repository آشنا شدید. این الگو یک لایه انتزاعی بین منطق کسب‌وکار و دسترسی به داده‌ها ایجاد می‌کند. حالا می‌خواهیم ببینیم چگونه با gomock می‌توانیم این الگو را تست کنیم.</p>
+<p>در فصل ۸ با الگوی Repository آشنا شدید. این الگو یک لایه انتزاعی بین منطق کسب‌وکار و دسترسی به داده‌ها ایجاد می‌کند. اکنون می‌خواهیم ببینیم چگونه با gomock می‌توانیم این الگو را تست کنیم.</p>
 <p>برای نمونه، یک Repository برای مدیریت مقالات داریم:</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">// article/repository.go

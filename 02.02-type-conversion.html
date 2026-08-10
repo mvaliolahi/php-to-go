@@ -77,7 +77,7 @@
 در Go چنین تبدیل خودکاری وجود ندارد. <code>"3" + 4</code> خطای کامپایل است. باید صریحاً بنویسید <code dir="ltr">3 + strconv.Atoi("3")</code> یا <code>strconv.Itoa(3) + "4"</code>. این سخت‌گیری در نگاه اول آزاردهنده است اما از دسته‌ای کامل از باگ‌ها جلوگیری می‌کند.
 </div>
 <h3 id="type-assertion">2.2.1 Type Assertion و Type Switch</h3>
-<p>وقتی با interface کار می‌کنید، گاهی باید نوع واقعی مقدار زیرین را استخراج کنید. Go دو ابزار برای این کار دارد:</p>
+<p>وقتی با <a href="03.06-interface.html"><bdi dir="ltr">interface</bdi></a> کار می‌کنید، گاهی باید نوع واقعی مقدار زیرین را استخراج کنید. مفهوم واسط و پیاده‌سازی ضمنی آن در <a href="03.06-interface.html">بخش ۳.۶</a> به‌تفصیل بررسی شده است؛ در اینجا فقط ابزارهای استخراج نوع را مرور می‌کنیم. Go دو ابزار برای این کار دارد:</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">var i interface{} = "hello"
 
@@ -106,14 +106,7 @@ n, ok := i.(int) // ok = false, n = 0
 }
 </code></pre>
 </figure>
-<div class="note"><strong>ساختار داخلی Interface در Go:</strong> وقتی مقداری در interface ذخیره می‌شود، Go از دو ساختار متفاوت استفاده می‌کند:
-<br/><br/>
-<code>eface</code> — برای interface خالی (<code>interface{}</code>): شامل اشاره‌گری به نوع داده (_type) و اشاره‌گری به مقدار واقعی data. این ساختار ۱۶ بایت حافظه مصرف می‌کند.
-<br/><br/>
-<code>iface</code> — برای interface با متدها: شامل اشاره‌گری به itable و اشاره‌گری به مقدار واقعی. itable در زمان اجرا ساخته و کش می‌شود تا overhead ارزیابی دینامیک کاهش یابد.
-<br/><br/>
-در PHP مشابه این مکانیزم وجود ندارد چون هر مقدار از قبل ساختار zval خود را دارد و نوع‌دهی دینامیک ذاتی زبان است.
-</div>
+<div class="note"><strong>ساختار داخلی Interface در Go:</strong> <bdi dir="ltr">interface</bdi> در Go از دو ساختار <code>eface</code> (برای <code>interface{}</code> و <code>any</code>) و <code>iface</code> (برای واسط‌های دارای متد) تشکیل شده که هر کدام شامل اشاره‌گری به نوع داده و اشاره‌گری به مقدار واقعی هستند. کش <code>itab</code>، تله‌ی <bdi dir="ltr">typed nil</bdi> و سه حالت <code>nil</code> در <a href="03.06-interface.html#iface-eface-داخلی">بخش ۳.۶</a> به‌طور کامل بررسی شده‌اند. در PHP مشابه این مکانیزم وجود ندارد چون هر مقدار از قبل ساختار <code>zval</code> خود را دارد و نوع‌دهی دینامیک ذاتی زبان است.</div>
 <h3 id="unsafe-package">2.2.2 بسته‌ی unsafe و تبدیل‌های سطح پایین</h3>
 <p>برای کارهای پیشرفته و تبدیل مستقیم حافظه، Go بسته‌ی <code>unsafe</code> را ارائه می‌دهد. این بسته امکان دسترسی مستقیم به حافظه و دور زدن سیستم نوع‌دهی ایمن Go را فراهم می‌کند:</p>
 <figure class="code go" dir="ltr">
@@ -250,7 +243,7 @@ s = fmt.Sprintf("%d", 42) // Wrong — slower — generic
 </code></pre>
 </figure>
 <h3 id="php-type-juggling-vs-go-explicit">2.2.7 PHP Type Juggling در برابر تبدیل صریح Go</h3>
-<p>همان‌طور که در ابتدای این بخش دیدید، <bdi dir="ltr">PHP Type Juggling</bdi> منبع بسیاری از باگ‌های ظریف است (مانند <code>"hello" + 1 = 1</code> یا <code>"foo" == 0 → true</code>). نمودار زیر این تفاوت فلسفی را به‌صورت بصری کنار هم قرار می‌دهد و تبدیل‌های ایمن و ناایمن در <bdi dir="ltr">Go</bdi> را فهرست می‌کند.</p>
+<p>همان‌طور که در ابتدای این بخش اشاره شد، <bdi dir="ltr">PHP Type Juggling</bdi> منبع بسیاری از باگ‌های ظریف است (مانند <code>"hello" + 1 = 1</code> یا <code>"foo" == 0 → true</code>). نمودار زیر این تفاوت فلسفی را به‌صورت بصری کنار هم قرار می‌دهد و تبدیل‌های ایمن و ناایمن در <bdi dir="ltr">Go</bdi> را فهرست می‌کند.</p>
 <figure class="diagram" dir="ltr">
 <svg viewBox="0 0 720 340" xmlns="http://www.w3.org/2000/svg">
 <defs>

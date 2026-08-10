@@ -174,7 +174,7 @@ func main() {
 </figure>
 <div class="tip"><strong>نکته عملی:</strong> در پروژه‌های واقعی می‌توانید <bdi dir="ltr">Handler</bdi> سفارشی بنویسید که لاگ‌ها را هم‌زمان به <bdi dir="ltr">stdout</bdi> و به یک سرویس مرکزی ارسال کند. همچنین با <bdi dir="ltr">slog.HandlerOptions</bdi> می‌توانید سطوح لاگ و افزودن <bdi dir="ltr">source</bdi> (فایل و شماره خط) را کنترل کنید.</div>
 <h3 id="log-correlation">9.1.5 همبستگی لاگ با Trace</h3>
-<p>در سیستم‌های توزیع‌شده یکی از الگوهای مهم، اضافه‌کردن <bdi dir="ltr">trace_id</bdi> و <bdi dir="ltr">span_id</bdi> به هر رکورد لاگ است. این کار به شما اجازه می‌دهد لاگ‌ها را با <bdi dir="ltr">Trace</bdi>‌ها در <bdi dir="ltr">Grafana</bdi> همبسته کنید (پیاده‌سازی کامل <bdi dir="ltr">OpenTelemetry</bdi> و انتشار <bdi dir="ltr">Context</bdi> بین سرویس‌ها را در بخش ۹.۳ می‌بینید):</p>
+<p>در سیستم‌های توزیع‌شده یکی از الگوهای مهم، اضافه‌کردن <bdi dir="ltr">trace_id</bdi> و <bdi dir="ltr">span_id</bdi> به هر رکورد لاگ است. این کار به شما اجازه می‌دهد لاگ‌ها را با <bdi dir="ltr">Trace</bdi>‌ها در <bdi dir="ltr">Grafana</bdi> همبسته کنید (پیاده‌سازی کامل <bdi dir="ltr">OpenTelemetry</bdi> و انتشار <bdi dir="ltr">Context</bdi> بین سرویس‌ها در <a href="09.03-opentelemetry.html">بخش ۹.۳</a> بررسی شده است):</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">// Add trace_id to context and logger
 func withTraceLogger(ctx context.Context) *slog.Logger {
@@ -236,7 +236,7 @@ logger := slog.New(slog.NewJSONHandler(os.Stdout, &amp;slog.HandlerOptions{
 </table>
 <div class="note"><strong>راهنمای انتخاب:</strong> برای اکثر پروژه‌ها <code>slog</code> بهترین انتخاب است چون استاندارد و بدون وابستگی است. اگر به حداکثر عملکرد نیاز دارید از <code>zap</code> یا <code>zerolog</code> استفاده کنید.</div>
 <h3 id="middleware-لاگ">9.1.9 Middleware لاگ‌گیری در برنامه‌های وب</h3>
-<p>در فریم‌ورک‌هایی مانند <bdi dir="ltr">net/http</bdi> یا <bdi dir="ltr">Gin</bdi> می‌توانید <bdi dir="ltr">middleware</bdi> تعریف کنید که به‌صورت خودکار اطلاعات درخواست‌ها را لاگ کند:</p>
+<p>در فریم‌ورک‌هایی مانند <bdi dir="ltr">net/http</bdi> یا <bdi dir="ltr">Gin</bdi> می‌توانید <bdi dir="ltr">Middleware</bdi> (که در <a href="07.04-middleware-management.html">بخش ۷.۴</a> به‌تفصیل بررسی شده) تعریف کنید که به‌صورت خودکار اطلاعات درخواست‌ها را لاگ کند:</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">func loggingMiddleware(next http.Handler) http.Handler {
     return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -329,7 +329,7 @@ func main() {
 </figure>
 <div class="comparison"><strong>تفاوت‌های کلیدی:</strong> در <bdi dir="ltr">PHP/Monolog</bdi> هر درخواست یک نمونه جدید <bdi dir="ltr">Logger</bdi> می‌سازد (یا از حافظه مشترک استفاده می‌کند). در <bdi dir="ltr">Go/slog</bdi> لاگر یک‌بار در شروع برنامه ساخته شده و بین تمام <bdi dir="ltr">goroutine</bdi> ها به‌صورت <bdi dir="ltr">thread-safe</bdi> استفاده می‌شود. همچنین <bdi dir="ltr">slog</bdi> بدون هیچ وابستگی خارجی در پکیج استاندارد موجود است، در حالی که <bdi dir="ltr">Monolog</bdi> باید با <bdi dir="ltr">Composer</bdi> نصب شود.</div>
 <h3 id="context-aware-logging">9.1.11 لاگ‌گیری آگاه از Context</h3>
-<p>یکی از الگوهای مهم در <bdi dir="ltr">Go</bdi> استفاده از <code>context.Context</code> برای انتقال اطلاعات درخواست در سراسر زنجیره فراخوانی است. می‌توانید <bdi dir="ltr">request ID</bdi>، شناسه کاربر و سایر اطلاعات را به <bdi dir="ltr">Context</bdi> اضافه کنید و در هر نقطه‌ای از برنامه به لاگ دسترسی داشته باشید:</p>
+<p>یکی از الگوهای مهم در <bdi dir="ltr">Go</bdi> استفاده از <code>context.Context</code> (که در <a href="05.04-context.html">بخش ۵.۴</a> معرفی شده) برای انتقال اطلاعات درخواست در سراسر زنجیره‌ی فراخوانی است. می‌توانید <bdi dir="ltr">request ID</bdi>، شناسه‌ی کاربر و سایر اطلاعات را به <bdi dir="ltr">Context</bdi> اضافه کنید و در هر نقطه‌ای از برنامه به لاگ دسترسی داشته باشید:</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">package main
 
@@ -380,7 +380,7 @@ func getUserHandler(w http.ResponseWriter, r *http.Request) {
 </figure>
 <div class="tip"><strong>نکته عملی:</strong> الگوی <code>loggerFromContext</code> بسیار پرکاربرد است. در سیستم‌های واقعی معمولاً یک <bdi dir="ltr">middleware</bdi> <code>request_id</code> را تولید و در <bdi dir="ltr">Context</bdi> قرار می‌دهد و سپس تمام توابع در همان زنجیره درخواست، از همان <bdi dir="ltr">request_id</bdi> در لاگ‌های خود استفاده می‌کنند. این کار ردیابی جریان یک درخواست خاص را بسیار آسان می‌کند.</div>
 <h3 id="لاگگیری-در-محیط-concurrent">9.1.12 لاگ‌گیری در محیط Concurrent</h3>
-<p>در <bdi dir="ltr">Go</bdi> برخلاف <bdi dir="ltr">PHP</bdi> که هر درخواست یک فرآیند مجزا است، صدها <bdi dir="ltr">goroutine</bdi> ممکن است همزمان لاگ بنویسند. خوشبختانه <code>slog</code> از نظر <bdi dir="ltr">thread-safety</bdi> ایمن است و نیاز به قفل اضافی ندارد. اما نکاتی وجود دارد که باید رعایت کنید:</p>
+<p>در <bdi dir="ltr">Go</bdi> برخلاف <bdi dir="ltr">PHP</bdi> که هر درخواست یک فرآیند مجزا است، صدها <bdi dir="ltr">goroutine</bdi> ممکن است به‌صورت هم‌روند لاگ بنویسند. خوشبختانه <code>slog</code> از نظر <bdi dir="ltr">thread-safety</bdi> ایمن است و نیاز به قفل اضافی ندارد. اما نکاتی وجود دارد که باید رعایت کنید:</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">package main
 
