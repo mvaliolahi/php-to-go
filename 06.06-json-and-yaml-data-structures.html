@@ -68,7 +68,7 @@
 <h2 id="ساختارهای-دادهای-json-و-yaml">ساختارهای داده‌ای JSON و YAML</h2><div class="abstract">
 <strong>چکیده:</strong> این بخش serialize و deserialize JSON و YAML در Go را پوشش می‌دهد: struct tags، custom marshaler و handling پیشرفته. تفاوت با json_encode/json_decode در PHP و مدیریت type بررسی می‌شود. الگوهای tagged struct و omitEmpty توضیح داده می‌شود.
 </div>
-<p>در دنیای مدرن نرم‌افزار، تبادل داده بین سرویس‌ها و پیکربندی برنامه‌ها عمدتاً با فرمت‌های JSON و YAML انجام می‌شود. در PHP کار با این فرمت‌ها بسیار ساده است: <code dir="ltr">json_decode()</code> و <code dir="ltr">json_encode()</code> برای JSON و افزونه‌های YAML در دسترس هستند. </p><p>در Go اما رویکرد متفاوتی وجود دارد: تبدیل داده‌ها به و از struct‌ها با استفاده از struct tag‌ها. </p><p>این رویکرد ابتدا ممکن است پیچیده به نظر برسد اما مزیت‌های بزرگی دارد: نوع‌داری ایستا، عملکرد بالا و امنیت بیشتر.</p>
+<p>در دنیای مدرن نرم‌افزار، تبادل داده بین سرویس‌ها و پیکربندی برنامه‌ها عمدتاً با فرمت‌های JSON و YAML انجام می‌شود. در PHP کار با این فرمت‌ها بسیار ساده است: <code dir="ltr">json_decode()</code> و <code dir="ltr">json_encode()</code> برای JSON و افزونه‌های YAML در دسترس هستند. </p><p>در Go اما رویکرد متفاوتی وجود دارد: تبدیل داده‌ها به و از struct‌ها با استفاده از struct tag‌ها. </p><p>این رویکرد ابتدا ممکن است پیچیده به نظر برسد اما مزیت‌های بزرگی دارد: نوع‌داری ایستا، عملکرد بالا و امنیت بیشتر. پیامد عملی این طراحی آن است که کامپایلر پیش از اجرای برنامه می‌تواند صحت نگاشت فیلدها را بررسی کند و در نتیجه دسترسی به فیلد ناموجود (که در PHP با آرایه‌های انجمنی به‌صورت <code>Undefined index</code> ظاهر می‌شود) در Go یک خطای زمان کامپایل است. فیلدهای <code dir="ltr">unexported</code> (با حرف کوچک آغازشونده) به‌طور خودکار از خروجی JSON حذف می‌شوند — این یک ویژگی امنیتی ذاتی است که نشت تصادفی داده‌های داخلی را غیرممکن می‌سازد.</p>
 <h3 id="کار-با-json">6.6.1 کار با JSON</h3>
 <p>ساختار <code>encoding/json</code> برای تبدیل بین JSON و struct بسیار مفید است. برخلاف PHP که <code dir="ltr">json_decode()</code> یک آرایه یا شیء پویا برمی‌گرداند، در Go داده‌ها به یک struct با نوع مشخص نگاشت می‌شوند.</p>
 <div class="quote-box">
@@ -233,7 +233,7 @@ switch event.Type {
 <strong>مقایسه با PHP:</strong> در PHP این الگو به‌طور طبیعی با <code dir="ltr">json_decode()</code> و آرایه‌های پویا انجام می‌شود — زیرا PHP همه چیز را به <code>array</code> یا <code>stdClass</code> تبدیل می‌کند. اما در Go با نوع‌داری ایستا، <code dir="ltr">json.RawMessage</code> راه درستی برای تأخیر انداختن parse تا زمانی که نوع دقیق مشخص شود است.
 </div>
 <h3 id="json-decoder-streaming">6.6.6 خواندن جریانی JSON</h3>
-<p>تا اینجا از <code dir="ltr">json.Unmarshal()</code> استفاده کردیم که کل JSON را یکجا در حافظه بارگذاری و پردازش می‌کند. اما برای JSON‌های بزرگ یا خواندن از شبکه، بهتر است از <code dir="ltr">json.Decoder</code> استفاده کنید که داده‌ها را stream می‌خواند:</p>
+<p>تا اینجا از <code dir="ltr">json.Unmarshal()</code> استفاده کردیم که کل JSON را یکجا در حافظه بارگذاری و پردازش می‌کند. اما برای JSON‌های بزرگ یا خواندن از شبکه، بهتر است از <code dir="ltr">json.Decoder</code> استفاده کنید که داده‌ها را stream می‌خواند. تحلیل مصالحه‌ی این دو روش به‌صورت زیر است: <code dir="ltr">json.Unmarshal</code> ورودی را به‌صورت <code>[]byte</code> در حافظه می‌گیرد، بنابراین مصرف حافظه‌اش برابر با حجم کل JSON است؛ اما می‌تواند به هر فیلدی از ورودی با هر ترتیبی دسترسی پیدا کند و در نتیجه برای اعتبارسنجی پیچیده یا پردازش وارونه مناسب‌تر است. <code dir="ltr">json.Decoder</code> به‌جای آن یک <code dir="ltr">io.Reader</code> می‌پذیرد و توکن‌به‌توکن جلو می‌رود؛ در نتیجه فقط یک آبجکت در هر لحظه در حافظه نگه‌می‌دارد و برای خواندن جریانی از شبکه یا فایل‌های لاگ JSONL ایده‌آل است. هزینه‌ی این کارایی، از دست رفتن امکان بازگشت به عقب و اعتبارسنجی cross-field قبل از مصرف کامل است؛ برای پاسخ‌های API معمولی که در یکباره به‌طور کامل نیازند، <code dir="ltr">Unmarshal</code> ساده‌تر و کافی است.</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">// Stream JSON from large file
 file, err := os.Open("large-data.json")
@@ -514,6 +514,9 @@ fmt.Println(string(out))
  Go 1.25 یک پیاده‌سازی جدید و آزمایشی JSON را شامل می‌شود که با تنظیم متغیر محیطی
  <code>GOEXPERIMENT=jsonv2</code> فعال می‌شود. این پیاده‌سازی شامل دو بسته جدید است:
  </p>
+<div class="warning">
+<strong>هشدار — وضعیت آزمایشی:</strong> <code dir="ltr">encoding/json/v2</code> در فاز <bdi dir="ltr">GOEXPERIMENT</bdi> است و به‌طور پیش‌فرض فعال نیست. این یعنی کدی که به آن وابسته باشد، بدون تنظیم صریح <code dir="ltr">GOEXPERIMENT=jsonv2</code> در زمان <code dir="ltr">go build</code> کامپایل نخواهد شد و در نتیجه برای برنامه‌های تولیدی پایدار توصیه نمی‌شود. در زمان نگارش این کتاب، API این بسته همچنان ممکن است تغییر کند و رفتار نهایی آن تا پذیرش کامل جامعه‌ی Go مشخص نخواهد شد. برای پروژه‌های production از <code dir="ltr">encoding/json</code> پایدار استفاده کنید.
+</div>
 <ul>
 <li><code>encoding/json/v2</code>: بازنگری عمده بسته <code>encoding/json</code> با عملکرد بهتر</li>
 <li><code>encoding/json/jsontext</code>: پردازش سطح‌پایین‌تر نحو JSON</li>

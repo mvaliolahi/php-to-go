@@ -70,6 +70,7 @@
 </div>
 <p>پس از اجرای کوئری‌ها، بخش اصلی پردازش نتایج و انتقال داده‌ها به ساختارهایی است که بتوانید به‌خوبی با آن‌ها کار کنید. پکیج <bdi dir="ltr">database/sql</bdi> ابزارهای متنوعی برای خواندن داده‌ها و نگاشت آن‌ها به متغیرها و ساختارها دارد.</p>
 <p>به‌عنوان برنامه‌نویس <bdi dir="ltr">Laravel</bdi> می‌دانید که <bdi dir="ltr">Eloquent</bdi> این کار را به صورت خودکار انجام می‌دهد. در <bdi dir="ltr">Go</bdi> نیاز به کنترل و دقت بیشتری دارید اما مزیت آن سرعت و کنترل دقیق بر عملکرد است.</p>
+<p>سه لایه‌ی انتزاع برای نگاشت داده در اکوسیستم Go وجود دارد که در ادامه مرور می‌شوند: <code dir="ltr">rows.Scan()</code> دستی در پکیج استاندارد (بیشترین کنترل، بیشترین کد تکراری)، <code dir="ltr">sqlx</code> با استفاده از <code dir="ltr">struct tag</code> و <bdi dir="ltr">reflection</bdi> (کد کمتر، سربار <bdi dir="ltr">reflection</bdi> در زمان اجرا)، و <code dir="ltr">sqlc</code> با تولید کد در زمان کامپایل (کمترین کد دستی، نوع‌دهی ایستا، بدون <bdi dir="ltr">reflection</bdi>). در ادامه هر سه را با مثال می‌بینیم و در پایان بخش تحلیل مصالحه‌ی آن‌ها را مرور می‌کنیم.</p>
 <h3 id="manual-scanning">8.4.1 روش اول</h3>
 <p>ساده‌ترین و مستقیم‌ترین روش استفاده از <bdi dir="ltr">rows.Scan()</bdi> است:</p>
 <figure class="code go" dir="ltr">
@@ -164,6 +165,7 @@ var user User
 err = sqlxdb.Get(&amp;user, "SELECT * FROM users WHERE id = $1", 42)</code></pre>
 </figure>
 <p><bdi dir="ltr">sqlx</bdi> از <bdi dir="ltr">struct tags</bdi> با کلید <code>db</code> برای نگاشت ستون‌ها استفاده می‌کند. این روش خطای کمتری دارد اما وابستگی خارجی اضافه می‌کند.</p>
+<p>تحت هود، <code dir="ltr">sqlx</code> از <bdi dir="ltr">reflection</bdi> برای نگاشت فیلدهای <code dir="ltr">struct</code> به ستون‌های <bdi dir="ltr">SQL</bdi> استفاده می‌کند؛ این سربار در بار پای قابل صرف‌نظر است اما در کوئری‌های داخل حلقه‌ی <bdi dir="ltr">hot path</bdi> ممکن است خودش را نشان دهد. در مقابل، <code dir="ltr">sqlc</code> کد <code dir="ltr">Scan</code> دستی معادل را در زمان کامپایل تولید می‌کند و هیچ هزینه‌ی <bdi dir="ltr">reflection</bdi> در زمان اجرا ندارد؛ به‌بیان دیگر، <code dir="ltr">sqlc</code> راحتی <code dir="ltr">sqlx</code> را با کارایی <code dir="ltr">Scan</code> دستی ترکیب می‌کند. انتخاب عملی برای پروژه‌های متوسط به بالا، شروع با <code dir="ltr">sqlx</code> برای سادگی و مهاجرت به <code dir="ltr">sqlc</code> هنگامی است که تعداد کوئری‌ها از حدود پنجاه عدد عبور کند، قابل‌دفاع است.</p>
 <h3 id="sqlc">8.4.3 روش سوم</h3>
 <p><bdi dir="ltr">sqlc</bdi> ابزاری است که از روی کوئری‌های <bdi dir="ltr">SQL</bdi> کد <bdi dir="ltr">Go</bdi> تولید می‌کند. این روش هم <bdi dir="ltr">type-safety</bdi> کامل و هم راحتی <bdi dir="ltr">ORM</bdi> را ارائه می‌دهد:</p>
 <figure class="code sql" dir="ltr">

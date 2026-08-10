@@ -115,7 +115,7 @@
 <strong>یادداشت:</strong> ویژگی <code dir="ltr">novalidate</code> در تگ <code>&lt;form&gt;</code> اعتبارسنجی مرورگر را غیرفعال می‌کند. این کار باعث می‌شود کنترل کامل اعتبارسنجی در دست سرور باشد. اعتبارسنجی سمت مرورگر فقط برای تجربه کاربری بهتر اضافه می‌شود و نباید به آن تکیه کرد.
 </div>
 <h3 id="پارس-فرم-در-go">7.14.2 پارس فرم در Go</h3>
-<p>برای خواندن داده‌های فرم در Go، ابتدا باید فرم را parse کنید. پکیج <code dir="ltr">net/http</code> سه روش اصلی برای این کار ارائه می‌دهد:</p>
+<p>برای خواندن داده‌های فرم در Go، ابتدا باید فرم را parse کنید. پکیج <code dir="ltr">net/http</code> سه روش اصلی برای این کار ارائه می‌دهد. تفاوت فلسفی با PHP در این است: در PHP سوپرگلوبال‌های <code dir="ltr">$_GET</code> و <code dir="ltr">$_POST</code> به‌طور خودکار قبل از اجرای کد کاربر پر می‌شوند و این به‌معنای سادگی است اما به‌قیمت از دست دادن کنترل. در Go پارس کردن <bdi dir="ltr">lazy</bdi> است — تا زمانی که <code dir="ltr">r.ParseForm()</code> یا <code dir="ltr">r.FormValue()</code> فراخوانی نشود، هیچ داده‌ای در حافظه بارگذاری نمی‌شود. این طراحی دو مزیت دارد: نخست، اگر هندلر شما فقط به <code dir="ltr">r.URL.Query()</code> نیاز داشته باشد (مثلاً برای GET بدون body)، هیچ حافظه‌ای برای پارس فرم هدر نمی‌رود. دوم، کنترل دقیق روی خطا — <code dir="ltr">r.FormValue()</code> خطای <code dir="ltr">ParseForm</code> را نادیده می‌گیرد، اما اگر از <code dir="ltr">ParseForm</code> به‌صورت صریح استفاده کنید، می‌توانید خطاهای پارس را به کاربر گزارش دهید.</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">func contactHandler(w http.ResponseWriter, r *http.Request) {
     if r.Method == http.MethodGet {
@@ -415,7 +415,7 @@ func contactPostHandler(w http.ResponseWriter, r *http.Request) {
 </code></pre>
 </figure>
 <div class="important">
-<strong>مهم:</strong> الگوی POST-Redirect-GET (PRG) را همیشه رعایت کنید. بعد از پردازش فرم POST، کاربر را به صفحه دیگری redirect کنید. این کار از ارسال مجدد فرم با دکمه بازنشانی مرورگر جلوگیری می‌کند. کد وضعیت <code dir="ltr">http.StatusSeeOther</code> (303) برای این redirect مناسب‌ترین گزینه است.
+<strong>مهم:</strong> الگوی POST-Redirect-GET (PRG) را همیشه رعایت کنید. بعد از پردازش فرم POST، کاربر را به صفحه دیگری redirect کنید. این کار از ارسال مجدد فرم با دکمه بازنشانی مرورگر جلوگیری می‌کند. کد وضعیت <code dir="ltr">http.StatusSeeOther</code> (303) برای این redirect مناسب‌ترین گزینه است. دلیل فنی انتخاب ۳۰۳ به‌جای ۳۰۱ یا ۳۰۲ آن است که HTTP/1.1 در <bdi dir="ltr">RFC 7231</bdi> صراحتاً تعیین کرده: کد ۳۰۲ (<bdi dir="ltr">Found</bdi>) از نظر تاریخی مبهم است و مرورگرهای قدیمی متد را به <bdi dir="ltr">GET</bdi> تغییر می‌دادند، اما این رفتار در RFC تضمین نشده بود. کد ۳۰۳ (<bdi dir="ltr">See Other</bdi>) صریحاً اعلام می‌کند که کلاینت باید با <bdi dir="ltr">GET</bdi> به URL جدید برود، بدون توجه به متد اصلی. این تمایز برای جلوگیری از رفتار غیرقابل پیش‌بینی حیاتی است: اگر ۳۰۲ به‌جای ۳۰۳ استفاده شود، برخی مرورگرها ممکن است درخواست <bdi dir="ltr">POST</bdi> را در URL جدید تکرار کنند و در نتیجه داده‌ها دوبار در دیتابیس ثبت شوند.
 </div>
 <figure class="diagram" dir="ltr">
 <svg viewBox="0 0 760 420" xmlns="http://www.w3.org/2000/svg">

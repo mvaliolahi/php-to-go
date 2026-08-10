@@ -159,6 +159,7 @@ reader.ReadString('\n') // reads from buffer, buffer empty → one syscall
 <div class="warning">
 <strong>محدودیت Scanner:</strong> حداکثر طول خط در <code dir="ltr">bufio.Scanner</code> پیش‌فرض ۶۵۵۳۶ بایت (۶۴KB) است. اگر خطی بلندتر از این باشد، <code dir="ltr">scanner.Err()</code> خطای <code dir="ltr">bufio.ErrTooLong</code> برمی‌گرداند. برای تغییر این حد:
 <code dir="ltr">scanner.Buffer(buf, maxCapacity)</code>
+این محدودیت پیش‌فرض یک تصمیم امنیتی آگاهانه است، نه یک ضعف طراحی. اگر <code dir="ltr">bufio.Scanner</code> بدون سقف عمل می‌کرد، یک فایل مخرب حاوی یک «خط» چندصد مگابایتی (مثلاً بدون هیچ <code>\n</code>) می‌توانست باعث مصرف بی‌رویه‌ی حافظه و در نهایت <bdi dir="ltr">OOM</bdi> سرور شود. این حمله به‌ویژه در پردازش لاگ‌های آپلودی کاربران یا داده‌های شبکه‌ای واقعی است. به‌همین دلیل همیشه قبل از شروع اسکن، بافر را با <code dir="ltr">scanner.Buffer(make([]byte, 64*1024), max)</code> تنظیم کنید تا سقف مجاز صریح باشد و در صورت تجاوز، خطای <code dir="ltr">ErrTooLong</code> به‌جای فروپاشی برنامه گزارش شود.
 </div>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">// Read with bufio.Reader (for long lines or more control)
@@ -248,7 +249,7 @@ os.WriteFile("unix-file.txt", []byte(normalized), 0644)
 <h3 id="خواندن-csv">6.4.7 خواندن فایل‌های CSV با encoding/csv</h3>
 <p>برای خواندن فایل‌های CSV، به‌جای نوشتن split function سفارشی، از پکیج استاندارد <code>encoding/csv</code> استفاده کنید. این پکیج تمام جزئیات پیچیده‌ی CSV را مدیریت می‌کند: فیلدهای نقل‌قولی، کاما در داخل نقل‌قول، خطوط چندخطی در نقل‌قول و کاراکترهای فرار:</p>
 <div class="note">
-<strong>نکته — هرگز CSV parser خودتان را ننویسید:</strong> <code>strings.Split(line, ",")</code> در نگاه اول وسوسه‌کننده به نظر می‌رسد، اما به‌محض اینکه فیلدی شامل کاما داخل نقل‌قول (مثل <code>"Hello, World"</code>)، خطوط چندخطی درون نقل‌قول، یا کاراکترهای فرار ظاهر شود، این رویکرد می‌شکند. <code>encoding/csv</code> استاندارد RFC 4180 را پیاده‌سازی می‌کند و برای تمام داده‌های دنیای واقعی ایمن است. اگر به دلایل خاص (مثلاً فرمت غیراستاندارد) مجبور به نوشتن <code>SplitFunc</code> سفارشی هستید، حتماً آن را با فایل‌های CSV پیچیده‌ی واقعی تست کنید.
+<strong>نکته — هرگز CSV parser خودتان را ننویسید:</strong> <code>strings.Split(line, ",")</code> در نگاه اول وسوسه‌کننده به نظر می‌رسد، اما به‌محض اینکه فیلدی شامل کاما داخل نقل‌قول (مثل <code>"Hello, World"</code>)، خطوط چندخطی درون نقل‌قول، یا کاراکترهای فرار ظاهر شود، این رویکرد می‌شکند. <code>encoding/csv</code> استاندارد RFC 4180 را پیاده‌سازی می‌کند و برای تمام داده‌های دنیای واقعی ایمن است. اگر به دلایل خاص (مثلاً فرمت غیراستاندارد) مجبور به نوشتن <code>SplitFunc</code> سفارشی هستید، حتماً آن را با فایل‌های CSV پیچیده‌ی واقعی تست کنید. پیامد عملی این تصمیم برای مهاجران PHP: در PHP تابع <code dir="ltr">str_getcsv</code> یا <code dir="ltr">fgetcsv</code> تقریباً بی‌نقص کار می‌کند و توسعه‌دهنده به‌سختی به جزئیات پیاده‌سازی فکر می‌کند؛ اما در Go، عدم استفاده از <code dir="ltr">encoding/csv</code> می‌تواند به‌سرعت به درز داده‌های مخرب (مثلاً تزریق SQL از طریق فیلد نام کاربر) منجر شود — به‌ویژه وقتی CSV از منبع غیرقابل اعتماد (آپلود کاربر یا API عمومی) می‌آید.
 </div>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">import (

@@ -82,8 +82,8 @@
 <strong>نکته‌ی حرفه‌ای:</strong> در <bdi dir="ltr">Go</bdi> Table-driven tests روش ایدئوماتیک تست چندین سناریو هستند. به‌جای نوشتن توابع تست جداگانه برای هر مورد، یک <bdi dir="ltr">slice</bdi> از موارد تست تعریف کنید و روی آن‌ها حلقه بزنید. این کار افزودن موارد تست جدید را ساده می‌کند.
 </div>
 <div class="note"><strong>ارجاع به مقدمه فصل:</strong> نمودار هرم تست و مقایسه کلی <bdi dir="ltr">PHPUnit</bdi> با <bdi dir="ltr">go test</bdi> در مقدمه فصل (بخش ۱۱.۰) ارائه شده است. در این بخش به جزئیات فنی پکیج <bdi dir="ltr">testing</bdi> می‌پردازیم.</div>
-<p>یکی از ویژگی‌های قدرتمند زبان Go ابزار تست‌نویسی داخلی آن است. برخلاف بسیاری از زبان‌ها که نیاز به فریمورک‌های جانبی برای تست دارند Go به صورت پیش‌فرض با پکیج testing امکان نوشتن و اجرای تست‌های سریع، ساده و مؤثر را فراهم می‌کند. این ویژگی تست‌نویسی را بخشی طبیعی از چرخه توسعه در Go قرار می‌دهد.</p>
-<p>در PHP مخصوصاً با فریمورک‌هایی مثل Laravel نوشتن Unit Test و Feature test به کمک PHPUnit امری رایج است. اگرچه در Go مفاهیم مشابه وجود دارند اما فلسفه‌ای ساده‌تر و مینیمال‌تر دنبال می‌شود.</p><p>تست‌ها در Go فقط فایل‌های جداگانه‌ای هستند که توابعشان با Test شروع می‌شود، در فایل‌هایی با پسوند test.go_ قرار می‌گیرند و با استفاده از ابزار go test اجرا می‌شوند.</p>
+<p>یکی از ویژگی‌های قدرتمند زبان Go ابزار تست‌نویسی داخلی آن است. برخلاف بسیاری از زبان‌ها که نیاز به فریمورک‌های جانبی برای تست دارند Go به صورت پیش‌فرض با پکیج <bdi dir="ltr">testing</bdi> امکان نوشتن و اجرای تست‌های سریع، ساده و مؤثر را فراهم می‌کند. این ویژگی تست‌نویسی را بخشی طبیعی از چرخه توسعه در Go قرار می‌دهد. تصمیم طراحی برای گنجاندن <bdi dir="ltr">testing</bdi> در کتابخانه‌ی استاندارد (به‌جای ارجاع به یک فریمورک خارجی) یکی از تأثیرگذارترین انتخاب‌های تیم Go بود؛ این تصمیم به جنگ فریمورک‌ها (که در اکوسیستم‌هایی مانند Python با تقابل pytest/nose/unittest یا در Java با JUnit/TestNG شاهد آن هستیم) پایان داد و یک الگوی واحد و پایدار را برای همه‌ی پروژه‌های Go رقم زد.</p>
+<p>در PHP مخصوصاً با فریمورک‌هایی مثل Laravel نوشتن Unit Test و Feature test به کمک PHPUnit امری رایج است. اگرچه در Go مفاهیم مشابه وجود دارند اما فلسفه‌ای ساده‌تر و مینیمال‌تر دنبال می‌شود. در PHPUnit، assertion‌ها، mock‌سازی و code coverage همگی درون یک فریمورک واحد و نسبتاً سنگین تجمیع شده‌اند؛ در Go این قابلیت‌ها یا در پکیج استاندارد گنجانده شده‌اند (مانند <code dir="ltr">testing.B</code> برای بنچمارک و <code dir="ltr">httptest</code> برای HTTP)، یا به کتابخانه‌های مستقل و قابل‌تعویض واگذار شده‌اند (مانند <bdi dir="ltr">testify</bdi> برای assertion و <bdi dir="ltr">gomock</bdi> برای mock).</p><p>تست‌ها در Go فقط فایل‌های جداگانه‌ای هستند که توابعشان با Test شروع می‌شود، در فایل‌هایی با پسوند <code dir="ltr">_test.go</code> قرار می‌گیرند و با استفاده از ابزار <bdi dir="ltr">go test</bdi> اجرا می‌شوند. این قرارداد ساده‌ی نام‌گذاری به‌جای پیکربندی، با فلسفه‌ی <em>«قرارداد به‌جای پیکربندی»</em> (<bdi dir="ltr">convention over configuration</bdi>) هم‌خوان است و سد ورود به تست‌نویسی را به‌شدت کاهش می‌دهد؛ هیچ فایل <code dir="ltr">phpunit.xml</code> یا وابستگی Composer لازم نیست.</p>
 <p>جدول کامل مقایسه <bdi dir="ltr">PHPUnit</bdi> و <bdi dir="ltr">go test</bdi> در مقدمه فصل (بخش ۱۱.۰) آمده است. در اینجا مستقیماً وارد جزئیات فنی پکیج <bdi dir="ltr">testing</bdi> می‌شویم.</p>
 <h3 id="ساختار-پایه-یک-تست">11.1.1 ساختار پایه یک تست</h3>
 <figure class="code go" dir="ltr">
@@ -236,7 +236,7 @@ func TestGetUser(t *testing.T) {
 }
 </code></pre>
 </figure>
-<div class="tip"><strong>نکته درباره <code>t.Cleanup()</code>:</strong> برخلاف <code>defer</code> که به‌ترتیب معکوس اجرا می‌شود، <code>t.Cleanup()</code> تضمین می‌کند که منابع حتی اگر تست با <code>t.Fatal()</code> یا <code>t.Skip()</code> تمام شود، به‌درستی آزاد شوند. همچنین Cleanup در تست‌های موازی (<code>t.Parallel()</code>) به‌درستی کار می‌کند.</div>
+<div class="tip"><strong>نکته درباره <code>t.Cleanup()</code>:</strong> برخلاف <code>defer</code> که به‌ترتیب معکوس اجرا می‌شود، <code>t.Cleanup()</code> تضمین می‌کند که منابع حتی اگر تست با <code>t.Fatal()</code> یا <code>t.Skip()</code> تمام شود، به‌درستی آزاد شوند. همچنین Cleanup در تست‌های موازی (<code>t.Parallel()</code>) به‌درستی کار می‌کند. از منظر فلسفی، <code>t.Cleanup</code> (معرفی‌شده در Go 1.14) جایگزین مدرن الگوی کلاسیک <code>setUp</code>/<code>tearDown</code> در PHPUnit است؛ اما تفاوت اساسی آن این است که به‌جای یک متد سراسری، چندین تابع <bdi dir="ltr">cleanup</bdi> مستقل می‌توانند در نقاط مختلف تست ثبت شوند — هر <bdi dir="ltr">helper</bdi> می‌تواند <bdi dir="ltr">cleanup</bdi> خود را ثبت کند و این ماهیت ترکیبی (<bdi dir="ltr">composability</bdi>) کد تست را بسیار خواناتر می‌سازد. در PHPUnit، برای پاک‌سازی منابع چندگانه باید همه را در یک <code>tearDown()</code> متمرکز کنید که اغلب به کدی شلخته و شکننده منجر می‌شود.</div>
 <h3 id="test-helpers-و-thelper">11.1.6 Test Helpers و t.Helper()</h3>
 <p>وقتی تست شما شکست می‌خورد، Go شماره‌ی خط شکست را گزارش می‌دهد. اما اگر از توابع کمکی استفاده کنید، بدون <code>t.Helper()</code> خط شکست به‌جای خط فراخوانی، به خط داخل تابع کمکی اشاره می‌کند که برای دیباگ مفید نیست. <code>t.Helper()</code> به Go می‌گوید که شماره‌ی خط فراخوانی‌کننده را گزارش دهد:</p>
 <figure class="code go" dir="ltr">
@@ -274,6 +274,7 @@ func TestAdd(t *testing.T) {
 <p>متد تستی با annotation به آن متصل می‌شود.</p>
 <p>PHPUnit تست‌ها را برای هر ردیف اجرا می‌کند.
 </p>
+<p>تفاوت فلسفی قابل‌توجه این است که در PHPUnit، <code>@dataProvider</code> یک ویژگی <bdi dir="ltr">reflection-based</bdi> است که با annotation‌های PHPDoc در metadata کد تعریف می‌شود؛ در حالی که table-driven test در Go صرفاً یک الگوی زبانی (<bdi dir="ltr">language-level pattern</bdi>) است که از کنار هم قرار گرفتن <code>slice</code> و <code>range</code> و <code>t.Run</code> شکل می‌گیرد. این یعنی هیچ magic‌ای وجود ندارد — IDEها، کامپایلر و ابزارهای تحلیل کد دقیقاً همان ساختار را می‌بینند که شما می‌بینید. مزیت عملی این شفافیت آن است که refactoring، type-checking و code completion همگی به‌طور طبیعی کار می‌کنند بدون آنکه به ابزار خاصی وابسته باشند.</p>
 <p><strong>مثال</strong> <strong dir="ltr">PHP</strong></p>
 <figure class="code php" dir="ltr">
 <pre><code class="language-php">/**
@@ -730,13 +731,13 @@ func BenchmarkNew(b *testing.B) {
     }
 }</code></pre>
 </figure>
-<h3 id="synctest-go-1.25">11.1.17 بسته testing/synctest — Go 1.25</h3>
+<h3 id="synctest-go-1.24">11.1.17 بسته testing/synctest — Go 1.24</h3>
 <p>
- بسته جدید <code>testing/synctest</code> پشتیبانی از تست کدهای هم‌روند را فراهم می‌کند.
- تابع <code>synctest.Test</code> یک تابع تست را در یک «حباب» ایزوله اجرا می‌کند.
+ بسته‌ی <code>testing/synctest</code> پشتیبانی از تست کدهای هم‌روند و وابسته به زمان را فراهم می‌کند. این بسته نخستین بار در Go 1.23 به‌صورت آزمایشی (با <bdi dir="ltr">GOEXPERIMENT=synctest</bdi>) معرفی شد و در Go 1.24 به پایداری رسید. تابع <code>synctest.Test</code> یک تابع تست را در یک «حباب» ایزوله اجرا می‌کند.
  درون حباب، زمان مجازی‌سازی شده: توابع بسته <code>time</code> روی یک ساعت جعلی کار می‌کنند
  و ساعت به‌صورت آنی به‌جلو حرکت می‌کند اگر تمام گوروتین‌های حباب مسدود باشند.
  </p>
+<p>چرایی معرفی این بسته به این برمی‌گردد که تست کدهای مبتنی بر زمان (<bdi dir="ltr">time.Sleep</bdi>، <bdi dir="ltr">time.After</bdi>، <bdi dir="ltr">context.WithTimeout</bdi>) همواره دچار دو مشکل بوده‌اند: نخست، کندی تست‌ها به‌دلیل انتظار واقعی برای گذشت زمان (مثلاً پنج ثانیه برای تست یک timeout پنج‌ثانیه‌ای)؛ دوم، عدم قطعیت (<bdi dir="ltr">non-determinism</bdi>) به‌دلیل تداخل scheduler زمان‌بندی با goroutine‌های هم‌زمان. <code>synctest</code> با مجازی‌سازی زمان، هر دو مشکل را به‌یکباره حل می‌کند: تست‌ها آنی اجرا می‌شوند و رفتار قطعی می‌گردد. این الگو در زبان‌هایی مانند Rust (با <bdi dir="ltr">tokio::test</bdi> و <bdi dir="ltr">mock_instant</bdi>) و Java (با <bdi dir="ltr">VirtualTime</bdi> در Akka) نیز وجود دارد و Go با معرفی <code>synctest</code> این فاصله را پر کرد.</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">func TestTimeout(t *testing.T) {
     synctest.Test(t, func() {
@@ -753,12 +754,12 @@ func BenchmarkNew(b *testing.B) {
     })
 }</code></pre>
 </figure>
-<h3 id="test-artifacts-go-1.26">11.1.18 آرتیفکت‌های تست — Go 1.26</h3>
+<h3 id="test-artifacts-go-1.24">11.1.18 آرتیفکت‌های تست — Go 1.24</h3>
 <p>
  متدهای جدید <code>T.ArtifactDir</code>، <code>B.ArtifactDir</code> و <code>F.ArtifactDir</code>
  دایرکتوری برای نوشتن فایل‌های خروجی تست (آرتیفکت) را برمی‌گردانند. هنگام استفاده از
  پرچم <code>-artifacts</code> با <code>go test</code>، این دایرکتوری در مسیر خروجی مشخص شده
- قرار می‌گیرد:
+ قرار می‌گیرد. این متدها پاسخی به یک نیاز قدیمی در CI/CD بود: پیش از این، توسعه‌دهندگان مجبور بودند مسیر خروجی را با ترکیبی از <code dir="ltr">t.TempDir()</code> و متغیرهای محیطی دستی مدیریت کنند که در پلتفرم‌های مختلف (Linux/Windows/macOS) شکننده بود. <code>ArtifactDir</code> با ارائه‌ی یک API یکپارچه و سازگار با CI، جمع‌آوری خروجی‌های تست (مانند screenshot، dump پایگاه داده، فایل‌های لاگ، خروجی pprof) را برای ابزارهایی مانند GitHub Actions و GitLab CI ساده می‌کند.
  </p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">func TestWithArtifacts(t *testing.T) {

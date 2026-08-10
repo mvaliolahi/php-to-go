@@ -141,7 +141,7 @@ func main() {
 <strong>از داخل کامپایلر:</strong> اعمال محدودیت <code>internal/</code> در مرحله‌ی <strong dir="ltr">import checking</strong> کامپایلر Go انجام می‌شود. کامپایلر مسیر import را بررسی می‌کند و اگر پکیج هدف در <code>internal/</code> باشد، بررسی می‌کند که فراخوان‌دهنده در همان شاخه‌ی والد قرار دارد یا خیر. اگر نه، خطای کامپایل دریافت می‌کنید. این محدودیت در سطح سورس‌کد Go تعریف شده و قابل دور زدن نیست.
 </div>
 <h3 id="module-resolution-و-linker">1.5.2 Module Resolution و لینکر</h3>
-<p>در PHP، autoloading با استفاده از PSR-4 انجام می‌شود. Composer یک نقشه‌ی <code>namespace → مسیر فایل</code> می‌سازد و وقتی کلاسی استفاده می‌شود، autoloader فایل مربوطه را بارگذاری می‌کند. این فرآیند در <strong>زمان اجرا</strong> انجام می‌شود.</p>
+<p>در PHP، autoloading با استفاده از PSR-4 انجام می‌شود. Composer یک نقشه‌ی <code>namespace → مسیر فایل</code> می‌سازد و وقتی کلاسی استفاده می‌شود، autoloader فایل مربوطه را بارگذاری می‌کند. این فرآیند در <strong>زمان اجرا</strong> انجام می‌شود. PSR-4 یک قرارداد فراتر از زبان است که توسط جامعه‌ی <bdi dir="ltr">PHP-FIG</bdi> تعیین می‌شود و در هر فریم‌ورک به‌طور جداگانه پیاده‌سازی شده؛ این یعنی حتی قواعد ساده‌ی «این کلاس کجاست» نیز به‌جای آنکه در مفسر زبان تعبیه شود، به یک لایه‌ی بیرونی سپرده شده است.</p>
 <p>در Go، module resolution در <strong>زمان کامپایل</strong> انجام می‌شود. وقتی <code>go build</code> اجرا می‌شود:</p>
 <p>۱. <strong dir="ltr">parser</strong> هر فایل <code>.go</code> را تجزیه می‌کند و import‌ها را شناسایی می‌کند.</p>
 <p>۲. <strong dir="ltr">module resolver</strong> هر import path را به ماژول و نسخه‌ی مربوطه تبدیل می‌کند (با استفاده از <code dir="ltr">go.mod</code> و <code dir="ltr">go.sum</code>).</p>

@@ -69,9 +69,10 @@
 <strong>چکیده:</strong> این بخش assertion در Go را پوشش می‌دهد: testify، require و custom assertion. الگوی table-driven با assertion بررسی می‌شود. تفاوت با assert در PHPUnit مشخص می‌گردد.
 </div>
 <p>در زبان‌هایی مثل PHP یا JavaScript استفاده از ابزارهای تست مانند PHPUnit یا Jest وابسته به مجموعه‌ای از assertion‌هاست یعنی عباراتی که انتظار داریم در طول اجرای تست درست باشند. در Go پکیج رسمی testing هیچ assertion آماده‌ای ندارد و هدف آن ارائه‌ی یک محیط بسیار ساده برای نوشتن تست‌ها است.</p>
+<p>این تصمیم طراحی عمدی و ریشه در فلسفه‌ی مینیمالیسم Go دارد. خالقان Go — Rob Pike و Russ Cox — همواره بر این باور بوده‌اند که فریمورک‌های assertion سنگین (مانند unittest در Python یا NUnit در .NET) اغلب به «magic» و پنهان‌شدن جریان واقعی کنترل منجر می‌شوند. در Go، یک assertion چیزی نیست جز یک <code>if</code> ساده به‌همراه <code>t.Errorf</code> یا <code>t.Fatalf</code>؛ همین سادگی به معنای آن است که یک تست Go برای هر برنامه‌نویس Go قابل‌خواندن است، حتی اگر با کتابخانه‌ی assertion خاصی آشنا نباشد. این فلسفه در یادداشت‌های Andrew Gerrand در <em>“Go: the Best Testing Framework is No Testing Framework”</em> (Go Blog، ۲۰۱۳) به‌تفصیل شرح داده شده است.</p>
 <p>اما این به این معنی نیست که استفاده از assertion غیرممکن یا غیررایج است. در واقع توسعه‌دهندگان Go با دو رویکرد کلی کار می‌کنند:</p>
 <h3 id="استفاده-از-مقایسه-ساده-با-if">11.2.1 استفاده از مقایسه ساده با if</h3>
-<p>در این روش، بدون هیچ کتابخانه‌ی جانبی، از مقایسه مستقیم و t.Errorf برای گزارش شکست استفاده می‌شود:
+<p>در این روش، بدون هیچ کتابخانه‌ی جانبی، از مقایسه مستقیم و <code>t.Errorf</code> برای گزارش شکست استفاده می‌شود. این الگو اصطلاحاً «collect-errors» نامیده می‌شود؛ یعنی حتی اگر یک assertion شکست بخورد، اجرای تست ادامه می‌یابد و تمام شکست‌ها در یک گزارش واحد چاپ می‌شوند. این رفتار برخلاف <code>t.Fatalf</code> است که بلافاصله اجرای تست را متوقف می‌کند (<bdi dir="ltr">fail-fast</bdi>). انتخاب بین این دو به معنای assertion بستگی دارد: اگر assertion بعدی بدون موفقیت در assertion فعلی بی‌معنی است (مثلاً بررسی <code>Name</code> وقتی شیء <code>nil</code> است)، از <code>Fatalf</code> استفاده کنید؛ اگر assertion‌ها مستقل‌اند (مثلاً بررسی فیلدهای مختلف یک struct)، <code>Errorf</code> به شما کمک می‌کند همه‌ی شکست‌ها را در یک اجرا ببینید.
 </p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">func TestMultiply(t *testing.T) {
@@ -236,6 +237,7 @@ func ErrorIs(t *testing.T, err, target error) {
 <p><strong dir="ltr">assert</strong> : در صورت شکست، ادامه تست اجرا می‌شود.</p>
 <p><strong dir="ltr">require</strong> : در صورت شکست، اجرای تست متوقف می‌شود <span dir="ltr">t.FailNow()</span>.
 </p>
+<p>تفاوت این دو، تفاوت فلسفه‌ی «fail-fast» در برابر «collect-errors» است که در بخش ۱۱.۲.۱ مرور شد. در عمل، تیم‌های Go معمولاً قانون ساده‌ی زیر را رعایت می‌کنند: <code>require</code> را برای پیش‌نیازها به‌کار ببرید (مثلاً <code>require.NoError(t, err)</code> بعد از باز کردن دیتابیس — اگر این شکست بخورد، ادامه‌ی تست بی‌معنی است و فقط نویز اضافه می‌سازد)؛ <code>assert</code> را برای مقایسه‌های مستقل به‌کار ببرید (مثلاً <code>assert.Equal(t, "Ali", user.Name)</code> و <code>assert.Equal(t, 30, user.Age)</code> — می‌خواهید هر دو شکست را هم‌زمان ببینید). در testify، <code>require</code> در پس‌زمینه <code>t.FailNow()</code> را فراخوانی می‌کند که با <bdi dir="ltr">runtime.Goexit</bdi> پیاده‌سازی شده و <bdi dir="ltr">defer</bdi>های تابع تست را اجرا می‌کند؛ به همین دلیل <code>require</code> برخلاف <bdi dir="ltr">panic</bdi> ایمن است و منابع به‌درستی پاک می‌شوند.</p>
 <p><strong>مثال</strong> :</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">require.NotNil(t, db, "Database connection should not be nil")

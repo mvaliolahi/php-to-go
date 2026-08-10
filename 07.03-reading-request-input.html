@@ -117,7 +117,7 @@ mux.HandleFunc("GET /user/{id}", func(w http.ResponseWriter, r *http.Request) {
 <div class="note"><strong>یادداشت:</strong> <code dir="ltr">r.PathValue()</code> در صورت نبود پارامتر رشته‌ی خالی برمی‌گرداند، بنابراین همیشه مقدار را اعتبارسنجی کنید. برای اعتبارسنجی فرمت (مثلاً فقط عدد)، از <code dir="ltr">strconv.Atoi</code> یا <code dir="ltr">regexp</code> استفاده کنید و در صورت خطا کد <bdi dir="ltr">400 Bad Request</bdi> برگردانید. هرگز مقدار خام پارامتر مسیر را مستقیماً به کوئری دیتابیس ندهید.</div>
 <h3 id="خواندن-دادههای-request-body">7.3.3 خواندن داده‌های Request Body</h3>
 <p>داده‌هایی که در درخواست POST، PUT، PATCH ارسال می‌شوند معمولا در بخش Body قرار دارند. این داده‌ها می‌توانند فرمت‌های مختلفی مثل JSON، فرم‌های HTML (urlencoded) یا فایل باشند.</p>
-<p>برای خواندن JSON ابتدا باید Body را بخوانید و سپس آن را به ساختار Go دیکد کنید.</p>
+<p>برای خواندن JSON ابتدا باید Body را بخوانید و سپس آن را به ساختار Go دیکد کنید. اینجا یک نکته‌ی امنیتی حیاتی وجود دارد: هرگز <code dir="ltr">r.Body</code> را بدون محدودیت حجم نخوانید. در PHP متغیر <code dir="ltr">post_max_size</code> در <code>php.ini</code> این محدودیت را به‌صورت سراسری اعمال می‌کند؛ اما در Go هیچ سقف پیش‌فرضی وجود ندارد و یک کلاینت مخرب می‌تواند با ارسال <bdi dir="ltr">body</bdi> چندین گیگابایتی، حافظه‌ی سرور را تخلیه کند. راه‌حل استاندارد، بستن <code dir="ltr">r.Body</code> در <code dir="ltr">http.MaxBytesReader(w, r.Body, limit)</code> است که هم حجم خوانده‌شده را محدود می‌کند و هم در صورت تجاوز، اتصال را قطع می‌نماید — نه فقط خطا برمی‌گرداند. این رفتار بسیار مهم‌تر از خطاست: بدون قطع اتصال، کلاینت می‌تواند به ارسال داده ادامه دهد و منابع سرور را مصرف کند.</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">import (
 "encoding/json"

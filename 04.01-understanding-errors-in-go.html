@@ -69,7 +69,9 @@
 <h2 id="درک-error-در-go">درک error در Go</h2><div class="abstract">
 <strong>چکیده:</strong> مدیریت خطای Go بر مبنای مقادیر بازگشتی است، نه مکانیزم exception. این بخش نوع error، الگوی if err != nil و تفاوت با try/catch در PHP را پوشش می‌دهد. مزایا و معایب این رویکرد با مثال‌های عملی بررسی می‌شود.
 </div>
-<p>در Go خطاها از طریق نوع داده‌ی error که در واقع یک interface است مدیریت می‌شوند.</p>
+<p>در Go خطاها از طریق نوع داده‌ی error که در واقع یک interface است مدیریت می‌شوند. این انتخاب طراحی بازتاب مستقیم فلسفه‌ای است که راب پایک در مقاله‌ی شناخته‌شده‌ی «Errors are Values» مطرح کرد: خطاها مقدار هستند، نه رویدادهای استثنایی. در نتیجه مدیریت خطا در Go بخشی از جریان عادی کنترل است و از تمام سازوکارهای زبان (متغیرها، شرط‌ها، توابع، نوع‌ها) برای ساختاردهی آن می‌توان بهره برد. این رویکرد در تضاد با مدل exception در PHP، Java و C# قرار دارد که در آن خطاها از مسیر جداگانه‌ای به‌نام throw/catch عبور می‌کنند و یک مسیر پنهان برای خروج از توابع ایجاد می‌کنند که فراخوان‌کننده ممکن است از آن بی‌اطلاع باشد.</p>
+
+<p>دلیل اصلی رد exception در Go، صراحت جریان کنترل است. در یک زبان مبتنی بر exception، هر تابعی می‌تواند با پرتاب استثنا از هر عمقی، جریان اجرا را به بلوک catch در لایه‌ی دلخواهی هدایت کند؛ این رفتار خواندن کد را سخت می‌کند زیرا فراخوانی تابعی بی‌گناه مانند <code>formatDate()</code> ممکن است به‌طور غیرمنتظره کل بدنه‌ی تابع فعلی را دور بزند. در Go، در مقابل، هر تابعی که ممکن است شکست بخورد این واقعیت را در امضای خود نشان می‌دهد (<code>func F() (T, error)</code>) و فراخوان‌کننده مجبور است صریحاً مقدار <code>error</code> را مدیریت کند یا با <code>_</code> آن را نادیده بگیرد — که در مرور کد به‌سرعت قابل شناسایی است. این صراحت هزینه‌ای هم دارد: پرحرفیِ <code>if err != nil</code> که در ابتدا آزاردهنده به‌نظر می‌رسد، اما در عمل به‌عنوان چک‌لیستی صریح از نقاط شکست عمل می‌کند و ابزارهایی مانند <code>errcheck</code> و <code>staticcheck</code> نادیده‌گرفتن خطا را در زمان کامپایل شناسایی می‌کنند.</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">type error interface {
     Error() string
@@ -218,7 +220,7 @@ if errors.As(err, &amp;nf) {
 }
 </code></pre>
 </figure>
-<p><code dir="ltr">errors.Is</code> زنجیره‌ی خطا را با فراخوانی متد <code dir="ltr">Unwrap()</code> پیمایش می‌کند و هر حلقه را با خطای هدف مقایسه می‌کند. <code dir="ltr">errors.As</code> نیز همان مسیر را طی می‌کند اما به‌جای مقایسه‌ی برابری، از <code>interface</code> matching استفاده می‌کند.</p>
+<p><code dir="ltr">errors.Is</code> زنجیره‌ی خطا را با فراخوانی متد <code dir="ltr">Unwrap()</code> پیمایش می‌کند و هر حلقه را با خطای هدف مقایسه می‌کند. <code dir="ltr">errors.As</code> نیز همان مسیر را طی می‌کند اما به‌جای مقایسه‌ی برابری، از <code>interface</code> matching استفاده می‌کند. هر دو تابع از Go 1.13 (اوت ۲۰۱۹) به‌عنوان بخشی از بسته‌ی استاندارد <code>errors</code> معرفی شدند و در کنار فعل قالب <code>%w</code> در <code>fmt.Errorf</code>، مفهوم «زنجیره‌ی خطا» را به‌عنوان شهروند درجه‌یک زبان پذیرفتند. پیش از آن، تنها راه برای تشخیص نوع خطای wrap شده، type assertion روی نوع بیرونی بود که اغلب شکست می‌خورد زیرا نوع بیرونی پیچیده‌تر از نوع اصلی بود. معرفی این دو تابع جایگزین تمیزی برای آن پیک‌سلی فراهم کرد و الگوی «پیچیدن خطا با <code>%w</code> و بررسی آن با <code>errors.Is/As</code>» را به ایدیوم غالب Go تبدیل کرد.</p>
 <div class="important"><strong>مهم:</strong> به <code dir="ltr">errors.As</code> باید <strong>اشاره‌گر</strong> به متغیر از نوع موردنظر بدهید، نه خود نوع را. این‌گونه اگر تطبیق پیدا شود، مقدار خطا در متغیر قرار می‌گیرد و به فیلدهای آن دسترسی دارید.</div>
 <div class="note"><strong>قانون تصمیم‌گیری <code dir="ltr">errors.Is</code> در برابر <code dir="ltr">errors.As</code>:</strong> اگر می‌خواهید بدانید «آیا این خطا (یا خطای پنهان‌شده در زنجیره) همان خطای از پیش تعریف‌شده‌ی فلان است؟» از <code dir="ltr">errors.Is</code> استفاده کنید — معادل <code>err == sentinel</code> اما در کل زنجیره. اگر می‌خواهید فیلدهای یک نوع خطای سفارشی (مثل <code>Path</code> در <code>NotFoundError</code>) را استخراج کنید، از <code dir="ltr">errors.As</code> استفاده کنید — معادل <code>instanceof</code> در PHP. به‌طور خلاصه: <strong>Is برای مقدار، As برای نوع و استخراج داده.</strong></div>
 <h3 id="عملکرد-خطاها">4.1.5 عملکرد Performance خطاها در Go</h3>
@@ -313,7 +315,7 @@ if err != nil {
 <span class="quote-book">GopherCon 2016 — Don't just check errors, handle them gracefully</span>
 </p>
 </div>
-<p>یکی از قدرتمندترین ویژگی‌های مدیریت خطا در Go قابلیت <bdi dir="ltr">Error Wrapping</bdi> است. با استفاده از <code dir="ltr">fmt.Errorf</code> و فعل قالب <code>%w</code> می‌توان خطاها را در هم پیچید و زنجیره‌ای از خطاها ساخت:</p>
+<p>یکی از قدرتمندترین ویژگی‌های مدیریت خطا در Go قابلیت <bdi dir="ltr">Error Wrapping</bdi> است. با استفاده از <code dir="ltr">fmt.Errorf</code> و فعل قالب <code>%w</code> می‌توان خطاها را در هم پیچید و زنجیره‌ای از خطاها ساخت. این مکانیزم که در Go 1.13 معرفی شد، با الهام از الگوی <code dir="ltr">Exception::getPrevious()</code> در PHP اما بدون بار اضافی شیء استثنا، اجازه می‌دهد هر لایه‌ی نرم‌افزار زمینه‌ی خود را به خطا اضافه کند بدون آنکه اصل خطا یا نوع آن را پاک کند. تفاوت کلیدی میان <code>%w</code> و <code>%v</code> در این است که <code>%w</code> متد <code dir="ltr">Unwrap() error</code> را روی خطای جدید پیاده‌سازی می‌کند و زنجیره را برای <code dir="ltr">errors.Is</code> و <code dir="ltr">errors.As</code> قابل پیمایش نگه می‌دارد؛ اما <code>%v</code> فقط رشته‌ی پیغام خطای قبلی را در رشته‌ی جدید الحاق می‌کند و هر اتصال به خطای اصلی را قطع می‌کند. در نتیجه، اگر به‌اشتباه از <code>%v</code> به‌جای <code>%w</code> استفاده کنید، فراخوان‌کننده دیگر قادر به شناسایی <code dir="ltr">sql.ErrNoRows</code> یا <code dir="ltr">os.ErrNotExist</code> در زنجیره نخواهد بود — این یکی از رایج‌ترین باگ‌های پنهان در پروژه‌های Go است.</p>
 <h3 id="error-anti-patterns">4.1.7 الگوهای ضد در مدیریت خطا</h3>
 <p>برنامه‌نویسان PHP هنگام مهاجرت به Go معمولاً الگوهای زیر را تکرار می‌کنند که همگی <bdi dir="ltr">anti-pattern</bdi> محسوب می‌شوند:</p>
 <p><strong>۱. نادیده گرفتن خطا:</strong> بدترین الگوی ممکن — خطا را کلاً بررسی نکردن.</p>
@@ -384,12 +386,9 @@ func validateAll(data Data) error {
 </tbody>
 </table>
 <div class="note"><strong>نکته:</strong> این اعداد تقریبی هستند. اما رابطه‌ی نسبی ثابت است: خطاهای Go بسیار سبک‌تر از Exception‌های PHP هستند.</div>
-<h3 id="errors-astype">4.1.10 تابع errors.AsType — Go 1.26</h3>
+<h3 id="errors-astype">4.1.10 تابع errors.AsType — پیشنهاد آینده (Go 1.26 یا بعد از آن)</h3>
 <p>
- تابع جدید <code>errors.AsType</code> generic از <code>errors.As</code>
- است. این تابع type-safe، سریع‌تر و در بیشتر موارد آسان‌تر برای استفاده است.
- برخلاف <code>errors.As</code> که نیاز به ایجاد متغیر هدف دارد، <code>errors.AsType</code>
- مستقیماً نوع هدف را مشخص می‌کند:
+ تابع <code>errors.AsType</code> یک نسخه‌ی generic از <code>errors.As</code> است که در فاز پیشنهاد (proposal) قرار دارد و در زمان نگارش این کتاب هنوز در هیچ نسخه‌ی پایدار Go منتشر نشده است. هدف این تابع، حذف پیک‌سلیِ «ایجاد متغیر هدف و پاس دادن اشاره‌گر به آن» است که در <code>errors.As</code> سنتی الزامی است. این تابع type-safe است، در بسیاری از مسیرها سریع‌تر، و در بیشتر موارد آسان‌تر برای استفاده محسوب می‌شود. برخلاف <code>errors.As</code> که نیاز به ایجاد متغیر هدف دارد، <code>errors.AsType</code> مستقیماً نوع هدف را با پارامتر نوع (type parameter) مشخص می‌کند:
  </p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">// Old approach with errors.As
@@ -398,7 +397,7 @@ if errors.As(err, &amp;timeoutErr) {
     fmt.Println("timeout:", timeoutErr.Duration)
 }
 
-// New approach with errors.AsType (Go 1.26)
+// Proposed approach with errors.AsType (not yet released — proposal stage)
 if timeoutErr, ok := errors.AsType[*TimeoutError](err); ok {
     fmt.Println("timeout:", timeoutErr.Duration)
 }
@@ -413,6 +412,7 @@ if code, ok := errors.AsType[ErrorCode](err); ok {
  هدف قبل از فراخوانی و خوانایی بهتر کد است. رفتار <code>errors.As</code> بدون تغییر
  باقی می‌ماند و هر دو تابع می‌توانند در کنار هم استفاده شوند.
  </p>
+<div class="warning"><strong>هشدار درباره‌ی وضعیت انتشار:</strong> در زمان نگارش این کتاب، <code>errors.AsType</code> هنوز یک پیشنهاد فعال در مخزن <bdi dir="ltr">golang/go</bdi> است و در هیچ نسخه‌ی پایدار Go (شامل ۱.۲۳، ۱.۲۴ و ۱.۲۵) وجود ندارد. کد بالا نمایشی است و تا زمان پذیرش نهایی پیشنهاد و انتشار آن در نسخه‌ی رسمی (احتمالاً Go 1.26 یا بعد از آن)، در برنامه‌های تولیدی کامپایل نخواهد شد. تا آن زمان، در کد واقعی همیشه از <code>errors.As</code> استفاده کنید. اخطار نهایی <code>go vet</code> و ابزارهای ایستا ممکن است در آینده برای مهاجرت از <code>errors.As</code> به <code>errors.AsType</code> معرفی شوند، اما تا پیش از انتشار رسمی، نوشتن کدی که به <code>errors.AsType</code> وابسته باشد، باعث شکست بیلد خواهد شد.</div>
 <div class="quote-box">
 <p class="quote-text">
  مدیریت خطا نباید کنترل جریان برنامه باشد. خطاها ارزشی هستند که باید

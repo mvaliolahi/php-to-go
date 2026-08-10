@@ -73,6 +73,7 @@
 <p>از وابستگی به منابع بیرونی مثل پایگاه‌داده یا سرویس های شخص ثالث جلوگیری می‌کند</p>
 <p>امکان تست سناریوهای خطا و edge caseها را فراهم می‌کند
 </p>
+<p>در ادبیات تست‌نویسی (که توسط Martin Fowler در مقاله‌ی <em>“Mocks Aren't Stubs”</em> در سال ۲۰۰۷ تثبیت شد)، چهار نوع <bdi dir="ltr">test double</bdi> وجود دارد: <strong>dummy</strong> (شیء‌ای که هرگز استفاده نمی‌شود ولی برای تکمیل امضای تابع لازم است)، <strong>stub</strong> (شیء‌ای که پاسخ‌های از پیش تعیین‌شده برمی‌گرداند ولی تعاملی را تأیید نمی‌کند)، <strong>fake</strong> (پیاده‌سازی واقعی اما ساده‌شده — مانند <code>InMemoryRepository</code>)، و <strong>mock</strong> (شیء‌ای که انتظارات تعاملی از پیش تعریف‌شده دارد و شکست در تطابق آن انتظارات، تست را شکست می‌دهد). <bdi dir="ltr">gomock</bdi> به‌طور خاص برای ساخت <strong>mock</strong> در این معنای دقیق طراحی شده است؛ ساخت stub و fake معمولاً به‌صورت دستی و ساده انجام می‌شود.</p>
 <p>در دنیای Go ابزار استاندارد و قدرتمند برای ایجاد mockها پکیج از تیم گوگل است.</p>
 <div class="quote-box">
 <p class="quote-text">چیزی که مالک آن نیستید را mock نکنید. فقط interfaceهایی که کنترل آن‌ها در دست شماست را mock کنید، نه کتابخانه‌های خارجی را. اگر نیاز دارید یک کتابخانه شخص ثالث را mock کنید، ابتدا آن را درون interfaceای که خودتان مالکش هستید بپیچید.</p>
@@ -96,6 +97,8 @@
 <pre><code class="language-go">go get go.uber.org/mock/gomock
 </code></pre>
 </figure>
+<p>توضیح تاریخی: <bdi dir="ltr">gomock</bdi> نخستین بار توسط تیم Google در پکیج <code>github.com/golang/mock</code> توسعه داده شد و سال‌ها به‌عنوان استاندارد de facto برای mock‌سازی در Go شناخته می‌شد. در سال ۲۰۲۳، این پروژه به <code>go.uber.org/mock</code> منتقل شد و اکنون توسط مهندسان Uber نگهداری می‌شود؛ پکیج قدیمی دیگر فعال نیست و فقط fix‌های امنیتی دریافت می‌کند. دلیل این انتقال، کاهش تعهد تیم Google به نگهداری پروژه‌های جانبی بود.</p>
+<p>جایگزین رایج <bdi dir="ltr">gomock</bdi>، ابزار <bdi dir="ltr">mockery</bdi> (<code>github.com/vektra/mockery</code>) است که تفاوت‌های فلسفی مهمی با gomock دارد: <bdi dir="ltr">mockery</bdi> به‌جای <code>EXPECT()</code> از الگوی <bdi dir="ltr">functional options</bdi> استفاده می‌کند و فایل پیکربندی <code>.mockery.yaml</code> برای تعیین این که کدام interface‌ها mock شوند؛ <bdi dir="ltr">gomock</bdi> به‌جای آن کاملاً بر <code>//go:generate</code> تکیه می‌کند. انتخاب بین این دو سلیقه‌ای است، اما <bdi dir="ltr">gomock</bdi> به‌دلیل قدمت بیشتر، یکپارچگی با testify و مستندات گسترده‌تر، همچنان رایج‌تر است.</p>
 <h3 id="ساختار-کلی-تست-با-gomock">11.3.2 ساختار کلی تست با gomock</h3>
 <p>برای استفاده از gomock باید مراحل زیر را طی کنید:</p>
 <p>تعریف یک <strong dir="ltr">interface</strong> (واسط)</p>

@@ -68,7 +68,7 @@
 <h2 id="کار-با-cookie-ها">کار با Cookie ها</h2><div class="abstract">
 <strong>چکیده:</strong> این بخش مدیریت cookie در Go را پوشش می‌دهد: set، get، secure flag و signing. تفاوت با setcookie در PHP و الگوهای امن بررسی می‌شود. کاربردهای session و tracking پوشش داده می‌گردد.
 </div>
-<p>کوکی‌ها ابزار اصلی ذخیره داده کوتاه‌مدت در مرورگر کاربر هستند. در محیط حرفه‌ای باید نکات امنیتی کوکی مثل HttpOnly و Secure را رعایت کنید.</p>
+<p>کوکی‌ها ابزار اصلی ذخیره داده کوتاه‌مدت در مرورگر کاربر هستند. در محیط حرفه‌ای باید نکات امنیتی کوکی مثل HttpOnly و Secure را رعایت کنید. در سال‌های اخیر، مرورگرهای مدرن رفتارهای پیش‌فرض امن‌تری را اعمال کرده‌اند — به‌ویژه <code dir="ltr">SameSite=Lax</code> که از Chrome 80 (فوریه‌ی ۲۰۲۰) به‌عنوان رفتار پیش‌فرض پذیرفته شده است. این تغییر به‌منظور کاهش حملات <bdi dir="ltr">CSRF</bdi> در سراسر وب معرفی شد، اما به این معنی است که برنامه‌نویس Go باید بداند چه زمانی رفتار پیش‌فرض کافی است و چه زمانی باید صریحاً <code dir="ltr">SameSite=Strict</code> یا <code dir="ltr">SameSite=None; Secure</code> را تنظیم کند. در PHP از نسخه‌ی 7.3 به بعد آرایه‌ی <code dir="ltr">setcookie()</code> این گزینه‌ها را می‌پذیرد؛ در Go فیلد <code dir="ltr">SameSite</code> از نوع <code dir="ltr">http.SameSite</code> در ساختار <code dir="ltr">http.Cookie</code> در دسترس است.</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">func setCookieHandler(w http.ResponseWriter, r *http.Request) {
     cookie := &amp;http.Cookie{

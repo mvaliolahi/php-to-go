@@ -68,7 +68,7 @@
 <h2 id="ساخت-خطاهای-سفارشی">ساخت خطاهای سفارشی</h2><div class="abstract">
 <strong>چکیده:</strong> این بخش ساخت خطاهای سفارشی را با نوع‌های خطا، error wrapping و errors.Is/As پوشش می‌دهد. الگوهای sentinel error، typed error و error chain با مثال‌های عملی توضیح داده می‌شود. طراحی API خطا برای مصرف‌کننده بررسی می‌شود.
 </div>
-<p>برای کنترل دقیق‌تر و ارائه‌ی اطلاعات کامل‌تر می‌توان خطاهای سفارشی ساخت. در PHP معمولاً با ایجاد کلاس سفارشی از <code>Exception</code> این کار را انجام می‌دهید. در Go نیز می‌توانید با تعریف یک <code>struct</code> و پیاده‌سازی متد <code>Error() string</code> خطای سفارشی بسازید.</p>
+<p>برای کنترل دقیق‌تر و ارائه‌ی اطلاعات کامل‌تر می‌توان خطاهای سفارشی ساخت. در PHP معمولاً با ایجاد کلاس سفارشی از <code>Exception</code> این کار را انجام می‌دهید. در Go نیز می‌توانید با تعریف یک <code>struct</code> و پیاده‌سازی متد <code>Error() string</code> خطای سفارشی بسازید. انتخاب یک <code>struct</code> به‌جای کلاس ارث‌بری‌پذیر، با فلسفه‌ی کلی Go درباره‌ی <bdi dir="ltr">composition over inheritance</bdi> هم‌خوان است: هر خطای سفارشی فقط یک نوع داده است که قرارداد <code>error</code> را برآورده می‌کند، بدون آنکه در سلسله‌مراتب ارث‌بری محبوس شود. این رویکرد مزایای عملی دارد: می‌توانید چندین خطای متفاوت را با فیلدهای مختلف (<code>Path</code>، <code>Query</code>، <code>Field</code>، <code>Code</code>) بسازید که هر کدام اطلاعات مخصوص به خود را حمل می‌کنند، و فراخوان‌کننده با <code dir="ltr">errors.As</code> می‌تواند هر شاخه را به‌صورت مستقل بررسی کند. در مقابل، در PHP برای رسیدن به همین انعطاف‌پذیری باید یا <bdi dir="ltr">getter</bdi>های متعددی روی کلاس پایه‌ی <code>Exception</code> تعریف کنید، یا سلسله‌مراتب عمیق <code>Exception</code> بسازید که در عمل به <bdi dir="ltr">instanceof</bdi> چندگانه در <code>catch</code> ختم می‌شود.</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">type DivideByZeroError struct {
     Dividend float64
@@ -144,7 +144,7 @@ for e := err; e != nil; {
 </code></pre>
 </figure>
 <h3 id="errors-join">4.2.4 مدیریت چندخطایی — Go 1.20+</h3>
-<p>از Go 1.20 تابع <code dir="ltr">errors.Join</code> امکان ترکیب چند خطا در یک خطای واحد را فراهم می‌کند. این قابلیت برای مواقعی که چند عملیات همزمان انجام می‌شود و هر کدام ممکن است خطای مستقلی تولید کند بسیار مفید است:</p>
+<p>از Go 1.20 تابع <code dir="ltr">errors.Join</code> امکان ترکیب چند خطا در یک خطای واحد را فراهم می‌کند. این قابلیت برای مواقعی که چند عملیات همزمان انجام می‌شود و هر کدام ممکن است خطای مستقلی تولید کند بسیار مفید است. پیش از Go 1.20، توسعه‌دهندگان معمولاً خطاهای متعدد را در یک <code>[]error</code> دستی جمع می‌کردند و سپس با <code>strings.Join</code> پیام آن‌ها را الحاق می‌کردند — اما این رویکرد زنجیره‌ی خطا را می‌شکست و <code dir="ltr">errors.Is</code>/<code dir="ltr">errors.As</code> دیگر نمی‌توانست خطاهای فرزند را بیابد. تابع <code>errors.Join</code> این خلأ را با معرفی متد <code dir="ltr">Unwrap() []error</code> (به‌جای <code dir="ltr">Unwrap() error</code> تک‌مقداری) پر کرد؛ این متد به <code dir="ltr">errors.Is</code> و <code dir="ltr">errors.As</code> اجازه می‌دهد هر شاخه‌ی درخت خطا را به‌صورت مستقل پیمایش کنند و در نتیجه هیچ خطای فرزندی گم نمی‌شود. این بهبود به‌ویژه در اعتبارسنجی فرم‌ها، اعتبارسنجی دسته‌ای داده‌ها، و عملیات <bdi dir="ltr">fan-out</bdi> که در آن چند <bdi dir="ltr">Goroutine</bdi> موازی خطاهای مستقل تولید می‌کنند، راه‌حل تمیزی فراهم می‌کند.</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">func validateForm(name, email string) error {
     var errs []error
