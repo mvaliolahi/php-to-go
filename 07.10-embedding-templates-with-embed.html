@@ -94,7 +94,7 @@ func init() {
 </code></pre>
 </figure>
 <p>با استفاده از embed می‌توانیم تمام قالب‌ها را در فایل اجرایی برنامه جاسازی کنیم:</p>
-<h3 id="نحوه-کار-goembed">7.10.1 نحوه کار //go:embed</h3>
+<h3 id="نحوه-کار-goembed">7.10.1 نحوه کار //go</h3>
 <p>دستور <code>//go:embed</code> یک دستور کامپایلر است که فایل‌ها را در زمان کامپایل درون باینری برنامه جاسازی می‌کند. این فایل‌ها بخشی از سورس کد محسوب نمی‌شوند بلکه در زمان اجرا به عنوان <code dir="ltr">embed.FS</code> (یک سیستم فایل مجازی فقط‌خواندنی) در دسترس هستند.</p>
 <div class="note"><strong>جزئیات embed.FS:</strong> <code dir="ltr">embed.FS</code> رابط <code dir="ltr">fs.FS</code> (از پکیج <code>io/fs</code>) را برآورده می‌کند. این یعنی می‌توانید آن را به هر تابعی که <code dir="ltr">fs.FS</code> می‌پذیرد پاس دهید، از جمله <code dir="ltr">template.ParseFS</code> و <code dir="ltr">http.FS</code>. محتوای جاسازی‌شده در زمان اجرا قابل تغییر نیست و همیشه محتوای زمان کامپایل را دارد.</div>
 <figure class="code go" dir="ltr">
@@ -199,8 +199,7 @@ tmpl, err := template.ParseFS(templateFS, "templates/*.html", "templates/**/*.ht
 </svg>
 <figcaption>شکل ۷-۱۱: خط لوله‌ی کامپایل <code>//go:embed</code> — سه فاز از چپ به راست: (۱) فایل‌های منبع شامل <code>main.go</code> با directive <code>//go:embed</code> و فایل‌های جانبی قالب‌ها و استاتیک؛ (۲) <code>go build</code> در زمان کامپایل directiveها را parse می‌کند، فایل‌ها را از دیسک می‌خواند، بایت‌ها را در بخش <code>.rodata</code> باینری جاسازی می‌کند، متغیر <code>embed.FS</code> را مقداردهی می‌کند و همه‌چیز را در یک باینری لینک می‌کند؛ (۳) باینری مستقل حاصل شامل کد <bdi dir="ltr">Go</bdi> کامپایل‌شده و <code>embed.FS</code> فقط‌خواندنی است. در فاز ۴ (پایین) در زمان اجرا، <code>template.ParseFS</code> قالب‌ها را از <code>embed.FS</code> می‌خواند و <code>ExecuteTemplate</code> آن‌ها را رندر می‌کند — فایل‌ها از حافظه خوانده می‌شوند، نه از دیسک. در <bdi dir="ltr">PHP</bdi> معادل رسمی برای <code>embed</code> وجود ندارد و <code>file_get_contents</code> همیشه از دیسک می‌خواند.</figcaption>
 </figure>
-<p><strong>مفاهیم کلیدی قالب‌ها</strong></p>
-<p><strong dir="ltr">Template inheritance</strong> : با استفاده از <code>block</code> و <code>define</code> می‌توانید یک طرح کلی داشته باشید و صفحات مختلف را درون آن جای‌گذاری کنید.</p>
+<p><strong>مفاهیم کلیدی قالب‌ها</strong> — <strong dir="ltr">Template inheritance</strong> : با استفاده از <code>block</code> و <code>define</code> می‌توانید یک طرح کلی داشته باشید و صفحات مختلف را درون آن جای‌گذاری کنید.</p>
 <p><strong>Context داده‌ها</strong> : قالب‌ها با استفاده از struct یا map داده‌ها را دریافت و رندر می‌کنند. نماد نقطه (<code>.</code>) به داده‌های context فعلی اشاره دارد.</p>
 <p><strong>توابع سفارشی</strong> : می‌توان توابع Go را به قالب معرفی کرد تا محاسبات ساده‌ای انجام دهد (مثل تبدیل تاریخ، حروف بزرگ، بررسی شرط و...).</p>
 <p>به مثال زیر توجه کنید:</p>
@@ -265,8 +264,7 @@ func main() {
 }
 </code></pre>
 </figure>
-<p><strong>نکات امنیتی و حرفه‌ای</strong></p>
-<p>عدم استفاده از ورودی‌های خام در قالب‌ها: همیشه از html/template استفاده کنید تا داده‌ها escape شوند. جلوگیری از حملات XSS: داده‌هایی که از کاربر می‌آیند باید فقط از طریق متغیرهای template رندر شوند. بهینه‌سازی عملکرد: قالب‌ها را فقط یک‌بار در ابتدای برنامه با <span dir="ltr">init()</span> بارگذاری کنید. </p><p>ساختار‌دهی مناسب به پوشه‌ها: قالب‌ها را در مسیر templates/ و فایل‌های استاتیک را در مسیر static/ نگه‌داری کنید. جاسازی همه قالب‌ها با embed: برای اطمینان از استقرار ساده در محیط production.</p>
+<p><strong>نکات امنیتی و حرفه‌ای</strong> — عدم استفاده از ورودی‌های خام در قالب‌ها: همیشه از html/template استفاده کنید تا داده‌ها escape شوند. جلوگیری از حملات XSS: داده‌هایی که از کاربر می‌آیند باید فقط از طریق متغیرهای template رندر شوند. بهینه‌سازی عملکرد: قالب‌ها را فقط یک‌بار در ابتدای برنامه با <span dir="ltr">init()</span> بارگذاری کنید. </p><p>ساختار‌دهی مناسب به پوشه‌ها: قالب‌ها را در مسیر templates/ و فایل‌های استاتیک را در مسیر static/ نگه‌داری کنید. جاسازی همه قالب‌ها با embed: برای اطمینان از استقرار ساده در محیط production.</p>
 <p>یکی از مهم‌ترین تصمیمات در سیستم قالب‌سازی، انتخاب بین <bdi dir="ltr">embed.FS</bdi> و خواندن مستقیم از filesystem است. <bdi dir="ltr">embed.FS</bdi> همه قالب‌ها را در زمان کامپایل داخل باینری جاسازی می‌کند که مزایای زیادی دارد: استقرار ساده (فقط یک فایل باینری)، عدم وابستگی به فایل‌های خارجی، و عملکرد بالاتر (بدون I/O دیسک در زمان اجرا). </p><p>اما محدودیت مهمی هم دارد: برای هر تغییر در قالب‌ها باید برنامه مجدداً کامپایل شود. به همین دلیل بهترین روش، استفاده از <bdi dir="ltr">os.DirFS</bdi> در زمان توسعه (برای hot-reload) و <bdi dir="ltr">embed.FS</bdi> در محیط production است.</p>
 <p><strong>سناریوهای عملیاتی جاسازی قالب‌ها:</strong></p>
 <ul>
@@ -276,16 +274,7 @@ func main() {
 <li><strong>قالب‌های پیش‌فرض با override:</strong> قالب‌های پیش‌فرض با <bdi dir="ltr">embed.FS</bdi> جاسازی می‌شوند و کاربر می‌تواند قالب‌های سفارشی خود را در مسیر مشخصی روی filesystem قرار دهد. برنامه ابتدا filesystem و سپس <bdi dir="ltr">embed.FS</bdi> را بررسی می‌کند — الگوی overlay.</li>
 </ul>
 <div class="tip"><strong>نکته عملی:</strong> از <bdi dir="ltr">embed.FS</bdi> برای production استفاده کنید (باینری واحد، بدون وابستگی) و از <bdi dir="ltr">os.DirFS</bdi> در زمان توسعه استفاده کنید (hot-reload بدون recompile). یک الگوی رایج: فلگ <code>--dev</code> برای تغییر بین این دو حالت. در حالت توسعه، قالب‌ها مستقیم از دیسک خوانده می‌شوند و تغییرات بلافاصله بدون recompile مشاهده می‌شوند. در حالت production، همه چیز از <bdi dir="ltr">embed.FS</bdi> خوانده می‌شود و فقط یک باینری نیاز است.</div>
-<div class="summary">
-<strong>خلاصه‌ی نکات کلیدی:</strong>
-<ul>
-<li>//go:embed templates/* برای جاسازی پوشه</li>
-<li>embed.FS سیستم فایل readonly</li>
-<li>template.ParseFS برای parse از embed</li>
-<li>deployment تک‌فایلی بدون وابستگی خارجی</li>
-<li>hot reload در توسعه با dev mode</li>
-</ul>
-</div></div>
+</div>
 </main>
 </div>
 <!-- Footer -->

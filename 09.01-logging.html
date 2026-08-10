@@ -127,7 +127,7 @@ func main() {
 // log.Lmicroseconds // Higher time precision</code></pre>
 </figure>
 <div class="tip"><strong>slog یا log؟</strong> پکیج <code>log</code> برای اسکریپت‌های کوچک، <bdi dir="ltr">CLI</bdi>‌های ساده یا نمونه‌های اولیه کافی است؛ اما برای هر سرویس‌ Production که قرار است خروجی‌اش توسط <bdi dir="ltr">Loki</bdi>/<bdi dir="ltr">ELK</bdi> پردازش شود، حتماً از <code>slog</code> استفاده کنید. تفاوت کلیدی این است که <code>log</code> فقط پیام متنی تولید می‌کند (غیرقابل فیلترینگ)، اما <code>slog</code> خروجی ساختاریافته با <bdi dir="ltr">key-value</bdi> می‌دهد که قابل جستجو، نمایه‌سازی و تجمیع است. همچنین <code>slog</code> از <bdi dir="ltr">context.Context</bdi> پشتیبانی می‌کند که برای انتشار <bdi dir="ltr">trace_id</bdi> ضروری است.</div>
-<h3 id="slog-لاگگیری-ساختاریافته-در-go-1.21">9.1.4 slog: Logging ساخت‌یافته در Go 1.21+</h3>
+<h3 id="slog-لاگگیری-ساختاریافته-در-go-1.21">9.1.4 Logging ساخت‌یافته در Go 1.21+</h3>
 <div class="quote-box">
 <p class="quote-text">لاگ‌گیری یک دغدغه‌ی عرضی است که نباید منطق کسب‌وکار را آلوده کند. لاگ‌های خود را ساخت‌یافته، معنادار و در سطح مناسب نگه دارید. لاگ‌های بیش از حد به اندازه‌ی لاگ‌های بسیار کم مضر هستند.</p>
 <p class="quote-source">
@@ -256,7 +256,7 @@ logger := slog.New(slog.NewJSONHandler(os.Stdout, &amp;slog.HandlerOptions{
 }</code></pre>
 </figure>
 <div class="important"><strong>نکته امنیتی:</strong> هرگز اطلاعات حساس مانند پسورد، توکن، شماره کارت یا داده‌های شخصی کاربران را در لاگ ننویسید. استفاده نادرست از لاگ می‌تواند آسیب‌های امنیتی جدی ایجاد کند.</div>
-<h3 id="مقایسه-کد-php-vs-go">9.1.10 مقایسه کد: Monolog در PHP در برابر slog در Go</h3>
+<h3 id="مقایسه-کد-php-vs-go">9.1.10 مقایسه کد</h3>
 <p>برای درک بهتر تفاوت‌ها، بیایید یک سناریوی مشابه را در هر دو زبان پیاده‌سازی کنیم. فرض کنید می‌خواهیم Logging ساخت‌یافته با سطح‌بندی و خروجی <bdi dir="ltr">JSON</bdi> داشته باشیم:</p>
 <figure class="code php" dir="ltr">
 <pre><code class="language-php">// PHP — Monolog: Structured JSON logging
@@ -636,16 +636,7 @@ func setupLogging() *slog.Logger {
 <li><strong><bdi dir="ltr">correlation IDs</bdi> برای ردیابی درخواست:</strong> در سیستم‌های توزیع‌شده هر درخواست باید <bdi dir="ltr">correlation ID</bdi> منحصربه‌فردی داشته باشد که در تمام لاگ‌های مربوط به همان درخواست تکرار شود. این الگو با <code dir="ltr">slog.With("correlation_id", id)</code> به‌سادگی قابل پیاده‌سازی است و امکان دنبال‌کردن مسیر یک درخواست از <bdi dir="ltr">gateway</bdi> تا دیتابیس را فراهم می‌کند.</li>
 </ul>
 <div class="tip"><strong>نکته کلیدی درباره لاگ ساختاریافته:</strong> همیشه از <bdi dir="ltr">structured fields</bdi> با کلید-مقدار استفاده کنید و از <bdi dir="ltr">fmt.Sprintf</bdi> در پیام لاگ پرهیز کنید. تفاوت را ببینید: ❌ <code>slog.Info(fmt.Sprintf("User %s logged in from %s", user, ip))</code> — این لاگ قابل جستجو نیست. ✅ <code>slog.Info("User logged in", slog.String("user_id", user), slog.String("ip", ip))</code> — این لاگ با <code>{user_id="alice"}</code> در <bdi dir="ltr">Loki</bdi> قابل فیلترینگ است. لاگ‌های ساختاریافته به شما امکان می‌دهند دقیقاً رکوردهایی که یک فیلد خاص دارند را پیدا کنید، در حالی که لاگ‌های متنی فقط جستجوی متنی ساده را پشتیبانی می‌کنند.</div>
-<div class="summary">
-<strong>خلاصه‌ی نکات کلیدی:</strong>
-<ul>
-<li>slog از Go 1.21+ structured logging</li>
-<li>level: Debug، Info، Warn، Error</li>
-<li>context-aware با ctx</li>
-<li>zap برای performance بالا</li>
-<li>JSON output برای log aggregator</li>
-</ul>
-</div></div>
+</div>
 </main></div>
 <!-- Footer -->
 <footer class="site-footer">

@@ -68,7 +68,7 @@
 <h2 id="delve">Delve</h2><div class="abstract">
 <strong>چکیده:</strong> این بخش Delve debugger را پوشش می‌دهد: breakpoint، step و variable inspection. الگوی dlv cli و IDE integration بررسی می‌شود. کاربردهای production debug پوشش داده می‌گردد.
 </div>
-<p>Delve یک دیباگر منبع‌باز است که به‌صورت تخصصی برای Go طراحی شده است. </p><p>برخلاف دیباگرهای عمومی مانند GDB که برای زبان‌های C/C++ ساخته شده‌اند، Delve از قابلیت‌های runtime Go و اطلاعات نمادهای کامپایل‌شده استفاده می‌کند تا به شما امکان اجرای دقیق، توقف، بررسی وضعیت متغیرها و تحلیل مسیر اجرای برنامه را بدهد.</p><p>مزیت اصلی Delve نسبت به GDB این است که ساختارهای داخلی Go مانند goroutine‌ها، channel‌ها، interface‌ها و slice‌ها را به‌درستی پشتیبانی می‌کند، در حالی که GDB نمی‌تواند حتی goroutine‌ها را نمایش دهد.</p>
+<p>Delve یک دیباگر منبع‌باز است که به‌صورت تخصصی برای Go طراحی شده است. برخلاف دیباگرهای عمومی مانند GDB که برای زبان‌های C/C++ ساخته شده‌اند، Delve از قابلیت‌های runtime Go و اطلاعات نمادهای کامپایل‌شده استفاده می‌کند تا به شما امکان اجرای دقیق، توقف، بررسی وضعیت متغیرها و تحلیل مسیر اجرای برنامه را بدهد.</p><p>مزیت اصلی Delve نسبت به GDB این است که ساختارهای داخلی Go مانند goroutine‌ها، channel‌ها، interface‌ها و slice‌ها را به‌درستی پشتیبانی می‌کند، در حالی که GDB نمی‌تواند حتی goroutine‌ها را نمایش دهد.</p>
 <p>برای برنامه‌نویسانی که از PHP می‌آیند، Delve معادل Xdebug است اما با تفاوت‌های مهم: Xdebug یک extension بومی PHP است که در همان process اجرا می‌شود، اما Delve یک process جداگانه است که از طریق سیستم‌عامل (ptrace در Linux/Mac) به باینری Go متصل می‌شود.</p><p>این رویکرد مزیت مهمی دارد: Delve هیچ overhead در production ندارد چون فقط زمان دیباگ فعال است، در حالی که Xdebug حتی وقتی استفاده نمی‌شود ۲۰-۴۰٪ عملکرد را کاهش می‌دهد.</p>
 <h3 id="نصب-delve">10.2.1 نصب Delve</h3>
 <figure class="code go" dir="ltr">
@@ -419,16 +419,7 @@ $ dlv connect localhost:2345
 <li><strong><bdi dir="ltr">Breakpoint</bdi> شرطی برای مقادیر خاص:</strong> وقتی می‌خواهید فقط وقتی مقدار خاصی در slice یا map وجود دارد متوقف شوید، از شرایط پیچیده‌تر استفاده کنید: <code>break main.process if len(items) &gt; 100</code> یا <code>break main.validate if user.Role == "admin"</code>. همچنین با دستور <code>on 1 print userID</code> می‌توانید هر بار که breakpoint فعال می‌شود مقدار متغیر خاصی را بدون توقف برنامه چاپ کنید (معادل Logpoint در VS Code).</li>
 </ul>
 <div class="tip"><strong>نکته کلیدی:</strong> از <code>breakpoint</code> شرطی استفاده کنید تا از گذراندن هزاران فراخوانی بی‌ربط جلوگیری کنید! مثلاً <code>break main.go:42 if x == 5</code> فقط وقتی <code>x</code> برابر ۵ است برنامه را متوقف می‌کند. بدون این شرط، اگر حلقه ۱۰۰۰۰ بار اجرا شود، باید ۱۰۰۰۰ بار دستور <code>continue</code> بزنید تا به مورد موردنظر برسید. breakpoint شرطی زمان دیباگ را از ساعت‌ها به ثانیه کاهش می‌دهد!</div>
-<div class="summary">
-<strong>خلاصه‌ی نکات کلیدی:</strong>
-<ul>
-<li>dlv debug برای شروع session</li>
-<li>break با b file:line</li>
-<li>step، next، continue برای navigation</li>
-<li>print و locals برای variable</li>
-<li>attach به process در حال اجرا</li>
-</ul>
-</div></div>
+</div>
 </main>
 </div>
 <!-- Footer -->

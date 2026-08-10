@@ -165,8 +165,7 @@ handlerChain := chainMiddleware(mux, recoverMiddleware, securityHeadersMiddlewar
 <p>و سپس در main به این صورت استفاده می‌کنیم:</p>
 <h3 id="الگوی-closure-و-adapter-در-middleware">7.4.5 الگوی Closure و Adapter در Middleware</h3>
 <p>برای درک عمیق‌تر middleware در Go، باید دو مفهوم کلیدی را بشناسیم: <strong dir="ltr">Closure</strong> (بستار) و <strong dir="ltr">http.HandlerFunc</strong> به عنوان <strong dir="ltr">Adapter</strong> (تطبیق‌دهنده).</p>
-<h4 id="نقش-closure">نقش Closure</h4>
-<p>وقتی تابع middleware را می‌نویسیم، یک <strong dir="ltr">closure</strong> ایجاد می‌کنیم. این closure به متغیر <code>next</code> (هندلر بعدی) دسترسی دارد و آن را در خود «حبس» می‌کند. به این ترتیب، وقتی <code>ServeHTTP</code> فراخوانی می‌شود، middleware همچنان به هندلر بعدی دسترسی دارد:</p>
+<p><strong  id="نقش-closure">نقش Closure</strong> — وقتی تابع middleware را می‌نویسیم، یک <strong dir="ltr">closure</strong> ایجاد می‌کنیم. این closure به متغیر <code>next</code> (هندلر بعدی) دسترسی دارد و آن را در خود «حبس» می‌کند. به این ترتیب، وقتی <code>ServeHTTP</code> فراخوانی می‌شود، middleware همچنان به هندلر بعدی دسترسی دارد:</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">func myMiddleware(next http.Handler) http.Handler {
     // closure: inner function has access to next variable
@@ -183,8 +182,7 @@ handlerChain := chainMiddleware(mux, recoverMiddleware, securityHeadersMiddlewar
 }
 </code></pre>
 </figure>
-<h4 id="نقش-httphandlerfunc-به-عنوان-adapter">نقش http.HandlerFunc به عنوان Adapter</h4>
-<p>در Go رابط <code dir="ltr">http.Handler</code> دارای متد <code dir="ltr">ServeHTTP(ResponseWriter, *Request)</code> است. اما <code dir="ltr">func(w ResponseWriter, r *Request)</code> صرفاً یک تابع است و رابط <code dir="ltr">http.Handler</code> را برآورده نمی‌کند. اینجاست که <code dir="ltr">http.HandlerFunc</code> نقش adapter را بازی می‌کند:</p>
+<p><strong  id="نقش-httphandlerfunc-به-عنوان-adapter">نقش http.HandlerFunc به عنوان Adapter</strong> — در Go رابط <code dir="ltr">http.Handler</code> دارای متد <code dir="ltr">ServeHTTP(ResponseWriter, *Request)</code> است. اما <code dir="ltr">func(w ResponseWriter, r *Request)</code> صرفاً یک تابع است و رابط <code dir="ltr">http.Handler</code> را برآورده نمی‌کند. اینجاست که <code dir="ltr">http.HandlerFunc</code> نقش adapter را بازی می‌کند:</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">// http.HandlerFunc is a type that any function with matching signature
 // Automatically converts to http.Handler
@@ -231,8 +229,7 @@ class MyMiddleware implements MiddlewareInterface
 </tbody>
 </table>
 <h3 id="پیادهسازی-middlewareهای-عملی">7.4.6 پیاده‌سازی Middleware‌های عملی</h3>
-<h4 id="middleware-هدرهای-امنیتی">Middleware هدرهای امنیتی</h4>
-<p>یکی از middleware‌های کلیدی، افزودن هدرهای امنیتی به تمام پاسخ‌هاست. این هدرها از حملات رایج مانند Clickjacking، XSS و MIME-type sniffing جلوگیری می‌کنند:</p>
+<p><strong  id="middleware-هدرهای-امنیتی">Middleware هدرهای امنیتی</strong> — یکی از middleware‌های کلیدی، افزودن هدرهای امنیتی به تمام پاسخ‌هاست. این هدرها از حملات رایج مانند Clickjacking، XSS و MIME-type sniffing جلوگیری می‌کنند:</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">func commonHeaders(next http.Handler) http.Handler {
     return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -264,8 +261,7 @@ class SetSecureHeaders
 }
 </code></pre>
 </figure>
-<h4 id="middleware-لاگ-درخواست">Middleware لاگ درخواست</h4>
-<p>برای ثبت جزئیات هر درخواست (متد، مسیر، کد وضعیت و مدت زمان)، باید <code dir="ltr">http.ResponseWriter</code> را بسته‌بندی کنیم تا بتوانیم کد وضعیت را ضبط کنیم:</p>
+<p><strong  id="middleware-لاگ-درخواست">Middleware لاگ درخواست</strong> — برای ثبت جزئیات هر درخواست (متد، مسیر، کد وضعیت و مدت زمان)، باید <code dir="ltr">http.ResponseWriter</code> را بسته‌بندی کنیم تا بتوانیم کد وضعیت را ضبط کنیم:</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">type responseRecorder struct {
     http.ResponseWriter
@@ -297,8 +293,7 @@ func requestLogger(next http.Handler) http.Handler {
 <div class="tip">
 <strong>نکته:</strong> بسته‌بندی <code dir="ltr">http.ResponseWriter</code> الگوی رایجی در Go است. با ایجاد ساختاری که <code dir="ltr">http.ResponseWriter</code> را embed می‌کند، می‌توانیم رفتار آن را بدون تغییر رابط اصلی، گسترش دهیم.
 </div>
-<h4 id="middleware-بازیابی-از-panic">Middleware بازیابی از Panic</h4>
-<p>اگر در هندلری panic رخ دهد، کل سرور از کار نمی‌افتد (Go 1.22+)، اما کاربر خطای زشتی می‌بیند. این middleware خطاهای panic را شکار کرده و پاسخ 500 مناسب برمی‌گرداند:</p>
+<p><strong  id="middleware-بازیابی-از-panic">Middleware بازیابی از Panic</strong> — اگر در هندلری panic رخ دهد، کل سرور از کار نمی‌افتد (Go 1.22+)، اما کاربر خطای زشتی می‌بیند. این middleware خطاهای panic را شکار کرده و پاسخ 500 مناسب برمی‌گرداند:</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">func recoverPanic(next http.Handler) http.Handler {
     return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -538,16 +533,7 @@ $userID = app('userID');
 </svg>
 <figcaption>شکل ۷-۵: مدل پیازی <bdi dir="ltr">Middleware</bdi> در <bdi dir="ltr">Go</bdi> — درخواست از چپ وارد می‌شود (آبی) و لایه به لایه به داخل نفوذ می‌کند تا به هندلر اصلی برسد؛ پاسخ از همان مسیر برمی‌گردد (سبز). هر لایه می‌تواند قبل از فراخوانی <code>next.ServeHTTP()</code> درخواست را متوقف کند (<code>short-circuit</code>) و مستقیماً پاسخ برگرداند. ترتیب حیاتی است: <code>recoverPanic</code> باید بیرونی‌ترین لایه باشد تا بتواند <code>panic</code>های همه‌ی لایه‌های داخلی را شکار کند؛ <code>logging</code> بعد از آن می‌آید تا تمام درخواست‌ها (حتی ردشده‌ها) را ثبت کند؛ <code>rateLimit</code> قبل از <code>auth</code> تا درخواست‌های غیرمجاز هم شمارش شوند. این ترتیب دقیقاً معادل آرایه‌ی <code>$middleware</code> در <code>Kernel.php</code> در <bdi dir="ltr">Laravel</bdi> است.</figcaption>
 </figure>
-<div class="summary">
-<strong>خلاصه‌ی نکات کلیدی:</strong>
-<ul>
-<li>middleware = تابعی که Handler را wrapper می‌کند</li>
-<li>الگوی func(next http.Handler) http.Handler</li>
-<li>chain برای ترکیب چند middleware</li>
-<li>کاربرد: logging، auth، CORS، rate limit</li>
-<li>order middleware از بیرون به درون</li>
-</ul>
-</div></div>
+</div>
 </main>
 </div>
 <!-- Footer -->

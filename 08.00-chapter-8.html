@@ -68,16 +68,7 @@
 <h2 id="فصل-هشتم">فصل هشتم</h2><div class="abstract">
 <strong>چکیده:</strong> این فصل کار با پایگاه داده در Go را باز می‌کند: database/sql، migration، transaction و ORM. تفاوت با PDO/Eloquent در PHP و الگوی Go بررسی می‌شود. کار با Redis و JSON در پایگاه داده پوشش داده می‌گردد.
 </div>
-<p>در این فصل خواننده با مفاهیم زیر آشنا خواهد شد:</p>
-<p>استفاده از ابزار <bdi dir="ltr">golang-migrate</bdi> و <bdi dir="ltr">goose</bdi> برای ورژنینگ ساختار دیتابیس، مدیریت فایل‌های <bdi dir="ltr">up.sql</bdi> و <bdi dir="ltr">down.sql</bdi>، و مقایسه با سیستم <bdi dir="ltr">Migration</bdi> در <bdi dir="ltr">Laravel</bdi>.</p>
-<p>استفاده از پکیج <bdi dir="ltr">database/sql</bdi> برای اتصال به دیتابیس‌های رابطه‌ای مانند <bdi dir="ltr">PostgreSQL</bdi> با کنترل دقیق منابع، آشنایی با <bdi dir="ltr">Prepared Statements</bdi> برای جلوگیری از <bdi dir="ltr">SQL Injection</bdi>، مدیریت مقادیر <bdi dir="ltr">NULL</bdi> با انواع <bdi dir="ltr">sql.Null*</bdi>، و مقایسه با ابزارهای انتزاعی <bdi dir="ltr">Laravel</bdi> مانند <bdi dir="ltr">Eloquent</bdi>.</p>
-<p>مدیریت <bdi dir="ltr">Connection Pool</bdi> و تنظیم پارامترهایی مانند <bdi dir="ltr">MaxOpenConns</bdi>، <bdi dir="ltr">MaxIdleConns</bdi>، <bdi dir="ltr">ConnMaxLifetime</bdi> و <bdi dir="ltr">ConnMaxIdleTime</bdi> برای بهینه‌سازی عملکرد و جلوگیری از مشکلات اتصال در محیط <bdi dir="ltr">production</bdi>.</p>
-<p>استفاده از <bdi dir="ltr">Query</bdi> و <bdi dir="ltr">QueryRow</bdi> برای خواندن داده‌ها، <bdi dir="ltr">Exec</bdi> برای عملیات <bdi dir="ltr">Insert</bdi>، <bdi dir="ltr">Update</bdi> و <bdi dir="ltr">Delete</bdi>، پارامترهای نام‌دار با <bdi dir="ltr">sqlx</bdi>، و عملیات دسته‌ای.</p>
-<p>سازمان‌دهی منطق دسترسی به دیتابیس با استفاده از <bdi dir="ltr">Repository Pattern</bdi> برای افزایش خوانایی، تست‌پذیری و قابلیت نگهداری کد، و مقایسه روش‌های مختلف نگاشت داده شامل <bdi dir="ltr">manual scanning</bdi>، <bdi dir="ltr">sqlx</bdi> و <bdi dir="ltr">sqlc</bdi>.</p>
-<p>مدیریت تراکنش‌ها با استفاده از <bdi dir="ltr">db.Begin</bdi>، <bdi dir="ltr">tx.Exec</bdi>، <bdi dir="ltr">tx.Commit</bdi> و <bdi dir="ltr">tx.Rollback</bdi> برای اجرای عملیات اتمیک با رعایت اصول <bdi dir="ltr">ACID</bdi>، آشنایی با سطوح ایزولاسیون، قفل‌گذاری خوش‌بینانه و بدبینانه، و الگوی <bdi dir="ltr">Saga</bdi> برای تراکنش‌های توزیع‌شده.</p>
-<p>مدیریت خطاها، تشخیص و مدیریت خطاهای دیتابیس مانند نقض محدودیت‌ها، خطاهای اتصال و <bdi dir="ltr">Deadlock</bdi> با استفاده از درایورهای خاص (مانند <bdi dir="ltr">pq.Error</bdi> برای <bdi dir="ltr">PostgreSQL</bdi>)، و پیاده‌سازی منطق <bdi dir="ltr">retry</bdi> با <bdi dir="ltr">exponential backoff</bdi>.</p>
-<p>ذخیره و بازیابی داده‌های <bdi dir="ltr">JSON</bdi> و <bdi dir="ltr">JSONB</bdi> با <bdi dir="ltr">json.Marshal/Unmarshal</bdi>، کار با آرایه‌ها در <bdi dir="ltr">PostgreSQL</bdi> با <bdi dir="ltr">pq.Array</bdi>، مدیریت زمان با <bdi dir="ltr">time.Time</bdi> و رابط‌های <bdi dir="ltr">sql.Scanner</bdi> و <bdi dir="ltr">driver.Valuer</bdi>.</p>
-<p>اتصال به <bdi dir="ltr">Redis</bdi> با کتابخانه <bdi dir="ltr">go-redis</bdi>، الگوهای <bdi dir="ltr">Cache-aside</bdi> و <bdi dir="ltr">Write-through</bdi>، قفل توزیع‌شده با <bdi dir="ltr">Redlock</bdi>، و <bdi dir="ltr">Pipeline</bdi> برای بهینه‌سازی عملکرد.</p>
+<p>در ادامه، نقشه‌ی راه کلیِ این فصل را در نمودار زیر می‌بینید و سپس وارد جزئیات هر بخش می‌شویم.</p>
 <h3 id="چرا-این-فصل-مهم-است">8.0.1 چرا این فصل مهم است</h3>
 <p>در زبان‌هایی مانند <bdi dir="ltr">PHP</bdi> و به‌ویژه در فریم‌ورکی مانند <bdi dir="ltr">Laravel</bdi> اتصال به پایگاه‌داده و اجرای عملیات بر روی آن تا حد زیادی ساده‌سازی و انتزاعی شده است. </p><p>کافی‌ست چند متغیر در فایل <bdi dir="ltr">.env</bdi> تعریف کنیم و سپس از طریق ابزارهایی چون <bdi dir="ltr">Eloquent ORM</bdi> یا <bdi dir="ltr">Query Builder</bdi> عملیات پیچیده‌ای را تنها با چند خط کد و بدون آشنایی عمیق با <bdi dir="ltr">SQL</bdi> انجام دهیم. </p><p>اما در زبان <bdi dir="ltr">Go</bdi> رویکرد متفاوتی پیش روی ماست. </p><p>این زبان با فلسفه‌ای نزدیک به سخت‌افزار و اصول مهندسی سیستم ابزارهایی در اختیار توسعه‌دهنده قرار می‌دهد که به همان اندازه که ساده‌اند به دقت، درک عمیق و مسئولیت‌پذیری بیشتری نیاز دارند.</p>
 <p>در این فضا اتصال به دیتابیس و کار با آن غالباً بدون لایه‌های انتزاعی سنگین انجام می‌شود مگر آنکه خودمان آگاهانه تصمیم به استفاده از کتابخانه‌هایی چون <bdi dir="ltr">GORM</bdi> یا <bdi dir="ltr">ent</bdi> بگیریم. </p><p>در <bdi dir="ltr">Go</bdi> این امکان وجود دارد که به‌صورت مستقیم با پایگاه‌داده تعامل کنیم، از طریق کتابخانه‌ی استاندارد <bdi dir="ltr">database/sql</bdi> یا نسخه‌ی توسعه‌یافته‌ی آن مانند <bdi dir="ltr">sqlx</bdi>. </p><p>این روش‌ها در کنار سادگی، کنترل کاملی روی کوئری‌ها، مدیریت منابع و عملکرد نهایی برنامه در اختیار ما می‌گذارند. </p><p>از سوی دیگر اگر پروژه‌ای پیچیده و مبتنی بر عملیات <bdi dir="ltr">CRUD</bdi> گسترده داشته باشیم استفاده از یک <bdi dir="ltr">ORM</bdi> مانند <bdi dir="ltr">GORM</bdi> می‌تواند توسعه را تسریع کند البته به بهای از دست رفتن بخشی از شفافیت و عملکرد.</p>
@@ -143,16 +134,7 @@
 <tr><td>کشینگ</td><td><bdi dir="ltr">Cache Facade</bdi> + <bdi dir="ltr">Redis</bdi></td><td><bdi dir="ltr">go-redis</bdi> + الگوی دستی</td></tr>
 </tbody>
 </table>
-<div class="summary">
-<strong>خلاصه‌ی نکات کلیدی:</strong>
-<ul>
-<li>database/sql واسط استاندارد SQL در Go</li>
-<li>connection pooling توکار با sql.DB</li>
-<li>migration با golang-migrate یا goose</li>
-<li>transaction با db.Begin و Commit/Rollback</li>
-<li>Redis با redis/go-redis</li>
-</ul>
-</div></div>
+</div>
 </main>
 </div>
 <!-- Footer -->

@@ -487,7 +487,7 @@ package e2e_test
 </code></pre>
 </figure>
 <div class="tip"><strong>نکته CI/CD:</strong> در خط لوله CI، معمولاً Unit Test ها در هر commit اجرا می‌شوند اما E2E Test ها فقط قبل از merge nightly اجرا می‌شوند. این کار زمان CI را کاهش می‌دهد.</div>
-<h3 id="testcontainers-تست-یکپارچگی-مبتنی-بر-docker">11.5.9 Testcontainers: تست یکپارچگی مبتنی بر Docker</h3>
+<h3 id="testcontainers-تست-یکپارچگی-مبتنی-بر-docker">11.5.9 تست یکپارچگی مبتنی بر Docker</h3>
 <p>از چالش‌های اصلی تست‌های یکپارچگی، مدیریت وابستگی‌های خارجی مانند دیتابیس، message queue و cache است. در PHP معمولاً از SQLite in-memory استفاده می‌شود اما این روش محدودیت‌هایی دارد و رفتار دیتابیس واقعی را شبیه‌سازی نمی‌کند. </p><p>کتابخانه <bdi dir="ltr">testcontainers-go</bdi> این مشکل را حل می‌کند: برای هر تست، یک container Docker واقعی اجرا می‌شود و پس از پایان تست، به‌صورت خودکار حذف می‌شود.</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">package integration_test
@@ -935,16 +935,7 @@ func TestParallelE2E(t *testing.T) {
 <li><strong>ادغام <bdi dir="ltr">CI/CD</bdi> با <bdi dir="ltr">Testcontainers</bdi>:</strong> در خط لوله <bdi dir="ltr">CI/CD</bdi>، تست‌های E2E با <bdi dir="ltr">Testcontainers</bdi> به‌صورت خودکار container دیتابیس را اجرا و پس از تست حذف می‌کنند. با فلگ <bdi dir="ltr">-tags=e2e</bdi> می‌توانید تست‌های E2E را فقط در زمان مناسب (مثلاً قبل از merge یا nightly) اجرا کنید و زمان CI را بهینه‌سازی نمایید.</li>
 </ul>
 <div class="tip"><strong>نکته درباره <bdi dir="ltr">Build Tags</bdi>:</strong> از <bdi dir="ltr">//go:build e2e</bdi> برای جداسازی تست‌های E2E از تست‌های واحد استفاده کنید. تست‌های E2E کند هستند و نباید در هر commit اجرا شوند. دستور <bdi dir="ltr">go test ./...</bdi> فقط تست‌های واحد را اجرا می‌کند و <bdi dir="ltr">go test -tags=e2e ./...</bdi> تست‌های E2E را هم اضافه می‌کند. در <bdi dir="ltr">CI/CD</bdi> معمولاً unit testها در هر commit و E2E testها فقط قبل از merge یا به‌صورت nightly اجرا می‌شوند.</div>
-<div class="summary">
-<strong>خلاصه‌ی نکات کلیدی:</strong>
-<ul>
-<li>Playwright برای browser E2E</li>
-<li>Docker Compose برای environment</li>
-<li>test isolation با container</li>
-<li>CI/CD integration</li>
-<li>snapshot testing برای UI</li>
-</ul>
-</div></div>
+</div>
 </main>
 </div>
 <!-- Footer -->

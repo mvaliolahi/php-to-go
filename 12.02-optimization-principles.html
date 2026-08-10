@@ -215,7 +215,7 @@ $ go tool pprof -http=:8081 cpu.prof
 </code></pre>
 </figure>
 <div class="note"><strong>ارجاع:</strong> برای تحلیل تخصصی پروفایل حافظه (شامل <bdi dir="ltr">-inuse_objects</bdi>، <bdi dir="ltr">-alloc_objects</bdi> و <bdi dir="ltr">runtime.ReadMemStats</bdi>) و نمودار جریان کار پروفایلینگ حافظه، به <a href="12.04-memory-optimization-and-gc.html">بخش ۱۲.۴</a> مراجعه کنید. در اینجا فقط فعال‌سازی pprof و انواع پروفایل پوشش داده می‌شود.</div>
-<h3 id="execution-tracer-ابزار-تحلیل-زمان-اجرا">12.2.6 Execution Tracer: ابزار تحلیل زمان اجرا</h3>
+<h3 id="execution-tracer-ابزار-تحلیل-زمان-اجرا">12.2.6 ابزار تحلیل زمان اجرا</h3>
 <p>علاوه بر pprof، Go ابزار قدرتمندی به نام <bdi dir="ltr">Execution Tracer</bdi> دارد که برای تحلیل مشکلات هم‌روندی و تأخیرها بسیار مفید است. Tracer برخلاف pprof که فقط زمان CPU را نشان می‌دهد، رویدادهای scheduler، GC، goroutineها و network poller را ثبت می‌کند. </p><p>این ابزار برای شناسایی مشکلاتی مثل goroutine leak، lock contention و GC pause طولانی بسیار مؤثر است:</p>
 <figure class="code bash" dir="ltr">
 <pre><code class="language-bash"># Collect trace for 5 seconds from live program
@@ -282,16 +282,7 @@ $ go tool trace trace.out
 <li><strong>شناسایی مسیرهای داغ با <bdi dir="ltr">Flame Graph</bdi>:</strong> از <bdi dir="ltr">go tool pprof -http=:8081 cpu.prof</bdi> برای مشاهده <bdi dir="ltr">Flame Graph</bdi> استفاده کنید. مسیرهای داغ (<bdi dir="ltr">hot paths</bdi>) پهن‌ترین بلوک‌ها در نمودار هستند و نشان می‌دهند کدام مسیر فراخوانی بیشترین زمان را صرف می‌کند. این نمایش بصری بسیار مؤثرتر از خروجی متنی <bdi dir="ltr">top</bdi> است و به‌ویژه برای توابع تودرتو که در خروجی <bdi dir="ltr">top</bdi> پنهان می‌مانند، راهگشاست.</li>
 </ul>
 <div class="tip"><strong>قانون طلایی بهینه‌سازی — «اندازه بگیر، حدس نزن»:</strong> همیشه اول پروفایل کنید، فقط گلوگاه را بهینه‌سازی کنید و با بنچمارک بهبود را تأیید کنید. این سه مرحله را هرگز رها نکنید. بدون پروفایل، احتمال اینکه بخش اشتباهی را بهینه‌سازی کنید بسیار بالاست. بدون بنچمارک قبل و بعد، نمی‌دانید آیا تغییر شما واقعاً بهبود ایجاد کرده یا کد را بدتر کرده است. بهینه‌سازی بر اساس حدس، اتلاف وقت و افزایش پیچیدگی بیهوده است. فقط داده‌ها و ابزارهای اندازه‌گیری معتبر هستند — pprof و بنچمارک بهترین دوستان شما در مسیر بهینه‌سازی هستند.</div>
-<div class="summary">
-<strong>خلاصه‌ی نکات کلیدی:</strong>
-<ul>
-<li>premature optimization را پرهیز کنید</li>
-<li>Amdahl's law: bottleneck را هدف بگیرید</li>
-<li>trade-off: speed vs readability</li>
-<li>measure قبل از optimize</li>
-<li>optimization برای critical path</li>
-</ul>
-</div></div>
+</div>
 </main>
 </div>
 <!-- Footer -->

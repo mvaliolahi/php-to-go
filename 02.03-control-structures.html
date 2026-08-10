@@ -87,14 +87,14 @@
 </tbody>
 </table>
 <h3 id="if">2.3.1 if</h3>
-<p>در PHP:</p>
+
 <figure class="code php" dir="ltr">
 <pre><code class="language-php">if ($x &gt; 10) {
     echo "Greater than 10";
 }
 </code></pre>
 </figure>
-<p>در Go:</p>
+
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">if x &gt; 10 {
     fmt.Println("Greater than 10")
@@ -102,7 +102,7 @@
 </code></pre>
 </figure>
 <p>در Go نیازی به پرانتز نیست اما بلاک if باید حتی برای یک خط نیز با آکولاد {} باز و بسته شود. Go نیز مشابه PHP از else if پشتیبانی می‌کند. </p>
-<p>مثال:</p>
+
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">if x &lt; 0 {
     fmt.Println("Negative")
@@ -128,7 +128,7 @@
 </code></pre>
 </figure>
 <h3 id="switch">2.3.2 switch</h3>
-<p>در PHP:</p>
+
 <figure class="code php" dir="ltr">
 <pre><code class="language-php">switch ($status) {
     case 'active':
@@ -137,7 +137,7 @@
 }
 </code></pre>
 </figure>
-<p>در Go:</p>
+
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">switch status {
     case "active":
@@ -148,7 +148,7 @@
 </code></pre>
 </figure>
 <p><strong>در</strong> <strong dir="ltr">Go</strong> نیازی به break نیست و به‌صورت پیش‌فرض پس از اولین case موفق از switch خارج می‌شود. ولی از کلمه کلیدی fallthrough برای ادامه‌ی اجرای case بعدی می توان استفاده کرد. همچنین می‌توانید switch را روی یک شرط منطقی مثل switch true هم اجرا کنید.</p>
-<p>مثال:</p>
+
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">switch {
     case age &lt; 18:
@@ -184,7 +184,7 @@
 }
 </code></pre>
 </figure>
-<p>در PHP:</p>
+
 <figure class="code php" dir="ltr">
 <pre><code class="language-php">while ($x &lt; 100) {
     $x *= 2;
@@ -192,7 +192,7 @@
 </code></pre>
 </figure>
 <h3 id="infinite-loop">2.3.5 infinite loop</h3>
-<p>در PHP:</p>
+
 <figure class="code php" dir="ltr">
 <pre><code class="language-php">while (true) {
 }
@@ -210,7 +210,7 @@
 <p>ایندکس یا کلید (در آرایه و اسلایس‌ها ایندکس، و در map کلید)</p>
 <p>مقدار</p>
 <p>اگر به یکی از آن‌ها نیازی ندارید می‌توانید آن را با _ نادیده بگیرید.</p>
-<p>در PHP:</p>
+
 <figure class="code php" dir="ltr">
 <pre><code class="language-php">foreach ($users as $user) {
     echo $user['name'];
@@ -287,15 +287,14 @@ for ($i = 0; $i &lt; 10; $i++) {
 <br/><br/>
 نکته‌ی مهم: مقدار برگشتی range یک کپی از عنصر اصلی است نه ارجاع به آن. بنابراین تغییر مقدار متغیر range روی داده‌ی اصلی تأثیری ندارد. اگر نیاز به تغییر عناصر slice دارید باید از اندیس استفاده کنید: <code>nums[i] = newValue</code>.</div>
 <div class="tip"><strong>نکته‌ی حرفه‌ای — range عبارت را فقط یک‌بار ارزیابی می‌کند:</strong> عبارت بعد از <code>range</code> پیش از شروع حلقه یک‌بار ارزیابی می‌شود و طول آن کش می‌شود. در نتیجه <code>append</code> به یک slice درون حلقه، بر تعداد تکرارهای همان حلقه بی‌تأثیر است. این رفتار با <bdi dir="ltr">PHP foreach</bdi> متفاوت است و در ویرایش هم‌زمان مجموعه باید مراقب آن باشید.</div>
-<p><strong>دستورات ترکیبی و تفاوت‌های فلسفی</strong></p>
-<p><strong>خوانایی و سادگی</strong></p>
+<p><strong>دستورات ترکیبی و تفاوت‌های فلسفی</strong> — <strong>خوانایی و سادگی</strong></p>
 <p>Go تاکید زیادی بر نوشتن کد خوانا، ساده و قابل پیش‌بینی دارد. به همین دلیل:</p>
 <p>استفاده از else if به‌شکل تو در تو زیاد رایج نیست پیشنهاد می‌شود که ساختارهای پیچیده با switch یا تفکیک توابع ساده‌سازی شوند.</p>
 <p>استفاده از range تقریباً همیشه جایگزین for ساده روی لیست است.</p>
 <p>استفاده از goto و ساختارهای پیچیده‌ی شرطی تا حد ممکن اجتناب می‌شود.</p>
 <p>ساختارهای کنترلی در Go در نگاه اول ساده‌اند اما طراحی دقیق آن‌ها باعث می‌شود کد Go خواناتر، کوتاه‌تر و کمتر مستعد خطا باشد.
 با این حال انتقال از آزادی PHP به نظم Go ممکن است ابتدا چالش‌برانگیز باشد. درک این ساختارها اولین قدم برای نوشتن کدی idiomatic و مؤثر در Go است.</p>
-<h3 id="if-init-deep">2.3.9 if-init: الگوهای پیشرفته‌ی مقداردهی در شرط</h3>
+<h3 id="if-init-deep">2.3.9 الگوهای پیشرفته‌ی مقداردهی در شرط</h3>
 <p>یکی از ویژگی‌های منحصربه‌فرد <bdi dir="ltr">Go</bdi> قابلیت <bdi dir="ltr">if-init</bdi> است: تعریف متغیر قبل از شرط در همان خط <code>if</code>. این الگو هم کد را فشرده‌تر می‌کند، و هم حوزه‌ی متغیر را به بلوک <code>if/else</code> محدود می‌کند و از آلودگی حوزه‌ی بیرونی جلوگیری می‌کند. این الگو در <bdi dir="ltr">PHP</bdi> وجود ندارد و برنامه‌نویسان <bdi dir="ltr">PHP</bdi> باید متغیر را قبل از شرط تعریف کنند.</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">// common pattern: read from map with error check
@@ -448,16 +447,7 @@ for i := range 3 {
 <li><strong>خروج زودهنگام با <bdi dir="ltr">break</bdi>:</strong> در هر دو زبان <bdi dir="ltr">break</bdi> از حلقه‌ی فعلی خارج می‌شود. اما در <bdi dir="ltr">Go</bdi> می‌توان با برچسب مشخص کرد کدام حلقه باید شکسته شود. همچنین <bdi dir="ltr">range</bdi> روی <bdi dir="ltr">channel</bdi> تا بسته‌ شدن <bdi dir="ltr">channel</bdi> ادامه می‌یابد و <bdi dir="ltr">break</bdi> می‌تواند این انتظار را قطع کند.</li>
 </ul>
 <div class="tip"><strong><bdi dir="ltr">range</bdi> کپی برمی‌گرداند:</strong> مهم‌ترین تفاوت <bdi dir="ltr">Go range</bdi> با <bdi dir="ltr">PHP foreach</bdi> این است که مقدار بازگشتی یک کپی است نه ارجاع. اگر نیاز به تغییر عناصر اصلی دارید دو راه دارید: اول، از ایندکس برای دسترسی مستقیم استفاده کنید مثل <code>items[i].Field = newVal</code>. دوم، از <bdi dir="ltr">slice</bdi> اشاره‌گرها استفاده کنید مثل <code>[]*Item</code> تا کپی اشاره‌گر ارزان باشد. هرگز تلاش نکنید مقدار متغیر <bdi dir="ltr">range</bdi> را تغییر دهید و انتظار تأثیر روی داده‌ی اصلی را داشته باشید — این یکی از رایج‌ترین اشتباهات برنامه‌نویسان <bdi dir="ltr">PHP</bdi> در <bdi dir="ltr">Go</bdi> است.</div>
-<div class="summary">
-<strong>خلاصه‌ی نکات کلیدی:</strong>
-<ul>
-<li>تنها حلقه‌ی Go یعنی for، while و do-while را پوشش می‌دهد</li>
-<li>if-init اجازه می‌دهد متغیر قبل از شرط تعریف شود</li>
-<li>switch به‌طور پیش‌فرض fallthrough نمی‌کند (برخلاف PHP)</li>
-<li>range روی اعداد از Go 1.22+ پشتیبانی می‌شود</li>
-<li>برچسب‌ها (labels) برای خروج از حلقه‌های تودرتو</li>
-</ul>
-</div></div>
+</div>
 </main>
 </div>
 <!-- Footer -->

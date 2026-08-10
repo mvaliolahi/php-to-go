@@ -70,8 +70,7 @@
 </div>
 <h3 id="ساختار-داده-و-ارسال-به-قالب">7.11.1 ساختار داده و ارسال به قالب</h3>
 <p>قالب‌ها با استفاده از یک context معمولاً struct یا map داده‌ها را دریافت می‌کنند و بر اساس آن رندر می‌شوند. داده‌ها باید به گونه‌ای طراحی شوند که کاملاً قابل فهم و ساخت‌یافته باشند.</p>
-<h4 id="نقش-نقطه-در-قالبها">نقش نقطه (.) در قالب‌ها</h4>
-<p>نماد نقطه (<code>.</code>) در قالب‌های Go به داده‌های context فعلی اشاره دارد. وقتی <code dir="ltr">tmpl.ExecuteTemplate(w, "layout.html", data)</code> فراخوانی می‌شود، <code>.</code> به <code>data</code> اشاره دارد. در داخل <code>{{ range .Items }}</code> نقطه به هر عنصر از slice اشاره می‌کند. در داخل <code>{{ with .User }}</code> نقطه به مقدار <code>.User</code> تغییر می‌کند:</p>
+<p><strong  id="نقش-نقطه-در-قالبها">نقش نقطه (.) در قالب‌ها</strong> — نماد نقطه (<code>.</code>) در قالب‌های Go به داده‌های context فعلی اشاره دارد. وقتی <code dir="ltr">tmpl.ExecuteTemplate(w, "layout.html", data)</code> فراخوانی می‌شود، <code>.</code> به <code>data</code> اشاره دارد. در داخل <code>{{ range .Items }}</code> نقطه به هر عنصر از slice اشاره می‌کند. در داخل <code>{{ with .User }}</code> نقطه به مقدار <code>.User</code> تغییر می‌کند:</p>
 <figure class="code html" dir="ltr">
 <pre><code class="language-xml"><!-- . = کل داده‌ها -->
 &lt;h1&gt;{{.Title}}&lt;/h1&gt;
@@ -90,7 +89,7 @@
 </figure>
 <div class="tip"><strong>نکته:</strong> دستور <code>{{ with }}</code> دو کار انجام می‌دهد: مقدار را بررسی می‌کند (اگر خالی باشد بلوک اجرا نمی‌شود) و همزمان نقطه را به آن مقدار تغییر می‌دهد. این معادل ترکیب <code>@if</code> و <code dir="ltr">@php($variable = ...)</code> در Blade است.</div>
 <div class="note"><strong>یادداشت:</strong> تفاوت <code dir="ltr">tmpl.Execute(w, data)</code> و <code dir="ltr">tmpl.ExecuteTemplate(w, "name", data)</code> یک منشأ رایج سردرگمی است: <code dir="ltr">Execute</code> فقط قالب اصلی (بدون نام) را رندر می‌کند و اگر قالب‌ها با <code dir="ltr">{{ define }}</code> نام‌گذاری شده باشند، به‌تنهایی کار نمی‌کند. <code dir="ltr">ExecuteTemplate</code> به شما اجازه می‌دهد قالب مشخصی را با نام فراخوانی کنید — که در الگوی layout + content ضروری است (همیشه نام قالب پایه مثل <code dir="ltr">"layout.html"</code> را پاس بدهید، نه نام قالب محتوا). اگر قالب رندر نشد و خطای <code dir="ltr">"not defined"</code> گرفتید، اول با <code dir="ltr">tmpl.DefinedTemplates()</code> لیست قالب‌های موجود را چاپ کنید.</div>
-<p>مثال:</p>
+
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">type PageData struct {
     Title string
@@ -279,16 +278,7 @@ func homeHandler(w http.ResponseWriter, r *http.Request) {
 <li><strong>رفع اشکال خطاهای قالب:</strong> خطاهای رایج قالب شامل: <bdi dir="ltr">"not defined"</bdi> (قالب یا تابعی وجود ندارد)، <bdi dir="ltr">"can't evaluate field"</bdi> (فیلدی روی نوع نادرست فراخوانی شده)، و خطاهای <bdi dir="ltr">partial write</bdi> (بخشی از محتوا قبل از خطا ارسال شده). برای رفع اشکال: ابتدا نام قالب را با <code>tmpl.DefinedTemplates()</code> بررسی کنید. سپس نوع داده ارسالی را با <code>fmt.Printf("%#v", data)</code> چاپ کنید. در نهایت همیشه از <bdi dir="ltr">buffer</bdi> استفاده کنید تا از نوشتن جزئی جلوگیری شود.</li>
 </ul>
 <div class="tip"><strong>نکته طلایی:</strong> قالب‌ها را یک بار در <code>init()</code> یا <code>main()</code> پارس کنید و شیء <code>*template.Template</code> را در متغیر سراسری ذخیره کنید. هرگز قالب‌ها را در هر درخواست <bdi dir="ltr">HTTP</bdi> مجدداً پارس نکنید. پارس کردن عملیاتی پرهزینه است که شامل خواندن فایل‌ها، تحلیل نحوی و ساخت درخت اجرایی است. تکرار این فرایند در هر درخواست نه تنها عملکرد را به شدت کاهش می‌دهد، بلکه احتمال خطاهای ناهمزمان (<bdi dir="ltr">race condition</bdi>) را نیز افزایش می‌دهد. الگوی صحیح: <bdi dir="ltr">parse once, execute many</bdi> — پارس یک بار، اجرای بارها.</div>
-<div class="summary">
-<strong>خلاصه‌ی نکات کلیدی:</strong>
-<ul>
-<li>tmpl.Execute(w, data) برای رندر</li>
-<li>context-aware escaping خودکار</li>
-<li>render helper برای یکدست کردن</li>
-<li>error handling با http.Error</li>
-<li>partial render با template جدا</li>
-</ul>
-</div></div>
+</div>
 </main>
 </div>
 <!-- Footer -->

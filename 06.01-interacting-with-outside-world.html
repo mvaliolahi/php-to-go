@@ -82,7 +82,7 @@
 <strong>نکته‌ی حرفه‌ای:</strong> در <bdi dir="ltr">Go</bdi> از رابط‌های <code dir="ltr">io.Reader</code> و <code dir="ltr">io.Writer</code> برای جدا کردن منطق کسب‌وکار از سیستم‌فایل، اتصال‌های شبکه و سایر <bdi dir="ltr">I/O</bdi> استفاده کنید. این کار تست‌کردن را ساده می‌کند — کافیست یک <code dir="ltr">bytes.Buffer</code> به‌جای فایل واقعی پاس بدهید.
 </div>
 <p>در PHP ابزارهای ساده‌ای مانند <code dir="ltr">file_get_contents()</code>، <code dir="ltr">fwrite()</code> یا <code dir="ltr">json_decode()</code> به‌راحتی قابل استفاده هستند. اما Go با یک مدل ساخت‌یافته، امن و مقیاس‌پذیر این امکانات را فراهم می‌کند. </p><p>تفاوت بنیادین اینجاست: Go به جای ارائه ده‌ها تابع با امضای متفاوت، دو رابط ساده (<code dir="ltr">io.Reader</code> و <code dir="ltr">io.Writer</code>) تعریف می‌کند که تمام عملیات I/O بر آن‌ها استوار است.</p>
-<h3 id="io-reader-writer">6.1.1 رابط‌های بنیادین: io.Reader و io.Writer</h3>
+<h3 id="io-reader-writer">6.1.1 رابط‌های بنیادین</h3>
 <div class="quote-box">
 <p class="quote-text">هرچه رابط بزرگ‌تر باشد، انتزاع ضعیف‌تر است. io.Reader و io.Writer نمونه‌های کامل هستند — هر کدام دقیقاً یک متد تعریف می‌کنند و انعطاف‌پذیرترین و پرپیاده‌سازی‌ترین رابط‌های کتابخانه استاندارد Go هستند.</p>
 <p class="quote-source">
@@ -172,7 +172,7 @@ writer.Flush() // without this, data is lost!
 <strong>نکته — انتخاب بین بافرشده و بافرنشده:</strong> قانون کلی این است: برای خواندن/نوشتن‌های کوچک و مکرر (مثل لاگ‌گذاری، پردازش خط‌به‌خط، صدها <code>Write</code> کوچک) همیشه از <code>bufio.Reader</code>/<code>bufio.Writer</code> استفاده کنید تا سربار سیستم‌کال کاهش یابد. برای انتقال داده‌ی حجیم یکباره، <code>io.Copy</code> خودش بافر ۳۲ کیلوبایتی دارد و نسخه‌ی بافرشده‌ی جداگانه لازم نیست. در PHP تفاوت کمتر حس می‌شود زیرا <code>fwrite()</code> به‌طور پیش‌فرض بافرشده است، اما در Go انتخاب صریح به شما سپرده شده است.
 </div>
 <p>این تفاوت باعث می‌شود Go به ابزارهای قوی‌تری برای مدیریت فایل، سیگنال و منابع نیاز داشته باشد — ابزارهایی که در ادامه این فصل با جزئیات بررسی خواهیم کرد.</p>
-<h3 id="iocopy-در-عمل">6.1.4 io.Copy: ستون فقرات انتقال داده</h3>
+<h3 id="iocopy-در-عمل">6.1.4 ستون فقرات انتقال داده</h3>
 <p>تابع <code dir="ltr">io.Copy()</code> یکی از پرکاربردترین و اصلی‌ترین توابع پکیج <code>io</code> است. این تابع داده‌ها را از یک <code dir="ltr">io.Reader</code> به یک <code dir="ltr">io.Writer</code> کپی می‌کند — اما نه یکجا. بلکه به‌صورت chunked با بافر ۳۲ کیلوبایتی. </p><p>این یعنی می‌توانید یک فایل گیگابایتی را از دیسک به اتصال شبکه کپی کنید بدون اینکه بیشتر از ۳۲ کیلوبایت حافظه مصرف کنید. این الگو پایه و اساس تمام عملیات انتقال داده کارآمد در Go است:</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">// Copy file without loading entirely into memory
@@ -207,7 +207,7 @@ fmt.Printf("دانلود شد: %d بایت\n", written)
 <div class="tip">
 <strong>نکته:</strong> اگر نوع Reader مقصد متد <code dir="ltr">WriteTo(w Writer)</code> را پیاده‌سازی کرده باشد یا نوع Writer مقصد متد <code dir="ltr">ReadFrom(r Reader)</code> را داشته باشد، <code dir="ltr">io.Copy</code> به‌جای بافر ۳۲KB از آن متدها استفاده می‌کند که کارآمدتر است. مثلاً <code>*os.File</code> هر دو متد را پیاده‌سازی می‌کند و در لینوکس از <code>sendfile(2)</code> سیستم‌کال برای کپی مستقیم فایل‌به‌فایل استفاده می‌کند — یعنی داده اصلاً به فضای کاربر نمی‌آید.
 </div>
-<h3 id="ioreadall">6.1.5 io.ReadAll: خواندن کامل با احتیاط</h3>
+<h3 id="ioreadall">6.1.5 خواندن کامل با احتیاط</h3>
 <p>تابع <code dir="ltr">io.ReadAll()</code> تمام داده‌های یک Reader را می‌خواند و به‌صورت <code>[]byte</code> برمی‌گرداند. این تابع جایگزین <code>iotest.ReadAll()</code> قدیمی شده و رفتار بهتری دارد: اگر Reader متد <code dir="ltr">WriteTo</code> را پیاده‌سازی کرده باشد، از آن استفاده می‌کند. اما مراقب باشید — <code dir="ltr">io.ReadAll()</code> کل داده را در حافظه بارگذاری می‌کند:</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">// Read full response body (only for small and medium responses)
@@ -230,7 +230,7 @@ limited := io.LimitReader(resp.Body, 1&lt;&lt;20) // 1 MB
 body, err := io.ReadAll(limited)
 </code></pre>
 </figure>
-<h3 id="teereader-در-عمل">6.1.6 io.TeeReader: خواندن و هم‌زمان کپی</h3>
+<h3 id="teereader-در-عمل">6.1.6 خواندن و هم‌زمان کپی</h3>
 <p><code dir="ltr">io.TeeReader</code> شبیه دستور <code>tee</code> در Unix عمل می‌کند: هر بایتی که از آن خوانده شود، هم‌زمان به یک Writer هم کپی می‌شود. این ابزار برای Logging، دیباگ و audit بسیار کاربردی است. مثلاً می‌خواهید پاسخ HTTP را هم پردازش کنید و هم در فایل لاگ بنویسید:</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">// Log data being read
@@ -259,7 +259,7 @@ processData(tee)
 fmt.Printf("پردازش شد: %d بایت\n", progress.Len())
 </code></pre>
 </figure>
-<h3 id="multiwriter-در-عمل">6.1.7 io.MultiWriter: نوشتن هم‌زمان در چند مقصد</h3>
+<h3 id="multiwriter-در-عمل">6.1.7 نوشتن هم‌زمان در چند مقصد</h3>
 <p><code dir="ltr">io.MultiWriter</code> یک Writer جدید می‌سازد که هر نوشتن در آن به تمام Writer‌های تشکیل‌دهنده ارسال می‌شود. این الگو برای Logging هم‌زمان در فایل و کنسول، یا نوشتن در چند فایل به‌صورت هم‌زمان بسیار مفید است:</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">// Simultaneous logging to file and stdout
@@ -432,16 +432,7 @@ fmt.Println(string(data)) // "HELLO GO WORLD"
 <div class="tip">
 <strong>نکته‌ی کلیدی درباره قدرت ترکیب‌پذیری:</strong> زیباترین جنبه‌ی <code dir="ltr">io.Reader</code> و <code dir="ltr">io.Writer</code> ترکیب‌پذیری آن‌هاست. بیشتر مسائل I/O در <bdi dir="ltr">Go</bdi> بدون نوشتن کد جدید قابل حل هستند — فقط کافی است رابط‌های موجود را به شکل مناسب ترکیب کنید. مثلاً رمزگشایی + لاگ + نوشتن در فایل فقط با ترکیب <code dir="ltr">gzip.NewReader</code>، <code dir="ltr">io.TeeReader</code> و <code dir="ltr">io.MultiWriter</code> ممکن است. این فلسفه «ترکیب به‌جای ساخت جدید» یکی از مهم‌ترین درس‌های طراحی <bdi dir="ltr">Go</bdi> است. هر زمان که به خودکفتید «باید یک تابع جدید بنویسم»، ابتدا بررسی کنید که آیا ترکیب رابط‌های موجود مشکل را حل می‌کند یا خیر.
 </div>
-<div class="summary">
-<strong>خلاصه‌ی نکات کلیدی:</strong>
-<ul>
-<li>Go فرآیند دائمی است؛ connection pooling طبیعی</li>
-<li>os/signal برای graceful shutdown</li>
-<li>io.Reader/Writer واسط استاندارد I/O</li>
-<li>net/http هم client و هم server دارد</li>
-<li>embed فایل‌ها را در باینری جاسازی می‌کند</li>
-</ul>
-</div></div>
+</div>
 </main>
 </div>
 <!-- Footer -->

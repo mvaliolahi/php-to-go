@@ -188,7 +188,7 @@ signal.Ignore(os.Interrupt) // SIGINT is ignored
 signal.Reset(os.Interrupt) // Ctrl+C kills the program again
 </code></pre>
 </figure>
-<h3 id="5">6.7.5 الگوی عملیاتی: signal.NotifyContext با چند سرویس</h3>
+<h3 id="5">6.7.5 الگوی عملیاتی</h3>
 <p>در برنامه‌های واقعی معمولاً چندین سرویس همزمان اجرا دارید: سرور HTTP، consumer پیام، cron worker و غیره. <code dir="ltr">signal.NotifyContext</code> بهترین راه برای هماهنگی خاموشی همه آن‌هاست:</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">func main() {
@@ -403,7 +403,7 @@ func backgroundWorker() {
 <div class="warning">
 <strong>هشدار:</strong> مراقب deadlock باشید! اگر درون handlerِ درخواست HTTP سعی کنید <code dir="ltr">wg.Add(1)</code> را بعد از فراخوانی <code dir="ltr">srv.Shutdown()</code> اجرا کنید، ممکن است <code dir="ltr">wg.Wait()</code> برای همیشه مسدود شود. همیشه <code dir="ltr">wg.Add(1)</code> را قبل از شروع گوروتین یا پردازش فراخوانی کنید.
 </div>
-<h3 id="10">6.7.10 روش پیشرفته: signal.NotifyContext — Go 1.16+</h3>
+<h3 id="10">6.7.10 روش پیشرفته</h3>
 <p>از نسخه Go 1.16 به بعد، تابع <code dir="ltr">signal.NotifyContext</code> در دسترس است که ترکیب <code dir="ltr">signal.Notify</code> و <code dir="ltr">context.WithCancel</code> را در یک تابع ساده فراهم می‌کند. وقتی سیگنال دریافت شود، Context به‌طور خودکار لغو می‌شود:</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">package main
@@ -798,16 +798,7 @@ func main() {
 <div class="tip">
 <strong>نکته‌ی کلیدی درباره <bdi dir="ltr">Kubernetes</bdi> و خاموشی ایمن:</strong> <bdi dir="ltr">Kubernetes</bdi> به <code dir="ltr">pod</code>ها <code dir="ltr">terminationGracePeriodSeconds</code> ثانیه (پیش‌فرض ۳۰) فرصت خاموشی می‌دهد. بعد از این مدت، <code dir="ltr">SIGKILL</code> ارسال می‌شود که غیرقابل‌گرفتن (uncatchable) است. بنابراین منطق خاموشی شما باید در این پنجره‌ی زمانی کامل شود. الگوی پیشنهادی: <code dir="ltr">context.WithTimeout</code> را ۵ ثانیه کمتر از <code dir="ltr">terminationGracePeriodSeconds</code> تنظیم کنید تا حاشیه‌ی ایمنی داشته باشید. مثلاً اگر <code dir="ltr">terminationGracePeriodSeconds: 30</code> است، از <code dir="ltr">WithTimeout(25*time.Second)</code> استفاده کنید. همچنین حتماً <code dir="ltr">preStop hook</code> را در <code dir="ltr">spec</code> <code dir="ltr">pod</code> تنظیم کنید تا <bdi dir="ltr">Kubernetes</bdi> قبل از ارسال <code dir="ltr">SIGTERM</code>، <code dir="ltr">pod</code> را از <code dir="ltr">Service</code> خارج کند و درخواست‌های جدید دیگر به <code dir="ltr">pod</code> ارسال نشود.
 </div>
-<div class="summary">
-<strong>خلاصه‌ی نکات کلیدی:</strong>
-<ul>
-<li>signal.Notify برای دریافت سیگنال روی channel</li>
-<li>SIGINT (Ctrl+C) و SIGTERM برای graceful shutdown</li>
-<li>context.WithCancel برای传播 لغو</li>
-<li>defer برای پاکسازی منابع قبل از خروج</li>
-<li>از signal.Ignore برای نادیده گرفتن سیگنال</li>
-</ul>
-</div></div>
+</div>
 </main>
 </div>
 <!-- Footer -->

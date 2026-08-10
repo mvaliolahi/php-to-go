@@ -384,16 +384,7 @@ if err != nil {
 <li><strong>اجتناب از خطاهای رایج بنچمارک:</strong> اولاً، کامپایلر Go ممکن است کدی که نتیجه‌اش استفاده نمی‌شود را حذف کند — همیشه نتیجه را در متغیر سراسری <bdi dir="ltr">var sink</bdi> ذخیره کنید. ثانیاً، GC ممکن است در وسط بنچمارک اجرا شود و نتایج را تحریف کند — از <bdi dir="ltr">runtime.GC()</bdi> قبل از <bdi dir="ltr">b.ResetTimer()</bdi> استفاده کنید. ثالثاً، اگر بنچمارک روی types یکسان اجرا می‌شود، کامپایلر ممکن است shortcut بزند — از انواع مختلف ورودی استفاده کنید.</li>
 </ul>
 <div class="tip"><strong>نکته حیاتی درباره آمار بنچمارک:</strong> همیشه بنچمارک‌ها را با فلگ <code dir="ltr">-count=5</code> (یا بیشتر) اجرا کنید و از <code dir="ltr">benchstat</code> برای مقایسه آماری نتایج استفاده کنید. یک اجرای تکی بنچمارک به‌هیچ‌وجه قابل اعتماد نیست — نوسانات load سیستم، GC pauses، CPU throttling و cache effects همگی می‌توانند نتایج یک اجرا را تا ۲۰-۳۰ درصد تحریف کنند. benchstat با محاسبه انحراف معیار و فاصله اطمینان ۹۵ درصد، به شما می‌گوید آیا تفاوت مشاهده‌شده واقعی است یا فقط نویز آماری. بدون benchstat، ممکن است هفته‌ها وقت صرف بهینه‌سازی کنید که در واقع هیچ اثر واقعی نداشته است. دستور کامل: <code dir="ltr">go test -bench=. -benchmem -count=5 | tee results.txt</code></div>
-<div class="summary">
-<strong>خلاصه‌ی نکات کلیدی:</strong>
-<ul>
-<li>benchmark با testing.B و b.N</li>
-<li>pprof CPU profile</li>
-<li>hotspot را measure کنید قبل از optimize</li>
-<li>inline و mid-stack inlining</li>
-<li>escape analysis با go build -gcflags</li>
-</ul>
-</div></div>
+</div>
 </main>
 </div>
 <!-- Footer -->

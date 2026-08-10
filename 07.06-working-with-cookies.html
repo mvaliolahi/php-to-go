@@ -307,16 +307,7 @@ func csrfMiddleware(next http.Handler) http.Handler {
 <li><strong>کوکی‌های امضاشده برای جلوگیری از دستکاری:</strong> هرگز به مقدار کوکی اعتماد نکنید زیرا کاربر می‌تواند آن را تغییر دهد. با کتابخانه <code dir="ltr">gorilla/securecookie</code> یا <bdi dir="ltr">HMAC</bdi> مقدار کوکی را امضا کنید تا هرگونه دستکاری قابل تشخیص باشد. برای داده‌های حساس‌تر از رمزنگاری نیز استفاده کنید. این روش امن‌تر از ذخیره داده خام است و نیازی به فضای دیتابیس سمت سرور ندارد.</li>
 </ul>
 <div class="tip"><strong>نکته کاربردی:</strong> همیشه برای کوکی‌های نشست سه ویژگی <code dir="ltr">Secure=true</code>، <code dir="ltr">HttpOnly=true</code> و <code dir="ltr">SameSite=Lax</code> یا <code dir="ltr">SameSite=Strict</code> را تنظیم کنید. بدون <code dir="ltr">Secure</code> کوکی روی <bdi dir="ltr">HTTP</bdi> نیز ارسال می‌شود و قابل رهگیری است. بدون <code dir="ltr">HttpOnly</code> مهاجم می‌تواند با <bdi dir="ltr">XSS</bdi> کوکی را بدزدد. بدون <code dir="ltr">SameSite</code> کوکی در درخواست‌های بین‌سایتی ارسال می‌شود و حمله <bdi dir="ltr">CSRF</bdi> ممکن می‌شود. هرگز داده‌های حساس مثل رمز عبور، شماره کارت بانکی یا اطلاعات شخصی را بدون رمزنگاری در کوکی ذخیره نکنید — حتی با <code dir="ltr">HttpOnly</code> و <code dir="ltr">Secure</code>. کوکی در مرورگر کاربر ذخیره می‌شود و در صورت نفوذ به دستگاه، قابل خواندن است.</div>
-<div class="summary">
-<strong>خلاصه‌ی نکات کلیدی:</strong>
-<ul>
-<li>http.Cookie برای ساخت cookie</li>
-<li>http.SetCookie برای ارسال به کلاینت</li>
-<li>r.Cookie برای خواندن از درخواست</li>
-<li>Secure، HttpOnly، SameSite برای امنیت</li>
-<li>gorilla/securecookie برای signing</li>
-</ul>
-</div></div>
+</div>
 </main>
 </div>
 <!-- Footer -->

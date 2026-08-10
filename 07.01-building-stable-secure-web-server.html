@@ -365,7 +365,7 @@ func main() {
 </code></pre>
 </figure>
 <div class="warning"><strong>هشدار:</strong> هرگز از <code dir="ltr">Access-Control-Allow-Origin: *</code> همراه با <code dir="ltr">Access-Control-Allow-Credentials: true</code> استفاده نکنید. این ترکیب توسط مرورگرها مسدود می‌شود و یک خطای امنیتی جدی محسوب می‌شود. به جای ستاره، دامنه‌های مجاز را به صورت صریح مشخص کنید.</div>
-<h3 id="rate-limiting-محدود-کردن-نرخ-درخواست">7.1.7 Rate Limiting: محدود کردن نرخ درخواست</h3>
+<h3 id="rate-limiting-محدود-کردن-نرخ-درخواست">7.1.7 محدود کردن نرخ درخواست</h3>
 <p>حملات <bdi dir="ltr">DDoS</bdi> و <bdi dir="ltr">Brute Force</bdi> از شایع‌ترین حملات علیه وب‌سرورها هستند. <bdi dir="ltr">Rate Limiting</bdi> با محدود کردن تعداد درخواست‌های هر کلاینت در بازه زمانی مشخص، از این حملات جلوگیری می‌کند. </p><p>در PHP معمولاً این کار توسط وب‌سرور (<bdi dir="ltr">Nginx</bdi>) یا سرویس‌هایی مثل <bdi dir="ltr">Cloudflare</bdi> انجام می‌شود، اما در Go می‌توانید آن را در خود برنامه پیاده‌سازی کنید:</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">type rateLimiter struct {
@@ -509,7 +509,7 @@ handler := maxBodySizeMiddleware(1 &lt;&lt; 20)(mux)
 </code></pre>
 </figure>
 <!-- ═══════════════════════════════════════════════════════════════ -->
- ENRICHMENT: SVG — http.Server Internal Connection Handling 
+ ENRICHMENT: SVG — http.Server Internal Connection Handling
 <!-- ═══════════════════════════════════════════════════════════════ -->
 <figure class="diagram" dir="ltr">
 <svg viewBox="0 0 760 440" xmlns="http://www.w3.org/2000/svg">
@@ -575,16 +575,7 @@ handler := maxBodySizeMiddleware(1 &lt;&lt; 20)(mux)
 <li><strong>پیکربندی <bdi dir="ltr">TLS</bdi>:</strong> برای سرورهای مستقلی که بدون <bdi dir="ltr">reverse proxy</bdi> اجرا می‌شوند، استفاده از <bdi dir="ltr">HTTPS</bdi> با <code dir="ltr">MinVersion: tls.VersionTLS12</code> الزامی است. گواهی‌نامه‌ها را با <bdi dir="ltr">autocert</bdi> از <bdi dir="ltr">Let's Encrypt</bdi> به صورت خودکار دریافت و تمدید کنید. رمزنگاری قوی با <code dir="ltr">CipherSuites</code> مدرن و <code dir="ltr">CurvePreferences</code> مناسب، امنیت انتقال داده‌ها را تضمین می‌کند.</li>
 </ul>
 <div class="tip"><strong>نکته:</strong> همیشه <code dir="ltr">ReadTimeout</code> و <code dir="ltr">WriteTimeout</code> را در محیط <bdi dir="ltr">production</bdi> به صورت صریح تنظیم کنید. یک سرور بدون <bdi dir="ltr">timeout</bdi> در برابر حمله <bdi dir="ltr">Slowloris</bdi> آسیب‌پذیر است — مهاجم می‌تواند با نگه‌داشتن هزاران اتصال نیمه‌باز، تمام منابع سرور شما را تخلیه کند. تنظیم <code dir="ltr">ReadHeaderTimeout</code> خط اول دفاع در برابر این حمله محسوب می‌شود.</div>
-<div class="summary">
-<strong>خلاصه‌ی نکات کلیدی:</strong>
-<ul>
-<li>http.Server با ReadTimeout، WriteTimeout</li>
-<li>TLS با http.ListenAndServeTLS</li>
-<li>graceful shutdown با Shutdown()</li>
-<li>mux با ServeMux یا router اختصاصی</li>
-<li>هدرهای امنیتی: X-Content-Type-Options، CSP</li>
-</ul>
-</div></div>
+</div>
 </main>
 </div>
 <!-- Footer -->

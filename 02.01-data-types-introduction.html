@@ -85,9 +85,8 @@
 <div class="tip">
 <strong>نکته‌ی حرفه‌ای:</strong> سیستم نوع‌دهی صریح <bdi dir="ltr">Go</bdi> در کدبیس‌های بزرگ یک مزیت رقابتی است. در <bdi dir="ltr">PHP</bdi> با رشد پروژه، عدم قطعیت نوع متغیرها باعث می‌شود هر فراخوانی تابع نیازمند بررسی مستندات یا کد منبع باشد. اما در <bdi dir="ltr">Go</bdi> امضای تابع <code>func Process(order Order, repo Repository) error</code> فوراً می‌گوید چه ورودی‌هایی لازم است و چه خروجی‌ای ممکن است. همین صراحت، زمان درک کد را کاهش و اطمینان از صحت تغییرات را افزایش می‌دهد — به‌ویژه وقتی ده‌ها توسعه‌دهنده روی یک پروژه کار می‌کنند.
 </div>
-<h3 id="primitive-types">2.1.1 Primitive Types</h3>
-<h4 id="integer">Integer</h4>
-<p>در <strong dir="ltr">PHP</strong> تعریف یک عدد صحیح بسیار ساده است و نوع آن به‌صورت <strong>دینامیک در زمان اجرا</strong> تعیین می‌شود:
+<h3 id="primitive-types">2.1.1 انواع اولیه</h3>
+<p><strong  id="integer">Integer</strong> — در <strong dir="ltr">PHP</strong> تعریف یک عدد صحیح بسیار ساده است و نوع آن به‌صورت <strong>دینامیک در زمان اجرا</strong> تعیین می‌شود:
 </p>
 <figure class="code php" dir="ltr">
 <pre><code class="language-php">$x = 10;
@@ -98,7 +97,7 @@
 <pre><code class="language-go">var x int = 10
 </code></pre>
 </figure>
-<p>یا به صورت کوتاه‌تر:</p>
+
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">x := 10
 </code></pre>
@@ -114,8 +113,7 @@ uint, uint8, uint16, uint32, uint64
 <p>int : نوع پیش‌فرض و وابسته به معماری سیستم که معمولاً 32 یا 64 بیت است</p>
 <p>Go برخلاف PHP از تبدیل خودکار نوع بین int و int64 جلوگیری می‌کند. این سخت‌گیری مانع بروز خطاهای پنهان می‌شود.</p>
 <div class="note"><strong>طراحی حافظه‌ی انواع عددی در Go:</strong> هر نوع عددی اندازه‌ی دقیق و مشخصی در حافظه دارد. <code>int8</code> دقیقاً ۱ بایت، <code>int16</code> دو بایت، <code>int32</code> چهار بایت و <code>int64</code> هشت بایت اشغال می‌کند. نوع <code>int</code> و <code>uint</code> بسته به معماری پردازنده (۳۲ یا ۶۴ بیتی) اندازه متفاوتی دارند. در سیستم‌های ۶۴ بیتی <code>int</code> معادل <code>int64</code> است. نوع <code>uintptr</code> نیز برای نگهداری مقدار عددی یک اشاره‌گر استفاده می‌شود و اندازه‌اش با اندازه‌ی اشاره‌گر سیستم برابر است. برخلاف PHP که هر عدد صحیح را در ساختار <code>zval</code> با ۱۶ بایت ذخیره می‌کند، Go فقط به اندازه‌ی لازم حافظه مصرف می‌کند.</div>
-<h4 id="floating-point">Floating-point</h4>
-<p>در <strong dir="ltr">PHP</strong> تعریف یک عدد اعشاری ساده است و نوع آن به‌صورت دینامیک تعیین می‌شود:</p>
+<p><strong  id="floating-point">Floating-point</strong> — در <strong dir="ltr">PHP</strong> تعریف یک عدد اعشاری ساده است و نوع آن به‌صورت دینامیک تعیین می‌شود:</p>
 <figure class="code php" dir="ltr">
 <pre><code class="language-php">$pi = 3.14;
 </code></pre>
@@ -125,15 +123,14 @@ uint, uint8, uint16, uint32, uint64
 <pre><code class="language-go">var pi float64 = 3.14
 </code></pre>
 </figure>
-<p>انواع اعداد اعشاری در Go:</p>
+
 <ul>
 <li><code dir="ltr">float32</code> : دقت پایین‌تر و حافظه کمتر (حدود ۷ رقم دقت)</li>
 <li><code dir="ltr">float64</code> : دقت بالاتر و پیش‌فرض برای اعداد اعشاری (حدود ۱۵ رقم دقت)</li>
 </ul>
 <p>Go به دقت محاسبات عددی توجه ویژه دارد و بین <code dir="ltr">float32</code> و <code dir="ltr">float64</code> تفاوت جدی قائل می‌شود. انتخاب نوع مناسب برای محاسبات حساس به دقت مانند محاسبات علمی یا مالی اهمیت زیادی دارد.</p>
 <div class="warning"><strong>هشدار درباره‌ی دقت اعشاری:</strong> نوع <code>float32</code> فقط حدود ۷ رقم دقت اعشاری دارد و <code>float64</code> حدود ۱۵ رقم. برای محاسبات مالی هرگز از float استفاده نکنید — از کتابخانه‌هایی مانند <code>shopspring/decimal</code> یا نوع سفارشی مبتنی بر <code>int64</code> (ذخیره‌ی مبلغ به‌صورت سِنت) استفاده کنید. در PHP نیز مشکل مشابهی وجود دارد اما به‌دلیل dynamic typing کمتر به‌چشم می‌آید.</div>
-<h4 id="boolean">Boolean</h4>
-<p>در <strong dir="ltr">PHP</strong> تعریف یک متغیر بولی ساده است و مقادیر <strong dir="ltr">true</strong> و <strong dir="ltr">false</strong> به‌صورت دینامیک شناخته می‌شوند:</p>
+<p><strong  id="boolean">Boolean</strong> — در <strong dir="ltr">PHP</strong> تعریف یک متغیر بولی ساده است و مقادیر <strong dir="ltr">true</strong> و <strong dir="ltr">false</strong> به‌صورت دینامیک شناخته می‌شوند:</p>
 <figure class="code php" dir="ltr">
 <pre><code class="language-php">$flag = true;
 </code></pre>
@@ -150,8 +147,7 @@ uint, uint8, uint16, uint32, uint64
 }
 </code></pre>
 </figure>
-<h4 id="string">String</h4>
-<p>در <strong dir="ltr">PHP</strong> تعریف یک رشته بسیار ساده است:</p>
+<p><strong  id="string">String</strong> — در <strong dir="ltr">PHP</strong> تعریف یک رشته بسیار ساده است:</p>
 <figure class="code php" dir="ltr">
 <pre><code class="language-php">$name = "Meysam";
 </code></pre>
@@ -161,17 +157,14 @@ uint, uint8, uint16, uint32, uint64
 <pre><code class="language-go">name := "Meysam"
 </code></pre>
 </figure>
-<p><strong>تفاوت‌ها</strong> :</p>
-<p><strong dir="ltr">Immutable</strong> <strong>بودن رشته‌ها</strong></p>
-<p>رشته‌ها در Go <strong>قابل تغییر نیستند</strong>. هر تغییر در رشته منجر به ایجاد یک رشته جدید می‌شود.</p>
-<p><strong>دسترسی به کاراکترها</strong></p>
-<p>می‌توان به کاراکترهای رشته مانند یک آرایه از بایت‌ها دسترسی داشت:</p>
+
+<p><strong dir="ltr">Immutable</strong> <strong>بودن رشته‌ها</strong> — رشته‌ها در Go <strong>قابل تغییر نیستند</strong>. هر تغییر در رشته منجر به ایجاد یک رشته جدید می‌شود.</p>
+<p><strong>دسترسی به کاراکترها</strong> — می‌توان به کاراکترهای رشته مانند یک آرایه از بایت‌ها دسترسی داشت:</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">firstChar := name[0] // type byte
 </code></pre>
 </figure>
-<p><strong dir="ltr">UTF-8</strong> <strong>و Unicode</strong></p>
-<p>رشته‌ها در Go همیشه <strong dir="ltr">UTF-8</strong> هستند.</p>
+<p><strong dir="ltr">UTF-8</strong> <strong>و Unicode</strong> — رشته‌ها در Go همیشه <strong dir="ltr">UTF-8</strong> هستند.</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">var r rune = 'م'
 </code></pre>
@@ -207,8 +200,7 @@ fmt.Println(len(runes)) // 4 — actual number of letters
 </figure>
 <br/>
 فیلد <code>Data</code> اشاره‌گری به آرایه‌ای از بایت‌های فقط‌خواندنی است و <code>Len</code> تعداد بایت‌ها را نگه می‌دارد. به همین دلیل است که رشته‌ها immutable هستند — داده‌ی زیربنایی در حافظه‌ی فقط‌خواندنی قرار دارد و هنگام تغییر، یک آرایه‌ی جدید ساخته می‌شود. انتساب رشته فقط کپی ۱۶ بایتِ header است نه خود داده. این مکانیزم شبیه به Copy-on-Write در PHP است اما تفاوت مهمی دارد: در PHP رشته‌ها هنگام تغییر واقعاً کپی می‌شوند (به‌دلیل reference counting) اما در Go چندین رشته می‌توانند به همان بایت‌های زیربنایی اشاره کنند تا زمانی که تغییری نیاز نباشد.</div>
-<h4 id="pointer">Pointer</h4>
-<p>در PHP هیچ نوع صریحی از اشاره‌گر وجود ندارد. در Go اشاره‌گرها بخشی طبیعی از زبان هستند. در بخش های بعد مفهوم اشاره‌گر و کاربردهای آن به صورت مفصل تشریح خواهد شد.</p>
+<p><strong  id="pointer">Pointer</strong> — در PHP هیچ نوع صریحی از اشاره‌گر وجود ندارد. در Go اشاره‌گرها بخشی طبیعی از زبان هستند. در بخش های بعد مفهوم اشاره‌گر و کاربردهای آن به صورت مفصل تشریح خواهد شد.</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">x := 10
 p := &amp;x // p is a pointer to x
@@ -218,20 +210,19 @@ p := &amp;x // p is a pointer to x
 <pre><code class="language-go">*p = 20 // value of x is changed through p
 </code></pre>
 </figure>
-<h3 id="composite-types">2.1.2 Composite Types</h3>
-<h4 id="array">Array</h4>
-<p>آرایه‌ها در Go ساختارهایی با اندازه ثابت و نوع مشخص هستند که مجموعه‌ای از مقادیر هم‌نوع را در خود نگه می‌دارند. برخلاف PHP که آرایه‌ها می‌توانند اندازه متغیر و انواع مختلف داده را در خود جای دهند آرایه‌های Go بسیار سخت‌گیرانه‌تر و ایستا هستند.</p>
-<p>در PHP:</p>
+<h3 id="composite-types">2.1.2 انواع مرکب</h3>
+<p><strong  id="array">Array</strong> — آرایه‌ها در Go ساختارهایی با اندازه ثابت و نوع مشخص هستند که مجموعه‌ای از مقادیر هم‌نوع را در خود نگه می‌دارند. برخلاف PHP که آرایه‌ها می‌توانند اندازه متغیر و انواع مختلف داده را در خود جای دهند آرایه‌های Go بسیار سخت‌گیرانه‌تر و ایستا هستند.</p>
+
 <figure class="code php" dir="ltr">
 <pre><code class="language-php">$arr = [1, 2, 3];
 </code></pre>
 </figure>
-<p>در Go:</p>
+
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">var arr = [3]int{1, 2, 3}
 </code></pre>
 </figure>
-<p><strong>تفاوت مهم</strong></p>
+
 <p>آرایه‌ها در Go اندازه‌ی ثابت دارند و بخشی از نوع آن‌ها است.</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">[3]int ≠ [4]int
@@ -242,10 +233,9 @@ p := &amp;x // p is a pointer to x
 <pre><code class="language-go">var zeros [5]int // five zeros
 </code></pre>
 </figure>
-<p><strong>تفاوت‌های کلیدی آرایه‌ها در</strong> <strong dir="ltr">Go نسبت به PHP</strong></p>
-<p>اندازه ثابت: در Go طول آرایه بخشی از نوع آن است. برای نمونه، [3]int و [4]int دو نوع کاملاً متفاوت به حساب می‌آیند و نمی‌توان آن‌ها را با هم جایگزین کرد یا آیتمی از آن را حذف کرد. نوع ایستا: برعکس PHP همه اعضای آرایه باید از یک نوع مشخص باشند مثلاً int یا string.</p>
+<p><strong>تفاوت‌های کلیدی آرایه‌ها در</strong> <strong dir="ltr">Go نسبت به PHP</strong> — اندازه ثابت: در Go طول آرایه بخشی از نوع آن است. برای نمونه، [3]int و [4]int دو نوع کاملاً متفاوت به حساب می‌آیند و نمی‌توان آن‌ها را با هم جایگزین کرد یا آیتمی از آن را حذف کرد. نوع ایستا: برعکس PHP همه اعضای آرایه باید از یک نوع مشخص باشند مثلاً int یا string.</p>
 <p><strong>مقادیر پیش‌فرض</strong> اگر آرایه‌ای تعریف شود ولی مقداردهی نشود به صورت خودکار با zero value آن نوع داده پر می‌شود مثلاً zero value نوع int عدد صفر است.</p>
-<p><strong>نکات مهم و توابع مرتبط با آرایه‌ها</strong></p>
+
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">fmt.Println(len(arr)) // 3
 </code></pre>
@@ -268,8 +258,7 @@ fmt.Println(arr)
 </code></pre>
 </figure>
 <div class="tip"><strong>نکته‌ی حرفه‌ای — array یا slice؟</strong> در <bdi dir="ltr">PHP</bdi> تنها یک ساختار آرایه دارید، اما در <bdi dir="ltr">Go</bdi> انتخاب بین <code>array</code> و <code>slice</code> عمدی است. از <code>array</code> فقط وقتی استفاده کنید که طول ثابت در زمان کامپایل معنای دامنه‌ای دارد (مثلاً آدرس IPv4 به‌صورت <code>[4]byte</code> یا ماتریس <code>[3][3]float64</code>)؛ در غیر این صورت <code>slice</code> انتخاب idiomatic است. آرایه‌ها با انتساب کامل کپی می‌شوند و این رفتار برای برنامه‌نویسان <bdi dir="ltr">PHP</bdi> غیرمنتظره است.</div>
-<h4 id="slice">Slice</h4>
-<p>slice از ویژگی‌های مهم Go است و تقریباً جایگزین آرایه‌های دینامیک در PHP محسوب می‌شود. اما همان‌طور که دیدیم آرایه‌ها طول ثابتی دارند و به‌ندرت به‌صورت روزمره استفاده می‌شوند. به جای آن Go ساختاری به نام Slice ارائه کرده که قدرت و انعطاف‌پذیری آرایه‌های PHP را با امنیت و کارایی بیشتر فراهم می‌کند.</p><p>در حقیقت در پشت صحنه یک slice به یک آرایه‌ی واقعی اشاره می‌کند و فقط بخش مشخصی از آن را نمایان می‌سازد.</p><p>تغییر در مقادیر slice می‌تواند آرایه زیربنایی را نیز تغییر دهد.</p>
+<p><strong  id="slice">Slice</strong> — slice از ویژگی‌های مهم Go است و تقریباً جایگزین آرایه‌های دینامیک در PHP محسوب می‌شود. اما همان‌طور که دیدیم آرایه‌ها طول ثابتی دارند و به‌ندرت به‌صورت روزمره استفاده می‌شوند. به جای آن Go ساختاری به نام Slice ارائه کرده که قدرت و انعطاف‌پذیری آرایه‌های PHP را با امنیت و کارایی بیشتر فراهم می‌کند.</p><p>در حقیقت در پشت صحنه یک slice به یک آرایه‌ی واقعی اشاره می‌کند و فقط بخش مشخصی از آن را نمایان می‌سازد.</p><p>تغییر در مقادیر slice می‌تواند آرایه زیربنایی را نیز تغییر دهد.</p>
 <div class="note"><strong>ساختار داخلی Slice در runtime:</strong> هر slice در Go در واقع یک ساختار سه فیلدی به نام SliceHeader است:
 <br/><br/>
 <figure class="code go" dir="ltr">
@@ -282,14 +271,13 @@ fmt.Println(arr)
 <br/>
 <code>Data</code> اشاره‌گری به اولین عنصر آرایه‌ی زیربنایی است. <code>Len</code> تعداد عناصری است که slice در حال حاضر شامل می‌شود و <code>Cap</code> ظرفیت کل آرایه‌ی زیربنایی از نقطه‌ی شروع Data به بعد را نشان می‌دهد. انتساب یک slice به متغیر دیگر فقط این ۲۴ بایت header را کپی می‌کند نه داده‌ها را — به همین دلیل دو slice می‌توانند به همان آرایه‌ی زیربنایی اشتراک داشته باشند. این رفتار با Copy-on-Write در آرایه‌های PHP تفاوت بنیادین دارد: در PHP وقتی <code>$b = $a</code> می‌نویسید ابتدا داده‌ها به‌اشتراک گذاشته می‌شوند اما به‌محض تغییر یکی از آن‌ها کپی ایجاد می‌شود. اما در Go داده‌ها واقعاً مشترک می‌مانند مگر اینکه <code>append</code> باعث ایجاد آرایه‌ی جدید شود.</div>
 
-<p>ویژگی‌های Slice:</p>
 <ul>
 <li>نمایی از یک بخش از آرایه یا زیرمجموعه‌ای از آن است</li>
 <li>اندازه و ظرفیت دارد</li>
 <li>قابلیت اضافه و حذف کردن عنصر دارد</li>
 <li>برای اکثر کارهایی که در <bdi dir="ltr">PHP</bdi> با آرایه انجام می‌دهید معادل مناسب و حرفه‌ای است</li>
 </ul>
-<h5 id="تعریف-مستقیم">تعریف مستقیم</h5>
+<p><strong  id="تعریف-مستقیم">تعریف مستقیم</strong></p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">names := []string{"Meysam", "Amin", "Reza"}
 </code></pre>
@@ -299,19 +287,19 @@ fmt.Println(arr)
 <pre><code class="language-php">$names = ['Meysam', 'Amin', 'Reza'];
 </code></pre>
 </figure>
-<h5 id="ساخت-با-make">ساخت با make</h5>
+<p><strong  id="ساخت-با-make">ساخت با make</strong></p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">users := make([]string, 0, 100) // initial length 0, capacity 100
 </code></pre>
 </figure>
-<h5 id="طول-و-ظرفیت">طول و ظرفیت</h5>
+<p><strong  id="طول-و-ظرفیت">طول و ظرفیت</strong></p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">nums := []int{1, 2, 3}
 fmt.Println(len(nums)) // 3
 fmt.Println(cap(nums)) // 3
 </code></pre>
 </figure>
-<h5 id="افزودن-عنصر-با-append">افزودن عنصر با append</h5>
+<p><strong  id="افزودن-عنصر-با-append">افزودن عنصر با append</strong></p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">nums := []int{1, 2}
 nums = append(nums, 3, 4)
@@ -324,8 +312,7 @@ nums = append(nums, 3, 4)
 <br/>• برای ظرفیت‌های بزرگ‌تر: رشد به‌صورت تدریجی کاهش می‌یابد
 <br/><br/>
 به همین دلیل پیش‌تخصیص ظرفیت با <code dir="ltr">make([]T, 0, n)</code> وقتی تعداد عناصر تقریبی را می‌دانید، از تخصیص‌های مکرر و کپی‌های اضافی جلوگیری می‌کند و کارایی را به‌شدت افزایش می‌دهد. در PHP آرایه‌ها نیز با الگوریتم مشابه رشد می‌کنند اما مدیریت آن خودکار و نامرئی است.</div>
-<h5 id="حذف-عنصر-از-slice">حذف عنصر از Slice</h5>
-<p><strong>مثال</strong> : حذف یک آیتم از لیست کاربران</p>
+<p><strong  id="حذف-عنصر-از-slice">حذف عنصر از Slice</strong> — <strong>مثال</strong> : حذف یک آیتم از لیست کاربران</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">users := []string{"Ali", "Meysam", "Nima", "Reza"}
 // Remove Meysam (index 1)
@@ -338,20 +325,19 @@ func removeAt(slice []string, index int) []string {
 </code></pre>
 </figure>
 <p>در Go تابعی برای حذف عنصر وجود ندارد ولی می‌توان با append و slicing این کار را انجام داد:</p>
-<h5 id="کپی-کردن-slice">کپی کردن Slice</h5>
+<p><strong  id="کپی-کردن-slice">کپی کردن Slice</strong></p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">copyUsers := make([]string, len(users))
 copy(copyUsers, users)
 </code></pre>
 </figure>
 <p>مشابه تابع array_copy در PHP ولی با مدیریت مستقیم حافظه.</p>
-<h4 id="map">Map‌</h4>
-<p>ساختارهای <strong dir="ltr">Key-Value</strong> ابزاری متداول برای نگهداری داده‌های ساخت‌یافته هستند. در PHP این ساختار با آرایه‌های انجمنی پیاده‌سازی می‌شود:</p>
+<p><strong  id="map">Map‌</strong> — ساختارهای <strong dir="ltr">Key-Value</strong> ابزاری متداول برای نگهداری داده‌های ساخت‌یافته هستند. در PHP این ساختار با آرایه‌های انجمنی پیاده‌سازی می‌شود:</p>
 <figure class="code php" dir="ltr">
 <pre><code class="language-php">$user = ['name' =&gt; 'Meysam', 'age' =&gt; 34];
 </code></pre>
 </figure>
-<p>در Go:</p>
+
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">user := map[string]interface{}{
     "name": "Meysam",
@@ -370,7 +356,7 @@ u := User{Name: "Meysam", Age: 34}
 </code></pre>
 </figure>
 <p>در بخش بعدی با مفهوم struct آشنا خواهید شد، برای چنین مواردی تعریف یک نوع داده‌ی struct راه‌حل بهتر و idiomatic است:</p>
-<h5 id="خواندن-از-map">خواندن از map</h5>
+<p><strong  id="خواندن-از-map">خواندن از map</strong></p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">m := map[string]int{
     "apple": 2,
@@ -379,7 +365,7 @@ u := User{Name: "Meysam", Age: 34}
 count := m["apple"]
 </code></pre>
 </figure>
-<h5 id="بررسی-وجود-کلید">بررسی وجود کلید</h5>
+<p><strong  id="بررسی-وجود-کلید">بررسی وجود کلید</strong></p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">count, ok := m["orange"]
 if ok {
@@ -390,24 +376,24 @@ if ok {
 </code></pre>
 </figure>
 <p>این مفهوم برای برنامه‌نویسان <bdi dir="ltr">PHP</bdi> جدید است چون در <bdi dir="ltr">PHP</bdi> معمولاً از تابع <code dir="ltr">isset()</code> استفاده می‌شود.</p>
-<h5 id="افزودن-یا-تغییر-مقدار">افزودن یا تغییر مقدار</h5>
+<p><strong  id="افزودن-یا-تغییر-مقدار">افزودن یا تغییر مقدار</strong></p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">m["cherry"] = 5
 </code></pre>
 </figure>
-<h5 id="حذف-کلید-از-map">حذف کلید از map</h5>
+<p><strong  id="حذف-کلید-از-map">حذف کلید از map</strong></p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">delete(m, "banana")
 </code></pre>
 </figure>
-<h5 id="پیمایش-map">پیمایش Map</h5>
+<p><strong  id="پیمایش-map">پیمایش Map</strong></p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">for k, v := range m {
     fmt.Printf("key=%s, value=%d\n", k, v)
 }
 </code></pre>
 </figure>
-<p><strong>نکات قابل توجه</strong></p>
+
 <p>مقدار بازگشتی دوم هنگام خواندن از (map (ok برای جلوگیری از خطاهای رایج بسیار مهم است.</p>
 <p>map ها <strong dir="ltr">unordered</strong> هستند. یعنی ترتیب پیمایش‌ آنها مشخص نیست. </p>
 <p>Map ها <strong dir="ltr">reference type</strong> هستند. اگر به تابعی پاس داده بشنوند خود map تغییر می‌کند نه یک کپی.</p>
@@ -416,8 +402,7 @@ if ok {
 <pre><code class="language-go">// Cannot compare maps directly with ==, only check if nil
 </code></pre>
 </figure>
-<h4 id="struct">Struct</h4>
-<p>در زبان Go مفهومی به نام <em>کلاس</em> وجود ندارد اما به‌جای آن ساختار داده‌ای به نام <strong dir="ltr">struct</strong> برای تعریف داده‌های ترکیبی و سازمان‌دهی اطلاعات استفاده می‌شود. Structها مانند جعبه‌هایی هستند که می‌توانند چندین مقدار با انواع مختلف را در خود جای دهند. یکی از تفاوت‌های مهم Go با PHP این است که در Go ارث‌بری وجود ندارد. </p><p>به جای آن می‌توان Composition انجام داد یعنی یک struct می‌تواند شامل struct دیگری به صورت embedding باشد که باعث قابلیت استفاده مجدد و سازماندهی بهتر کد می‌شود که این موارد در فصل های بعد در بخش مربوط به شی‌گرایی بیشتر توضیح داده خواهد شد.</p>
+<p><strong  id="struct">Struct</strong> — در زبان Go مفهومی به نام <em>کلاس</em> وجود ندارد اما به‌جای آن ساختار داده‌ای به نام <strong dir="ltr">struct</strong> برای تعریف داده‌های ترکیبی و سازمان‌دهی اطلاعات استفاده می‌شود. Structها مانند جعبه‌هایی هستند که می‌توانند چندین مقدار با انواع مختلف را در خود جای دهند. یکی از تفاوت‌های مهم Go با PHP این است که در Go ارث‌بری وجود ندارد. </p><p>به جای آن می‌توان Composition انجام داد یعنی یک struct می‌تواند شامل struct دیگری به صورت embedding باشد که باعث قابلیت استفاده مجدد و سازماندهی بهتر کد می‌شود که این موارد در فصل های بعد در بخش مربوط به شی‌گرایی بیشتر توضیح داده خواهد شد.</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">type Product struct {
     ID int
@@ -450,8 +435,7 @@ type Good struct {
 fmt.Println(p.Title)
 </code></pre>
 </figure>
-<h4 id="custom-types">Custom Types</h4>
-<p>می‌توان بر پایه‌ی انواع داده‌ای موجود مانند int, string, float64 و حتی struct نوع‌های جدیدی تعریف کرد. این قابلیت علاوه بر خوانایی و سازمان‌دهی بهتر به شما کمک می‌کند تا از type safety بهره‌مند شوید و کدی با قابلیت نگه‌داری و تست‌پذیری بالاتر بنویسید.</p>
+<p><strong  id="custom-types">Custom Types</strong> — می‌توان بر پایه‌ی انواع داده‌ای موجود مانند int, string, float64 و حتی struct نوع‌های جدیدی تعریف کرد. این قابلیت علاوه بر خوانایی و سازمان‌دهی بهتر به شما کمک می‌کند تا از type safety بهره‌مند شوید و کدی با قابلیت نگه‌داری و تست‌پذیری بالاتر بنویسید.</p>
 <p>برای تعریف یک نوع داده سفارشی به صورت زیر عمل می‌کنیم:</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">type Score int
@@ -484,8 +468,7 @@ func SendVerification(to Email) { ... }
 </code></pre>
 </figure>
 <p>حالا اگر به‌اشتباه PhoneNumber را به SendVerification پاس بدهید کامپایلر هشدار خواهد داد.</p>
-<h4 id="const">const</h4>
-<p>با استفاده از کلیدواژه const می‌توان داده‌هایی را به‌عنوان <strong>ثابت</strong> یا <strong dir="ltr">immutable</strong> تعریف کرد یعنی داده های که مقدار آن‌ها <strong>در زمان کامپایل مشخص</strong> می‌شود و <strong>مقدار آنها هرگز در زمان اجرا تغییر نمی‌کند</strong>.</p>
+<p><strong  id="const">const</strong> — با استفاده از کلیدواژه const می‌توان داده‌هایی را به‌عنوان <strong>ثابت</strong> یا <strong dir="ltr">immutable</strong> تعریف کرد یعنی داده های که مقدار آن‌ها <strong>در زمان کامپایل مشخص</strong> می‌شود و <strong>مقدار آنها هرگز در زمان اجرا تغییر نمی‌کند</strong>.</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">const Pi = 3.14
 const Greeting = "Hello"
@@ -511,8 +494,7 @@ Blue = "blue"
 )
 </code></pre>
 </figure>
-<h4 id="enum-با-iota">Enum با iota</h4>
-<p>PHP از نسخه ۸.۱ به بعد از نوع جدید Enum پشتیبانی می‌کند:</p>
+<p><strong  id="enum-با-iota">Enum با iota</strong> — PHP از نسخه ۸.۱ به بعد از نوع جدید Enum پشتیبانی می‌کند:</p>
 <figure class="code php" dir="ltr">
 <pre><code class="language-php">enum Status {
     case Active;
@@ -534,14 +516,11 @@ var s Status = Active
 </figure>
 <p>iota یک شناسه عددی است که به طور خودکار از صفر شروع شده و برای هر مقدار ثابتی که تعریف می‌شود یک واحد افزایش پیدا می‌کند. این ویژگی تعریف مجموعه‌ای از مقادیر ثابت enumerations را بسیار ساده و خوانا می‌کند.</p>
 <p>با کمک <strong dir="ltr">iota</strong> می‌توانید به راحتی Enum های مشابه PHP را تعریف کنید. الگوهای iota و custom type ضمن ساده‌سازی کد موجب افزایش خوانایی و نگهداری آسان‌تر برنامه‌های Go می‌شوند و تفاوت اصلی Go با زبان‌های شیءگرای سنتی را نشان می‌دهند.</p>
-<h3 id="variable-scope">2.1.3 Variable Scope</h3>
+<h3 id="variable-scope">2.1.3 دامنه‌ی متغیرها</h3>
 <p>دامنه یا Scope تعیین می‌کند که یک متغیر در کدام بخش از برنامه قابل دسترسی است. در زبان Go نحوه‌ی تعریف متغیر نقش مهمی در تعیین محدوده‌ی آن دارد</p>
-<p><strong>متغیرهای تعریف‌شده با =:</strong></p>
-<p>این نوع تعریف معمولاً در داخل توابع استفاده می‌شود و دامنه‌ی آن تنها به همان Block محدود است. به بیان دیگر چنین متغیری فقط در همان محدوده‌ای که تعریف شده قابل استفاده خواهد بود و بیرون از آن شناخته‌شده نیست.</p>
-<p><strong>متغیرهای تعریف‌شده با</strong> <strong dir="ltr">var</strong></p>
-<p>اگر در سطح پکیج تعریف شوند در سراسر فایل و حتی در کل پکیج در دسترس خواهند بود. این موضوع امکان تعریف متغیرهایی را فراهم می‌کند که در بخش‌های مختلف کد قابل استفاده باشند.</p>
-<p><strong>حروف بزرگ و کوچک در نام‌گذاری متغیرها</strong></p>
-<p>یکی از ویژگی‌های خاص Go این است که دسترسی به متغیرها و به طور کلی شناسه‌ها به حرف اول نام آن‌ها بستگی دارد. اگر نام یک متغیر با حرف بزرگ شروع شود مانند Name آن متغیر Export شده محسوب می‌شود و از پکیج‌های دیگر نیز قابل دسترسی خواهد بود.</p><p>اما اگر نام با حرف کوچک شروع شود مانند name تنها در همان پکیج فعلی معتبر خواهد بود.</p><p>جزئیات کامل این مفهوم در فصل شی‌گرایی نیز بررسی خواهد شد.</p>
+<p><strong>متغیرهای تعریف‌شده با =:</strong> — این نوع تعریف معمولاً در داخل توابع استفاده می‌شود و دامنه‌ی آن تنها به همان Block محدود است. به بیان دیگر چنین متغیری فقط در همان محدوده‌ای که تعریف شده قابل استفاده خواهد بود و بیرون از آن شناخته‌شده نیست.</p>
+<p><strong>متغیرهای تعریف‌شده با</strong> <strong dir="ltr">var</strong> — اگر در سطح پکیج تعریف شوند در سراسر فایل و حتی در کل پکیج در دسترس خواهند بود. این موضوع امکان تعریف متغیرهایی را فراهم می‌کند که در بخش‌های مختلف کد قابل استفاده باشند.</p>
+<p><strong>حروف بزرگ و کوچک در نام‌گذاری متغیرها</strong> — یکی از ویژگی‌های خاص Go این است که دسترسی به متغیرها و به طور کلی شناسه‌ها به حرف اول نام آن‌ها بستگی دارد. اگر نام یک متغیر با حرف بزرگ شروع شود مانند Name آن متغیر Export شده محسوب می‌شود و از پکیج‌های دیگر نیز قابل دسترسی خواهد بود.</p><p>اما اگر نام با حرف کوچک شروع شود مانند name تنها در همان پکیج فعلی معتبر خواهد بود.</p><p>جزئیات کامل این مفهوم در فصل شی‌گرایی نیز بررسی خواهد شد.</p>
 <p><strong>این شیوه‌ی مدیریت دامنه‌ی متغیرها باعث می‌شود</strong> :</p>
 <p>1. از تداخل نام‌ها در بخش‌های مختلف برنامه جلوگیری شود.</p>
 <p>2. کدی ساخت‌یافته‌تر، خواناتر و قابل نگهداری‌تر تولید گردد.</p>
@@ -554,7 +533,7 @@ var s Status = Active
 <br/><br/>
 علاوه بر این، PHP برای مدیریت حافظه از reference counting و garbage collector استفاده می‌کند. هر <code>zval</code> شامل شمارنده‌ای است که تعداد ارجاع‌ها را رهگیری می‌کند. Go از روش متفاوتی استفاده می‌کند: garbage collector مبتنی بر تری‌کالر mark-and-sweep که هیچ نیازی به reference counting ندارد و overhead کمتری در زمان اجرا دارد.
 </div>
-<h3 id="zero-values">2.1.4 Zero Values: تفاوت بنیادین با nil در PHP</h3>
+<h3 id="zero-values">2.1.4 تفاوت بنیادین با nil در PHP</h3>
 <div class="quote-box">
 <p class="quote-text">مقدار صفر را مفید کنید. مقدار صفر یک نوع باید بدون مقداردهی اولیه صریح آماده استفاده باشد. این اصل طراحی در Go است که دسته‌های کاملی از باگ‌های مرتبط با داده‌های مقداردهی‌نشده را حذف می‌کند.</p>
 <p class="quote-source">
@@ -607,7 +586,7 @@ fmt.Println(string(data))
 // Age=0 and Score=null are different concepts!
 </code></pre>
 </figure>
-<h3 id="type-alias-vs-definition">2.1.5 نوع‌مستعار در برابر نوع‌جدید: Type Alias vs Type Definition</h3>
+<h3 id="type-alias-vs-definition">2.1.5 نوع‌مستعار در برابر نوع‌جدید</h3>
 <p><bdi dir="ltr">Go</bdi> دو روش متفاوت برای تعریف انواع سفارشی ارائه می‌دهد که رفتار کاملاً متفاوتی دارند. این تفاوت برای برنامه‌نویسان <bdi dir="ltr">PHP</bdi> که با <bdi dir="ltr">type alias</bdi> آشنا نیستند بسیار مهم است و درک آن از خطاهای عجیب کامپایلر جلوگیری می‌کند.</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">// Type Definition — new and independent type
@@ -710,7 +689,7 @@ func processRunes(data string) {
 </code></pre>
 </figure>
 <div class="tip"><strong>بهینه‌سازی پیشرفته:</strong> در مسیرهای بحرانی کد می‌توانید از <code>unsafe.Pointer</code> برای تبدیل بدون کپی استفاده کنید (که در بخش ۲.۲ توضیح داده شده). اما این روش فقط وقتی امن است که <code>[]byte</code> پس از تبدیل تغییر نکند. اگر داده‌ی بزرگ را فقط می‌خوانید، این بهینه‌سازی می‌تواند تأثیر قابل‌توجهی داشته باشد.</div>
-<h3 id="memory-layout-comparison">2.1.9 مقایسه‌ی ساختار حافظه:PHP zval در برابر Go Typed Values</h3>
+<h3 id="memory-layout-comparison">2.1.9 مقایسه‌ی ساختار حافظه</h3>
 <p>یکی از تفاوت‌های بنیادین <bdi dir="ltr">PHP</bdi> و <bdi dir="ltr">Go</bdi> در نحوه‌ی ذخیره‌سازی مقادیر در حافظه نهفته است. در <bdi dir="ltr">PHP</bdi> هر متغیر فارغ از نوع داده‌ی آن در یک ساختار یکسان به نام <bdi dir="ltr">zval</bdi> نگهداری می‌شود که شامل برچسب نوع، مقدار واقعی، شمارنده‌ی ارجاع و پرچم ارجاع است. </p><p>این طراحی یکنواخت انعطاف‌پذیری بالایی در زمان اجرا فراهم می‌کند اما هزینه‌ی حافظه‌ی قابل‌توجهی دارد. </p><p>در مقابل <bdi dir="ltr">Go</bdi> هر مقدار دقیقاً به اندازه‌ی نوع واقعی خود فضا اشغال می‌کند بدون هیچ سربار اضافی برای مدیریت نوع در زمان اجرا.</p>
 <p>این تفاوت ساختاری پیامدهای عملی مهمی دارد: برنامه‌های <bdi dir="ltr">Go</bdi> معمولاً حافظه‌ی بسیار کمتری نسبت به معادل <bdi dir="ltr">PHP</bdi> خود مصرف می‌کنند. برای نمونه، ذخیره‌ی هزار عدد صحیح در <bdi dir="ltr">PHP</bdi> حدود ۱۶ کیلوبایت فقط برای ساختارهای <bdi dir="ltr">zval</bdi> نیاز دارد اما در <bdi dir="ltr">Go</bdi> فقط ۸ کیلوبایت. </p><p>این بهره‌وری حافظه مستقیماً بر کارایی کش پردازنده و سرعت اجرای برنامه تأثیر می‌گذارد و یکی از دلایل اصلی برتری عملکرد <bdi dir="ltr">Go</bdi> در کارهای محاسباتی است.</p>
 <figure class="diagram" dir="ltr">
@@ -757,16 +736,7 @@ func processRunes(data string) {
 <li><strong>نوع‌دستی برای شفافیت دامنه:</strong> با <code>type Score int</code> یا <code>type UserID int64</code> می‌توانید انواع سفارشی بسازید که خوانایی کد را افزایش می‌دهد و از اشتباه گرفتن مقادیر مختلف جلوگیری می‌کند. کامپایلر <bdi dir="ltr">Go</bdi> بین <bdi dir="ltr">Score</bdi> و <bdi dir="ltr">int</bdi> تفاوت قائل می‌شود و نمی‌توانید ناخواسته یکی را به‌جای دیگری استفاده کنید. این رویکرد در <bdi dir="ltr">PHP</bdi> ممکن نیست چون نوع‌دهی پویا چنین امنیتی فراهم نمی‌کند.</li>
 </ul>
 <div class="tip"><strong>مقدار صفر ویژگی است نه مشکل:</strong> <bdi dir="ltr">Go</bdi> برخلاف <bdi dir="ltr">PHP</bdi> مفهوم <bdi dir="ltr">null</bdi> همه‌گیر ندارد. هر متغیر بدون مقداردهی مقدار صفر نوع خود را می‌گیرد که همیشه معتبر و ایمن است. انواع <bdi dir="ltr">struct</bdi> خود را طوری طراحی کنید که مقدار صفر آن‌ها بلافاصله قابل استفاده باشد. مثلاً به‌جای تابع سازنده‌ای که همه‌ی فیلدها را اجباری می‌کند، فیلدها را با مقادیر پیش‌فرض معتبر طراحی کنید. این الگو در کتابخانه‌ی استاندارد <bdi dir="ltr">Go</bdi> به‌طور گسترده استفاده شده: <bdi dir="ltr">bytes.Buffer</bdi>، <bdi dir="ltr">sync.Mutex</bdi> و <bdi dir="ltr">http.Server</bdi> همگی بدون مقداردهی اولیه قابل استفاده‌اند. اگر نوعی نیاز به مقداردهی اجباری دارد تابع <bdi dir="ltr">NewX()</bdi> بسازید اما مقدار صفر را بی‌معنی نکنید.</div>
-<div class="summary">
-<strong>خلاصه‌ی نکات کلیدی:</strong>
-<ul>
-<li>هر نوع در Go مقدار صفر مشخصی دارد (0, false, "", nil)</li>
-<li>رشته‌ها immutable هستند و string header شامل pointer + length است</li>
-<li>array طول ثابت دارد؛ slice از array با طول دینامیک ساخته می‌شود</li>
-<li>map هش‌جدول است و مرجع‌دار رفتار می‌کند</li>
-<li>struct مجموعه‌ی فیلدها با تخصیص مقداری است</li>
-</ul>
-</div></div>
+</div>
 </main>
 </div>
 <!-- Footer -->

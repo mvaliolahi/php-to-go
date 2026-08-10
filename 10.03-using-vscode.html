@@ -277,8 +277,7 @@ $ docker compose -f docker-compose.debug.yml up
 # Then in VS Code, connect with "Attach to Remote" config
 </code></pre>
 </figure>
-<p><strong>روش ۳: Dev Containers</strong></p>
-<p>VS Code قابلیت <bdi dir="ltr">Dev Containers</bdi> را دارد که به شما اجازه می‌دهد کل محیط توسعه را داخل container اجرا کنید. در این حالت، نیازی به remote attach نیست چون VS Code مستقیماً داخل container اجرا می‌شود و دیباگ مثل حالت محلی کار می‌کند:</p>
+<p><strong>روش ۳: Dev Containers</strong> — VS Code قابلیت <bdi dir="ltr">Dev Containers</bdi> را دارد که به شما اجازه می‌دهد کل محیط توسعه را داخل container اجرا کنید. در این حالت، نیازی به remote attach نیست چون VS Code مستقیماً داخل container اجرا می‌شود و دیباگ مثل حالت محلی کار می‌کند:</p>
 <figure class="code json" dir="ltr">
 <pre><code class="language-json">// .devcontainer/devcontainer.json
 {
@@ -313,8 +312,7 @@ $ docker compose -f docker-compose.debug.yml up
 }
 </code></pre>
 </figure>
-<p><strong>روش ۲: دیباگ تست با Code Lens</strong></p>
-<p>افزونه Go به‌صورت خودکار لینک‌های <bdi dir="ltr">debug test</bdi> و <bdi dir="ltr">run test</bdi> بالای هر تابع تست اضافه می‌کند. فقط کافیست روی <bdi dir="ltr">debug test</bdi> کلیک کنید و VS Code به‌صورت خودکار آن تست را در حالت دیباگ اجرا می‌کند. این ساده‌ترین روش برای دیباگ تست‌های منفرد است.</p>
+<p><strong>روش ۲: دیباگ تست با Code Lens</strong> — افزونه Go به‌صورت خودکار لینک‌های <bdi dir="ltr">debug test</bdi> و <bdi dir="ltr">run test</bdi> بالای هر تابع تست اضافه می‌کند. فقط کافیست روی <bdi dir="ltr">debug test</bdi> کلیک کنید و VS Code به‌صورت خودکار آن تست را در حالت دیباگ اجرا می‌کند. این ساده‌ترین روش برای دیباگ تست‌های منفرد است.</p>
 <p><strong>روش ۳: دیباگ تست با Race Detector</strong></p>
 <figure class="code json" dir="ltr">
 <pre><code class="language-json">{
@@ -354,14 +352,10 @@ $ docker compose -f docker-compose.debug.yml up
 <p><strong>Data Breakpoints:</strong> می‌توانید روی یک متغیر خاص breakpoint که هر بار مقدار آن تغییر کند، برنامه متوقف شود. این قابلیت در VS Code 1.60+ اضافه شده و برای شناسایی اینکه کجا یک متغیر مقدار غیرمنتظره می‌گیرد بسیار مفید است.</p>
 <h3 id="رفع-مشکلات-رایج-دیباگ-vs-code">10.3.6 رفع مشکلات رایج دیباگ در VS Code</h3>
 <p>هنگام دیباگ Go در VS Code ممکن است با مشکلاتی مواجه شوید. در اینجا مشکلات رایج و راه‌حل آن‌ها آورده شده است:</p>
-<p><strong>مشکل: Breakpoint‌ها کار نمی‌کنند (خاکستری هستند)</strong></p>
-<p>این مشکل معمولاً به دلیل فعال بودن بهینه‌سازی کامپایلر رخ می‌دهد. راه‌حل: مطمئن شوید برنامه با فلگ <bdi dir="ltr">-gcflags="all=-N -l"</bdi> کامپایل شده باشد. در launch.json این فلگ به‌صورت خودکار اضافه می‌شود، اما اگر باینری را جداگانه ساخته‌اید باید دستی اضافه کنید. همچنین اگر از <bdi dir="ltr">go run</bdi> استفاده می‌کنید، به‌جای آن از <bdi dir="ltr">dlv debug</bdi> استفاده کنید.</p>
-<p><strong>مشکل: متغیرها قابل مشاهده نیستند</strong></p>
-<p>وقتی بهینه‌سازی فعال باشد، کامپایلر ممکن است متغیرها را حذف کند یا در register نگه دارد. راه‌حل: غیرفعال‌سازی بهینه‌سازی با <bdi dir="ltr">-gcflags="all=-N -l"</bdi>. اگر متغیر در closure استفاده شده، ممکن است با نام <code>&amp;</code> شروع شود. از دستور <code>args</code> و <code>locals</code> در Debug Console استفاده کنید.</p>
-<p><strong>مشکل: Cannot find Delve debugger</strong></p>
-<p>Delve نصب نشده یا در PATH نیست. راه‌حل: <code>go install github.com/go-delve/delve/cmd/dlv@latest</code> را اجرا کنید و مطمئن شوید <code>$GOPATH/bin</code> در PATH شماست. در VS Code می‌توانید مسیر Delve را با <code>"go.alternateTools.dlv": "/path/to/dlv"</code> مشخص کنید.</p>
-<p><strong>مشکل: Remote attach نمی‌شود</strong></p>
-<p>پورت Delive در container باز نیست یا فایروال جلوگیری می‌کند. راه‌حل: مطمئن شوید پورت ۲۳۴۵ در Docker map شده (<code>-p 2345:2345</code>)، <code>api-version=2</code> در دستور Delve مشخص شده، و SSH tunnel برقرار است.</p>
+<p><strong>مشکل: Breakpoint‌ها کار نمی‌کنند (خاکستری هستند)</strong> — این مشکل معمولاً به دلیل فعال بودن بهینه‌سازی کامپایلر رخ می‌دهد. راه‌حل: مطمئن شوید برنامه با فلگ <bdi dir="ltr">-gcflags="all=-N -l"</bdi> کامپایل شده باشد. در launch.json این فلگ به‌صورت خودکار اضافه می‌شود، اما اگر باینری را جداگانه ساخته‌اید باید دستی اضافه کنید. همچنین اگر از <bdi dir="ltr">go run</bdi> استفاده می‌کنید، به‌جای آن از <bdi dir="ltr">dlv debug</bdi> استفاده کنید.</p>
+<p><strong>مشکل: متغیرها قابل مشاهده نیستند</strong> — وقتی بهینه‌سازی فعال باشد، کامپایلر ممکن است متغیرها را حذف کند یا در register نگه دارد. راه‌حل: غیرفعال‌سازی بهینه‌سازی با <bdi dir="ltr">-gcflags="all=-N -l"</bdi>. اگر متغیر در closure استفاده شده، ممکن است با نام <code>&amp;</code> شروع شود. از دستور <code>args</code> و <code>locals</code> در Debug Console استفاده کنید.</p>
+<p><strong>مشکل: Cannot find Delve debugger</strong> — Delve نصب نشده یا در PATH نیست. راه‌حل: <code>go install github.com/go-delve/delve/cmd/dlv@latest</code> را اجرا کنید و مطمئن شوید <code>$GOPATH/bin</code> در PATH شماست. در VS Code می‌توانید مسیر Delve را با <code>"go.alternateTools.dlv": "/path/to/dlv"</code> مشخص کنید.</p>
+<p><strong>مشکل: Remote attach نمی‌شود</strong> — پورت Delive در container باز نیست یا فایروال جلوگیری می‌کند. راه‌حل: مطمئن شوید پورت ۲۳۴۵ در Docker map شده (<code>-p 2345:2345</code>)، <code>api-version=2</code> در دستور Delve مشخص شده، و SSH tunnel برقرار است.</p>
 <figure class="code json" dir="ltr">
 <pre><code class="language-json">// Useful settings for fixing debug issues in settings.json
 {
@@ -476,16 +470,7 @@ $ docker compose -f docker-compose.debug.yml up
 <li><strong>پیکربندی <bdi dir="ltr">Build Tags</bdi> برای دیباگ:</strong> وقتی پروژه از build tags استفاده می‌کند (مثلاً <code>//go:build integration</code>)، باید آن‌ها را در <code>launch.json</code> مشخص کنید: <code>"buildFlags": "-tags=integration"</code>. بدون این تنظیم، VS Code فایل‌هایی که build tag دارند را نادیده می‌گیرد و breakpoint‌ها روی آن‌ها کار نمی‌کند. همچنین می‌توانید در <code>settings.json</code> مقدار <code>"go.buildTags": "integration"</code> را تنظیم کنید تا همیشه اعمال شود.</li>
 </ul>
 <div class="tip"><strong>نکته کلیدی:</strong> اگر برنامه شما از <code>stdin</code> می‌خواند (مثلاً ورودی کاربر یا pipe)، حتماً در <code>launch.json</code> مقدار <code>"console": "integratedTerminal"</code> را تنظیم کنید. مقدار پیش‌فرض <code>"internalConsole"</code> از <code>stdin</code> پشتیبانی نمی‌کند و برنامه در منتظر ورودی می‌ماند! همچنین اگر خروجی رنگی یا کاراکترهای خاص دارید، <code>"integratedTerminal"</code> بهترین گزینه است چون رفتار یکسانی با terminal واقعی دارد.</div>
-<div class="summary">
-<strong>خلاصه‌ی نکات کلیدی:</strong>
-<ul>
-<li>Go extension برای language server</li>
-<li>launch.json برای debug config</li>
-<li>test runner یکپارچه</li>
-<li>refactoring با gopls</li>
-<li>remote development با SSH یا container</li>
-</ul>
-</div></div>
+</div>
 </main>
 </div>
 <!-- Footer -->

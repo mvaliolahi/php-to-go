@@ -179,7 +179,7 @@ go func() { // run anonymous function in goroutine
 </svg>
 <figcaption>شکل ۵-۲: مدل سه‌وجهی GMP — P (Processor) منبع مجازی اجرایی است که تعدادش با GOMAXPROCS برابر است؛ M (Machine) یک Thread واقعی سیستم‌عامل است که یک P را در اختیار دارد و G (Goroutine) را اجرا می‌کند. وقتی صف محلی یک P خالی شود، با Work-Stealing نیمی از صف یک P پرتر را برمی‌دارد.</figcaption>
 </figure>
-<h4 id="work-stealing">الگوریتم <bdi dir="ltr">Work-Stealing</bdi></h4>
+<p><strong  id="work-stealing">الگوریتم <bdi dir="ltr">Work-Stealing</bdi></strong></p>
 <p>وقتی یک <bdi dir="ltr">P</bdi> صف محلی خود را خالی می‌یابد، به ترتیب زیر عمل می‌کند:</p>
 <p>۱. ابتدا صف محلی خود را بررسی می‌کند — اگر خالی بود، به مرحله بعد.</p>
 <p>۲. <bdi dir="ltr">Global Run Queue</bdi> را بررسی می‌کند — اگر <bdi dir="ltr">G</bdi>‌ای وجود داشت آن را می‌گیرد.</p>
@@ -526,16 +526,7 @@ fmt.Println("GOMAXPROCS:", runtime.GOMAXPROCS(0))
 <li><strong>الگوی <bdi dir="ltr">Pipeline</bdi> با مراحل به‌عنوان <bdi dir="ltr">Goroutine</bdi>:</strong> در پردازش داده‌ها می‌توان هر مرحله از خط لوله (<bdi dir="ltr">Pipeline</bdi>) را به یک <bdi dir="ltr">Goroutine</bdi> اختصاص داد. مثلاً مرحله خواندن داده، مرحله تبدیل، مرحله فیلتر و مرحله نوشتن خروجی هر کدام یک <bdi dir="ltr">Goroutine</bdi> مستقل هستند که از طریق <bdi dir="ltr">Channel</bdi> به هم متصل شده‌اند. این الگو شبیه <bdi dir="ltr">Unix Pipe</bdi> عمل می‌کند و مزیتش این است که هر مرحله می‌تواند با سرعت مستقل خود کار کند.</li>
 </ul>
 <div class="tip"><strong>نکته عملی — شرط خروج مشخص برای هر <bdi dir="ltr">Goroutine</bdi>:</strong> مهم‌ترین قاعده در کار با <bdi dir="ltr">Goroutine</bdi> این است: هر <bdi dir="ltr">Goroutine</bdi> باید شرط خروج مشخصی داشته باشد. بهترین روش این است که هر <bdi dir="ltr">Goroutine</bdi> یا از یک <bdi dir="ltr">Channel</bdi> سیگنال توقف دریافت کند، یا از <code>context.Context</code> برای لغو استفاده نماید، یا در یک حلقه <code>for</code> با شرط خروج واضح کار کند. هرگز <bdi dir="ltr">Goroutine</bdi>‌ای نسازید که نتوانید آن را متوقف کنید — جزئیات کامل عوامل نشت و راه‌حل‌های تشخیصی آن‌ها در بخش ۵.۹ (<a href="05.09-goroutine-leak.html#goroutine-leak">Goroutine Leak</a>) بررسی شده است.</div>
-<div class="summary">
-<strong>خلاصه‌ی نکات کلیدی:</strong>
-<ul>
-<li>goroutine با go keyword راه‌اندازی می‌شود</li>
-<li>هزینه‌ی goroutine: ~2KB stack اولیه، در برابر MBها thread</li>
-<li>GMP scheduler: Goroutine + Machine + Processor</li>
-<li>goroutine روی thread سیستم‌عامل multiplex می‌شود</li>
-<li>نشتی goroutine با context یا done channel جلوگیری می‌شود</li>
-</ul>
-</div></div>
+</div>
 </main>
 </div>
 <!-- Footer -->

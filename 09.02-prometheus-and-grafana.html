@@ -126,8 +126,7 @@
 </figure>
 <p>Prometheus چهار نوع متریک اصلی دارد. انتخاب نوع مناسب برای هر سناریو، تفاوت بین داشبورد مفید و داده‌های بی‌فایده را رقم می‌زند. در ادامه هر نوع را با تصویر، مثال عملیاتی و کد Go بررسی می‌کنیم.</p>
 <!-- ===== Counter ===== -->
-<h4 id="metric-counter">Counter</h4>
-<p><bdi dir="ltr">Counter</bdi> ساده‌ترین و پرکاربردترین نوع متریک است. مقدار آن از صفر شروع شده و فقط افزایش می‌یابد — هرگز کاهش نمی‌یابد. وقتی برنامه ری‌استارت شود، Counter به صفر برمی‌گردد و <bdi dir="ltr">Prometheus</bdi> به‌طور خودکار این ریستارت را تشخیص داده و <bdi dir="ltr">rate()</bdi> را درست محاسبه می‌کند. </p><p>به همین دلیل هیچ‌گاه نباید Counter را مستقیم روی داشبورد رسم کنید — فقط نرخ تغییر آن (<bdi dir="ltr">rate</bdi>) معنادار است.</p>
+<p><strong  id="metric-counter">Counter</strong> — <bdi dir="ltr">Counter</bdi> ساده‌ترین و پرکاربردترین نوع متریک است. مقدار آن از صفر شروع شده و فقط افزایش می‌یابد — هرگز کاهش نمی‌یابد. وقتی برنامه ری‌استارت شود، Counter به صفر برمی‌گردد و <bdi dir="ltr">Prometheus</bdi> به‌طور خودکار این ریستارت را تشخیص داده و <bdi dir="ltr">rate()</bdi> را درست محاسبه می‌کند. </p><p>به همین دلیل هیچ‌گاه نباید Counter را مستقیم روی داشبورد رسم کنید — فقط نرخ تغییر آن (<bdi dir="ltr">rate</bdi>) معنادار است.</p>
 <p><strong>سناریوهای عملیاتی Counter:</strong></p>
 <ul>
 <li><strong>شمارش درخواست‌ها:</strong> هر درخواست HTTP یک واحد به <code>http_requests_total</code> اضافه می‌شود. با <bdi dir="ltr">rate()</bdi> نرخ درخواست در ثانیه به‌دست می‌آید.</li>
@@ -166,8 +165,7 @@ func metricsMiddleware(next http.Handler) http.Handler {
 </figure>
 <div class="tip"><strong>نکته عملی:</strong> همیشه Counter را با Labels تعریف کنید (<code>NewCounterVec</code>). مثلاً به‌جای یک Counter کلی، از Labels مثل <code>method</code> و <code>status</code> استفاده کنید تا بتوانید نرخ خطا را به تفکیک endpoint تحلیل کنید. بدون Labels، فقط یک عدد کلی دارید که برای عیب‌یابی بی‌فایده است.</div>
 <!-- ===== Gauge ===== -->
-<h4 id="metric-gauge">Gauge</h4>
-<p><bdi dir="ltr">Gauge</bdi> متریک وضعیت لحظه‌ای است. برعکس Counter، مقدار Gauge می‌تواند افزایش یا کاهش یابد و مقدار مطلق آن مهم است — نیازی به <bdi dir="ltr">rate()</bdi> ندارد. Gauge نشان‌دهنده‌ی «وضعیت الان» است: چند اتصال فعال داریم؟ چقدر حافظه مصرف شده؟ چند goroutine در حال اجراست؟</p>
+<p><strong  id="metric-gauge">Gauge</strong> — <bdi dir="ltr">Gauge</bdi> متریک وضعیت لحظه‌ای است. برعکس Counter، مقدار Gauge می‌تواند افزایش یا کاهش یابد و مقدار مطلق آن مهم است — نیازی به <bdi dir="ltr">rate()</bdi> ندارد. Gauge نشان‌دهنده‌ی «وضعیت الان» است: چند اتصال فعال داریم؟ چقدر حافظه مصرف شده؟ چند goroutine در حال اجراست؟</p>
 <p><strong>سناریوهای عملیاتی Gauge:</strong></p>
 <ul>
 <li><strong>اتصال‌های فعال:</strong> هر اتصال ورودی <code>Inc()</code> و هر قطع اتصال <code>Dec()</code> فراخوانی می‌شود. این عدد نشان می‌دهد سرور چقدر تحت بار است.</li>
@@ -204,8 +202,7 @@ defer activeConnections.Dec()
 dbConnections.WithLabelValues("primary").Set(float64(dbPool.Stats().OpenConnections))</code></pre>
 </figure>
 <!-- ===== Histogram ===== -->
-<h4 id="metric-histogram">Histogram</h4>
-<p><bdi dir="ltr">Histogram</bdi> سه سری زمانی تولید می‌کند: <code>_bucket</code> (توزیع تجمعی)، <code>_sum</code> (مجموع مقادیر) و <code>_count</code> (تعداد نمونه‌ها). مزیت اصلی Histogram این است که <bdi dir="ltr">percentile</bdi> ها سمت سرور (Prometheus) محاسبه می‌شوند — یعنی می‌توانید داده‌های چند instance را تجمیع کرده و p95 کلی سیستم را به‌دست آورید. این ویژگی در محیط‌های میکروسرویسی حیاتی است.</p>
+<p><strong  id="metric-histogram">Histogram</strong> — <bdi dir="ltr">Histogram</bdi> سه سری زمانی تولید می‌کند: <code>_bucket</code> (توزیع تجمعی)، <code>_sum</code> (مجموع مقادیر) و <code>_count</code> (تعداد نمونه‌ها). مزیت اصلی Histogram این است که <bdi dir="ltr">percentile</bdi> ها سمت سرور (Prometheus) محاسبه می‌شوند — یعنی می‌توانید داده‌های چند instance را تجمیع کرده و p95 کلی سیستم را به‌دست آورید. این ویژگی در محیط‌های میکروسرویسی حیاتی است.</p>
 <p><strong>سناریوهای عملیاتی Histogram:</strong></p>
 <ul>
 <li><strong>زمان پاسخ HTTP:</strong> هر درخواست زمان <code>Observe(duration)</code> فراخوانی می‌شود. p95 و p99 latency از مهم‌ترین متریک‌های هر API هستند.</li>
@@ -241,8 +238,7 @@ func durationMiddleware(next http.Handler) http.Handler {
 </figure>
 <div class="important"><strong>انتخاب Bucket مناسب:</strong> Bucket پیش‌فرض Prometheus (<code>DefBuckets</code>) شامل بازه‌های <code>{0.005, 0.01, 0.025, 0.05, 0.1, 0.25, 0.5, 1, 2.5, 5, 10}</code> ثانیه است. این بازه‌ها برای اکثر API‌ها مناسب هستند، اما اگر SLA شما متفاوت است باید Bucket سفارشی تعریف کنید. مثلاً اگر SLA شما «p99 زیر 100ms» است، باید بازه‌های ریزتری مثل <code>{0.01, 0.025, 0.05, 0.075, 0.1, 0.15, 0.25}</code> داشته باشید تا دقت محاسبه percentile بالا باشد. Bucketها قابل تغییر پس از تعریف نیستند — فقط با ری‌استارت و از دست رفتن داده‌های قبلی قابل تغییر هستند.</div>
 <!-- ===== Summary ===== -->
-<h4 id="metric-summary">Summary</h4>
-<p><bdi dir="ltr">Summary</bdi> مشابه Histogram است اما percentile‌ها سمت کلاینت (برنامه Go) محاسبه می‌شوند. این یعنی هر instance عدد percentile خودش را گزارش می‌دهد و <bdi dir="ltr">Prometheus</bdi> فقط آن را ذخیره می‌کند. مشکل اصلی: نمی‌توانید percentile‌های چند instance را با هم ترکیب کنید. </p><p>p95 نمونه A بعلاوه p95 نمونه B مساوی p95 کل سیستم نیست — percentile از روی percentile قابل محاسبه نیست.</p>
+<p><strong  id="metric-summary">Summary</strong> — <bdi dir="ltr">Summary</bdi> مشابه Histogram است اما percentile‌ها سمت کلاینت (برنامه Go) محاسبه می‌شوند. این یعنی هر instance عدد percentile خودش را گزارش می‌دهد و <bdi dir="ltr">Prometheus</bdi> فقط آن را ذخیره می‌کند. مشکل اصلی: نمی‌توانید percentile‌های چند instance را با هم ترکیب کنید. </p><p>p95 نمونه A بعلاوه p95 نمونه B مساوی p95 کل سیستم نیست — percentile از روی percentile قابل محاسبه نیست.</p>
 <p><strong>چه زمانی از Summary استفاده کنید؟</strong></p>
 <ul>
 <li><strong>پروسه‌ی تک‌نمونه‌ای:</strong> وقتی فقط یک instance از برنامه دارید و نیاز به تجمیع ندارید. مثلاً یک cron job که تعداد محدودی اجرا می‌شود.</li>
@@ -272,7 +268,7 @@ rpcDuration.WithLabelValues("UserService", "GetUser").Observe(duration.Seconds()
 </figure>
 <div class="warning"><strong>هشدار:</strong> در اکثر پروژه‌های production، <bdi dir="ltr">Histogram</bdi> ترجیح داده می‌شود چون قابلیت تجمیع دارد. اگر 5 پاد از سرویس شما اجرا شده و بخواهید p95 کلی را بدانید، فقط Histogram این امکان را می‌دهد. Summary فقط زمانی مناسب است که دقیقاً یک نمونه دارید یا تجمیع برایتان مهم نیست. همچنین Summary حافظه بیشتری مصرف می‌کند چون باید تمام نمونه‌های اخیر را در حافظه نگه دارد.</div>
 <!-- ===== Comparison Table ===== -->
-<h4 id="مقایسه-انواع-متریک">مقایسه چهار نوع متریک</h4>
+<p><strong  id="مقایسه-انواع-متریک">مقایسه چهار نوع متریک</strong></p>
 <table class="comparison-table" dir="rtl">
 <thead>
 <tr><th>نوع</th><th>رفتار</th><th>percentile</th><th>تجمیع‌پذیری</th><th>بهترین کاربرد</th><th>کوئری رایج</th></tr>
@@ -518,16 +514,7 @@ groups:
 </tbody>
 </table>
 <div class="note"><strong>برای توسعه‌دهندگان تازه‌کار:</strong> یادگیری <bdi dir="ltr">PromQL</bdi> ممکن است در ابتدا دشوار به نظر برسد. پیشنهاد می‌کنیم ابتدا سه کوئری اول جدول بالا را در <bdi dir="ltr">Grafana Explore</bdi> امتحان کنید و نتایج را مشاهده نمایید. سپس به‌تدریج کوئری‌های پیچیده‌تر بنویسید. منبع کامل <bdi dir="ltr">PromQL</bdi> در <bdi dir="ltr">prometheus.io/docs/prometheus/latest/querying</bdi> موجود است.</div>
-<div class="summary">
-<strong>خلاصه‌ی نکات کلیدی:</strong>
-<ul>
-<li>Prometheus pull-based metrics</li>
-<li>counter: monotonic increasing</li>
-<li>gauge: up/down</li>
-<li>histogram: distribution</li>
-<li>Grafana برای dashboard و alerting</li>
-</ul>
-</div></div>
+</div>
 </main></div>
 <!-- Footer -->
 <footer class="site-footer">

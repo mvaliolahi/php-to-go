@@ -77,15 +77,7 @@
 <span class="quote-book">Observability: A Manifesto</span>
 </p>
 </div>
-<p><strong>در این فصل خواننده با مفاهیم زیر آشنا خواهد شد:</strong></p>
-<p>استفاده از پکیج استاندارد <bdi dir="ltr">log</bdi> برای ثبت Logsی ساده، و معرفی ابزارهای پیشرفته مانند <bdi dir="ltr">logrus</bdi>، <bdi dir="ltr">zap</bdi> یا <bdi dir="ltr">zerolog</bdi> برای Logging ساخت‌یافته در پروژه‌های بزرگ. همچنین آشنایی عمیق با <bdi dir="ltr">slog</bdi> در <bdi dir="ltr">Go 1.21+</bdi> به‌عنوان استاندارد جدید Logging ساخت‌یافته.</p>
-<p>اهمیت Logs و کاربرد در <bdi dir="ltr">Debugging</bdi>، <bdi dir="ltr">Monitoring</bdi>، تحلیل رفتار کاربران و ثبت عملیات بحرانی برای امنیت. سطوح لاگ (<bdi dir="ltr">Debug</bdi>، <bdi dir="ltr">Info</bdi>، <bdi dir="ltr">Warn</bdi>، <bdi dir="ltr">Error</bdi>، <bdi dir="ltr">Fatal</bdi>) و مقایسه با <bdi dir="ltr">Monolog</bdi> در <bdi dir="ltr">PHP</bdi>.</p>
-<p>استفاده از <bdi dir="ltr">os.Create</bdi> یا <bdi dir="ltr">os.OpenFile</bdi> برای ذخیره Logs در فایل و تنظیم فرمت با <bdi dir="ltr">log.SetFlags</bdi>. ذخیره‌سازی مناسب در محیط‌های <bdi dir="ltr">Development</bdi> و <bdi dir="ltr">Production</bdi>، استفاده از فرمت <bdi dir="ltr">JSON</bdi> برای تحلیل، اجتناب از ثبت اطلاعات حساس، و استفاده از <bdi dir="ltr">Context</bdi> برای افزودن اطلاعات درخواست.</p>
-<p>مثالی از <bdi dir="ltr">Middleware</bdi> برای ثبت خودکار اطلاعات درخواست‌ها و پاسخ‌ها در برنامه‌های وب.</p>
-<p>استفاده از <bdi dir="ltr">Logger</bdi> های <bdi dir="ltr">Thread-safe</bdi> مانند <bdi dir="ltr">logrus</bdi> و <bdi dir="ltr">zerolog</bdi> برای جلوگیری از مشکلات در محیط‌های <bdi dir="ltr">Concurrent</bdi>.</p>
-<p>مانیتورینگ با <bdi dir="ltr">Prometheus</bdi> و جمع‌آوری و ذخیره Metrics. آشنایی با انواع Metrics (<bdi dir="ltr">Counter</bdi>، <bdi dir="ltr">Gauge</bdi>، <bdi dir="ltr">Histogram</bdi>، <bdi dir="ltr">Summary</bdi>) و پیاده‌سازی Metrics سفارشی در <bdi dir="ltr">Go</bdi>.</p>
-<p>مصورسازی با <bdi dir="ltr">Grafana</bdi> و اتصال به <bdi dir="ltr">Prometheus</bdi> و <bdi dir="ltr">Tempo</bdi> برای نمایش Metrics و <bdi dir="ltr">Trace</bdi> ها. ساخت داشبوردهای تعاملی، تنظیم <bdi dir="ltr">Alert</bdi> برای خطاها و استفاده از ویجت‌های متنوع.</p>
-<p>راه‌اندازی <bdi dir="ltr">OpenTelemetry</bdi> برای جمع‌آوری <bdi dir="ltr">Metrics</bdi>، <bdi dir="ltr">Traces</bdi> و <bdi dir="ltr">Logs</bdi> با استفاده از <bdi dir="ltr">SDK</bdi>، <bdi dir="ltr">Collector</bdi> و <bdi dir="ltr">Exporter</bdi> ها، و یکپارچه‌سازی با <bdi dir="ltr">Prometheus</bdi> و <bdi dir="ltr">Grafana Tempo</bdi>. آشنایی با <bdi dir="ltr">Trace Context Propagation</bdi> بین سرویس‌ها و ملاحظات عملکرد در محیط <bdi dir="ltr">Production</bdi>.</p>
+<p>در ادامه، نقشه‌ی راه کلیِ این فصل را در نمودار زیر می‌بینید و سپس وارد جزئیات هر بخش می‌شویم.</p>
 <h3 id="چرا-observability-مهم-است">9.0.1 چرا Observability مهم است</h3>
 <p><bdi dir="ltr">Observability</bdi> یعنی توانایی درک وضعیت داخلی سیستم از طریق خروجی‌های آن — Logs، Metrics و <bdi dir="ltr">Trace</bdi> ها. در برنامه‌های <bdi dir="ltr">PHP</bdi> به دلیل مدل اجرای مبتنی بر درخواست، دیباگ نسبتاً ساده است: هر درخواست یک فرآیند مجزا است و لاگ‌های آن مستقل هستند. </p><p>اما در <bdi dir="ltr">Go</bdi> برنامه شما یک فرآیند بلندمدت است که هزاران درخواست را همزمان پردازش می‌کند. بدون ابزارهای مناسب <bdi dir="ltr">Observability</bdi>، ردیابی مشکل در چنین سیستمی بسیار دشوار خواهد بود.</p>
 <p>سه رکن اصلی <bdi dir="ltr">Observability</bdi> عبارتند از:</p>
@@ -149,16 +141,7 @@
 </tbody>
 </table>
 <div class="tip"><strong>نکته برای توسعه‌دهندگان تازه‌کار:</strong> اگر تا به حال با ابزارهای مانیتورینگ کار نکرده‌اید نگران نباشید. این فصل از صفر شروع می‌شود و هر مفهوم را با مثال عملی توضیح می‌دهد. پیشنهاد می‌کنیم ابتدا بخش Logging را کامل بخوانید و پیاده‌سازی کنید، سپس Metrics و در نهایت ردیابی. هر مرحله به تنهایی ارزشمند است و لازم نیست حتماً همه را همزمان پیاده‌سازی کنید.</div>
-<div class="summary">
-<strong>خلاصه‌ی نکات کلیدی:</strong>
-<ul>
-<li>structured logging با slog یا zap</li>
-<li>Prometheus برای metrics</li>
-<li>OpenTelemetry برای distributed tracing</li>
-<li>Grafana برای visualization</li>
-<li>three pillars: logs، metrics، traces</li>
-</ul>
-</div></div>
+</div>
 </main></div>
 <!-- Footer -->
 <footer class="site-footer">

@@ -86,8 +86,7 @@
 نکته مهم: هر عملیات ارسال یا دریافت روی channel ابتدا قفل <code dir="ltr">hchan.mutex</code> را می‌گیرد. این یعنی دسترسی همزمان به یک channel از چند goroutine به صورت خودکار ایمن است. اما به همین دلیل استفاده‌ی شدید از یک channel مشترک می‌تواند <bdi dir="ltr">Lock Contention</bdi> ایجاد کند.
 </div>
 <h3 id="buffered-vs-unbuffered">5.2.2 Buffered vs Unbuffered</h3>
-<h4 id="unbuffered-channel">Unbuffered Channel</h4>
-<p>یک <strong>کانال بدون بافر</strong> یعنی یک کانال با ظرفیت صفر — هیچ فضای موقتی برای ذخیره داده وجود ندارد. ارسال‌کننده <strong>بلاک</strong> می‌شود تا گیرنده آماده شود و بالعکس. مثل یک دست دادن مستقیم بین دو نفر.</p>
+<p><strong  id="unbuffered-channel">Unbuffered Channel</strong> — یک <strong>کانال بدون بافر</strong> یعنی یک کانال با ظرفیت صفر — هیچ فضای موقتی برای ذخیره داده وجود ندارد. ارسال‌کننده <strong>بلاک</strong> می‌شود تا گیرنده آماده شود و بالعکس. مثل یک دست دادن مستقیم بین دو نفر.</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">ch := make(chan string) // unbuffered (capacity 0)
 go func() {
@@ -98,8 +97,7 @@ fmt.Println(msg)
 </code></pre>
 </figure>
 <p>اگر در کانال بدون بافر فرستنده منتظر گیرنده نباشد، برنامه به حالت <bdi dir="ltr">Deadlock</bdi> می‌رود و <code>panic</code> می‌کند. این مشابه صفی در Laravel است که فقط ظرفیت یک پیام دارد و اگر <bdi dir="ltr">Worker</bdi> آماده نباشد سیستم پیام جدید را نمی‌پذیرد.</p>
-<h4 id="buffered-channel">Buffered Channel</h4>
-<p>یک <strong>کانال با بافر</strong> دارای ظرفیت مشخصی است که می‌تواند چند مقدار را در صف نگه دارد. ارسال‌کننده تا زمانی که ظرفیت بافر پر نشده می‌تواند داده ارسال کند <strong>بدون</strong> اینکه منتظر گیرنده بماند. این مدل مشابه یک صف در حافظه است که چند پیام را ذخیره می‌کند — شبیه <bdi dir="ltr">Redis Queue</bdi> در Laravel.</p>
+<p><strong  id="buffered-channel">Buffered Channel</strong> — یک <strong>کانال با بافر</strong> دارای ظرفیت مشخصی است که می‌تواند چند مقدار را در صف نگه دارد. ارسال‌کننده تا زمانی که ظرفیت بافر پر نشده می‌تواند داده ارسال کند <strong>بدون</strong> اینکه منتظر گیرنده بماند. این مدل مشابه یک صف در حافظه است که چند پیام را ذخیره می‌کند — شبیه <bdi dir="ltr">Redis Queue</bdi> در Laravel.</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">ch := make(chan int, 3) // channel with capacity 3
 ch &lt;- 10 // send without blocking
@@ -356,16 +354,7 @@ func main() {
 </ul>
 <div class="important"><strong>نکته مهم — مالکیت کانال و مسئولیت بستن:</strong> مهم‌ترین قاعده درباره بستن کانال این است: <bdi dir="ltr">Goroutine</bdi>‌ای که کانال را ایجاد می‌کند باید مسئول بستن آن باشد و فرستنده‌ها هرگز نباید کانال را ببندند. دلیل ساده است: بستن کانال یعنی «دیگر داده‌ای ارسال نخواهد شد» و فقط کسی که کانال را ساخته می‌داند چه زمانی همه فرستنده‌ها کارشان تمام شده. اگر یک فرستنده کانال را ببندد در حالی که فرستنده دیگری هنوز می‌خواهد ارسال کند، برنامه <code>panic</code> می‌کند. الگوی صحیح این است: سازنده کانال، تمام فرستنده‌ها را با <code>sync.WaitGroup</code> منتظر می‌ماند و سپس <code>close(ch)</code> را فراخوانی می‌کند. گیرنده‌ها هرگز نباید کانال را ببندند چون ممکن است گیرنده‌های دیگری هم وجود داشته باشند.</div>
 <div class="note"><strong>یادداشت:</strong> انتخاب بین کانال بدون بافر و بافر‌دار، معادل انتخاب بین «همگام‌سازی دقیق» و «صف ناهمگام» است. کانال بدون بافر را برای سیگنال‌دهی و هماهنگی استفاده کنید (مثل <code>chan struct{}</code>)، چون فرستنده تا آماده‌شدن گیرنده بلاک می‌شود و این رفتار خود یک مکانیزم همگام‌سازی است. کانال بافر‌دار را برای بافر کردن داده‌ها بین مراحل <bdi dir="ltr">Pipeline</bdi> یا صف کارها به‌کار ببرید. ظرفیت بافر را بر اساس تفاوت سرعت تولید و مصرف تنظیم کنید؛ ظرفیت خیلی بزرگ حافظه را هدر می‌دهد و ظرفیت خیلی کوچک باعث <bdi dir="ltr">Backpressure</bdi> زودرس می‌شود.</div>
-<div class="summary">
-<strong>خلاصه‌ی نکات کلیدی:</strong>
-<ul>
-<li>channel با make(chan T) ساخته می‌شود</li>
-<li>unbuffered: فرستنده تا دریافت گیرنده مسدود می‌شود</li>
-<li>buffered: تا پر شدن بافر مسدود نمی‌شود</li>
-<li>channel direction: send-only یا receive-only</li>
-<li>close برای سیگنال پایان receiving</li>
-</ul>
-</div></div>
+</div>
 </main>
 </div>
 <!-- Footer -->

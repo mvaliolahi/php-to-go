@@ -157,7 +157,7 @@ data, _ := io.ReadAll(tee)
 <div class="comparison">
 <strong>مقایسه با PHP:</strong> مقایسه‌ی کامل‌تر دکوراتورهای <code dir="ltr">MultiWriter</code> و <code dir="ltr">TeeReader</code> با معادل‌های PHP (<code dir="ltr">fwrite()</code> و <code dir="ltr">stream_copy_to_stream()</code>) در فصل ۶.۱ آورده شده است. در Go، <code dir="ltr">io.MultiWriter</code> یک <code dir="ltr">io.Writer</code> جدید می‌سازد که برای تابع‌های مصرف‌کننده شفاف عمل می‌کند — هیچ‌کدام از مقاصد نمی‌دانند داده به‌طور هم‌زمان به چند خروجی می‌رود.
 </div>
-<h3 id="نوشتن-اتمیک">6.3.5 Atomic Write: write-to-temp + rename</h3>
+<h3 id="نوشتن-اتمیک">6.3.5 Atomic Write</h3>
 <p>یکی از الگوهای کلیدی تولید در نوشتن فایل، نوشتن اتمیک است. مشکل روش معمولی این است: اگر هنگام نوشتن در فایل، برنامه crash کند یا برق قطع شود، فایل نیمه‌کاره باقی می‌ماند و داده‌های قبلی هم از بین رفته‌اند. راه‌حل این است: ابتدا در یک فایل موقت بنویسید، سپس فایل موقت را به نام نهایی rename کنید.</p><p>عملیات rename در اکثر فایل‌سیستم‌ها اتمیک است — یا کامل انجام می‌شود یا اصلاً انجام نمی‌شود:</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">func atomicWriteFile(path string, data []byte, perm os.FileMode) error {
@@ -325,7 +325,7 @@ fclose($fp);
 <tr><td>مدیریت خطا</td><td>بازگشت <code>int|false</code></td><td>بازگشت <code>error</code></td></tr>
 </tbody>
 </table>
-<h3 id="فلوچارت-حالتهای-نوشتن">6.3.9 فلوچارت حالت‌های نوشتن فایل: Create/O_TRUNC/O_APPEND</h3>
+<h3 id="فلوچارت-حالتهای-نوشتن">6.3.9 فلوچارت حالت‌های نوشتن فایل</h3>
 <p>یکی از مهم‌ترین تصمیمات هنگام نوشتن در فایل، انتخاب حالت صحیح باز کردن فایل است. Go برخلاف PHP که با پرچم‌های ساده مثل <code dir="ltr">FILE_APPEND</code> کار می‌کند، کنترل بسیار دقیقی روی نحوه باز کردن فایل می‌دهد. هر پرچم رفتار متفاوتی دارد و ترکیب اشتباه آن‌ها می‌تواند منجر به از دست رفتن داده شود. </p><p>در نمودار زیر تمام حالت‌های ممکن را به‌صورت فلوچارت تصمیم‌گیری مشاهده می‌کنید، همراه با مقایسه PHP و توضیح خطرات هر مسیر.</p>
 <figure class="diagram" dir="ltr">
 <svg viewBox="0 0 760 440" xmlns="http://www.w3.org/2000/svg">
@@ -400,16 +400,7 @@ fclose($fp);
 <div class="tip">
 <strong>نکته عملی — الگوی نوشتن اتمیک:</strong> الگوی «فایل موقت + <code dir="ltr">Sync()</code> + <code dir="ltr">Rename()</code>» که در تابع <code dir="ltr">atomicWriteFile</code> بالا پیاده‌سازی شد، همان الگویی است که دیتابیس‌های SQLite و PostgreSQL برای نوشتن WAL خود استفاده می‌کنند. این الگو دوام داده روی دیسک را حتی در صورت قطع برق یا <code dir="ltr">crash</code> برنامه تضمین می‌کند — یا فایل کامل جایگزین می‌شود یا هیچ تغییری رخ نمی‌دهد. برای مرور مراحل پنج‌گانه به چارت تصمیم‌گیری در شکل ۶-۳-ج و تابع <code dir="ltr">atomicWriteFile</code> مراجعه کنید.
 </div>
-<div class="summary">
-<strong>خلاصه‌ی نکات کلیدی:</strong>
-<ul>
-<li>os.WriteFile برای نوشتن کامل فایل</li>
-<li>bufio.Writer برای نوشتن با buffer</li>
-<li>O_APPEND برای append به فایل موجود</li>
-<li>io.Writer واسط استاندارد خروجی</li>
-<li>Writer.Flush() قبل از Close ضروری است</li>
-</ul>
-</div></div>
+</div>
 </main>
 </div>
 <!-- Footer -->

@@ -135,7 +135,7 @@ func main() {
 </code></pre>
 </figure>
 <p>در PHP همیشه از try/catch استفاده می‌کنید اما در Go این بازیابی باید صریح و ساختار یافته باشد.</p>
-<h3 id="panic-chaining">4.3.3 Panic Chaining: وقتی چند panic رخ می‌دهد</h3>
+<h3 id="panic-chaining">4.3.3 وقتی چند panic رخ می‌دهد</h3>
 <p>وقتی panic در حال unwind پشته است و در یکی از توابع <code>defer</code> panic جدیدی رخ می‌دهد، panic دوم به زنجیره اضافه می‌شود. وقتی <code>recover</code> فراخوانی می‌شود، فقط آخرین panic بازیابی می‌شود:</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">func main() {
@@ -434,16 +434,7 @@ func main() {
 <li><strong>بازیابی panic در راه‌انداز goroutine:</strong> چون <code dir="ltr">recover</code> فقط در همان goroutine کار می‌کند، هر goroutine‌ای که ممکن است panic کند باید <code dir="ltr">defer/recover</code> مخصوص خودش را داشته باشد. الگوی رایج این است که تابعی بنویسید که goroutine را درون خودش با <code dir="ltr">recover</code> بپیچد. این الگو به‌ویژه در سیستم‌هایی که از worker pool استفاده می‌کنند حیاتی است، زیرا panic در یک worker نباید کل pool را از بین ببرد.</li>
 </ul>
 <div class="warning"><strong>هشدار عملی — هرگز از panic برای مدیریت خطای عادی استفاده نکنید:</strong> <code dir="ltr">panic</code> فقط برای خطاهای غیرقابل بازیافت برنامه‌نویس مناسب است — نه برای خطاهای قابل پیش‌بینی مثل فایل پیدا نشد، شبکه قطع شد یا ورودی نامعتبر. برای این خطاها همیشه از مقادیر <code dir="ltr">error</code> استفاده کنید. همچنین همیشه در <bdi dir="ltr">HTTP middleware</bdi> از <code dir="ltr">defer/recover</code> استفاده کنید تا از کرش کل سرور به‌خاطر panic در یک handler جلوگیری شود. فراموش نکنید که panic در goroutine فرعی بدون recover، کل پروسه را از بین می‌برد. هر goroutine‌ای که مستقل اجرا می‌شود باید recovery مخصوص خودش را داشته باشد.</div>
-<div class="summary">
-<strong>خلاصه‌ی نکات کلیدی:</strong>
-<ul>
-<li>panic برای خطاهای غیرقابل بازیافت (programmer error)</li>
-<li>recover در defer برای捕获 panic</li>
-<li>panic نباید جایگزین error در جریان عادی</li>
-<li>panic در init یا کتابخانه می‌تواند خطرناک باشد</li>
-<li>runtime panic از nil dereference یا out-of-bounds</li>
-</ul>
-</div></div>
+</div>
 </main>
 </div>
 <!-- Footer -->

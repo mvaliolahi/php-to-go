@@ -68,17 +68,7 @@
 <h2 id="فصل-دوم">فصل دوم</h2><div class="abstract">
 <strong>چکیده:</strong> این فصل ابزارهای عملی مهاجرت ذهنی از PHP به Go را ارائه می‌دهد: نوع‌دهی استاتیک، ساختارهای کنترلی، توابع و اشاره‌گرها. هر مفهوم با مقایسه‌ی مستقیم PHP و Go و نگاهی به پیاده‌سازی داخلی توضیح داده می‌شود. درک این فصل پایه‌ی نوشتن کد Go کارآمد است.
 </div>
-<p>اگر فصل اول ذهنیت شما را از «توسعه‌ی سریع <bdi dir="ltr">PHP</bdi>» به «توسعه‌ی پایدار <bdi dir="ltr">Go</bdi>» تغییر داد، این فصل ابزارهای عملی آن تغییر ذهنیت را در اختیارتان می‌گذارد. در اینجا با تیپ‌ها، ساختارهای کنترلی، توابع و اشاره‌گرها کار می‌کنید — عناصری که هرکدام بازتابی از همان فلسفه‌ی صراحت و سادگی هستند که در فصل قبل آموختید. </p><p>در <bdi dir="ltr">PHP</bdi> متغیرها بدون نوع تعریف می‌شوند و سیستم خودش حدس می‌زند؛ در <bdi dir="ltr">Go</bdi> هر مقدار از ابتدا نوع مشخصی دارد و کامپایلر اجازه‌ی حدس زدن را نمی‌دهد.</p>
-<p>این فصل قلب عملی کتاب شماست. در اینجا همه‌ی ابزارهای بنیادین که روزانه در توسعه‌ی نرم‌افزار با <bdi dir="ltr">Go</bdi> به‌کار می‌برید را از پایه و با مقایسه‌ی مداوم با تجربه‌ی <bdi dir="ltr">PHP</bdi> شما می‌آموزید. </p><p>هر بخش با مثال‌های عملی، هشدارهای مربوط به تله‌های رایج، و نگاهی به درون‌ساخت‌های پیاده‌سازی همراه است تا هم بفهمید «چگونه» و هم «چرا» را درک کنید.</p>
-<p><strong>در این فصل خواننده با مفاهیم زیر آشنا خواهد شد:</strong></p>
-<p>سیستم <bdi dir="ltr">static type</bdi> در <bdi dir="ltr">Go</bdi> و مقایسه آن با <bdi dir="ltr">dynamic type</bdi> در <bdi dir="ltr">PHP</bdi> — از <bdi dir="ltr">zero values</bdi> و تأثیر فلسفی آن‌ها بر طراحی ایمن نرم‌افزار، تا نوع‌دهی صریح و تأثیر آن بر ایمنی کد و کاهش خطاهای زمان‌اجرای. درک این تفاوت بنیادین اولین قدم برای مهاجرت موفق از <bdi dir="ltr">PHP</bdi> به <bdi dir="ltr">Go</bdi> است.</p>
-<p>انواع داده‌های پایه در <bdi dir="ltr">Go</bdi> مانند <bdi dir="ltr">int</bdi>، <bdi dir="ltr">float</bdi>، <bdi dir="ltr">bool</bdi>، <bdi dir="ltr">string</bdi>، <bdi dir="ltr">byte</bdi> و <bdi dir="ltr">rune</bdi> و تفاوت‌های آن‌ها با معادل‌های <bdi dir="ltr">PHP</bdi> — شامل ساختار داخلی رشته‌ها (string header و immutable بودن)، رفتار <bdi dir="ltr">overflow</bdi> عددی، و تفاوت <bdi dir="ltr">type alias</bdi> با <bdi dir="ltr">type definition</bdi></p>
-<p>انواع داده‌های مرکب در <bdi dir="ltr">Go</bdi> شامل <bdi dir="ltr">array</bdi>، <bdi dir="ltr">slice</bdi>، <bdi dir="ltr">map</bdi> و <bdi dir="ltr">struct</bdi> و مقایسه با آرایه‌ها و اشیاء در <bdi dir="ltr">PHP</bdi> — با تأکید بر تفاوت رفتار مرجع‌دار بودن slice و map در برابر کپی شدن struct و array</p>
-<p>تبدیل انواع داده — تفاوت <bdi dir="ltr">type conversion</bdi> صریح با <bdi dir="ltr">type juggling</bdi> ضمنی، بسته‌ی <bdi dir="ltr">strconv</bdi> برای تبدیل‌های رشته‌ای-عددی، <bdi dir="ltr">type assertion</bdi> و <bdi dir="ltr">type switch</bdi> برای کار با interface، و بسته‌ی <bdi dir="ltr">unsafe</bdi> برای تبدیل‌های سطح پایین</p>
-<p>ساختارهای کنترلی <bdi dir="ltr">if</bdi>، <bdi dir="ltr">switch</bdi>، <bdi dir="ltr">for</bdi> و تفاوت‌های آن‌ها با ساختارهای مشابه در <bdi dir="ltr">PHP</bdi> — از <bdi dir="ltr">if-init</bdi> و حوزه‌ی متغیرها، تا رفتار <bdi dir="ltr">fallthrough</bdi> در switch، <bdi dir="ltr">range</bdi> روی اعداد — Go 1.22+، و برچسب‌ها برای خروج از حلقه‌های تودرتو</p>
-<p>تعریف و استفاده از توابع و متدها شامل بازگشت چند مقدار، توابع ناشناس و <bdi dir="ltr">closure</bdi>، کلیدواژه <bdi dir="ltr">defer</bdi> و ترتیب اجرای <bdi dir="ltr">LIFO</bdi> آن، متدها با <bdi dir="ltr">value receiver</bdi> و <bdi dir="ltr">pointer receiver</bdi>، قواعد <bdi dir="ltr">method set</bdi>، توابع <bdi dir="ltr">variadic</bdi>، و تابع <bdi dir="ltr">init()</bdi></p>
-<p>اشاره‌گرها و مدیریت حافظه — از ارسال مرجع و اشاره‌گر به اشاره‌گر تا <bdi dir="ltr">escape analysis</bdi> و تفاوت رفتار انواع مقداری و مرجع‌دار، با بررسی ریزش حافظه و مقایسه‌ی کارایی ارسال مقداری در برابر اشاره‌گری</p>
-<p>جنریک‌ها و مقایسه با <bdi dir="ltr">Type Hinting</bdi> در <bdi dir="ltr">PHP</bdi> — از <bdi dir="ltr">type constraint</bdi> و <bdi dir="ltr">comparable</bdi> تا تصمیم‌گیری درباره‌ی زمان استفاده از جنریک در برابر interface، و محدودیت‌های فعلی جنریک‌ها در <bdi dir="ltr">Go</bdi></p>
+<p>در ادامه، نقشه‌ی راه کلیِ این فصل را در نمودار زیر می‌بینید و سپس وارد جزئیات هر بخش می‌شویم.</p>
 <figure class="diagram" dir="ltr">
 <svg viewBox="0 0 720 300" xmlns="http://www.w3.org/2000/svg">
 <defs>
@@ -126,16 +116,7 @@
 </figure>
 <div class="tip"><strong>نگاهی به درون‌ساخت Go:</strong> در این فصل علاوه بر مقایسه‌ی سطحی <bdi dir="ltr">PHP</bdi> و <bdi dir="ltr">Go</bdi>، به بررسی نحوه‌ی پیاده‌سازی داخلی انواع داده در <bdi dir="ltr">Go</bdi> نیز می‌پردازیم. درک ساختار حافظه‌ی انواع داده‌ای، نحوه‌ی رشد اسلایس‌ها، عملکرد داخلی مپ‌ها، مکانیزم <bdi dir="ltr">Escape Analysis</bdi> کامپایلر و نحوه‌ی پیاده‌سازی جنریک‌ها به شما کمک می‌کند کدی کارآمدتر بنویسید و خطاهای ظریف حافظه را پیش‌گیری کنید. این دانش تفاوت آگاهی بین «فقط کار کردن کد» و «فهمیدن چرایی کار کردن کد» را ایجاد می‌کند.</div>
 <div class="important"><strong>پیش‌نیاز:</strong> پیش از مطالعه‌ی این فصل، مطمئن شوید فصل اول را خوانده‌اید. مفاهیمی مانند تفاوت <bdi dir="ltr">stack</bdi> و <bdi dir="ltr">heap</bdi>، حافظه‌ی ایستا و پویا، و فلسفه‌ی کلی <bdi dir="ltr">Go</bdi> که در فصل اول بررسی شد، در این فصل به‌طور مستمر به‌کار می‌روند. همچنین داشتن تجربه‌ی عملی با <bdi dir="ltr">PHP</bdi> به شما کمک می‌کند تفاوت‌ها را بهتر درک کنید.</div>
-<div class="summary">
-<strong>خلاصه‌ی نکات کلیدی:</strong>
-<ul>
-<li>Go نوع‌دهی استاتیک دارد؛ کامپایلر اجازه‌ی حدس نمی‌دهد</li>
-<li>مقادیر صفر (Zero Values) تضمین می‌کنند هیچ متغیری تعریف‌نشده نیست</li>
-<li>تبدیل نوع صریح است؛ Type Juggling وجود ندارد</li>
-<li>تنها حلقه‌ی Go یعنی for، همه‌ی الگوها را پوشش می‌دهد</li>
-<li>متدها روی struct تعریف می‌شوند، نه درون کلاس</li>
-</ul>
-</div></div>
+</div>
 </main>
 </div>
 <!-- Footer -->

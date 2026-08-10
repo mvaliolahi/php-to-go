@@ -90,7 +90,7 @@ func main() {
 }
 </code></pre>
 </figure>
-<p>نکات مهم:</p>
+
 <ul>
 <li><code dir="ltr">os.Open()</code> فقط فایل را برای خواندن باز می‌کند (خواندن-نوشتن نیست)</li>
 <li><code dir="ltr">defer file.Close()</code> تضمین می‌کند فایل در پایان تابع بسته شود</li>
@@ -360,7 +360,7 @@ func readUsersCSV(path string) ([]User, error) {
 <div class="comparison">
 <strong>مقایسه با PHP:</strong> در PHP تابع <code dir="ltr">fgetcsv()</code> معادل <code>csv.Reader.Read()</code> است و <code dir="ltr">fputcsv()</code> معادل <code>csv.Writer.Write()</code>. اما پکیج Go کنترل بیشتری ارائه می‌دهد: تنظیم جداکننده، کاراکتر کامنت، <code dir="ltr">LazyQuotes</code> برای CSV‌های ناقص و <code dir="ltr">FieldsPerRecord</code> برای اعتبارسنجی تعداد فیلدها. همچنین <code>csv.Reader</code> به‌صورت جریانی خوانده و مصرف حافظه‌اش ثابت است، در حالی که <code dir="ltr">str_getcsv()</code> کل رشته را در حافظه نیاز دارد.
 </div>
-<h3 id="خط-لوله-توکنایز-اسکنر">6.4.8 خط لوله توکنایزیشن Scanner: نگاهی به درون bufio.Scanner</h3>
+<h3 id="خط-لوله-توکنایز-اسکنر">6.4.8 خط لوله توکنایزیشن Scanner</h3>
 <p>فهم نحوه کار داخلی <bdi dir="ltr">bufio.Scanner</bdi> به شما کمک می‌کند از آن به‌درستی استفاده کنید و خطاهای رایج مانند «token too long» را رفع کنید. </p><p>Scanner یک خط لوله پردازشی است: داده از جریان ورودی خوانده می‌شود، توسط تابع Split به توکن‌ها تقسیم می‌شود، و هر توکن در یک بافر داخلی ذخیره شده و به کاربر بازگردانده می‌شود. </p><p>در نمودار زیر تمام جزئیات این خط لوله، مدیریت بافر داخلی، و نحوه نوشتن تابع Split سفارشی را مشاهده می‌کنید.</p>
 <figure class="diagram" dir="ltr">
 <svg viewBox="0 0 760 420" xmlns="http://www.w3.org/2000/svg">
@@ -433,12 +433,12 @@ func readUsersCSV(path string) ([]User, error) {
 </text>
 <rect x="410" y="255" width="40" height="30" fill="rgba(33,150,243,0.1)" stroke="#2196f3" stroke-width="1" stroke-dasharray="2 2" rx="4"/>
 <text x="430" y="275" text-anchor="middle" class="small">…</text>
-<text x="275" y="305" text-anchor="middle" class="small">First token: "Hello" (chars before 
+<text x="275" y="305" text-anchor="middle" class="small">First token: "Hello" (chars before
 ) — second token: "Go" — SplitFunc finds the separator</text>
 <!-- Key rules -->
 <line x1="50" y1="320" x2="500" y2="320" stroke="#cbd5e1" stroke-width="1"/>
-<text x="50" y="340" class="small" fill="#4caf50">✓ ScanLines: 
- and 
+<text x="50" y="340" class="small" fill="#4caf50">✓ ScanLines:
+ and
  separators (both detected)</text>
 <text x="50" y="358" class="small" fill="#4caf50">✓ ScanWords: split on whitespace</text>
 <text x="50" y="376" class="small" fill="#ef4444">✗ Line longer than 64KB → bufio.ErrTooLong error</text>
@@ -459,16 +459,7 @@ func readUsersCSV(path string) ([]User, error) {
 <div class="tip">
 <strong>نکته عملی — حد ۶۴KB Scanner:</strong> مهم‌ترین محدودیت <bdi dir="ltr">bufio.Scanner</bdi> حداکثر اندازه توکن (۶۴ کیلوبایت پیش‌فرض) است. اگر خطایی شبیه «token too long» یا «bufio: scanner: token too long» دریافت کردید، دلیل آن خطی بلندتر از ۶۴KB در فایل ورودی است. راه‌حل: بلافاصله بعد از ساخت Scanner، اندازه بافر را افزایش دهید. نمونه: <code dir="ltr">scanner := bufio.NewScanner(file); scanner.Buffer(make([]byte, 0, 64*1024), 1024*1024)</code> — پارامتر اول بافر اولیه (می‌تواند خالی باشد، Scanner خودش رشد می‌دهد) و پارامتر دوم حداکثر اندازه مجاز توکن است. اگر هیچ‌کدام کار نکرد، به <bdi dir="ltr">bufio.Reader</bdi> با <code dir="ltr">ReadString('\n')</code> سوییچ کنید که هیچ محدودیتی روی طول خط ندارد.
 </div>
-<div class="summary">
-<strong>خلاصه‌ی نکات کلیدی:</strong>
-<ul>
-<li>bufio.Scanner با ScanLines برای خواندن خط</li>
-<li>حافظه بهینه برای فایل‌های حجیم</li>
-<li>Scanner.Buffer برای افزایش buffer پیش‌فرض</li>
-<li>SplitFunc سفارشی برای تقسیم غیرخطی</li>
-<li>Err() برای تشخیص خطای غیر-EOF</li>
-</ul>
-</div></div>
+</div>
 </main>
 </div>
 <!-- Footer -->

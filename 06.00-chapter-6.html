@@ -74,7 +74,7 @@
 <strong>رابط‌های بنیادین io.Reader و io.Writer:</strong> قلب تپنده‌ی تمام عملیات I/O در Go دو interface ساده اما قدرتمند هستند: <code dir="ltr">io.Reader</code> با متد <code dir="ltr">Read(p []byte) (n int, err error)</code> و <code dir="ltr">io.Writer</code> با متد <code dir="ltr">Write(p []byte) (n int, err error)</code>. هر نوعی که این متدها را پیاده‌سازی کند — فایل، اتصال شبکه، بافر، بدنه‌ی HTTP response، hash بررسی‌کننده،.compress/gzip — می‌تواند جایگزین دیگری استفاده شود. این composability یکی از مزیت‌های اصلی Go نسبت به PHP است که در آن هر تابع I/O امضای متفاوتی دارد. وقتی یک تابع <code dir="ltr">io.Reader</code> می‌پذیرد، شما می‌توانید فایل، اتصال TLS، بافر رمزنگاری‌شده یا حتی خروجی یک فرآیند فرزند را به آن بدهید — بدون تغییر یک خط کد.
 </div>
 <p>در PHP تعامل با دنیای بیرون عمدتاً از طریق توابع ساده‌ای مانند <code dir="ltr">file_get_contents()</code>، <code dir="ltr">json_encode()</code> و <code dir="ltr">curl_exec()</code> انجام می‌شود. هر کدام از این توابع امضای مخصوص به خود را دارند: یکی رشته برمی‌گرداند، دیگری <code>false</code> در صورت خطا، و سومی resource باز می‌کند. </p><p>هیچ قرارداد یکتایی وجود ندارد. اما Go با یک مدل متفاوت و ساخت‌یافته‌تر این امکانات را ارائه می‌دهد: رابط‌های <code dir="ltr">io.Reader</code> و <code dir="ltr">io.Writer</code> به عنوان قراردادهای یکتای ورودی/خروجی، پکیج <code>embed</code> برای جاسازی فایل‌ها در باینری، و <code>os/signal</code> برای مدیریت خاموشی ایمن. این تفاوت‌ها هم در سطح سینتکس و هم در فلسفه‌ی طراحی ریشه دارند.</p>
-<p>در این فصل خواننده با مفاهیم زیر آشنا خواهد شد:</p>
+<p>در ادامه، نقشه‌ی راه کلیِ این فصل را در نمودار زیر می‌بینید و سپس وارد جزئیات هر بخش می‌شویم.</p>
 <ul>
 <li><strong>رابط‌های بنیادین I/O:</strong> <code dir="ltr">io.Reader</code> و <code dir="ltr">io.Writer</code> به عنوان قراردادهای یکتای ورودی/خروجی، دکوراتورهایی مانند <code dir="ltr">io.TeeReader</code>، <code dir="ltr">io.MultiWriter</code> و <code dir="ltr">io.LimitReader</code>، و توابع کاربردی مانند <code dir="ltr">io.Copy</code> و <code dir="ltr">io.ReadAll</code></li>
 <li><strong>خواندن فایل‌ها:</strong> از خواندن ساده با <code dir="ltr">os.ReadFile</code> تا خواندن جریانی با <code dir="ltr">io.Reader</code>، خواندن خط‌به‌خط با <code dir="ltr">bufio.Scanner</code>، فایل‌های Memory-Mapped با <code dir="ltr">golang.org/x/exp/mmap</code> و متادیتای فایل با <code dir="ltr">os.Stat()</code></li>
@@ -137,16 +137,7 @@
 </svg>
 <figcaption>شکل ۶-۱: نقشه‌ی راه فصل ششم — ۷ بخش در سه لایه: مبانی I/O با <code>io.Reader</code>/<code>io.Writer</code> (۶.۱) به‌عنوان قرارداد یکتای ورودی/خروجی، سپس سه روش خواندن/نوشتن فایل (۶.۲ تا ۶.۴)، و در نهایت جاسازی فایل، پردازش داده‌های ساخت‌یافته و مدیریت سیگنال‌های سیستم‌عامل (۶.۵ تا ۶.۷).</figcaption>
 </figure>
-<div class="summary">
-<strong>خلاصه‌ی نکات کلیدی:</strong>
-<ul>
-<li>os و io برای کار با فایل و استریم</li>
-<li>encoding/json و yaml.v3 برای serialize داده</li>
-<li>os/signal برای مدیریت سیگنال سیستم‌عامل</li>
-<li>embed برای جاسازی فایل در باینری</li>
-<li>defer برای بستن مطمئن منابع</li>
-</ul>
-</div></div>
+</div>
 </main>
 </div>
 <!-- Footer -->

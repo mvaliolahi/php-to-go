@@ -98,8 +98,7 @@ func main() {
 </figure>
 <p>تابع شبیه‌سازی ارسال ایمیل:</p>
 <p>هر ایمیل در یک goroutine جداگانه ارسال می‌شود.</p>
-<p>با sync.WaitGroup منتظر می‌مانیم همه goroutineها تمام شوند.</p>
-<p>برخلاف PHP که باید worker جداگانه بسازید یا از صف استفاده کنید اینجا در یک پروسه و با هزینه‌ی بسیار کم ارسال‌ها همزمان انجام می‌شوند.</p>
+<p>با sync.WaitGroup منتظر می‌مانیم همه goroutineها تمام شوند. برخلاف PHP که باید worker جداگانه بسازید یا از صف استفاده کنید اینجا در یک پروسه و با هزینه‌ی بسیار کم ارسال‌ها همزمان انجام می‌شوند.</p>
 <p>مزیت اصلی سرعت بالاتر و پیچیدگی کمتر در توسعه.
 </p>
 <h3 id="crawl-داده-از-چند-api-به-طور-همزمان">5.8.2 Crawl داده از چند API به طور همزمان</h3>
@@ -469,16 +468,7 @@ func (h *Hub) Run(ctx context.Context) {
 </ul>
 <div class="tip"><strong>نکته درباره اندازه <bdi dir="ltr">Worker Pool</bdi>:</strong> تعداد <bdi dir="ltr">Worker</bdi>ها باید متناسب با نوع کار باشد. برای <bdi dir="ltr">CPU-bound</bdi> مثل پردازش تصویر یا رمزنگاری، از <code dir="ltr">runtime.NumCPU()</code> استفاده کنید — تعداد بیشتر فقط باعث <bdi dir="ltr">context switching</bdi> اضافی می‌شود. اما برای <bdi dir="ltr">I/O-bound</bdi> مثل درخواست <bdi dir="ltr">HTTP</bdi> یا کوئری دیتابیس، می‌توانید تعداد بسیار بیشتری <bdi dir="ltr">Worker</bdi> داشته باشید (مثلاً ۱۰۰ یا بیشتر) زیرا هر <bdi dir="ltr">Worker</bdi> بیشتر وقتش منتظر پاسخ شبکه است و <bdi dir="ltr">CPU</bdi> اشغال نمی‌کند. یک الگوی رایج شروع با <code dir="ltr">runtime.NumCPU() * 2</code> و تنظیم بر اساس نتایج بنچمارک است.</div>
 <div class="note"><strong>یادداشت:</strong> در سرورهای <bdi dir="ltr">HTTP</bdi> تولیدی، هرگز در <bdi dir="ltr">Handler</bdi> مستقیماً <code>go func(){...}</code> ننویسید بدون اینکه <bdi dir="ltr">Context</bdi> درخواست را به آن پاس بدهید. وقتی کاربر مرورگر را می‌بندد، <code>r.Context()</code> لغو می‌شود و اگر <bdi dir="ltr">Goroutine</bdi> پس‌زمینه آن را بررسی نکند، به‌جای توقف، منابع سرور را مصرف می‌کند و در نهایت نشت می‌دهد. الگوی امن: <code>go func(ctx context.Context){ select { case &lt;-ctx.Done(): return; case result := &lt;-ch: ... } }(r.Context())</code>. در <bdi dir="ltr">PHP</bdi> این مشکل رخ نمی‌دهد زیرا فرآیند <bdi dir="ltr">PHP-FPM</bdi> با تمام درخواست از بین می‌رود، اما در <bdi dir="ltr">Go</bdi> سرور طول‌عمر دارد و نشت‌ها تجمعی هستند.</div>
-<div class="summary">
-<strong>خلاصه‌ی نکات کلیدی:</strong>
-<ul>
-<li>HTTP handler: هر درخواست یک goroutine</li>
-<li>batch processing: worker pool برای کنترل منابع</li>
-<li>background worker: long-running goroutine با context</li>
-<li>از goroutine بی‌رویه پرهیز کنید (GOMAXPROCS محدود است)</li>
-<li>rate limiting با ticker یا token bucket</li>
-</ul>
-</div></div>
+</div>
 </main>
 </div>
 <!-- Footer -->

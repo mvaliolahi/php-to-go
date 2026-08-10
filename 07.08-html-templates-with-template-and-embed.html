@@ -81,7 +81,7 @@
 <tr><td>وراثت قالب</td><td dir="ltr">@extends + @yield</td><td dir="ltr">{{ block "name". }}{{ end }}</td></tr>
 </tbody>
 </table>
-<p>در توسعه‌ی وب، نمایش صحیح داده‌ها در صفحات HTML اهمیت زیادی دارد.</p><p>در Go برای ایجاد صفحات وب پویا از پکیجی به نام html/template استفاده می‌شود.</p><p>این پکیج امکان جدا کردن منطق برنامه‌نویسی از Presentation را مشابه template engine هایی مثل Laravel Blade فراهم می‌کند, همانطور که در فصل های قبل اشاره شد از Go 1.16 به بعد ابزار جدیدی به نام embed نیز معرفی شد که به شما اجازه می‌دهد فایل‌هایی مانند قالب‌های HTML، CSS یا فایل‌های پیکربندی را مستقیماً درون فایل binary برنامه جاسازی کنید.</p><p>این ویژگی برای توزیع ساده‌تر، امنیت بالاتر، و حذف وابستگی به فایل‌های خارجی بسیار مفید است.</p>
+<p>در توسعه‌ی وب، نمایش صحیح داده‌ها در صفحات HTML اهمیت زیادی دارد. در Go برای ایجاد صفحات وب پویا از پکیجی به نام html/template استفاده می‌شود.</p><p>این پکیج امکان جدا کردن منطق برنامه‌نویسی از Presentation را مشابه template engine هایی مثل Laravel Blade فراهم می‌کند, همانطور که در فصل های قبل اشاره شد از Go 1.16 به بعد ابزار جدیدی به نام embed نیز معرفی شد که به شما اجازه می‌دهد فایل‌هایی مانند قالب‌های HTML، CSS یا فایل‌های پیکربندی را مستقیماً درون فایل binary برنامه جاسازی کنید.</p><p>این ویژگی برای توزیع ساده‌تر، امنیت بالاتر، و حذف وابستگی به فایل‌های خارجی بسیار مفید است.</p>
 <p>Go دارای دو پکیج برای قالب‌سازی است:</p>
 <p><strong dir="ltr">text/template</strong> : مخصوص داده‌های متنی مانند ایمیل یا فایل‌های متنی. هیچ ایمن‌سازی‌ای انجام نمی‌دهد.</p>
 <p><strong dir="ltr">html/template</strong> : مخصوص HTML است و به طور خودکار داده‌های خروجی را در برابر حملات XSS escape می‌کند. در برنامه‌های وب همیشه باید از html/template استفاده کنید تا داده‌های کاربر به طور ایمن در HTML نمایش داده شوند.</p>
@@ -247,16 +247,7 @@ func loadTemplates() *template.Template {
 <li><strong>جلوگیری از <bdi dir="ltr">XSS</bdi> با خودکار-فرار (<bdi dir="ltr">Auto-Escaping</bdi>):</strong> پکیج <bdi dir="ltr">html/template</bdi> به صورت خودکار همه مقادیر را بر اساس <bdi dir="ltr">context</bdi> فرار می‌دهد. در <code>&lt;p&gt;{{.Value}}&lt;/p&gt;</code> کاراکترهای خطرناک <bdi dir="ltr">HTML-escape</bdi> می‌شوند. در <code>href="{{.URL}}"</code> مقدار <bdi dir="ltr">URL-encoded</bdi> می‌شود. در <code>&lt;script&gt;{{.Data}}&lt;/script&gt;</code> مقدار <bdi dir="ltr">JS-escaped</bdi> می‌شود. فقط وقتی مطمئنید محتوا امن و کنترل‌شده است از <code>template.HTML</code> برای دور زدن فرار خودکار استفاده کنید.</li>
 </ul>
 <div class="tip"><strong>نکته طلایی:</strong> همیشه برای خروجی <bdi dir="ltr">HTML</bdi> از <bdi dir="ltr">html/template</bdi> استفاده کنید، هرگز از <bdi dir="ltr">text/template</bdi>. پکیج <bdi dir="ltr">html/template</bdi> به صورت خودکار مقادیر را <bdi dir="ltr">escape</bdi> می‌کند و از حملات <bdi dir="ltr">XSS</bdi> جلوگیری می‌کند. پکیج <bdi dir="ltr">text/template</bdi> هیچ ایمن‌سازی‌ای انجام نمی‌دهد و استفاده از آن برای <bdi dir="ltr">HTML</bdi> معادل باز گذاشتن در برای مهاجمان است. حتی اگر فکر می‌کنید ورودی کاربر خطرناک نیست، همیشه <bdi dir="ltr">html/template</bdi> را انتخاب کنید — هزینه اضافی ندارد اما امنیت تضمین‌شده‌ای ارائه می‌دهد.</div>
-<div class="summary">
-<strong>خلاصه‌ی نکات کلیدی:</strong>
-<ul>
-<li>html/template با auto-escaping XSS</li>
-<li>template.ParseFS از embed.FS</li>
-<li>template.Execute با data context</li>
-<li>define و template برای reuse</li>
-<li>context-aware escaping (HTML، JS، URL)</li>
-</ul>
-</div></div>
+</div>
 </main>
 </div>
 <!-- Footer -->

@@ -91,7 +91,7 @@
 </code></pre>
 </figure>
 <p>دریافت مقدار پارامتر query و دریافت مقدار صفحه (اختیاری):</p>
-<p><strong>نکات مهم</strong></p>
+
 <p><span dir="ltr">r.URL.Query()</span> یک url.Values برمی‌گرداند که شبیه map[string][]string است.</p>
 <p>از متد Get برای گرفتن اولین مقدار هر کلید استفاده می‌کنیم.</p>
 <p>باید اعتبارسنجی پارامترها را به‌دقت انجام دهید و در صورت نیاز مقدار پیش‌فرض یا خطا برگردانید.
@@ -151,8 +151,7 @@ func createUserHandler(w http.ResponseWriter, r *http.Request) {
 </code></pre>
 </figure>
 <p>محدود کردن اندازه خواندن به 1MB برای امنیت بیشتر و بررسی وجود مقادیر لازم:</p>
-<h4 id="خواندن-دادههای-form-data-یا-urlencoded">خواندن داده‌های form-data یا urlencoded</h4>
-<p>برای داده‌های ارسالی توسط فرم‌های HTML که معمولا application/x-www-form-urlencoded یا multipart/form-data هستند، از متد ParseForm یا ParseMultipartForm استفاده می‌کنیم.
+<p><strong  id="خواندن-دادههای-form-data-یا-urlencoded">خواندن داده‌های form-data یا urlencoded</strong> — برای داده‌های ارسالی توسط فرم‌های HTML که معمولا application/x-www-form-urlencoded یا multipart/form-data هستند، از متد ParseForm یا ParseMultipartForm استفاده می‌کنیم.
 </p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">func submitFormHandler(w http.ResponseWriter, r *http.Request) {
@@ -409,16 +408,7 @@ func createArticleHandler(w http.ResponseWriter, r *http.Request) {
 <li><strong>استراتژی پارس بر اساس <bdi dir="ltr">Content-Type</bdi>:</strong> بهترین روش مدیریت درخواست‌ها، بررسی هدر <code dir="ltr">Content-Type</code> قبل از هر عملیاتی است. اگر <code dir="ltr">application/json</code> باشد از <code dir="ltr">json.NewDecoder</code>، اگر <code dir="ltr">application/x-www-form-urlencoded</code> باشد از <code dir="ltr">r.ParseForm</code>، و اگر <code dir="ltr">multipart/form-data</code> باشد از <code dir="ltr">r.ParseMultipartForm</code> استفاده کنید. این استراتژی از خطاهای پارس و حفره‌های امنیتی جلوگیری می‌کند.</li>
 </ul>
 <div class="tip"><strong>نکته کاربردی:</strong> همیشه هدر <bdi dir="ltr">Content-Type</bdi> را قبل از پارس کردن بررسی کنید. بسیاری از باگ‌های امنیتی از این ناشی می‌شوند که سرور فرض می‌کند درخواست <bdi dir="ltr">JSON</bdi> است اما کلاینت داده فرم ارسال کرده. اگر بدون بررسی <code dir="ltr">Content-Type</code> سعی کنید <bdi dir="ltr">JSON</bdi> را از یک فرم <code dir="ltr">multipart/form-data</code> پارس کنید، نه‌تنها خطای دیکد دریافت می‌کنید بلکه ممکن است <code dir="ltr">r.Body</code> قبلاً توسط <code dir="ltr">ParseMultipartForm</code> خوانده شده و دیگر قابل دسترسی نباشد. الگوی ایمن این است که ابتدا <code dir="ltr">Content-Type</code> را بررسی و سپس متد پارس مناسب را انتخاب کنید.</div>
-<div class="summary">
-<strong>خلاصه‌ی نکات کلیدی:</strong>
-<ul>
-<li>r.URL.Query برای query string</li>
-<li>r.Form و r.PostForm برای form data</li>
-<li>json.NewDecoder برای JSON body</li>
-<li>r.FormFile برای file upload</li>
-<li>validation با کتابخانه یا دستی</li>
-</ul>
-</div></div>
+</div>
 </main>
 </div>
 <!-- Footer -->

@@ -83,7 +83,7 @@
 <div class="tip">
 <strong>نکته‌ی حرفه‌ای:</strong> رویکرد <bdi dir="ltr">Go</bdi> در استفاده از struct با <bdi dir="ltr">JSON</bdi> tag‌ها، رویکردی ساختار‌داده‌محور است. برخلاف <bdi dir="ltr">PHP</bdi> که ممکن است از آرایه‌های انجمنی برای همه‌چیز استفاده کنید، در <bdi dir="ltr">Go</bdi> ابتدا شکل داده‌هایتان را تعریف می‌کنید و سپس به رمزگشای <bdi dir="ltr">JSON</bdi> اجازه می‌دهید آن را پر کند.
 </div>
-<h4 id="تبدیل-json-به-struct">تبدیل JSON به struct (Unmarshal)</h4>
+<p><strong  id="تبدیل-json-به-struct">تبدیل JSON به struct (Unmarshal)</strong></p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">type User struct {
     Name string `json:"name"`
@@ -102,7 +102,7 @@ func main() {
 </code></pre>
 </figure>
 <p>نکته مهم: <strong dir="ltr">struct tag</strong> ها (مثل <code>`json:"name"`</code>) مشخص می‌کنند که هر فیلد struct به کدام کلید JSON نگاشت شود. بدون این tag‌ها، نام فیلد باید به‌طور دقیق با کلید JSON (حتی بزرگ/کوچکی حروف) یکسان باشد.</p>
-<h4 id="تبدیل-struct-به-json">تبدیل struct به JSON (Marshal)</h4>
+<p><strong  id="تبدیل-struct-به-json">تبدیل struct به JSON (Marshal)</strong></p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">user := User{Name: "Ali", Age: 30}
 output, err := json.Marshal(user)
@@ -197,7 +197,7 @@ func main() {
 <div class="note">
 <strong>هزینه‌ی Reflection:</strong> استفاده از <code>reflect</code> در زمان اجرا هزینه‌ای دارد و کندتر از کد دستی است. برای برنامه‌های معمولی این هزینه ناچیز است، اما در hot paths که میلیون‌ها بار JSON تولید/مصرف می‌شود، ابزارهایی مثل <code>easyjson</code> یا <code>sonic</code> کد مارشالینگ را در زمان کامپایل تولید می‌کنند و سرعت چند برابری دارند.
 </div>
-<h3 id="json-rawmessage">6.6.5 json.RawMessage: پردازش تأخیری JSON</h3>
+<h3 id="json-rawmessage">6.6.5 پردازش تأخیری JSON</h3>
 <p>گاهی نمی‌دانید ساختار دقیق یک بخش از JSON چیست، یا می‌خواهید آن بخش را بدون پردازش عبور بدهید. <code dir="ltr">json.RawMessage</code> یک نوع ساده از <code>[]byte</code> است که محتوای JSON خام را بدون decode نگه می‌دارد:</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">type Event struct {
@@ -232,7 +232,7 @@ switch event.Type {
 <div class="comparison">
 <strong>مقایسه با PHP:</strong> در PHP این الگو به‌طور طبیعی با <code dir="ltr">json_decode()</code> و آرایه‌های پویا انجام می‌شود — زیرا PHP همه چیز را به <code>array</code> یا <code>stdClass</code> تبدیل می‌کند. اما در Go با نوع‌داری ایستا، <code dir="ltr">json.RawMessage</code> راه درستی برای تأخیر انداختن parse تا زمانی که نوع دقیق مشخص شود است.
 </div>
-<h3 id="json-decoder-streaming">6.6.6 json.Decoder: خواندن جریانی JSON</h3>
+<h3 id="json-decoder-streaming">6.6.6 خواندن جریانی JSON</h3>
 <p>تا اینجا از <code dir="ltr">json.Unmarshal()</code> استفاده کردیم که کل JSON را یکجا در حافظه بارگذاری و پردازش می‌کند. اما برای JSON‌های بزرگ یا خواندن از شبکه، بهتر است از <code dir="ltr">json.Decoder</code> استفاده کنید که داده‌ها را stream می‌خواند:</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">// Stream JSON from large file
@@ -651,16 +651,7 @@ func main() {
 <div class="important">
 <strong>قانون طلایی:</strong> در <bdi dir="ltr">Go</bdi> هرگز بر نام فیلد <bdi dir="ltr">struct</bdi> برای کنترل خروجی <bdi dir="ltr">JSON</bdi> تکیه نکنید — همیشه از <bdi dir="ltr">struct tag</bdi> صریح استفاده کنید. <code dir="ltr">json:"-"</code> برای حذف، <code dir="ltr">json:",omitempty"</code> برای حذف شرطی، و <code dir="ltr">json:"name"</code> برای نام‌گذاری صریح.
 </div>
-<div class="summary">
-<strong>خلاصه‌ی نکات کلیدی:</strong>
-<ul>
-<li>struct tags با `json:"field_name"`</li>
-<li>json.Marshal و json.Unmarshal</li>
-<li>omitempty برای حذف فیلد خالی</li>
-<li>custom MarshalJSON/UnmarshalJSON برای کنترل کامل</li>
-<li>yaml.v3 با struct tag مشابه JSON</li>
-</ul>
-</div></div>
+</div>
 </main>
 </div>
 <!-- Footer -->

@@ -450,16 +450,7 @@ go tool pprof leak.prof</code></pre>
 </ul>
 <div class="tip"><strong>نکته درباره تشخیص نشت در تولید:</strong> برای شناسایی نشت <bdi dir="ltr">Goroutine</bdi> در محیط تولید، دو ابزار اصلی دارید: اول، <code dir="ltr">runtime.NumGoroutine()</code> که تعداد کل <bdi dir="ltr">goroutine</bdi>های فعال را برمی‌گرداند. ثبت دوره‌ای این عدد و ارسال به سیستم مانیتورینگ (مثل <bdi dir="ltr">Prometheus</bdi>) بهترین روش است. اگر نمودار روند صعودی مداوم داشت، نشت رخ داده است. دوم، <code dir="ltr">pprof</code> با مسیر <code dir="ltr">/debug/pprof/goroutine</code> که <bdi dir="ltr">stack trace</bdi> تمام <bdi dir="ltr">goroutine</bdi>ها را نشان می‌دهد. با مقایسه‌ی خروجی در زمان‌های مختلف می‌توان <bdi dir="ltr">goroutine</bdi>های نشتی را که <bdi dir="ltr">stack trace</bdi> یکسانی دارند و تعدادشان فقط افزایش می‌یابد شناسایی کرد. دستور <code dir="ltr">go tool pprof http://localhost:6060/debug/pprof/goroutine</code> پروفایل تعاملی ارائه می‌دهد.</div>
 <div class="note"><strong>یادداشت:</strong> برای اطمینان از عدم نشت در تست‌های خود، الگوی زیر را به‌کار ببرید: قبل و بعد از هر تست، <code>runtime.NumGoroutine()</code> را چک کنید و اگر اختلاف معناداری وجود داشت، تست را شکست‌خورده اعلام کنید. این کار با <code>go test -race</code> ترکیب شود تا علاوه بر <bdi dir="ltr">Data Race</bdi>، نشت‌های ظریف <bdi dir="ltr">Goroutine</bdi> نیز در CI شناسایی شوند. کتابخانه‌هایی مثل <code>go.uber.org/goleak</code> این کار را با چند خط کد ساده می‌کنند و در پروژه‌های تولیدی به‌عنوان استاندارد تلقی می‌شوند.</div>
-<div class="summary">
-<strong>خلاصه‌ی نکات کلیدی:</strong>
-<ul>
-<li>goroutine بدون خروج = نشتی حافظه</li>
-<li>علل رایج: channel بدون receiver، فراموش کردن context</li>
-<li>pprof goroutine برای تشخیص نشتی</li>
-<li>context.WithCancel برای لغو goroutine طولانی</li>
-<li>done channel سیگنال پایان به goroutine</li>
-</ul>
-</div></div>
+</div>
 </main>
 </div>
 <!-- Footer -->

@@ -157,7 +157,7 @@ c.IncrementPointer() // count now 1
 </ul>
 <div class="warning"><strong>هشدار:</strong> نیازی به اشاره‌گر برای slice، map و channel نیست! این انواع ذاتاً مرجع‌دار هستند و ارسال آن‌ها به تابع بدون اشاره‌گر هم باعث به‌اشتراک‌گذاری داده می‌شود. استفاده از <code>*[]int</code> یا <code>*map[string]int</code> هم لازم نیست و هم کد را پیچیده‌تر می‌کند.</div>
 <p>Go از نظر ایمنی حافظه بسیار محتاط عمل می‌کند. حتی اگر اشاره‌گری به متغیر محلی یک تابع برگردانید، کامپایلر Go به‌صورت خودکار تشخیص می‌دهد (از طریق Escape Analysis) که متغیر باید روی heap قرار گیرد تا پس از خروج از تابع همچنان معتبر بماند. این برخلاف C است که برگرداندن اشاره‌گر به متغیر محلی باعث رفتار تعریف‌نشده می‌شود.</p>
-<h3 id="escape-analysis">2.5.4 Escape Analysis: چگونه Go تصمیم می‌گیرد چه چیزی روی Heap قرار گیرد</h3>
+<h3 id="escape-analysis">2.5.4 چگونه Go تصمیم می‌گیرد چه چیزی روی Heap قرار گیرد</h3>
 <div class="quote-box">
 <p class="quote-text">یک برنامه‌نویس کاربردی باید بداند چگونه با اشاره‌گرها کار کند و حافظه را مستقیماً مدیریت نماید. اگر اشاره‌گرها را نمی‌فهمید، نمی‌فهمید کامپیوترها چگونه کار می‌کنند.</p>
 <p class="quote-source">
@@ -456,16 +456,7 @@ person := Person{
 <li><strong>استفاده از <code>new()</code> برای تخصیص صریح <bdi dir="ltr">Heap</bdi>:</strong> تابع <code>new(T)</code> یک مقدار صفر از نوع <code>T</code> روی <bdi dir="ltr">Heap</bdi> تخصیص می‌دهد و اشاره‌گر آن را برمی‌گرداند. اما در عمل، کامپایلر ممکن است حتی با <code>new</code> متغیر را روی <bdi dir="ltr">Stack</bdi> نگه دارد اگر فرار نکند. تابع <code>make</code> نیز برای <bdi dir="ltr">slice</bdi>، <bdi dir="ltr">map</bdi> و <bdi dir="ltr">channel</bdi> استفاده می‌شود و همیشه روی <bdi dir="ltr">Heap</bdi> تخصیص می‌دهد.</li>
 </ul>
 <div class="tip"><strong>نکته‌ی کلیدی — اولویت مقدار برای کوچک، اشاره‌گر برای بزرگ:</strong> در <bdi dir="ltr">Go</bdi> پیشنهاد می‌شود برای <bdi dir="ltr">struct</bdi>‌های کوچک (زیر ۶۴ بایت) از ارسال مقداری استفاده کنید چون <bdi dir="ltr">cache locality</bdi> بهتری دارد و <bdi dir="ltr">overhead</bdi> <bdi dir="ltr">GC</bdi> ایجاد نمی‌کند. اما برای <bdi dir="ltr">struct</bdi>‌های بزرگ یا وقتی نیاز به تغییر مقدار اصلی دارید، از اشاره‌گر استفاده کنید. <bdi dir="ltr">Escape Analysis</bdi> به کامپایلر کمک می‌کند تصمیمات هوشمندانه بگیرد: متغیرهایی که فرار نمی‌کنند روی <bdi dir="ltr">Stack</bdi> رایگان هستند و فقط متغیرهایی که واقعاً نیاز دارند روی <bdi dir="ltr">Heap</bdi> قرار می‌گیرند. بنابراین به جای نگرانی درباره‌ی جزئیات تخصیص، کدی تمیز و خوانا بنویسید و <bdi dir="ltr">Escape Analysis</bdi> را به کامپایلر بسپارید.</div>
-<div class="summary">
-<strong>خلاصه‌ی نکات کلیدی:</strong>
-<ul>
-<li>&amp; برای گرفتن آدرس، * برای dereference</li>
-<li>escape analysis تعیین می‌کند متغیر روی stack یا heap قرار گیرد</li>
-<li>pointer receiver اجازه‌ی تغییر و اجتناب از کپی را می‌دهد</li>
-<li>اشاره‌گر به اشاره‌گر برای ساختارهای درختی کاربرد دارد</li>
-<li>nil pointer باید قبل از dereference بررسی شود</li>
-</ul>
-</div></div>
+</div>
 </main>
 </div>
 <!-- Footer -->

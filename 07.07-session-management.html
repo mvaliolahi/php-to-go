@@ -299,8 +299,7 @@ func logoutHandler(w http.ResponseWriter, r *http.Request) {
 }
 </code></pre>
 </figure>
-<h4 id="middleware-سشن-loadandsave">Middleware سشن: LoadAndSave</h4>
-<p>متد <code>LoadAndSave</code> یک middleware است که به‌صورت خودکار سشن را در ابتدای هر درخواست بارگذاری و در پایان ذخیره می‌کند. این middleware الگوی استاندارد ادغام سشن در زنجیره middleware است:</p>
+<p><strong  id="middleware-سشن-loadandsave">Middleware سشن: LoadAndSave</strong> — متد <code>LoadAndSave</code> یک middleware است که به‌صورت خودکار سشن را در ابتدای هر درخواست بارگذاری و در پایان ذخیره می‌کند. این middleware الگوی استاندارد ادغام سشن در زنجیره middleware است:</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">// LoadAndSave automatically:
 // 1. Reads session cookie from request
@@ -347,7 +346,7 @@ session()-&gt;forget('userID');
 <tr><td dir="ltr">Lazy loading</td><td>خیر</td><td>بله — فقط وقتی نیاز باشد</td></tr>
 </tbody>
 </table>
-<h3 id="flash-messages-پیامهای-یکباره">7.7.4 Flash Messages: پیام‌های یک‌باره</h3>
+<h3 id="flash-messages-پیامهای-یکباره">7.7.4 پیام‌های یک‌باره</h3>
 <p>Flash message پیامی است که فقط برای یک درخواست بعدی در دسترس است و سپس به صورت خودکار حذف می‌شود. این الگو برای نمایش پیام‌های موفقیت، خطا یا اطلاع‌رسانی بعد از عملیات‌هایی مانند ثبت‌نام، ویرایش یا حذف بسیار کاربردی است:</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">// Save flash message
@@ -402,8 +401,7 @@ session()-&gt;flash('success', 'مقاله با موفقیت ایجاد شد');
 <div class="tip">
 <strong>نکته:</strong> تفاوت <code>Put</code> و <code>PopString</code> مهم است: <code>Put</code> مقدار را در سشن ذخیره می‌کند و باقی می‌ماند، اما <code>PopString</code> مقدار را می‌خواند و بلافاصله حذف می‌کند. برای flash message حتماً از <code>PopString</code> استفاده کنید تا پیام فقط یک بار نمایش داده شود.
 </div>
-<h4 id="پشتیبانی-از-backend-های-مختلف-در-scs">پشتیبانی از Backend‌های مختلف در scs</h4>
-<p>کتابخانه scs از چندین backend ذخیره‌سازی پشتیبانی می‌کند. در محیط production با چندین نمونه سرور، باید از backend توزیع‌شده مانند Redis یا دیتابیس استفاده کنید:</p>
+<p><strong  id="پشتیبانی-از-backend-های-مختلف-در-scs">پشتیبانی از Backend‌های مختلف در scs</strong> — کتابخانه scs از چندین backend ذخیره‌سازی پشتیبانی می‌کند. در محیط production با چندین نمونه سرور، باید از backend توزیع‌شده مانند Redis یا دیتابیس استفاده کنید:</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">import (
 "github.com/alexedwards/scs/v2"
@@ -558,16 +556,7 @@ func initSessionStore(redisURL string) *scs.SessionManager {
 <div class="tip">
 <strong>نکته امنیتی:</strong> همیشه پرچم‌های <code dir="ltr">HttpOnly</code>، <code dir="ltr">Secure</code> و <code dir="ltr">SameSite</code> را روی کوکی سشن تنظیم کنید. <code dir="ltr">HttpOnly</code> از دسترسی <bdi dir="ltr">JavaScript</bdi> به کوکی (و سرقت سشن با <bdi dir="ltr">XSS</bdi>) جلوگیری می‌کند. <code dir="ltr">Secure</code> تضمین می‌کند که کوکی فقط روی <bdi dir="ltr">HTTPS</bdi> ارسال شود. <code dir="ltr">SameSite=Lax</code> یا <code dir="ltr">SameSite=Strict</code> از ارسال کوکی در درخواست‌های بین‌سایتی محافظت کرده و حمله <bdi dir="ltr">CSRF</bdi> را دشوار می‌سازد. همچنین حتماً بعد از ورود موفق کاربر، شناسه سشن را بازتولید (<bdi dir="ltr">regenerate</bdi>) کنید تا از حمله <bdi dir="ltr">Session Fixation</bdi> جلوگیری شود. بدون بازتولید شناسه، مهاجم می‌تواند شناسه سشن معلومی را به قربانی تزریق کند و پس از ورود قربانی، از همان شناسه برای دسترسی غیرمجاز استفاده نماید.
 </div>
-<div class="summary">
-<strong>خلاصه‌ی نکات کلیدی:</strong>
-<ul>
-<li>Go $_SESSION ندارد؛ باید پیاده شود</li>
-<li>cookie store: session در cookie رمزنگاری‌شده</li>
-<li>server store: session در Redis یا memory</li>
-<li>gorilla/session الگوی رایج</li>
-<li>CSRF protection با token</li>
-</ul>
-</div></div>
+</div>
 </main>
 </div>
 <!-- Footer -->

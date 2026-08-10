@@ -564,16 +564,7 @@ func queryWithTimeout(ctx context.Context) {
 </ul>
 <div class="tip"><strong>نکته عملی — <tspan direction="ltr" unicode-bidi="embed">Context</tspan> همیشه اولین پارامتر و هرگز فیلد <tspan direction="ltr" unicode-bidi="embed">struct</tspan> نباید باشد:</strong> در Go قرارداد بسیار مهمی وجود دارد که <tspan direction="ltr" unicode-bidi="embed">context.Context</tspan> باید همیشه به عنوان اولین پارامتر تابع پاس داده شود و نام آن <tspan direction="ltr" unicode-bidi="embed">ctx</tspan> باشد. هرگز <tspan direction="ltr" unicode-bidi="embed">Context</tspan> را در یک <tspan direction="ltr" unicode-bidi="embed">struct</tspan> ذخیره نکنید. دلیل این قرارداد این است که <tspan direction="ltr" unicode-bidi="embed">Context</tspan> یک شیء با چرخه حیات مشخص است و باید با پایان عملیات والد لغو شود. اگر <tspan direction="ltr" unicode-bidi="embed">Context</tspan> در <tspan direction="ltr" unicode-bidi="embed">struct</tspan> ذخیره شود چرخه حیات آن نامشخص می‌شود و ممکن است <tspan direction="ltr" unicode-bidi="embed">Goroutine</tspan>‌هایی که از آن استفاده می‌کنند هرگز سیگنال لغو دریافت نکنند. همچنین ذخیره <tspan direction="ltr" unicode-bidi="embed">Context</tspan> در <tspan direction="ltr" unicode-bidi="embed">struct</tspan> باعث وابستگی پنهان می‌شود و تست‌نویسی را بسیار دشوار می‌سازد. همیشه امضای تابع باید <tspan direction="ltr" unicode-bidi="embed">func DoSomething(ctx context.Context,...)</tspan> باشد نه اینکه <tspan direction="ltr" unicode-bidi="embed">ctx</tspan> از داخل <tspan direction="ltr" unicode-bidi="embed">struct</tspan> خوانده شود. این قرارداد در تمام کتابخانه‌های استاندارد Go رعایت می‌شود و ابزارهایی مثل <tspan direction="ltr" unicode-bidi="embed">go vet</tspan> نیز آن را بررسی می‌کنند.</div>
 <div class="note"><strong>یادداشت:</strong> در <bdi dir="ltr">PHP</bdi> مفهوم <bdi dir="ltr">Context</bdi> به این شکل وجود ندارد؛ در Laravel درخواست فعلی از طریق <code>request()</code> یا تزریق <code>Request $request</code> در دسترس است اما قابلیت لغو یا <bdi dir="ltr">deadline</bdi> ندارد. در <bdi dir="ltr">Go</bdi> همیشه <code>context.Context</code> را از <code>r.Context()</code> در <bdi dir="ltr">HTTP handler</bdi>ها بگیرید و به توابع فرعی پاس بدهید. در زنجیره‌ی <bdi dir="ltr">middleware</bdi>، <bdi dir="ltr">Context</bdi> درخواست به‌طور خودکار با هر <bdi dir="ltr">middleware</bdi> جدید می‌تواند مشتق شود (<code>r.WithContext(ctx)</code>) تا <bdi dir="ltr">deadline</bdi> یا <bdi dir="ltr">value</bdi> جدیدی اضافه شود بدون اینکه <bdi dir="ltr">Context</bdi> والد تغییر کند (یادآوری: <bdi dir="ltr">Context</bdi>ها <bdi dir="ltr">immutable</bdi> هستند).</div>
-<div class="summary">
-<strong>خلاصه‌ی نکات کلیدی:</strong>
-<ul>
-<li>context.Context به‌عنوان اولین پارامتر توابع</li>
-<li>WithCancel برای لغو صریح</li>
-<li>WithTimeout برای محدودیت زمانی</li>
-<li>WithValue برای انتقال مقادیر request-scoped</li>
-<li>context در درخت فراخوانی پخش می‌شود</li>
-</ul>
-</div></div>
+</div>
 </main>
 </div>
 <!-- Footer -->

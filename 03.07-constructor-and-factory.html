@@ -289,13 +289,11 @@ if err != nil {
 <div class="tip"><strong>چه زمانی از کدام الگو استفاده کنیم؟</strong> از <strong>سازنده‌ی ساده <code dir="ltr">NewX()</code></strong> وقتی استفاده کنید که struct کمتر از ۳ فیلد اختیاری دارد. از <strong dir="ltr">Functional Options</strong> وقتی استفاده کنید که فیلدهای اختیاری زیاد اما مستقل هستند. از <strong dir="ltr">Builder</strong> وقتی استفاده کنید که مراحل ساخت وابسته به هم هستند، اعتبارسنجی پیچیده لازم است یا ساخت باید تدریجی باشد (مثل SQL builder یا HTTP request builder).</div>
 <h3 id="چه-زمانی-سازنده-بنویسیم">3.7.4 چه زمانی در Go سازنده بنویسیم؟</h3>
 <p>در PHP هر کلاس همیشه یک constructor دارد (حتی اگر صریحاً تعریف نشده باشد). اما در Go ساخت <code>struct</code> بدون سازنده کاملاً معتبر است. پس چه زمانی باید تابع <code dir="ltr">NewX()</code> بنویسیم؟</p>
-<p><strong>بنویسید وقتی:</strong></p>
-<p>۱. struct مقادیر اولیه‌ی پیچیده نیاز دارد (اتصال به دیتابیس، خواندن تنظیمات).</p>
+<p><strong>بنویسید وقتی:</strong> — ۱. struct مقادیر اولیه‌ی پیچیده نیاز دارد (اتصال به دیتابیس، خواندن تنظیمات).</p>
 <p>۲. اعتبارسنجی لازم است (بررسی اینکه فیلدهای ضروری تنظیم شده‌اند).</p>
 <p>۳. فیلدهای unexported دارید که باید از خارج مقداردهی شوند.</p>
 <p>۴. interface برمی‌گردانید نه struct — تا پیاده‌سازی داخلی مخفی بماند.</p>
-<p><strong>نیازی نیست وقتی:</strong></p>
-<p>۱. struct فقط فیلدهای ساده و exported دارد.</p>
+<p><strong>نیازی نیست وقتی:</strong> — ۱. struct فقط فیلدهای ساده و exported دارد.</p>
 <p>۲. zero value معتبر و مفید است (مثل <code>sync.Mutex{}</code> یا <code>bytes.Buffer{}</code>).</p>
 <p>۳. هیچ منطق مقداردهی خاصی وجود ندارد.</p>
 <figure class="code go" dir="ltr">
@@ -466,16 +464,7 @@ func main() {
 <li><strong>الگوی <bdi dir="ltr">Builder</bdi> برای ساخت چندمرحله‌ای:</strong> وقتی ساخت شیء شامل مراحل وابسته به هم یا اعتبارسنجی پیچیده است از الگوی <bdi dir="ltr">Builder</bdi> استفاده کنید. مثلاً ساخت <bdi dir="ltr">HTTP client</bdi> با <bdi dir="ltr">base URL</bdi>، <bdi dir="ltr">timeout</bdi>، <bdi dir="ltr">retry</bdi> و <bdi dir="ltr">header</bdi>های سفارشی. الگوی <bdi dir="ltr">Builder</bdi> اجازه می‌دهد هر مرحله به‌صورت تدریجی اضافه شود و در نهایت تابع <bdi dir="ltr">Build()</bdi> تمام اعتبارسنجی‌ها را انجام دهد.</li>
 </ul>
 <div class="tip"><strong>قانون طلایی سازنده‌های پیچیده:</strong> وقتی تعداد پارامترهای اختیاری زیاد است از الگوی <bdi dir="ltr">Functional Options</bdi> استفاده کنید: <bdi dir="ltr">NewServer(WithPort(8080), WithTimeout(30*time.Second))</bdi>. این الگو سه مزیت کلیدی دارد: اول اینکه هر <bdi dir="ltr">option</bdi> مستندات خود را دارد و <bdi dir="ltr">IDE</bdi> آن‌ها را نشان می‌دهد. دوم اینکه اضافه‌کردن <bdi dir="ltr">option</bdi> جدید بدون تغییر رابط سازنده امکان‌پذیر است و سازگاری عقب‌ (<bdi dir="ltr">backward compatibility</bdi>) حفظ می‌شود. سوم اینکه مقادیر پیش‌فرض در خود تابع سازنده تعریف می‌شوند و مصرف‌کننده فقط مواردی را که می‌خواهد تغییر دهد مشخص می‌کند. این الگو در کتابخانه استاندارد Go و پروژه‌های بزرگ مانند <bdi dir="ltr">gRPC</bdi> و <bdi dir="ltr">Kubernetes</bdi> به‌وفور استفاده شده است.</div>
-<div class="summary">
-<strong>خلاصه‌ی نکات کلیدی:</strong>
-<ul>
-<li>NewType الگوی استاندارد constructor در Go است</li>
-<li>option pattern برای constructor با پارامترهای اختیاری</li>
-<li>factory function برای ایجاد انواع مختلف واسط مشترک</li>
-<li>builder pattern برای ساخت شیء پیچیده مرحله‌به‌مرحله</li>
-<li>از over-engineering با الگوهای Java-style پرهیز کنید</li>
-</ul>
-</div></div>
+</div>
 </main>
 </div>
 <!-- Footer -->

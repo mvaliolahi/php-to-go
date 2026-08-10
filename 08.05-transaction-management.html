@@ -228,16 +228,7 @@ if affected == 0 {
 <li><strong>تراکنش‌های فقط‌خواندنی برای گزارش‌گیری:</strong> کوئری‌های گزارش‌گیری معمولاً فقط داده می‌خوانند و نیازی به تغییر ندارند. با تنظیم <code dir="ltr">sql.TxOptions{ReadOnly: true}</code> دیتابیس می‌تواند بهینه‌سازی‌هایی انجام دهد مثلاً تراکنش را از عملیات <bdi dir="ltr">WAL</bdi> معاف کند. همچنین از تغییرات ناخواسته جلوگیری می‌شود. در <bdi dir="ltr">PostgreSQL</bdi> تراکنش‌های فقط‌خواندنی می‌توانند از <bdi dir="ltr">snapshot</bdi> بهینه استفاده کنند.</li>
 </ul>
 <div class="tip"><strong>همیشه <code dir="ltr">defer tx.Rollback()</code> بعد از <code dir="ltr">Begin()</code> بنویسید:</strong> حتی اگر قصد دارید <code dir="ltr">tx.Commit()</code> کنید، همیشه بلافاصله بعد از <code dir="ltr">db.Begin()</code> دستور <code dir="ltr">defer tx.Rollback()</code> را بنویسید. دلیل این است که فراخوانی <code dir="ltr">Rollback()</code> بعد از <code dir="ltr">Commit()</code> بدون اثر است (<bdi dir="ltr">no-op</bdi>) و خطایی تولید نمی‌کند. اما اگر در مسیر خطا فراموش کنید <code dir="ltr">Rollback</code> را فراخوانی کنید اتصال از <bdi dir="ltr">Pool</bdi> نشت می‌کند و برنامه با کمبود اتصال مواجه خواهد شد. این الگو ساده‌ترین و امن‌ترین روش مدیریت تراکنش در <bdi dir="ltr">Go</bdi> است.</div>
-<div class="summary">
-<strong>خلاصه‌ی نکات کلیدی:</strong>
-<ul>
-<li>db.Begin شروع transaction</li>
-<li>tx.Commit یا tx.Rollback</li>
-<li>defer tx.Rollback() برای اطمینان</li>
-<li>isolation level با db.BeginTx</li>
-<li>nested transaction با savepoint</li>
-</ul>
-</div></div>
+</div>
 </main></div>
 <!-- Footer -->
 <footer class="site-footer">

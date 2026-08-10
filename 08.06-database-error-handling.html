@@ -211,16 +211,7 @@ func isRetryable(err error) bool {
 <li><strong>برخورد با <bdi dir="ltr">Timeout</bdi> اتصال در میکروسرویس‌ها:</strong> در معماری میکروسرویسی اتصال به دیتابیس ممکن است به دلیل بار شبکه، <bdi dir="ltr">DNS</bdi> یا فشار روی دیتابیس مرکزی قطع شود. باید <code>context.WithTimeout</code> برای هر عملیات دیتابیس تعریف کنید و <bdi dir="ltr">circuit breaker</bdi> برای جلوگیری از ارسال درخواست به دیتابیسی که از قبل تحت فشار است پیاده‌سازی کنید. همچنین مانیتورینگ نرخ خطای اتصال برای شناسایی زودهنگام مشکلات زیرساختی ضروری است.</li>
 </ul>
 <div class="warning"><strong>هشدار عملیاتی:</strong> هرگز خطاهای <bdi dir="ltr">Constraint</bdi> (<code>unique_violation</code>، <code>foreign_key_violation</code>، <code>not_null_violation</code>) را <bdi dir="ltr">retry</bdi> نکنید. این خطاها ناشی از داده‌های نامعتبر هستند و تلاش مجدد فقط منابع سرور را هدر می‌دهد و ممکن است باعث ایجاد حلقه‌ی بی‌نهایت <bdi dir="ltr">retry</bdi> شود. فقط خطاهای موقتی مثل <code>deadlock_detected</code>، <code>connection_exception</code> و <code>context.DeadlineExceeded</code> قابل <bdi dir="ltr">retry</bdi> هستند. تابع <code>isRetryable()</code> را پیاده‌سازی کنید تا این تمایز به صورت متمرکز مدیریت شود.</div>
-<div class="summary">
-<strong>خلاصه‌ی نکات کلیدی:</strong>
-<ul>
-<li>sql.ErrNoRows برای no result</li>
-<li>errors.Is برای مقایسه‌ی خطا</li>
-<li>error wrapping با %w برای context</li>
-<li>retry برای transient error</li>
-<li>logging برای diagnostic</li>
-</ul>
-</div></div>
+</div>
 </main></div>
 <!-- Footer -->
 <footer class="site-footer">

@@ -358,16 +358,7 @@ upx --best myapp
 </ul>
 <div class="tip"><strong>نکته‌ی عملی:</strong> برای باینری‌های تولیدی حتماً از <code dir="ltr">-ldflags="-s -w"</code> استفاده کنید تا اندازه کاهش یابد. همچنین با <code dir="ltr">-X main.version=1.2.3</code> می‌توانید اطلاعات نسخه را در زمان ساخت تزریق کنید. ترکیب کامل: <code dir="ltr">go build -ldflags="-s -w -X main.version=$(git describe --tags) -X main.commit=$(git rev-parse --short HEAD)" -trimpath -o myapp</code>. پرچم <code dir="ltr">-trimpath</code> مسیرهای محلی را از باینری حذف می‌کند که برای تکرارپذیری بیلد و امنیت مهم است.</div>
 <div class="note"><strong>نکته‌ی حرفه‌ای — تفاوت <code dir="ltr">go build</code>، <code dir="ltr">go install</code> و <code dir="ltr">go run</code>:</strong> <code dir="ltr">go run</code> برای توسعه‌ی سریع استفاده می‌شود، کد را کامپایل می‌کند، اجرا می‌کند و سپس باینری موقت را پاک می‌کند. <code dir="ltr">go build</code> باینری پایدار در دایرکتوری جاری می‌سازد و مناسب CI/CD است. <code dir="ltr">go install</code> باینری را در <code dir="ltr">GOBIN</code> (یا <code dir="ltr">GOPATH/bin</code>) نصب می‌کند تا از هر مسیری قابل اجرا باشد — این بهترین روش برای نصب ابزارهای توسعه مثل <code dir="ltr">golangci-lint</code> یا <code dir="ltr">air</code> است. در Go 1.24 به بعد، ابزارهای پروژه‌ای را با دستورالعمل <code dir="ltr">tool</code> در <code dir="ltr">go.mod</code> مدیریت کنید (به بخش ۳.۲ مراجعه کنید) تا نسخه‌ی ابزار بین اعضای تیم ثابت بماند.</div>
-<div class="summary">
-<strong>خلاصه‌ی نکات کلیدی:</strong>
-<ul>
-<li>go run برای توسعه، go build برای تولید باینری</li>
-<li>cross-compilation با GOOS/GOARCH بدون toolchain خارجی</li>
-<li>ldflags برای تزریق متادیتا در زمان build</li>
-<li>CGO_ENABLED=0 باینری استاتیک تولید می‌کند</li>
-<li>go install ابزارهای گلوبال را نصب می‌کند</li>
-</ul>
-</div></div>
+</div>
 </main>
 </div>
 <!-- Footer -->

@@ -76,13 +76,10 @@
 </ul>
 به زبان ساده: هر Data Race یک Race Condition است اما هر Race Condition لزوماً Data Race نیست.
 </div>
-<p><strong dir="ltr">Race Condition</strong> <strong>زمانی رخ می‌دهد که دو یا چند Goroutine یا thread / process به طور همزمان به داده مشترکی دسترسی داشته باشند و حداقل یکی از آن‌ها بدون هماهنگی لازم داده را تغییر دهد.</strong></p>
-<p>مثلاً در نظر بگیرید یک متغیر شمارنده دارید که چند goroutine می‌خواهند مقدارش را افزایش دهند. اگر این عملیات به صورت همزمان و بدون هماهنگی انجام شود ممکن است افزایش‌ها به درستی ثبت نشوند.</p>
+<p><strong dir="ltr">Race Condition</strong> <strong>زمانی رخ می‌دهد که دو یا چند Goroutine یا thread / process به طور همزمان به داده مشترکی دسترسی داشته باشند و حداقل یکی از آن‌ها بدون هماهنگی لازم داده را تغییر دهد.</strong> — مثلاً در نظر بگیرید یک متغیر شمارنده دارید که چند goroutine می‌خواهند مقدارش را افزایش دهند. اگر این عملیات به صورت همزمان و بدون هماهنگی انجام شود ممکن است افزایش‌ها به درستی ثبت نشوند.</p>
 <p>در PHP معمولاً وقتی چند پردازش یا Worker به یک منبع مشترک مثل دیتابیس یا Redis دسترسی دارند برای جلوگیری از این مشکلات از قفل redis یا فایل یا دیتابیس استفاده می‌کنیم. اما در Go ابزار استاندارد و سبک برای مدیریت این مشکل استفاده از</p>
-<p><strong dir="ltr">Mutex</strong></p>
-<p><strong dir="ltr">Channel</strong></p>
-<p><strong dir="ltr">Atomic operations</strong></p>
-<p>است که توسط پکیج sync ارائه می‌شود.</p>
+<p><strong dir="ltr">Mutex</strong> — <strong dir="ltr">Channel</strong></p>
+<p><strong dir="ltr">Atomic operations</strong> — است که توسط پکیج sync ارائه می‌شود.</p>
 <p><strong>مثال ساده از Race Condition:</strong></p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">package main
@@ -109,12 +106,10 @@ func main() {
 </code></pre>
 </figure>
 <p>چون ۱۰۰۰ goroutine داریم که مقدار counter را افزایش می‌دهند انتظار داریم عدد ۱۰۰۰ چاپ شود.</p>
-<p><strong>آنچه واقعاً اتفاق می‌افتد</strong></p>
-<p>غالباً عددی کمتر از ۱۰۰۰ چاپ می‌شود.</p>
+<p><strong>آنچه واقعاً اتفاق می‌افتد</strong> — غالباً عددی کمتر از ۱۰۰۰ چاپ می‌شود.</p>
 <p>دلیلش این است که چند goroutine به صورت همزمان به counter دسترسی پیدا می‌کنند عدد را می‌خوانند، افزایش می‌دهند و می‌نویسند. اما چون دسترسی‌ها هم‌زمان است برخی از افزایش‌ها روی هم می‌افتند و از بین می‌روند.
 </p>
-<p><strong>چرا</strong> <strong dir="ltr">Race Condition در PHP کمتر اتفاق می‌افتد</strong></p>
-<p>PHP در حالت عادی single-thread اجرا می‌شود و هر درخواست در یک process مستقل است. هر بار که می‌خواهید داده مشترکی را تغییر دهید معمولاً با دیتابیس، Redis یا job queue ارتباط دارید که خودش sync بودن را مدیریت می‌کند و یا از ابزارهایی مثل atomic lock یا database lock استفاده می کنید.</p><p>در Go به خاطر مدل هم‌روندی goroutine و حافظه مشترک درون یک process اشتراک داده در حافظه برنامه به صورت مستقیم اتفاق می‌افتد.</p><p>بنابراین ریسک race condition بیشتر است.</p>
+<p><strong>چرا</strong> <strong dir="ltr">Race Condition در PHP کمتر اتفاق می‌افتد</strong> — PHP در حالت عادی single-thread اجرا می‌شود و هر درخواست در یک process مستقل است. هر بار که می‌خواهید داده مشترکی را تغییر دهید معمولاً با دیتابیس، Redis یا job queue ارتباط دارید که خودش sync بودن را مدیریت می‌کند و یا از ابزارهایی مثل atomic lock یا database lock استفاده می کنید.</p><p>در Go به خاطر مدل هم‌روندی goroutine و حافظه مشترک درون یک process اشتراک داده در حافظه برنامه به صورت مستقیم اتفاق می‌افتد.</p><p>بنابراین ریسک race condition بیشتر است.</p>
 <p>خوشبختانه تیم Go یک ابزار فوق‌العاده برای تشخیص race condition ساخته است که با کامپایل برنامه همراه شده است.</p>
 <p><strong>اجرای برنامه با فلگ</strong> <strong dir="ltr">race -</strong> :</p>
 <figure class="code go" dir="ltr">
@@ -183,8 +178,7 @@ func main() {
 </figure>
 <p>count++ // افزایش شمارنده داخل بخش محافظت شده</p>
 <p>بدون استفاده از <span dir="ltr">mu.Lock()</span> و <span dir="ltr">mu.Unlock()</span> ممکن بود چند goroutine همزمان مقدار count را بخوانند و سپس بنویسند که باعث می‌شود تعداد افزایش‌ها کمتر از ۵۰ شود. در این مثال mutex تضمین می‌کند که فقط یک goroutine در هر لحظه بخش افزایش شمارنده را اجرا کند. </p><p>توجه داشته باشید که deferها به صورت LIFO اجرا می‌شوند یعنی <span dir="ltr">wg.Done()</span> در آخر اجرا می‌شود چون اول <span dir="ltr">Unlock()</span> deferred شده.</p>
-<h4 id="rwmutex">RWMutex</h4>
-<p>گاهی ممکن است بخواهید چند <bdi dir="ltr">Goroutine</bdi> به طور همزمان بتوانند فقط بخوانند اما نوشتن به صورت انحصاری باشد. Go این امکان را با <code>sync.RWMutex</code> فراهم کرده است. این نوع قفل برای سناریوهایی مثل <bdi dir="ltr">Cache</bdi> که خواندن بسیار بیشتر از نوشتن است بسیار مفید است.</p>
+<p><strong  id="rwmutex">RWMutex</strong> — گاهی ممکن است بخواهید چند <bdi dir="ltr">Goroutine</bdi> به طور همزمان بتوانند فقط بخوانند اما نوشتن به صورت انحصاری باشد. Go این امکان را با <code>sync.RWMutex</code> فراهم کرده است. این نوع قفل برای سناریوهایی مثل <bdi dir="ltr">Cache</bdi> که خواندن بسیار بیشتر از نوشتن است بسیار مفید است.</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">type SafeCache struct {
     mu sync.RWMutex
@@ -206,8 +200,7 @@ func (c *SafeCache) Set(key, value string) {
 </code></pre>
 </figure>
 <p>وقتی <code>RLock()</code> فراخوانی شود، سایر خواننده‌ها نیز می‌توانند همزمان <code>RLock()</code> بگیرند. اما وقتی <code>Lock()</code> فراخوانی شود، تمام خواننده‌ها و نویسنده‌های دیگر باید منتظر بمانند. این کار <bdi dir="ltr">Throughput</bdi> خواندن را به شدت افزایش می‌دهد.</p>
-<h4 id="syncmap">sync.Map</h4>
-<p>برای کارهای خاص، Go نوع <code>sync.Map</code> را ارائه می‌دهد که یک <bdi dir="ltr">Map</bdi> همزمان‌امن بدون نیاز به <code>Mutex</code> است. این نوع برای دو سناریو بهینه شده: وقتی کلیدها فقط یک بار نوشته و بارها خوانده می‌شوند، و وقتی <bdi dir="ltr">Map</bdi> ناپیوسته از <bdi dir="ltr">Goroutine</bdi>‌های مختلف به‌روزرسانی می‌شود. برای سایر کاربردها، <code>map</code> معمولی با <code>Mutex</code> معمولاً بهتر عمل می‌کند.</p>
+<p><strong  id="syncmap">sync.Map</strong> — برای کارهای خاص، Go نوع <code>sync.Map</code> را ارائه می‌دهد که یک <bdi dir="ltr">Map</bdi> همزمان‌امن بدون نیاز به <code>Mutex</code> است. این نوع برای دو سناریو بهینه شده: وقتی کلیدها فقط یک بار نوشته و بارها خوانده می‌شوند، و وقتی <bdi dir="ltr">Map</bdi> ناپیوسته از <bdi dir="ltr">Goroutine</bdi>‌های مختلف به‌روزرسانی می‌شود. برای سایر کاربردها، <code>map</code> معمولی با <code>Mutex</code> معمولاً بهتر عمل می‌کند.</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">var m sync.Map
 
@@ -259,8 +252,7 @@ Previous read at 0x00c0000b6010 by goroutine 6:
 <li>عدم گزارش <bdi dir="ltr">Data Race</bdi> به معنای عدم وجود <bdi dir="ltr">Race Condition</bdi> نیست — <bdi dir="ltr">Race Detector</bdi> فقط <bdi dir="ltr">Data Race</bdi>‌هایی را شناسایی می‌کند که در آن اجرای خاص اتفاق بیفتند.</li>
 </ul>
 </div>
-<p><strong>مشکلات رایج در استفاده از</strong> <strong dir="ltr">Mutex</strong></p>
-<p><strong dir="ltr">Deadlock:</strong> اگر یک goroutine قفلی را بگیرد و هرگز آزاد نکند سایر goroutine‌ها قفل می‌شوند.</p>
+<p><strong>مشکلات رایج در استفاده از</strong> <strong dir="ltr">Mutex</strong> — <strong dir="ltr">Deadlock:</strong> اگر یک goroutine قفلی را بگیرد و هرگز آزاد نکند سایر goroutine‌ها قفل می‌شوند.</p>
 <p><strong dir="ltr">Starvation:</strong> قفل‌های mutex ممکن است باعث شوند برخی goroutineها همیشه منتظر بمانند.</p>
 <p><strong>فاصله زمانی زیاد بین</strong> <strong dir="ltr">Lock و Unlock</strong> باید حداقل کد ممکن در بخش قفل شده اجرا شود تا performance بالا بماند.</p>
 <p><strong dir="ltr">Avoid Mutex When Possible:</strong> در Go توصیه می‌شود به جای قفل کردن داده مگر در مواقع ضروری، از Channels برای ارتباط و هماهنگی استفاده کنید.</p>
@@ -286,8 +278,7 @@ atomic.CompareAndSwapInt64(&amp;counter, 0, 1)
 </div>
 <div class="important"><strong>Go Memory Model — رابطه Happens-Before:</strong> مدل حافظه‌ی Go تعریف می‌کند که تحت چه شرایطی تضمین می‌شود یک goroutine نتیجه‌ی نوشته‌شده توسط goroutine دیگر را می‌بیند. رابطه‌ی <strong dir="ltr">happens-before</strong> هسته‌ی این مدل است: اگر عملیات A قبل از B happens-before، B نتیجه‌ی A را خواهد دید. عملیات‌هایی که happens-before ایجاد می‌کنند شامل: مقداردهی متغیر در یک goroutine قبل از شروع آن، ارسال روی channel قبل از دریافت متناظر، <code>Lock</code> قبل از <code>Unlock</code> بعدی روی همان mutex، و <code>Done</code> قبل از بازگشت <code>Wait</code> هستند. بدون این روابط، کامپایلر و پردازنده آزادند دستورات را reordering که می‌تواند نتایج غیرمنتظره‌ای ایجاد کند.
 </div>
-<p><strong>مثال محافظت از</strong> <strong dir="ltr">Map با Mutex</strong></p>
-<p>اگر بخواهیم یک Map مشترک بین goroutine‌ها داشته باشیم و از دسترسی همزمان جلوگیری کنیم.</p>
+<p><strong>مثال محافظت از</strong> <strong dir="ltr">Map با Mutex</strong> — اگر بخواهیم یک Map مشترک بین goroutine‌ها داشته باشیم و از دسترسی همزمان جلوگیری کنیم.</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">package main
 import (
@@ -424,7 +415,7 @@ addr := net.JoinHostPort(host, strconv.Itoa(port))</code></pre>
 <figcaption>شکل ۵-۸: تجزیه‌ی گام‌به‌گام <code>counter++</code> در دو سناریو — در نیمه‌ی بالا (بدون همگام‌سازی)، G1 و G2 هر دو مقدار <code>0</code> را می‌خوانند، هر دو آن را افزایش می‌دهند و هر دو <code>1</code> را می‌نویسند؛ نتیجه‌ی نهایی <code>1</code> است به‌جای <code>2</code> (lost update). در نیمه‌ی پایین (با Mutex)، G1 قفل را می‌گیرد و G2 تا اتمام کار G1 مسدود می‌شود؛ سپس G2 مقدار صحیح <code>1</code> را می‌خواند و <code>2</code> را می‌نویسد — عملیات سریال‌سازی شده و نتیجه صحیح است.</figcaption>
 </figure>
 <p>نمودار بالا به وضوح نشان می‌دهد که چرا <bdi dir="ltr">counter++</bdi> در محیط همزمان مشکل‌ساز است. در مسیر مسابقه، <bdi dir="ltr">G1</bdi> مقدار <bdi dir="ltr">0</bdi> را می‌خواند و قبل از اینکه بنویسد، <bdi dir="ltr">G2</bdi> هم مقدار <bdi dir="ltr">0</bdi> را می‌خواند. سپس هر دو مقدار <bdi dir="ltr">1</bdi> را می‌نویسند و نتیجه نهایی <bdi dir="ltr">1</bdi> می‌شود به جای <bdi dir="ltr">2</bdi>. این همان <bdi dir="ltr">lost update</bdi> است. </p><p>در بخش پایینی نمودار می‌بینید که <bdi dir="ltr">Mutex</bdi> با ایجاد بخش بحرانی این مشکل را حل می‌کند: وقتی <bdi dir="ltr">G1</bdi> قفل را می‌گیرد، <bdi dir="ltr">G2</bdi> باید صبر کند تا <bdi dir="ltr">G1</bdi> کارش تمام شود و قفل را آزاد کند. سپس <bdi dir="ltr">G2</bdi> مقدار صحیح <bdi dir="ltr">1</bdi> را می‌خواند و <bdi dir="ltr">2</bdi> را می‌نویسد. نتیجه نهایی صحیح خواهد بود.</p>
-<h4 id="سناریوهای-عملیاتی-race">سناریوهای عملیاتی <bdi dir="ltr">Race Condition</bdi></h4>
+<p><strong  id="سناریوهای-عملیاتی-race">سناریوهای عملیاتی <bdi dir="ltr">Race Condition</bdi></strong></p>
 <ul>
 <li><strong>شمارنده‌های مشترک در <bdi dir="ltr">HTTP handler</bdi>ها:</strong> در یک سرور <bdi dir="ltr">HTTP</bdi> اگر چند درخواست همزمان به یک متغیر مشترک مانند شمارنده درخواست‌ها دسترسی داشته باشند، بدون <bdi dir="ltr">mutex</bdi> یا <bdi dir="ltr">atomic</bdi> تعداد درخواست‌ها به درستی شمارش نمی‌شود. این مشکل در <bdi dir="ltr">PHP</bdi> معمولاً رخ نمی‌دهد زیرا هر درخواست در <bdi dir="ltr">process</bdi> مجزا است، اما در <bdi dir="ltr">Go</bdi> تمام <bdi dir="ltr">HTTP handler</bdi>ها در یک <bdi dir="ltr">process</bdi> اجرا می‌شوند و حافظه مشترک دارند. برای حل این مشکل از <bdi dir="ltr">sync/atomic</bdi> برای شمارنده‌های ساده یا <bdi dir="ltr">sync.Mutex</bdi> برای ساختارهای پیچیده‌تر استفاده کنید.</li>
 <li><strong>دسترسی همزمان به <bdi dir="ltr">map</bdi>:</strong> <bdi dir="ltr">map</bdi> در <bdi dir="ltr">Go</bdi> برای دسترسی همزمان امن نیست و نوشتن همزمان روی <bdi dir="ltr">map</bdi> باعث <bdi dir="ltr">panic</bdi> می‌شود. برای حل این مشکل دو راه دارید: استفاده از <bdi dir="ltr">sync.Map</bdi> که برای سناریوهای خاص بهینه شده، یا استفاده از <bdi dir="ltr">map</bdi> معمولی با <bdi dir="ltr">sync.Mutex</bdi> یا <bdi dir="ltr">sync.RWMutex</bdi>. اگر خواندن زیاد و نوشتن کم است، <bdi dir="ltr">RWMutex</bdi> کارایی بهتری دارد زیرا چند <bdi dir="ltr">goroutine</bdi> می‌توانند همزمان بخوانند.</li>
@@ -468,16 +459,7 @@ func (m *SafeMap) Set(key, value string) {
 <div class="tip"><strong>استفاده از فلگ <bdi dir="ltr">go test -race</bdi> در CI:</strong> در بخش <a href="#race-detector">Race Detector</a> همین فصل، فلگ <code>-race</code> و <bdi dir="ltr">ThreadSanitizer</bdi> معرفی شدند. همیشه تست‌های خود را با <bdi dir="ltr">go test -race ./...</bdi> اجرا و در <bdi dir="ltr">CI/CD</bdi> اجباری کنید — عدم شناسایی <bdi dir="ltr">Data Race</bdi> در یک اجرای خاص، به معنای عدم وجود آن نیست.</div>
 <div class="note"><strong>یادداشت:</strong> انتخاب بین <code>sync.Mutex</code> و <code>sync/atomic</code> اغلب گیج‌کننده است. قاعده ساده: اگر فقط یک متغیر ساده (مثل <code>int64</code> شمارنده) را به‌طور همزمان تغییر می‌دهید، <code>atomic.AddInt64</code> سریع‌تر و سبک‌تر از <code>Mutex</code> است. اما به‌محض اینکه باید چند متغیر را به‌صورت اتمیک به‌روزرسانی کنید یا منطق شرطی روی آن‌ها اعمال کنید، <code>Mutex</code> تنها گزینه‌ی صحیح است — ترکیب چند <code>atomic</code> روی متغیرهای مختلف، اتمیسیته‌ی کل عملیات را تضمین نمی‌کند. در <bdi dir="ltr">PHP</bdi> این تمایز وجود ندارد چون هر درخواست در فرآیند مستقل است و هم‌روندی روی حافظه مشترک رخ نمی‌دهد.</div>
 <div class="warning"><strong>هشدار درباره <bdi dir="ltr">map</bdi> همزمان:</strong> برخلاف <bdi dir="ltr">slice</bdi> و سایر ساختارهای داده، <bdi dir="ltr">map</bdi> در <bdi dir="ltr">Go</bdi> برای دسترسی همزمان طراحی نشده است. نوشتن همزمان روی <bdi dir="ltr">map</bdi> باعث <bdi dir="ltr">panic: concurrent map writes</bdi> می‌شود. حتی خواندن و نوشتن همزمان نیز خطرناک است. اگر نیاز به <bdi dir="ltr">map</bdi> همزمان دارید، حتماً از <bdi dir="ltr">sync.Map</bdi> یا <bdi dir="ltr">map</bdi> معمولی با <bdi dir="ltr">Mutex/RWMutex</bdi> استفاده کنید. این یکی از تفاوت‌های مهم <bdi dir="ltr">Go</bdi> با <bdi dir="ltr">PHP</bdi> است زیرا در <bdi dir="ltr">PHP</bdi> هر درخواست <bdi dir="ltr">map</bdi> (آرایه انجمنی) مستقل خود را دارد.</div>
-<div class="summary">
-<strong>خلاصه‌ی نکات کلیدی:</strong>
-<ul>
-<li>race condition: دسترسی همزمان ناهماهنگ به منبع مشترک</li>
-<li>go build -race داده‌ی تشخیص race می‌دهد</li>
-<li>sync.Mutex برای دسترسی انحصاری</li>
-<li>sync.RWMutex برای خواندن همزمان و نوشتن انحصاری</li>
-<li>channel جایگزین امن‌تر برای shared memory</li>
-</ul>
-</div></div>
+</div>
 </main>
 </div>
 <!-- Footer -->

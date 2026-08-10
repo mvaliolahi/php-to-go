@@ -134,7 +134,7 @@ $ go test -v -json ./... 2&gt;&amp;1 | grep -i cache
 </figure>
 <div class="warning"><strong>هشدار:</strong> Race Detector در تست‌ها حدود ۵-۱۰ برابر کندتر اجرا می‌شود و مصرف حافظه بیشتری دارد. برای همین فقط در CI و development استفاده کنید، نه در production. همچنین Race Detector نمی‌تواند تمام race conditionها را شناسایی کند — فقط مواردی که در زمان اجرای تست رخ دهند را پیدا می‌کند.</div>
 <div class="comparison"><strong>مقایسه با PHP:</strong> در PHP با PHPUnit مکانیزم کش تست وجود ندارد چون هر اجرا از صفر شروع می‌شود. همچنین Race Detector در Go مفهومی است که در PHP وجود ندارد چون PHP ذاتاً تک‌نخی است. در PHP مشکلات هم‌روندی فقط با ابزارهایی مثل Swoole یا Fiber ظاهر می‌شوند و ابزار تشخیص خودکار ندارند.</div>
-<h3 id="fuzzing-تست-فازی-در-go-118">11.1.4 Fuzzing: تست فازی در Go 1.18+</h3>
+<h3 id="fuzzing-تست-فازی-در-go-118">11.1.4 تست فازی در Go 1.18+</h3>
 <p>از قابلیت‌های مهمی که در Go 1.18 معرفی شد، <strong>Fuzzing</strong> است. Fuzzing یک تکنیک تست خودکار است که مقادیر تصادفی و غیرمعمول به عنوان ورودی تابع شما ارسال می‌کند تا باگ‌هایی که با تست‌های دستی پیدا نمی‌شوند را کشف کند. این قابلیت در PHPUnit معادل مستقیمی ندارد و یکی از مزیت‌های بزرگ Go در تست‌نویسی است.</p>
 <p>بسیاری از باگ‌های امنیتی مهم (مثل buffer overflow و injection) با ورودی‌های غیرمنتظره کشف می‌شوند. Fuzzing این ورودی‌ها را به‌صورت خودکار تولید می‌کند و می‌تواند ساعت‌ها یا روزها اجرا شود تا باگ‌های پنهان را بیابد.</p>
 <figure class="code go" dir="ltr">
@@ -357,8 +357,7 @@ public function sumProvider()
 <li>مرحله ۳: فراخوانی هندلر با پارامترهای تستی</li>
 <li>مرحله ۴: بررسی نتیجه.</li>
 </ul>
-<p><strong>توضیح مراحل</strong></p>
-<p>۱ <strong dir="ltr">. httptest.NewRequest</strong></p>
+<p><strong>توضیح مراحل</strong> — ۱ <strong dir="ltr">. httptest.NewRequest</strong></p>
 <p>این تابع یک درخواست HTTP آزمایشی ایجاد می‌کند که می‌تواند هر مسیری، متد و بادی دلخواهی داشته باشد. برای مثال:</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">req := httptest.NewRequest("POST", "/login", strings.NewReader("username=foo"))
@@ -554,8 +553,7 @@ func (ts *testServer) postForm(path string, data url.Values) *http.Response {
 }
 </code></pre>
 </figure>
-<p><strong>مثال تست جریان ورود با</strong> <strong dir="ltr">Cookie</strong></p>
-<p>در بسیاری از برنامه‌های وب، کاربر وارد می‌شود، یک cookie سشن دریافت می‌کند و سپس به صفحه محافظت‌شده دسترسی پیدا می‌کند. برای تست این جریان باید cookie jar را مدیریت کنیم:</p>
+<p><strong>مثال تست جریان ورود با</strong> <strong dir="ltr">Cookie</strong> — در بسیاری از برنامه‌های وب، کاربر وارد می‌شود، یک cookie سشن دریافت می‌کند و سپس به صفحه محافظت‌شده دسترسی پیدا می‌کند. برای تست این جریان باید cookie jar را مدیریت کنیم:</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">func TestLoginFlow(t *testing.T) {
     mux := http.NewServeMux()
@@ -851,16 +849,7 @@ func BenchmarkNew(b *testing.B) {
 <li><strong>بنچمارک با <bdi dir="ltr">BenchmarkXxx</bdi>:</strong> توابعی که با <bdi dir="ltr">Benchmark</bdi> شروع می‌شوند و آرگومان <bdi dir="ltr">*testing.B</bdi> می‌گیرند، به‌صورت خودکار بنچمارک اجرا می‌شوند. با فلگ <bdi dir="ltr">-bench</bdi> فعال می‌شوند و <bdi dir="ltr">b.N</bdi> به‌صورت خودکار تنظیم می‌شود تا نتایج معتبر باشند. این قابلیت در <bdi dir="ltr">PHPUnit</bdi> معادل داخلی ندارد و نیاز به ابزارهایی مثل <bdi dir="ltr">PHPBench</bdi> دارد.</li>
 </ul>
 <div class="tip"><strong>نکته درباره الگوی <bdi dir="ltr">Table-driven test</bdi>:</strong> این الگو <strong>اصطلاح رایج و ترجیح‌داده‌شده Go</strong> است. به‌جای نوشتن چندین تابع <bdi dir="ltr">Test</bdi> جداگانه برای هر ورودی، از <bdi dir="ltr">[]struct{input, expected}</bdi> با حلقه <bdi dir="ltr">t.Run</bdi> استفاده کنید. این کار نه تنها خوانایی تست را بالا می‌برد، بلکه افزودن مورد تست جدید را به یک خط تغییر تقلیل می‌دهد. در <bdi dir="ltr">PHP</bdi> معادل این الگو <bdi dir="ltr">@dataProvider</bdi> است اما در <bdi dir="ltr">Go</bdi> این الگو بسیار رایج‌تر و ساختاریافته‌تر است.</div>
-<div class="summary">
-<strong>خلاصه‌ی نکات کلیدی:</strong>
-<ul>
-<li>func TestXxx(t *testing.T)</li>
-<li>t.Run برای subtest</li>
-<li>t.Parallel برای parallel test</li>
-<li>table-driven الگوی رایج Go</li>
-<li>go test -v -run برای filter</li>
-</ul>
-</div></div>
+</div>
 </main>
 </div>
 <!-- Footer -->

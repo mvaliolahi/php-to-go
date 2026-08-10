@@ -425,7 +425,7 @@ if code, ok := errors.AsType[ErrorCode](err); ok {
 <span class="quote-book">کتاب Simple Design: The Art of Software</span>
 </p>
 </div>
-<h3 id="error-flow-call-stack">4.1.11 جریان خطا در پشته فراخوانی: از Database تا Handler</h3>
+<h3 id="error-flow-call-stack">4.1.11 جریان خطا در پشته فراخوانی</h3>
 <p>در یک برنامه‌ی وب واقعی، خطا معمولاً در پایین‌ترین لایه (مثلاً <bdi dir="ltr">Database</bdi>) رخ می‌دهد و باید از طریق لایه‌های میانی به بالاترین لایه منتقل شود. هر لایه باید خطا را با <code dir="ltr">fmt.Errorf</code> و فعل <code>%w</code> بسته‌بندی کند تا ضمن حفظ زنجیره‌ی خطا، زمینه‌ی خود را نیز اضافه نماید. </p><p>این رویکرد تضمین می‌کند که وقتی خطا به <bdi dir="ltr">Handler</bdi> می‌رسد، پیام آن شامل مسیر کامل از منبع خطا تا لایه‌ی بالاست. بدون این بسته‌بندی، ردیابی علت واقعی خطا در یک سیستم چندلایه بسیار دشوار خواهد بود.</p>
 <p>در لایه‌ی <bdi dir="ltr">Repository</bdi> خطا با اطلاعاتی درباره‌ی عملیات پایگاه‌داده بسته‌بندی می‌شود، مثلاً <code dir="ltr">fmt.Errorf("query user: %w", err)</code>. در لایه‌ی <bdi dir="ltr">Service</bdi> همان خطا با زمینه‌ی منطق کسب‌وکار بسته‌بندی می‌شود مثل <code dir="ltr">fmt.Errorf("get user: %w", err)</code>. </p><p>در نهایت <bdi dir="ltr">HTTP Handler</bdi> خطا را بررسی کرده و تصمیم می‌گیرد چه کد وضعیت مناسبی به کلاینت برگردانده شود. این الگوی لایه‌ای بسته‌بندی، ردیابی خطا را در سیستم‌های بزرگ ساده‌تر و قابل‌اتکاتر می‌کند.</p>
 <figure class="diagram" dir="ltr">
@@ -491,16 +491,7 @@ if code, ok := errors.AsType[ErrorCode](err); ok {
 <li><strong>استفاده از <code dir="ltr">errors.As</code> برای بررسی نوع خطا:</strong> وقتی نیاز به دسترسی به فیلدهای خطای سفارشی دارید (مثل فیلد <code dir="ltr">Path</code> در <code dir="ltr">NotFoundError</code>)، از <code dir="ltr">errors.As</code> استفاده کنید. این تابع زنجیره‌ی خطا را پیمایش کرده و اولین خطایی که نوع موردنظر را داشته باشد استخراج می‌کند. به‌یاد داشته باشید که به <code dir="ltr">errors.As</code> باید اشاره‌گر به متغیر بدهید، نه خود نوع را.</li>
 </ul>
 <div class="tip"><strong>نکته‌ی عملی — بسته‌بندی خطا بدون تکرار:</strong> هر لایه باید خطا را فقط یک‌بار با <code dir="ltr">fmt.Errorf("context: %w", err)</code> بسته‌بندی کند. اگر در یک لایه خطا را دو بار <code dir="ltr">wrap</code> کنید، پیام خطا تکراری و گنگ می‌شود: <code dir="ltr">"failed to get user: failed to get user: query error"</code>. الگوی صحیح این است: هر لایه فقط یک زمینه‌ی جدید اضافه کند و خطای <code dir="ltr">wrap</code> شده را همان‌طور که هست به لایه‌ی بالاتر منتقل کند. همچنین هرگز از <code>%v</code> به‌جای <code>%w</code> استفاده نکنید، زیرا <code>%v</code> زنجیره‌ی خطا را قطع می‌کند و <code dir="ltr">errors.Is/As</code> دیگر قادر به پیمایش آن نخواهد بود.</div>
-<div class="summary">
-<strong>خلاصه‌ی نکات کلیدی:</strong>
-<ul>
-<li>error یک واسط با متد Error() string است</li>
-<li>if err != nil الگوی استاندارد بررسی خطا</li>
-<li>Go try/catch ندارد؛ خطا صریح مدیریت می‌شود</li>
-<li>بازگشت چند مقدار: (result, error) الگوی رایج</li>
-<li>خطاها در Go صریح، نه implicit یا جادویی</li>
-</ul>
-</div></div>
+</div>
 </main>
 </div>
 <!-- Footer -->

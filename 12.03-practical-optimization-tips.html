@@ -359,16 +359,7 @@ $ go build -gcflags="-m" ./...
 </ul>
 <div class="tip"><strong>نکته کاربردی:</strong> قانون ساده‌ای به یاد داشته باشید: اگر فقط یک بار رشته‌ای را قالب‌بندی می‌کنید، از <code dir="ltr">fmt.Sprintf</code> استفاده کنید — خوانایی و سادگی مهم‌تر از میکروبهینه‌سازی است. اما اگر در حلقه‌ای رشته‌ها را الحاق می‌کنید (حتی اگر فقط ۱۰ بار)، حتماً از <code dir="ltr">strings.Builder</code> استفاده کنید. تفاوت عملکرد با افزایش تعداد الحاق‌ها به‌صورت نمایی (<code dir="ltr">O(n²)</code> در مقابل <code dir="ltr">O(n)</code>) رشد می‌کند. همیشه قبل از بهینه‌سازی، با <code dir="ltr">go test -bench</code> اندازه‌گیری کنید و فقط <code dir="ltr">hot path</code>‌ها را بهینه کنید. قانون کلی: اگر بیش از ۵ الحاق دارید، <code dir="ltr">strings.Builder</code> را انتخاب کنید.</div>
 <div class="note"><strong>ارجاع به بخش‌های مرتبط:</strong> این بخش نکات میکروبهینه‌سازی را پوشش داد. برای موضوعات تخصصی‌تر به این بخش‌ها مراجعه کنید: <a href="12.04-memory-optimization-and-gc.html">بخش ۱۲.۴</a> برای <bdi dir="ltr">sync.Pool</bdi>، تنظیم <bdi dir="ltr">GOGC/GOMEMLIMIT</bdi> و الگوریتم سه‌رنگی GC؛ و <a href="12.05-practical-techniques-for-memory-reduction.html">بخش ۱۲.۵</a> برای مرتب‌سازی فیلدهای struct (alignment)، string interning و memory-mapped I/O.</div>
-<div class="summary">
-<strong>خلاصه‌ی نکات کلیدی:</strong>
-<ul>
-<li>sync.Pool برای reuse object</li>
-<li>pre-allocate slice با make و cap</li>
-<li>string builder به‌جای +</li>
-<li>avoid unnecessary copy</li>
-<li>bytes.Buffer برای binary</li>
-</ul>
-</div></div>
+</div>
 </main>
 </div>
 <!-- Footer -->

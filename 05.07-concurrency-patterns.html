@@ -737,16 +737,7 @@ func fetchAll(ctx context.Context, urls []string) ([]string, error) {
 <li><strong>مرتب‌سازی ادغامی همزمان (<tspan direction="ltr" unicode-bidi="embed">Merge Sort</tspan>):</strong> الگوی <tspan direction="ltr" unicode-bidi="embed">Fan-Out / Fan-In</tspan> به صورت طبیعی با الگوریتم <tspan direction="ltr" unicode-bidi="embed">Merge Sort</tspan> هماهنگ است. در هر سطح از بازگشت آرایه به دو نیمه تقسیم می‌شود که هر کدام در یک <tspan direction="ltr" unicode-bidi="embed">Goroutine</tspan> مستقل مرتب می‌شوند و سپس نتایج <tspan direction="ltr" unicode-bidi="embed">Merge</tspan> می‌شوند. این الگو برای مجموعه‌داده‌های بزرگ بسیار مؤثر است اما باید مراقب باشید که تعداد <tspan direction="ltr" unicode-bidi="embed">Goroutine</tspan>‌ها از حد مجاز فراتر نرود و از <tspan direction="ltr" unicode-bidi="embed">Semaphore</tspan> یا <tspan direction="ltr" unicode-bidi="embed">Worker Pool</tspan> برای محدود کردن عمق هم‌روندی استفاده کنید.</li>
 </ul>
 <div class="important"><strong>نکته عملی — ابتدا راه‌حل ترتیبی بنویسید سپس هم‌روندی اضافه کنید:</strong> یکی از اشتباهات رایج در بین توسعه‌دهندگان Go این است که از همان ابتدا کد همزمان می‌نویسند. رویکرد صحیح این است که ابتدا یک راه‌حل ترتیبی ساده و درست بنویسید آن را تست کنید و مطمئن شوید که از نظر منطقی کار می‌کند. سپس با استفاده از ابزارهای <tspan direction="ltr" unicode-bidi="embed">Profiling</tspan> مثل <tspan direction="ltr" unicode-bidi="embed">go tool pprof</tspan> بررسی کنید که گلوگاه (<tspan direction="ltr" unicode-bidi="embed">Bottleneck</tspan>) کجاست. فقط وقتی <tspan direction="ltr" unicode-bidi="embed">Profiling</tspan> نشان داد که عملیات <tspan direction="ltr" unicode-bidi="embed">I/O</tspan> یا <tspan direction="ltr" unicode-bidi="embed">CPU</tspan> گلوگاه است هم‌روندی اضافه کنید. این رویکرد دلایل مهمی دارد: اولاً کد ترتیبی بسیار ساده‌تر دیباگ و تست می‌شود. ثانیاً اضافه کردن هم‌روندی بدون نیاز فقط پیچیدگی و احتمال خطا را افزایش می‌دهد. ثالثاً هم‌روندی سرعت کد کند را چند برابر نمی‌کند بلکه فقط زمان انتظار را کاهش می‌دهد. اگر الگوریتم شما از نظر پیچیدگی زمانی ناکارآمد است هم‌روندی مشکل را حل نمی‌کند.</div>
-<div class="summary">
-<strong>خلاصه‌ی نکات کلیدی:</strong>
-<ul>
-<li>fan-in: چند ورودی به یک خروجی</li>
-<li>fan-out: یک ورودی به چند worker</li>
-<li>pipeline: مراحل متوالی با channel</li>
-<li>worker pool: تعداد ثابت goroutine برای پردازش صف</li>
-<li>generator: تولید مقادیر با channel</li>
-</ul>
-</div></div>
+</div>
 </main>
 </div>
 <!-- Footer -->

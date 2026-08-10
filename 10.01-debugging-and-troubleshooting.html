@@ -100,7 +100,7 @@
 </tbody>
 </table>
 <p>همان‌طور که در جدول بالا مشاهده می‌کنید، هرچند ابزارهای دیباگ در PHP و Go از نظر مفهومی شبیه هستند، اما تفاوت‌های مهمی در نحوه کار و پشتیبانی از قابلیت‌های پیشرفته وجود دارد. به‌ویژه در زمینه دیباگ Concurrency ابزارهای Go قدرتمندتر هستند چون از ابتدا برای این منظور طراحی شده‌اند.</p>
-<h3 id="pprof-پروفایلینگ-cpu-و-حافظه">10.1.1 pprof: پروفایلینگ CPU و حافظه</h3>
+<h3 id="pprof-پروفایلینگ-cpu-و-حافظه">10.1.1 پروفایلینگ CPU و حافظه</h3>
 <div class="quote-box">
 <p class="quote-text">فرض نکنید — ثابت کنید. قبل از بهینه‌سازی، اندازه‌گیری کنید. قبل از رفع، درک کنید. پروفایلر فقط به شما نمی‌گوید چه چیزی کند است — به شما می‌گوید کجا نگاه کنید. در Go ابزار pprof پروفایلینگ CPU، حافظه و مسدودسازی گوروتین را با حداقل سربار به شما می‌دهد.</p>
 <p class="quote-source">
@@ -129,8 +129,7 @@ func main() {
 </code></pre>
 </figure>
 <p>وقتی <bdi dir="ltr">net/http/pprof</bdi> را import می‌کنید، چندین endpoint به‌طور خودکار روی <bdi dir="ltr">DefaultServeMux</bdi> ثبت می‌شود. </p><p>هر endpoint اطلاعات خاصی ارائه می‌دهد: <bdi dir="ltr">/debug/pprof/profile</bdi> برای CPU، <bdi dir="ltr">/debug/pprof/heap</bdi> برای حافظه، <bdi dir="ltr">/debug/pprof/goroutine</bdi> برای goroutine‌ها، <bdi dir="ltr">/debug/pprof/block</bdi> برای بلاکینگ، و <bdi dir="ltr">/debug/pprof/mutex</bdi> برای lock contention. این endpoint‌ها حتی در production هم قابل استفاده هستند، به شرطی که فقط روی <bdi dir="ltr">localhost</bdi> گوش دهید.</p>
-<h4 id="pprof-cpu-walkthrough">گردش کار پروفایلینگ CPU با pprof</h4>
-<p>در نظر بگیرید برنامه‌ای دارید که کند شده و می‌خواهید بفهمید مشکل کجاست. پروفایلینگ CPU اولین قدم است. pprof CPU profile sampling انجام می‌دهد: هر ۱۰ میلی‌ثانیه (به‌صورت پیش‌فرض) stack trace تمام goroutine‌ها را ثبت می‌کند و پس از اتمام دوره، نتایج را تجمیع می‌کند:</p>
+<p><strong  id="pprof-cpu-walkthrough">گردش کار پروفایلینگ CPU با pprof</strong> — در نظر بگیرید برنامه‌ای دارید که کند شده و می‌خواهید بفهمید مشکل کجاست. پروفایلینگ CPU اولین قدم است. pprof CPU profile sampling انجام می‌دهد: هر ۱۰ میلی‌ثانیه (به‌صورت پیش‌فرض) stack trace تمام goroutine‌ها را ثبت می‌کند و پس از اتمام دوره، نتایج را تجمیع می‌کند:</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">// Example: program with high CPU usage
 package main
@@ -196,8 +195,7 @@ $ go tool pprof -http=:8080 http://localhost:6060/debug/pprof/profile?seconds=30
 </figure>
 <p>در رابط وب pprof چندین نمای مختلف دارید: <bdi dir="ltr">Top</bdi> برای لیست توابع، <bdi dir="ltr">Graph</bdi> برای نمودار فراخوانی، <bdi dir="ltr">Flame Graph</bdi> برای نمودار شعله (بهترین روش برای شناسایی سریع نقاط داغ)، <bdi dir="ltr">Peek</bdi> برای مشاهده فراخوانی‌کنندگان یک تابع، و <bdi dir="ltr">Source</bdi> برای مشاهده کد خط‌به‌خط. Flame Graph معمولاً سریع‌ترین راه برای پیدا کردن bottleneck است.</p>
 <div class="tip"><strong>نکته عملی:</strong> برای مقایسه دو پروفایل (مثلاً قبل و بعد از بهینه‌سازی)، از دستور <code>go tool pprof -base profile1.prof profile2.prof</code> استفاده کنید. این دستور فقط تفاوت بین دو پروفایل را نشان می‌دهد و به شما کمک می‌کند تأثیر تغییرات را اندازه‌گیری کنید.</div>
-<h4 id="pprof-memory-walkthrough">پروفایلینگ حافظه با pprof (heap و allocs)</h4>
-<p>پروفایلینگ حافظه در Go دو نوع دارد: <bdi dir="ltr">heap</bdi> و <bdi dir="ltr">allocs</bdi>. پروفایل <bdi dir="ltr">heap</bdi> نشان‌دهنده حافظه تخصیص‌داده‌شده و آزادنشده (در حال استفاده) در زمان پروفایلینگ است، در حالی که <bdi dir="ltr">allocs</bdi> مجموع تمام تخصیص‌ها (حتی آزادشده) را نشان می‌دهد. </p><p>برای شناسایی نشت حافظه، heap مناسب‌تر است و برای شناسایی فشار GC (Garbage Collector)، allocs مفیدتر است.</p>
+<p><strong  id="pprof-memory-walkthrough">پروفایلینگ حافظه با pprof (heap و allocs)</strong> — پروفایلینگ حافظه در Go دو نوع دارد: <bdi dir="ltr">heap</bdi> و <bdi dir="ltr">allocs</bdi>. پروفایل <bdi dir="ltr">heap</bdi> نشان‌دهنده حافظه تخصیص‌داده‌شده و آزادنشده (در حال استفاده) در زمان پروفایلینگ است، در حالی که <bdi dir="ltr">allocs</bdi> مجموع تمام تخصیص‌ها (حتی آزادشده) را نشان می‌دهد. </p><p>برای شناسایی نشت حافظه، heap مناسب‌تر است و برای شناسایی فشار GC (Garbage Collector)، allocs مفیدتر است.</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">// Example: memory leak in slice
 package main
@@ -292,7 +290,7 @@ func collectMemoryProfile(filename string) error {
 </code></pre>
 </figure>
 <div class="warning"><strong>هشدار:</strong> در محیط production، حتماً pprof را فقط روی <code>localhost</code> گوش دهید نه <code>0.0.0.0</code> تا از دسترسی غیرمجاز جلوگیری شود. همچنین می‌توانید از middleware احراز هویت برای محافظت از endpoint‌های pprof استفاده کنید. پروفایلینگ CPU هزینه‌ی اندکی دارد (حدود ۱-۲٪) اما پروفایلینگ حافظه عملاً بدون overhead است.</div>
-<h3 id="go-tool-trace-تحلیل-اجرا">10.1.2 go tool trace: تحلیل اجرا</h3>
+<h3 id="go-tool-trace-تحلیل-اجرا">10.1.2 تحلیل اجرا</h3>
 <p>ابزار <bdi dir="ltr">go tool trace</bdi> یکی از ابزارهای اصلی تحلیل هم‌روندی در Go است. برخلاف pprof که فقط زمان CPU و حافظه را نشان می‌دهد، trace رویدادهای scheduler، GC، goroutine‌ها و network poller را به‌صورت یک timeline بصری نمایش می‌دهد. این ابزار برای شناسایی مشکلاتی مثل goroutine leak، lock contention و GC pause طولانی کارآمد است. </p><p>اگر با ابزارهای PHP آشنا باشید، نزدیک‌ترین معادل <bdi dir="ltr">XHProf</bdi> یا <bdi dir="ltr">Tideways</bdi> است، اما trace اطلاعاتی ارائه می‌دهد که در PHP قابل دستیابی نیست چون PHP ذاتاً تک‌نخی است.</p>
 <figure class="code bash" dir="ltr">
 <pre><code class="language-bash"># Collect trace for 5 seconds from running program
@@ -335,8 +333,7 @@ func main() {
 <div class="note"><strong>نکته فنی:</strong> فایل‌های trace می‌توانند بسیار بزرگ شوند (چند صد مگابایت برای برنامه‌های پرترافیک). برای محیط production، فقط بازه‌های کوتاه (۵-۳۰ ثانیه) را trace کنید. همچنین ابزار <code>go tool trace</code> در Go 1.21+ بهبودهای زیادی داشته و فایل‌های بزرگ را بهتر مدیریت می‌کند.</div>
 <h3 id="سناریوهای-رایج-دیباگ">10.1.3 سناریوهای رایج دیباگ در Go</h3>
 <p>برنامه‌نویسان Go معمولاً با دسته‌ای از مشکلات تکراری مواجه می‌شوند. در اینجا سناریوهای رایج و راه‌حل‌های آن‌ها را بررسی می‌کنیم:</p>
-<p><strong>سناریو ۱: Goroutine Leak</strong></p>
-<p>یکی از مشکلات رایج در برنامه‌های Go، نشت goroutine است. وقتی goroutine‌ای شروع می‌شود اما هرگز تمام نمی‌شود (مثلاً چون روی channel‌ای منتظر می‌ماند که هیچ‌گاه مقدار دریافت نمی‌کند)، حافظه‌ی آن هرگز آزاد نمی‌شود. این مشکل در PHP بی‌معنی است چون هر درخواست PHP پس از اتمام، تمام منابع خود را آزاد می‌کند.</p><p>اما در Go برنامه‌ها طولانی‌مدت هستند و نشت goroutine به‌مرور باعث از کار افتادن سرور می‌شود.</p>
+<p><strong>سناریو ۱: Goroutine Leak</strong> — یکی از مشکلات رایج در برنامه‌های Go، نشت goroutine است. وقتی goroutine‌ای شروع می‌شود اما هرگز تمام نمی‌شود (مثلاً چون روی channel‌ای منتظر می‌ماند که هیچ‌گاه مقدار دریافت نمی‌کند)، حافظه‌ی آن هرگز آزاد نمی‌شود. این مشکل در PHP بی‌معنی است چون هر درخواست PHP پس از اتمام، تمام منابع خود را آزاد می‌کند.</p><p>اما در Go برنامه‌ها طولانی‌مدت هستند و نشت goroutine به‌مرور باعث از کار افتادن سرور می‌شود.</p>
 <figure class="code bash" dir="ltr">
 <pre><code class="language-bash"># Check number of goroutines
 $ go tool pprof http://localhost:6060/debug/pprof/goroutine
@@ -380,8 +377,7 @@ func goodHandler(w http.ResponseWriter, r *http.Request) {
 }
 </code></pre>
 </figure>
-<p><strong>سناریو ۲: Memory Leak</strong></p>
-<p>در Go نشت حافظه به معنای حافظه‌ای است که دیگر قابل دسترسی نیست اما GC نمی‌تواند آن را آزاد کند چون هنوز reference به آن وجود دارد. علل اصلی: slice‌های سراسری که مدام رشد می‌کنند، map‌هایی که هرگز پاک نمی‌شوند، و closure‌هایی که به متغیرهای بزرگ ارجاع دارند. برای شناسایی این مشکل، از <bdi dir="ltr">pprof heap</bdi> استفاده کنید و حافظه را در دو لحظه مختلف مقایسه نمایید:</p>
+<p><strong>سناریو ۲: Memory Leak</strong> — در Go نشت حافظه به معنای حافظه‌ای است که دیگر قابل دسترسی نیست اما GC نمی‌تواند آن را آزاد کند چون هنوز reference به آن وجود دارد. علل اصلی: slice‌های سراسری که مدام رشد می‌کنند، map‌هایی که هرگز پاک نمی‌شوند، و closure‌هایی که به متغیرهای بزرگ ارجاع دارند. برای شناسایی این مشکل، از <bdi dir="ltr">pprof heap</bdi> استفاده کنید و حافظه را در دو لحظه مختلف مقایسه نمایید:</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">// Incorrect pattern: global map without cleanup
 var userSessions = map[string]*Session{}
@@ -416,8 +412,7 @@ $ go tool pprof -base heap1.prof heap2.prof
 # This command only shows the difference (memory growth)
 </code></pre>
 </figure>
-<p><strong>سناریو ۳: Slow Request</strong></p>
-<p>وقتی یک درخواست خاص کندتر از حد انتظار است، باید بفهمید زمان کجا صرف می‌شود. برای این کار ترکیبی از <bdi dir="ltr">pprof</bdi> و <bdi dir="ltr">trace</bdi> مؤثر است. ابتدا با <bdi dir="ltr">pprof CPU profile</bdi> ببینید کدام توابع بیشترین زمان را مصرف می‌کنند، سپس با <bdi dir="ltr">trace</bdi> ببینید آیا goroutine‌ها بلاک شده‌اند یا GC pause طولانی وجود دارد.</p>
+<p><strong>سناریو ۳: Slow Request</strong> — وقتی یک درخواست خاص کندتر از حد انتظار است، باید بفهمید زمان کجا صرف می‌شود. برای این کار ترکیبی از <bdi dir="ltr">pprof</bdi> و <bdi dir="ltr">trace</bdi> مؤثر است. ابتدا با <bdi dir="ltr">pprof CPU profile</bdi> ببینید کدام توابع بیشترین زمان را مصرف می‌کنند، سپس با <bdi dir="ltr">trace</bdi> ببینید آیا goroutine‌ها بلاک شده‌اند یا GC pause طولانی وجود دارد.</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">// Add pprof to specific HTTP handler for debugging
 func slowHandler(w http.ResponseWriter, r *http.Request) {
@@ -442,8 +437,7 @@ func slowHandler(w http.ResponseWriter, r *http.Request) {
 // Analysis: go tool pprof slow-request.prof
 </code></pre>
 </figure>
-<p><strong>سناریو ۴: Data Race</strong></p>
-<p>وقتی دو goroutine به‌صورت همزمان به یک متغیر دسترسی دارند و حداقل یکی از آن‌ها نوشتن است، data race رخ می‌دهد. این باگ‌ها خطرناک هستند چون رفتار غیرقطعی دارند و ممکن است فقط در شرایط خاصی ظاهر شوند. Race detector داخلی Go ابزار اصلی شناسایی این مشکلات است:</p>
+<p><strong>سناریو ۴: Data Race</strong> — وقتی دو goroutine به‌صورت همزمان به یک متغیر دسترسی دارند و حداقل یکی از آن‌ها نوشتن است، data race رخ می‌دهد. این باگ‌ها خطرناک هستند چون رفتار غیرقطعی دارند و ممکن است فقط در شرایط خاصی ظاهر شوند. Race detector داخلی Go ابزار اصلی شناسایی این مشکلات است:</p>
 <figure class="code bash" dir="ltr">
 <pre><code class="language-bash"># Enable race detector
 $ go test -race ./...
@@ -492,8 +486,7 @@ func getSync(key string) (string, bool) {
 }
 </code></pre>
 </figure>
-<p><strong>سناریو ۵: Nil Pointer Dereference</strong></p>
-<p>از خطاهای رایج زمان اجرا در Go دسترسی به اشاره‌گر nil است. برخلاف PHP که با warning ادامه می‌دهد در Go این خطا باعث panic می‌شود. برای پیشگیری از این مشکل همیشه nil check انجام دهید و از تابع‌هایی که error برمی‌گردانند استفاده کنید:</p>
+<p><strong>سناریو ۵: Nil Pointer Dereference</strong> — از خطاهای رایج زمان اجرا در Go دسترسی به اشاره‌گر nil است. برخلاف PHP که با warning ادامه می‌دهد در Go این خطا باعث panic می‌شود. برای پیشگیری از این مشکل همیشه nil check انجام دهید و از تابع‌هایی که error برمی‌گردانند استفاده کنید:</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">// Check nil before access
 func processUser(u *User) error {
@@ -644,16 +637,7 @@ func monitorMemory(ctx context.Context) {
 <li><strong>استفاده از <bdi dir="ltr">strace</bdi> برای مشکلات سیستم‌عامل:</strong> وقتی مشکل مربوط به خود برنامه نیست بلکه از تعامل با سیستم‌عامل نشأت می‌گیرد (مثلاً file descriptor leak، permission denied، یا network timeout)، ابزار <code>strace</code> در Linux می‌تواند تمام system call‌ها و signal‌ها را رهگیری کند. دستور <code>strace -p &lt;PID&gt; -e trace=network,open,close</code> فقط فراخوانی‌های شبکه و فایل را نشان می‌دهد. این ابزار در PHP هم کاربرد دارد اما در Go اهمیت بیشتری دارد چون برنامه‌ها مستقیماً با syscall کار می‌کنند.</li>
 </ul>
 <div class="tip"><strong>نکته کلیدی:</strong> همیشه از ساده‌ترین روش دیباگ شروع کنید — <code>fmt.Println</code> یا <code>log.Printf</code> — قبل از اینکه به سراغ دیباگر کامل بروید. اغلب یک <code>log.Printf("value=%v err=%v", val, err)</code> در جای مناسب، مشکل را سریع‌تر از هر دیباگری آشکار می‌کند. دیباگر برای مشکلات پیچیده‌ای مناسب است که با log ساده قابل ریشه‌یابی نیستند. اگر بتوانید مشکل را با یک log ساده حل کنید، وقت بسیار زیادی صرفه‌جویی شده است. فقط یادتان باشد بعد از رفع مشکل، log‌های موقتی را حذف کنید!</div>
-<div class="summary">
-<strong>خلاصه‌ی نکات کلیدی:</strong>
-<ul>
-<li>structured logging برای diagnostic</li>
-<li>error wrapping برای trace زنجیره</li>
-<li>pprof برای CPU و memory profile</li>
-<li>goroutine dump برای deadlock</li>
-<li>race detector برای data race</li>
-</ul>
-</div></div>
+</div>
 </main>
 </div>
 <!-- Footer -->

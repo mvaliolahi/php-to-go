@@ -225,16 +225,7 @@ type Product struct {
 <li><strong>الگوهای ذخیره‌سازی داده‌های باینری:</strong> نوع <bdi dir="ltr">BYTEA</bdi> در <bdi dir="ltr">PostgreSQL</bdi> و <bdi dir="ltr">BLOB</bdi> در <bdi dir="ltr">MySQL</bdi> برای ذخیره‌سازی داده‌های باینری مثل هش رمز عبور، تصاویر کوچک یا گواهی‌نامه‌ها استفاده می‌شوند. در <bdi dir="ltr">Go</bdi> این داده‌ها به <code>[]byte</code> نگاشت می‌شوند. اما نکته مهم این است که فایل‌های بزرگ (بیشتر از ۱ مگابایت) را مستقیماً در دیتابیس ذخیره نکنید — آن‌ها را در فضای ابری (<bdi dir="ltr">S3</bdi> یا <bdi dir="ltr">MinIO</bdi>) قرار دهید و فقط <bdi dir="ltr">URL</bdi> را در دیتابیس نگه دارید.</li>
 </ul>
 <div class="tip"><strong>نکته عملی درباره <code>json.RawMessage</code> و رابط‌های سفارشی:</strong> از <code>json.RawMessage</code> زمانی استفاده کنید که بخواهید <bdi dir="ltr">parsing</bdi> <bdi dir="ltr">JSON</bdi> را به تأخیر بیندازید — مثلاً وقتی ساختار <bdi dir="ltr">JSON</bdi> متغیر است یا لازم نیست فوراً پردازش شود. این کار هم عملکرد بهتری دارد (چون از <bdi dir="ltr">Unmarshal</bdi> مضاعف جلوگیری می‌کند) و هم انعطاف‌پذیری بیشتری می‌دهد. برای انواع پیچیده‌تر مثل <bdi dir="ltr">PostgreSQL Array</bdi> یا <bdi dir="ltr">HSTORE</bdi> حتماً رابط‌های <code>sql.Scanner</code> و <code>driver.Valuer</code> را پیاده‌سازی کنید تا کد مصرف‌کننده تمیز و خوانا بماند. این رابط‌ها لایه‌ی انتزاعی بین دیتابیس و منطق کسب‌وکار شما ایجاد می‌کنند و تغییر دیتابیس در آینده را بسیار ساده‌تر می‌کنند.</div>
-<div class="summary">
-<strong>خلاصه‌ی نکات کلیدی:</strong>
-<ul>
-<li>json.Marshal/Unmarshal برای JSON column</li>
-<li>time.Time برای timestamp</li>
-<li>timezone با time.LoadLocation</li>
-<li>custom type با Valuer/Scanner</li>
-<li>duration با time.Duration</li>
-</ul>
-</div></div>
+</div>
 </main></div>
 <!-- Footer -->
 <footer class="site-footer">

@@ -228,7 +228,7 @@ func SendNotification(u User) error {
 </code></pre>
 </figure>
 <p>این الگو به‌ویژه برای Dependency Injection و نوشتن تست واحد ارزشمند است. وقتی تابع شما interface بپذیرد، در تست می‌توانید به‌راحتی یک mock بسازید و نیازی به راه‌اندازی زیرساخت واقعی نخواهید داشت.</p><p>این به‌طور دقیق همان هدفی است که در PHP با تزریق وابستگی در constructor دنبال می‌کنید، اما در Go بسیار ساده‌تر و صریح‌تر پیاده‌سازی می‌شود.</p>
-<h3 id="iface-eface-داخلی">3.6.6 ساختار داخلی Interface: iface و eface</h3>
+<h3 id="iface-eface-داخلی">3.6.6 ساختار داخلی Interface</h3>
 <p>برای درک عمیق رفتار interface در Go — به‌خصوص تله‌ی nil — باید ساختار داخلی آن را بشناسید. در سطح runtime، Go دو نوع ساختار interface دارد:</p>
 <p dir="ltr"><strong dir="ltr">eface (empty interface):</strong> برای <code>interface{}</code> و <code>any</code> — interface بدون هیچ متد:</p>
 <figure class="code go" dir="ltr">
@@ -490,7 +490,7 @@ func NewMailer(config Config) *smtp.Mailer {
 </figure>
 <p>در نمودار بالا ساختار کامل یک interface غیرخالی (<bdi dir="ltr">iface</bdi>) را مشاهده می‌کنید. بخش <bdi dir="ltr">itab</bdi> حاوی سه بخش حیاتی است: <code dir="ltr">inter</code> که نوع interface را مشخص می‌کند (مثلاً <code dir="ltr">io.Writer</code>)، <code dir="ltr">_type</code> که نوع واقعی داده را نشان می‌دهد (مثلاً <code dir="ltr">*bufio.Writer</code>) و آرایه‌ی <code dir="ltr">fun</code> که اشاره‌گر به توابع پیاده‌سازی‌شده را نگه می‌دارد. </p><p>وقتی متدی مانند <code dir="ltr">w.Write(p)</code> فراخوانی می‌شود Go از <code dir="ltr">itab.fun[0]</code> برای یافتن آدرس تابع واقعی استفاده می‌کند و <code dir="ltr">data</code> را به‌عنوان receiver ارسال می‌کند. </p><p>این مکانیزم فقط یک سطح <bdi dir="ltr">indirection</bdi> اضافی نسبت به فراخوانی مستقیم متد دارد و به‌لطف کش <bdi dir="ltr">itab</bdi> عملاً هیچ هزینه‌ی عملکردی قابل‌توجهی ایجاد نمی‌کند.</p>
 <p>سه حالت <bdi dir="ltr">nil</bdi> که در پایین نمودار نمایش داده شده‌اند از مهم‌ترین مفاهیم برای برنامه‌نویسان PHP هستند. حالت اول یک interface واقعاً nil است که هر دو فیلد آن nil هستند. </p><p>حالت دوم یعنی «nil با نوع مشخص» (<bdi dir="ltr">typed nil</bdi>) یکی از رایج‌ترین باگ‌های Go است: وقتی یک اشاره‌گر nil از نوع مشخص به interface اختصاص می‌یابد فیلد <code dir="ltr">tab/itab</code> مقدار غیر-nil می‌گیرد و بنابراین interface دیگر nil نیست حتی اگر مقدار داده‌ی آن nil باشد. </p><p>حالت سوم هم یک interface عادی با مقدار غیر-nil است. درک این سه حالت برای جلوگیری از باگ‌های ظریف در کد Go ضروری است.</p>
-<h4 id="interface-سناریوهای-عملیاتی">سناریوهای عملیاتی Interface</h4>
+<p><strong  id="interface-سناریوهای-عملیاتی">سناریوهای عملیاتی Interface</strong></p>
 <ul>
 <li><strong>تزریق وابستگی مبتنی بر interface:</strong> در PHP معمولاً از constructor injection با type-hint استفاده می‌کنید: <code dir="ltr">public function __construct(MailerInterface $mailer)</code>. در Go همین الگو با interface پیاده‌سازی می‌شود: <code dir="ltr">func NewService(m Mailer) *Service</code>. تفاوت این است که در Go نیازی به ثبت صریح binding در container نیست — هر structی که متد <code dir="ltr">Send()</code> داشته باشد خودکار سازگار است. این سادگی باعث می‌شود dependency injection در Go بسیار سبک‌تر و مستقیم‌تر از Laravel یا Symfony باشد و نیازی به framework سنگین IoC نداشته باشد.</li>
 <li><strong>تست با پیاده‌سازی‌های mock:</strong> یکی از قدرتمندترین کاربردهای interface در Go سادگی ساختن mock برای تست است. برخلاف PHP که به کتابخانه‌هایی مثل Mockery نیاز دارد در Go فقط کافیست یک struct ساده بسازید که interface مورد نظر را پیاده‌سازی کند. مثلاً <code dir="ltr">type MockMailer struct{ Sent bool }</code> با متد <code dir="ltr">Send()</code> یک mock کامل است. این mock‌ها قابل‌ پیش‌بینی و قابل‌اشکال‌زدایی هستند و هیچ جادوی runtime ندارند.</li>
@@ -499,16 +499,7 @@ func NewMailer(config Config) *smtp.Mailer {
 <li><strong>برگرداندن interface در برابر struct از توابع:</strong> اصل Idiomatic Go می‌گوید «interface بپذیرید struct برگردانید». یعنی ورودی توابع باید interface باشد اما خروجی باید نوع concrete باشد. برگرداندن interface از تابع مصرف‌کننده را محدود می‌کند چون فقط به متدهای interface دسترسی دارد نه متدهای اضافی struct. اما برگرداندن struct به مصرف‌کننده اجازه می‌دهد هم از متدهای interface استفاده کند و هم از متدهای اختصاصی struct بدون نیاز به type assertion.</li>
 </ul>
 <div class="tip"><strong>اصل «accept interfaces, return structs» و تله‌ی typed nil:</strong> دو درس عملی که هر برنامه‌نویس Go باید یاد بگیرد: ۱) همیشه توابع شما باید interface بپذیرند تا انعطاف‌پذیر باشند اما struct برگردانند تا شفاف باشند. این یعنی مصرف‌کننده دقیقاً می‌داند چه چیزی دریافت می‌کند و می‌تواند از همه‌ی متدهای struct استفاده کند. ۲) برای بررسی nil بودن یک interface همیشه هر دو بخش (type و value) را بررسی کنید. اگر تابعی interface برمی‌گرداند و ممکن است nil باشد هرگز اشاره‌گر nil از نوع مشخص را مستقیماً برنگردانید — به‌جای آن <code dir="ltr">return nil</code> را بنویسید. همچنین اگر نیاز دارید مقدار زیرین interface را برای nil بررسی کنید از reflection استفاده کنید: <code dir="ltr">if v := reflect.ValueOf(w); v.Kind() == reflect.Ptr &amp;&amp; v.IsNil()</code>. این دو اصل ساده اما حیاتی از دسته‌ای از باگ‌های ظریف جلوگیری می‌کنند.</div>
-<div class="summary">
-<strong>خلاصه‌ی نکات کلیدی:</strong>
-<ul>
-<li>واسط Go ضمنی است: بدون implements صریح</li>
-<li>نوع با داشتن متدهای لازم، واسط را ارضا می‌کند</li>
-<li>empty interface (any) هر نوعی را می‌پذیرد</li>
-<li>type assertion برای استخراج نوع زیرین</li>
-<li>accept interfaces, return structs: الگوی رایج Go</li>
-</ul>
-</div></div>
+</div>
 </main>
 </div>
 <!-- Footer -->

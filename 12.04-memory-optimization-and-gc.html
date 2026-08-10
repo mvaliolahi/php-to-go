@@ -154,7 +154,7 @@ func heapAllocated() *User {
 </code></pre>
 </figure>
 <div class="warning"><strong>تله‌ی رایج:</strong> بسیاری از برنامه‌نویسان تازه‌کار Go فکر می‌کنند استفاده از اشاره‌گر همیشه بهتر است چون از کپی‌شدن مقدار جلوگیری می‌کند. اما در واقعیت، اشاره‌گر باعث escape شدن متغیر به heap می‌شود و هزینه‌ی GC را افزایش می‌دهد. قانون ساده: اگر ساختار کوچک‌تر از یک cache line باشد، value برگردانید نه اشاره‌گر.</div>
-<h3 id="pprof-تحلیل-حافظه-با-ابزار-پروفایلینگ">12.4.3 pprof: تحلیل حافظه با ابزار پروفایلینگ</h3>
+<h3 id="pprof-تحلیل-حافظه-با-ابزار-پروفایلینگ">12.4.3 تحلیل حافظه با ابزار پروفایلینگ</h3>
 <p>اولین قدم در بهینه‌سازی حافظه، اندازه‌گیری و شناسایی مشکلات است. Go ابزار قدرتمندی به نام <bdi dir="ltr">pprof</bdi> برای پروفایلینگ CPU و حافظه ارائه می‌دهد. بدون پروفایلینگ، هر تلاشی برای بهینه‌سازی حافظه صرفاً حدس و گمان است.</p>
 <p><strong>روش ۱: پروفایلینگ در تست</strong></p>
 <figure class="code bash" dir="ltr">
@@ -207,7 +207,7 @@ mem.Alloc, mem.TotalAlloc, mem.Sys, mem.NumGC)
 </code></pre>
 </figure>
 <div class="tip"><strong>نکته عملی:</strong> <code dir="ltr">runtime.ReadMemStats</code> یک STW (Stop-The-World) کوتاه ایجاد می‌کند. در محیط production از فراخوانی مکرر آن خودداری کنید. به‌جای آن از متریک‌های pprof یا <code dir="ltr">debug.SetGCPercent</code> استفاده کنید.</div>
-<h3 id="syncpool-بازیافت-اشیاء-و-کاهش-فشار-gc">12.4.4 sync.Pool: بازیافت اشیاء و کاهش فشار GC</h3>
+<h3 id="syncpool-بازیافت-اشیاء-و-کاهش-فشار-gc">12.4.4 بازیافت اشیاء و کاهش فشار GC</h3>
 <p><bdi dir="ltr">sync.Pool</bdi> ابزار کلیدی Go برای کاهش فشار GC در برنامه‌های با بار بالا است. thread-safe مورد استفاده قرار گیرد. وقتی شیئی دیگر لازم نیست، به pool بازگردانده می‌شود و دفعه‌ی بعد بدون تخصیص حافظه‌ی جدید قابل استفاده است.</p>
 <p><strong>چرا sync.Pool مهم است؟</strong> هر تخصیص جدید روی heap یک شیء اضافه برای GC ایجاد می‌کند. اگر برنامه شما در هر ثانیه هزاران شیء موقت ایجاد کند (مثلاً بافرهای خواندن، شیءهای response)، GC باید همه آن‌ها را ردیابی و آزاد کند. با sync.Pool اشیاء بازیافت می‌شوند و تخصیص جدید نیاز نیست.</p>
 <p><strong>معماری داخلی:</strong> هر <code dir="ltr">sync.Pool</code> دو سطح ذخیره‌سازی دارد: <strong dir="ltr">local</strong> (محلی به هر P/پردازنده) و <strong dir="ltr">victim</strong> (اشیاء از چرخه GC قبلی). وقتی <code dir="ltr">Get()</code> فراخوانی می‌شود، ابتدا در local pool پردازنده جاری جستجو می‌شود، سپس در victim pool. </p><p>وقتی <code dir="ltr">Put()</code> فراخوانی می‌شود، شیء در local pool ذخیره می‌شود. در هر چرخه GC، اشیاء local به victim منتقل می‌شوند و victim قبلی حذف می‌شوند.</p>
@@ -574,16 +574,7 @@ GOEXPERIMENT=nogreenteagc go build -o myapp .
 <li><strong>پیش‌تخصیص برای کاهش کار GC:</strong> هر تخصیص جدید روی heap یک شیء اضافه برای GC ایجاد می‌کند. با <bdi dir="ltr">make([]T, 0, n)</bdi> برای slice و <bdi dir="ltr">strings.Builder.Grow()</bdi> برای رشته‌ها، تعداد تخصیص‌ها را به حداقل برسانید. هرچه اشیاء کمتری روی heap باشند، GC سریع‌تر marking را تمام می‌کند و تأخیر کمتری ایجاد می‌کند. در بنچمارک‌های واقعی، پیش‌تخصیص می‌تواند تا ۳ برابر سرعت را افزایش دهد و ۹۰ درصد تخصیص‌ها را حذف کند.</li>
 </ul>
 <div class="tip"><strong>نکته حیاتی درباره <code dir="ltr">GOGC</code>:</strong> مقدار پیش‌فرض <code dir="ltr">GOGC=100</code> یعنی GC زمانی اجرا می‌شود که heap به دو برابر اندازه‌ی پس از آخرین GC رسیده باشد. افزایش <code dir="ltr">GOGC</code> (مثلاً ۲۰۰ یا ۴۰۰) فرکانس اجرای GC را کاهش می‌دهد اما مصرف حافظه افزایش می‌یابد. کاهش آن (مثلاً ۵۰) فرکانس GC را بیشتر اما مصرف حافظه کمتر می‌کند. در محیط‌های container حتماً از <code dir="ltr">GOMEMLIMIT</code> (از Go 1.19) استفاده کنید — این متغیر سقف حافظه را تعیین می‌کند و از OOM kill جلوگیری می‌کند. ترکیب پیشنهادی: <code dir="ltr">GOGC=200 GOMEMLIMIT=80% container_memory</code>. بدون <code dir="ltr">GOMEMLIMIT</code>، افزایش <code dir="ltr">GOGC</code> می‌تواند منجر به مصرف حافظه‌ی نامحدود و OOM در container شود.</div>
-<div class="summary">
-<strong>خلاصه‌ی نکات کلیدی:</strong>
-<ul>
-<li>escape analysis: stack vs heap</li>
-<li>GOGC برای tuning GC</li>
-<li>GOMEMLIMIT برای memory cap</li>
-<li>sync.Pool برای reuse</li>
-<li>avoid finalizer اگر ممکن</li>
-</ul>
-</div></div>
+</div>
 </main>
 </div>
 <!-- Footer -->

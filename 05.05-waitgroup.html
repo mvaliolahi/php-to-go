@@ -306,7 +306,7 @@ go func() {
 <figcaption>شکل ۵-۷: چرخه‌ی حیات شمارنده‌ی داخلی <code>sync.WaitGroup</code> — در مسیر صحیح (بالا)، <code>Add(3)</code> سه <code>Done()</code> را متعادل می‌کند و وقتی شمارنده به صفر می‌رسد <code>Wait()</code> برمی‌گردد. در مسیر خطا (پایین)، تعداد <code>Done()</code> از <code>Add()</code> بیشتر می‌شود، شمارنده منفی می‌شود و <code>panic</code> رخ می‌دهد. همیشه <code>Add</code> را قبل از <code>go</code> و <code>Done</code> را با <code>defer</code> در ابتدای goroutine فراخوانی کنید.</figcaption>
 </figure>
 <p>نمودار بالا چرخه کامل حیات شمارنده <bdi dir="ltr">WaitGroup</bdi> را نشان می‌دهد: خط زمانی تغییرات شمارنده از <bdi dir="ltr">Add(3)</bdi> تا آخرین <bdi dir="ltr">Done()</bdi>، و حالت خطا در صورتی که تعداد <bdi dir="ltr">Done()</bdi> از <bdi dir="ltr">Add()</bdi> بیشتر شود (<bdi dir="ltr">panic</bdi>).</p>
-<h4 id="سناریوهای-عملیاتی-waitgroup">سناریوهای عملیاتی <bdi dir="ltr">WaitGroup</bdi></h4>
+<p><strong  id="سناریوهای-عملیاتی-waitgroup">سناریوهای عملیاتی <bdi dir="ltr">WaitGroup</bdi></strong></p>
 <ul>
 <li><strong>انتظار برای چند درخواست <bdi dir="ltr">HTTP</bdi> همزمان:</strong> وقتی نیاز دارید داده‌ها را از چند <bdi dir="ltr">API</bdi> مختلف به صورت موازی دریافت کنید، هر درخواست را در یک <bdi dir="ltr">goroutine</bdi> مجزا اجرا کنید و با <bdi dir="ltr">WaitGroup</bdi> منتظر بمانید تا همه پاسخ‌ها دریافت شوند. این الگو در <bdi dir="ltr">PHP</bdi> معمولاً با <bdi dir="ltr">curl_multi</bdi> یا <bdi dir="ltr">Promise</bdi> در <bdi dir="ltr">ReactPHP</bdi> پیاده‌سازی می‌شود اما در <bdi dir="ltr">Go</bdi> بسیار ساده‌تر و طبیعی‌تر است. نتایج هر درخواست را در یک <bdi dir="ltr">channel</bdi> یا <bdi dir="ltr">map</bdi> محافظت‌شده با <bdi dir="ltr">mutex</bdi> ذخیره کنید.</li>
 <li><strong>پردازش دسته‌ای با <bdi dir="ltr">worker</bdi>های متعدد:</strong> وقتی تعداد زیادی وظیفه دارید که باید به صورت موازی پردازش شوند، یک <bdi dir="ltr">worker pool</bdi> ایجاد کنید و هر <bdi dir="ltr">worker</bdi> با <bdi dir="ltr">WaitGroup</bdi> همگام‌سازی شود. این الگو مشابه <bdi dir="ltr">Laravel Queue Worker</bdi> است اما بدون نیاز به <bdi dir="ltr">Redis</bdi> یا سیستم صف خارجی. تعداد <bdi dir="ltr">worker</bdi>ها را بر اساس <bdi dir="ltr">GOMAXPROCS</bdi> و نوع کار تنظیم کنید.</li>
@@ -346,16 +346,7 @@ func fetchAll(urls []string) ([]string, error) {
 </figure>
 <div class="tip"><strong>فراخوانی <bdi dir="ltr">Add()</bdi> قبل از راه‌اندازی <bdi dir="ltr">goroutine</bdi>:</strong> یکی از اشتباهات رایج فراخوانی <bdi dir="ltr">wg.Add(1)</bdi> داخل <bdi dir="ltr">goroutine</bdi> است. این کار باعث <bdi dir="ltr">race condition</bdi> می‌شود زیرا ممکن است <bdi dir="ltr">wg.Wait()</bdi> قبل از اینکه هیچ <bdi dir="ltr">Add()</bdi> فراخوانی شود اجرا شود و برنامه پیش از اتمام <bdi dir="ltr">goroutine</bdi>ها ادامه پیدا کند. الگوی صحیح این است که <bdi dir="ltr">Add()</bdi> را قبل از کلمه کلیدی <bdi dir="ltr">go</bdi> فراخوانی کنید. اگر تعداد <bdi dir="ltr">goroutine</bdi>ها از قبل مشخص است، می‌توانید از <bdi dir="ltr">wg.Add(n)</bdi> یک‌بار قبل از حلقه استفاده کنید که کارایی بهتری دارد.</div>
 <div class="note"><strong>یادداشت:</strong> <bdi dir="ltr">sync.WaitGroup</bdi> هیچ مکانیزمی برای انتشار خطا از <bdi dir="ltr">Goroutine</bdi>‌های فرزند به فراخوان ارائه نمی‌دهد — <code>wg.Wait()</code> فقط منتظر اتمام می‌ماند و خطاها باید دستی جمع‌آوری شوند (مثلاً با کانال یا <code>sync.Mutex</code> روی متغیر <code>firstErr</code>). اگر لازم است خطای اول، بقیه <bdi dir="ltr">Goroutine</bdi>‌ها را لغو کند، به‌جای <bdi dir="ltr">WaitGroup</bdi> از <code>golang.org/x/sync/errgroup</code> استفاده کنید که ترکیب <bdi dir="ltr">WaitGroup + context.WithCancel</bdi> را با کد بسیار تمیزتر فراهم می‌کند (در فصل ۵.۷ معرفی شده است).</div>
-<div class="summary">
-<strong>خلاصه‌ی نکات کلیدی:</strong>
-<ul>
-<li>Add(n) برای ثبت تعداد goroutine</li>
-<li>Done() در پایان هر goroutine</li>
-<li>Wait() برای انتظار تا اتمام همه</li>
-<li>Add باید قبل از go call شود</li>
-<li>WaitGroup با copy نباید منتقل شود</li>
-</ul>
-</div></div>
+</div>
 </main>
 </div>
 <!-- Footer -->

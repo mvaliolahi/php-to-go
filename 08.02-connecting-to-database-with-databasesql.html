@@ -121,8 +121,7 @@ for rows.Next() {
 db.SetMaxIdleConns(10)
 db.SetConnMaxLifetime(time.Minute * 5)</code></pre>
 </figure>
-<h4 id="نکات-کلیدی-برای-بهینهسازی-connection-pool">نکات کلیدی برای بهینه‌سازی Connection Pool</h4>
-<p>راهنمای تفصیلی مقدار پیشنهادی هر پارامتر (<bdi dir="ltr">MaxOpenConns</bdi>، <bdi dir="ltr">MaxIdleConns</bdi>، <bdi dir="ltr">ConnMaxLifetime</bdi>) و جدول سناریوهای سبک/متوسط/سنگین را در بخش <a href="#تنظیم-دقیق-connection-pool-برای-production">بهینه‌سازی تنظیمات Connection Pool برای Production</a> در ادامه‌ی همین فصل پیدا می‌کنید. در اینجا تنها نکته‌ای را می‌آوریم که در آن بخش پوشش داده نشده است.</p>
+<p><strong  id="نکات-کلیدی-برای-بهینهسازی-connection-pool">نکات کلیدی برای بهینه‌سازی Connection Pool</strong> — راهنمای تفصیلی مقدار پیشنهادی هر پارامتر (<bdi dir="ltr">MaxOpenConns</bdi>، <bdi dir="ltr">MaxIdleConns</bdi>، <bdi dir="ltr">ConnMaxLifetime</bdi>) و جدول سناریوهای سبک/متوسط/سنگین را در بخش <a href="#تنظیم-دقیق-connection-pool-برای-production">بهینه‌سازی تنظیمات Connection Pool برای Production</a> در ادامه‌ی همین فصل پیدا می‌کنید. در اینجا تنها نکته‌ای را می‌آوریم که در آن بخش پوشش داده نشده است.</p>
 <p><strong>استفاده از <bdi dir="ltr">Context</bdi>:</strong> همیشه کوئری‌ها را با <bdi dir="ltr">Context</bdi> اجرا کنید تا امکان لغو عملیات فراهم شود:</p>
 <figure class="code go" dir="ltr"><pre><code class="language-go">ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 defer cancel()
@@ -309,16 +308,7 @@ stats.WaitDuration,
 <li><strong>عمر اتصال و راه‌اندازی مجدد دیتابیس:</strong> وقتی سرور دیتابیس راه‌اندازی مجدد می‌شود تمام اتصال‌های موجود قطع می‌شوند. اگر <bdi dir="ltr">ConnMaxLifetime</bdi> تنظیم نشده باشد برنامه ممکن است اتصال‌های قطع‌شده را در <bdi dir="ltr">Pool</bdi> نگه دارد و خطاهای <code dir="ltr">connection reset by peer</code> دریافت کند. تنظیم <code dir="ltr">ConnMaxLifetime = 5 * time.Minute</code> تضمین می‌کند اتصال‌ها قبل از اینکه سرور آنها را قطع کند جایگزین شوند.</li>
 </ul>
 <div class="tip"><strong>یادآوری قانون طلایی:</strong> مقدار پیش‌فرض <bdi dir="ltr">MaxOpenConns</bdi> در <bdi dir="ltr">database/sql</bdi> برابر صفر یعنی «بدون محدودیت» — در <bdi dir="ltr">production</bdi> هرگز این مقدار را روی صفر رها نکنید. راهنمای انتخاب عدد مناسب (<code dir="ltr">NumCPU * 2</code> به‌عنوان نقطه‌ی شروع، تنظیم بر اساس متریک‌های <code dir="ltr">db.Stats()</code>) را در بخش <a href="#تنظیم-دقیق-connection-pool-برای-production">بهینه‌سازی تنظیمات Connection Pool برای Production</a> و سناریوی اول همین بخش بررسی کردیم.</div>
-<div class="summary">
-<strong>خلاصه‌ی نکات کلیدی:</strong>
-<ul>
-<li>sql.Open با driver name و DSN</li>
-<li>sql.DB pool با SetMaxOpenConns</li>
-<li>driver به‌صورت blank import</li>
-<li>Ping برای تست اتصال</li>
-<li>defer db.Close() در پایان برنامه</li>
-</ul>
-</div></div>
+</div>
 </main></div>
 <!-- Footer -->
 <footer class="site-footer">

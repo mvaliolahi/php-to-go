@@ -263,7 +263,7 @@ func MapStack[T any, R any](s *Stack[T], fn func(T) R) []R {
 <div class="important">
 <strong>قانون تجربی:</strong> جنریک‌ها وقتی ارزش دارند که (۱) الگوریتم یکسانی برای چندین نوع تکرار شود، (۲) type safety در زمان کامپایل مهم باشد، (۳) استفاده از interface باعث cast یا reflection شود. در غیر این صورت، سادگی را ترجیح دهید.
 </div>
-<h3 id="type-inference">2.6.6 Type Inference: استنتاج نوع</h3>
+<h3 id="type-inference">2.6.6 استنتاج نوع</h3>
 <p>یکی از مزیت‌های <bdi dir="ltr">Go</bdi> این است که کامپایلر اغلب می‌تواند نوع جنریک را از آرگومان‌ها استنتاج کند و نیازی به تعیین صریح نیست:</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">// Explicit type declaration
@@ -520,16 +520,7 @@ type NumberLike[T NumberLike[T]] interface {
 <li><strong>توابع کمکی <bdi dir="ltr">slice</bdi> و <bdi dir="ltr">map</bdi> جنریک:</strong> بسته‌ی <code>slices</code> استاندارد <bdi dir="ltr">Go</bdi> توابع جنریک مثل <code>slices.Contains</code>، <code>slices.Sort</code>، <code>slices.Index</code> و <code>maps.Keys</code> را ارائه می‌دهد. این توابع جایگزین کدهای تکراری می‌شوند و با محدودیت <code>comparable</code> یا <code>Ordered</code> ایمنی نوع را تضمین می‌کنند.</li>
 </ul>
 <div class="tip"><strong>نکته‌ی کلیدی — از جنریک‌ها بیش‌ازحد استفاده نکنید:</strong> در <bdi dir="ltr">Go</bdi> فلسفه‌ی سادگی همیشه اولویت دارد. با انواع مشخص و بتن شروع کنید و فقط وقتی الگوی یکسانی ۳ بار یا بیشتر با انواع مختلف تکرار شد، آن را به جنریک تبدیل کنید. جنریک‌ها ابزار قدرتمندی هستند اما پیچیدگی کد را افزایش می‌دهند: امضاهای طولانی‌تر، خطاهای کامپایل مبهم‌تر، و کد کمتر خوانا. اگر <code>interface</code> ساده نیازتان را برآورده می‌کند (بدون نیاز به <bdi dir="ltr">type assertion</bdi> یا <bdi dir="ltr">reflection</bdi>)، از آن استفاده کنید. قانون تجربی: «سه بار تکرار، بعد جنریک».</div>
-<div class="summary">
-<strong>خلاصه‌ی نکات کلیدی:</strong>
-<ul>
-<li>جنریک‌ها از Go 1.18 با type parameters معرفی شدند</li>
-<li>type constraint محدودیه‌ی نوع را تعریف می‌کند (comparable، any)</li>
-<li>نوع‌های جنریک: slice، map، struct با پارامتر نوع</li>
-<li>زمان عدم استفاده: وقتی جنریک پیچیدگی بیش از فایده می‌آورد</li>
-<li>جنریک برای کدهای reuse-pOriented، واسط برای رفتار</li>
-</ul>
-</div></div>
+</div>
 </main>
 </div>
 <!-- Footer -->

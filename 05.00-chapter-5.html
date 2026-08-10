@@ -99,7 +99,7 @@
 <tr><td>مقیاس‌پذیری</td><td>محدود به تعداد فرآیندها</td><td>صدها هزار <bdi dir="ltr">Goroutine</bdi></td></tr>
 </tbody>
 </table>
-<h3 id="تغییر-پارادایم-از-thread-به-goroutine">5.0.3 تغییر پارادایم: از Thread به Goroutine</h3>
+<h3 id="تغییر-پارادایم-از-thread-به-goroutine">5.0.3 تغییر پارادایم</h3>
 <p>در زبان‌هایی مانند Java یا C++، <bdi dir="ltr">Thread</bdi>‌های سیستم‌عامل ابزار اصلی هم‌روندی هستند. هر <bdi dir="ltr">Thread</bdi> حداقل ۱ مگابایت <bdi dir="ltr">Stack</bdi> اختصاصی دارد (در لینوکس پیش‌فرض ۸ مگابایت)، ساخت آن نیازمند <bdi dir="ltr">syscall</bdi> است، و زمان‌بندی آن توسط کرنل سیستم‌عامل انجام می‌شود. این محدودیت‌ها باعث می‌شوند ایجاد ده‌ها هزار <bdi dir="ltr">Thread</bdi> عملاً غیرممکن باشد.</p>
 <p><bdi dir="ltr">Goroutine</bdi>‌ها این محدودیت‌ها را از سه جهت اساسی حل می‌کنند. نخست، <bdi dir="ltr">Stack</bdi> اولیه‌ی بسیار کوچک (۲ کیلوبایت) که به‌صورت پویا رشد می‌کند، اجازه می‌دهد صدها هزار <bdi dir="ltr">Goroutine</bdi> همزمان اجرا شوند. دوم، <bdi dir="ltr">Scheduler</bdi> داخلی Go به‌جای کرنل سیستم‌عامل، زمان‌بندی را در <bdi dir="ltr">User Space</bdi> انجام می‌دهد که بسیار سریع‌تر است. </p><p>سوم، مدل <bdi dir="ltr">M:N Scheduler</bdi> تعداد بسیار زیادی <bdi dir="ltr">Goroutine</bdi> را روی تعداد محدودی <bdi dir="ltr">Thread</bdi> سیستم‌عامل نگاشت می‌کند و بهره‌وری منابع را به حداکثر می‌رساند.</p>
 <h3 id="مقدمه‌ای-بر-csp">5.0.4 مقدمه‌ای بر CSP</h3>
@@ -153,16 +153,7 @@ func main() {
 <div class="tip"><strong>به‌عنوان یک برنامه‌نویس PHP:</strong> اگر تاکنون برای اجرای کارها از <bdi dir="ltr">Queue</bdi> و <bdi dir="ltr">Redis</bdi> استفاده می‌کردید، از این پس در Go می‌توانید همان کار را با <bdi dir="ltr">Goroutine</bdi> و <bdi dir="ltr">Channel</bdi> انجام دهید. اگر مجبور بودید برای موازی شدن از <bdi dir="ltr">Worker</bdi>‌های <bdi dir="ltr">CLI</bdi> در کنار سرور اصلی استفاده کنید، Go به شما امکان مدیریت همه چیز در یک فرآیند واحد را می‌دهد. و اگر <bdi dir="ltr">API</bdi>‌ها باعث تأخیر در پاسخ‌دهی شما می‌شود، Go می‌تواند این <bdi dir="ltr">API</bdi>‌ها را به‌صورت <bdi dir="ltr">Non-blocking</bdi> و همزمان فراخوانی کند.</div>
 <div class="note"><strong>یادداشت:</strong> پیش از ورود به جزئیات فنی، دو مفهوم را به‌خاطر بسپارید: نخست، هم‌روندی در Go بر پایه‌ی <bdi dir="ltr">CSP</bdi> ساخته شده و ابزار اصلی آن <bdi dir="ltr">Goroutine</bdi> و <bdi dir="ltr">Channel</bdi> است، نه <bdi dir="ltr">Thread</bdi> و قفل. دوم، هر <bdi dir="ltr">Goroutine</bdi> که شروع می‌کنید باید مسیر خروج مشخصی داشته باشد (با <code>context.Context</code> یا بستن کانال)؛ در غیر این صورت نشت <bdi dir="ltr">Goroutine</bdi> رخ می‌دهد که در بخش ۵.۹ به‌تفصیل بررسی شده است.</div>
 <h3 id="آنچه-در-این-فصل-خواهید-آموخت">5.0.8 آنچه در این فصل خواهید آموخت</h3>
-<p>در این فصل خواننده با مفاهیم زیر آشنا خواهد شد:</p>
-<p><strong>بخش ۵.۱ — <bdi dir="ltr">Goroutine</bdi>:</strong> مفهوم <bdi dir="ltr">Goroutine</bdi> و تفاوت آن با <bdi dir="ltr">Thread</bdi> سیستم‌عامل و فرآیند PHP، چرخه‌ی حیات <bdi dir="ltr">Goroutine</bdi>، مدل <bdi dir="ltr">GMP Scheduler</bdi> و الگوریتم <bdi dir="ltr">Work-Stealing</bdi>، مکانیزم رشد <bdi dir="ltr">Stack</bdi>.</p>
-<p><strong>بخش ۵.۲ — <bdi dir="ltr">Channel</bdi>:</strong> ساختار داخلی <code>hchan</code>، کانال‌های بافر‌دار و بدون بافر، کانال‌های یک‌طرفه، رفتار کانال <bdi dir="ltr">nil</bdi> و بسته‌شده.</p>
-<p><strong>بخش ۵.۳ — <bdi dir="ltr">Select</bdi>:</strong> مکانیک <bdi dir="ltr">Select</bdi>، عملیات <bdi dir="ltr">Non-blocking</bdi>، <bdi dir="ltr">Timeout</bdi> و <bdi dir="ltr">Multiplexing</bdi>.</p>
-<p><strong>بخش ۵.۴ — <bdi dir="ltr">Context</bdi>:</strong> ساختار درختی <bdi dir="ltr">Context</bdi>، <code>WithCancel</code>، <code>WithTimeout</code>، <code>WithDeadline</code>، و <bdi dir="ltr">Graceful Shutdown</bdi>.</p>
-<p><strong>بخش ۵.۵ — <bdi dir="ltr">WaitGroup</bdi>:</strong> ساختار داخلی <bdi dir="ltr">WaitGroup</bdi>، قوانین استفاده و اشتباهات رایج.</p>
-<p><strong>بخش ۵.۶ — <bdi dir="ltr">Race Condition</bdi>:</strong> انواع <bdi dir="ltr">Race Condition</bdi>، <bdi dir="ltr">Mutex</bdi> و <bdi dir="ltr">RWMutex</bdi>، عملیات <bdi dir="ltr">Atomic</bdi>، و <bdi dir="ltr">Race Detector</bdi>.</p>
-<p><strong>بخش ۵.۷ — الگوهای هم‌روندی:</strong> <bdi dir="ltr">Worker Pool</bdi>، <bdi dir="ltr">Fan-out/Fan-in</bdi>، <bdi dir="ltr">Pipeline</bdi>، <bdi dir="ltr">Rate Limiting</bdi>، <bdi dir="ltr">Semaphore</bdi>، و <bdi dir="ltr">Graceful Shutdown</bdi>.</p>
-<p><strong>بخش ۵.۸ — کاربردهای عملی:</strong> کلاینت <bdi dir="ltr">HTTP</bdi> همزمان، کوئری‌های دیتابیس موازی، و پردازنده‌ی کارهای پس‌زمینه.</p>
-<p><strong>بخش ۵.۹ — نشت <bdi dir="ltr">Goroutine</bdi>:</strong> الگوهای رایج نشت، تشخیص با <bdi dir="ltr">pprof</bdi>، و راه‌حل‌ها.</p>
+<p>در ادامه، نقشه‌ی راه کلیِ این فصل را در نمودار زیر می‌بینید و سپس وارد جزئیات هر بخش می‌شویم.</p>
 <figure class="diagram" dir="ltr">
 <svg viewBox="0 0 760 340" xmlns="http://www.w3.org/2000/svg">
 <defs>
@@ -216,16 +207,7 @@ func main() {
 </svg>
 <figcaption>شکل ۵-۱: نقشه‌ی راه فصل پنجم — ۹ بخش که در سه لایه چیده شده‌اند: مبانی هم‌روندی (۵.۱ تا ۵.۵)، همگام‌سازی و امنیت حافظه (۵.۶)، و الگوهای عملی به‌همراه شناسایی نشتی (۵.۷ تا ۵.۹). مسیر خواندن پیشنهادی با فلش‌ها مشخص است.</figcaption>
 </figure>
-<div class="summary">
-<strong>خلاصه‌ی نکات کلیدی:</strong>
-<ul>
-<li>Goroutine سبک‌وزن و مدیریت‌شده توسط runtime است</li>
-<li>channel برای ارتباط همزمان بین goroutine‌ها</li>
-<li>select برای چندگانه‌سازی channel</li>
-<li>context برای لغو و timeout هم‌روندی</li>
-<li>race condition با sync.Mutex یا channel حل می‌شود</li>
-</ul>
-</div></div>
+</div>
 </main>
 </div>
 <!-- Footer -->

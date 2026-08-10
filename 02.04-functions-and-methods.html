@@ -157,7 +157,7 @@ fmt.Println(double(4)) // Output: 8
 }
 </code></pre>
 </figure>
-<p>پردازش فایل:</p>
+
 <p>با استفاده از defer دیگر لازم نیست جای بستن فایل یا آزادسازی منابع را در چند نقطه‌ی کد به خاطر بسپارید.</p>
 <div class="note"><strong>مکانیزم داخلی defer در Go:</strong> هر بار که <code>defer</code> فراخوانی می‌شود، کامپایلر Go ساختاری به نام <code>_defer</code> در runtime ایجاد می‌کند و آن را به صورت یک linked list به پشته‌ی defer تابع فعلی اضافه می‌کند. ساختار <code>_defer</code> شامل اشاره‌گری به تابع تأخیر‌افتاده، آرگومان‌های آن و اشاره‌گر به <code>_defer</code> قبلی است:
 <br/><br/>
@@ -258,7 +258,7 @@ func main() {
 }
 </code></pre>
 </figure>
-<h3 id="method-set-قواعد">2.4.9 Method Set Rules: T در برابر *T</h3>
+<h3 id="method-set-قواعد">2.4.9 T در برابر *T</h3>
 <p>از مهم‌ترین مفاهیم در <bdi dir="ltr">Go</bdi> که برنامه‌نویسان <bdi dir="ltr">PHP</bdi> باید بدانند، قواعد <bdi dir="ltr">method set</bdi> است. این قواعد تعیین می‌کنند که کدام متدها روی کدام نوع قابل دسترسی هستند:</p>
 <table class="comparison-table" dir="rtl">
 <thead>
@@ -325,7 +325,7 @@ func main() {
 <div class="note">
 <strong>نکته‌ی فنی:</strong> پارامتر <code>...int</code> درون تابع تبدیل به <code>[]int</code> (slice) می‌شود. فقط آخرین پارامتر تابع می‌تواند variadic باشد. اگر تابعی چند نوع پارامتر دارد، پارامتر variadic باید آخرین باشد: <code>func Log(format string, args ...any)</code>.
 </div>
-<h3 id="توابع-بعنوان-مقدار">2.4.11 توابع به‌عنوان مقدار: First-Class Citizens</h3>
+<h3 id="توابع-بعنوان-مقدار">2.4.11 توابع به‌عنوان مقدار</h3>
 <p>در <bdi dir="ltr">Go</bdi> توابع <strong dir="ltr">first-class citizens</strong> هستند: می‌توان آن‌ها را به متغیرها نسبت داد، به توابع دیگر ارسال کرد، و از توابع بازگرداند. این قابلیت پایه‌ی برنامه‌نویسی تابعی در <bdi dir="ltr">Go</bdi> است:</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">// Function as type
@@ -370,7 +370,7 @@ func init() {
 <div class="warning">
 <strong>احتیاط:</strong> بیش‌استفاده از <code>init()</code> باعث می‌شود ترتیب مقداردهی نامشخص و دیباگ مشکل شود. ترجیحاً از تابع صریح <code>NewX()</code> استفاده کنید.
 </div>
-<h3 id="defer-lifo-نمودار">2.4.13 defer: نمودار ترتیب اجرای LIFO</h3>
+<h3 id="defer-lifo-نمودار">2.4.13 نمودار ترتیب اجرای LIFO</h3>
 <p><bdi dir="ltr">defer</bdi> توابع را به‌صورت <bdi dir="ltr">LIFO</bdi> (آخرین ورود، اولین خروج) اجرا می‌کند. نمودار زیر ترتیب اجرا را نشان می‌دهد:</p>
 <figure class="diagram" dir="ltr">
 <svg viewBox="0 0 720 320" xmlns="http://www.w3.org/2000/svg">
@@ -464,16 +464,7 @@ func init() {
 <li><strong>اجتناب از وضعیت اشتراکی قابل تغییر:</strong> وقتی چندین <bdi dir="ltr">goroutine</bdi> به یک <bdi dir="ltr">struct</bdi> دسترسی دارند <bdi dir="ltr">value receiver</bdi> طبیعتاً ایمن است چون روی کپی کار می‌کند اما <bdi dir="ltr">pointer receiver</bdi> نیاز به هماهنگی صریح دارد. از <bdi dir="ltr">mutex</bdi> یا <bdi dir="ltr">channel</bdi> برای محافظت از داده‌ی مشترک استفاده کنید. هرگز فرض نکنید که <bdi dir="ltr">pointer receiver</bdi> بدون هماهنگی ایمن است.</li>
 </ul>
 <div class="tip"><strong>قانون طلایی — سازگاری در انتخاب <bdi dir="ltr">Receiver</bdi>:</strong> اگر حتی یک متد از نوع شما به <bdi dir="ltr">pointer receiver</bdi> نیاز دارد همه‌ی متدهای آن نوع باید <bdi dir="ltr">pointer receiver</bdi> باشند. این رویکرد سازگاری <bdi dir="ltr">method set</bdi> را حفظ می‌کند و از خطاهای عجیب با <bdi dir="ltr">interface</bdi> جلوگیری می‌کند. مخلوط کردن <bdi dir="ltr">value</bdi> و <bdi dir="ltr">pointer receiver</bdi> در یک نوع منبع رایج باگ‌هاست: نوع <code>T</code> برخی متدها را دارد و نوع <code>*T</code> همه را و این ناسازگاری فقط هنگام استفاده از <bdi dir="ltr">interface</bdi> آشکار می‌شود. به‌عنوان قاعده‌ی کلی: اگر شک دارید <bdi dir="ltr">pointer receiver</bdi> را انتخاب کنید.</div>
-<div class="summary">
-<strong>خلاصه‌ی نکات کلیدی:</strong>
-<ul>
-<li>توابع Go می‌توانند چند مقدار بازگشت دهند (میانبار error)</li>
-<li>closure به متغیرهای بیرونی دسترسی دارد</li>
-<li>defer با ترتیب LIFO برای پاکسازی منابع</li>
-<li>pointer receiver برای تغییر یا اجتناب از کپی</li>
-<li>init() قبل از main و به‌ترتیب وابستگی پکیج‌ها اجرا می‌شود</li>
-</ul>
-</div></div>
+</div>
 </main>
 </div>
 <!-- Footer -->

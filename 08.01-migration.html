@@ -239,16 +239,7 @@ func Down(tx *sql.Tx) error {
 <li><strong><bdi dir="ltr">Migration</bdi> بدون توقف (<bdi dir="ltr">Zero-Downtime</bdi>) — الگوی Expand/Contract:</strong> تغییرات مخرب مثل حذف ستون را در سه مرحله اعمال کنید: ابتدا ستون جدید را اضافه کنید (<bdi dir="ltr">expand</bdi>) و کد را طوری بنویسید که هم ساختار قدیم و هم جدید را پشتیبانی کند. سپس کد را برای استفاده فقط از ساختار جدید به‌روز کنید. در نهایت ستون قدیمی را حذف کنید (<bdi dir="ltr">contract</bdi>). این الگو تضمین می‌کند که در هیچ لحظه‌ای سرویس قطع نمی‌شود.</li>
 </ul>
 <div class="tip"><strong>تست دوجهتِ <bdi dir="ltr">Migration</bdi> قبل از ادغام:</strong> قاعده‌ی «<bdi dir="ltr">Migration</bdi> قابل بازگشت» را در ابتدای همین فصل بررسی کردیم — در اینجا فقط تأکید می‌کنیم که هر <bdi dir="ltr">Migration</bdi> جدید را در محیط محلی ابتدا <code dir="ltr">up</code> و بلافاصله <code dir="ltr">down</code> اجرا کنید تا از صحت هر دو جهت مطمئن شوید. این کار کم‌هزینه‌ترین لحظه‌ای است که می‌توانید نقص فایل <bdi dir="ltr">.down.sql</bdi> را کشف کنید؛ کشف همان نقص در محیط تولید بسیار پرخطر و زمان‌بر خواهد بود.</div>
-<div class="summary">
-<strong>خلاصه‌ی نکات کلیدی:</strong>
-<ul>
-<li>golang-migrate با فایل SQL جدا</li>
-<li>goose با annotation در فایل SQL</li>
-<li>embed برای جاسازی migration در باینری</li>
-<li>version-controlled schema تکامل‌پذیر</li>
-<li>rollback با down migration</li>
-</ul>
-</div></div>
+</div>
 </main></div>
 <!-- Footer -->
 <footer class="site-footer">

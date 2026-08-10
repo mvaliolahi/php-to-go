@@ -222,7 +222,7 @@ func main() {
 </code></pre>
 </figure>
 <!-- ═══════════════════════════════════════════════════════════════ -->
- ENRICHMENT: SVG — ServeMux Routing Tree &amp; Pattern Matching 
+ ENRICHMENT: SVG — ServeMux Routing Tree &amp; Pattern Matching
 <!-- ═══════════════════════════════════════════════════════════════ -->
 <figure class="diagram" dir="ltr">
 <svg viewBox="0 0 760 440" xmlns="http://www.w3.org/2000/svg">
@@ -290,16 +290,7 @@ func main() {
 <li><strong>استخراج پارامترهای مسیر:</strong> در <bdi dir="ltr">Go 1.22+</bdi> با الگوی <code dir="ltr">{id}</code> می‌توانید بخش‌های دینامیک مسیر را تعریف کنید و با <code dir="ltr">r.PathValue("id")</code> مقدار آن را بخوانید. این قابلیت جایگزین روش‌های دستی قبلی مثل <code dir="ltr">strings.Split(r.URL.Path, "/")</code> می‌شود. برای الگوهای چند پارامتری مثل <code dir="ltr">GET /api/users/{userId}/posts/{postId}</code> هر پارامتر با نام خود قابل دسترسی است. توجه داشته باشید که <code dir="ltr">{id}</code> فقط یک بخش واحد مسیر (تا اسلش بعدی) را تطبیق می‌دهد.</li>
 </ul>
 <div class="tip"><strong>نکته:</strong> از <bdi dir="ltr">Go 1.22</bdi> به بعد، <bdi dir="ltr">ServeMux</bdi> از مسیریابی بر اساس متد <bdi dir="ltr">HTTP</bdi> و پارامترهای مسیر پشتیبانی می‌کند. این ویژگی‌های جدید نیازی به کتابخانه‌های شخص ثالث مثل <bdi dir="ltr">Chi</bdi> یا <bdi dir="ltr">HttpRouter</bdi> برای اکثر پروژه‌ها از بین برده است. با الگوی <code dir="ltr">"GET /users/{id}"</code> و تابع <code dir="ltr">r.PathValue("id")</code> می‌توانید <bdi dir="ltr">API</bdi> های <bdi dir="ltr">RESTful</bdi> کامل را بدون هیچ وابستگی خارجی پیاده‌سازی کنید. فقط پروژه‌هایی که نیاز به گروه‌بندی پیشرفته <bdi dir="ltr">middleware</bdi> یا <bdi dir="ltr">regex</bdi> روی مسیر دارند ممکن است به کتابخانه‌های اضافی نیاز داشته باشند.</div>
-<div class="summary">
-<strong>خلاصه‌ی نکات کلیدی:</strong>
-<ul>
-<li>ServeMux برای routing ساده</li>
-<li>router اختصاصی (chi، gorilla، echo) برای امکانات پیشرفته</li>
-<li>path parameter با الگوی {id}</li>
-<li>subrouter برای گروه‌بندی route</li>
-<li>middleware با الگوی function chain</li>
-</ul>
-</div></div>
+</div>
 </main>
 </div>
 <!-- Footer -->

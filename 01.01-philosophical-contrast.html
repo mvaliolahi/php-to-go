@@ -176,7 +176,7 @@ func GetFromCache(key string) (string, bool) {
 <div class="important">
 <strong>هشدار:</strong> اعداد <bdi dir="ltr">benchmark</bdi> همیشه باید با احتیاط تفسیر شوند. در عمل، گلوگاه اغلب دیتابیس یا شبکه است نه خود زبان. اما در سناریوهایی با لود بالا و پردازش <bdi dir="ltr">CPU</bdi>-محور (مثل پردازش <bdi dir="ltr">stream</bdi>، محاسبات موازی، <bdi dir="ltr">proxy</bdi> با لود بالا)، این تفاوت‌ها کاملاً ملموس هستند. همچنین توجه کنید که <bdi dir="ltr">PHP-FPM</bdi> به ازای هر <bdi dir="ltr">worker</bdi> حدود ۳۰ مگابایت حافظه مصرف می‌کند — با ۵۰ <bdi dir="ltr">worker</bdi> یعنی ۱.۵ گیگابایت فقط برای لایه‌ی <bdi dir="ltr">PHP</bdi>، در حالی که کل برنامه‌ی <bdi dir="ltr">Go</bdi> با ۱۰ مگابایت کار می‌کند.
 </div>
-<h3 id="مقایسه‌ی-زمان-حیات-درخواست">1.1.5 مقایسه‌ی زمان حیات درخواست: PHP-FPM در برابر Go</h3>
+<h3 id="مقایسه‌ی-زمان-حیات-درخواست">1.1.5 مقایسه‌ی زمان حیات درخواست</h3>
 <p>تفاوت عملکرد ریشه در مدل اجرایی دارد. نمودار زیر چرخه‌ی حیات کامل یک درخواست <bdi dir="ltr">HTTP</bdi> را در هر دو زبان نشان می‌دهد:</p>
 <figure class="diagram" dir="ltr">
 <svg viewBox="0 0 760 360" xmlns="http://www.w3.org/2000/svg">
@@ -345,16 +345,7 @@ ENTRYPOINT ["/server"]
 </div>
 <h3 id="ارجاع-متقابل-مدیریت-خطا">1.1.10 ارجاع متقابل: مدیریت خطا</h3>
 <p>همان‌طور که در این بخش دیدید، تفاوت بنیادین بین <bdi dir="ltr">exception</bdi> در <bdi dir="ltr">PHP</bdi> و <bdi dir="ltr">error</bdi> در <bdi dir="ltr">Go</bdi> فقط مسئله‌ی <bdi dir="ltr">syntax</bdi> نیست — بازتاب فلسفه‌ی متفاوتی است. </p><p>در فصل ۳ بخش ۶ (۳.۶ مدیریت خطا) این موضوع را با جزئیات کامل و مثال‌های عملی بررسی خواهیم کرد: چگونه <bdi dir="ltr">error wrapping</bdi> کار می‌کند، تله‌ی <bdi dir="ltr">nil interface</bdi> چیست، و چگونه الگوهای پیشرفته‌ی مدیریت خطا مانند <bdi dir="ltr">sentinel error</bdi> و <bdi dir="ltr">custom error type</bdi> را پیاده‌سازی کنید.</p>
-<div class="summary">
-<strong>خلاصه‌ی نکات کلیدی:</strong>
-<ul>
-<li>PHP در ۱۹۹۴ برای صفحات داینامیک وب متولد شد؛ Go در ۲۰۰۷ برای مقیاس‌پذیری</li>
-<li>مدل PHP: فرآیند-per-request، stateless؛ مدل Go: فرآیند دائمی، stateful</li>
-<li>Go با کامپایل AOT باینری مستقل تولید می‌کند که نیازی به وب‌سرور ندارد</li>
-<li>مهاجرت Twitch: کاهش حافظه از ۲۰۰GB به ۲۰GB، افزایش ۵برابری توان پردازشی</li>
-<li>در لود بالا و پردازش CPU-محور، تفاوت عملکرد Go و PHP کاملاً ملموس است</li>
-</ul>
-</div></div>
+</div>
 </main>
 </div>
 <!-- Footer -->

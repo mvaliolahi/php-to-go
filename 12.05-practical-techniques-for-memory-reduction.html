@@ -505,16 +505,7 @@ for method := range v.Methods() {
 <li><strong>کاهش تخصیص در <bdi dir="ltr">JSON marshaling</bdi>:</strong> <bdi dir="ltr">encoding/json</bdi> در هر فراخوانی از <bdi dir="ltr">reflect</bdi> استفاده می‌کند و بافرهای موقتی تخصیص می‌دهد. برای کاهش تخصیص‌ها، از <bdi dir="ltr">sync.Pool</bdi> برای بافرها استفاده کنید. یا بهتر، از کدهای تولیدشده (<bdi dir="ltr">code generation</bdi>) مثل <bdi dir="ltr">easyjson</bdi> یا <bdi dir="ltr">go-json</bdi> استفاده کنید که بدون <bdi dir="ltr">reflect</bdi> کار می‌کنند و هم سریع‌ترند و هم حافظه‌ی کمتری مصرف می‌کنند. این تکنیک در <bdi dir="ltr">API</bdi>‌هایی که هر ثانیه هزاران درخواست <bdi dir="ltr">JSON</bdi> پردازش می‌کنند بسیار مؤثر است.</li>
 </ul>
 <div class="warning"><strong>هشدار عملی:</strong> قبل از هرگونه بهینه‌سازی حافظه، حتماً با <code dir="ltr">go tool pprof</code> اندازه‌گیری کنید. از <code dir="ltr">go test -bench=. -benchmem</code> برای شناسایی <code dir="ltr">hot path</code>‌ها استفاده کنید و فقط همان مسیرها را بهینه کنید. بهینه‌سازی کدهایی که زیاد اجرا نمی‌شوند، فقط پیچیدگی را افزایش می‌دهد و سودی ندارد. قاعده‌ی <code dir="ltr">80/20</code> را به یاد داشته باشید: ۸۰٪ مصرف حافظه در ۲۰٪ کد رخ می‌دهد. همچنین بعد از هر تغییر، دوباره بنچمارک بگیرید تا مطمئن شوید بهینه‌سازی واقعاً مؤثر بوده است. بدون اندازه‌گیری، بهینه‌سازی فقط حدس زدن است.</div>
-<div class="summary">
-<strong>خلاصه‌ی نکات کلیدی:</strong>
-<ul>
-<li>struct field order: بزرگ به کوچک</li>
-<li>string interning با sync.Map</li>
-<li>freelist با sync.Pool</li>
-<li>avoid bool در slice؛ از bitset استفاده</li>
-<li>mmap برای داده‌ی readonly حجیم</li>
-</ul>
-</div></div>
+</div>
 </main>
 </div>
 <!-- Footer -->

@@ -127,7 +127,7 @@ func (e *wrapError) Unwrap() error {
 </code></pre>
 </figure>
 <p>متد <code dir="ltr">Unwrap()</code> کلید اصلی زنجیره‌ی خطاهاست. <code dir="ltr">errors.Is</code> و <code dir="ltr">errors.As</code> از این متد برای پیمایش زنجیره استفاده می‌کنند. هر نوع خطایی که متد <code>Unwrap() error</code> داشته باشد، می‌تواند در زنجیره قرار بگیرد.</p>
-<h3 id="errors-unwrap">4.2.3 errors.Unwrap: پیمایش دستی زنجیره</h3>
+<h3 id="errors-unwrap">4.2.3 پیمایش دستی زنجیره</h3>
 <p>تابع <code dir="ltr">errors.Unwrap</code> متد <code dir="ltr">Unwrap()</code> خطا را فراخوانی می‌کند. اگر خطا این متد را نداشته باشد، <code>nil</code> برمی‌گرداند:</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">err := readConfig("config.yaml")
@@ -143,7 +143,7 @@ for e := err; e != nil; {
 // Layer: file does not exist
 </code></pre>
 </figure>
-<h3 id="errors-join">4.2.4 errors.Join: مدیریت چندخطایی — Go 1.20+</h3>
+<h3 id="errors-join">4.2.4 مدیریت چندخطایی — Go 1.20+</h3>
 <p>از Go 1.20 تابع <code dir="ltr">errors.Join</code> امکان ترکیب چند خطا در یک خطای واحد را فراهم می‌کند. این قابلیت برای مواقعی که چند عملیات همزمان انجام می‌شود و هر کدام ممکن است خطای مستقلی تولید کند بسیار مفید است:</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">func validateForm(name, email string) error {
@@ -374,7 +374,7 @@ func GetUser(id int) (*User, error) {
 }
 </code></pre>
 </figure>
-<h3 id="error-wrapping-chain-tree">4.2.8 زنجیره‌ی پیچیدن خطا: درخت fmt.Errorf %w</h3>
+<h3 id="error-wrapping-chain-tree">4.2.8 زنجیره‌ی پیچیدن خطا</h3>
 <p>در بخش «<a href="#خطای-پیچیده-تر-با-wrapping">خطای پیچیده‌تر با Wrapping</a>» دیدیم که <code dir="ltr">fmt.Errorf</code> با فعل <code dir="ltr">%w</code> چگونه زنجیره‌ی خطا می‌سازد و متد <code dir="ltr">Unwrap()</code> را به‌صورت خودکار پیاده‌سازی می‌کند. در این بخش روی نکته‌ی حیاتی‌ای تمرکز می‌کنیم که منبع رایج باگ‌های پنهان در پروژه‌های <bdi dir="ltr">Go</bdi> است: تفاوت <code dir="ltr">%w</code> با <code dir="ltr">%v</code>. <code dir="ltr">%v</code> فقط پیغام خطا را قالب‌بندی می‌کند و زنجیره را می‌شکند — فراخوانی‌کننده دیگر نمی‌تواند خطای اصلی را با <code dir="ltr">errors.Is()</code> یا <code dir="ltr">errors.As()</code> بررسی کند. نمودار زیر این تفاوت را در کنار مکانیزم <code dir="ltr">Unwrap()</code> سفارشی و ساخت درخت خطا نشان می‌دهد.</p>
 <figure class="diagram" dir="ltr">
 <svg viewBox="0 0 760 460" xmlns="http://www.w3.org/2000/svg">
@@ -443,16 +443,7 @@ func GetUser(id int) (*User, error) {
 <div class="important">
 <strong>قانون طلایی:</strong> در <bdi dir="ltr">Go</bdi> هرگز از <code dir="ltr">%v</code> در <code dir="ltr">fmt.Errorf</code> برای پیچیدن خطا استفاده نکنید. <code dir="ltr">%w</code> زنجیره را حفظ می‌کند، <code dir="ltr">%v</code> زنجیره را می‌شکند. خطای بدون زنجیره = خطای غیرقابل بررسی = باگ پنهان. این یکی از رایج‌ترین اشتباهات برنامه‌نویسان مهاجر از <bdi dir="ltr">PHP</bdi> است که عادت به الحاق رشته‌ی پیغام خطا دارند و اهمیت زنجیره‌ی خطا را درک نمی‌کنند.
 </div>
-<div class="summary">
-<strong>خلاصه‌ی نکات کلیدی:</strong>
-<ul>
-<li>custom error با تعریف نوع و متد Error()</li>
-<li>errors.Is برای مقایسه‌ی خطا با sentinel</li>
-<li>errors.As برای استخراج نوع خطا</li>
-<li>fmt.Errorf با %w خطاها را wrap می‌کند</li>
-<li>sentinel error برای خطاهای شناخته‌شده</li>
-</ul>
-</div></div>
+</div>
 </main>
 </div>
 <!-- Footer -->

@@ -258,7 +258,7 @@ class ContactRequest extends FormRequest
 }
 </code></pre>
 </figure>
-<h4 id="استفاده-از-اعتبارسنج-در-هندلر">استفاده از اعتبارسنج در هندلر</h4>
+<p><strong  id="استفاده-از-اعتبارسنج-در-هندلر">استفاده از اعتبارسنج در هندلر</strong></p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">var emailRX = regexp.MustCompile(`^[a-zA-Z0-9.!#$%&amp;'*+/=?^_\x60{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$`)
 
@@ -595,16 +595,7 @@ func contactHandler(w http.ResponseWriter, r *http.Request) {
 <li><strong>جلوگیری از <bdi dir="ltr">CSRF</bdi> با توکن:</strong> هر فرم <code dir="ltr">POST</code> باید توکن <bdi dir="ltr">CSRF</bdi> داشته باشد. ساده‌ترین راه استفاده از کتابخانه <code dir="ltr">gorilla/csrf</code> است: یک بار <bdi dir="ltr">middleware</bdi> را ثبت کنید و با <code dir="ltr">csrf.TemplateField(r)</code> فیلد مخفی را در قالب تولید کنید. در هر درخواست <code dir="ltr">POST</code>، <bdi dir="ltr">middleware</bdi> به صورت خودکار توکن را تایید می‌کند و در صورت عدم تطابق کد <code dir="ltr">403</code> برمی‌گرداند. هرگز فرم‌های <code dir="ltr">POST</code> بدون محافظت <bdi dir="ltr">CSRF</bdi> رها نکنید — حتی در صفحات داخلی.</li>
 </ul>
 <div class="tip"><strong>نکته طلایی:</strong> همیشه پس از پردازش موفق فرم از الگوی <bdi dir="ltr">Post-Redirect-Get (PRG)</bdi> استفاده کنید. بدون این الگو، اگر کاربر بعد از ارسال فرم دکمه بازنشانی مرورگر را بزند، فرم مجدداً ارسال می‌شود و داده‌ها دوباره در پایگاه داده ذخیره می‌شوند. الگوی <bdi dir="ltr">PRG</bdi> به این شکل کار می‌کند: فرم با <code dir="ltr">POST</code> ارسال می‌شود ← سرور پردازش را انجام می‌دهد ← سرور به جای نمایش نتیجه، کاربر را با کد <code dir="ltr">303 See Other</code> به صفحه‌ای دیگر <code dir="ltr">redirect</code> می‌کند ← مرورگر درخواست <code dir="ltr">GET</code> به صفحه جدید ارسال می‌کند. حالا اگر کاربر دکمه بازنشانی را بزند فقط درخواست <code dir="ltr">GET</code> تکرار می‌شود و هیچ عارضه جانبی نخواهد داشت.</div>
-<div class="summary">
-<strong>خلاصه‌ی نکات کلیدی:</strong>
-<ul>
-<li>r.ParseForm و r.PostForm</li>
-<li>r.MultipartForm برای file upload</li>
-<li>bind to struct با reflection یا library</li>
-<li>validation با go-playground/validator</li>
-<li>CSRF token برای امنیت</li>
-</ul>
-</div></div>
+</div>
 </main>
 </div>
 <!-- Footer -->

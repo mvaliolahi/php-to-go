@@ -70,7 +70,7 @@
 </div>
 <p>بعد از اجرای کوئری‌ها بخش اصلی پردازش نتایج و انتقال داده‌ها به ساختارهایی است که بتوانید به راحتی با آن‌ها کار کنید. پکیج <bdi dir="ltr">database/sql</bdi> ابزارهای متنوعی برای خواندن داده‌ها و نگاشت آن‌ها به متغیرها و ساختارها دارد.</p>
 <p>به‌عنوان برنامه‌نویس <bdi dir="ltr">Laravel</bdi> می‌دانید که <bdi dir="ltr">Eloquent</bdi> این کار را به صورت خودکار انجام می‌دهد. در <bdi dir="ltr">Go</bdi> نیاز به کنترل و دقت بیشتری دارید اما مزیت آن سرعت و کنترل دقیق بر عملکرد است.</p>
-<h3 id="manual-scanning">8.4.1 روش اول: Manual Scanning</h3>
+<h3 id="manual-scanning">8.4.1 روش اول</h3>
 <p>ساده‌ترین و مستقیم‌ترین روش استفاده از <bdi dir="ltr">rows.Scan()</bdi> است:</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">type User struct {
@@ -144,7 +144,7 @@ if err := rows.Err(); err != nil {
 <li><strong>اسکن دسته‌ای چندین سطر:</strong> برای خواندن صدها یا هزاران سطر، الگوی <bdi dir="ltr">slice append</bdi> در حلقه‌ی <bdi dir="ltr">rows.Next()</bdi> کارآمدتر از <bdi dir="ltr">sqlx.Select()</bdi> است چون کنترل بیشتری روی حافظه و خطاها دارید. اما <bdi dir="ltr">sqlx.Select()</bdi> کد تمیزتری تولید می‌کند و برای کاربردهای معمولی کاملاً مناسب است.</li>
 </ul>
 <div class="tip"><strong>نکته عملی:</strong> دو الگوی اصلی برای مدیریت ستون‌های <bdi dir="ltr">nullable</bdi> وجود دارد: انواع <bdi dir="ltr">sql.Null*</bdi> و الگوی <bdi dir="ltr">pointer</bdi>. انواع <bdi dir="ltr">sql.Null*</bdi> صراحت بیشتری دارند و به‌خوبی مستند می‌شوند اما در <bdi dir="ltr">JSON</bdi> serialization به‌طور پیش‌فرض شیء پیچیده‌ای تولید می‌کنند مثل <code>{"String":"test","Valid":true}</code>. الگوی <bdi dir="ltr">pointer</bdi> در <bdi dir="ltr">JSON</bdi> به‌درستی <code>null</code> تولید می‌کند اما خطر <bdi dir="ltr">nil dereference</bdi> وجود دارد. پیشنهاد عملی: در <bdi dir="ltr">API</bdi> ها از <bdi dir="ltr">pointer</bdi> استفاده کنید و در لایه‌ی دسترسی داده از <bdi dir="ltr">sql.Null*</bdi>، سپس تبدیل را در لایه‌ی میانی انجام دهید.</div>
-<h3 id="sqlx">8.4.2 روش دوم: sqlx</h3>
+<h3 id="sqlx">8.4.2 روش دوم</h3>
 <p>کتابخانه <bdi dir="ltr">sqlx</bdi> با افزودن <bdi dir="ltr">struct tags</bdi> نگاشت خودکار را فراهم می‌کند:</p>
 <figure class="code go" dir="ltr">
 <pre><code class="language-go">import "github.com/jmoiron/sqlx"
@@ -164,7 +164,7 @@ var user User
 err = sqlxdb.Get(&amp;user, "SELECT * FROM users WHERE id = $1", 42)</code></pre>
 </figure>
 <p><bdi dir="ltr">sqlx</bdi> از <bdi dir="ltr">struct tags</bdi> با کلید <code>db</code> برای نگاشت ستون‌ها استفاده می‌کند. این روش خطای کمتری دارد اما وابستگی خارجی اضافه می‌کند.</p>
-<h3 id="sqlc">8.4.3 روش سوم: sqlc</h3>
+<h3 id="sqlc">8.4.3 روش سوم</h3>
 <p><bdi dir="ltr">sqlc</bdi> ابزاری است که از روی کوئری‌های <bdi dir="ltr">SQL</bdi> کد <bdi dir="ltr">Go</bdi> تولید می‌کند. این روش هم <bdi dir="ltr">type-safety</bdi> کامل و هم راحتی <bdi dir="ltr">ORM</bdi> را ارائه می‌دهد:</p>
 <figure class="code sql" dir="ltr">
 <pre><code class="language-sql">-- name: GetUser :one
@@ -212,16 +212,7 @@ WHERE u.id = $1
 <h3 id="custom-scanner">8.4.6 رابط sql.Scanner و driver.Valuer</h3>
 <p>با پیاده‌سازی <bdi dir="ltr">sql.Scanner</bdi> و <bdi dir="ltr">driver.Valuer</bdi> می‌توانید هر نوع پیچیده‌ای را بدون کد تکراری تبدیل کنید. مثال کامل پیاده‌سازی این رابط‌ها برای ستون‌های <bdi dir="ltr">JSONB</bdi> در بخش <a href="08.07-working-with-json-arrays-and-timestamps.html#custom-types">تبدیل سفارشی با sql.Scanner و driver.Valuer</a> آورده شده است.</p>
 <div class="comparison"><strong>مقایسه با Eloquent:</strong> در <bdi dir="ltr">Laravel</bdi> مدل‌های <bdi dir="ltr">Eloquent</bdi> با <bdi dir="ltr">ORM</bdi> به‌صورت خودکار ستون‌ها را به فیلدهای مدل نگاشت می‌کنند — حتی <bdi dir="ltr">JOIN</bdi>‌ها و روابط با <code>with()</code> بدون کد اضافی کار می‌کنند. در <bdi dir="ltr">Go</bdi> شما باید صراحتاً هر فیلد را در <code dir="ltr">Scan()</code> مشخص کنید یا از ابزارهایی چون <bdi dir="ltr">sqlx</bdi> و <bdi dir="ltr">sqlc</bdi> برای کاهش کد تکراری استفاده کنید. این رویکرد اگرچه نیازمند کد بیشتری است اما شفافیت و کنترل کاملی روی عملیات نگاشت ارائه می‌دهد.</div>
-<div class="summary">
-<strong>خلاصه‌ی نکات کلیدی:</strong>
-<ul>
-<li>rows.Scan با pointer به فیلدها</li>
-<li>sqlx با StructScan</li>
-<li>sqlc برای generate type-safe code</li>
-<li>struct tag با `db:"column_name"`</li>
-<li>null handling با sql.Null*</li>
-</ul>
-</div></div>
+</div>
 </main></div>
 <!-- Footer -->
 <footer class="site-footer">
